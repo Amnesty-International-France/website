@@ -6,8 +6,8 @@ This is the repository for the redesign of the Amnesty International France webs
 
 ## Requirements
 
-- PHP 8.0 or greater
-- MySQL version 8.0 or greater or MariaDB version 10.5 or greater
+- PHP 8.0 or higher
+- MySQL version 8.0 or higher or MariaDB version 10.5 or higher
 - [Castor](https://github.com/jolicode/castor)
 
 ## Installation

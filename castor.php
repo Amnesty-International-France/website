@@ -66,6 +66,7 @@ function install(string $path = '.'): void
         https://github.com/amnestywebsite/cmb2-password-field/releases/download/$cmb2_password_field_version/cmb2-password-field.zip \
         https://github.com/amnestywebsite/cmb2-message-field/releases/download/$cmb2_message_field_version/cmb2-message-field.zip \
         https://github.com/jaymcp/cmb2-field-order/archive/refs/tags/$cmb2_field_order_version.zip \
+        jetpack \
         --activate", context: $context);
 }
 
