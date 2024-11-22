@@ -30,7 +30,7 @@ flowchart TD
     E --> |oui| F[Soummet le formulaire]
     E --> |non| G[Corrige le formulaire]
     G --> E
-    F--> H[Serveur génère et envoie le code 2FA par email]
+    Q--> H[Serveur génère et envoie le code 2FA par email]
     H--> I[Code 2FA envoyé par email]
     I--> J[Utilisateur reçoit le code 2FA]
     J --> K[Utilisateur soumet le code 2FA]
