@@ -12,9 +12,12 @@
 
 Cette fonctionnalité a pour objectif de permettre à un utilisateur de créer un compte
 
-### Parti pris 
+### Synthèse des règles métiers(*)
 
 - la 2FA sert à vérifier que l'utilisateur est bien un humain (et pas un bot)
+- Si l'utilisateur n'est pas connu par Saleforce, il ne peut créer de compte
+
+(*) Les règles métiers sont indiquées sur le Linear. 
 
 ### Schéma du parcours utilisateur
 
@@ -41,7 +44,7 @@ flowchart TD
     F --> O[Envoi du contenu du formulaire à SalesForce]
     O --> P{Utilisateur connu sur SalesForce ?}
     P --> |Oui| Q[SalesForce retourne le status]
-    P --> |Non| R[SalesForce stocke les informations de l'utilisateur]
+    P --> |Non| R[L'utilisateur voit un écran lui proposant de devenir donateur]
 
     
     
