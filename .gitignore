@@ -36,3 +36,5 @@ wp-config.php
 
 # Themes
 /wp-content/themes/*
+
+docker-compose.yml
