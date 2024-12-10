@@ -1,0 +1,179 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "color": {
+      "background": false,
+      "text": false,
+      "defaultPalette": false,
+      "defaultGradients": false,
+      "palette": [
+        {
+          "slug": "black",
+          "color": "#000",
+          "name": "Black"
+        },
+        {
+          "slug": "white",
+          "color": "#fff",
+          "name": "White"
+        },
+        {
+          "slug": "primary",
+          "color": "#fdff28",
+          "name": "Primary"
+        },
+        {
+          "slug": "primary-state",
+          "color": "#f8d72b",
+          "name": "Primary State"
+        },
+        {
+          "slug": "secondary",
+          "color": "#2196f3",
+          "name": "Secondary"
+        },
+        {
+          "slug": "accent",
+          "color": "#2196f3",
+          "name": "Accent"
+        },
+        {
+          "slug": "grey-lightest",
+          "color": "#f7f7f7",
+          "name": "Lightest Grey"
+        },
+        {
+          "slug": "grey-lighter",
+          "color": "#e4e4e4",
+          "name": "Lighter Grey"
+        },
+        {
+          "slug": "grey-light",
+          "color": "#b3b3b3",
+          "name": "light Grey"
+        },
+        {
+          "slug": "grey-base",
+          "color": "#767676",
+          "name": "Default Grey"
+        },
+        {
+          "slug": "grey-dark",
+          "color": "#525252",
+          "name": "Dark Grey"
+        },
+        {
+          "slug": "grey-darker",
+          "color": "#262626",
+          "name": "Darker Grey"
+        },
+        {
+          "slug": "grey-darkest",
+          "color": "#111111",
+          "name": "Darkest Grey"
+        },
+        {
+          "slug": "blue-twitter",
+          "color": "#1da1f2",
+          "name": "Twitter Blue"
+        },
+        {
+          "slug": "orange-base",
+          "color": "#ffa500",
+          "name": "Orange"
+        }
+      ]
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "fontFamily": "\"Amnesty Trade Gothic\", sans-serif",
+          "name": "Amnesty Trade Gothic",
+          "slug": "primary",
+          "fontFace": [
+            {
+              "fontFamily": "Amnesty Trade Gothic",
+              "fontStyle": "normal",
+              "fontWeight": 300,
+              "fontDisplay": "swap",
+              "src": [
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Light.eot",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Light.woff2",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Light.woff",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Light.ttf"
+              ]
+            },
+            {
+              "fontFamily": "Amnesty Trade Gothic",
+              "fontStyle": "oblique",
+              "fontWeight": 300,
+              "fontDisplay": "swap",
+              "src": [
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-LightObl.eot",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-LightObl.woff2",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-LightObl.woff",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-LightObl.ttf"
+              ]
+            },
+            {
+              "fontFamily": "Amnesty Trade Gothic",
+              "fontStyle": "normal",
+              "fontWeight": "normal",
+              "fontDisplay": "swap",
+              "src": [
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Roman.eot",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Roman.woff2",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Roman.woff",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Roman.ttf"
+              ]
+            },
+            {
+              "fontFamily": "Amnesty Trade Gothic",
+              "fontStyle": "oblique",
+              "fontWeight": "normal",
+              "fontDisplay": "swap",
+              "src": [
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Oblique.eot",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Oblique.woff2",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Oblique.woff",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-Oblique.ttf"
+              ]
+            }
+          ]
+        },
+        {
+          "fontFamily": "\"Amnesty Trade Gothic Condensed\", sans-serif",
+          "name": "Amnesty Trade Gothic",
+          "slug": "secondary",
+          "fontFace": [
+            {
+              "fontFamily": "Amnesty Trade Gothic Condensed",
+              "fontStyle": "oblique",
+              "fontWeight": "normal",
+              "fontDisplay": "swap",
+              "src": [
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-CnNo.18Obl.eot",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-CnNo.18Obl.woff2",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-CnNo.18Obl.woff",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-CnNo.18Obl.ttf"
+              ]
+            },
+            {
+              "fontFamily": "Amnesty Trade Gothic Condensed",
+              "fontStyle": "normal",
+              "fontWeight": "bold",
+              "fontDisplay": "swap",
+              "src": [
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-BdCnNo.20.eot",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-BdCnNo.20.woff2",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-BdCnNo.20.woff",
+                "{PLUGIN_DIR_URL}/assets/fonts/TradeGothicLTW05-BdCnNo.20.ttf"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

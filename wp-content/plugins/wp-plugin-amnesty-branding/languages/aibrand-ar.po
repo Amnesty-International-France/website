@@ -1,0 +1,300 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Amnesty International Branding 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-plugin-amnesty-branding\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-04-09T11:11:39+00:00\n"
+"PO-Revision-Date: 2024-04-23 09:39+0100\n"
+"Language: ar\n"
+"X-Generator: Poedit 3.4.2\n"
+"X-Domain: aibrand\n"
+
+#. Plugin Name of the plugin
+msgid "Amnesty International Branding"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://github.com/amnestywebsite/wp-plugin-amnesty-branding"
+msgstr ""
+
+#. Description of the plugin
+msgid "Applies Amnesty International's branding to the Humanity Theme"
+msgstr ""
+
+#. Author of the plugin
+#. translators: [front]
+#: includes/theme-setup/wp-head.php:19
+#: views/partials/petitions/header.php:29
+msgid "Amnesty International"
+msgstr "منظمة العفو الدولية"
+
+#. Author URI of the plugin
+msgid "https://www.amnesty.org"
+msgstr ""
+
+#. translators: [admin]
+#: includes/class-post-meta.php:46
+msgid "For use when an item has had a major update"
+msgstr "للاستخدام عند وجود تحديث رئيسي لعنصر"
+
+#. translators: [admin]
+#: includes/admin/media-library/columns.php:22
+msgid "Amnesty Info"
+msgstr "معلومات منظمة العفو الدولية"
+
+#. translators: [admin]
+#: includes/admin/media-library/columns.php:55
+msgid "Has Caption"
+msgstr "يحتوي على تسمية توضيحية"
+
+#. translators: [admin]
+#: includes/admin/media-library/columns.php:59
+msgid "Has Alt Text"
+msgstr "يحتوي على نص بديل"
+
+#. translators: [admin]
+#: includes/admin/media-library/columns.php:63
+msgid "Has Credit"
+msgstr "لديه الائتمان"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:19
+msgid "Contact"
+msgstr "اتصال"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:23
+msgid "Contact Info"
+msgstr "معلومات الاتصال"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:33
+msgid "IS Office"
+msgstr "مكتب IS"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:45
+msgid "Contact info for the International Secretariat office"
+msgstr "معلومات الاتصال بمكتب الأمانة الدولية"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:54
+msgid "Name"
+msgstr "الاسم"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:64
+msgid "Address"
+msgstr "العنوان"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:74
+msgid "Phone"
+msgstr "الهاتف"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:84
+msgid "Fax"
+msgstr "فاكس"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:94
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:104
+msgid "Link to contact page"
+msgstr "ارتباط إلى صفحة الاتصال"
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:106
+msgid "Please select only one item"
+msgstr "الرجاء تحديد عنصر واحد فقط"
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:22
+msgctxt "death penalty status"
+msgid "Abolitionist for all crimes"
+msgstr "إلغاء العقوبة بالنسبة لجميع الجرائم"
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:24
+msgid "Does not use the death penalty"
+msgstr "لا يستخدم عقوبة الإعدام"
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:28
+msgctxt "death penalty status"
+msgid "Abolitionist for ordinary crimes"
+msgstr "إلغاء العقوبة بالنسبة للجرائم العادية"
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:30
+msgid "Retains the death penalty only for serious crimes, such as those committed during times of war"
+msgstr "لا يبقي على عقوبة الإعدام إلا بالنسبة للجرائم الخطيرة، مثل الجرائم المرتكبة في أوقات الحرب"
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:34
+msgctxt "death penalty status"
+msgid "Abolitionist in practice"
+msgstr "إلغاء العقوبة في الممارسة الفعلية"
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:36
+msgid "Retains the death penalty in law, but hasn’t executed for at least 10 years"
+msgstr "يبقي على عقوبة الإعدام في القانون، لكنه لم ينفذ عمليات إعدام منذ 10 سنوات على الأقل"
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:40
+msgctxt "death penalty status"
+msgid "Retentionist"
+msgstr "الإبقاء على العقوبة"
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:42
+msgid "Retains the death penalty in law"
+msgstr "يبقي على عقوبة الإعدام في القانون"
+
+#: includes/features/death-penalty/taxonomy-custom-fields.php:23
+msgid "Death Penalty"
+msgstr "عقوبة الإعدام"
+
+#. translators: [admin]
+#: includes/features/death-penalty/taxonomy-custom-fields.php:36
+msgid "Status in Law"
+msgstr "الحالة"
+
+#. translators: [front]
+#: includes/features/language-selector/render.php:46
+msgid "Available languages"
+msgstr "اللغات المتاحة"
+
+#. translators: [front] Accessibility label for screen reader/keyboard users
+#: views/partials/petitions/header.php:42
+msgid "Skip to main content"
+msgstr "الاطلاع على آخر التطورات"
+
+#. translators: [front]
+#: views/partials/single/docref.php:18
+msgid "Document Reference: "
+msgstr "مرجع الوثيقة:"
+
+#: views/partials/single/index-number.php:17
+msgid "Index Number:"
+msgstr "رقم الوثيقة:"
+
+#. translators: [front]
+#: views/partials/single/recipients.php:18
+#: views/templates/attachments/local.php:29
+#: views/templates/attachments/remote.php:46
+msgid "View Recipients"
+msgstr "عرض المستلمين"
+
+#. translators: [front] ARIA
+#. translators: [admin]
+#: views/templates/attachments/local.php:42
+#: views/templates/attachments/remote.php:59
+#: assets/scripts/blockeditor.js:8566
+msgid "Sidebar"
+msgstr "الشريط الجانبي"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:142
+msgid "Website Timezone Details"
+msgstr "تفاصيل المنطقة الزمنية لموقع الويب"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:146
+msgid "The website's timezone is %1$s and the date/time is %2$s"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:153
+msgid "Server Timezone Details"
+msgstr "تفاصيل المنطقة الزمنية للملقم"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:157
+msgid "The server's timezeone is %1$s and the date/time is %2$s"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:207
+msgid "Updated at"
+msgstr "تم التحديث في"
+
+#: assets/scripts/blockeditor.js:211
+msgid "Choose Date"
+msgstr "اختر موعدٌا"
+
+#: assets/scripts/blockeditor.js:216
+msgid "Updated Date"
+msgstr "تاريخ محدّث"
+
+#: assets/scripts/blockeditor.js:223
+msgid "Clear"
+msgstr "مسح"
+
+#: assets/scripts/blockeditor.js:8415
+msgid "Global Default"
+msgstr "افتراضي"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8536
+msgid "Loading"
+msgstr "تحميل"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8538
+msgid "Select a sidebar"
+msgstr "حدد شريطا جانبيا"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8564
+msgid "Appearance"
+msgstr "المظهر"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8570
+msgid "Disable Sidebar"
+msgstr "تعطيل الشريط الجانبي"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8572
+msgid "Hides the sidebar on this Annual Report"
+msgstr "إخفاء الشريط الجانبي في هذا التقرير السنوي"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8622
+msgid "Brand Background"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8637
+msgid "Light Grey Background"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8652
+msgid "Light"
+msgstr "فاتح"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8666
+msgid "Yellow"
+msgstr "أصفر"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8672
+msgid "Yellow Circle"
+msgstr "دائرة صفراء"
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8677
+msgid "Logos Only Yellow"
+msgstr "الشعارات فقط صفراء"

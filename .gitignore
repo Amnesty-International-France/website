@@ -1,6 +1,6 @@
 .env.*
 .castor.stub.php
-.clever.json
+.ddev
 
 # Wordpress - ignore core, configuration, examples, uploads and logs.
 # https://github.com/github/gitignore/blob/main/WordPress.gitignore
@@ -34,6 +34,7 @@ wp-config.php
 /wp-content/plugins/*
 # Example of my custom plugin named hello-world
 #!/wp-content/plugins/hello-world/
+!/wp-content/plugins/wp-plugin-amnesty-branding/
 
 # Themes
 /wp-content/themes/*
