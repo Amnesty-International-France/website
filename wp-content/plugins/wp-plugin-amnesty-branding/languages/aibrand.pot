@@ -1,0 +1,301 @@
+# Copyright (C) 2024 Amnesty International
+# This file is distributed under the GPLv2.
+msgid ""
+msgstr ""
+"Project-Id-Version: Amnesty International Branding 1.0.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-plugin-amnesty-branding\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-04-22T08:46:05+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: aibrand\n"
+
+#. Plugin Name of the plugin
+msgid "Amnesty International Branding"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://github.com/amnestywebsite/wp-plugin-amnesty-branding"
+msgstr ""
+
+#. Description of the plugin
+msgid "Applies Amnesty International's branding to the Humanity Theme"
+msgstr ""
+
+#. Author of the plugin
+#. translators: [front]
+#: includes/theme-setup/wp-head.php:19
+#: views/partials/petitions/header.php:29
+msgid "Amnesty International"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.amnesty.org"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/media-library/columns.php:22
+msgid "Amnesty Info"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/media-library/columns.php:55
+msgid "Has Caption"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/media-library/columns.php:59
+msgid "Has Alt Text"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/media-library/columns.php:63
+msgid "Has Credit"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:19
+msgid "Contact"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:23
+msgid "Contact Info"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:33
+msgid "IS Office"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:45
+msgid "Contact info for the International Secretariat office"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:54
+msgid "Name"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:64
+msgid "Address"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:74
+msgid "Phone"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:84
+msgid "Fax"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:94
+msgid "Email"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:104
+msgid "Link to contact page"
+msgstr ""
+
+#. translators: [admin]
+#: includes/admin/theme-options/contact.php:106
+msgid "Please select only one item"
+msgstr ""
+
+#. translators: [admin]
+#: includes/class-post-meta.php:46
+msgid "For use when an item has had a major update"
+msgstr ""
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:22
+msgctxt "death penalty status"
+msgid "Abolitionist for all crimes"
+msgstr ""
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:24
+msgid "Does not use the death penalty"
+msgstr ""
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:28
+msgctxt "death penalty status"
+msgid "Abolitionist for ordinary crimes"
+msgstr ""
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:30
+msgid "Retains the death penalty only for serious crimes, such as those committed during times of war"
+msgstr ""
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:34
+msgctxt "death penalty status"
+msgid "Abolitionist in practice"
+msgstr ""
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:36
+msgid "Retains the death penalty in law, but hasn’t executed for at least 10 years"
+msgstr ""
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:40
+msgctxt "death penalty status"
+msgid "Retentionist"
+msgstr ""
+
+#. translators: [front] Location single template https://www.amnesty.org/en/location/asia-and-the-pacific/south-asia/afghanistan
+#: includes/features/death-penalty/helpers.php:42
+msgid "Retains the death penalty in law"
+msgstr ""
+
+#: includes/features/death-penalty/taxonomy-custom-fields.php:23
+msgid "Death Penalty"
+msgstr ""
+
+#. translators: [admin]
+#: includes/features/death-penalty/taxonomy-custom-fields.php:36
+msgid "Status in Law"
+msgstr ""
+
+#. translators: [front]
+#: includes/features/language-selector/render.php:46
+msgid "Available languages"
+msgstr ""
+
+#. translators: [front] Accessibility label for screen reader/keyboard users
+#: views/partials/petitions/header.php:42
+msgid "Skip to main content"
+msgstr ""
+
+#. translators: [front]
+#: views/partials/single/docref.php:18
+msgid "Document Reference: "
+msgstr ""
+
+#: views/partials/single/index-number.php:17
+msgid "Index Number:"
+msgstr ""
+
+#. translators: [front]
+#: views/partials/single/recipients.php:18
+#: views/templates/attachments/local.php:29
+#: views/templates/attachments/remote.php:46
+msgid "View Recipients"
+msgstr ""
+
+#. translators: [front] ARIA
+#. translators: [admin]
+#: views/templates/attachments/local.php:42
+#: views/templates/attachments/remote.php:59
+#: assets/scripts/blockeditor.js:8566
+msgid "Sidebar"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:142
+msgid "Website Timezone Details"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:146
+msgid "The website's timezone is %1$s and the date/time is %2$s"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:153
+msgid "Server Timezone Details"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:157
+msgid "The server's timezeone is %1$s and the date/time is %2$s"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:207
+msgid "Updated at"
+msgstr ""
+
+#: assets/scripts/blockeditor.js:211
+msgid "Choose Date"
+msgstr ""
+
+#: assets/scripts/blockeditor.js:216
+msgid "Updated Date"
+msgstr ""
+
+#: assets/scripts/blockeditor.js:223
+msgid "Clear"
+msgstr ""
+
+#: assets/scripts/blockeditor.js:8415
+msgid "Global Default"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8536
+msgid "Loading"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8538
+msgid "Select a sidebar"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8564
+msgid "Appearance"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8570
+msgid "Disable Sidebar"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8572
+msgid "Hides the sidebar on this Annual Report"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8622
+msgid "Brand Background"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8637
+msgid "Light Grey Background"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8652
+msgid "Light"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8666
+msgid "Yellow"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8672
+msgid "Yellow Circle"
+msgstr ""
+
+#. translators: [admin]
+#: assets/scripts/blockeditor.js:8677
+msgid "Logos Only Yellow"
+msgstr ""
