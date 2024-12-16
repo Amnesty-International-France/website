@@ -1,4 +1,4 @@
-.env.*
+#.env.*
 .castor.stub.php
 
 # Wordpress - ignore core, configuration, examples, uploads and logs.
