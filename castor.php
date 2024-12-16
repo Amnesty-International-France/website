@@ -27,11 +27,6 @@ function install(string $path = '.'): void
     $context = context()->withEnvironment(load_dot_env())->withWorkingDirectory($path)->withAllowFailure();
 
     $wp_cli_installed = run('wp cli', context: $context->withQuiet());
-
-    if($wp_cli_installed->isSuccessful()) {
-        io()->info('wp cli is already installed installed');
-    }
-
     if(!$wp_cli_installed->isSuccessful()) {
         io()->info('wp cli is not installed'.PHP_EOL.'Installation...');
 
@@ -49,23 +44,17 @@ function install(string $path = '.'): void
     }
 
     // Test if a WordPress installation exists
-    // $wp_installation = run('wp core is-installed', context: $context->withQuiet());
-    // if($wp_installation->isSuccessful()) {
-    //     io()->info('A wordpress installation already exists');
-    //     exit(1);
-    // }
+    $wp_installation = run('wp core is-installed', context: $context->withQuiet());
+    if($wp_installation->isSuccessful()) {
+        io()->info('A wordpress installation already exists');
+        exit(1);
+    }
 
     io()->info("Starting installation of WordPress environment");
-
-    // run('wp core download --locale="fr_FR" --path=.', context: $context);
-    io()->info("Wordpress is installed");
-
- 
-
-
-    // run('wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbhost=$DB_HOST --dbprefix=$DB_PREFIX', context: $context);
-    // run('wp db create', context: $context);
-    // run('wp core install --locale=$LANG --url=$WP_URL --title="$WP_TITLE" --admin_user=$WP_ADMIN_USER --admin_password=$WP_ADMIN_PASSWORD --admin_email=$WP_ADMIN_EMAIL', context: $context);
+    run('wp core download --locale=$LANG --skip-content --path=.', context: $context);
+    run('wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbhost=$DB_HOST --dbprefix=$DB_PREFIX', context: $context);
+    run('wp db create', context: $context);
+    run('wp core install --locale=$LANG --url=$WP_URL --title="$WP_TITLE" --admin_user=$WP_ADMIN_USER --admin_password=$WP_ADMIN_PASSWORD --admin_email=$WP_ADMIN_EMAIL', context: $context);
     $theme_version = get_github_latest_version('https://github.com/amnestywebsite/humanity-theme/releases/latest');
     run("wp theme install https://github.com/amnestywebsite/humanity-theme/releases/download/$theme_version/humanity-theme.zip --activate", context: $context);
     $cmb2_attached_posts_version = get_github_latest_version('https://github.com/CMB2/cmb2-attached-posts/releases/latest');
