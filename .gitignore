@@ -38,5 +38,9 @@ wp-config.php
 
 # Themes
 /wp-content/themes/*
+!/wp-content/themes/espace-donateur/
 
 docker-compose.yml
+
+vendor/
+composer.*
