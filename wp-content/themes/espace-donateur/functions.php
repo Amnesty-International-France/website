@@ -17,13 +17,25 @@ add_action('wp_enqueue_scripts', 'humanity_theme_parent_theme_enqueue_styles');
 
 function humanity_theme_parent_theme_enqueue_styles()
 {
+
     wp_enqueue_style('humanity-theme-style', get_template_directory_uri() . '/style.css');
     wp_enqueue_style(
         'espace-donateur-style',
         get_stylesheet_directory_uri() . '/style.css',
         ['humanity-theme-style']
     );
+
 }
+
+function humanity_theme_parent_theme_enqueue_scripts()
+{
+    wp_enqueue_script('check-password-js', get_stylesheet_directory_uri().'/js/check-password.js');
+}
+
+add_action('wp_enqueue_scripts', 'humanity_theme_parent_theme_enqueue_scripts');
+
+
+
 
 /*
 / Sales Force
@@ -104,7 +116,7 @@ function get_salesforce_data($url)
 
 
     if (is_wp_error($access_token)) {
-        echo 'Erreur : ' . $access_token->get_error_message();
+        // echo 'Erreur : ' . $access_token->get_error_message();
         return;
     }
 
@@ -117,7 +129,7 @@ function get_salesforce_data($url)
 
 
     if (is_wp_error($response)) {
-        echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
+        // echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
     } else {
         $data = wp_remote_retrieve_body($response);
         return json_decode($data);
