@@ -6,9 +6,8 @@ $success_message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
-    $data = get_salesforce_user_data($_POST['email']);
 
-    if ($data->hasEspaceDon) {
+    if (has_access_to_donation_space($_POST['email'])) {
 
         wp_redirect(get_permalink(get_page_by_path('creer-un-compte')));
         exit;

@@ -46,10 +46,14 @@ function get_salesforce_access_token()
     $access_token = get_option('salesforce_access_token');
     $expiration_time = get_option('salesforce_token_expiration_time');
 
+
+
     // Si le token est encore valide, le retourner
-    if ($access_token && $expiration_time && time() < $expiration_time) {
-        return $access_token;
-    }
+    // if ($access_token && $expiration_time && time() < $expiration_time) {
+
+    //     print_r("token is ok");
+    //     return $access_token;
+    // }
 
     // Sinon, il faut rafraîchir le token
     return refresh_salesforce_token();
@@ -83,16 +87,22 @@ function refresh_salesforce_token()
     ));
 
 
+
+
+
+
     // Vérifier si la requête a réussi
     if (is_wp_error($response)) {
+
         return new WP_Error('request_failed', 'La requête a échoué', $response->get_error_message());
     }
 
     // Analyser la réponse JSON
     $body = wp_remote_retrieve_body($response);
 
-
     $data = json_decode($body, true);
+
+
 
     // Si l'authentification a réussi, on obtient un nouveau access_token
     if (isset($data['access_token'])) {
@@ -116,8 +126,8 @@ function get_salesforce_data($url)
 
 
     if (is_wp_error($access_token)) {
-        // echo 'Erreur : ' . $access_token->get_error_message();
-        return;
+        echo 'Erreur : ' . $access_token->get_error_message();
+        exit;
     }
 
 
@@ -129,9 +139,10 @@ function get_salesforce_data($url)
 
 
     if (is_wp_error($response)) {
-        // echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
+        echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
     } else {
         $data = wp_remote_retrieve_body($response);
+
         return json_decode($data);
     }
 }
@@ -140,7 +151,16 @@ function get_salesforce_data($url)
 function get_salesforce_user_data($email)
 {
     // L'URL pour récupérer les données
-    $url = 'apexrest/search/v1/' . $email;
+    $url = 'services/apexrest/search/v1/' . $email;
 
     return get_salesforce_data($url);
+}
+
+function has_access_to_donation_space($email)
+{
+
+    $data = get_salesforce_user_data($email);
+
+    return $data->isDonateur || $data->isMembre;
+
 }

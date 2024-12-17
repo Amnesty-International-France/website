@@ -7,3 +7,14 @@ Author URI:
 Template:       humanity-theme
 Version:        0.1.0
 */
+
+
+.aif-error-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--wp--preset--color--pale-pink);
+    color: var(--wp--preset--color--vivid-red);
+    padding: 40px;
+
+}
