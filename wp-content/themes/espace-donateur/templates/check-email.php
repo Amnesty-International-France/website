@@ -9,6 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
     if (has_access_to_donation_space($_POST['email'])) {
 
+        $user = get_user_by('email', $_POST['email']);
+
+        if($user) {
+            wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
+            exit;
+        }
         wp_redirect(get_permalink(get_page_by_path('creer-un-compte')));
         exit;
     } else {
