@@ -68,6 +68,7 @@ function install(string $path = '.'): void
         https://github.com/jaymcp/cmb2-field-order/archive/refs/tags/$cmb2_field_order_version.zip \
         jetpack \
         --activate", context: $context);
+    run("wp plugin install cloudflare --activate", context: $context);
 }
 
 function get_github_latest_version(string $url): string {
