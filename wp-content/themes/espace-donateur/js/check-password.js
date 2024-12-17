@@ -3,6 +3,7 @@ function preventCopyPaste(event) {
     event.preventDefault();
 }
 
+
 function checkPasswordMatch() {
     var password = document.getElementById("password").value;
     var confirmPassword = document.getElementById("confirm-password").value;

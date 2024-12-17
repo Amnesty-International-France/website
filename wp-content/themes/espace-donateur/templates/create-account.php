@@ -97,10 +97,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="password">Mot de passe (obligatoire) :</label>
                 <input type="password" id="password" name="password" required aria-required="true"
                     placeholder="Votre mot de passe" aria-describedby="passwordHelp" autocomplete="new-password"
+<<<<<<< HEAD
                     required aria-required="true" oninput="checkPassphraseStrength()" onpaste="preventCopyPaste(event)>
                 <small id=" passwordHelp">
                 Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 12 caractères, une
                 majuscule, un chiffre et un caractère spécial)
+=======
+                    required aria-required="true" oninput="checkPassphraseStrength()" onpaste="preventCopyPaste(event)">
+                <small id="passwordHelp">
+                    Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 12 caractères, une
+                    majuscule, un chiffre et un caractère spécial)
+>>>>>>> 33c66e0 (fix : a11y)
                 </small>
 
 
@@ -113,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="confirm-password">Confirmer le mot de passe (obligatoire) :</label>
                 <input type="password" id="confirm-password" required aria-required="true" name="confirm-password"
                     placeholder="Confirmer votre mot de passe" autocomplete="new-password" required
+<<<<<<< HEAD
                     oninput="checkPasswordMatch()" onpaste="preventCopyPaste(event)
                     >
 
@@ -124,6 +132,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </fieldset>
 
     <button class="btn btn--dark" type="submit" id="submit-btn">S'inscrire</button>
+=======
+                    onpaste="preventCopyPaste(event)" oninput="checkPasswordMatch()">
+
+                <div id="password-error-not-match" class="invalid password-error-message">Les mots de passe ne
+                    correspondent
+                    pas.
+                </div>
+
+            </fieldset>
+
+            <button class="btn btn--dark" type="submit" id="submit-btn">S'inscrire</button>
+>>>>>>> 33c66e0 (fix : a11y)
 
     </div>
 

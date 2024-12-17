@@ -47,14 +47,6 @@ function get_salesforce_access_token()
     $expiration_time = get_option('salesforce_token_expiration_time');
 
 
-
-
-    // Si le token est encore valide, le retourner
-    // if ($access_token && $expiration_time && time() < $expiration_time) {
-
-    //     print_r("token is ok");
-    //     return $access_token;
-
     return refresh_salesforce_token();
 }
 
@@ -84,9 +76,6 @@ function refresh_salesforce_token()
             'Content-Type' => 'application/x-www-form-urlencoded'
         ),
     ));
-
-
-
 
 
 
@@ -139,7 +128,6 @@ function get_salesforce_data($url)
         echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
     } else {
         $data = wp_remote_retrieve_body($response);
-
         return json_decode($data);
     }
 }
@@ -154,8 +142,6 @@ function get_salesforce_user_data($email)
 
 function has_access_to_donation_space($email)
 {
-
     $data = get_salesforce_user_data($email);
     return $data->isDonateur || $data->isMembre;
-
 }
