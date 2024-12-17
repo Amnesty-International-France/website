@@ -18,3 +18,17 @@ Version:        0.1.0
     padding: 40px;
 
 }
+
+.password-error-message {
+
+    display: none;
+}
+
+.valid {
+    color: green;
+}
+
+.invalid {
+    color: var(--wp--preset--color--vivid-red);
+    ;
+}

@@ -31,9 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'nickname'      => $first_name . ' ' . $last_name,
                 'role'          => 'subscriber');
 
-
             $user_id = wp_insert_user($userdata);
-
 
             if (!is_wp_error($user_id)) {
                 wp_redirect(get_permalink(get_page_by_path('accueil')));
@@ -82,27 +80,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="email" id="email" name="email" placeholder="Votre adresse email" autocomplete="email" required>
 
             <fieldset>
-                <legend>Votre mot de passe</legend>
+                <legend> Votre mot de passe doit :</legend>
+
+
+
+                <ul id="passphraseRequirements">
+                    <li id="length">Doit contenir au moins 12 caractères</li>
+                    <li id="uppercase">Doit contenir au moins une lettre majuscule</li>
+                    <li id="lowercase">Doit contenir au moins une lettre minuscule</li>
+                    <li id="number">Doit contenir au moins un chiffre</li>
+                    <li id="special">Doit contenir au moins un caractère spécial (!, @, #, $, %,
+                        etc.)
+                    </li>
+                </ul>
 
                 <label for="password">Mot de passe (obligatoire) :</label>
                 <input type="password" id="password" name="password" required aria-required="true"
-                    placeholder="Votre mot de passe" autocomplete="new-password" required aria-required="true"
-                    onpaste="preventCopyPaste(event)">
+                    placeholder="Votre mot de passe" aria-describedby="passwordHelp" autocomplete="new-password"
+                    required aria-required="true" oninput="checkPassphraseStrength()" onpaste="preventCopyPaste(event)">
+                <small id="passwordHelp">
+                    Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 12 caractères, une
+                    majuscule, un chiffre et un caractère spécial)
+                </small>
 
+
+                <div id="password-error-too-weak" class="invalid password-error-message">
+                    Le mot de passe est trop faible
+                </div>
+
+                <br /> <br />
 
                 <label for="confirm-password">Confirmer le mot de passe (obligatoire) :</label>
                 <input type="password" id="confirm-password" required aria-required="true" name="confirm-password"
                     placeholder="Confirmer votre mot de passe" autocomplete="new-password" required
-                    onpaste="preventCopyPaste(event)" oninput="checkPasswordMatch()"><br><br>
+                    onpaste="preventCopyPaste(event)" oninput="checkPasswordMatch()">
 
-
-                <div id="password-error" style="color: red; display: none;">Les mots de passe ne correspondent pas.
+                <div id="password-error-not-match" class="invalid password-error-message">Les mots de passe ne
+                    correspondent
+                    pas.
                 </div>
 
-
             </fieldset>
-
-
 
             <button class="btn btn--dark" type="submit" id="submit-btn">S'inscrire</button>
 
