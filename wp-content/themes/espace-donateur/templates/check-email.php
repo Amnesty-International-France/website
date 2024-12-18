@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
 <main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
     <?php if (isset($error_message)) : ?>
-    <div class="error-message"><?php echo $success_message; ?></div>
+    <div class="aif-error-message"><?php echo $error_message; ?></div>
     <?php endif; ?>
     <div class="container">
 
