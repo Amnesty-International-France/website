@@ -47,13 +47,6 @@ function get_salesforce_access_token()
     $expiration_time = get_option('salesforce_token_expiration_time');
 
 
-
-    // Si le token est encore valide, le retourner
-    // if ($access_token && $expiration_time && time() < $expiration_time) {
-
-    //     print_r("token is ok");
-    //     return $access_token;
-    // }
     return refresh_salesforce_token();
 }
 
@@ -83,9 +76,6 @@ function refresh_salesforce_token()
             'Content-Type' => 'application/x-www-form-urlencoded'
         ),
     ));
-
-
-
 
 
 

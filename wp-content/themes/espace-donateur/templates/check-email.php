@@ -9,6 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
     if (has_access_to_donation_space($_POST['email'])) {
 
+        $user = get_user_by('email', $_POST['email']);
+
+        if($user) {
+            wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
+            exit;
+        }
         wp_redirect(get_permalink(get_page_by_path('creer-un-compte')));
         exit;
     } else {
@@ -23,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
 <main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
     <?php if (isset($error_message)) : ?>
-    <div class="error-message"><?php echo $success_message; ?></div>
+    <div class="aif-error-message"><?php echo $error_message; ?></div>
     <?php endif; ?>
     <div class="container">
 
