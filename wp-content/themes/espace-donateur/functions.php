@@ -17,13 +17,25 @@ add_action('wp_enqueue_scripts', 'humanity_theme_parent_theme_enqueue_styles');
 
 function humanity_theme_parent_theme_enqueue_styles()
 {
+
     wp_enqueue_style('humanity-theme-style', get_template_directory_uri() . '/style.css');
     wp_enqueue_style(
         'espace-donateur-style',
         get_stylesheet_directory_uri() . '/style.css',
         ['humanity-theme-style']
     );
+
 }
+
+function humanity_theme_parent_theme_enqueue_scripts()
+{
+    wp_enqueue_script('check-password-js', get_stylesheet_directory_uri().'/js/check-password.js');
+}
+
+add_action('wp_enqueue_scripts', 'humanity_theme_parent_theme_enqueue_scripts');
+
+
+
 
 /*
 / Sales Force
@@ -34,12 +46,14 @@ function get_salesforce_access_token()
     $access_token = get_option('salesforce_access_token');
     $expiration_time = get_option('salesforce_token_expiration_time');
 
-    // Si le token est encore valide, le retourner
-    if ($access_token && $expiration_time && time() < $expiration_time) {
-        return $access_token;
-    }
 
-    // Sinon, il faut rafraîchir le token
+
+    // Si le token est encore valide, le retourner
+    // if ($access_token && $expiration_time && time() < $expiration_time) {
+
+    //     print_r("token is ok");
+    //     return $access_token;
+    // }
     return refresh_salesforce_token();
 }
 
@@ -71,16 +85,22 @@ function refresh_salesforce_token()
     ));
 
 
+
+
+
+
     // Vérifier si la requête a réussi
     if (is_wp_error($response)) {
+
         return new WP_Error('request_failed', 'La requête a échoué', $response->get_error_message());
     }
 
     // Analyser la réponse JSON
     $body = wp_remote_retrieve_body($response);
 
-
     $data = json_decode($body, true);
+
+
 
     // Si l'authentification a réussi, on obtient un nouveau access_token
     if (isset($data['access_token'])) {
@@ -99,13 +119,11 @@ function refresh_salesforce_token()
 
 function get_salesforce_data($url)
 {
-
     $access_token = get_salesforce_access_token();
-
 
     if (is_wp_error($access_token)) {
         echo 'Erreur : ' . $access_token->get_error_message();
-        return;
+        exit;
     }
 
 
@@ -128,7 +146,12 @@ function get_salesforce_data($url)
 function get_salesforce_user_data($email)
 {
     // L'URL pour récupérer les données
-    $url = 'apexrest/search/v1/' . $email;
-
+    $url = 'services/apexrest/search/v1/' . $email;
     return get_salesforce_data($url);
+}
+
+function has_access_to_donation_space($email)
+{
+    $data = get_salesforce_user_data($email);
+    return $data->isDonateur || $data->isMembre;
 }
