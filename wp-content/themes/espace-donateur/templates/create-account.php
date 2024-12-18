@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user_id = wp_insert_user($userdata);
 
             if (!is_wp_error($user_id)) {
-                wp_redirect(get_permalink(get_page_by_path('accueil')));
+                wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
                 exit;
             } else {
                 $error_message = "Une erreur est survenue";
@@ -97,8 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="password">Mot de passe (obligatoire) :</label>
                 <input type="password" id="password" name="password" required aria-required="true"
                     placeholder="Votre mot de passe" aria-describedby="passwordHelp" autocomplete="new-password"
-                    required aria-required="true" oninput="checkPassphraseStrength()" onpaste="preventCopyPaste(event)">
-                <small id="passwordHelp">
+                    required aria-required="true" oninput="checkPassphraseStrength()">
+                <small id=" passwordHelp">
                     Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 12 caractères, une
                     majuscule, un chiffre et un caractère spécial)
                 </small>
@@ -113,9 +113,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="confirm-password">Confirmer le mot de passe (obligatoire) :</label>
                 <input type="password" id="confirm-password" required aria-required="true" name="confirm-password"
                     placeholder="Confirmer votre mot de passe" autocomplete="new-password" required
-                    onpaste="preventCopyPaste(event)" oninput="checkPasswordMatch()">
+                    oninput="checkPasswordMatch()">
 
-                <div id="password-error-not-match" class="invalid password-error-message">Les mots de passe ne
+                <div id=" password-error-not-match" class="invalid password-error-message">Les mots de passe ne
                     correspondent
                     pas.
                 </div>
