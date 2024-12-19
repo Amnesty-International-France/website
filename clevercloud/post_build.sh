@@ -1,6 +1,6 @@
 #!/bin/bash
-set -x
 set -e
+set -x
 echo $PATH
 castor install --path=www
 
