@@ -3,7 +3,7 @@
 
 ## Préparation, installation d'un nouvel environnement
 
-### Application et Add-ono
+### Application et Add-on
 * Application PHP
 * Une base de données Mysql
 * Un File Storage FS Bucket
@@ -24,7 +24,7 @@
 | WP_ADMIN_PASSWORD |random secure string|
 | WP_ADMIN_USER |admin |
 | WP_TITLE |AMNESTY FR |
-| WP_URL |site url | 
+| WP_URL |site URL |
 
 
 
@@ -38,7 +38,7 @@ Clever Cloud fait des backup tous les jours
 
 Nous utilisons Restic. Nous avons configuré une rétension de 30j, la cron est lancée à 0h00
 
-#### L'initialisation de Restic se fait à la main, à la suite du premier déploiement:
+#### L'initialisation de Restic se fait à la main à la suite du premier déploiement:
 
 ```
 clever applications list
