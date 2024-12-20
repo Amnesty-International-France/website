@@ -17,7 +17,7 @@
 | BUCKET_NAME | `aif-wp-backup-<env> ` |
 | CC_FS_BUCKET       |`/www:<fs-bucket-url> ` |
 | CC_POST_BUILD_HOOK |`clevercloud/post_build.sh`   |
-| CC_PRE_BUILD_HOOK  |`curl "https://castor.jolicode.com/install" | bash` |
+| CC_PRE_BUILD_HOOK  |`curl "https://castor.jolicode.com/install" \| bash ` |
 | CC_WEBROOT |/www |
 | RESTIC_PASSWORD |random string |
 | WP_ADMIN_EMAIL|email |
