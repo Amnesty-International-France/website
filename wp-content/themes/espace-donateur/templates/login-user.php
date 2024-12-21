@@ -17,24 +17,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         die('Invalid nonce.');
     }
 
-    $creds = array(
-        'user_login'    => $email,
-        'user_password' => $password,
-        'remember'      => true
-    );
 
-    $user = wp_signon($creds, false);
+    $user = get_user_by('email', $email);
 
-    if (!is_wp_error($user)) {
+    if($user && get_email_is_verified($user->ID)) {
 
-        wp_set_current_user($user->ID);
-        wp_redirect(get_permalink(get_page_by_path('accueil')));
-        exit;
+        $creds = array(
+            'user_login'    => $email,
+            'user_password' => $password,
+            'remember'      => true
+        );
+
+        $user = wp_signon($creds, true);
+
+        if (!is_wp_error($user)) {
+            wp_set_current_user($user->ID);
+            wp_redirect(get_permalink(home_url('/')));
+            exit;
+        } else {
+
+            $error_message = "Une erreur est survenue ...";
+
+        }
+
+    } else {
+
+        $error_message = "Votre email n'a pas été vérifier Pour le faire veuillez vous rendre sur" . get_permalink(get_page_by_path('verification-email'));
     }
 
 
 
-    $error_message = "Utilisateur inconnu ou mauvais mot de passe";
+
+
 
 }
 
