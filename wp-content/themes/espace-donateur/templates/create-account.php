@@ -34,16 +34,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user_id = wp_insert_user($userdata);
 
             if (!is_wp_error($user_id)) {
-                wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
-                exit;
+
+                $code = generate_2fa_code();
+                store_2fa_code($user_id, $code);
+                $verifaction_url = get_permalink(get_page_by_path('verification-email'));
+
+
+                if(send_2fa_code($email, $code, $verifaction_url)) {
+                    wp_redirect($verifaction_url);
+                    exit;
+                }
             } else {
                 $error_message = "Une erreur est survenue";
             }
         }
 
+    } else {
+        $error_message = "Vous ne pouvez pas accéder à l'espace donateur";
     }
 
-    $error_message = "Vous ne pouvez pas accéder à l'espace donateur";
 }
 ?>
 
