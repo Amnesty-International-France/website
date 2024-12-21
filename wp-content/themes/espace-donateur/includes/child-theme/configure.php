@@ -29,13 +29,3 @@ function hide_admin_bar_for_limited_users()
     }
 }
 add_action('after_setup_theme', 'hide_admin_bar_for_limited_users');
-
-
-function restrict_admin_access()
-{
-    if (is_admin() && !current_user_can('administrator') && !defined('DOING_AJAX')) {
-        wp_redirect(home_url());
-        exit;
-    }
-}
-add_action('init', 'restrict_admin_access');

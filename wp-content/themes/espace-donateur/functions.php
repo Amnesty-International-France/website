@@ -12,15 +12,17 @@
 /*
 / Configure Child Theme
 */
-
 require_once realpath(__DIR__ . '/includes/child-theme/configure.php');
 
 
 /*
 / Sales Force
 */
-
-
 require_once realpath(__DIR__ . '/includes/sales-force/authentification.php');
-
 require_once realpath(__DIR__ . '/includes/sales-force/user-data.php');
+
+
+/*
+/  2FA
+*/
+require_once realpath(__DIR__ . '/includes/2FA/index.php');
