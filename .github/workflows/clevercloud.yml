@@ -4,6 +4,9 @@ on:
   push:
     branches: [ "cicd/premiere" ]
 
+env:
+  APP_ID: ${{ vars.APP_ID }}
+
 permissions:
   contents: read
 
