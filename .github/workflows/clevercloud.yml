@@ -4,9 +4,6 @@ on:
   push:
     branches: [ "cicd/premiere" ]
 
-env:
-  CLEVER_APP_ID: ${{ secrets.CLEVER_APP_ID }}
-
 permissions:
   contents: read
 
@@ -29,5 +26,5 @@ jobs:
         curl -s -O https://clever-tools.clever-cloud.com/releases/${CC_VERSION}/clever-tools-${CC_VERSION}_linux.tar.gz
         tar -xvf clever-tools-${CC_VERSION}_linux.tar.gz
         export PATH=${PATH}:$(pwd)/clever-tools-${CC_VERSION}_linux
-        clever link ${CLEVER_APP_ID}
+        clever link $APP_ID
         clever deploy
