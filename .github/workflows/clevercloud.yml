@@ -30,4 +30,5 @@ jobs:
         tar -xvf clever-tools-${CC_VERSION}_linux.tar.gz
         export PATH=${PATH}:$(pwd)/clever-tools-${CC_VERSION}_linux
         clever link $APP_ID
+        git fetch --unshallow || git fetch --all
         clever deploy
