@@ -31,4 +31,4 @@ jobs:
         export PATH=${PATH}:$(pwd)/clever-tools-${CC_VERSION}_linux
         git fetch --unshallow || git fetch --all
         clever link $APP_ID
-        clever deploy
+        clever deploy -p ignore # if already deployed, do nothing
