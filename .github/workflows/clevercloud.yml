@@ -1,0 +1,37 @@
+name: Deploy to Clever Cloud
+
+on:
+  push:
+    branches: [ "cicd/premiere" ]
+
+env:
+  CLEVER_APP_ID: ${{ secrets.CLEVER_APP_ID }}
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Download clever-tools
+      env:
+        CC_VERSION: latest
+      run: |
+        curl -s -O https://clever-tools.clever-cloud.com/releases/${CC_VERSION}/clever-tools-${CC_VERSION}_linux.tar.gz
+        tar -xvf clever-tools-${CC_VERSION}_linux.tar.gz
+        PATH=${PATH}:$(pwd)/clever-tools-${CC_VERSION}_linux
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Deploy
+      env:
+        CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
+        CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
+      run: |
+        clever link $CLEVER_APP_ID
+        clever deploy
