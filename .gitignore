@@ -1,7 +1,12 @@
 .env.*
 .castor.stub.php
+<<<<<<< HEAD
 .ddev
 clever.json
+=======
+.clever.json
+.ddev
+>>>>>>> 8145630 (Fix(cicd): Deploy was failing when server was up to date)
 
 # Wordpress - ignore core, configuration, examples, uploads and logs.
 # https://github.com/github/gitignore/blob/main/WordPress.gitignore
