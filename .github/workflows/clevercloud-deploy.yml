@@ -3,8 +3,8 @@ name: Deploy to Clever Cloud
 on:
   workflow_call:
     inputs:
-      app-environment:
-        description: Github environment
+      app-id:
+        description: Clever Cloud APP Id
         required: true
         type: string
     secrets:
@@ -16,7 +16,7 @@ on:
         required: true
 
 env:
-  APP_ID: ${{ vars.APP_ID }}
+  APP_ID: ${{ inputs.app-id }}
 
 permissions:
   contents: read
@@ -25,7 +25,6 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: ${{ inputs.app-environment }}
 
     steps:
     - name: Checkout

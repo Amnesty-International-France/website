@@ -10,9 +10,10 @@ permissions:
 jobs:
   deploy:
     name: Deploy on Fairness preprod
+    environment: FAIRNESS
     uses: ./.github/workflows/clevercloud-deploy.yml
     with:
-      app-environment: FAIRNESS
+      app-id: ${{ vars.APP_ID }}
     secrets:
       clever-token: ${{ secrets.CLEVER_TOKEN }}
       clever-secret: ${{ secrets.CLEVER_SECRET }}
