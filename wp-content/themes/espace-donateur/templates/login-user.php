@@ -5,7 +5,7 @@ get_header();
 
 
 
-$success_message = "";
+$error_message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['login_nonce'])) {
 
@@ -18,48 +18,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     }
 
 
-    $user = get_user_by('email', $email);
+    $stored_user = get_user_by('email', $email);
 
-    if($user && get_email_is_verified($user->ID)) {
+    if($stored_user) {
+        if(get_email_is_verified(user_id: $stored_user->ID)) {
 
-        $creds = array(
-            'user_login'    => $email,
-            'user_password' => $password,
-            'remember'      => true
-        );
+            $creds = array(
+                'user_login'    => $email,
+                'user_password' => $password,
+                'remember'      => true
+            );
 
-        $user = wp_signon($creds, true);
+            $user = wp_signon($creds, true);
 
-        if (!is_wp_error($user)) {
-            wp_set_current_user($user->ID);
-            wp_redirect(get_permalink(home_url('/')));
-            exit;
+            if (!is_wp_error($user)) {
+                wp_set_current_user($user->ID);
+                wp_redirect(home_url());
+            } else {
+                $error_message = "Mauvais email ou mot de passe";
+            }
+
+
         } else {
-
-            $error_message = "Une erreur est survenue ...";
-
+            $url = get_permalink(get_page_by_path('verification-email'));
+            $error_message = "Votre email ne semble pas encore vérifié. Pour le faire veuillez vous rendre sur  <a href='" . $url . "'>" . $url . "</a>.";
         }
 
     } else {
 
-        $error_message = "Votre email n'a pas été vérifier Pour le faire veuillez vous rendre sur" . get_permalink(get_page_by_path('verification-email'));
+        $url = get_permalink(get_page_by_path('qui-etes-vous'));
+        $error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur  <a href='" . $url . "'>" . $url . "</a>.";
     }
 
 
 
 
-
-
 }
-
-
 ?>
 
 
 
 
 <main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-    <?php if (isset($error_message)) : ?>
+    <?php if (!empty($error_message)) : ?>
     <div class="aif-error-message"><?php echo $error_message; ?></div>
     <?php endif; ?>
 
@@ -85,7 +86,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
         </form>
 
+        <p>Pas encore de compte ?<a href="<?php echo get_permalink(get_page_by_path('qui-etes-vous')) ?>"> Rendez-vous
+                ici
+                pour créer votre compte</a></p>
+
 
     </div>
 
 </main>
+
+<?php
+// Appel du pied de page
+get_footer();
+?>

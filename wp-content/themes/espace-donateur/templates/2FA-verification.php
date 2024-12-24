@@ -49,10 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     <div class="container">
 
         <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="article-title wp-block-post-title">Vérification votre email</h1>
+            <h1 class="article-title wp-block-post-title">Votre email n'a pas encore été vérifier ?</h1>
         </header>
 
-        <p>Vérifié votre email en renseignant le code reçu par mail</p>
+        <p>Vérifier le email en renseignant le code reçu par mail</p>
 
         <form role="form" method="POST" action="">
             <?php wp_nonce_field('2FA_check', '2FA_nonce'); ?>
