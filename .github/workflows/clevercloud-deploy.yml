@@ -3,23 +3,12 @@ name: Deploy to Clever Cloud
 on:
   workflow_call:
     inputs:
-      app-id:
-        description: Clever Cloud APP Id
-        required: true
-        type: string
       deploy-environment:
         description: Github environment name
         type: string
-    secrets:
-      clever-token:
-        description: Clever Cloud Token
-        required: true
-      clever-secret:
-        description: Clever Cloud Secret
-        required: true
 
 env:
-  APP_ID: ${{ inputs.app-id }}
+  APP_ID: ${{ vars.APP_ID }}
 
 permissions:
   contents: read
@@ -37,8 +26,8 @@ jobs:
     - name: Deploy
       env:
         CC_VERSION: latest
-        CLEVER_TOKEN: ${{ secrets.clever-token }}
-        CLEVER_SECRET: ${{ secrets.clever-secret }}
+        CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
+        CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
       run: |
         curl -s -O https://clever-tools.clever-cloud.com/releases/${CC_VERSION}/clever-tools-${CC_VERSION}_linux.tar.gz
         tar -xvf clever-tools-${CC_VERSION}_linux.tar.gz
