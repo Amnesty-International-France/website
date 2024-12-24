@@ -37,10 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $code = generate_2fa_code();
                 store_2fa_code($user_id, $code);
-                $verifaction_url = get_permalink(get_page_by_path('verification-email'));
-
 
                 if(send_2fa_code($email, $code, $verifaction_url)) {
+                    $verifaction_url = get_permalink(get_page_by_path('verification-email'));
                     wp_redirect($verifaction_url);
                     exit;
                 }
