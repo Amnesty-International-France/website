@@ -74,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         <p>Connectez-vous pour accéder à votre espace donateur</p>
 
         <form role="form" method="POST" action="">
-
             <?php wp_nonce_field('login_form', 'login_nonce'); ?>
             <label for="email">Votre adresse email (obligatoire)</label>
             <input placeholder="" value="" type="email" name="email" id="email" autocomplete="email" required="true">
@@ -96,6 +95,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 </main>
 
 <?php
-// Appel du pied de page
 get_footer();
 ?>
