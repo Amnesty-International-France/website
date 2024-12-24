@@ -3,9 +3,8 @@
 /* Template Name: Espace Donateur - 2FA Check */
 get_header();
 
-
-
 $success_message = "";
+$disable_input = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['2FA-code']) && isset($_POST['2FA_nonce'])) {
 
@@ -21,16 +20,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     if($user) {
 
         $stored_code = get_2fa_code($user->ID);
-
         if($stored_code &&  $stored_code === $code) {
-
             store_email_is_verified($user->ID);
+            reset_login_attempts($user->ID);
             wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
             exit;
+        } else {
+
+            $disable_input = false;
+
+            if(limit_login_attempts($user->ID)) {
+                $error_message = "Le code ne correspond pas";
+
+            } else {
+                $error_message = "La vérification du code à échoué. Veuillez recommencer dans quelques secondes";
+
+            }
+
+
         }
 
+    } else {
+        $error_message = "Utilisateur inconnu ou code invalide";
+
     }
-    $error_message = "Utilisateur inconnu ou code invalide";
+
 
 }
 
@@ -41,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
 
 <main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-    <?php if (isset($error_message)) : ?>
+    <?php if (!empty($error_message)) : ?>
     <div class="aif-error-message"><?php echo $error_message; ?></div>
     <?php endif; ?>
 
@@ -52,14 +66,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
             <h1 class="article-title wp-block-post-title">Votre email n'a pas encore été vérifier ?</h1>
         </header>
 
-        <p>Vérifier le email en renseignant le code reçu par mail</p>
+        <p>Vérifier votre email en renseignant le code reçu par mail</p>
 
         <form role="form" method="POST" action="">
             <?php wp_nonce_field('2FA_check', '2FA_nonce'); ?>
-            <label for="email">Votre adresse email (obligatoire)</label>
-            <input placeholder="" value="" type="email" name="email" id="email" autocomplete="email" required="true">
-            <label for="2FA-code">Votre code de vérification (obligatoire)</label>
-            <input placeholder="" id="2FA-code" value="" type="text" name="2FA-code" required="true">
+            <label class="<?php echo !empty($error_message) ? 'aif-input-error' : "" ?>" for="email">Votre
+                adresse email
+                (obligatoire)</label>
+            <input class="<?php echo !empty($error_message) ? "aif-input-error" : "" ?>" placeholder="" value=""
+                type="email" name="email" id="email" autocomplete="email" required="true">
+            <label class="<?php echo !empty($error_message) ? "aif-input-error" : "" ?>" for="2FA-code">Votre
+                code de
+                vérification (obligatoire)</label>
+            <input pattern="\d{6}" title="rentrer ici votre code de 6 chiffres reçu par email"
+                class="<?php echo !empty($error_message) ? "aif-input-error" : "" ?>" placeholder="" id=" 2FA-code"
+                value="" type="text" name="2FA-code" required="true">
 
             <button class="btn btn--dark" type="submit">Vérifier le code</button>
         </form>
