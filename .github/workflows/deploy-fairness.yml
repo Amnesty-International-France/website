@@ -4,31 +4,15 @@ on:
   push:
     branches: [ "cicd/fairness" ]
 
-env:
-  APP_ID: ${{ vars.APP_ID }}
-
 permissions:
   contents: read
 
 jobs:
   deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    environment: FAIRNESS
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Deploy
-      env:
-        CC_VERSION: latest
-        CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
-        CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
-      run: |
-        curl -s -O https://clever-tools.clever-cloud.com/releases/${CC_VERSION}/clever-tools-${CC_VERSION}_linux.tar.gz
-        tar -xvf clever-tools-${CC_VERSION}_linux.tar.gz
-        export PATH=${PATH}:$(pwd)/clever-tools-${CC_VERSION}_linux
-        git fetch --unshallow || git fetch --all
-        clever link $APP_ID
-        clever deploy -p ignore # if already deployed, do nothing
+    name: Deploy on Fairness preprod
+    uses: ./.github/workflows/clevercloud-deploy.yml
+    with:
+      app-id: ${{ vars.APP_ID }}
+    secrets:
+      clever-token: ${{ secrets.CLEVER_TOKEN }}
+      clever-secret: ${{ secrets.CLEVER_SECRET }}
