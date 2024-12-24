@@ -2,14 +2,14 @@ name: Deploy to Clever Cloud
 
 on:
   push:
-    branches: [ "cicd/fairness" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
 
 jobs:
   deploy:
-    name: Deploy on Fairness preprod
+    name: Release
     uses: coopTilleuls/action-clevercloud-deploy/.github/workflows/deploy.yml@v1
     with:
       # variable APP_ID and secrets CLEVER_TOKEN and CLEVER_SECRET

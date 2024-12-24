@@ -9,8 +9,8 @@ permissions:
 
 jobs:
   deploy:
-    name: Deploy on Fairness preprod
-    uses: ./.github/workflows/clevercloud-deploy.yml
+    name: Fairness preprod
+    uses: coopTilleuls/action-clevercloud-deploy/.github/workflows/deploy.yml@v1
     with:
       # variable APP_ID and secrets CLEVER_TOKEN and CLEVER_SECRET
       # must be defined in this github environment
