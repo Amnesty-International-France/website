@@ -19,6 +19,13 @@ Version:        0.1.0
 
 }
 
+.aif-input-error {
+    border-color: var(--wp--preset--color--vivid-red);
+    color: var(--wp--preset--color--vivid-red);
+
+}
+
+
 .password-error-message {
 
     display: none;
