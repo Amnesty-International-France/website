@@ -21,7 +21,7 @@ function install(string $path = '.'): void
     }
 
     if(!fs()->exists($path)) {
-       fs()->mkdir($path);
+        fs()->mkdir($path);
     }
 
     $context = context()->withEnvironment(load_dot_env())->withWorkingDirectory($path)->withAllowFailure();
@@ -43,29 +43,23 @@ function install(string $path = '.'): void
             exit(1);
         }
         fs()->chmod('wp-cli.phar', 0755);
-        fs()->copy('./wp-cli.phar', '/usr/local/bin/wp');
+        fs()->copy('./wp-cli.phar', '/home/bas/.local/bin/wp');
         fs()->remove('./wp-cli.phar');
         io()->success('wp cli installation complete');
     }
 
-    // Test if a WordPress installation exists
-    // $wp_installation = run('wp core is-installed', context: $context->withQuiet());
-    // if($wp_installation->isSuccessful()) {
-    //     io()->info('A wordpress installation already exists');
-    //     exit(1);
-    // }
+    $wp_installation = run('wp core is-installed', context: $context->withQuiet());
+    if($wp_installation->isSuccessful()) {
+        io()->info('A wordpress installation already exists');
+    } else {
+        io()->info("Starting installation of WordPress environment");
+        run('wp core download --locale=$LANG --skip-content --path=.', context: $context);
+        run('wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbhost=$DB_HOST --dbprefix=$DB_PREFIX', context: $context);
+        //run('wp db create', context: $context);
+        run('wp core install --locale=$LANG --url=$WP_URL --title="$WP_TITLE" --admin_user=$WP_ADMIN_USER --admin_password=$WP_ADMIN_PASSWORD --admin_email=$WP_ADMIN_EMAIL', context: $context);
+        run("wp plugin install cloudflare --activate", context: $context);
+    }
 
-    io()->info("Starting installation of WordPress environment");
-
-    // run('wp core download --locale="fr_FR" --path=.', context: $context);
-    io()->info("Wordpress is installed");
-
- 
-
-
-    // run('wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbhost=$DB_HOST --dbprefix=$DB_PREFIX', context: $context);
-    // run('wp db create', context: $context);
-    // run('wp core install --locale=$LANG --url=$WP_URL --title="$WP_TITLE" --admin_user=$WP_ADMIN_USER --admin_password=$WP_ADMIN_PASSWORD --admin_email=$WP_ADMIN_EMAIL', context: $context);
     $theme_version = get_github_latest_version('https://github.com/amnestywebsite/humanity-theme/releases/latest');
     run("wp theme install https://github.com/amnestywebsite/humanity-theme/releases/download/$theme_version/humanity-theme.zip --activate", context: $context);
     $cmb2_attached_posts_version = get_github_latest_version('https://github.com/CMB2/cmb2-attached-posts/releases/latest');
@@ -79,9 +73,11 @@ function install(string $path = '.'): void
         https://github.com/jaymcp/cmb2-field-order/archive/refs/tags/$cmb2_field_order_version.zip \
         jetpack \
         --activate", context: $context);
+    run("wp plugin auto-updates enable --all", context: $context);
 }
 
 function get_github_latest_version(string $url): string {
+    io()->info('check version for '. $url);
     $location = http_client()->withOptions(['max_redirects' => 0])->request('GET', $url)->getHeaders(false)['location'][0];
     $split = explode('/', $location);
     return $split[array_key_last($split)];
