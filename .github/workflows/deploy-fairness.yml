@@ -15,3 +15,6 @@ jobs:
       # variable APP_ID and secrets CLEVER_TOKEN and CLEVER_SECRET
       # must be defined in this github environment
       deploy-environment: FAIRNESS
+    secrets:
+      clever-token: ${{ secrets.CLEVER_TOKEN }}
+      clever-secret: ${{ secrets.CLEVER_SECRET }}

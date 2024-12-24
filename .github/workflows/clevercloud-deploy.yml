@@ -6,6 +6,13 @@ on:
       deploy-environment:
         description: Github environment name
         type: string
+    secrets:
+      clever-token:
+        description: Clever Cloud Token
+        required: true
+      clever-secret:
+        description: Clever Cloud Secret
+        required: true
 
 env:
   APP_ID: ${{ vars.APP_ID }}
@@ -26,8 +33,8 @@ jobs:
     - name: Deploy
       env:
         CC_VERSION: latest
-        CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
-        CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
+        CLEVER_TOKEN: ${{ secrets.clever-token }}
+        CLEVER_SECRET: ${{ secrets.clever-secret }}
       run: |
         curl -s -O https://clever-tools.clever-cloud.com/releases/${CC_VERSION}/clever-tools-${CC_VERSION}_linux.tar.gz
         tar -xvf clever-tools-${CC_VERSION}_linux.tar.gz
