@@ -2,7 +2,7 @@ name: Deploy to Clever Cloud
 
 on:
   push:
-    branches: [ "fairness-dev" ]
+    branches: [ "cicd/fairness" ]
 
 permissions:
   contents: read
@@ -10,11 +10,11 @@ permissions:
 jobs:
   deploy:
     name: Deploy on Fairness preprod
-    uses: ./.github/workflows/clevercloud-deploy.yml
+    uses: coopTilleuls/action-clevercloud-deploy@v1
     with:
       # variable APP_ID and secrets CLEVER_TOKEN and CLEVER_SECRET
       # must be defined in this github environment
-      deploy-environment: FAIRNESS
+      deploy-environment: RELEASE
     secrets:
       clever-token: ${{ secrets.CLEVER_TOKEN }}
       clever-secret: ${{ secrets.CLEVER_SECRET }}
