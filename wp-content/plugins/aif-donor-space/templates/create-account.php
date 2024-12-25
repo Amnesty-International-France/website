@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     placeholder="Confirmer votre mot de passe" autocomplete="new-password" required
                     oninput="checkPasswordMatch()">
 
-                <div id=" password-error-not-match" class="invalid password-error-message">Les mots de passe ne
+                <div id="password-error-not-match" class="invalid password-error-message">Les mots de passe ne
                     correspondent
                     pas.
                 </div>

@@ -2,9 +2,9 @@
 
 /*
 Plugin Name: AIF Donor Space
-Description: A plugin to add a custom page with a custom template to WordPress.
+Description: A plugin to add Donor Space to Amnesty International France Website
 Version: 1.0
-Author: Fairness coop for Amnesty International France
+Author: Fairness.coop for Amnesty International France
 */
 
 if (! defined('ABSPATH')) {
@@ -61,7 +61,6 @@ function aif_donor_space_create_pages()
 }
 register_activation_hook(__FILE__, 'aif_donor_space_create_pages');
 
-// Fonction pour charger le template personnalisé
 function aif_donor_space_load_template($template)
 {
     $page_slug = get_post_field('post_name', get_queried_object_id());
@@ -95,10 +94,9 @@ function aif_donor_space_enqueue_assets()
 
     wp_enqueue_script(
         'aif-donor-space-script',
-        $plugin_url . 'assets/js/main.js',
-        array(),
-        '1.0',
-        true
+        $plugin_url . 'assets/js/check-password.js',
+        [],
+        '1.0'
     );
 }
 add_action('wp_enqueue_scripts', 'aif_donor_space_enqueue_assets');

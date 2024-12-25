@@ -10,11 +10,6 @@ function get_salesforce_access_token()
     return refresh_salesforce_token();
 }
 
-function tata()
-{
-
-    echo "tata";
-}
 
 function refresh_salesforce_token()
 {

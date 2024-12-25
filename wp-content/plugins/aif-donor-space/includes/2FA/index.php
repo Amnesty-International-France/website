@@ -80,8 +80,6 @@ function limit_login_attempts($user_id)
         update_user_meta($user_id, 'login_blocked_until', time() + 3600); // 1 heure
         return false;
     } else {
-
-        print_r($attempts);
         update_user_meta($user_id, 'login_attempts', $attempts + 1);
         return true;
     }
