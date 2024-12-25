@@ -5,6 +5,7 @@ function checkPasswordMatch() {
 
     if (password !== confirmPassword) {
         document.getElementById("password-error-not-match").style.display = "block";
+
         document.getElementById("submit-btn").disabled = true;
     } else {
         document.getElementById("password-error-not-match").style.display = "none";
