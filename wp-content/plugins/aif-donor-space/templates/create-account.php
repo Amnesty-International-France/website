@@ -3,34 +3,41 @@
 /* Template Name: Create account */
 get_header();
 
+$error_all_fields_required_message = "";
+$error_invalid_email_message  = "";
+$error_password_not_match_message  = "";
+$error_technical_message  = "";
+$error_no_access_to_donor_space = false;
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $email = sanitize_email($_POST['email']);
 
-    if(has_access_to_donation_space($email)) {
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm-password'];
 
-        $first_name = sanitize_text_field($_POST['first-name']);
-        $last_name = sanitize_text_field($_POST['last-name']);
-        $password = $_POST['password'];
-        $confirm_password = $_POST['confirm-password'];
+    if (empty($email) || empty($password)) {
+        $error_all_fields_required_message = "Veuillez renseigner le mot de passe et votre email";
+    } elseif (!is_email($email)) {
+        $error_invalid_email_message = "L'email renseigné est invalide";
 
-        if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
-            $error_message = "Tous les champs sont requis.";
-        } elseif (!is_email($email)) {
-            $error_message = "L'adresse email est invalide.";
-        } elseif ($password !== $confirm_password) {
-            $error_message = "Les mots de passe ne correspondent pas.";
-        } else {
+    } elseif ($password !== $confirm_password) {
+        $error_password_not_match_message  = "Les mots de passe ne correspondent pas";
+    } else {
 
+        $sf_member = get_salesforce_member_data($email);
+
+        if(has_access_to_donation_space($sf_member)) {
+
+            $user = get_salesforce_user_data($sf_member->Id);
 
             $userdata = array(
                 'user_login'    => $email,
                 'user_email'    => $email,
                 'user_pass'     => $password,
-                'first_name'    => $first_name,
-                'last_name'     => $last_name,
-                'nickname'      => $first_name . ' ' . $last_name,
+                'first_name'    => $user->Name,
+                'last_name'     => $user->LastName,
+                'nickname'      => $user->FirstName . ' ' . $user->LastName,
                 'role'          => 'subscriber');
 
             $user_id = wp_insert_user($userdata);
@@ -47,79 +54,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit;
                 }
             } else {
-                $error_message = "Une erreur est survenue";
+                $error_technical = false;
             }
-        }
 
-    } else {
-        $error_message = "Vous ne pouvez pas accéder à l'espace donateur";
+
+        } else {
+            $error_no_access_to_donor_space = true;
+        }
     }
 
 }
+
+
+
 ?>
 
 <main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-    <?php if (isset($error_message)) : ?>
-    <div class="aif-error-message"><?php echo $error_message; ?></div>
-    <?php endif; ?>
+
+
     <div class="container">
-
-
         <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="article-title wp-block-post-title">Créer mon compte</h1>
+            <h1 class="aif-mb1w">Mon espace Don</h1>
+            <h2> Créer mon compte </h2>
         </header>
 
-        <p>Votre espace don vous permet de suivre facilement vos dons et adhésion. Vous pouvez y modifier vos
-            coordonnées personnelles, votre RIB et éditer des duplicatas de vos reçus fiscaux. Vous n’êtes pas encore
-            donateur ? <a href="<?php echo get_permalink(get_page_by_path('nous-soutenir')) ?>">Soutenez nous !</a></p>
+        <p class="aif-mb0">Votre espace don vous permet de suivre facilement vos dons et adhésion. Vous pouvez y
+            modifier vos
+            coordonnées personnelles, votre RIB et éditer des duplicatas de vos reçus fiscaux. </p>
+
+        <p class="aif-mb1w"> Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre
+            adhésion ou de
+            votre don.
+        </p>
+
+        <?php if (!empty($error_all_fields_required_message) || !empty($error_invalid_email_message) || !empty($error_password_not_match_message) || !empty($error_technical_message)) : ?>
+        <div class="aif-bg-grey--lighter aif-p1w aif-mb1w">
+
+            <div class="aif-flex aif-gap-single">
+                <div>
+                    <svg width="4" height="14" viewBox="0 0 4 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M2 14C1.45 14 0.979167 13.8477 0.5875 13.5431C0.195833 13.2384 0 12.8722 0 12.4444C0 12.0167 0.195833 11.6505 0.5875 11.3458C0.979167 11.0412 1.45 10.8889 2 10.8889C2.55 10.8889 3.02083 11.0412 3.4125 11.3458C3.80417 11.6505 4 12.0167 4 12.4444C4 12.8722 3.80417 13.2384 3.4125 13.5431C3.02083 13.8477 2.55 14 2 14ZM0 9.33333V0H4V9.33333H0Z"
+                            fill="#D51118" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="aif-color-red aif-text-bold">Une erreur est survenue</p>
+
+                    <p class="aif-mb0">
+
+                        <?php echo $error_all_fields_required_message  ?>
+                        <?php echo $error_invalid_email_message  ?>
+                        <?php echo $error_password_not_match_message  ?>
+                        <?php echo $error_technical_message  ?>
+
+                    </p>
+
+                </div>
+            </div>
+
+            <?php endif; ?>
+
+            <?php if ($error_no_access_to_donor_space) : ?>
+            <div class="aif-bg-grey--lighter aif-p1w aif-mb1w">
+
+                <div class="aif-flex aif-gap-single">
+                    <div>
+                        <svg width="4" height="14" viewBox="0 0 4 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M2 14C1.45 14 0.979167 13.8477 0.5875 13.5431C0.195833 13.2384 0 12.8722 0 12.4444C0 12.0167 0.195833 11.6505 0.5875 11.3458C0.979167 11.0412 1.45 10.8889 2 10.8889C2.55 10.8889 3.02083 11.0412 3.4125 11.3458C3.80417 11.6505 4 12.0167 4 12.4444C4 12.8722 3.80417 13.2384 3.4125 13.5431C3.02083 13.8477 2.55 14 2 14ZM0 9.33333V0H4V9.33333H0Z"
+                                fill="#D51118" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="aif-color-red aif-text-bold">L’adresse email renseignée ne trouve pas de
+                            correspondance
+                            dans notre
+                            système.</p>
+
+                        <p class="aif-mb0">
+
+                            Devenez donateur en <a>réalisant un don </a> ou <a class="aif-text-underline 
+aif-text-underline--orange" href="mailto:smd@amnesty.fr"> contatcer le
+                                Service membres et
+                                donateurs </a> si vous pensez
+                            que c’est une erreur.
+
+                        </p>
+
+                    </div>
+                </div>
 
 
-        <form action="" method="POST" onsubmit="return checkPasswordMatch()">
+            </div>
+            <?php endif; ?>
 
+            <form action="" method="POST" onsubmit="return checkPasswordMatch()">
 
-            <label for="first-name">Prénom (obligatoire) :</label>
-            <input type="text" id="first-name" name="first-name" placeholder="Votre prénom" autocomplete="given-name"
-                required>
-
-            <label for="last-name">Nom (obligatoire) :</label>
-            <input type="text" id="last-name" name="last-name" placeholder="Votre nom" autocomplete="family-name"
-                required>
-
-
-
-            <label for="email">Adresse email (obligatoire) :</label>
-            <input type="email" id="email" name="email" placeholder="Votre adresse email" autocomplete="email" required>
-
-            <fieldset>
-                <legend> Votre mot de passe doit :</legend>
-
-
-
-                <ul id="passphraseRequirements">
-                    <li id="length">Doit contenir au moins 12 caractères</li>
-                    <li id="uppercase">Doit contenir au moins une lettre majuscule</li>
-                    <li id="lowercase">Doit contenir au moins une lettre minuscule</li>
-                    <li id="number">Doit contenir au moins un chiffre</li>
-                    <li id="special">Doit contenir au moins un caractère spécial (!, @, #, $, %,
-                        etc.)
-                    </li>
-                </ul>
+                <label for="email">Adresse email (obligatoire) :</label>
+                <input type="email" id="email" name="email" placeholder="Votre adresse email" autocomplete="email"
+                    required>
 
                 <label for="password">Mot de passe (obligatoire) :</label>
                 <input type="password" id="password" name="password" required aria-required="true"
-                    placeholder="Votre mot de passe" aria-describedby="passwordHelp" autocomplete="new-password"
-                    required aria-required="true" oninput="checkPassphraseStrength()">
+                    placeholder="Votre mot de passe" aria-describedby="passwordHelp passphraseRequirements"
+                    autocomplete="new-password" required aria-required="true" oninput="checkPassphraseStrength()">
                 <small id=" passwordHelp">
-                    Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 12 caractères, une
+                    Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 6 caractères, une
                     majuscule, un chiffre et un caractère spécial)
                 </small>
-
 
                 <div id="password-error-too-weak" class="invalid password-error-message">
                     Le mot de passe est trop faible
                 </div>
 
-                <br /> <br />
+                <div id="passphraseRequirements">
+                    <p class=" aif-m0 aif-mt1w ">Votre mot de passe doit </p>
+                    <ul>
+                        <li id=" length">Doit contenir au moins 6 caractères</li>
+                        <li id="uppercase">Doit contenir au moins une lettre majuscule</li>
+                        <li id="lowercase">Doit contenir au moins une lettre minuscule</li>
+                        <li id="number">Doit contenir au moins un chiffre</li>
+                        <li id="special">Doit contenir au moins un caractère spécial (!, @, #, $, %,
+                            etc.)
+                        </li>
+                    </ul>
+                </div>
 
                 <label for="confirm-password">Confirmer le mot de passe (obligatoire) :</label>
                 <input type="password" id="confirm-password" required aria-required="true" name="confirm-password"
@@ -131,10 +191,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     pas.
                 </div>
 
-            </fieldset>
+                <button class="btn aif-mt1w" type="submit" id="submit-btn">Créer mon compte</button>
 
-            <button class="btn btn--dark" type="submit" id="submit-btn">S'inscrire</button>
+            </form>
 
-    </div>
+            <hr class="aif-mt1w">
+
+            <p class="aif-mt1w">
+                Les données personnelles collectées sur ce formulaire sont traitées par l’association Amnesty
+                International
+                France (AIF), responsable du traitement. Ces données vont nous permettre de vous envoyer nos
+                propositions
+                d’engagement, qu’elles soient militantes ou financières. Notre politique de confidentialité détaille la
+                manière dont Amnesty International France, en sa qualité de responsable de traitement, traite et protège
+                vos
+                données personnelles collectées conformément aux dispositions de la Loi du 6 janvier 1978 relative à
+                l’informatique, aux fichiers et aux libertés dite Loi « Informatique et Libertés », et au Règlement
+                européen
+                du 25 mai 2018 sur la protection des données (« RGPD »). Pour toute demande, vous pouvez contacter le
+                service membres et donateurs d’AIF à l’adresse mentionnée ci-dessus, par email smd@amnesty.fr. Vous
+                pouvez
+                également introduire une réclamation auprès de la CNIL. Pour plus d’information sur le traitement de vos
+                données personnelles, veuillez consulter notre politique de confidentialité.
+            </p>
+
+
+            <section class="aif-bg-primary aif-p1w aif-mt2w">
+
+                <h3> Vous n’êtes pas encore donateur ? </h3>
+
+                <p>
+                    Votre soutien servira à soutenir le travail d’enquête ainsi que l'ensemble des actions d'Amnesty
+                    International.
+                </p>
+
+                <a href="" class="btn btn--dark"> Soutenez-nous !</a>
+
+            </section>
+
+            <section class="aif-mt2w">
+
+                <h3> Vous avez déja un compte ? </h3>
+
+                <a href="<?php echo get_permalink(get_page_by_path('connectez-vous')) ?>" class="btn btn--dark">
+                    Connectez-vous ! !</a>
+
+
+            </section>
+
+
+        </div>
 
 </main>
+
+<?php
+get_footer()
+?>

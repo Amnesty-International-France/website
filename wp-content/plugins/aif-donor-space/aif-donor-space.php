@@ -45,8 +45,10 @@ function aif_donor_space_create_pages()
         'verifier-votre-email' => 'AIF - Vérifier votre email',
         'creer-votre-compte' => 'AIF - Créer votre compte',
         'connectez-vous' => 'AIF - Connectez-vous',
+
         'accueil' => 'AIF - Espace Donateur',
         'qui-etes-vous' => 'AIF - Qui êtes-vous ?'
+
 
     ];
 
