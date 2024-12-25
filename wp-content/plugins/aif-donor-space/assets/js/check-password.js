@@ -33,6 +33,7 @@ function checkPassphraseStrength() {
     } else {
         input.removeAttribute("aria-describedby");
         input.setAttribute("aria-described-by", "passwordHelp");
+        elem.classList.remove("aif-input-error");
         document.getElementById("password-error-too-weak").style.display = "none";
         document.getElementById("submit-btn").disabled = false;
     }
