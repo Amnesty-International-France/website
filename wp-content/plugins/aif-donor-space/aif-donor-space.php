@@ -7,21 +7,46 @@ Version: 1.0
 Author: Your Name
 */
 
-// Include the page creation file
 
 // Empêcher l'accès direct
 if (! defined('ABSPATH')) {
     exit;
 }
 
-// Inclure les fichiers nécessaires
+
+/*
+/ Includes
+*/
+
 include_once plugin_dir_path(__FILE__) . 'includes/test.php';
 
+/*
+/ Configure Child Theme
+*/
+require_once plugin_dir_path(__FILE__) . '/includes/child-theme/configure.php';
+
+
+/*
+/ Sales Force
+*/
+require_once plugin_dir_path(__FILE__) . '/includes/sales-force/authentification.php';
+require_once plugin_dir_path(__FILE__) . '/includes/sales-force/user-data.php';
+
+
+/*
+/  2FA
+*/
+require_once plugin_dir_path(__FILE__) . '/includes/2FA/index.php';
+
+
+/*
+/ Configure Plugin
+*/
 function aif_donor_space_create_pages()
 {
 
     $pages = [
-        'donor-page-1' => 'Donor Page 1',
+        'verifier-votre-email' => 'AIF - Vérifier votre email',
     ];
 
     foreach ($pages as $slug => $title) {
