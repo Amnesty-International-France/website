@@ -5,7 +5,6 @@ function checkPasswordMatch() {
 
     if (password !== confirmPassword) {
         document.getElementById("password-error-not-match").style.display = "block";
-
         document.getElementById("submit-btn").disabled = true;
     } else {
         document.getElementById("password-error-not-match").style.display = "none";
@@ -17,7 +16,7 @@ function checkPassphraseStrength() {
     const input = document.getElementById('password');
     const passphrase = input.value;
 
-    const lengthCheck = passphrase.length >= 12;
+    const lengthCheck = passphrase.length >= 6;
     const uppercaseCheck = /[A-Z]/.test(passphrase);
     const lowercaseCheck = /[a-z]/.test(passphrase);
     const numberCheck = /\d/.test(passphrase);
@@ -27,6 +26,7 @@ function checkPassphraseStrength() {
         numberCheck && specialCheck)) {
         const elem = document.getElementById("password-error-too-weak");
         elem.style.display = "block";
+        elem.classList.add("aif-input-error");
         input.setAttribute("aria-describedby", "passwordHelp password-error-too-weak");
         document.getElementById("submit-btn").disabled = true;
     } else {
