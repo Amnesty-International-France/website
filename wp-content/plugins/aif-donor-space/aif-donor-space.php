@@ -1,14 +1,12 @@
 <?php
 
 /*
-Plugin Name: AIF Donor Space 2
+Plugin Name: AIF Donor Space
 Description: A plugin to add a custom page with a custom template to WordPress.
 Version: 1.0
-Author: Your Name
+Author: Fairness coop for Amnesty International France
 */
 
-
-// Empêcher l'accès direct
 if (! defined('ABSPATH')) {
     exit;
 }
@@ -17,8 +15,6 @@ if (! defined('ABSPATH')) {
 /*
 / Includes
 */
-
-include_once plugin_dir_path(__FILE__) . 'includes/test.php';
 
 /*
 / Configure Child Theme
@@ -47,6 +43,9 @@ function aif_donor_space_create_pages()
 
     $pages = [
         'verifier-votre-email' => 'AIF - Vérifier votre email',
+        'creer-votre-compte' => 'AIF - Créer votre compte',
+        'connectez-vous' => 'AIF - Connectez-vous',
+
     ];
 
     foreach ($pages as $slug => $title) {
@@ -70,7 +69,9 @@ function aif_donor_space_load_template($template)
     $templates_dir = plugin_dir_path(__FILE__) . '/templates/';
 
     $templates_map = [
-        'donor-page-1' => $templates_dir . 'template-page-1.php',
+        'verifier-votre-email' => $templates_dir . 'check-email.php',
+        'creer-votre-compte' => $templates_dir . 'create-account.php',
+        'connectez-vous' => $templates_dir . 'login-user.php',
     ];
 
     if (array_key_exists($page_slug, $templates_map) && file_exists($templates_map[ $page_slug ])) {
@@ -80,3 +81,24 @@ function aif_donor_space_load_template($template)
     return $template;
 }
 add_filter('template_include', 'aif_donor_space_load_template');
+
+
+function aif_donor_space_enqueue_assets()
+{
+    $plugin_url = plugin_dir_url(__FILE__);
+    wp_enqueue_style(
+        'aif-donor-space-style',
+        $plugin_url . 'assets/css/style.css',
+        array(),
+        '1.0'
+    );
+
+    wp_enqueue_script(
+        'aif-donor-space-script',
+        $plugin_url . 'assets/js/main.js',
+        array(),
+        '1.0',
+        true
+    );
+}
+add_action('wp_enqueue_scripts', 'aif_donor_space_enqueue_assets');
