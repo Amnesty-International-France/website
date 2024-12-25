@@ -63,10 +63,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     <div class="container">
 
         <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="article-title wp-block-post-title">Votre email n'a pas encore été vérifier ?</h1>
+            <h1 class="aif-mb1w">Mon espace Don</h1>
+            <h2> Validation de la création de mon compte </h2>
         </header>
 
-        <p>Vérifier votre email en renseignant le code reçu par mail</p>
+        <p>Votre espace don vous permet de suivre facilement vos dons et adhésion. Vous pouvez y modifier vos
+            coordonnées personnelles, votre RIB et éditer des duplicatas de vos reçus fiscaux.</p>
+
+        <p>
+            Pour finaliser ma création de compte, rentrer votre email et le code à 6 chiffres que vous venez de recevoir
+            sur votre email.
+        </p>
 
         <form role="form" method="POST" action="">
             <?php wp_nonce_field('2FA_check', '2FA_nonce'); ?>
@@ -75,17 +82,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 (obligatoire)</label>
             <input class="<?php echo !empty($error_message) ? "aif-input-error" : "" ?>" placeholder="" value=""
                 type="email" name="email" id="email" autocomplete="email" required="true">
-            <label class="<?php echo !empty($error_message) ? "aif-input-error" : "" ?>" for="2FA-code">Votre
-                code de
-                vérification (obligatoire)</label>
+            <label class="<?php echo !empty($error_message) ? "aif-input-error" : "" ?>" for="2FA-code">Code à 6
+                chiffres (obligatoire)</label>
             <input pattern="\d{6}" title="rentrer ici votre code de 6 chiffres reçu par email"
                 class="<?php echo !empty($error_message) ? "aif-input-error" : "" ?>" placeholder="" id=" 2FA-code"
                 value="" type="text" name="2FA-code" required="true">
 
-            <button class="btn btn--dark" type="submit">Vérifier le code</button>
+            <button class="btn aif-mt1w" type="submit">Valider la création de mon compte</button>
         </form>
+
+
+        <hr class="aif-mt1w">
+
+        <p class="aif-mt1w">
+            Les données personnelles collectées sur ce formulaire sont traitées par l’association Amnesty International
+            France (AIF), responsable du traitement. Ces données vont nous permettre de vous envoyer nos propositions
+            d’engagement, qu’elles soient militantes ou financières. Notre politique de confidentialité détaille la
+            manière dont Amnesty International France, en sa qualité de responsable de traitement, traite et protège vos
+            données personnelles collectées conformément aux dispositions de la Loi du 6 janvier 1978 relative à
+            l’informatique, aux fichiers et aux libertés dite Loi « Informatique et Libertés », et au Règlement européen
+            du 25 mai 2018 sur la protection des données (« RGPD »). Pour toute demande, vous pouvez contacter le
+            service membres et donateurs d’AIF à l’adresse mentionnée ci-dessus, par email smd@amnesty.fr. Vous pouvez
+            également introduire une réclamation auprès de la CNIL. Pour plus d’information sur le traitement de vos
+            données personnelles, veuillez consulter notre politique de confidentialité.
+        </p>
 
 
     </div>
 
 </main>
+
+<?php
+get_footer()
+?>
