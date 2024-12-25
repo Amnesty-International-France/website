@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($password !== $confirm_password) {
             $error_message = "Les mots de passe ne correspondent pas.";
         } else {
+
+
             $userdata = array(
                 'user_login'    => $email,
                 'user_email'    => $email,
@@ -34,12 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user_id = wp_insert_user($userdata);
 
             if (!is_wp_error($user_id)) {
-
                 $code = generate_2fa_code();
                 store_2fa_code($user_id, $code);
 
+                $verifaction_url = get_permalink(get_page_by_path('verifier-votre-email'));
+
                 if(send_2fa_code($email, $code, $verifaction_url)) {
-                    $verifaction_url = get_permalink(get_page_by_path('verification-email'));
+
                     wp_redirect($verifaction_url);
                     exit;
                 }
