@@ -21,6 +21,12 @@ To start the script : `castor install <path>`
 
 It will install the environment with the [humanity theme](https://github.com/amnestywebsite/humanity-theme) and its required plugins.
 
+## CI/CD
+
+puhsing on branch `main` deploys on http://app-dadec8ba-25dc-44d7-b10d-6dd400a829fd.cleverapps.io 
+
+pushing on branch `fairness-dev` deploys on http://app-0feb7822-eaf8-4f15-ba3d-d5d66aca81f2.cleverapps.io
+
 ## Custom Plugins
 
 A custom plugin must be developed directly in a folder under `<path>/wp-content/plugins` (example: wp-content/plugins/hello-world).  
