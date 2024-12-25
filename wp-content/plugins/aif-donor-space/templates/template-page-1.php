@@ -4,7 +4,8 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-get_header(); ?>
+get_header();
+?>
 
 <div class="custom-template">
     <h1>Donor Page 1</h1>

@@ -11,12 +11,12 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-
 /*
 / Includes
 */
 
 /*
+
 / Configure Child Theme
 */
 require_once plugin_dir_path(__FILE__) . '/includes/child-theme/configure.php';
@@ -47,6 +47,7 @@ function aif_donor_space_create_pages()
         'connectez-vous' => 'AIF - Connectez-vous',
         'accueil' => 'AIF - Espace Donateur',
         'qui-etes-vous' => 'AIF - Qui êtes-vous ?'
+
     ];
 
     foreach ($pages as $slug => $title) {
