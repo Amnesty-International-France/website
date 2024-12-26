@@ -29,13 +29,13 @@ function get_2fa_code($user_id)
 
 function send_2fa_code($to_email, $code, $verification_url)
 {
-    $api_key = MAILGUN_TOKEN;
-    $url = MAILGUN_URL . '/'. MAILGUN_DOMAIN . '/messages';
+    $api_key = $_ENV['AIF_MAILGUN_TOKEN'];
+    $url = $_ENV['AIF_MAILGUN_URL'] . '/'. $_ENV['AIF_MAILGUN_DOMAIN'] . '/messages';
 
     $response = wp_remote_post($url, array(
         'method' => 'POST',
         'body' => array(
-            'from' => 'noreply@' . MAILGUN_DOMAIN,
+            'from' => 'noreply@' .  $_ENV['AIF_MAILGUN_DOMAIN'],
             'to' => $to_email,
             'subject' => 'Amnesty France- Vérifier votre email',
             'text' => 'Le code de vérification est ' ." ". $code . 'Cliquer ici pour activer votre compte: ' . $verification_url
