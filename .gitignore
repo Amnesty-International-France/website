@@ -36,6 +36,7 @@ wp-config.php
 # Example of my custom plugin named hello-world
 #!/wp-content/plugins/hello-world/
 !/wp-content/plugins/wp-plugin-amnesty-branding/
+!/wp-content/plugins/aif-donor-space/
 
 # Themes
 /wp-content/themes/*
