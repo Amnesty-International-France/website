@@ -1,14 +1,3 @@
-/*
-Theme Name:     Espace-donateur
-Theme URI:      
-Description:    Humanity-theme child theme.
-Author:         Me
-Author URI:     
-Template:       humanity-theme
-Version:        0.1.0
-*/
-
-
 .aif-error-message {
     display: flex;
     align-items: center;
@@ -27,7 +16,6 @@ Version:        0.1.0
 
 
 .password-error-message {
-
     display: none;
 }
 
@@ -37,4 +25,115 @@ Version:        0.1.0
 
 .invalid {
     color: var(--wp--preset--color--vivid-red);
+}
+
+
+/* Container */
+
+.aif-flex {
+    display: flex;
+}
+
+.aif-flex-row {
+    flex-direction: row;
+}
+
+.aif-justify-center {
+    justify-content: center;
+
+}
+
+.aif-align-center {
+    align-items: center;
+
+}
+
+
+/* Gap */
+
+.aif-gap-single {
+    gap: var(--wp--preset--spacing--single);
+
+}
+
+
+
+/* Marging */
+
+
+
+.aif-m0 {
+    margin: 0;
+}
+
+.aif-mb0 {
+    margin-bottom: 0;
+}
+
+.aif-mt1w {
+    margin-top: var(--wp--preset--spacing--single) !important;
+}
+
+.aif-mt2w {
+    margin-top: var(--wp--preset--spacing--double) !important;
+}
+
+.aif-mt3w {
+    margin-top: var(--wp--preset--spacing--triple) !important;
+}
+
+.aif-mb1w {
+    margin-bottom: var(--wp--preset--spacing--single);
+}
+
+
+
+
+/* Padding */
+
+.aif-p0 {
+    padding: 0;
+}
+
+
+.aif-p1w {
+    padding: var(--wp--preset--spacing--single);
+}
+
+
+/* Backgrounds */
+
+
+.aif-bg-primary {
+    background-color: var(--wp--preset--color--primary);
+}
+
+.aif-bg-grey--lighter {
+    background-color: var(--wp--preset--color--grey-lighter);
+}
+
+/* Color */
+
+
+.aif-color-red {
+    color: var(--wp--preset--color--vivid-red);
+}
+
+/* Font Weight */
+
+
+.aif-text-bold {
+    font-weight: bold;
+}
+
+/* Text Decoration */
+
+
+.aif-text-underline {
+    text-decoration: underline;
+}
+
+
+.aif-text-underline--orange {
+    text-decoration-color: var(--wp--preset--color--orange-base);
 }

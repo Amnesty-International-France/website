@@ -26,15 +26,22 @@ function get_salesforce_data($url)
 }
 
 
-function get_salesforce_user_data($email)
+function get_salesforce_member_data($email)
 {
-    // L'URL pour récupérer les données
     $url = 'services/apexrest/search/v1/' . $email;
     return get_salesforce_data($url);
 }
 
-function has_access_to_donation_space($email)
+function get_salesforce_user_data($ID)
 {
-    $data = get_salesforce_user_data($email);
-    return $data->isDonateur || $data->isMembre;
+    $url = 'services/data/v57.0/sobjects/Contact/' . $ID;
+    return get_salesforce_data($url);
 }
+
+
+function has_access_to_donation_space($sf_user)
+{
+    return $sf_user->isDonateur || $sf_user->isMembre;
+}
+
+//
