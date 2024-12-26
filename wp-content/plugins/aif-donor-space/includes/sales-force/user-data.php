@@ -10,7 +10,7 @@ function get_salesforce_data($url)
     }
 
 
-    $response = wp_remote_get(SALESFORCE_URL . $url, array(
+    $response = wp_remote_get($_ENV["AIF_SALESFORCE_URL"] . $url, array(
         'headers' => array(
             'Authorization' => 'Bearer ' . $access_token
         )
@@ -43,5 +43,3 @@ function has_access_to_donation_space($sf_user)
 {
     return $sf_user->isDonateur || $sf_user->isMembre;
 }
-
-//

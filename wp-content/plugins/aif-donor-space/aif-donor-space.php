@@ -1,5 +1,7 @@
 <?php
 
+ob_start();
+
 /*
 Plugin Name: Amnesty International France -  Donor Space
 Description: A plugin to add Donor Space to Amnesty International France Website
