@@ -4,8 +4,9 @@ get_header();
 
 $success_message = "";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
     if (has_access_to_donation_space($_POST['email'])) {
 
@@ -14,9 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         if($user) {
             wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
             exit;
+        } else {
+            wp_redirect(get_permalink(get_page_by_path('creer-votre-compte')));
+            exit;
         }
-        wp_redirect(get_permalink(get_page_by_path('creer-un-compte')));
-        exit;
+
     } else {
         $error_message = "Vous n'avez pas accès à l'espace don";
     }

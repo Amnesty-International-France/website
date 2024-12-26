@@ -38,7 +38,7 @@ function send_2fa_code($to_email, $code, $verification_url)
             'from' => 'noreply@' . MAILGUN_DOMAIN,
             'to' => $to_email,
             'subject' => 'Amnesty France- Vérifier votre email',
-            'text' => 'Le code de vérification est ' . $code . 'Cliquer ici pour activer votre compte: ' . $verification_url
+            'text' => 'Le code de vérification est ' ." ". $code . 'Cliquer ici pour activer votre compte: ' . $verification_url
         ),
         'headers' => array(
             'Authorization' => 'Basic ' . base64_encode('api:' . $api_key)
@@ -80,8 +80,6 @@ function limit_login_attempts($user_id)
         update_user_meta($user_id, 'login_blocked_until', time() + 3600); // 1 heure
         return false;
     } else {
-
-        print_r($attempts);
         update_user_meta($user_id, 'login_attempts', $attempts + 1);
         return true;
     }
