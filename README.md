@@ -37,3 +37,36 @@ For your plugin to be versioned on git, you need to add the following line to th
 ## Start wordpress
 
 To start wordpress, run : `wp server`
+
+## Amnesty International France - Donor Space Plugin
+
+
+**Amnesty International France Donor Space** is distributed as a plugin.
+
+### Prerequisites
+
+Before activating the plugin, ensure that you have added the following environment variables.
+
+#### SalesForce Configuration
+
+This plugin requires access to SalesForce. To enable SalesForce integration, please add the following environment variables:
+
+| Name                     | Description                                           |
+|--------------------------|-------------------------------------------------------|
+| `AIF_SALESFORCE_URL`     | The URL of the SalesForce instance used by the plugin |
+| `AIF_SALESFORCE_CLIENT_ID` | The `client_id` from SalesForce                      |
+| `AIF_SALESFORCE_SECRET`  | The `client_secret` from SalesForce                   |
+
+To obtain these details, please contact Amnesty International France.
+
+#### MailGun Configuration
+
+This plugin requires access to MailGun for email sending. To enable MailGun, please add the following environment variables:
+
+| Name                  | Description                                    |
+|-----------------------|------------------------------------------------|
+| `AIF_MAILGUN_TOKEN`   | The MailGun Token                              |
+| `AIF_MAILGUN_URL`     | The MailGun URL                                |
+| `AIF_MAILGUN_DOMAIN`  | The domain name used for sending emails        |
+
+For more information, visit [MailGun](https://app.mailgun.com/).
