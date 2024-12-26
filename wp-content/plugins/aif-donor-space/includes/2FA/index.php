@@ -17,7 +17,7 @@ function store_email_is_verified($user_id)
 
 function get_email_is_verified($user_id)
 {
-    return get_user_meta($user_id, 'email-verfied');
+    return get_user_meta($user_id, 'email-verfied', true);
 }
 
 

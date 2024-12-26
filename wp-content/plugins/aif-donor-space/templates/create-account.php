@@ -42,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user_id = wp_insert_user($userdata);
 
             if (!is_wp_error($user_id)) {
+                store_SF_user_ID($user_id, $sf_member->Id);
+
                 $code = generate_2fa_code();
                 store_2fa_code($user_id, $code);
 

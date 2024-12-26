@@ -1,3 +1,11 @@
+<?php
+$current_user = wp_get_current_user();
+$sf_user_ID = get_SF_user_ID($current_user->ID);
+
+$tax_reciept = get_salesforce_user_taxt_reciept($sf_user_ID);
+
+?>
+
 <main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
 
 
