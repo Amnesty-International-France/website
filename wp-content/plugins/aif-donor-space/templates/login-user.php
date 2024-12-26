@@ -33,7 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
             if (!is_wp_error($user)) {
                 wp_set_current_user($user->ID);
-                wp_redirect(home_url());
+
+                $verifaction_url = get_permalink(get_page_by_path('accueil'));
+                wp_redirect($verifaction_url);
             } else {
                 $error_message = "Mauvais email ou mot de passe";
             }
