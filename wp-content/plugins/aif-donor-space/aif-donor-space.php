@@ -13,15 +13,17 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+define("AIF_PLUGIN_PATH", plugin_dir_path(__FILE__));
+
 
 /*
 / Includes
 */
 
 /*
-/ Configure Child Theme
+/ Configure Plugin
 */
-require_once plugin_dir_path(__FILE__) . '/includes/child-theme/configure.php';
+require_once plugin_dir_path(__FILE__) . '/includes/plugin/configure.php';
 
 
 /*

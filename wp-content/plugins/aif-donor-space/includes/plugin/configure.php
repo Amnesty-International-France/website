@@ -52,3 +52,15 @@ function aif_donor_space_check_requirements()
 }
 
 add_action('admin_notices', 'aif_donor_space_check_requirements');
+function aif_donor_space_get_partial($partial_name)
+{
+    $partial_path = AIF_PLUGIN_PATH . "templates/partials/{$partial_name}.php";
+
+
+
+    if (file_exists($partial_path)) {
+        include $partial_path;
+    } else {
+        echo "<!-- Partial {$partial_name} introuvable -->";
+    }
+}

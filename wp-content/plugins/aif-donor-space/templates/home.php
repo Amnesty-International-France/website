@@ -1,37 +1,24 @@
 <?php
+
 /* Template Name: Espace Donateur - Home */
 get_header();
 
 if (is_user_logged_in()) {
-    // L'utilisateur est connecté
-    echo '<p>Welcome, ' . wp_get_current_user()->user_login . '!</p>';
-    // Vous pouvez ajouter ici tout contenu ou fonctionnalité spécifique pour les utilisateurs connectés
+
+    $current_user = wp_get_current_user();
+    $sf_user = get_salesforce_member_data($current_user->user_email);
+
+    if (has_access_to_donation_space($sf_user)) {
+        aif_donor_space_get_partial("tax-reciept") ;
+    } else {
+        wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
+    }
+
+
 } else {
-    // L'utilisateur n'est pas connecté
-    echo "l'utilisateur n'est pas connecté";
-    // Vous pouvez ajouter ici tout contenu ou fonctionnalité spécifique pour les utilisateurs non connectés
+
+    wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
+    exit;
 }
 
-?>
-
-
-
-
-<main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-
-
-    <div class="container">
-
-
-        <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="article-title wp-block-post-title">Mon espace donateur</h1>
-        </header>
-
-
-
-    </div>
-
-</main>
-<?php
-get_footer()
-?>
+get_footer();
