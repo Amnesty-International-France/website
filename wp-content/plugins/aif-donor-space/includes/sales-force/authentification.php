@@ -10,6 +10,7 @@ function get_salesforce_access_token()
     return refresh_salesforce_token();
 }
 
+
 function refresh_salesforce_token()
 {
     // Paramètres de la requête pour rafraîchir le token

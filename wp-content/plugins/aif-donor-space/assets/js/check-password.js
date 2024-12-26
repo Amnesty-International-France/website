@@ -1,15 +1,11 @@
-
-function preventCopyPaste(event) {
-    event.preventDefault();
-}
-
-
 function checkPasswordMatch() {
-    var password = document.getElementById("password").value;
-    var confirmPassword = document.getElementById("confirm-password").value;
+
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirm-password").value;
 
     if (password !== confirmPassword) {
         document.getElementById("password-error-not-match").style.display = "block";
+
         document.getElementById("submit-btn").disabled = true;
     } else {
         document.getElementById("password-error-not-match").style.display = "none";
@@ -21,7 +17,6 @@ function checkPassphraseStrength() {
     const input = document.getElementById('password');
     const passphrase = input.value;
 
-    //Expressions régulières pour tester les conditions
     const lengthCheck = passphrase.length >= 12;
     const uppercaseCheck = /[A-Z]/.test(passphrase);
     const lowercaseCheck = /[a-z]/.test(passphrase);
