@@ -22,7 +22,7 @@ function groupByYear(array $objects, string $prop): array
         }
         $groupedByYear[$year][] = $object;
     }
-    asort($groupedByYear);
+    ksort($groupedByYear);
 
     return $groupedByYear;
 }

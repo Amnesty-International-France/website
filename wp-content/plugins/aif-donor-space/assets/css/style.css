@@ -41,11 +41,27 @@
 .aif-justify-center {
     justify-content: center;
 
+
 }
 
 .aif-align-center {
     align-items: center;
 
+}
+
+.aif-grid-container {
+    @media screen and (min-width: 1140px) {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+    }
+}
+
+.aif-container {
+    padding: 0 var(--wp--preset--spacing--half) !important;
+
+    @media screen and (min-width: 1140px) {
+        padding: 0;
+    }
 }
 
 
@@ -100,6 +116,9 @@
     padding: var(--wp--preset--spacing--single);
 }
 
+.aif-pb1w {
+    padding-bottom: var(--wp--preset--spacing--single);
+}
 
 /* Backgrounds */
 
