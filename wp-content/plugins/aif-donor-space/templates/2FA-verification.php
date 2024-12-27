@@ -9,7 +9,7 @@ $disable_input = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['2FA-code']) && isset($_POST['2FA_nonce'])) {
 
     $email = sanitize_text_field($_POST['email']);
-    $code = $_POST['2FA-code'] ;
+    $code = sanitize_text_field($_POST['2FA-code']) ;
 
     if (!isset($_POST['2FA_nonce']) || !wp_verify_nonce($_POST['2FA_nonce'], '2FA_check')) {
         die('Invalid nonce.');

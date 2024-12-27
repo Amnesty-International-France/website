@@ -12,9 +12,8 @@ $error_no_access_to_donor_space = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = sanitize_email($_POST['email']);
-
-    $password = $_POST['password'];
-    $confirm_password = $_POST['confirm-password'];
+    $password = sanitize_text_field($_POST['password']);
+    $confirm_password = sanitize_text_field($_POST['confirm-password']);
 
     if (empty($email) || empty($password)) {
         $error_all_fields_required_message = "Veuillez renseigner le mot de passe et votre email";
