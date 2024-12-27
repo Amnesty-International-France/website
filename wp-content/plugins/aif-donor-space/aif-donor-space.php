@@ -46,6 +46,11 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/2FA/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controllers.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
 
+/*
+/  Domain
+*/
+require_once plugin_dir_path(__FILE__) . '/includes/domain/tax-receipt.php';
+
 
 /*
 / Configure Plugin
