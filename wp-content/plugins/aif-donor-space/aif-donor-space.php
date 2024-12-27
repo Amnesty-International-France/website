@@ -38,6 +38,11 @@ require_once plugin_dir_path(__FILE__) . '/includes/sales-force/user-data.php';
 */
 require_once plugin_dir_path(__FILE__) . '/includes/2FA/index.php';
 
+/*
+/  Domain
+*/
+require_once plugin_dir_path(__FILE__) . '/includes/domain/tax-receipt.php';
+
 
 /*
 / Configure Plugin
