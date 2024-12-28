@@ -9,9 +9,8 @@ $error_message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['login_nonce'])) {
 
-    $email = sanitize_text_field($_POST['email']);
-    $password = $_POST['password'] ;
-
+    $email = sanitize_email($_POST['email']);
+    $password = sanitize_text_field($_POST['password']) ;
 
     if (!isset($_POST['login_nonce']) || !wp_verify_nonce($_POST['login_nonce'], 'login_form')) {
         die('Invalid nonce.');
