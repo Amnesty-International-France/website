@@ -1,4 +1,4 @@
 AuthType Basic
 AuthName "Amnesty release"
-AuthUserFile "${ENV:APP_HOME}/www/passwords"
+AuthUserFile "/var/www/bas/site/www/passwords"
 Require valid-user
