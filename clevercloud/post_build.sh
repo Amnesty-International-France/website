@@ -7,9 +7,11 @@ castor install --path=www
 test -f ${APP_HOME}/user.ini && \
   cp ${APP_HOME}/user.ini ${APP_HOME}${CC_WEBROOT}/.user.ini
 
-# patch wp-config.php for the WP CORE
-if ! grep -q  WP_AUTO_UPDATE_CORE  www/wp-config.php  ; then
-    sed -i "/Add any custom values between this line/a define( 'WP_AUTO_UPDATE_CORE', true);" www/wp-config.php
+cp -f ${APP_HOME}/infogerance/aif-clever-cloud.php  ${APP_HOME}${CC_WEBROOT}/
+
+# patch wp-config.php
+if ! grep -q  aif-clever-cloud.php   www/wp-config.php  ; then
+    sed -i "/Add any custom values between this line/a require ABSPATH . '/aif-clever-cloud.php';" www/wp-config.php
 fi
 
 
