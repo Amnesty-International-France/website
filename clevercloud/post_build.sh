@@ -14,6 +14,10 @@ if ! grep -q  aif-clever-cloud.php   www/wp-config.php  ; then
     sed -i "/Add any custom values between this line/a require ABSPATH . '/aif-clever-cloud.php';" www/wp-config.php
 fi
 
+# rysnc plugins if exists on repo
+if test -d ${APP_HOME}/wp-content/plugins  ; then
+    rsync -a ${APP_HOME}/wp-content/plugins/ ${APP_HOME}${CC_WEBROOT}/wp-content/plugins/
+fi
 
 # install restic for FS backup
 RESTIC_TAG=0.17.3
