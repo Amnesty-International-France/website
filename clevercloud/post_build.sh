@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-set -x
 echo $PATH
 castor install --path=www
 
@@ -17,6 +16,15 @@ fi
 # rysnc plugins if exists on repo
 if test -d ${APP_HOME}/wp-content/plugins  ; then
     rsync -a ${APP_HOME}/wp-content/plugins/ ${APP_HOME}${CC_WEBROOT}/wp-content/plugins/
+fi
+
+# htpasswd if no-prod
+if echo $CC_APP_NAME  | grep -q release  ; then
+   cp ${APP_HOME}/infogerance/htaccess  ${APP_HOME}${CC_WEBROOT}/.htaccess
+   echo $HTPASSWORD  | base 64 -d  > ${APP_HOME}${CC_WEBROOT}/passwords
+else
+    rm -f ${APP_HOME}${CC_WEBROOT}/.htaccess
+    rm -f ${APP_HOME}${CC_WEBROOT}/passwords
 fi
 
 # install restic for FS backup
