@@ -21,7 +21,7 @@ fi
 # htpasswd if no-prod
 if echo $CC_APP_NAME  | grep -q release  ; then
    cp ${APP_HOME}/infogerance/htaccess  ${APP_HOME}${CC_WEBROOT}/.htaccess
-   echo $HTPASSWORD  | base 64 -d  > ${APP_HOME}${CC_WEBROOT}/passwords
+   echo $HTPASSWORD  | base64 -d  > ${APP_HOME}${CC_WEBROOT}/passwords
 else
     rm -f ${APP_HOME}${CC_WEBROOT}/.htaccess
     rm -f ${APP_HOME}${CC_WEBROOT}/passwords
