@@ -12,6 +12,9 @@ export AWS_SECRET_ACCESS_KEY=${CELLAR_ADDON_KEY_SECRET}
 export RESTIC_REPOSITORY=s3:https://${CELLAR_ADDON_HOST}/${BUCKET_NAME}
 export DOCROOT=${APP_HOME}${CC_WEBROOT}/
 restic backup ${DOCROOT}
+if [ $? -eq 0 ] ; then
+    curl ${BACKUP_HEALTHCHECKS_URL}
+fi
 
 # on garde uniquement les 30 derniers backups
 restic forget --keep-last 30
