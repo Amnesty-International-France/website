@@ -4,6 +4,8 @@ $current_user = wp_get_current_user();
 $sf_user_ID = get_SF_user_ID($current_user->ID);
 $tax_reciept = get_salesforce_user_tax_reciept($sf_user_ID);
 
+print_r($sf_user_ID);
+
 $sorted = [];
 $groupped = [];
 
@@ -61,9 +63,11 @@ if($tax_reciept->totalSize > 0) {
                         Numéro du reçu fiscal : <?= $record->Name ?>
                     </p>
 
-                    <button
+                    <button onclick="createDuplicateTaxReceiptDemand(<?= $record->Name ?>);"
                         aria-label='Demander votre duplicatat de reçu fiscal pour le duplicata numéro <?= $record->Name ?>'
-                        class="btn btn--large">Demander votre duplicata de reçu fiscal </button>
+                        class="btn btn--large" data-param="<?=  esc_attr($record->Name); ?>">
+                        Demander votre duplicata de reçu fiscal
+                    </button>
                 </div>
                 <?php endforeach ?>
 

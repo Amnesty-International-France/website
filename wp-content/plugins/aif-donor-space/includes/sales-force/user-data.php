@@ -1,5 +1,34 @@
 <?php
 
+
+function post_salesforce_data($url, $params = [])
+{
+    $access_token = get_salesforce_access_token();
+
+    if (is_wp_error($access_token)) {
+        echo 'Erreur : ' . $access_token->get_error_message();
+        exit;
+    }
+
+
+    // Effectuer la requête POST via wp_remote_post()
+    $response = wp_remote_post($url, array(
+        'method'    => 'POST',
+        'body'      => $params,
+        'timeout'   => 15,
+        'headers'   => array(
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Authorization' => 'Bearer ' . $access_token
+        ),
+    ));
+
+    if (is_wp_error($response)) {
+        echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
+    } else {
+        $data = wp_remote_retrieve_body($response);
+        return json_decode($data);
+    }
+}
 function get_salesforce_data($url)
 {
     $access_token = get_salesforce_access_token();
@@ -60,4 +89,21 @@ function store_SF_user_ID($user_id, $user_SF_ID)
 function get_SF_user_ID($user_id)
 {
     return get_user_meta($user_id, 'user_SF_ID', true);
+}
+
+function create_duplicate_taxt_receipt_request($ID, $taxt_receipt_reference)
+{
+    $url = 'services/data/v42.0/sobjects/Case';
+
+    $params = [
+
+        "RecordTypeId" => "012060000011IdCAAU",
+        "Type_de_demande_AIF__c" => "Envoi duplicata",
+        "Origin" => "Web",
+        "ContactId" => $ID,
+        "Date_de_la_demande__c" => date("Y-m-d"),
+        "Code_Marketing_Prestataire_c" => "espace-donateur",
+        "Identifiant" => $taxt_receipt_reference
+    ];
+    return post_salesforce_data($url, $params);
 }

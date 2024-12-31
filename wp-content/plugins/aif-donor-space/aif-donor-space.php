@@ -110,5 +110,39 @@ function aif_donor_space_enqueue_assets()
         [],
         '1.0'
     );
+
+    wp_enqueue_script(
+        'aif-create-duplicate-tax-receipt',
+        plugins_url('/assets/js/create-duplicate-tax-receipt-demand.js', __FILE__),
+        [],
+        '1.0.,0',
+        array(
+           'in_footer' => true,
+        )
+    );
+
+    $nonce = wp_create_nonce('create-duplicate-tax-receipt-nonce');
+
+
+    $result = wp_localize_script(
+        'aif-create-duplicate-tax-receipt',
+        'my_ajax_obj',
+        array(
+             'ajax_url' => admin_url('admin-ajax.php'),
+             'nonce'    => $nonce,
+         )
+    );
+    print($result ? "Yeeeees le script a été localisé" : "oh non");
 }
 add_action('wp_enqueue_scripts', 'aif_donor_space_enqueue_assets');
+
+
+add_action('wp_ajax_my_tag_count', 'my_ajax_handler');
+
+/**
+ * Handles my AJAX request.
+ */
+function my_ajax_handler()
+{
+    wp_send_json(['message' => 'you did it'], 200);
+}
