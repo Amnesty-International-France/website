@@ -88,20 +88,3 @@ function get_SF_user_ID($user_id)
 {
     return get_user_meta($user_id, 'user_SF_ID', true);
 }
-
-function create_duplicate_taxt_receipt_request($ID, $taxt_receipt_reference)
-{
-    $url = 'services/data/v42.0/sobjects/Case';
-
-    $params = [
-
-        "RecordTypeId" => "012060000011IdCAAU",
-        "Type_de_demande_AIF__c" => "Envoi duplicata",
-        "Origin" => "Web",
-        "ContactId" => $ID,
-        "Date_de_la_demande__c" => date("Y-m-d"),
-        "Code_Marketing_Prestataire_c" => "espace-donateur",
-        "Identifiant" => $taxt_receipt_reference
-    ];
-    return post_salesforce_data($url, $params);
-}

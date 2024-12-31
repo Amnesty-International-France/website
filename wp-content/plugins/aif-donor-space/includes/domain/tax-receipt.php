@@ -27,5 +27,19 @@ function groupByYear(array $objects, string $prop): array
     return $groupedByYear;
 }
 
+function create_duplicate_taxt_receipt_request($Contact_ID, $taxt_receipt_reference)
+{
+    $url = 'services/data/v57.0/sobjects/Case';
 
-// register the ajax action for authenticated users
+    $params = [
+
+        "RecordTypeId" => "012060000011IdCAAU",
+        "Type_de_demande_AIF__c" => "Envoi duplicata",
+        "Origin" => "Web",
+        "ContactId" => $Contact_ID,
+        "Date_de_la_demande__c" => date("Y-m-d"),
+        "Code_Marketing_Prestataire__c" => "WB_ESPDON",
+        "Identifiant__c" => $taxt_receipt_reference
+    ];
+    return  post_salesforce_data($url, $params);
+}
