@@ -1,4 +1,0 @@
-AuthType Basic
-AuthName "Amnesty release"
-AuthUserFile "/var/www/bas/site/www/passwords"
-Require valid-user
