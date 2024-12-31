@@ -139,3 +139,14 @@ function aif_donor_space_enqueue_assets()
 
 }
 add_action('wp_enqueue_scripts', 'aif_donor_space_enqueue_assets');
+
+
+add_action('wp_ajax_my_tag_count', 'my_ajax_handler');
+
+/**
+ * Handles my AJAX request.
+ */
+function my_ajax_handler()
+{
+    wp_send_json(['message' => 'you did it'], 200);
+}

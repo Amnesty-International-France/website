@@ -22,7 +22,10 @@ function groupByYear(array $objects, string $prop): array
         }
         $groupedByYear[$year][] = $object;
     }
-    ksort($groupedByYear);
+    arsort($groupedByYear);
 
     return $groupedByYear;
 }
+
+
+// register the ajax action for authenticated users
