@@ -1,33 +1,24 @@
 const createDuplicateTaxReceiptDemand = async (taxReceiptReference) => {
 
-    console.log(my_ajax_obj)
+    console.log(taxReceiptReference);
 
-    if (!taxReceiptReference) {
-
-        throw new Error("Taxt Receipt Reference not provided");
-    }
-
-    try {
-
-        fetch(my_ajax_obj.ajax_url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                _ajax_nonce: my_ajax_obj.nonce, // nonce
-                action: "my_tag_count", // action
-                title: "my title" // data
-            }),
-        }).then((result) => {
-
-            console.log(result);
-        }).catch((e) => { console.log(e) })
-
-
-    } catch (error) {
-
-        console.log(err)
-
-    }
+    fetch(aifDonorSpace.root + 'aif-donor-space/v1/duplicate-tax-receipt-request/', {
+        method: 'POST',
+        headers: {
+            'X-WP-NONCE': aifDonorSpace.nonce,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            taxReceiptReference
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 
 
 }

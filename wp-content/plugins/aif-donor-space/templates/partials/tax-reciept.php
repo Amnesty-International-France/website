@@ -63,9 +63,10 @@ if($tax_reciept->totalSize > 0) {
                         Numéro du reçu fiscal : <?= $record->Name ?>
                     </p>
 
-                    <button onclick="createDuplicateTaxReceiptDemand(<?= $record->Name ?>);"
-                        aria-label='Demander votre duplicatat de reçu fiscal pour le duplicata numéro <?= $record->Name ?>'
-                        class="btn btn--large" data-param="<?=  esc_attr($record->Name); ?>">
+                    <?php $name = $record->Name  ?>
+                    <button onclick="createDuplicateTaxReceiptDemand('<?=$name?>');"
+                        aria-label='Demander votre duplicata de reçu fiscal pour le duplicata numéro <?= $name?>'
+                        class="btn btn--large" data-param="<?= $name ?>">
                         Demander votre duplicata de reçu fiscal
                     </button>
                 </div>
