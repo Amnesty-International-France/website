@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         if($stored_code &&  $stored_code === $code) {
             store_email_is_verified($user->ID);
             reset_login_attempts($user->ID);
-            wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
+            wp_redirect(get_permalink(get_page_by_path('espace-donateur/connectez-vous')));
             exit;
         } else {
 

@@ -1,7 +1,6 @@
 <?php
 
 
-
 function humanity_theme_parent_theme_enqueue_styles()
 {
 
