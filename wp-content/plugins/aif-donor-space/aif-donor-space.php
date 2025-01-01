@@ -49,8 +49,8 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
 /*
 /  Domain
 */
-require_once plugin_dir_path(__FILE__) . '/includes/domain/tax-receipt/rest-controllers.php';
-require_once plugin_dir_path(__FILE__) . '/includes/domain/tax-receipt/index.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controllers.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
 
 
 /*
@@ -140,8 +140,3 @@ function aif_donor_space_enqueue_assets()
 
 }
 add_action('wp_enqueue_scripts', 'aif_donor_space_enqueue_assets');
-
-
-/**
- *  REST endpoints
- */
