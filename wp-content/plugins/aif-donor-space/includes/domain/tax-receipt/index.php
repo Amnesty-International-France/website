@@ -22,8 +22,8 @@ function groupByYear(array $objects, string $prop): array
         }
         $groupedByYear[$year][] = $object;
     }
-    arsort($groupedByYear);
 
+    krsort($groupedByYear);
     return $groupedByYear;
 }
 

@@ -21,18 +21,17 @@ function handle_duplicate_tax_receipt_request(WP_REST_Request $request)
         return new WP_REST_Response(array('status' => 403,'message' => 'tax receipt ID not provided'));
     }
 
-
-
     $result = create_duplicate_taxt_receipt_request($SF_ID, $taxt_receipt_reference);
 
-    // if (!$result['success']) {
-    //     return new WP_REST_Response(['message' => 'demand failed'], status: 400);
-    // }
+    if (!$result->success) {
+        return new WP_REST_Response(['message' => 'demand failed', 'result' => $result], status: 400);
+    }
 
     $response = array(
-        'message' => 'Tax receipt duplicated successfully!',
+        'message' => 'demand succeed',
         'result' => $result
     );
+
     return new WP_REST_Response($response, 200);
 }
 

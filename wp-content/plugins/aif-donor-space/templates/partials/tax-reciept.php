@@ -4,8 +4,6 @@ $current_user = wp_get_current_user();
 $sf_user_ID = get_SF_user_ID($current_user->ID);
 $tax_reciept = get_salesforce_user_tax_reciept($sf_user_ID);
 
-print_r($sf_user_ID);
-
 $sorted = [];
 $groupped = [];
 
@@ -17,17 +15,13 @@ if($tax_reciept->totalSize > 0) {
 ?>
 
 <div class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-
-
     <div class="aif-grid-container">
 
         <div>
             <!-- Leave Empty -->
-
         </div>
 
         <main class="aif-container">
-
             <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
                 <h1 class="article-title wp-block-post-title">Mes reçus fiscaux</h1>
             </header>
@@ -38,8 +32,8 @@ if($tax_reciept->totalSize > 0) {
                 l'année
                 de vos dons. </p>
 
-            <p>Pour toutes questions ou modifications sur vos dons et/ou adhésion, <a
-                    class="aif-text-underline aif-text-underline--orange " href="mailto:smd@amnesty.fr">contactez-nous.
+            <p>Pour toutes questions ou modifications sur vos dons et/ou adhésion,
+                <a class="aif-text-underline aif-text-underline--orange " href="mailto:smd@amnesty.fr">contactez-nous
                 </a>
             </p>
 
@@ -52,7 +46,24 @@ if($tax_reciept->totalSize > 0) {
 
                 <h3> <?=  $year ?> </h3>
                 <?php foreach ($records as $record): ?>
+                <?php $name = $record->Name  ?>
+
                 <div class="aif-mb1w">
+                    <div id="aif-success-message-<?=$name?>" class="aif-bg-grey--lighter aif-p1w aif-mb1w aif-hide">
+                        <div class="aif-flex aif-gap-single">
+                            <div class="aif-text-green">
+                                <svg aria-hidden="true" aria-hidden="true" width="4" height="14" viewBox="0 0 4 14"
+                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M2 14C1.45 14 0.979167 13.8477 0.5875 13.5431C0.195833 13.2384 0 12.8722 0 12.4444C0 12.0167 0.195833 11.6505 0.5875 11.3458C0.979167 11.0412 1.45 10.8889 2 10.8889C2.55 10.8889 3.02083 11.0412 3.4125 11.3458C3.80417 11.6505 4 12.0167 4 12.4444C4 12.8722 3.80417 13.2384 3.4125 13.5431C3.02083 13.8477 2.55 14 2 14ZM0 9.33333V0H4V9.33333H0Z"
+                                        fill="currentColor" />
+                                </svg>
+                            </div>
+
+                            <p class="aif-text-green aif-mb0 aif-text-bold">Votre demande de duplicata a bien été
+                                prise en compte. Vous le receverez d'ici quelques heures dans votre boite email</p>
+                        </div>
+                    </div>
                     <p class="aif-m0 aif-p0">Du <?=  date("d/m/Y", strtotime($record->Debut__c));  ?> au
                         <?=  date("d/m/Y", strtotime($record->Fin__c));  ?> -
                         <span class="aif-text-bold">
@@ -60,13 +71,14 @@ if($tax_reciept->totalSize > 0) {
                     </p>
 
                     <p>
-                        Numéro du reçu fiscal : <?= $record->Name ?>
+                        Numéro du reçu fiscal : <?= $name ?>
                     </p>
 
-                    <?php $name = $record->Name  ?>
-                    <button onclick="createDuplicateTaxReceiptDemand('<?=$name?>');"
+
+                    <button data-id="get-duplicate-tax-receipt-button"
+                        onclick="createDuplicateTaxReceiptDemand('<?=$name?>');"
                         aria-label='Demander votre duplicata de reçu fiscal pour le duplicata numéro <?= $name?>'
-                        class="btn btn--large" data-param="<?= $name ?>">
+                        class="btn btn--large">
                         Demander votre duplicata de reçu fiscal
                     </button>
                 </div>
