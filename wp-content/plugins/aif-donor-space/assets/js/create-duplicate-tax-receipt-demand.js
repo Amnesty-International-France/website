@@ -47,6 +47,3 @@ const createDuplicateTaxReceiptDemand = async (taxReceiptReference) => {
         return disbaleAllButtons(buttons);
     }
 }
-
-
-
