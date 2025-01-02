@@ -38,15 +38,16 @@ function aif_donor_space_check_requirements()
     }
 
 
-    $AIF_SALESFORCE_URL = $_ENV['AIF_SALESFORCE_URL'];
-    $AIF_SALESFORCE_CLIENT_ID = $_ENV['AIF_SALESFORCE_CLIENT_ID'];
-    $AIF_SALESFORCE_SECRET = $_ENV['AIF_SALESFORCE_SECRET'];
-    $AIF_MAILGUN_TOKEN = $_ENV['AIF_MAILGUN_TOKEN'];
-    $AIF_MAILGUN_URL = $_ENV['AIF_MAILGUN_URL'];
-    $AIF_MAILGUN_DOMAIN = $_ENV['AIF_MAILGUN_DOMAIN'];
+    $AIF_SALESFORCE_URL = getenv('AIF_SALESFORCE_URL');
+    $AIF_SALESFORCE_CLIENT_ID = getenv('AIF_SALESFORCE_CLIENT_ID');
+    $AIF_SALESFORCE_SECRET = getenv('AIF_SALESFORCE_SECRET');
+    $AIF_MAILGUN_TOKEN = getenv('AIF_MAILGUN_TOKEN');
+    $AIF_MAILGUN_URL = getenv('AIF_MAILGUN_URL');
+    $AIF_MAILGUN_DOMAIN = getenv('AIF_MAILGUN_DOMAIN');
 
     if (empty($AIF_SALESFORCE_URL) || empty($AIF_SALESFORCE_CLIENT_ID) || empty($AIF_SALESFORCE_SECRET) || empty($AIF_MAILGUN_DOMAIN) || empty($AIF_MAILGUN_TOKEN) || empty($AIF_MAILGUN_URL)) {
         echo "<div class='notice notice-error'><p><strong>AIF Donor Space:</strong> Ce plugin nécessite la présence des variables d'environnement AIF_SALESFORCE_URL,AIF_SALESFORCE_CLIENT_ID, AIF_SALESFORCE_SECRET, AIF_MAILGUN_TOKEN, AIF_MAILGUN_URL, AIF_MAILGUN_DOMAIN   </p> <p> Voir le README.md pour plus d'informations </p></div>";
+        deactivate_plugins('aif-donor-space');
     }
 }
 
