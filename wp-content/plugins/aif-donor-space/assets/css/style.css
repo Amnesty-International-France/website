@@ -26,6 +26,12 @@
     justify-content: end
 }
 
+.aif-lg-justify-end {
+    @media screen and (min-width: 1140px) {
+        justify-content: end
+    }
+}
+
 .aif-align-center {
     align-items: center;
 
