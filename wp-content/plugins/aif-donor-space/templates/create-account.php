@@ -47,14 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $code = generate_2fa_code();
                 store_2fa_code($user_id, $code);
 
-                $verifaction_url = get_permalink(get_page_by_path('verifier-votre-email'));
+                $verifaction_url = get_permalink(get_page_by_path('espace-donateur/verifier-votre-email'));
 
                 if(send_2fa_code($email, $code, $verifaction_url)) {
                     wp_redirect($verifaction_url);
                     exit;
                 }
             } else {
-                $url = get_permalink(get_page_by_path('connectez-vous'));
+                $url = get_permalink(get_page_by_path('espace-donateur/connectez-vous'));
                 $error_technical_message = "Vous vous êtes déja inscrit. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-text-underline 
     aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
             }
