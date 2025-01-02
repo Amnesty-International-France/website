@@ -18,6 +18,15 @@ if test -d ${APP_HOME}/wp-content/plugins  ; then
     rsync -a ${APP_HOME}/wp-content/plugins/ ${APP_HOME}${CC_WEBROOT}/wp-content/plugins/
 fi
 
+# htpasswd if no-prod
+if echo $CC_APP_NAME  | grep -q release  ; then
+   cp ${APP_HOME}/infogerance/htaccess  ${APP_HOME}${CC_WEBROOT}/.htaccess
+   echo $HTPASSWORD  | base 64 -d  > ${APP_HOME}${CC_WEBROOT}/passwords
+else
+    rm -f ${APP_HOME}${CC_WEBROOT}/.htaccess
+    rm -f ${APP_HOME}${CC_WEBROOT}/passwords
+fi
+
 # install restic for FS backup
 RESTIC_TAG=0.17.3
 curl -L https://github.com/restic/restic/releases/download/v${RESTIC_TAG}/restic_${RESTIC_TAG}_linux_amd64.bz2 | bunzip2 > /home/bas/.local/bin/restic
