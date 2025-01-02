@@ -18,7 +18,6 @@ define('AIF_DONOR_SPACE_VERSION', '1.0.0');
 define('AIF_DONOR_SPACE_URL', plugin_dir_url(__FILE__));
 
 
-
 /*
 / Includes
 */
