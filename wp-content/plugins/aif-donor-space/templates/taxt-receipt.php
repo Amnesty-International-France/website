@@ -21,7 +21,7 @@ if ($tax_reciept->totalSize > 0) {
 
 <div class="aif-grid-container aif-mt1w">
 
-    <nav class="aif-flex aif-mr1w aif-justify-end" aria-label="menu retour a l'espace don">
+    <nav class="aif-flex aif-mr1w aif-lg-justify-end aif-container aif-mb1w" aria-label="menu retour a l'espace don">
         <a class="" href="<?= get_permalink(get_page_by_path('espace-donateur')) ?>">
 
             <svg class="" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
