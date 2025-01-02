@@ -27,7 +27,7 @@ function get_2fa_code($user_id)
 }
 
 
-function send_2fa_code($to_email, $code, $verification_url)
+function send_2fa_code($to_email, $code, $message)
 {
     $api_key = getenv('AIF_MAILGUN_TOKEN');
     $url = getenv('AIF_MAILGUN_URL') . '/'. getenv('AIF_MAILGUN_DOMAIN') . '/messages';
@@ -38,7 +38,7 @@ function send_2fa_code($to_email, $code, $verification_url)
             'from' => 'noreply@' .  getenv('AIF_MAILGUN_DOMAIN'),
             'to' => $to_email,
             'subject' => 'Amnesty France- Vérifier votre email',
-            'text' => 'Le code de vérification est '. $code . 'Rendez-vous sur cette url vour activer votre compte: ' . $verification_url
+            'text' => $message,
         ),
         'headers' => array(
             'Authorization' => 'Basic ' . base64_encode('api:' . $api_key)

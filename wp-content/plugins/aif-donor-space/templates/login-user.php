@@ -33,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
             if (!is_wp_error($user)) {
                 wp_set_current_user($user->ID);
 
-                $verifaction_url = get_permalink(get_page_by_path('espace-donateur'));
-                wp_redirect($verifaction_url);
+                $verification_url = get_permalink(get_page_by_path('espace-donateur'));
+                wp_redirect($verification_url);
                 exit;
             } else {
                 $error_message = "Mauvais email ou mot de passe";

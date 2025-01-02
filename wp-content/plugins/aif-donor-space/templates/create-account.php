@@ -47,10 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $code = generate_2fa_code();
                 store_2fa_code($user_id, $code);
 
-                $verifaction_url = get_permalink(get_page_by_path('espace-donateur/verifier-votre-email'));
+                $verification_url = get_permalink(get_page_by_path('espace-donateur/verifier-votre-email'));
 
-                if(send_2fa_code($email, $code, $verifaction_url)) {
-                    wp_redirect($verifaction_url);
+                $message = 'Le code de vérification est '. $code . 'Rendez-vous sur cette url vour activer votre compte: ' . $verification_url;
+
+                if(send_2fa_code($email, $code, $message)) {
+                    wp_redirect($verification_url);
                     exit;
                 }
             } else {
