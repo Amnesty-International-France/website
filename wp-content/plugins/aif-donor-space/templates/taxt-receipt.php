@@ -1,5 +1,10 @@
 <?php
 
+/* Template Name: Espace Donateur - Home */
+get_header();
+
+check_user_page_access();
+
 $current_user = wp_get_current_user();
 $sf_user_ID = get_SF_user_ID($current_user->ID);
 $tax_reciept = get_salesforce_user_tax_reciept($sf_user_ID);
@@ -7,7 +12,7 @@ $tax_reciept = get_salesforce_user_tax_reciept($sf_user_ID);
 $sorted = [];
 $groupped = [];
 
-if($tax_reciept->totalSize > 0) {
+if ($tax_reciept->totalSize > 0) {
     $sorted = sortByDateProp($tax_reciept->records, "Debut__c");
     $groupped = groupByYear($sorted, "Debut__c");
 }
@@ -98,3 +103,8 @@ if($tax_reciept->totalSize > 0) {
             <!-- Leave Empty -->
         </div>
     </div>
+
+
+    <?php
+
+get_footer();
