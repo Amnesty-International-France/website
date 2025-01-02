@@ -23,10 +23,11 @@ define('AIF_DONOR_SPACE_URL', plugin_dir_url(__FILE__));
 */
 
 /*
-/ Configure Plugin
+/ Configuration
 */
 
-require_once AIF_DONOR_SPACE_PATH. '/includes/plugin/configure.php';
+require_once AIF_DONOR_SPACE_PATH. '/configuration.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/authorization.php';
 
 /*
 / Sales Force
@@ -46,6 +47,12 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/2FA/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controllers.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
 
+/*
+/  Domain
+*/
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controllers.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
+
 
 /*
 / Configure Plugin
@@ -54,24 +61,46 @@ function aif_donor_space_create_pages()
 {
 
     $pages = [
-        'verifier-votre-email' => 'AIF - Vérifier votre email',
-        'creer-votre-compte' => 'AIF - Créer votre compte',
-        'connectez-vous' => 'AIF - Connectez-vous',
-        'accueil' => 'AIF - Espace Donateur',
-        'qui-etes-vous' => 'AIF - Qui êtes-vous ?'
+        'espace-donateur' =>  [
+            'title' =>  'Mon espace don',
+            'children' => [
+                'verifier-votre-email' =>  ['title' => 'Mon espace don - Vérifier votre email'],
+                'creer-votre-compte' => ['title' => 'Mon espace don - Créer votre compte'],
+                'connectez-vous' => ['title' => 'Mon espace don - Connectez-vous'],
+                'mes-recus-fiscaux' => ['title' => 'Mon espace don - Reçus Fiscaux']
+            ]
+
+        ]
     ];
 
-    foreach ($pages as $slug => $title) {
+
+    foreach ($pages as $slug => $pageData) {
         if (!get_page_by_path($slug)) {
-            wp_insert_post([
-                'post_title'   => $title,
-                'post_name'    => $slug,
-                'post_status'  => 'publish',
-                'post_type'    => 'page',
-            ]);
+            $id = wp_insert_post([
+                  'post_title'   => $pageData['title'],
+                  'post_name'    => $slug,
+                  'post_status'  => 'publish',
+                  'post_type'    => 'page',
+              ]);
+
+            if ($pageData['children']) {
+                foreach ($pageData['children'] as $key => $value) {
+                    if (!get_page_by_path($key)) {
+                        wp_insert_post([
+                            'post_title'   => $value['title'],
+                            'post_name'    => $key,
+                            'post_status'  => 'publish',
+                            'post_type'    => 'page',
+                            'post_parent' => $id
+                        ]);
+
+                    }
+                }
+            }
         }
     }
 }
+
 register_activation_hook(__FILE__, 'aif_donor_space_create_pages');
 
 function aif_donor_space_load_template($template)
@@ -81,11 +110,11 @@ function aif_donor_space_load_template($template)
     $templates_dir = AIF_DONOR_SPACE_PATH . '/templates/';
 
     $templates_map = [
-        'qui-etes-vous' =>  $templates_dir . 'check-email.php',
         'creer-votre-compte' => $templates_dir . 'create-account.php',
         'connectez-vous' => $templates_dir . 'login-user.php',
         'verifier-votre-email' => $templates_dir . '2FA-verification.php',
-        'accueil' => $templates_dir . 'home.php',
+        'espace-donateur' => $templates_dir . 'home.php',
+        'mes-recus-fiscaux' => $templates_dir . 'taxt-receipt.php',
     ];
 
     if (array_key_exists($page_slug, $templates_map) && file_exists($templates_map[ $page_slug ])) {
