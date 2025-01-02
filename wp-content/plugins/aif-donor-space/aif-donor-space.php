@@ -152,7 +152,7 @@ function aif_donor_space_enqueue_assets()
         )
     );
 
-    wp_localize_script('aif-donor-space-script-tax-receipt', 'aifDonorSpace', array(
+    wp_localize_script('aif-create-duplicate-tax-receipt', 'aifDonorSpace', array(
         'nonce' => wp_create_nonce('wp_rest'),
         'root' => esc_url_raw(rest_url()),
     ));
