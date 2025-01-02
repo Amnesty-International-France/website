@@ -67,13 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 }
 
-
-
 ?>
 
 <main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-
-
     <div class="container">
         <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
             <h1 class="aif-mb1w">Mon espace Don</h1>
@@ -168,7 +164,7 @@ aif-text-underline--orange" href="mailto:smd@amnesty.fr"> contatcer le
                 majuscule, un chiffre et un caractère spécial)
             </small>
 
-            <div id="password-error-too-weak" class="invalid password-error-message">
+            <div id="password-error-too-weak" class="aif-text-red aif-hide">
                 Le mot de passe est trop faible
             </div>
 
@@ -190,7 +186,7 @@ aif-text-underline--orange" href="mailto:smd@amnesty.fr"> contatcer le
                 placeholder="Confirmer votre mot de passe" autocomplete="new-password" required
                 oninput="checkPasswordMatch()">
 
-            <div id="password-error-not-match" class="invalid password-error-message">Les mots de passe ne
+            <div id="password-error-not-match" class="aif-text-red aif-hide">Les mots de passe ne
                 correspondent
                 pas.
             </div>
