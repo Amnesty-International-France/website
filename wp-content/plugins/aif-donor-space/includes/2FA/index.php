@@ -17,7 +17,7 @@ function store_email_is_verified($user_id)
 
 function get_email_is_verified($user_id)
 {
-    return get_user_meta($user_id, 'email-verfied');
+    return get_user_meta($user_id, 'email-verfied', true);
 }
 
 
@@ -38,7 +38,7 @@ function send_2fa_code($to_email, $code, $verification_url)
             'from' => 'noreply@' .  $_ENV['AIF_MAILGUN_DOMAIN'],
             'to' => $to_email,
             'subject' => 'Amnesty France- Vérifier votre email',
-            'text' => 'Le code de vérification est ' ." ". $code . 'Cliquer ici pour activer votre compte: ' . $verification_url
+            'text' => 'Le code de vérification est '. $code . 'Rendez-vous sur cette url vour activer votre compte: ' . $verification_url
         ),
         'headers' => array(
             'Authorization' => 'Basic ' . base64_encode('api:' . $api_key)
