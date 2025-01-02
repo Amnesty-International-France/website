@@ -14,11 +14,11 @@ function get_salesforce_access_token()
 function refresh_salesforce_token()
 {
     // Paramètres de la requête pour rafraîchir le token
-    $client_id = $_ENV['AIF_SALESFORCE_CLIENT_ID'];
-    $client_secret = $_ENV['AIF_SALESFORCE_SECRET'];
+    $client_id = getenv('AIF_SALESFORCE_CLIENT_ID');
+    $client_secret = getenv('AIF_SALESFORCE_SECRET');
 
     // URL de l'API Salesforce (URL de production)
-    $url = $_ENV["AIF_SALESFORCE_URL"] . 'services/oauth2/token';
+    $url = getenv("AIF_SALESFORCE_URL") . 'services/oauth2/token';
 
 
     // Paramètres pour la requête POST
