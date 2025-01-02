@@ -13,28 +13,38 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+define("AIF_DONOR_SPACE_PATH", plugin_dir_path(__FILE__));
+define('AIF_DONOR_SPACE_VERSION', '1.0.0');
+define('AIF_DONOR_SPACE_URL', plugin_dir_url(__FILE__));
+
 
 /*
 / Includes
 */
 
 /*
-/ Configure Child Theme
+/ Configure Plugin
 */
-require_once plugin_dir_path(__FILE__) . '/includes/child-theme/configure.php';
 
+require_once AIF_DONOR_SPACE_PATH. '/includes/plugin/configure.php';
 
 /*
 / Sales Force
 */
-require_once plugin_dir_path(__FILE__) . '/includes/sales-force/authentification.php';
-require_once plugin_dir_path(__FILE__) . '/includes/sales-force/user-data.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/sales-force/authentification.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/sales-force/user-data.php';
 
 
 /*
 /  2FA
 */
-require_once plugin_dir_path(__FILE__) . '/includes/2FA/index.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/2FA/index.php';
+
+/*
+/  Domain
+*/
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controllers.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
 
 
 /*
@@ -68,7 +78,7 @@ function aif_donor_space_load_template($template)
 {
     $page_slug = get_post_field('post_name', get_queried_object_id());
 
-    $templates_dir = plugin_dir_path(__FILE__) . '/templates/';
+    $templates_dir = AIF_DONOR_SPACE_PATH . '/templates/';
 
     $templates_map = [
         'qui-etes-vous' =>  $templates_dir . 'check-email.php',
@@ -86,22 +96,41 @@ function aif_donor_space_load_template($template)
 }
 add_filter('template_include', 'aif_donor_space_load_template');
 
-
+/**
+ *  Assets
+ */
 function aif_donor_space_enqueue_assets()
 {
-    $plugin_url = plugin_dir_url(__FILE__);
+
     wp_enqueue_style(
         'aif-donor-space-style',
-        $plugin_url . 'assets/css/style.css',
+        AIF_DONOR_SPACE_URL . 'assets/css/style.css',
         array(),
         '1.0'
     );
 
     wp_enqueue_script(
         'aif-donor-space-script',
-        $plugin_url . 'assets/js/check-password.js',
+        AIF_DONOR_SPACE_URL . 'assets/js/check-password.js',
         [],
         '1.0'
     );
+
+    wp_enqueue_script(
+        'aif-create-duplicate-tax-receipt',
+        plugins_url('/assets/js/create-duplicate-tax-receipt-demand.js', __FILE__),
+        [],
+        '1.0.,0',
+        array(
+           'in_footer' => false,
+        )
+    );
+
+    wp_enqueue_script('aif-donor-space-script', AIF_DONOR_SPACE_URL . 'assets/js/create-duplicate-tax-receipt-demand.js', array(), null, true);
+    wp_localize_script('aif-donor-space-script', 'aifDonorSpace', array(
+        'nonce' => wp_create_nonce('wp_rest'),
+        'root' => esc_url_raw(rest_url()),
+    ));
+
 }
 add_action('wp_enqueue_scripts', 'aif_donor_space_enqueue_assets');
