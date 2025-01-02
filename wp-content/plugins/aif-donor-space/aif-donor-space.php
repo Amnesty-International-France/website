@@ -37,15 +37,12 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/sales-force/user-data.php';
 
 
 /*
-/  2FA
-*/
-require_once AIF_DONOR_SPACE_PATH. '/includes/2FA/index.php';
-
-/*
 /  Domain
 */
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controllers.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/2FA/index.php';
+
 
 /*
 /  Domain
@@ -139,7 +136,7 @@ function aif_donor_space_enqueue_assets()
     );
 
     wp_enqueue_script(
-        'aif-donor-space-script',
+        'aif-donor-space-script-check-password',
         AIF_DONOR_SPACE_URL . 'assets/js/check-password.js',
         [],
         '1.0'
@@ -155,8 +152,7 @@ function aif_donor_space_enqueue_assets()
         )
     );
 
-    wp_enqueue_script('aif-donor-space-script', AIF_DONOR_SPACE_URL . 'assets/js/create-duplicate-tax-receipt-demand.js', array(), null, true);
-    wp_localize_script('aif-donor-space-script', 'aifDonorSpace', array(
+    wp_localize_script('aif-donor-space-script-tax-receipt', 'aifDonorSpace', array(
         'nonce' => wp_create_nonce('wp_rest'),
         'root' => esc_url_raw(rest_url()),
     ));
