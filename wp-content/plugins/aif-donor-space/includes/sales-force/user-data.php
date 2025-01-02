@@ -9,7 +9,7 @@ function post_salesforce_data($url, $params = [])
         echo 'Erreur : ' . $access_token->get_error_message();
         exit;
     }
-    $response = wp_remote_post($_ENV["AIF_SALESFORCE_URL"] . $url, array(
+    $response = wp_remote_post(getenv("AIF_SALESFORCE_URL") . $url, array(
         'method'    => 'POST',
         'body'      => json_encode($params),
         'timeout'   => 15,
@@ -37,7 +37,7 @@ function get_salesforce_data($url)
     }
 
 
-    $response = wp_remote_get($_ENV["AIF_SALESFORCE_URL"] . $url, array(
+    $response = wp_remote_get(getenv("AIF_SALESFORCE_URL") . $url, array(
         'headers' => array(
             'Authorization' => 'Bearer ' . $access_token
         )
