@@ -15,9 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     if (!isset($_POST['login_nonce']) || !wp_verify_nonce($_POST['login_nonce'], 'login_form')) {
         die('Invalid nonce.');
     }
-
-
     $stored_user = get_user_by('email', $email);
+
 
     if($stored_user) {
         if(get_email_is_verified(user_id: $stored_user->ID)) {
@@ -29,6 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
             );
 
             $user = wp_signon($creds, true);
+
+
 
             if (!is_wp_error($user)) {
                 wp_set_current_user($user->ID);

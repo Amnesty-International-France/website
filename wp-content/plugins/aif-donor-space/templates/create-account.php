@@ -103,12 +103,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p class="aif-text-red aif-text-bold">Une erreur est survenue</p>
 
                     <p class="aif-mb0">
-
-                        <?php echo $error_all_fields_required_message  ?>
-                        <?php echo $error_invalid_email_message  ?>
-                        <?php echo $error_password_not_match_message  ?>
-                        <?php echo $error_technical_message  ?>
-
+                        <?= $error_all_fields_required_message  ?>
+                        <?= $error_invalid_email_message  ?>
+                        <?= $error_password_not_match_message  ?>
+                        <?= $error_technical_message  ?>
                     </p>
 
                 </div>
@@ -147,8 +145,6 @@ aif-text-underline--orange" href="mailto:smd@amnesty.fr"> contatcer le
 
                 </div>
             </div>
-
-
         </div>
         <?php endif; ?>
 
@@ -161,7 +157,7 @@ aif-text-underline--orange" href="mailto:smd@amnesty.fr"> contatcer le
             <input type="password" id="password" name="password" required aria-required="true"
                 placeholder="Votre mot de passe" aria-describedby="passwordHelp passphraseRequirements"
                 autocomplete="new-password" required aria-required="true" oninput="checkPassphraseStrength()">
-            <small id=" passwordHelp">
+            <small id="passwordHelp">
                 Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 6 caractères, une
                 majuscule, un chiffre et un caractère spécial)
             </small>
