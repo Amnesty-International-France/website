@@ -5,6 +5,9 @@ get_header();
 
 check_user_page_access();
 
+$current_user = wp_get_current_user();
+$sf_user = get_salesforce_member_data($current_user->user_email);
+
 ?>
 
 <main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
@@ -18,22 +21,45 @@ check_user_page_access();
 
         <section>
 
-            <h2>Menu navigation</h2>
-            <nav aria-label="navigation espace donateur">
-                <li>
-                    <a class="aif-underline aif-text-large"
-                        href="<?= get_permalink(get_page_by_path('espace-donateur/mes-recus-fiscaux')) ?>">Mes reçus
-                        fiscaux
-                        <svg class="aif-rotate-180" width="26" height="15" viewBox="0 0 13 7" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g id="Frame">
-                                <path id="Vector" d="M3.5 1L3.9 1.4L2.2 3.2H12V3.8H2.2L3.9 5.6L3.5 6L1 3.5L3.5 1Z"
-                                    fill="#2B2B2B" />
-                            </g>
-                        </svg>
+            <p>Bonjour <span class="aif-text-bold"> <?= $current_user->display_name ?> </span> vous êtes
 
-                    </a>
-                </li>
+                <?php if($sf_user->isDonateur) : ?>
+                membre donateur
+                <?php elseif($sf_user->isMembre): ?>
+                membre
+                <?php else: ?>
+                ancien membre
+                <?php endif; ?>
+
+                d'Amnesty International France en prélèvement automatique mensuel sous le n° <?= $sf_user->Id ?> </p>
+
+
+            <p>Bienvenue dans votre espace don qui permet la gestion administrative des informations liées à vos
+                dons et adhésion
+
+            </p>
+
+            <h2>Menu navigation</h2>
+
+            <nav aria-label="navigation espace donateur">
+                <ul class="aif-list-none aif-m0">
+                    <li>
+                        <a class="aif-underline"
+                            href="<?= get_permalink(get_page_by_path('espace-donateur/mes-recus-fiscaux')) ?>">Mes reçus
+                            fiscaux
+                            <svg class="aif-rotate-180" width="13" height="7" viewBox="0 0 13 7" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="Frame">
+                                    <path id="Vector" d="M3.5 1L3.9 1.4L2.2 3.2H12V3.8H2.2L3.9 5.6L3.5 6L1 3.5L3.5 1Z"
+                                        fill="#2B2B2B" />
+                                </g>
+                            </svg>
+
+                        </a>
+                    </li>
+
+                </ul>
+
             </nav>
 
 
@@ -47,4 +73,4 @@ check_user_page_access();
 </main>
 
 <?php
-get_footer();
+                                    get_footer();
