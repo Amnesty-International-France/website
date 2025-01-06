@@ -9,9 +9,9 @@ function get_salesforce_access_token()
 
     $is_valid = $expiration_time > $current_time_in_ms;
 
-    if ($is_valid) {
-        return $access_token;
-    }
+    // if ($is_valid) {
+    //     return $access_token;
+    // }
 
     return refresh_salesforce_token();
 }
