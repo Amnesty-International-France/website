@@ -186,3 +186,9 @@
 .aif-rotate-180 {
     transform: rotate(180deg);
 }
+
+/* List style */
+
+.aif-list-none {
+    list-style-type: none;
+}
