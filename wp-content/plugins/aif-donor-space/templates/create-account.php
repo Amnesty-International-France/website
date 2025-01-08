@@ -51,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $verification_url = get_permalink(get_page_by_path('espace-donateur/verifier-votre-email'));
 
-                $message = 'Le code de vérification est '. $code . 'Rendez-vous sur cette url vour activer votre compte: ' . $verification_url;
+                $message = 'Le code de vérification est '. $code . '. Rendez-vous sur cette url vour activer votre compte: ' . $verification_url;
 
-                if(send_2fa_code($email, $code, $message)) {
+                if(send_2fa_code($email, $message)) {
                     wp_redirect($verification_url);
                     exit;
                 }
@@ -153,12 +153,13 @@ aif-text-underline--orange" href="mailto:smd@amnesty.fr"> contatcer le
         <form action="" method="POST" onsubmit="return checkPasswordMatch()">
 
             <label for="email">Adresse email (obligatoire) :</label>
-            <input type="email" id="email" name="email" placeholder="Votre adresse email" autocomplete="email" required>
+            <input type="email" id="email" name="email" placeholder="Votre adresse email" autocomplete="email"
+                aria-required="true" required>
 
             <label for="password">Mot de passe (obligatoire) :</label>
-            <input type="password" id="password" name="password" required aria-required="true"
-                placeholder="Votre mot de passe" aria-describedby="passwordHelp passphraseRequirements"
-                autocomplete="new-password" required aria-required="true" oninput="checkPassphraseStrength()">
+            <input type="password" id="password" name="password" placeholder="Votre mot de passe"
+                aria-describedby="passwordHelp passphraseRequirements" autocomplete="new-password" required
+                aria-required="true" oninput="checkPassphraseStrength()">
             <small id="passwordHelp">
                 Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 6 caractères, une
                 majuscule, un chiffre et un caractère spécial)
