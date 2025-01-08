@@ -27,7 +27,7 @@ function get_2fa_code($user_id)
 }
 
 
-function send_2fa_code($to_email, $code, $message)
+function send_2fa_code($to_email, $message)
 {
     $api_key = getenv('AIF_MAILGUN_TOKEN');
     $url = getenv('AIF_MAILGUN_URL') . '/'. getenv('AIF_MAILGUN_DOMAIN') . '/messages';

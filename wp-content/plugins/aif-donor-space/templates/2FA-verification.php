@@ -80,10 +80,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code-email']) && 
             store_2fa_code($stored_user->ID, $code);
 
             $verification_url = get_permalink(get_page_by_path('espace-donateur/verifier-votre-email'));
-            $message = 'Votre nouveau code est '. $code . 'Rendez-vous sur cette url vour activer votre compte: ' . ' '. $verification_url;
+            $message = 'Votre nouveau code est '. $code . '. Rendez-vous sur cette url vour activer votre compte: ' . ' '. $verification_url;
 
 
-            if(send_2fa_code($email, $code, $message)) {
+            if(send_2fa_code($email, $message)) {
                 $send_code_success_message = "Votre code est en chemin";
             }
 
