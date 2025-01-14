@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         if($stored_code &&  $stored_code === $code) {
             store_email_is_verified($user->ID);
             reset_login_attempts($user->ID);
-            wp_redirect(get_permalink(get_page_by_path('espace-donateur/connectez-vous')));
+            wp_redirect(get_permalink(get_page_by_path('espace-don/connectez-vous')));
             exit;
         } else {
 
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code-email']) && 
 
         if(!$stored_user) {
 
-            $url = get_permalink(get_page_by_path('espace-donateur/creer-votre-compte'));
+            $url = get_permalink(get_page_by_path('espace-don/creer-votre-compte'));
             $send_code_error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur  <a class='aif-text-underline 
     aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
         } else {
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code-email']) && 
             $code = generate_2fa_code();
             store_2fa_code($stored_user->ID, $code);
 
-            $verification_url = get_permalink(get_page_by_path('espace-donateur/verifier-votre-email'));
+            $verification_url = get_permalink(get_page_by_path('espace-don/verifier-votre-email'));
             $message = 'Votre nouveau code est '. $code . '. Rendez-vous sur cette url vour activer votre compte: ' . ' '. $verification_url;
 
 
