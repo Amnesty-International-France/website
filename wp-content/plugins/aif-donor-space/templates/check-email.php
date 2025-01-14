@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
         <p>Nous avons besoin de votre email pour déterminer si vous avez êtes déja connu</p>
 
-        <form role="form" method="POST" action="">
+            <form class="aif-form-container" role="form" method="POST" action="">
             <label>Votre adresse email</label>
             <div>
                 <input placeholder="" value="" type="email" name="email" required="true">
