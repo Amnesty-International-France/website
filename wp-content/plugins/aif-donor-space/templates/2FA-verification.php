@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code-email']) && 
                 sur votre email.
             </p>
 
-            <form role="form" method="POST" action="">
+                <form class="aif-form-container" role="form" method="POST" action="">
                 <?php wp_nonce_field('2FA_check', '2FA_nonce'); ?>
                 <label class="<?php echo !empty($error_message) ? 'aif-input-error' : "" ?>" for="email">Votre
                     adresse email
@@ -226,7 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code-email']) && 
             <?php endif; ?>
             <h2> Code non reçu ou invalide ? </h2>
 
-            <form role="form" method="POST" action="">
+                <form class="aif-form-container" role="form" method="POST" action="">
                 <?php wp_nonce_field('2FA_send_code', '2FA_new_code_nonce'); ?>
                 <label class="<?php echo !empty($error_message) ? 'aif-input-error' : "" ?>" for="2FA-code-email">Votre
                     adresse email
