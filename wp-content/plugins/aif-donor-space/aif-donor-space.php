@@ -43,12 +43,7 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controller
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/2FA/index.php';
 
-
-/*
-/  Domain
-*/
-require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controllers.php';
-require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/utils.php';
 
 
 /*
