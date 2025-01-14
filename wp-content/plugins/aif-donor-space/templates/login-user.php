@@ -71,10 +71,12 @@ aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
         <?php
         if (!empty($error_message)) {
             $title = "Une erreur est survenue";
+
+            aif_include_partial("alert", [
+                "title" => $title,
+            "content" => $error_message]);
+
         }
-aif_include_partial("alert", [
-    "title" => $title,
-"content" => $error_message])
 
 ?>
       
