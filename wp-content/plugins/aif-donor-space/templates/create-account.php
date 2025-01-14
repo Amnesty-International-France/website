@@ -195,8 +195,8 @@ if (!empty($send_code_error_message)) {
 
             <h3> Vous avez déja un compte ? </h3>
 
-            <a href="<?php echo get_permalink(get_page_by_path('connectez-vous')) ?>" class="btn btn--dark">
-                Connectez-vous ! !</a>
+            <a href="<?php echo get_permalink(get_page_by_path('espace-don/connectez-vous')) ?>" class="btn btn--dark">
+                Connectez-vous !</a>
 
 
         </section>
