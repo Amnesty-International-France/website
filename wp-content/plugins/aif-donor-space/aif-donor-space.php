@@ -58,7 +58,7 @@ function aif_donor_space_create_pages()
 {
 
     $pages = [
-        'espace-donateur' =>  [
+        'espace-don' =>  [
             'title' =>  'Mon espace don',
             'children' => [
                 'verifier-votre-email' =>  ['title' => 'Mon espace don - Vérifier votre email'],
