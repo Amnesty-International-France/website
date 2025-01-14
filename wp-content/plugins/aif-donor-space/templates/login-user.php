@@ -94,7 +94,7 @@ aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
 
         <?php endif; ?>
 
-        <form role="form" method="POST" action="">
+            <form class="aif-form-container" role="form" method="POST" action="">
             <?php wp_nonce_field('login_form', 'login_nonce'); ?>
             <label for="email">Votre adresse email (obligatoire)</label>
             <input placeholder="" value="" type="email" name="email" id="email" autocomplete="email" required="true">

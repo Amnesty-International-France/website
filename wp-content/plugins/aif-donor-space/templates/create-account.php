@@ -148,72 +148,75 @@ aif-text-underline--orange" href="mailto:smd@amnesty.fr"> contatcer le
         </div>
         <?php endif; ?>
 
-        <form action="" method="POST" onsubmit="return checkPasswordMatch()">
+        <section>
+            <h3 class="aif-sr-only"> S'inscrire</h3>
 
-            <label for="email">Adresse email (obligatoire) :</label>
-            <input type="email" id="email" name="email" placeholder="Votre adresse email" autocomplete="email"
-                aria-required="true" required>
+            <form class="aif-form-container" action="" method="POST" onsubmit="return checkPasswordMatch()">
 
-            <label for="password">Mot de passe (obligatoire) :</label>
-            <input type="password" id="password" name="password" placeholder="Votre mot de passe"
-                aria-describedby="passwordHelp passphraseRequirements" autocomplete="new-password" required
-                aria-required="true" oninput="checkPassphraseStrength()">
-            <small id="passwordHelp">
-                Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 6 caractères, une
-                majuscule, un chiffre et un caractère spécial)
-            </small>
+                <label for="email">Adresse email (obligatoire) :</label>
+                <input type="email" id="email" name="email" placeholder="Votre adresse email" autocomplete="email"
+                    aria-required="true" required>
 
-            <div id="password-error-too-weak" class="aif-text-red aif-hide">
-                Le mot de passe est trop faible
-            </div>
+                <label for="password">Mot de passe (obligatoire) :</label>
+                <input type="password" id="password" name="password" placeholder="Votre mot de passe"
+                    aria-describedby="passwordHelp passphraseRequirements" autocomplete="new-password" required
+                    aria-required="true" oninput="checkPassphraseStrength()">
+                <small id="passwordHelp">
+                    Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 6 caractères, une
+                    majuscule, un chiffre et un caractère spécial)
+                </small>
 
-            <div id="passphraseRequirements">
-                <p class=" aif-m0 aif-mt1w ">Votre mot de passe doit </p>
-                <ul>
-                    <li id=" length">Doit contenir au moins 6 caractères</li>
-                    <li id="uppercase">Doit contenir au moins une lettre majuscule</li>
-                    <li id="lowercase">Doit contenir au moins une lettre minuscule</li>
-                    <li id="number">Doit contenir au moins un chiffre</li>
-                    <li id="special">Doit contenir au moins un caractère spécial (!, @, #, $, %,
-                        etc.)
-                    </li>
-                </ul>
-            </div>
+                <div id="password-error-too-weak" class="aif-text-red aif-hide">
+                    Le mot de passe est trop faible
+                </div>
 
-            <label for="confirm-password">Confirmer le mot de passe (obligatoire) :</label>
-            <input type="password" id="confirm-password" required aria-required="true" name="confirm-password"
-                placeholder="Confirmer votre mot de passe" autocomplete="new-password" required
-                oninput="checkPasswordMatch()">
+                <div id="passphraseRequirements">
+                    <p class=" aif-m0 aif-mt1w ">Votre mot de passe doit </p>
+                    <ul>
+                        <li id=" length">Doit contenir au moins 6 caractères</li>
+                        <li id="uppercase">Doit contenir au moins une lettre majuscule</li>
+                        <li id="lowercase">Doit contenir au moins une lettre minuscule</li>
+                        <li id="number">Doit contenir au moins un chiffre</li>
+                        <li id="special">Doit contenir au moins un caractère spécial (!, @, #, $, %,
+                            etc.)
+                        </li>
+                    </ul>
+                </div>
 
-            <div id="password-error-not-match" class="aif-text-red aif-hide">Les mots de passe ne
-                correspondent
-                pas.
-            </div>
+                <label for="confirm-password">Confirmer le mot de passe (obligatoire) :</label>
+                <input type="password" id="confirm-password" required aria-required="true" name="confirm-password"
+                    placeholder="Confirmer votre mot de passe" autocomplete="new-password" required
+                    oninput="checkPasswordMatch()">
 
-            <button class="btn aif-mt1w" type="submit" id="submit-btn">Créer mon compte</button>
+                <div id="password-error-not-match" class="aif-text-red aif-hide">Les mots de passe ne
+                    correspondent
+                    pas.
+                </div>
 
-        </form>
+                <button class="btn aif-mt1w" type="submit" id="submit-btn">Créer mon compte</button>
 
-        <hr class="aif-mt1w">
+            </form>
 
-        <p class="aif-mt1w">
-            Les données personnelles collectées sur ce formulaire sont traitées par l’association Amnesty
-            International
-            France (AIF), responsable du traitement. Ces données vont nous permettre de vous envoyer nos
-            propositions
-            d’engagement, qu’elles soient militantes ou financières. Notre politique de confidentialité détaille la
-            manière dont Amnesty International France, en sa qualité de responsable de traitement, traite et protège
-            vos
-            données personnelles collectées conformément aux dispositions de la Loi du 6 janvier 1978 relative à
-            l’informatique, aux fichiers et aux libertés dite Loi « Informatique et Libertés », et au Règlement
-            européen
-            du 25 mai 2018 sur la protection des données (« RGPD »). Pour toute demande, vous pouvez contacter le
-            service membres et donateurs d’AIF à l’adresse mentionnée ci-dessus, par email smd@amnesty.fr. Vous
-            pouvez
-            également introduire une réclamation auprès de la CNIL. Pour plus d’information sur le traitement de vos
-            données personnelles, veuillez consulter notre politique de confidentialité.
-        </p>
+            <hr class="aif-mt1w">
 
+            <p class="aif-mt1w">
+                Les données personnelles collectées sur ce formulaire sont traitées par l’association Amnesty
+                International
+                France (AIF), responsable du traitement. Ces données vont nous permettre de vous envoyer nos
+                propositions
+                d’engagement, qu’elles soient militantes ou financières. Notre politique de confidentialité détaille la
+                manière dont Amnesty International France, en sa qualité de responsable de traitement, traite et protège
+                vos
+                données personnelles collectées conformément aux dispositions de la Loi du 6 janvier 1978 relative à
+                l’informatique, aux fichiers et aux libertés dite Loi « Informatique et Libertés », et au Règlement
+                européen
+                du 25 mai 2018 sur la protection des données (« RGPD »). Pour toute demande, vous pouvez contacter le
+                service membres et donateurs d’AIF à l’adresse mentionnée ci-dessus, par email smd@amnesty.fr. Vous
+                pouvez
+                également introduire une réclamation auprès de la CNIL. Pour plus d’information sur le traitement de vos
+                données personnelles, veuillez consulter notre politique de confidentialité.
+            </p>
+        </section>
 
         <section class="aif-bg-primary aif-p1w aif-mt2w">
 
