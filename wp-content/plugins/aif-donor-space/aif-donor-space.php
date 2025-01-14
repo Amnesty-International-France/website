@@ -58,7 +58,7 @@ function aif_donor_space_create_pages()
 {
 
     $pages = [
-        'espace-donateur' =>  [
+        'espace-don' =>  [
             'title' =>  'Mon espace don',
             'children' => [
                 'verifier-votre-email' =>  ['title' => 'Mon espace don - Vérifier votre email'],
@@ -110,7 +110,7 @@ function aif_donor_space_load_template($template)
         'creer-votre-compte' => $templates_dir . 'create-account.php',
         'connectez-vous' => $templates_dir . 'login-user.php',
         'verifier-votre-email' => $templates_dir . '2FA-verification.php',
-        'espace-donateur' => $templates_dir . 'home.php',
+        'espace-don' => $templates_dir . 'home.php',
         'mes-recus-fiscaux' => $templates_dir . 'taxt-receipt.php',
     ];
 

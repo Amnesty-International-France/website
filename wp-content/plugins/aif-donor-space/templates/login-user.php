@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
             if (!is_wp_error($user)) {
                 wp_set_current_user($user->ID);
 
-                $verification_url = get_permalink(get_page_by_path('espace-donateur'));
+                $verification_url = get_permalink(get_page_by_path('espace-don'));
                 wp_redirect($verification_url);
                 exit;
             } else {
@@ -43,14 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
 
         } else {
-            $url = get_permalink(get_page_by_path('espace-donateur/verifier-votre-email'));
+            $url = get_permalink(get_page_by_path('espace-don/verifier-votre-email'));
             $error_message = "Votre email ne semble pas encore vérifié. Pour le faire veuillez vous rendre sur  <a class='aif-text-underline 
 aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
         }
 
     } else {
 
-        $url = get_permalink(get_page_by_path('espace-donateur/creer-votre-compte'));
+        $url = get_permalink(get_page_by_path('espace-don/creer-votre-compte'));
         $error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur  <a class='aif-text-underline 
 aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
     }
@@ -113,7 +113,7 @@ aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
                 jamais
                 créé votre espace, merci de cliquer sur “Créer votre compte”. </p>
 
-            <a href="<?php echo get_permalink(get_page_by_path('espace-donateur/creer-votre-compte')) ?>"
+            <a href="<?php echo get_permalink(get_page_by_path('espace-don/creer-votre-compte')) ?>"
                 class="btn">Créer
                 votre compte</a>
 
