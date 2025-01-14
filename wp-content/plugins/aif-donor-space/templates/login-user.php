@@ -18,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     $stored_user = get_user_by('email', $email);
 
 
-    if($stored_user) {
-        if(get_email_is_verified(user_id: $stored_user->ID)) {
+    if ($stored_user) {
+        if (get_email_is_verified(user_id: $stored_user->ID)) {
 
             $creds = array(
                 'user_login'    => $email,
@@ -68,19 +68,17 @@ aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
             <h2> Je me connecte </h2>
         </header>
 
-        <?php if (!empty($error_message)) : ?>
-        <?php if (!empty($error_message)) : ?>
-
         <?php
-    $title = "Une erreur est survenue";
-            aif_include_partial("alert", [
-                "title" => $title,
-            "content" => $error_message])
+        if (!empty($error_message)) {
+            $title = "Une erreur est survenue";
+        }
+aif_include_partial("alert", [
+    "title" => $title,
+"content" => $error_message])
 
-            ?>
-        <?php endif; ?>
+?>
+      
 
-        <?php endif; ?>
 
         <form role="form" method="POST" action="">
             <?php wp_nonce_field('login_form', 'login_nonce'); ?>

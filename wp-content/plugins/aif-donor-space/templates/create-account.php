@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $sf_member = get_salesforce_member_data($email);
 
-        if(has_access_to_donation_space($sf_member)) {
+        if (has_access_to_donation_space($sf_member)) {
 
             $user = get_salesforce_user_data($sf_member->Id);
 
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $message = 'Le code de vérification est '. $code . '. Rendez-vous sur cette url vour activer votre compte: ' . $verification_url;
 
-                if(send_2fa_code($email, $message)) {
+                if (send_2fa_code($email, $message)) {
                     wp_redirect($verification_url);
                     exit;
                 }
@@ -84,30 +84,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             votre don.
         </p>
 
-        <?php if (!empty($error_message)) : ?>
+<?php
 
-        <?php
-            $title = "Une erreur est survenue";
-            aif_include_partial("alert", [
-                "title" => $title,
-            "content" => $error_message])
+if (!empty($error_message)) {
+    $title = "Une erreur est survenue";
+    aif_include_partial("alert", [
+        "title" => $title,
+    "content" => $error_message]);
 
-            ?>
-        <?php endif; ?>
+}
 
-        <?php if ($error_no_access_to_donor_space) : ?>
+if (!empty($send_code_error_message)) {
 
-        <?php
+    $title = "L’adresse email renseignée ne trouve pas de correspondance dans notre système.";
+    $content = 'Devenez donateur en <a>réalisant un don </a> ou <a
+                                            class="aif-text-underline aif-text-underline--orange" href="mailto:smd@amnesty.fr">contacter le Service
+                                            membres et donateurs</a> si vous pensez que c’est une erreur.';
 
-                $title = "L’adresse email renseignée ne trouve pas de correspondance dans notre système.";
-            $content = 'Devenez donateur en <a>réalisant un don </a> ou <a class="aif-text-underline aif-text-underline--orange" href="mailto:smd@amnesty.fr">contacter le Service membres et donateurs</a> si vous pensez que c’est une erreur.';
-            aif_include_partial("alert", [
-                "title" => $title,
-            "content" => $content])
+    aif_include_partial("alert", [
+    "title" => $title,
+    "content" => $content]);
 
-            ?>
-
-        <?php endif; ?>
+}
+?>
 
         <form action="" method="POST" onsubmit="return checkPasswordMatch()">
 
