@@ -6,7 +6,7 @@ function humanity_theme_parent_theme_enqueue_styles()
 
     wp_enqueue_style('humanity-theme-style', get_template_directory_uri() . '/style.css');
     wp_enqueue_style(
-        'espace-donateur-style',
+        'espace-don-style',
         get_stylesheet_directory_uri() . '/style.css',
         ['humanity-theme-style']
     );

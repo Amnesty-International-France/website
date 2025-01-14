@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $code = generate_2fa_code();
                 store_2fa_code($user_id, $code);
 
-                $verification_url = get_permalink(get_page_by_path('espace-donateur/verifier-votre-email'));
+                $verification_url = get_permalink(get_page_by_path('espace-don/verifier-votre-email'));
 
                 $message = 'Le code de vérification est '. $code . '. Rendez-vous sur cette url vour activer votre compte: ' . $verification_url;
 
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit;
                 }
             } else {
-                $url = get_permalink(get_page_by_path('espace-donateur/connectez-vous'));
+                $url = get_permalink(get_page_by_path('espace-don/connectez-vous'));
                 $error_technical_message = "Vous vous êtes déja inscrit. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-text-underline 
     aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
             }

@@ -15,10 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         $user = get_user_by('email', $email);
 
         if($user) {
-            wp_redirect(get_permalink(get_page_by_path('espace-donateur/connectez-vous')));
+            wp_redirect(get_permalink(get_page_by_path('espace-don/connectez-vous')));
             exit;
         } else {
-            wp_redirect(get_permalink(get_page_by_path('espace-donateur/connectez-vous')));
+            wp_redirect(get_permalink(get_page_by_path('espace-don/connectez-vous')));
             exit;
         }
 
