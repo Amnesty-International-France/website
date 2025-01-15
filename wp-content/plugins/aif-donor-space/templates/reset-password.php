@@ -9,7 +9,6 @@ if (!isset($_GET['ID']) || !isset($_GET['token'])) {
 
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset($_POST['confirm-password']) && isset($_GET['ID']) && isset($_GET['token'])) {
 
     $ID = $_GET['ID'];
@@ -27,6 +26,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
                     'user_pass' => $password
                 ];
                 wp_update_user($userdata);
+
+
+
+                $url = add_query_arg([
+                    "email" => $user->user_email,
+                ], get_permalink(get_page_by_path('espace-don/connectez-vous')));
+
+
+                wp_redirect($url);
+
+                exit;
 
             } else {
                 $error_title = "Une erreur est survenue.";
@@ -53,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
 
     <div class="container">
 
-            <?php
+<?php
 
         if (isset($error_message)) {
             $error_title = "Une erreur est survenue.";
