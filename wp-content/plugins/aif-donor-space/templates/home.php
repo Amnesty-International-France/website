@@ -73,4 +73,4 @@ $sf_user = get_salesforce_member_data($current_user->user_email);
 </main>
 
 <?php
-                                    get_footer();
+get_footer();
