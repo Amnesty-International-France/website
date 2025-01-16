@@ -4,6 +4,14 @@
 get_header();
 
 
+$email = '';
+
+if (array_key_exists('email', $_GET)) {
+    $email = $_GET['email'];
+}
+
+
+
 
 $error_message = "";
 
@@ -79,20 +87,27 @@ aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
         }
 
 ?>
-      
 
-
+        <section>
+            <h3 class="aif-sr-only"> Formulaire de connexion </h3>
             <form class="aif-form-container" role="form" method="POST" action="">
-            <?php wp_nonce_field('login_form', 'login_nonce'); ?>
-            <label for="email">Votre adresse email (obligatoire)</label>
-            <input placeholder="" value="" type="email" name="email" id="email" autocomplete="email" required="true">
-            <label for="email">Votre mot de passe (obligatoire)</label>
-            <input placeholder="" id="password" value="" type="password" name="password" autocomplete="password"
-                required="true">
+                <?php wp_nonce_field('login_form', 'login_nonce'); ?>
+                <label for="email">Votre adresse email (obligatoire)</label>
+                <input placeholder=""
+                    value="<?= $email ? $email : '' ?>"
+                    type="email" name="email" id="email" autocomplete="email" required="true">
+                <label for="email">Votre mot de passe (obligatoire)</label>
+                <input placeholder="" id="password" value="" type="password" name="password" autocomplete="password"
+                    required="true">
 
-            <button class="btn aif-mt1w" type="submit">Se connecter</button>
+                <button class="btn aif-mt1w" type="submit">Se connecter</button>
 
-        </form>
+            </form>
+
+            <a class="aif-text-underline aif-text-underline--orange aif-mt1w aif-block" href="<?=  get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>"> Mot de passe oublié ? </a>
+
+        </section>
+
 
         <section class="aif-mt2w aif-mb1w">
             <h3>Première connexion</h3>
@@ -101,7 +116,7 @@ aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
                 jamais
                 créé votre espace, merci de cliquer sur “Créer votre compte”. </p>
 
-            <a href="<?php echo get_permalink(get_page_by_path('espace-don/creer-votre-compte')) ?>"
+            <a href="<?=  get_permalink(get_page_by_path('espace-don/creer-votre-compte')) ?>"
                 class="btn">Créer
                 votre compte</a>
 

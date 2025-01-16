@@ -2,6 +2,8 @@
 .castor.stub.php
 .ddev
 clever.json
+vendor/
+composer*
 
 # Wordpress - ignore core, configuration, examples, uploads and logs.
 # https://github.com/github/gitignore/blob/main/WordPress.gitignore

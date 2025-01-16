@@ -88,3 +88,14 @@ function get_SF_user_ID($user_id)
 {
     return get_user_meta($user_id, 'user_SF_ID', true);
 }
+
+function store_email_token($user_id, $token)
+{
+    update_user_meta($user_id, 'user_email_token', $token);
+}
+
+
+function get_email_token($user_id)
+{
+    return get_user_meta($user_id, 'user_email_token', true);
+}
