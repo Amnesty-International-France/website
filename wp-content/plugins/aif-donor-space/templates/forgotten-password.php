@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         $emailBody = "Pour réinitialiser votre mot de passe, veuillez vous rendre sur " . $url;
         send_reset_password_email($user->user_email, $emailBody);
 
-        $success_title = "Un email vient de vous être envoyé";
-        $success_message = "Veuillez consulter votre boîte email pour réinitialiser votre mot de passe";
+        $success_title = "Votre demande à bien été prise en compte";
+        $success_message = "Si votre adresse est reconnue vous allez recevoir en email pour pouvoir réinitialiser votre mot de passe";
 
 
     } else {
