@@ -11,6 +11,11 @@
     display: flex;
 }
 
+.aif-block {
+    display: block;
+}
+
+
 .aif-flex-row {
     flex-direction: row;
 }

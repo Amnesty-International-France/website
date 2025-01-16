@@ -42,8 +42,10 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/sales-force/user-data.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controllers.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/2FA/index.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/user-authentification.php';
 
 require_once AIF_DONOR_SPACE_PATH. '/includes/utils.php';
+
 
 
 /*
@@ -59,7 +61,10 @@ function aif_donor_space_create_pages()
                 'verifier-votre-email' =>  ['title' => 'Mon espace don - Vérifier votre email'],
                 'creer-votre-compte' => ['title' => 'Mon espace don - Créer votre compte'],
                 'connectez-vous' => ['title' => 'Mon espace don - Connectez-vous'],
-                'mes-recus-fiscaux' => ['title' => 'Mon espace don - Reçus Fiscaux']
+                'mes-recus-fiscaux' => ['title' => 'Mon espace don - Reçus Fiscaux'],
+                'modifier-mon-mot-de-passe' => ['title' => 'Mon espace don - Modifier mon mot de passe'],
+                'mot-de-passe-oublie' => ['title' => 'Mon espace don - Mot de passe oublié'],
+
             ]
 
         ]
@@ -107,6 +112,8 @@ function aif_donor_space_load_template($template)
         'verifier-votre-email' => $templates_dir . '2FA-verification.php',
         'espace-don' => $templates_dir . 'home.php',
         'mes-recus-fiscaux' => $templates_dir . 'taxt-receipt.php',
+        'modifier-mon-mot-de-passe' => $templates_dir . 'reset-password.php',
+        'mot-de-passe-oublie' => $templates_dir . 'forgotten-password.php',
     ];
 
     if (array_key_exists($page_slug, $templates_map) && file_exists($templates_map[ $page_slug ])) {
