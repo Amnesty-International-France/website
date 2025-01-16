@@ -28,7 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
         $url = get_permalink(get_page_by_path('espace-don/creer-votre-compte'));
         $error_title = "Votre utilisateur nous est inconnu";
-        $error_message = 'Vous pouvez créer votre compte en allant sur ' . $url;
+        $error_message = 'Vous pouvez créer votre compte en allant sur ' .'<a class="aif-underline aif-aif-text-underline--orange" href="'. $url.
+        '"> Créer mon compte </a>';
     }
 }
 
@@ -40,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         <?php
 
         if (isset($error_message)) {
-            $error_title = "Une erreur est survenue.";
             aif_include_partial("alert", [
             "title" => $error_title,
             "content" => $error_message]);
