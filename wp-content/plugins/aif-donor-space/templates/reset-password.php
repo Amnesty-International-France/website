@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
     pas.
 </div>
 
-<button class="btn aif-mt1w" type="submit" id="submit-btn">Créer mon compte</button>
+<button class="btn aif-mt1w" type="submit" id="submit-btn">Réinitialiser mon mot de passe</button>
 
 
 </form>
