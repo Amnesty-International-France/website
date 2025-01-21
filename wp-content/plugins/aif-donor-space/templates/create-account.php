@@ -44,7 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $code = generate_2fa_code();
                 store_2fa_code($user_id, $code);
 
-                $verification_url = get_permalink(get_page_by_path('espace-don/verifier-votre-email'));
+                $verification_url = add_query_arg([
+                    "ID" => $user_id,
+                ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
 
                 $message = 'Le code de vérification est '. $code . '. Rendez-vous sur cette url vour activer votre compte: ' . $verification_url;
 
@@ -54,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             } else {
                 $url = get_permalink(get_page_by_path('espace-don/connectez-vous'));
-                $error_technical_message = "Vous vous êtes déja inscrit. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-text-underline 
+                $error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-text-underline 
     aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
             }
 
@@ -84,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             votre don.
         </p>
 
-<?php
+        <?php
 
 if (!empty($error_message)) {
     $title = "Une erreur est survenue";
@@ -109,7 +111,7 @@ if (!empty($send_code_error_message)) {
 ?>
 
         <section>
-            <h3 class="aif-sr-only"> S'inscrire</h3>
+            <h3 class="aif-sr-only">S'inscrire</h3>
 
             <form class="aif-form-container" action="" method="POST" onsubmit="return checkPasswordMatch()">
 
@@ -195,7 +197,8 @@ if (!empty($send_code_error_message)) {
 
             <h3> Vous avez déja un compte ? </h3>
 
-            <a href="<?php echo get_permalink(get_page_by_path('espace-don/connectez-vous')) ?>" class="btn btn--dark">
+            <a href="<?php echo get_permalink(get_page_by_path('espace-don/connectez-vous')) ?>"
+                class="btn btn--dark">
                 Connectez-vous !</a>
 
 

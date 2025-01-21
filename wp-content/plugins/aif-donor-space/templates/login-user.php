@@ -3,15 +3,21 @@
 /* Template Name: Espace Donateur - Login */
 get_header();
 
+$email = "";
 
-$email = '';
 
-if (array_key_exists('email', $_GET)) {
-    $email = $_GET['email'];
+
+if (!isset($_GET['ID'])) {
+    $error_title = "Une erreur est survenue";
+    $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
+
+} else {
+    $user = get_user_by("ID", $_GET['ID']);
+    if ($user) {
+        $email = $user->user_email;
+    }
+
 }
-
-
-
 
 $error_message = "";
 
@@ -104,7 +110,9 @@ aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
 
             </form>
 
-            <a class="aif-text-underline aif-text-underline--orange aif-mt1w aif-block" href="<?=  get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>"> Mot de passe oublié ? </a>
+            <a class="aif-text-underline aif-text-underline--orange aif-mt1w aif-block"
+                href="<?=  get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>">
+                Mot de passe oublié ? </a>
 
         </section>
 
