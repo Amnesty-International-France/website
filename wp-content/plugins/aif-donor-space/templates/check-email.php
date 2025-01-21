@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
             <h1 class="article-title wp-block-post-title">Qui êtes vous ?</h1>
         </header>
 
-        <p>Nous avons besoin de votre email pour déterminer si vous avez êtes déja connu</p>
+        <p>Nous avons besoin de votre email pour déterminer si vous êtes déja connu</p>
 
             <form class="aif-form-container" role="form" method="POST" action="">
             <label>Votre adresse email</label>
