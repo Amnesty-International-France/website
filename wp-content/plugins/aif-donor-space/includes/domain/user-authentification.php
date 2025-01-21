@@ -6,7 +6,7 @@ function aif_generate_random_hash()
 }
 
 
-function send_reset_password_email($to_email, $message)
+function send_reset_password_email($to_email, $htmlMessage, $textMessage)
 {
     $api_key = getenv('AIF_MAILGUN_TOKEN');
     $url = getenv('AIF_MAILGUN_URL') . '/'. getenv('AIF_MAILGUN_DOMAIN') . '/messages';
@@ -17,7 +17,8 @@ function send_reset_password_email($to_email, $message)
             'from' => 'noreply@' .  getenv('AIF_MAILGUN_DOMAIN'),
             'to' => $to_email,
             'subject' => 'Amnesty France- réinitialiser votre mot de passe',
-            'text' => $message,
+            'text' => $textMessage,
+            'html' => $htmlMessage
         ),
         'headers' => array(
             'Authorization' => 'Basic ' . base64_encode('api:' . $api_key)
