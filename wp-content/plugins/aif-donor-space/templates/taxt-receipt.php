@@ -54,10 +54,11 @@ if ($tax_reciept->totalSize > 0) {
         <section>
             <h2> Historique de vos reçus fiscaux </h2>
             <?php if ($tax_reciept->totalSize > 0): ?>
+            <?php $index = 0 ?>
+   
 
             <?php foreach ($groupped as $year => $records): ?>
-
-            <details class="wp-block-details">
+            <details  class="wp-block-details" <?= $index < 2 ? 'open' : '' ?>>
                 <summary>
                     <h3> <?=  $year ?> </h3>
 
@@ -98,9 +99,12 @@ if ($tax_reciept->totalSize > 0) {
                         Demander votre duplicata de reçu fiscal
                     </button>
                 </div>
+
                 <?php endforeach ?>
+
             </details>
 
+            <?php $index = $index + 1 ?>
             <?php endforeach ?>
 
             <?php else: ?>
