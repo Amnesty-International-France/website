@@ -76,6 +76,12 @@ function get_salesforce_user_tax_reciept($ID)
     return get_salesforce_data($url);
 }
 
+function get_salesforce_user_SEPA_mandate($ID)
+{
+    $url = 'services/data/v57.0/sobjects/Contact/'.$ID.'/Mandats_SEPA__r?fields=Id,Name,RUM__c,Montant__c,Statut__c,Periodicite__c,Date_paiement_Avenir__c,Tech_Iban__c';
+    return get_salesforce_data($url);
+}
+
 
 
 
@@ -98,4 +104,23 @@ function store_email_token($user_id, $token)
 function get_email_token($user_id)
 {
     return get_user_meta($user_id, 'user_email_token', true);
+}
+
+
+
+
+function aif_get_user_status($sf_user)
+{
+
+    if ($sf_user->isMembre && $sf_user->isDonateur) {
+        return "membre donateur";
+    }
+
+    if ($sf_user->iisDonateursMembre) {
+        return "donateur";
+    }
+
+    if ($sf_user->isMembre) {
+        return "membre";
+    }
 }

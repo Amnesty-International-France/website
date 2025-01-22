@@ -41,6 +41,7 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/sales-force/user-data.php';
 */
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controllers.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/bank/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/2FA/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/user-authentification.php';
 
@@ -64,6 +65,7 @@ function aif_donor_space_create_pages()
                 'mes-recus-fiscaux' => ['title' => 'Mon espace don - Reçus Fiscaux'],
                 'modifier-mon-mot-de-passe' => ['title' => 'Mon espace don - Modifier mon mot de passe'],
                 'mot-de-passe-oublie' => ['title' => 'Mon espace don - Mot de passe oublié'],
+                'modification-coordonnees-bancaire' => ['title' => 'Mon espace don - Mettre à jour ses coordonées bancaires'],
 
             ]
 
@@ -94,7 +96,9 @@ function aif_donor_space_create_pages()
                     }
                 }
             }
+
         }
+
     }
 }
 
@@ -114,6 +118,7 @@ function aif_donor_space_load_template($template)
         'mes-recus-fiscaux' => $templates_dir . 'taxt-receipt.php',
         'modifier-mon-mot-de-passe' => $templates_dir . 'reset-password.php',
         'mot-de-passe-oublie' => $templates_dir . 'forgotten-password.php',
+        'modification-coordonnees-bancaire' => $templates_dir . 'update-iban.php',
     ];
 
     if (array_key_exists($page_slug, $templates_map) && file_exists($templates_map[ $page_slug ])) {
