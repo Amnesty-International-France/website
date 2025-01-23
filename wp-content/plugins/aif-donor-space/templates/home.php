@@ -42,11 +42,25 @@ $sf_user = get_salesforce_member_data($current_user->user_email);
             <h2>Menu navigation</h2>
 
             <nav aria-label="navigation espace donateur">
-                <ul class="aif-list-none aif-m0">
+                <ul class="aif-list-none aif-m0 aif-flex aif-gap-single aif-flex-col">
                     <li>
                         <a class="aif-underline"
                             href="<?= get_permalink(get_page_by_path('espace-don/mes-recus-fiscaux')) ?>">Mes reçus
                             fiscaux
+                            <svg class="aif-rotate-180" width="13" height="7" viewBox="0 0 13 7" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="Frame">
+                                    <path id="Vector" d="M3.5 1L3.9 1.4L2.2 3.2H12V3.8H2.2L3.9 5.6L3.5 6L1 3.5L3.5 1Z"
+                                        fill="#2B2B2B" />
+                                </g>
+                            </svg>
+
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="aif-underline"
+                            href="<?= get_permalink(get_page_by_path('espace-don/modification-coordonnees-bancaire')) ?>">Modifier mes coordonnées bancaires
                             <svg class="aif-rotate-180" width="13" height="7" viewBox="0 0 13 7" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g id="Frame">
