@@ -28,7 +28,7 @@ foreach ($SEPA_mandates->records as $mandate) {
 }
 $user_status = aif_get_user_status($SF_membre_data);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['submit'] === "Modifier IBAN") {
     $newIbanBlocks = $_POST['ibanBlock'];
     $newIban = implode('', $newIbanBlocks);
 
@@ -49,11 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['submit'] === "Annuler les modifications") {
+    $ibanBlocks = str_split($mandate->Tech_Iban__c, 4);
+
+}
+
 
 ?>
 
-<div class="aif-grid-container aif-mt1w">
 
+<div class="aif-grid-container aif-mt1w">
     <nav class="aif-flex aif-mr1w aif-lg-justify-end aif-container aif-mb1w" aria-label="menu retour a l'espace don">
         <a class=""
             href="<?= get_permalink(get_page_by_path('espace-don')) ?>">
@@ -101,11 +106,11 @@ if (!empty($success_message)) {
 
 ?>
 
-
+<section class="aif-flex aif-flex-col">
+        <h2 class="aif-sr-only">Modifier mon IBAN</h2>
 
         <form method="post" action="">
-
-            <div class="aif-flex aif-gap-single">
+            <div class="aif-update-iban__input-container ">
                 <?php foreach ($ibanBlocks as $index => $block): ?>
                 <label for="ibanBlock<?php echo $index; ?>"
                     class="aif-sr-only">Bloc
@@ -119,10 +124,15 @@ if (!empty($success_message)) {
                     aria-label="Bloc <?php echo $index + 1; ?>" />
                 <?php endforeach; ?>
             </div>
-            <button class="btn btn--dark aif-mt1w" type="submit">Modifier IBAN</button>
+
+            <div class="aif-update-iban__button-container ">
+                <input type="submit" name="submit" class="btn btn--dark aif-mt1w" value="Modifier IBAN"/>
+                <input type="submit" name="submit"  class="aif-button-link" value="Annuler les modifications"/>
+            </div>
+     
         </form>
-
-
+     
+    </section>
     </main>
     <div>
         <!-- Leave Empty -->

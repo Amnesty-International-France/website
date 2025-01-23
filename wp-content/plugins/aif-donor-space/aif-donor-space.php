@@ -66,6 +66,7 @@ function aif_donor_space_create_pages()
                 'modifier-mon-mot-de-passe' => ['title' => 'Mon espace don - Modifier mon mot de passe'],
                 'mot-de-passe-oublie' => ['title' => 'Mon espace don - Mot de passe oublié'],
                 'modification-coordonnees-bancaire' => ['title' => 'Mon espace don - Mettre à jour ses coordonées bancaires'],
+                'mes-informations' => ['title' => 'Mon espace don - Mes informations'],
 
             ]
 
@@ -119,6 +120,7 @@ function aif_donor_space_load_template($template)
         'modifier-mon-mot-de-passe' => $templates_dir . 'reset-password.php',
         'mot-de-passe-oublie' => $templates_dir . 'forgotten-password.php',
         'modification-coordonnees-bancaire' => $templates_dir . 'update-iban.php',
+        'mes-informations' => $templates_dir . 'my-informations.php',
     ];
 
     if (array_key_exists($page_slug, $templates_map) && file_exists($templates_map[ $page_slug ])) {

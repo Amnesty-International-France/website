@@ -60,7 +60,7 @@ $sf_user = get_salesforce_member_data($current_user->user_email);
 
                     <li>
                         <a class="aif-underline"
-                            href="<?= get_permalink(get_page_by_path('espace-don/modification-coordonnees-bancaire')) ?>">Modifier mes coordonnées bancaires
+                            href="<?= get_permalink(get_page_by_path('espace-don/mes-informations')) ?>">Mes informations
                             <svg class="aif-rotate-180" width="13" height="7" viewBox="0 0 13 7" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g id="Frame">
