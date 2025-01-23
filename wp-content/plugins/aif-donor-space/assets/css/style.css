@@ -52,8 +52,6 @@ body {
 }
 
 .aif-grid-container {
-    height: 100%;
-
     @media screen and (min-width: 1140px) {
         display: grid;
         grid-template-columns: 1fr 2fr 1fr;
