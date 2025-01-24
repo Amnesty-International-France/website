@@ -15,11 +15,26 @@ This is the repository for the redesign of the Amnesty International France webs
 The first step is to change `.env` file to provide some information to the script for the creation of the WordPress environment.  
 You can create different env file like `.env.local`, `.env.dev`, ...
 
-The script takes one argument which is the path. It corresponds to the location where the environment will be created (default: current folder).
+The script takes one optional argument which is `--path`. It corresponds to the location where the environment will be created (default: current folder).
 
-To start the script : `castor install <path>`
+The script need to have the path `$HOME/.local/bin` into your `$PATH` because `wp-cli` will be installed there.  
+If it is not, add the following line in your `.bashrc` or `.zschrc` : `export PATH="$HOME/.local/bin:$PATH"` 
+
+To start the installation script : `castor install`
 
 It will install the environment with the [humanity theme](https://github.com/amnestywebsite/humanity-theme) and its required plugins.
+
+## Update plugins from Github repositories (and install private plugins)
+
+To update plugins from Github repositories (and update humanity theme), you can use the following script :
+
+`castor update-github-plugins`
+
+You can update (or install) plugins from private repositories (especially the amnesty branding plugin). You need to pass a Github access token to the script with the option `--token` like this :
+
+`castor update-github-plugins --token my-access-token`
+
+Like the install script, you can specify the path of the wordpress installation with `--path`.
 
 ## CI/CD
 
