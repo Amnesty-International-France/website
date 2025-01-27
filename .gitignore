@@ -24,6 +24,12 @@ wp-config.php
 # Uploads
 /wp-content/uploads/
 
+# Upgrade
+/wp-content/upgrade/
+
+# Jetpack-Waf
+/wp-content/jetpack-waf/
+
 # Log files
 *.log
 
@@ -34,6 +40,7 @@ wp-config.php
 /wp-content/plugins/*
 # Example of my custom plugin named hello-world
 #!/wp-content/plugins/hello-world/
+!/wp-content/plugins/prismic-import
 
 # Themes
 /wp-content/themes/*
