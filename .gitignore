@@ -2,6 +2,7 @@
 .castor.stub.php
 .ddev
 clever.json
+.clever.json
 vendor/
 composer*
 
@@ -37,12 +38,10 @@ wp-config.php
 /wp-content/plugins/*
 # Example of my custom plugin named hello-world
 #!/wp-content/plugins/hello-world/
-!/wp-content/plugins/wp-plugin-amnesty-branding/
 !/wp-content/plugins/aif-donor-space/
 
 # Themes
 /wp-content/themes/*
-!/wp-content/themes/espace-donateur/
 
 docker-compose.yml
 
