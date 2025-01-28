@@ -244,3 +244,25 @@ body {
     white-space: nowrap;
     border-width: 0;
 }
+
+/* Blocks */
+
+.aif-password-container {
+    position: relative;
+}
+
+.aif-password-container__input {
+    padding-right: 40px;
+    /* Ajuster en fonction de la taille de l'icône */
+}
+
+.aif-password-container__toggle {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}

@@ -119,10 +119,16 @@ if (!empty($send_code_error_message)) {
                 <input type="email" id="email" name="email" placeholder="Votre adresse email" autocomplete="email"
                     aria-required="true" required>
 
-                <label for="password">Mot de passe (obligatoire) :</label>
-                <input type="password" id="password" name="password" placeholder="Votre mot de passe"
-                    aria-describedby="passwordHelp passphraseRequirements" autocomplete="new-password" required
-                    aria-required="true" oninput="checkPassphraseStrength()">
+
+                
+                <label for="password">Votre mot de pase (obligatoire)</label>
+                 <div class="aif-password-container">
+                    <input  id="password" type="password" name="password" id="password" aria-describedby="passwordHelp passphraseRequirements" autocomplete="new-password" required
+                    aria-required="true" oninput="checkPassphraseStrength()" placeholder="Votre mot de passe" class="aif-password-container__input">
+                    <svg  aria-hidden="true" id="togglePassword" class="aif-password-container__toggle" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+                    </svg>
+                </div>
                 <small id="passwordHelp">
                     Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 6 caractères, une
                     majuscule, un chiffre et un caractère spécial)
@@ -145,10 +151,18 @@ if (!empty($send_code_error_message)) {
                     </ul>
                 </div>
 
+
+                   
                 <label for="confirm-password">Confirmer le mot de passe (obligatoire) :</label>
-                <input type="password" id="confirm-password" required aria-required="true" name="confirm-password"
-                    placeholder="Confirmer votre mot de passe" autocomplete="new-password" required
-                    oninput="checkPasswordMatch()">
+                 <div class="aif-password-container">
+                    <input  id="password" type="password" name="confirm-password" id="password" aria-describedby="passwordHelp passphraseRequirements" autocomplete="new-password" required
+                    aria-required="true" oninput="checkPasswordMatch()"  placeholder="Confirmer votre mot de passe" class="aif-password-container__input">
+                    
+                    <svg id="togglePassword" aria-hidden="true" class="aif-password-container__toggle" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+                    </svg>
+                </div>
+
 
                 <div id="password-error-not-match" class="aif-text-red aif-hide">Les mots de passe ne
                     correspondent
@@ -208,6 +222,21 @@ if (!empty($send_code_error_message)) {
     </div>
 
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                this.setAttribute('aria-pressed', type === 'password' ? 'false' : 'true');
+            });
+        });
+
+</script>
 
 <?php
 get_footer()
