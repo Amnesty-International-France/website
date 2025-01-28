@@ -7,6 +7,8 @@
 html,
 body {
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -52,20 +54,22 @@ body {
 }
 
 .aif-grid-container {
-    height: 100%;
+
 
     @media screen and (min-width: 1140px) {
         display: grid;
         grid-template-columns: 1fr 2fr 1fr;
+        flex: 1 1 auto;
     }
 }
 
 .aif-container {
     padding: 0 var(--wp--preset--spacing--half) !important;
-    height: 100%;
+
 
     @media screen and (min-width: 1140px) {
         padding: 0;
+        height: 100%;
     }
 }
 
