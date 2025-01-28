@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'user_login'    => $email,
                 'user_email'    => $email,
                 'user_pass'     => $password,
-                'first_name'    => $user->Name,
+                'first_name'    => $user->FirstName,
                 'last_name'     => $user->LastName,
                 'nickname'      => $user->FirstName . ' ' . $user->LastName,
                 'role'          => 'subscriber');

@@ -6,7 +6,8 @@ get_header();
 check_user_page_access();
 
 $current_user = wp_get_current_user();
-$sf_user = get_salesforce_member_data($current_user->user_email);
+$sf_member = get_salesforce_member_data($current_user->user_email);
+$sf_user = get_salesforce_user_data($sf_member->Id);
 
 ?>
 
@@ -21,17 +22,17 @@ $sf_user = get_salesforce_member_data($current_user->user_email);
 
         <section>
 
-            <p>Bonjour <span class="aif-text-bold"> <?= $current_user->display_name ?> </span> vous êtes
+            <p>Bonjour <span class="aif-text-bold"> <?= $sf_user->Name ?> </span> vous êtes
 
-                <?php if($sf_user->isDonateur) : ?>
+                <?php if($sf_member->isDonateur) : ?>
                 membre donateur
-                <?php elseif($sf_user->isMembre): ?>
+                <?php elseif($sf_member->isMembre): ?>
                 membre
                 <?php else: ?>
                 ancien membre
                 <?php endif; ?>
 
-                d'Amnesty International France en prélèvement automatique mensuel sous le n° <?= $sf_user->Id ?> </p>
+                d'Amnesty International France en prélèvement automatique mensuel sous le n° <?= $sf_user->Identifiant_contact__c ?> </p>
 
 
             <p>Bienvenue dans votre espace don qui permet la gestion administrative des informations liées à vos
