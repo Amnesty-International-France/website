@@ -45,10 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 store_2fa_code($user_id, $code);
 
                 $verification_url = add_query_arg([
-                    "ID" => $user_id,
+                    "user" => $email,
                 ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
 
-                $message = 'Le code de vérification est '. $code . '. Rendez-vous sur cette url vour activer votre compte: ' . $verification_url;
+                $message = "Le code de vérification est {$code}. Rendez-vous sur cette url vour activer votre compte:  {$verification_url}";
 
                 if (send_2fa_code($email, $message)) {
                     wp_redirect($verification_url);
@@ -56,8 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             } else {
                 $url = get_permalink(get_page_by_path('espace-don/connectez-vous'));
-                $error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-text-underline 
-    aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
+                $error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-text-underline  aif-text-underline--orange' href='{$url}'>{$url}</a>.";
             }
 
 
