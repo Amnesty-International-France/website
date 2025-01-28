@@ -9,19 +9,13 @@ $error_message = "";
 $send_code_error_message = "";
 $email = "";
 
-if (!isset($_GET['ID'])) {
+if (!isset($_GET['user'])) {
     $error_title = "Une erreur est survenue";
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
-
+} else {
+    $email = $_GET['user'];
 }
 
-if (isset($_GET['ID'])) {
-    $user = get_user_by("ID", $_GET['ID']);
-    if($user) {
-        $email = $user->user_email;
-    }
-
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset($_POST['2FA_nonce'])) {
 
@@ -40,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
             reset_login_attempts($user->ID);
 
             $verification_url = add_query_arg([
-                "ID" => $user->ID,
+                "user" => $email,
             ], get_permalink(get_page_by_path('espace-don/connectez-vous')));
             wp_redirect($verification_url);
             exit;
@@ -88,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
             store_2fa_code($stored_user->ID, $code);
 
             $verification_url = add_query_arg([
-                "ID" => $user->ID,
+                "user" => $email
             ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
 
             $message = 'Votre nouveau code est '. $code . '. Rendez-vous sur cette url vour activer votre compte: ' . ' '. $verification_url;
