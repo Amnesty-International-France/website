@@ -7,12 +7,12 @@ $email = "";
 
 
 
-if (!isset($_GET['ID'])) {
+if (!isset($_GET['user'])) {
     $error_title = "Une erreur est survenue";
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 
 } else {
-    $user = get_user_by("ID", $_GET['ID']);
+    $user = get_user_by("email", $_GET['user']);
     if ($user) {
         $email = $user->user_email;
     }
@@ -43,8 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
             $user = wp_signon($creds, true);
 
-
-
             if (!is_wp_error($user)) {
                 wp_set_current_user($user->ID);
 
@@ -57,13 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
 
         } else {
-            $url = get_permalink(get_page_by_path('espace-don/verifier-votre-email'));
+            $verification_url = add_query_arg([
+                "user" => $email,
+            ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
             $error_message = "Votre email ne semble pas encore vérifié. Pour le faire veuillez vous rendre sur  <a class='aif-text-underline 
-aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
+aif-text-underline--orange' href='{$verification_url}'> {$verification_url}</a>.";
         }
-
     } else {
-
         $url = get_permalink(get_page_by_path('espace-don/creer-votre-compte'));
         $error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur  <a class='aif-text-underline 
 aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
