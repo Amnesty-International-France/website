@@ -72,7 +72,7 @@ class Prismic_Import_Command {
                 fwrite($file, json_encode($doc, JSON_UNESCAPED_UNICODE));
                 fwrite($file, ',');
                 $docs++;
-                if( $limit !== -1 && $docs > $limit ) {
+                if( $limit !== -1 && $docs >= $limit ) {
                     $limitReached = true;
                     break;
                 }
@@ -94,8 +94,8 @@ class Prismic_Import_Command {
      *
      * ## OPTIONS
      *
-     * <output>
-     * : The name of output file
+     * <json_file>
+     * : The name of json file
      *
      * ## EXAMPLES
      *
@@ -158,7 +158,9 @@ function treat_news($document): void {
     $pub_date = (new DateTime($data['datePub']))->format('Y-m-d H:i:s');
     $content = "";
     foreach ( $data['chapo'] as $chapo) {
-        $content .= prismic_rich_text_to_wp($chapo);
+        $migrate_data = [];
+        $migrate_data['is_chapo'] = true;
+        $content .= prismic_rich_text_to_wp($chapo, $migrate_data);
     }
     foreach ( $data['contenu'] as $contenu) {
         $content .= prismic_rich_text_to_wp($contenu);
@@ -190,6 +192,10 @@ function get_or_create_user($username): int {
 }
 
 function insert_post(string $type, string $title, string $date, string $content, int|null $post_author, string $excerpt, string $slug, array $categories): void {
+    $categories_ids = [];
+    foreach( $categories as $category ) {
+        $categories_ids[] = get_category_by_slug($category)->term_id;
+    }
     $post_array = [
         'post_type' => $type, // post or page
         'post_name' => $slug,
@@ -198,7 +204,7 @@ function insert_post(string $type, string $title, string $date, string $content,
         'post_content' => $content,
         'post_excerpt' => $excerpt,
         'post_status' => 'publish',
-        'post_category' => $categories,
+        'post_category' => $categories_ids,
         //'tax_input' => null,
     ];
     if( isset($post_author) ) {
@@ -209,7 +215,7 @@ function insert_post(string $type, string $title, string $date, string $content,
     );
 }
 
-function prismic_rich_text_to_wp(mixed $rich_text): string {
+function prismic_rich_text_to_wp(mixed $rich_text, mixed $migrate_data = []): string {
     try {
         $text = format_spans($rich_text['text'], $rich_text['spans']);
     } catch (BlockQuoteException $e) {
@@ -220,25 +226,47 @@ function prismic_rich_text_to_wp(mixed $rich_text): string {
 
     switch( $rich_text['type'] ) {
         case 'paragraph':
-            return "<!-- wp:paragraph --><p>{$text}</p><!-- /wp:paragraph -->";
+            if(isset($migrate_data['is_chapo'])) {
+                return "<!-- wp:paragraph {\"fontSize\":\"medium\"} --><p class=\"has-medium-font-size\"><strong>$text</strong></p><!-- /wp:paragraph -->";
+            }
+            return "<!-- wp:paragraph --><p>$text</p><!-- /wp:paragraph -->";
         case 'heading1':
-            return "<!-- wp:heading {\"level\": 1} --><h1 class='wp-block-heading'>{$text}</h1><!-- /wp:heading -->";
+            return "<!-- wp:heading {\"level\": 1} --><h1 class='wp-block-heading'>$text</h1><!-- /wp:heading -->";
         case 'heading2':
-            return "<!-- wp:heading {\"level\": 2} --><h2 class='wp-block-heading'>{$text}</h2><!-- /wp:heading -->";
+            return "<!-- wp:heading {\"level\": 2} --><h2 class='wp-block-heading'>$text</h2><!-- /wp:heading -->";
         case 'heading3':
-            return "<!-- wp:heading {\"level\": 3} --><h3 class='wp-block-heading'>{$text}</h3><!-- /wp:heading -->";
+            return "<!-- wp:heading {\"level\": 3} --><h3 class='wp-block-heading'>$text</h3><!-- /wp:heading -->";
         case 'heading4':
-            return "<!-- wp:heading {\"level\": 4} --><h4 class='wp-block-heading'>{$text}</h4><!-- /wp:heading -->";
+            return "<!-- wp:heading {\"level\": 4} --><h4 class='wp-block-heading'>$text</h4><!-- /wp:heading -->";
         case 'heading5':
-            return "<!-- wp:heading {\"level\": 5} --><h5 class='wp-block-heading'>{$text}</h5><!-- /wp:heading -->";
+            return "<!-- wp:heading {\"level\": 5} --><h5 class='wp-block-heading'>$text</h5><!-- /wp:heading -->";
         case 'heading6':
-            return "<!-- wp:heading {\"level\": 6} --><h6 class='wp-block-heading'>{$text}</h6><!-- /wp:heading -->";
+            return "<!-- wp:heading {\"level\": 6} --><h6 class='wp-block-heading'>$text</h6><!-- /wp:heading -->";
+        case 'list-item':
+            $before = "";
+            $after = "";
+            if(isset($migrate_data['content'], $migrate_data['current_index'])) {
+                $listItemsIndexes = array_keys(array_filter($migrate_data['content'], static fn($item) => $item['type'] === 'list-item'));
+                $first = $listItemsIndexes[0];
+                $last = end($listItemsIndexes);
+                if($migrate_data['current_index'] === $first) {
+                    $before = "<!-- wp:list --><ul class=\"wp-block-list\">";
+                }
+                if($migrate_data['current_index'] === $last) {
+                    $after = "</ul><!-- /wp:list -->";
+                }
+            }
+            return "$before<!-- wp:list-item --><li>$text</li><!-- /wp:list-item -->$after";
         default:
             echo "{$rich_text['type']} is not implemented ! (rich_text_to_wp)".PHP_EOL;
             return "";
     }
 }
 
+/**
+ * @throws BlockQuoteAuteurException
+ * @throws BlockQuoteException
+ */
 function format_spans($text, $spans): string {
     $res = $text;
     $insertions = [];
@@ -257,17 +285,27 @@ function format_spans($text, $spans): string {
                 if ( $span['data']['link_type'] === "Web") {
                     $insertions[] = ['position' => $span['start'], 'tag' => "<a href='{$span['data']['url']}' target='{$span['data']['target']}' type='{$span['data']['link_type']}'>", 'isClosing' => false];
                     $insertions[] = ['position' => $span['end'], 'tag' => "</a>", 'isClosing' => true];
+                } else if( $span['data']['link_type'] === 'Document' ) {
+                    $query = new WP_Query(['name' => $span['data']['slug'], 'post_type' => 'any', 'numberposts' => 1]);
+                    if($query->have_posts()) {
+                        $query->the_post();
+                        $url = get_permalink();
+                        wp_reset_postdata();
+                        $insertions[] = ['position' => $span['start'], 'tag' => "<a href='$url'>", 'isClosing' => false];
+                        $insertions[] = ['position' => $span['end'], 'tag' => "</a>", 'isClosing' => true];
+                    } else {
+                        echo "Can't create hyperlink for : {$span['data']['slug']} because it doesn't exists.".PHP_EOL;
+                    }
                 } else {
-                    $insertions[] = ['position' => $span['start'], 'tag' => "<a href='{$span['data']['url']}' target='{$span['data']['target']}' type='{$span['data']['link_type']}'>", 'isClosing' => false];
-                    $insertions[] = ['position' => $span['end'], 'tag' => "</a>", 'isClosing' => true];
+                    echo "hyperlink type not implemented : {$span['data']['link_type']}".PHP_EOL;
                 }
-
                 break;
             case 'label':
                 if( $span['data']['label'] === "lireaussi") {
+                    $prefix = explode(':', $text)[0];
                     $insertions[] = ['position' => $span['start'], 'tag' => "<strong><mark style='background-color:#e4e4e4; padding-left: 10px' class='has-inline-color has-orange-base-color'>", 'isClosing' => false];
-                    $insertions[] = ['position' => $span['start']+strlen("Lire aussi :"), 'tag' => "</mark></strong>", 'isClosing' => true];
-                    $insertions[] = ['position' => $span['start']+strlen("Lire aussi :"), 'tag' => "<mark style='background-color:#e4e4e4' class='has-inline-color'>", 'isClosing' => false];
+                    $insertions[] = ['position' => $span['start']+strlen($prefix)+1, 'tag' => "</mark></strong>", 'isClosing' => true];
+                    $insertions[] = ['position' => $span['start']+strlen($prefix)+1, 'tag' => "<mark style='background-color:#e4e4e4' class='has-inline-color'>", 'isClosing' => false];
                     $insertions[] = ['position' => $span['end'], 'tag' => "</mark>", 'isClosing' => true];
                 } else if( $span['data']['label'] === "blockquote") {
                     throw new BlockQuoteException($text);
@@ -348,6 +386,13 @@ function prismic_slice_to_wp($slice): string {
             }
             $str_ids = implode(',', $ids);
             return "<!-- wp:amnesty-core/block-list {\"type\":\"select\",\"style\":\"grid\",\"selectedPosts\":[$str_ids]} /-->";
+        case 'bloc_info_riche':
+            $text = "";
+            foreach ($slice['primary']['content'] as $index=>$item) {
+                $migrate_data = ['content' => $slice['primary']['content'], 'current_index' => $index];
+                $text .= prismic_rich_text_to_wp($item, $migrate_data);
+            }
+            return "<!-- wp:amnesty-core/block-section {\"background\":\"grey\"} --> $text <!-- /wp:amnesty-core/block-section -->";
         default:
             echo "{$slice['slice_type']} is not implemented ! (prismic_slice_to_wp)".PHP_EOL;
             return "";
