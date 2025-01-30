@@ -150,6 +150,16 @@ function aif_donor_space_enqueue_assets()
     );
 
     wp_enqueue_script(
+        'aif-donor-space-display-password',
+        AIF_DONOR_SPACE_URL . 'assets/js/display-password.js',
+        [
+
+        ],
+        '1.0',
+        true
+    );
+
+    wp_enqueue_script(
         'aif-create-duplicate-tax-receipt',
         plugins_url('/assets/js/create-duplicate-tax-receipt-demand.js', __FILE__),
         [],

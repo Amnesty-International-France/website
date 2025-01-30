@@ -70,6 +70,7 @@ body {
     @media screen and (min-width: 1140px) {
         padding: 0;
         height: 100%;
+        max-width: 1024px;
     }
 }
 
@@ -247,4 +248,73 @@ body {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
+}
+
+
+/* Blokcs */
+
+
+.aif-container--main {
+    display: block;
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.aif-container--form {
+    max-width: 341px;
+    margin-bottom: var(--wp--preset--spacing--single);
+}
+
+.aif-button--full {
+    width: 100%;
+}
+
+.aif-link--primary {
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: var(--wp--preset--font-size--small);
+    text-transform: uppercase;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.aif-input {
+    font-family: var(--wp--preset--font-family--primary);
+    text-transform: lowercase;
+    font-weight: normal;
+    font-size: var(--wp--preset--font-size--regular);
+}
+
+.aif-password-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+
+.aif-password-container__input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.aif-password-container__input {
+    width: 100%;
+    padding-right: 3rem;
+}
+
+.aif-password-container__button {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    font-family: var(--wp--preset--font-family--secondary);
+    border-radius: 4px;
+    cursor: pointer;
 }
