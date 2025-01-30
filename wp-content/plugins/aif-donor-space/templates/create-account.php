@@ -69,13 +69,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
-<main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-    <div class="container">
+<main class="aif-container--main">
         <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
             <h1 class="aif-mb1w">Mon espace Don</h1>
-            <h2> Créer mon compte </h2>
+       
         </header>
 
+    <div class="aif-container--form">
+
+        <h2> Créer mon compte </h2>
         <p class="aif-mb0">Votre espace don vous permet de suivre facilement vos dons et adhésion. Vous pouvez y
             modifier vos
             coordonnées personnelles, votre RIB et éditer des duplicatas de vos reçus fiscaux. </p>
@@ -115,11 +117,11 @@ if (!empty($send_code_error_message)) {
             <form class="aif-form-container" action="" method="POST" onsubmit="return checkPasswordMatch()">
 
                 <label for="email">Adresse email (obligatoire) :</label>
-                <input type="email" id="email" name="email" placeholder="Votre adresse email" autocomplete="email"
+                <input type="email" class="aif-input" id="email" name="email" placeholder="Votre adresse email" autocomplete="email"
                     aria-required="true" required>
 
                 <label for="password">Mot de passe (obligatoire) :</label>
-                <input type="password" id="password" name="password" placeholder="Votre mot de passe"
+                <input type="password" id="password" class="aif-input" name="password" placeholder="Votre mot de passe"
                     aria-describedby="passwordHelp passphraseRequirements" autocomplete="new-password" required
                     aria-required="true" oninput="checkPassphraseStrength()">
                 <small id="passwordHelp">
@@ -145,7 +147,7 @@ if (!empty($send_code_error_message)) {
                 </div>
 
                 <label for="confirm-password">Confirmer le mot de passe (obligatoire) :</label>
-                <input type="password" id="confirm-password" required aria-required="true" name="confirm-password"
+                <input type="password"  class="aif-input" id="confirm-password" required aria-required="true" name="confirm-password"
                     placeholder="Confirmer votre mot de passe" autocomplete="new-password" required
                     oninput="checkPasswordMatch()">
 
@@ -154,7 +156,7 @@ if (!empty($send_code_error_message)) {
                     pas.
                 </div>
 
-                <button class="btn aif-mt1w" type="submit" id="submit-btn">Créer mon compte</button>
+                <button class="btn aif-mt1w aif-button--full" type="submit" id="submit-btn">Créer mon compte</button>
 
             </form>
 
@@ -197,7 +199,7 @@ if (!empty($send_code_error_message)) {
             <h3> Vous avez déja un compte ? </h3>
 
             <a href="<?php echo get_permalink(get_page_by_path('espace-don/connectez-vous')) ?>"
-                class="btn btn--dark">
+                class="btn btn--dark aif-button--full ">
                 Connectez-vous !</a>
 
 

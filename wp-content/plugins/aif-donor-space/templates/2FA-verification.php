@@ -106,27 +106,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
 ?>
 
 
-<main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-    <div class="container">
-        <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="aif-mb1w">Mon espace Don</h1>
+<main class="aif-container--main">
 
-        </header>
+    <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
+        <h1 class="aif-mb1w">Mon espace Don</h1>
 
+    </header>
+    <div class="aif-container--form">
         <section>
             <h2> Validation de la création de mon compte </h2>
 
 
-            <?php if (!empty($error_message)) : ?>
-            <?php
-            $title = "Une erreur est survenue";
-                aif_include_partial("alert", [
-                    "title" => $title,
-                "content" => $error_message])
 
-                ?>
-
-            <?php endif; ?>
 
             <p>Votre espace don vous permet de suivre facilement vos dons et adhésion. Vous pouvez y modifier vos
                 coordonnées personnelles, votre RIB et éditer des duplicatas de vos reçus fiscaux.</p>
@@ -136,18 +127,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
                 recevoir par email
             </p>
 
-            <form class="aif-form-container" role="form" method="POST" action="">
+            <form role="form" method="POST" action="">
                 <?php wp_nonce_field('2FA_check', '2FA_nonce'); ?>
                 <label for="2FA-code">Code à 6
                     chiffres (obligatoire)</label>
-                <input pattern="\d{6}" title="rentrer ici votre code de 6 chiffres reçu par email" placeholder=""
-                    id=" 2FA-code" value="" type="text" name="2FA-code" required="true">
+                <input class="aif-input" pattern="\d{6}" title="rentrer ici votre code de 6 chiffres reçu par email"
+                    placeholder="" id=" 2FA-code" value="" type="text" name="2FA-code" required="true">
 
-                <button class="btn aif-mt1w" type="submit">Valider la création de mon compte</button>
+                <?php if (!empty($error_message)) : ?>
+                <?php
+            $title = "Une erreur est survenue";
+                    aif_include_partial("alert", [
+                        "title" => $title,
+                    "content" => $error_message])
+
+                    ?>
+
+                <?php endif; ?>
+
+                <button class="btn aif-mt1w aif-button--full" type="submit">Valider la création de mon compte</button>
             </form>
-
-
-
 
 
         </section>
@@ -179,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
             <form class="aif-form-container" role="form" method="POST" action="">
                 <?php wp_nonce_field('2FA_send_code', '2FA_new_code_nonce'); ?>
 
-                <button class="btn aif-mt1w" type="submit">Recevoir un nouveau code</button>
+                <button class="btn aif-mt1w aif-button--full" type="submit">Recevoir un nouveau code</button>
             </form>
 
             <hr class="aif-mt1w">

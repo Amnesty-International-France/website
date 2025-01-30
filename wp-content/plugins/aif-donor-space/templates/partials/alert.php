@@ -6,7 +6,7 @@ $has_success = isset($success) && $success;
 
 
 
-<div class="aif-bg-grey--lighter aif-p1w aif-mb1w">
+<div class="aif-bg-grey--lighter aif-p1w aif-mb1w aif-mt1w">
 
     <div class="aif-flex aif-gap-single">
         <div class="<?= $has_success ? 'aif-text-green' : 'aif-text-red' ?>">
