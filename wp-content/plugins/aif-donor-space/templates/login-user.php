@@ -102,10 +102,14 @@ aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
                     value="<?= $email ? $email : '' ?>"
                      class="aif-input"
                     type="email" name="email" id="email" autocomplete="email" required="true">
-                <label for="email">Votre mot de passe (obligatoire)</label>
-                <input  class="aif-input" placeholder="" id="password" value="" type="password" name="password" autocomplete="password"
-                    required="true">
-
+                <div class="aif-password-container">
+        <label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
+        <div class="aif-password-container__input-wrapper">
+            <input class="aif-password-container__input aif-input" name="password" aria-describedby="passwordHelp passphraseRequirements" type="password" id="password" autocomplete="new-password" required aria-required="true" oninput="checkPassphraseStrength()">
+            <button class="aif-password-container__button" type="button" id="toggle-password"  data-target="password" aria-label="Afficher ou masquer le mot de passe">
+                Afficher
+            </button>
+        </div>
                 <button class="btn aif-mt1w aif-button--full" type="submit">Se connecter</button>
 
             </form>

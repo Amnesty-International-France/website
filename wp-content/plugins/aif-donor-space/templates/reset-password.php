@@ -94,10 +94,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
 
         <form class="aif-form-container" action="" method="POST">
 
-
-            <label for="password">Votre nouveau mot de passe (obligatoire) :</label>
-            <input type="password" class="aif-input" id="password" name="password" aria-describedby="passwordHelp passphraseRequirements"
-                autocomplete="new-password" required aria-required="true" oninput="checkPassphraseStrength()">
+        <div class="aif-password-container">
+        <label class="aif-password-container__label" for="password">Nouveau mot de passe (obligatoire)</label>
+        <div class="aif-password-container__input-wrapper">
+            <input class="aif-password-container__input aif-input" name="password" aria-describedby="passwordHelp passphraseRequirements" type="password" id="password" autocomplete="new-password" required aria-required="true" oninput="checkPassphraseStrength()">
+            <button class="aif-password-container__button" type="button" id="toggle-password"  data-target="password" aria-label="Afficher ou masquer le mot de passe">
+                Afficher
+            </button>
+        </div>
+   
             <small id="passwordHelp">
                 Exemple de mot de passe valide : <strong>Mon@MotDePasse123</strong> (au moins 6 caractères, une
                 majuscule, un chiffre et un caractère spécial)
@@ -120,11 +125,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
                 </ul>
             </div>
 
-            <label for="confirm-password">Confirmer le mot de passe (obligatoire) :</label>
-            <input type="password" class="aif-input" id="confirm-password" required aria-required="true" name="confirm-password"
-                placeholder="Confirmer votre mot de passe" autocomplete="new-password" required
-                oninput="checkPasswordMatch()">
-
+            <div class="aif-password-container">
+        <label class="aif-password-container__label" for="password">Nouveau mot de passe (obligatoire)</label>
+        <div class="aif-password-container__input-wrapper">
+            <input class="aif-password-container__input aif-input" name="confirm-password" aria-describedby="passwordHelp passphraseRequirements" type="password" id="confirm-password" autocomplete="new-password" required aria-required="true" oninput="checkPasswordMatch()">
+            <button class="aif-password-container__button" type="button" id="toggle-password"  data-target="confirm-password" aria-label="Afficher ou masquer le mot de passe">
+                Afficher
+            </button>
+        </div>
             <div id="password-error-not-match" class="aif-text-red aif-hide">Les mots de passe ne
                 correspondent
                 pas.

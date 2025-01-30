@@ -267,6 +267,7 @@ body {
 
 .aif-container--form {
     max-width: 341px;
+    margin-bottom: var(--wp--preset--spacing--single);
 }
 
 .aif-button--full {
@@ -284,5 +285,36 @@ body {
 .aif-input {
     font-family: var(--wp--preset--font-family--primary);
     text-transform: lowercase;
-    font-weight: normal
+    font-weight: normal;
+    font-size: var(--wp--preset--font-size--regular);
+}
+
+.aif-password-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+
+.aif-password-container__input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.aif-password-container__input {
+    width: 100%;
+    padding-right: 3rem;
+}
+
+.aif-password-container__button {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    font-family: var(--wp--preset--font-family--secondary);
+    border-radius: 4px;
+    cursor: pointer;
 }
