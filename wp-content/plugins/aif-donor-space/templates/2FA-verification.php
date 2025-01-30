@@ -74,8 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
         if(!$stored_user) {
 
             $url = get_permalink(get_page_by_path('espace-don/creer-votre-compte'));
-            $send_code_error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur  <a class='aif-text-underline 
-    aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
+            $send_code_error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page <a class='aif-link--primary' href='{$url}'>Créer mon compte </a>.";
         } else {
 
             $code = generate_2fa_code();
@@ -115,9 +114,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
     <div class="aif-container--form">
         <section>
             <h2> Validation de la création de mon compte </h2>
-
-
-
 
             <p>Votre espace don vous permet de suivre facilement vos dons et adhésion. Vous pouvez y modifier vos
                 coordonnées personnelles, votre RIB et éditer des duplicatas de vos reçus fiscaux.</p>

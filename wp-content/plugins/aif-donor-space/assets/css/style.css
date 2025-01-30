@@ -188,11 +188,6 @@ body {
 }
 
 
-.aif-text-underline--orange {
-    text-decoration-color: var(--wp--preset--color--orange-base);
-}
-
-
 /* Text Transform */
 
 .aif-uppercase {

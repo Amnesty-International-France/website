@@ -46,7 +46,7 @@ if ($tax_reciept->totalSize > 0) {
             de vos dons. </p>
 
         <p>Pour toutes questions ou modifications sur vos dons et/ou adhésion,
-            <a class="aif-text-underline aif-text-underline--orange " href="mailto:smd@amnesty.fr">contactez-nous
+            <a class="aif-link--primary " href="mailto:smd@amnesty.fr">contactez-nous
             </a>
         </p>
 
@@ -113,7 +113,7 @@ if ($tax_reciept->totalSize > 0) {
 
             <p>Les dons de plus de 5 ans et inférieurs à 7 € ne sont pas affichés dans cet espace. Le montant de votre
                 abonnement au magazine la Chronique n’est pas déductible des impôts. Pour toutes autres demandes
-                concernant vos reçus fiscaux, <a class="aif-text-underline aif-text-underline--orange"
+                concernant vos reçus fiscaux, <a class="aif-link--primary"
                     title="contacter le service SMD d'Amnesty France" href="mailto:smd@amnesty.fr">contactez-nous </a>.
             </p>
         </section>

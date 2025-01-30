@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             } else {
                 $url = get_permalink(get_page_by_path('espace-don/connectez-vous'));
-                $error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-text-underline  aif-text-underline--orange' href='{$url}'>{$url}</a>.";
+                $error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>.";
             }
 
 
@@ -101,7 +101,7 @@ if (!empty($send_code_error_message)) {
 
     $title = "L’adresse email renseignée ne trouve pas de correspondance dans notre système.";
     $content = 'Devenez donateur en <a>réalisant un don </a> ou <a
-                                            class="aif-text-underline aif-text-underline--orange" href="mailto:smd@amnesty.fr">contacter le Service
+                                            class="aif-link--primary" href="mailto:smd@amnesty.fr">contacter le Service
                                             membres et donateurs</a> si vous pensez que c’est une erreur.';
 
     aif_include_partial("alert", [

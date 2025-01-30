@@ -58,13 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
             $verification_url = add_query_arg([
                 "user" => $email,
             ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
-            $error_message = "Votre email ne semble pas encore vérifié. Pour le faire veuillez vous rendre sur  <a class='aif-text-underline 
-aif-text-underline--orange' href='{$verification_url}'> {$verification_url}</a>.";
+            $error_message = "Votre email ne semble pas encore vérifié. Pour le faire veuillez vous rendre sur la page <a class='aif-link--primary' href='{$verification_url}'> Vérifier mon email</a>.";
         }
     } else {
         $url = get_permalink(get_page_by_path('espace-don/creer-votre-compte'));
-        $error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur  <a class='aif-text-underline 
-aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
+        $error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page  <a class='aif-link--primary' href='{$url}> Créer mon compte </a>.";
     }
 
 }
@@ -81,18 +79,7 @@ aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
         </header>
 <div class="aif-container--form">
 <h2> Je me connecte </h2>
-        <?php
-        if (!empty($error_message)) {
-            $title = "Une erreur est survenue";
-
-            aif_include_partial("alert", [
-                "title" => $title,
-            "content" => $error_message]);
-
-        }
-
-?>
-
+   
         <section>
             <h3 class="aif-sr-only"> Formulaire de connexion </h3>
             <form class="aif-form-container" role="form" method="POST" action="">
@@ -110,6 +97,19 @@ aif-text-underline--orange' href='" . $url . "'>" . $url . "</a>.";
                 Afficher
             </button>
         </div>
+
+        <?php
+        if (!empty($error_message)) {
+            $title = "Une erreur est survenue";
+
+            aif_include_partial("alert", [
+                "title" => $title,
+            "content" => $error_message]);
+
+        }
+
+?>
+
                 <button class="btn aif-mt1w aif-button--full" type="submit">Se connecter</button>
 
             </form>

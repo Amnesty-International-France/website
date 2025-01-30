@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
 
         $error_title = "Votre utilisateur nous est inconnu";
         $error_message = 'Devenez donateur en <a>réalisant un don </a> ou <a
-                          class="aif-text-underline aif-text-underline--orange" href="mailto:smd@amnesty.fr">contacter le Service membres et donateurs</a> si vous pensez que c’est une erreur.';
+                          class="aif-link--primary" href="mailto:smd@amnesty.fr">contacter le Service membres et donateurs</a> si vous pensez que c’est une erreur.';
 
     }
 }
