@@ -12,7 +12,9 @@ This is the repository for the redesign of the Amnesty International France webs
 
 ## Installation
 
-The first step is to change `.env` file to provide some information to the script for the creation of the WordPress environment.  
+The first step is to create your database in mysql : `create database <name>;`.
+
+Then, you need to change `.env` file to provide some information to the script for the creation of the WordPress environment.  
 You can create different env file like `.env.local`, `.env.dev`, ...
 
 The script takes one optional argument which is `--path`. It corresponds to the location where the environment will be created (default: current folder).
