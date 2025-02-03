@@ -65,6 +65,13 @@ function get_salesforce_user_data($ID)
     return get_salesforce_data($url);
 }
 
+function post_salesforce_user_data($userData)
+{
+    $url = 'services/data/v57.0/sobjects/Contact/';
+    return post_salesforce_data($url, $userData);
+}
+
+
 
 function has_access_to_donation_space($sf_user)
 {

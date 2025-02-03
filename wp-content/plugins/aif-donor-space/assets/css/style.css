@@ -54,11 +54,9 @@ body {
 }
 
 .aif-grid-container {
-
-
     @media screen and (min-width: 1140px) {
         display: grid;
-        grid-template-columns: 1fr 2fr 1fr;
+        grid-template-columns: 1fr 1024px 1fr;
         flex: 1 1 auto;
     }
 }

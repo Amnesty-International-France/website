@@ -18,14 +18,15 @@ $has_error = false;
 
 $ibanBlocks = [];
 
-foreach ($SEPA_mandates->records as $mandate) {
+$actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
 
-    if ($mandate->Statut__c === "Actif") {
-        $actifMandate = $mandate;
-        $day_of_payment = date("d", strtotime($actifMandate->Date_paiement_Avenir__c));
-        $ibanBlocks = str_split($mandate->Tech_Iban__c, 4);
-    }
+if($actifMandate) {
+    $day_of_payment = date("d", strtotime($actifMandate->Date_paiement_Avenir__c));
+    $ibanBlocks = str_split($actifMandate->Tech_Iban__c, 4);
+    $last4IBANDigit = substr($actifMandate->Tech_Iban__c, -4);
 }
+
+
 $user_status = aif_get_user_status($SF_membre_data);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
