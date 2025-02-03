@@ -50,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 wp_redirect($verification_url);
                 exit;
             } else {
+
+                $title = "Une erreur est survenue";
                 $error_message = "Mauvais email ou mot de passe";
             }
 
@@ -58,10 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
             $verification_url = add_query_arg([
                 "user" => $email,
             ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
-            $error_message = "Votre email ne semble pas encore vérifié. Pour le faire veuillez vous rendre sur la page <a class='aif-link--primary' href='{$verification_url}'> Vérifier mon email</a>.";
+
+            $title = "Votre email ne semble pas encore vérifié";
+            $error_message = "Pour le faire veuillez vous rendre sur la page <a class='aif-link--primary' href='{$verification_url}'> Vérifier mon email</a>.";
         }
     } else {
         $url = get_permalink(get_page_by_path('espace-don/creer-votre-compte'));
+
+        $title = "L'adresse email renseignée ne trouve pas de correspondance dans notre système";
         $error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page  <a class='aif-link--primary' href='{$url}> Créer mon compte </a>.";
     }
 
@@ -73,34 +79,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
 <main class="aif-container--main">
 
-        <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="aif-mb1w">Mon espace Don</h1>
-     
-        </header>
-<div class="aif-container--form">
-<h2> Je me connecte </h2>
-   
+    <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
+        <h1 class="aif-mb1w">Mon espace Don</h1>
+
+    </header>
+    <div class="aif-container--form">
+        <h2> Je me connecte </h2>
+
         <section>
             <h3 class="aif-sr-only"> Formulaire de connexion </h3>
             <form class="aif-form-container" role="form" method="POST" action="">
                 <?php wp_nonce_field('login_form', 'login_nonce'); ?>
                 <label for="email">Votre adresse email (obligatoire)</label>
-                <input placeholder=""
+                <input placeholder="Votre adresse email"
                     value="<?= $email ? $email : '' ?>"
-                     class="aif-input"
-                    type="email" name="email" id="email" autocomplete="email" required="true">
+                    class="aif-input" placeholder="Votre adresse email" type="email" name="email" id="email"
+                    autocomplete="email" required="true">
                 <div class="aif-password-container">
-        <label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
-        <div class="aif-password-container__input-wrapper">
-            <input class="aif-password-container__input aif-input" name="password" aria-describedby="passwordHelp passphraseRequirements" type="password" id="password" autocomplete="new-password" required aria-required="true" oninput="checkPassphraseStrength()">
-            <button class="aif-password-container__button" type="button" id="toggle-password"  data-target="password" aria-label="Afficher ou masquer le mot de passe">
-                Afficher
-            </button>
-        </div>
+                    <label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
+                    <div class="aif-password-container__input-wrapper">
+                        <input placeholder="Votre mot de passe" class="aif-password-container__input aif-input"
+                            name="password" aria-describedby="passwordHelp passphraseRequirements" type="password"
+                            id="password" autocomplete="new-password" required aria-required="true"
+                            oninput="checkPassphraseStrength()">
+                        <button class="aif-password-container__button" type="button" id="toggle-password"
+                            data-target="password" aria-label="Afficher ou masquer le mot de passe">
+                            Afficher
+                        </button>
+                    </div>
 
-        <?php
+                    <?php
         if (!empty($error_message)) {
-            $title = "Une erreur est survenue";
+
 
             aif_include_partial("alert", [
                 "title" => $title,
@@ -110,26 +120,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
 ?>
 
-                <button class="btn aif-mt1w aif-button--full" type="submit">Se connecter</button>
+                    <div class="aif-flex aif-justify-end">
+                        <a class="aif-link--primary aif-mt1w aif-block"
+                            href="<?=  get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>">
+                            Mot de passe oublié ? </a>
+
+                    </div>
+
+                    <button class="btn aif-mt1w aif-button--full" type="submit">Se connecter</button>
 
             </form>
 
-            <a class="aif-link--primary aif-mt1w aif-block"
-                href="<?=  get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>">
-                Mot de passe oublié ? </a>
+
+
+
 
         </section>
 
 
-        <section class="aif-mt2w aif-mb1w">
-            <h3>Première connexion</h3>
+        <section class="aif-mt1w aif-mb1w">
+            <h3>Première connexion ?</h3>
 
             <p> La création de votre espace don n’est pas automatique lorsque vous faites un don.Si vous n’avez
                 jamais
                 créé votre espace, merci de cliquer sur “Créer votre compte”. </p>
 
             <a href="<?=  get_permalink(get_page_by_path('espace-don/creer-votre-compte')) ?>"
-                class="btn aif-button--full">Créer
+                class="btn aif-button--full btn--white">Créer
                 votre compte</a>
 
         </section>

@@ -4,6 +4,11 @@
 
 }
 
+:root {
+
+    --aif-orange: #EF8200;
+}
+
 html,
 body {
     height: 100%;
@@ -275,12 +280,14 @@ body {
     text-decoration: underline;
 }
 
-.aif-input {
+.aif-input,
+.aif-input::placeholder {
     font-family: var(--wp--preset--font-family--primary);
-    text-transform: lowercase;
     font-weight: normal;
     font-size: var(--wp--preset--font-size--regular);
+    text-transform: initial;
 }
+
 
 .aif-password-container {
     display: flex;
@@ -307,7 +314,45 @@ body {
     transform: translateY(-50%);
     background-color: transparent;
     border: none;
-    font-family: var(--wp--preset--font-family--secondary);
+    text-decoration: underline;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.aif-info-message__container {
+    display: flex;
+    gap: var(--wp--preset--spacing--quarter);
+    margin-top: var(--wp--preset--spacing--half);
+
+}
+
+.aif-info-message__container__icon-container {
+    min-width: 25px;
+}
+
+
+/*
+    Button
+*/
+
+.btn:hover {
+    background-color: var(--aif-orange) !important;
+}
+
+.btn--white:hover {
+    color: var(--aif-orange) !important;
+    border: 1px solid var(--aif-orange) !important;
+    background-color: white !important;
+}
+
+.btn--dark:hover {
+    background-color: white !important;
+    color: black !important;
+}
+
+.btn:disabled,
+.btn:disabled:hover {
+    color: #A7AAAD !important;
+    border: 1px solid #A7AAAD;
+    background-color: white !important;
 }

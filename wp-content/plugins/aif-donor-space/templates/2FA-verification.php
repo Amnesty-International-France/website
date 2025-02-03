@@ -115,8 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
         <section>
             <h2> Validation de la création de mon compte </h2>
 
-            <p>Votre espace don vous permet de suivre facilement vos dons et adhésion. Vous pouvez y modifier vos
-                coordonnées personnelles, votre RIB et éditer des duplicatas de vos reçus fiscaux.</p>
 
             <p>
                 Pour finaliser la création de votre compte, veuillez rentrer le code à 6 chiffres que vous venez de
@@ -176,8 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
 
                 <button class="btn aif-mt1w aif-button--full" type="submit">Recevoir un nouveau code</button>
             </form>
-
-            <hr class="aif-mt1w">
+            
             <p class="aif-mt1w">
                 Les données personnelles collectées sur ce formulaire sont traitées par l’association Amnesty
                 International
