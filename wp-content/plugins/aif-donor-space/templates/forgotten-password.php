@@ -70,7 +70,7 @@ if (isset($success_message)) {
         <section>
             <form class="aif-form-container" action="" method="POST">
                 <label for="email">Votre email (obligatoire) :</label>
-                <input type="email" class="aif-input" id="email" name="email" required aria-required="true">
+                <input placeholder="Votre email" type="email" class="aif-input" id="email" name="email" required aria-required="true">
                 <button class="btn aif-mt1w aif-button--full" type="submit" id="submit-btn">Réinitialiser mon mot de passe</button>
 
             </form>
