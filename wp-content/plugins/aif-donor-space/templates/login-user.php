@@ -91,14 +91,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
             <form class="aif-form-container" role="form" method="POST" action="">
                 <?php wp_nonce_field('login_form', 'login_nonce'); ?>
                 <label for="email">Votre adresse email (obligatoire)</label>
-                <input placeholder="Votre adresse email"
+                <input placeholder="adresse@mail.fr"
                     value="<?= $email ? $email : '' ?>"
-                    class="aif-input" placeholder="Votre adresse email" type="email" name="email" id="email"
+                    class="aif-input" type="email" name="email" id="email"
                     autocomplete="email" required="true">
                 <div class="aif-password-container">
                     <label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
                     <div class="aif-password-container__input-wrapper">
-                        <input placeholder="Votre mot de passe" class="aif-password-container__input aif-input"
+                        <input placeholder="Mot de passe" class="aif-password-container__input aif-input"
                             name="password" aria-describedby="passwordHelp passphraseRequirements" type="password"
                             id="password" autocomplete="new-password" required aria-required="true"
                             oninput="checkPassphraseStrength()">

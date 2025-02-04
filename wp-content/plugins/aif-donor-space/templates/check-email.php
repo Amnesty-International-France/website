@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
             <form class="aif-form-container" role="form" method="POST" action="">
             <label>Votre adresse email</label>
             <div>
-                <input placeholder="" value="" type="email" name="email" required="true">
+                <input placeholder="adresse@mail.fr" value="" type="email" name="email" required="true">
                 <button aria-label="Rechercher" class="btn btn--dark" type="submit">Vérifier votre email</button>
             </div>
         </form>

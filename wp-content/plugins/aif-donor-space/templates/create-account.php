@@ -113,7 +113,7 @@ if (!empty($send_code_error_message)) {
             <div>
 
             <label for="email">Adresse email (obligatoire) :</label>
-                <input type="email" class="aif-input" id="email" name="email" aria-describedby="email-help-message" placeholder="Votre adresse email"
+                <input type="email" class="aif-input" id="email" name="email" aria-describedby="email-help-message" placeholder="adresse@mail.fr"
                     autocomplete="email" aria-required="true" required>
 
                 <?php
@@ -129,7 +129,7 @@ if (!empty($send_code_error_message)) {
                 <div class="aif-password-container">
                     <label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
                     <div class="aif-password-container__input-wrapper">
-                        <input class="aif-password-container__input aif-input" placeholder="Votre mot de passe" name="password"
+                        <input class="aif-password-container__input aif-input" placeholder="Mot de passe" name="password"
                             aria-describedby="passwordHelp passphraseRequirements" type="password" id="password"
                             autocomplete="new-password" required aria-required="true"
                             oninput="checkPassphraseStrength()">
@@ -152,9 +152,9 @@ if (!empty($send_code_error_message)) {
 
                    
 
-                    <div id="passphraseRequirements">
-                        <p class=" aif-m0">Votre mot de passe : </p>
-                        <ul>
+                    <div id="passphraseRequirements aif-text-small">
+                        <p class=" aif-m0 aif-text-small">Votre mot de passe : </p>
+                        <ul class="aif-text-small">
                             <li id=" length">Doit contenir au moins 6 caractères</li>
                             <li id="uppercase">Doit contenir au moins une lettre majuscule</li>
                             <li id="lowercase">Doit contenir au moins une lettre minuscule</li>
@@ -172,7 +172,7 @@ if (!empty($send_code_error_message)) {
                         <div class="aif-password-container__input-wrapper">
                             <input class="aif-password-container__input aif-input" name="confirm-password"
                                 type="password" id="confirm-password" autocomplete="new-password" required
-                                aria-required="true" placeholder="Votre mot de passe" oninput="checkPasswordMatch()">
+                                aria-required="true" placeholder="Mot de passe" oninput="checkPasswordMatch()">
                             <button class="aif-password-container__button" type="button" id="toggle-confirm-password"
                                 data-target="confirm-password" aria-label="Afficher ou masquer le mot de passe">
                                 Afficher
@@ -189,8 +189,8 @@ if (!empty($send_code_error_message)) {
 
             </form>
 
-            <p class="aif-mt1w">
-                Les données personnelles collectées sur ce formulaire sont traitées par l’association Amnesty International France (AIF), responsable du traitement. Ces données vont nous permettre de vous envoyer nos propositions d’engagement, qu’elles soient militantes ou financières. Notre politique de confidentialité détaille la manière dont Amnesty International France, en sa qualité de responsable de traitement, traite et protège vos données personnelles collectées conformément aux dispositions de la Loi du 6 janvier 1978 relative à l’informatique, aux fichiers et aux libertés dite Loi « Informatique et Libertés », et au Règlement européen du 25 mai 2018 sur la protection des données (« RGPD »). Pour toute demande, vous pouvez contacter le service membres et donateurs d’AIF à l’adresse mentionnée ci-dessus, par email smd@amnesty.fr. Vous pouvez également introduire une réclamation auprès de la CNIL. Pour plus d’information sur le traitement de vos données personnelles, veuillez consulter notre politique de confidentialité.
+            <p class="aif-mt1w aif-text-small">
+            Les données personnelles collectées sur ce formulaire sont traitées par l’association Amnesty International France (AIF), responsable du traitement. Ces données vont nous permettre de vous envoyer nos propositions d’engagement, qu’elles soient militantes ou financières. Notre politique de confidentialité détaille la manière dont Amnesty International France, en sa qualité de responsable de traitement, traite et protège vos données personnelles collectées conformément aux dispositions de la Loi du 6 janvier 1978 relative à l’informatique, aux fichiers et aux libertés dite Loi « Informatique et Libertés », et au Règlement européen du 25 mai 2018 sur la protection des données (« RGPD »). Pour toute demande, vous pouvez contacter le service membres et donateurs d’AIF à l’adresse mentionnée ci-dessus, par email smd@amnesty.fr. Vous pouvez également introduire une réclamation auprès de la CNIL. Pour plus d’information sur le traitement de vos données personnelles, veuillez consulter notre politique de confidentialité.
             </p>
         </section>
 

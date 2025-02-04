@@ -7,6 +7,6 @@
 </svg>
 </div>
 
-<p> <?= $content ?></p>
+<p class="aif-text-small "> <?= $content ?></p>
 
 </div>
