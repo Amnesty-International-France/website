@@ -95,27 +95,16 @@ if (checkKeys($requiredFields, $_POST)) {
 
 ?>
 
-<div class="aif-grid-container aif-mt1w">
 
-    <nav class="aif-flex aif-mr1w aif-lg-justify-end aif-container aif-mb1w" aria-label="menu retour a l'espace don">
-        <a class=""
-            href="<?= get_permalink(get_page_by_path('espace-don')) ?>">
 
-            <svg class="" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g id="Frame">
-                    <path id="Vector" d="M3.5 1L3.9 1.4L2.2 3.2H12V3.8H2.2L3.9 5.6L3.5 6L1 3.5L3.5 1Z" fill="#2B2B2B" />
-                </g>
-            </svg>
-            Revenir à mon espace don
-        </a>
-    </nav>
+<main class="aif-container--main">
+       
+        <section class="aif-container--form">
 
-    <main class="">
-        <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="article-title wp-block-post-title">Mes informations personelles</h1>
+        <header>
+            <h1>Mes informations</h1>
         </header>
 
-        <section>
             <h2>Mes informations personelles</h2>
 
             <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$SF_User->Identifiant_contact__c}" ?>
@@ -165,18 +154,33 @@ if (checkKeys($requiredFields, $_POST)) {
                 <input autocomplete="address-level3" name="Ville__c" class="aif-input" id="city" type="text"
                     value="<?= $SF_User->Ville__c ?>" />
 
-                <div>
 
-                    <label for="Pays__c">Pays (obligatoire)</label>
-                    <select id="Pays__c" name="Pays__c" aria-label="Sélectionnez un pays">
-                        <?php foreach ($countries as $country) : ?>
-                        <option
-                            value="<?php echo htmlspecialchars($country); ?>">
-                            <?php echo htmlspecialchars($country); ?>
-                        </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+            <div  class="aif-dropdown__container">
+            <label for="select">Pays</label>
+                <button
+                type="button"
+                role="combobox"
+                id="select"
+                id="dropdown-button"
+           
+                class="checkboxGroup-button i aif-dropdown__container_button">
+                Séléctionner votre pays
+            
+            </button>
+       
+
+            <ul role="listbox" id="dropdown-list" class="checkboxGroup-list aif-dropdown__container_option-list">
+                
+            <?php     foreach ($countries as $country): ?>
+
+            <li role="option" class="aif-dropdown__container_option-list__item "><?= $country ?></li>
+            <?php     endforeach ?>
+
+            </ul>
+
+            <div id="announcement" aria-live="assertive" role="alert" class="aif-sr-only" ></div> <!-- The screen reader will announce the content in this element  -->
+            </div>
+
                 <label for="tel">N° de téléphone portable</label>
                 <input autocomplete="tel" name="MobilePhone" class="aif-input" id="tel" type="text"
                     value="<?= $SF_User->MobilePhone ?>" />
@@ -195,7 +199,7 @@ if (checkKeys($requiredFields, $_POST)) {
         <?php if($actifMandate) :  ?>
 
 
-        <section class="aif-mt1w">
+        <section class="aif-container--form">
         <h2>
             Mes informations bancaires
         </h2>
@@ -217,10 +221,182 @@ if (checkKeys($requiredFields, $_POST)) {
 
     </main>
 
-    <div>
-        <!-- Leave Empty -->
-    </div>
-</div>
+<script>
+
+
+
+
+const elements = {
+  button: document.querySelector('[role="combobox"]'),
+  dropdown: document.querySelector('[role="listbox"]'),
+  options: document.querySelectorAll('[role="option"]'),
+  announcement: document.getElementById('announcement'),
+};
+
+let isDropdownOpen = false;
+let currentOptionIndex = 0;
+let lastTypedChar = '';
+let lastMatchingIndex = 0;
+
+const toggleDropdown = () => {
+  elements.button.classList.toggle('is-active');
+  isDropdownOpen = !isDropdownOpen;
+  elements.button.setAttribute('aria-expanded', isDropdownOpen.toString());
+
+  if (isDropdownOpen) {
+    focusCurrentOption();
+  } else {
+    elements.button.focus(); // focus the button when the dropdown is closed just like the select element
+  }
+};
+
+const focusCurrentOption = () => {
+  const currentOption = elements.options[currentOptionIndex];
+
+  currentOption.classList.add('aif-dropdown__container_option-list__item--curent');
+  currentOption.focus();
+
+  currentOption.focus();
+
+// Scroll the current option into view
+    currentOption.scrollIntoView({
+        block: 'nearest',
+    });
+
+  elements.options.forEach((option, index) => {
+    if (option !== currentOption) {
+      option.classList.remove('aif-dropdown__container_option-list__item--curent');
+    }
+  });
+};
+
+const handleKeyPress = (event) => {
+  event.preventDefault();
+  const { key } = event;
+  const openKeys = ['ArrowDown', 'ArrowUp', 'Enter', ' '];
+
+  if (!isDropdownOpen && openKeys.includes(key)) {
+    toggleDropdown();
+
+  } else if (isDropdownOpen) {
+    switch (key) {
+      case 'Escape':
+        toggleDropdown();
+        break;
+      case 'ArrowDown':
+        moveFocusDown();
+        break;
+      case 'ArrowUp':
+        moveFocusUp();
+        break;
+      case 'Enter':
+      case ' ':
+        selectCurrentOption();
+        break;
+      default:
+        // Handle alphanumeric key presses for mini-search
+        handleAlphanumericKeyPress(key);
+        break;
+    }
+  }
+};
+
+const handleDocumentInteraction = (event) => {
+  const isClickInsideButton = elements.button.contains(event.target);
+  const isClickInsideDropdown = elements.dropdown.contains(event.target);
+
+  if (isClickInsideButton || (!isClickInsideDropdown && isDropdownOpen)) {
+    toggleDropdown();
+  }
+
+  // Check if the click is on an option
+  const clickedOption = event.target.closest('[role="option"]');
+  if (clickedOption) {
+    selectOptionByElement(clickedOption);
+  }
+};
+
+
+const moveFocusDown = () => {
+  if (currentOptionIndex < elements.options.length - 1) {
+    currentOptionIndex++;
+  } else {
+    currentOptionIndex = 0;
+  }
+  focusCurrentOption();
+};
+
+const moveFocusUp = () => {
+  if (currentOptionIndex > 0) {
+    currentOptionIndex--;
+  } else {
+    currentOptionIndex = elements.options.length - 1;
+  }
+  focusCurrentOption();
+};
+
+const selectCurrentOption = () => {
+  const selectedOption = elements.options[currentOptionIndex];
+  selectOptionByElement(selectedOption);
+};
+
+const announceOption = (text) => {
+  elements.announcement.textContent = text;
+  elements.announcement.setAttribute('aria-live', 'assertive');
+  setTimeout(() => {
+    elements.announcement.textContent = '';
+    elements.announcement.setAttribute('aria-live', 'off');
+  }, 1000); // Announce and clear after 1 second (adjust as needed)
+};
+
+
+const selectOptionByElement = (optionElement) => {
+  const optionValue = optionElement.textContent;
+
+  elements.button.textContent = optionValue;
+  elements.options.forEach(option => {
+    option.classList.remove('aif-dropdown__container_option-list__item--curent');
+    option.setAttribute('aria-selected', 'false');
+  });
+
+  optionElement.classList.add('aif-dropdown__container_option-list__item--curent');
+  optionElement.setAttribute('aria-selected', 'true');
+
+  toggleDropdown();
+  announceOption(optionValue);
+};
+
+const handleAlphanumericKeyPress = (key) => {
+  const typedChar = key.toLowerCase();
+
+  if (lastTypedChar !== typedChar) {
+    lastMatchingIndex = 0;
+  }
+
+  const matchingOptions = Array.from(elements.options).filter((option) =>
+    option.textContent.toLowerCase().startsWith(typedChar)
+  );
+
+  if (matchingOptions.length) {
+    if (lastMatchingIndex === matchingOptions.length) {
+      lastMatchingIndex = 0;
+    }
+    let value = matchingOptions[lastMatchingIndex]
+    const index = Array.from(elements.options).indexOf(value);
+    currentOptionIndex = index;
+    focusCurrentOption();
+    lastMatchingIndex += 1;
+  }
+  lastTypedChar = typedChar;
+};
+
+elements.button.addEventListener('keydown', handleKeyPress);
+// elements.button.addEventListener('click', toggleDropdown);
+document.addEventListener('click', handleDocumentInteraction);
+
+
+
+</script>
 
 
 <?php
