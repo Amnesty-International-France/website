@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (!empty($error_message)) {
     $title = "Une erreur est survenue";
     aif_include_partial("alert", [
+        "state" => "error",
         "title" => $title,
     "content" => $error_message]);
 
@@ -99,6 +100,7 @@ if (!empty($send_code_error_message)) {
                                             membres et donateurs</a> si vous pensez que c’est une erreur.';
 
     aif_include_partial("alert", [
+    "state" => "error",
     "title" => $title,
     "content" => $content]);
 

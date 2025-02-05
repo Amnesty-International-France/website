@@ -76,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
             $error_title = "Une erreur est survenue.";
             aif_include_partial("alert", [
             "title" => $error_title,
+            "state" => "error",
             "content" => $error_message]);
 
         }

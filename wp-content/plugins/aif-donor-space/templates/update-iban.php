@@ -86,6 +86,7 @@ if (!empty($error_message)) {
     $title = "Une erreur est survenue";
     aif_include_partial("alert", [
         "title" => $title,
+        "state" => "error",
     "content" => $error_message]);
 
 }
@@ -95,7 +96,7 @@ if (!empty($success_message)) {
     aif_include_partial("alert", [
         "title" => $success_message_title,
     "content" => $success_message,
-"success" => true]);
+"state" => "success"]);
 
 }
 
