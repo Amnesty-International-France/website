@@ -133,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
             $title = "Une erreur est survenue";
                     aif_include_partial("alert", [
                         "title" => $title,
+                        "state" => "error",
                     "content" => $error_message])
 
                     ?>
@@ -152,6 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
             <?php if (!empty($send_code_error_message)) {
                 $title = "Une erreur est survenue";
                 aif_include_partial("alert", [
+                    "state" => "error",
                     "title" => $title,
                 "content" => $send_code_error_message]);
 

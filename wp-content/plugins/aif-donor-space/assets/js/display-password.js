@@ -1,7 +1,5 @@
 const toggleButtons = document.querySelectorAll('.aif-password-container__button');
 
-console.log(toggleButtons)
-
 toggleButtons.forEach(button => {
     button.addEventListener('click', function () {
         const targetId = button.getAttribute('data-target');

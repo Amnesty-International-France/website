@@ -17,6 +17,9 @@ $actifMandate  = null;
 $day_of_payment = null;
 $has_error = false;
 
+$action_succeed = false;
+$disable_button = false;
+
 
 $requiredFields = [
 "Salutation", "LastName", "Code_Postal__c", "FirstName", "Email", "Adresse_Ligne_4__c", "Ville__c", "Pays__c", "MobilePhone"
@@ -82,120 +85,168 @@ function checkKeys($requiredFields, $array_to_check)
 }
 
 
-if (checkKeys($requiredFields, $_POST)) {
+if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $disable_button = true;
 
     $partial_data = [
         "Identifiant_contact__c" => $SF_User->Identifiant_contact__c
     ];
 
     $data  = array_merge($_POST, $partial_data);
+
     post_salesforce_user_data($data);
+
+    $action_succeed = true;
+    $disable_button = false;
+
 
 }
 
 ?>
 
-<div class="aif-grid-container aif-mt1w">
 
-    <nav class="aif-flex aif-mr1w aif-lg-justify-end aif-container aif-mb1w" aria-label="menu retour a l'espace don">
-        <a class=""
-            href="<?= get_permalink(get_page_by_path('espace-don')) ?>">
 
-            <svg class="" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g id="Frame">
-                    <path id="Vector" d="M3.5 1L3.9 1.4L2.2 3.2H12V3.8H2.2L3.9 5.6L3.5 6L1 3.5L3.5 1Z" fill="#2B2B2B" />
-                </g>
-            </svg>
-            Revenir à mon espace don
-        </a>
-    </nav>
+<main class="aif-container--main">
 
-    <main class="">
-        <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="article-title wp-block-post-title">Mes informations personelles</h1>
+    <section class="aif-container--form">
+
+        <header>
+            <h1>Mes informations</h1>
         </header>
 
-        <section>
-            <h2>Mes informations personelles</h2>
-
-            <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$SF_User->Identifiant_contact__c}" ?>
-            </p>
+        <?php
+        if ($action_succeed === true) {
 
 
-            <form class="" role="form" method="POST" action="">
-                <label for="email">Adresse email (obligatoire)</label>
-                <input class="aif-input" id="email" readonly read type="email"
-                    value="<?= $current_user->user_email ?>"
-                    name="Email" />
+            aif_include_partial("alert", [
+                "state" => "success",
+                "title" => "Votre demande de changement d'informations ont bien été pris en compte",
+            "content" => "Ces changements seront visible d'ici quelques minutes"]);
 
-                <p class="aif-mt1w">Votre email sert d'identifiant pour votre Espace Don. Pour le modiifer <a
-                        class="aif-link--primary"> contactez-nous</a></p>
+        }
 
-                <fieldset class="aif-flex">
-                    <legend>Civilité<legend>
+?>
 
-                            <input type="radio" id="M" name="Salutation" value="M" checked />
-                            <label for="M">Monsieur</label>
+        <h2>Mes informations personelles</h2>
 
-
-                            <input type="radio" id="Mme" name="Salutation" value="Mme" />
-                            <label for="Mme">Madame</label>
-                </fieldset>
-
-                <label for="firstname">Prénom (obligatoire)</label>
-                <input autocomplete="gi<dven-name" name="FirstName" class="aif-input" required aria-required=""
-                    id="firstname" read type="text"
-                    value="<?= $SF_User->FirstName ?>" />
-                <label for="lastname">Nom (obligatoire)</label>
-                <input autocomplete="lastName" name="LastName" class="aif-input" required aria-required="" id="lastname"
-                    read type="text"
-                    value="<?= $SF_User->LastName ?>" />
-                <label for="street-address">Adresse postale (obligatoire)</label>
-                <input autocomplete="street-address" name="Adresse_Ligne_4__c" class="aif-input" required
-                    aria-required="" id="street-address" type="text"
-                    value="<?= $SF_User->Adresse_Ligne_4__c ?>" />
-                <label for="address-level3">Complément adresse</label>
-                <input autocomplete="address-level3" name="Adresse_Ligne_3__c" class="aif-input" id="address-level3"
-                    type="text"
-                    value="<?= $SF_User->Adresse_Ligne_3__c ?>" />
-                <label for="postal-code">Code Postal (obligatoire)</label>
-                <input autocomplete="postal-code" name="Code_Postal__c" class="aif-input" id="postal-code" type="text"
-                    value="<?= $SF_User->Code_Postal__c ?>" />
-                <label for="city">Ville (obligatoire)</label>
-                <input autocomplete="address-level3" name="Ville__c" class="aif-input" id="city" type="text"
-                    value="<?= $SF_User->Ville__c ?>" />
-
-                <div>
-
-                    <label for="Pays__c">Pays (obligatoire)</label>
-                    <select id="Pays__c" name="Pays__c" aria-label="Sélectionnez un pays">
-                        <?php foreach ($countries as $country) : ?>
-                        <option
-                            value="<?php echo htmlspecialchars($country); ?>">
-                            <?php echo htmlspecialchars($country); ?>
-                        </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <label for="tel">N° de téléphone portable</label>
-                <input autocomplete="tel" name="MobilePhone" class="aif-input" id="tel" type="text"
-                    value="<?= $SF_User->MobilePhone ?>" />
-                <label for="HomePhone">N° de téléphone domicile</label>
-                <input name="HomePhone" class="aif-input" id="HomePhone" type="text"
-                    value="<?= $SF_User->HomePhone ?>" />
+        <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$SF_User->Identifiant_contact__c}" ?>
+        </p>
 
 
-                <button class="btn aif-mt1w aif-button--full" type="submit">Transmettre les modifications</button>
-            </form>
-        </section>
+        <form class="" role="form" method="POST" action="">
+            <label for="email">Adresse email (obligatoire)</label>
+            <input class="aif-input aif-input--disabled" id="email" readonly read type="email"
+                value="<?= $current_user->user_email ?>"
+                name="Email" />
+
+            <?php
+                        aif_include_partial("info-message", [
+                        "id" => "email-help-message",
+                        "content" => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, contactez-nous."]); ?>
+
+            <fieldset class="aif-flex aif-fieldset">
+                <legend class="aif-fieldset__legend">Civilité (obligatoire)<legend>
+
+                        <div class="aif-radio-button-container">
 
 
 
+                            <div class="aif-radio-button-container__button">
+                                <input
+                                    checked="<?= $SF_User->Civility == 'M' ?>"
+                                    type="radio" id="M" name="Salutation" value="M" />
+                                <label for="M">Monsieur</label>
+                            </div>
+                            <div class="aif-radio-button-container__button">
+                                <input type="radio" id="Mme"
+                                    checked="<?= $SF_User->Civility == 'Mme' ?>"
+                                    name="Salutation" value="Mme" />
+                                <label for="Mme">Madame</label>
+                            </div>
 
-        <?php if($actifMandate) :  ?>
+                        </div>
+            </fieldset>
+
+            <label for="firstname">Prénom (obligatoire)</label>
+            <input autocomplete="gi<dven-name" name="FirstName" class="aif-input" required aria-required=""
+                id="firstname" read type="text"
+                value="<?= $SF_User->FirstName ?>" />
+            <label for="lastname">Nom (obligatoire)</label>
+            <input autocomplete="lastName" name="LastName" class="aif-input" required aria-required="" id="lastname"
+                read type="text" value="<?= $SF_User->LastName ?>" />
+            <label for="street-address">Adresse postale (obligatoire)</label>
+            <input autocomplete="street-address" name="Adresse_Ligne_4__c" class="aif-input" required aria-required=""
+                id="street-address" type="text"
+                value="<?= $SF_User->Adresse_Ligne_4__c ?>" />
+            <label for="address-level3">Complément adresse</label>
+            <input autocomplete="address-level3" name="Adresse_Ligne_3__c" class="aif-input" id="address-level3"
+                type="text"
+                value="<?= $SF_User->Adresse_Ligne_3__c ?>" />
+            <label for="postal-code">Code Postal (obligatoire)</label>
+            <input autocomplete="postal-code" name="Code_Postal__c" class="aif-input" id="postal-code" type="text"
+                value="<?= $SF_User->Code_Postal__c ?>" />
+            <label for="city">Ville (obligatoire)</label>
+            <input autocomplete="address-level3" name="Ville__c" class="aif-input" id="city" type="text"
+                value="<?= $SF_User->Ville__c ?>" />
 
 
-        <section class="aif-mt1w">
+            <div class="aif-dropdown__container">
+                <label for="select">Pays</label>
+                <button type="button" role="combobox" id="select" id="dropdown-button"
+                    class="checkboxGroup-button i aif-dropdown__container_button">
+                    Séléctionner votre pays
+
+                </button>
+
+
+                <ul role="listbox" id="dropdown-list" class="checkboxGroup-list aif-dropdown__container_option-list">
+
+                    <?php     foreach ($countries as $country): ?>
+
+                    <li role="option" class="aif-dropdown__container_option-list__item ">
+                        <?= $country ?>
+                    </li>
+                    <?php     endforeach ?>
+
+                </ul>
+
+                <div id="announcement" aria-live="assertive" role="alert" class="aif-sr-only"></div>
+                <!-- The screen reader will announce the content in this element  -->
+            </div>
+
+            <div class="aif-hidden">
+                <label for="inputResult">Votre pays</label>
+                <input autocomplete="tel"
+                    value="<?= $SF_User->Pays__c ?>" name="Pays__c"
+                    class="aif-input" id="inputResult" type="text" />
+            </div>
+
+
+
+            <label for="tel">N° de téléphone portable</label>
+            <input autocomplete="tel" name="MobilePhone" class="aif-input" id="tel" type="text"
+                value="<?= $SF_User->MobilePhone ?>" />
+            <label for="HomePhone">N° de téléphone domicile</label>
+            <input name="HomePhone" class="aif-input" id="HomePhone" type="text"
+                value="<?= $SF_User->HomePhone ?>" />
+
+
+            <button class="btn aif-mt1w aif-button--full"
+                <?= $disable_button ? 'disabled' : '' ?>
+                type="submit">Transmettre les modifications</button>
+
+            <button class="btn btn--dark aif-mt1w aif-button--full" type="reset">Annuler</button>
+        </form>
+    </section>
+
+
+
+
+    <?php if($actifMandate) :  ?>
+
+
+    <section class="aif-container--form">
         <h2>
             Mes informations bancaires
         </h2>
@@ -203,24 +254,22 @@ if (checkKeys($requiredFields, $_POST)) {
         <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$SF_User->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> de {$actifMandate->Montant__c} € le {$day_of_payment} de chaque mois." ?>
         </p>
 
-        <p>Prélèvement automatique sur l'IBAN se terminant par <?= $last4IBANDigit ?> </p>
+
+
+        <?php aif_include_partial("alert", ["content" => "Prélèvement automatique sur l'IBAN se terminant par {$last4IBANDigit}"]); ?>
 
         <p>
-            <a   href="<?= get_permalink(get_page_by_path('espace-don/modification-coordonnees-bancaire')) ?>"  class="aif-link--primary"> Modifier l'IBAN</a>
+            <a href="<?= get_permalink(get_page_by_path('espace-don/modification-coordonnees-bancaire')) ?>"
+                class="btn btn--white  aif-button--full"> Modifier l'IBAN</a>
         </p>
 
-        </section>
-<?php endif ?>
-  
+    </section>
+    <?php endif ?>
 
 
 
-    </main>
 
-    <div>
-        <!-- Leave Empty -->
-    </div>
-</div>
+</main>
 
 
 <?php

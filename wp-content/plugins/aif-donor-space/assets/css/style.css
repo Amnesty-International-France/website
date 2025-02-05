@@ -17,6 +17,7 @@ body {
 }
 
 
+
 /* Container */
 
 .aif-flex {
@@ -27,6 +28,9 @@ body {
     display: block;
 }
 
+.aif-hidden {
+    display: none;
+}
 
 .aif-flex-row {
     flex-direction: row;
@@ -61,7 +65,7 @@ body {
 .aif-grid-container {
     @media screen and (min-width: 1140px) {
         display: grid;
-        grid-template-columns: 1fr 1024px 1fr;
+        grid-template-columns: 1fr 440px 1fr;
         flex: 1 1 auto;
     }
 }
@@ -82,7 +86,6 @@ body {
 
 .aif-gap-single {
     gap: var(--wp--preset--spacing--single);
-
 }
 
 
@@ -292,6 +295,12 @@ body {
     text-transform: initial;
 }
 
+.aif-input--disabled {
+    color: black;
+    border: 1px solid #A7AAAD;
+    background-color: #F6F7F7 !important;
+}
+
 
 .aif-password-container {
     display: flex;
@@ -357,4 +366,75 @@ body {
     color: #A7AAAD !important;
     border: 1px solid #A7AAAD;
     background-color: white !important;
+}
+
+.aif-dropdown__container,
+.aif-dropdown__container_button {
+    width: 100%;
+}
+
+
+.aif-dropdown__container {
+
+    position: relative;
+}
+
+.aif-dropdown__container_button {
+    width: 100%;
+}
+
+.aif-dropdown__container_option-list {
+    display: none;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: scroll;
+    background: var(--wp--preset--color--white);
+    border: 1px solid var(--wp--preset--color--grey-lighter);
+
+}
+
+.aif-dropdown__container_option-list__item {
+    padding: var(--wp--preset--spacing--quarter) 0;
+    align-content: center;
+}
+
+.aif-dropdown__container_option-list__item--curent {
+    background-color: var(--wp--preset--color--primary);
+    font-weight: bold;
+}
+
+
+.aif-dropdown__container_option-list__item:not(:last-child) {
+    border-bottom: 1px solid var(--wp--preset--color--grey-lighter);
+
+}
+
+.aif-fieldset {
+
+    background-color: transparent;
+    padding: 0;
+    margin: 0 !important;
+}
+
+.aif-fieldset__legend {
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: var(--wp--preset--font-size--small);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.aif-radio-button-container {
+    display: flex;
+
+    gap: var(--wp--preset--spacing--single)
+}
+
+.aif-radio-button-container__button {
+
+    display: flex;
+    align-items: center;
+    gap: var(--wp--preset--spacing--quarter)
 }

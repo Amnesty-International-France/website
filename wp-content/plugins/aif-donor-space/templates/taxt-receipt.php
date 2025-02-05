@@ -74,7 +74,7 @@ if ($tax_reciept->totalSize > 0) {
                         aif_include_partial("alert", [
                             "title" => "Votre demande à bien été prise en compte",
                         "content" => "Vous le receverez d'ici quelques heures dans votre boite email",
-                    "success" => true]);
+                    "state" => "success"]);
 
                     ?>
                     </div>

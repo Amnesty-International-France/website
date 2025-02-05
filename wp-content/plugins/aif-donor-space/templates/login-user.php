@@ -113,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
 
             aif_include_partial("alert", [
+                "state" => "error",
                 "title" => $title,
             "content" => $error_message]);
 
