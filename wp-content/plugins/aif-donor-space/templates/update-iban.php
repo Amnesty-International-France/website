@@ -53,22 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
-<div class="aif-grid-container aif-mt1w">
 
-    <nav class="aif-flex aif-mr1w aif-lg-justify-end aif-container aif-mb1w" aria-label="menu retour a l'espace don">
-        <a class=""
-            href="<?= get_permalink(get_page_by_path('espace-don')) ?>">
 
-            <svg class="" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g id="Frame">
-                    <path id="Vector" d="M3.5 1L3.9 1.4L2.2 3.2H12V3.8H2.2L3.9 5.6L3.5 6L1 3.5L3.5 1Z" fill="#2B2B2B" />
-                </g>
-            </svg>
-            Revenir à mon espace don
-        </a>
-    </nav>
+<main class="aif-container--main">
 
-    <main class="aif-container">
+<section class="aif-container--form">
         <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
             <h1 class="article-title wp-block-post-title">Modification de mes informations bancaires</h1>
         </header>
@@ -108,28 +97,28 @@ if (!empty($success_message)) {
         <form method="post" action="">
 
             <div class="aif-flex aif-gap-single">
-                <?php foreach ($ibanBlocks as $index => $block): ?>
+    
                 <label for="ibanBlock<?php echo $index; ?>"
-                    class="aif-sr-only">Bloc
+                    class="aif-sr-only">N° IBAN (obligatoire)
                     <?php echo $index + 1; ?></label>
                 <input type="text"
                     id="ibanBlock<?php echo $index; ?>"
-                    name="ibanBlock[]"
+                    name="iban"
                     value="<?php echo htmlspecialchars($block); ?>"
                     maxlength="4"
                     class="<?= $has_error ? 'aif-input-error' : '' ?>"
                     aria-label="Bloc <?php echo $index + 1; ?>" />
-                <?php endforeach; ?>
+          
             </div>
-            <button class="btn btn--dark aif-mt1w" type="submit">Modifier IBAN</button>
+            <button class="btn aif-mt1w aif-button--full" type="submit">Enregistrer</button>
+            <button class="btn btn--dark aif-mt1w aif-button--full" type="reset">Annuler</button>
         </form>
+
+</section>
 
 
     </main>
-    <div>
-        <!-- Leave Empty -->
-    </div>
-</div>
+
 
 
 <?php
