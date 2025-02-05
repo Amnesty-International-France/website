@@ -149,9 +149,6 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
                 <legend class="aif-fieldset__legend">Civilité (obligatoire)<legend>
 
                         <div class="aif-radio-button-container">
-
-
-
                             <div class="aif-radio-button-container__button">
                                 <input
                                     checked="<?= $SF_User->Civility == 'M' ?>"
@@ -169,25 +166,25 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             </fieldset>
 
             <label for="firstname">Prénom (obligatoire)</label>
-            <input autocomplete="gi<dven-name" name="FirstName" class="aif-input" required aria-required=""
+            <input placeholder="Prénom" autocomplete="gi<dven-name" name="FirstName" class="aif-input" required aria-required=""
                 id="firstname" read type="text"
                 value="<?= $SF_User->FirstName ?>" />
             <label for="lastname">Nom (obligatoire)</label>
-            <input autocomplete="lastName" name="LastName" class="aif-input" required aria-required="" id="lastname"
+            <input placeholder="Nom" autocomplete="lastName" name="LastName" class="aif-input" required aria-required="" id="lastname"
                 read type="text" value="<?= $SF_User->LastName ?>" />
             <label for="street-address">Adresse postale (obligatoire)</label>
-            <input autocomplete="street-address" name="Adresse_Ligne_4__c" class="aif-input" required aria-required=""
+            <input placeholder="N° et nom de la rue"  autocomplete="street-address" name="Adresse_Ligne_4__c" class="aif-input" required aria-required=""
                 id="street-address" type="text"
                 value="<?= $SF_User->Adresse_Ligne_4__c ?>" />
             <label for="address-level3">Complément adresse</label>
-            <input autocomplete="address-level3" name="Adresse_Ligne_3__c" class="aif-input" id="address-level3"
+            <input placeholder="N° d'appartement, étage, bâtiment"   autocomplete="address-level3" name="Adresse_Ligne_3__c" class="aif-input" id="address-level3"
                 type="text"
                 value="<?= $SF_User->Adresse_Ligne_3__c ?>" />
             <label for="postal-code">Code Postal (obligatoire)</label>
-            <input autocomplete="postal-code" name="Code_Postal__c" class="aif-input" id="postal-code" type="text"
+            <input  placeholder="Code Postal" autocomplete="postal-code" name="Code_Postal__c" class="aif-input" id="postal-code" type="text"
                 value="<?= $SF_User->Code_Postal__c ?>" />
             <label for="city">Ville (obligatoire)</label>
-            <input autocomplete="address-level3" name="Ville__c" class="aif-input" id="city" type="text"
+            <input placeholder="Ville" autocomplete="address-level3" name="Ville__c" class="aif-input" id="city" type="text"
                 value="<?= $SF_User->Ville__c ?>" />
 
 
@@ -225,10 +222,10 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
 
             <label for="tel">N° de téléphone portable</label>
-            <input autocomplete="tel" name="MobilePhone" class="aif-input" id="tel" type="text"
+            <input placeholder="06 00 00 00 00" autocomplete="tel" name="MobilePhone" class="aif-input" id="tel" type="text"
                 value="<?= $SF_User->MobilePhone ?>" />
-            <label for="HomePhone">N° de téléphone domicile</label>
-            <input name="HomePhone" class="aif-input" id="HomePhone" type="text"
+            <label  for="HomePhone">N° de téléphone domicile</label>
+            <input placeholder="01 00 00 00 00" name="HomePhone" class="aif-input" id="HomePhone" type="text"
                 value="<?= $SF_User->HomePhone ?>" />
 
 
