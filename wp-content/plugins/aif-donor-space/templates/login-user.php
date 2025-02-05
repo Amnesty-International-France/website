@@ -5,6 +5,12 @@ get_header();
 
 $email = "";
 
+$current_user = wp_get_current_user();
+
+$resetEmailLink = add_query_arg([
+    "user" => $current_user->user_email
+], get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')));
+
 
 
 if (!isset($_GET['user'])) {
@@ -15,8 +21,8 @@ if (!isset($_GET['user'])) {
     $user = get_user_by("email", $_GET['user']);
     if ($user) {
         $email = $user->user_email;
-    }
 
+    }
 }
 
 $error_message = "";
@@ -93,8 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 <label for="email">Votre adresse email (obligatoire)</label>
                 <input placeholder="adresse@mail.fr"
                     value="<?= $email ? $email : '' ?>"
-                    class="aif-input" type="email" name="email" id="email"
-                    autocomplete="email" required="true">
+                    class="aif-input" type="email" name="email" id="email" autocomplete="email" required="true">
                 <div class="aif-password-container">
                     <label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
                     <div class="aif-password-container__input-wrapper">
@@ -123,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
                     <div class="aif-flex aif-justify-end">
                         <a class="aif-link--primary aif-mt1w aif-block"
-                            href="<?=  get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>">
+                            href="<?= $resetEmailLink ?>">
                             Mot de passe oublié ? </a>
 
                     </div>
