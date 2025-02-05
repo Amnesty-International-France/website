@@ -68,6 +68,7 @@ function aif_donor_space_create_pages()
                 'mot-de-passe-oublie' => ['title' => 'Mon espace don - Mot de passe oublié'],
                 'modification-coordonnees-bancaire' => ['title' => 'Mon espace don - Mettre à jour ses coordonées bancaires'],
                 'mes-informations-personelles' => ['title' => 'Mon espace don - Mes informations personelles'],
+                'mes-demandes' => ['title' => 'Mon espace don - Mes demandes'],
 
             ]
 
@@ -122,6 +123,7 @@ function aif_donor_space_load_template($template)
         'mot-de-passe-oublie' => $templates_dir . 'forgotten-password.php',
         'modification-coordonnees-bancaire' => $templates_dir . 'update-iban.php',
         'mes-informations-personelles' => $templates_dir . 'my-personal-informations.php',
+        'mes-demandes' => $templates_dir . 'my-demand.php',
     ];
 
     if (array_key_exists($page_slug, $templates_map) && file_exists($templates_map[ $page_slug ])) {
@@ -165,6 +167,16 @@ function aif_donor_space_enqueue_assets()
     wp_enqueue_script(
         'aif-donor-space-dropdown',
         AIF_DONOR_SPACE_URL . 'assets/js/dropdown.js',
+        [
+
+        ],
+        '1.0',
+        true
+    );
+
+    wp_enqueue_script(
+        'aif-donor-iban-formatter',
+        AIF_DONOR_SPACE_URL . 'assets/js/iban-formatter.js',
         [
 
         ],

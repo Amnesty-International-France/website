@@ -287,6 +287,13 @@ body {
     text-decoration: underline;
 }
 
+
+.aif-link--secondary {
+    font-family: var(--wp--preset--font-family--primary);
+    font-size: var(--wp--preset--font-size--small);
+    text-decoration: underline;
+}
+
 .aif-input,
 .aif-input::placeholder {
     font-family: var(--wp--preset--font-family--primary);
