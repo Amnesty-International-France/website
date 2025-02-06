@@ -95,10 +95,9 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
     $data  = array_merge($_POST, $partial_data);
 
-    post_salesforce_user_data($data);
+    patch_salesforce_user_data($data, $sf_user_ID);
 
     $action_succeed = true;
-    $disable_button = false;
 
 
 }
@@ -122,7 +121,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             aif_include_partial("alert", [
                 "state" => "success",
                 "title" => "Votre demande de changement d'informations ont bien été pris en compte",
-            "content" => "Ces changements seront visible d'ici quelques minutes"]);
+            "content" => "Revenez sur cette page d'ici quelques minutes pour les visualiser"]);
 
         }
 
@@ -134,7 +133,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
         </p>
 
 
-        <form class="" role="form" method="POST" action="">
+        <form class="" onsubmit="disablePersonalInformationsButtons()" role="form" method="POST" action="">
             <label for="email">Adresse email (obligatoire)</label>
             <input class="aif-input aif-input--disabled" id="email" readonly read type="email"
                 value="<?= $current_user->user_email ?>"
@@ -166,26 +165,28 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             </fieldset>
 
             <label for="firstname">Prénom (obligatoire)</label>
-            <input placeholder="Prénom" autocomplete="gi<dven-name" name="FirstName" class="aif-input" required aria-required=""
-                id="firstname" read type="text"
+            <input placeholder="Prénom" autocomplete="gi<dven-name" name="FirstName" class="aif-input" required
+                aria-required="" id="firstname" read type="text"
                 value="<?= $SF_User->FirstName ?>" />
             <label for="lastname">Nom (obligatoire)</label>
-            <input placeholder="Nom" autocomplete="lastName" name="LastName" class="aif-input" required aria-required="" id="lastname"
-                read type="text" value="<?= $SF_User->LastName ?>" />
+            <input placeholder="Nom" autocomplete="lastName" name="LastName" class="aif-input" required aria-required=""
+                id="lastname" read type="text"
+                value="<?= $SF_User->LastName ?>" />
             <label for="street-address">Adresse postale (obligatoire)</label>
-            <input placeholder="N° et nom de la rue"  autocomplete="street-address" name="Adresse_Ligne_4__c" class="aif-input" required aria-required=""
-                id="street-address" type="text"
+            <input placeholder="N° et nom de la rue" autocomplete="street-address" name="Adresse_Ligne_4__c"
+                class="aif-input" required aria-required="" id="street-address" type="text"
                 value="<?= $SF_User->Adresse_Ligne_4__c ?>" />
             <label for="address-level3">Complément adresse</label>
-            <input placeholder="N° d'appartement, étage, bâtiment"   autocomplete="address-level3" name="Adresse_Ligne_3__c" class="aif-input" id="address-level3"
-                type="text"
+            <input placeholder="N° d'appartement, étage, bâtiment" autocomplete="address-level3"
+                name="Adresse_Ligne_3__c" class="aif-input" id="address-level3" type="text"
                 value="<?= $SF_User->Adresse_Ligne_3__c ?>" />
             <label for="postal-code">Code Postal (obligatoire)</label>
-            <input  placeholder="Code Postal" autocomplete="postal-code" name="Code_Postal__c" class="aif-input" id="postal-code" type="text"
+            <input placeholder="Code Postal" autocomplete="postal-code" name="Code_Postal__c" class="aif-input"
+                id="postal-code" type="text"
                 value="<?= $SF_User->Code_Postal__c ?>" />
             <label for="city">Ville (obligatoire)</label>
-            <input placeholder="Ville" autocomplete="address-level3" name="Ville__c" class="aif-input" id="city" type="text"
-                value="<?= $SF_User->Ville__c ?>" />
+            <input placeholder="Ville" autocomplete="address-level3" name="Ville__c" class="aif-input" id="city"
+                type="text" value="<?= $SF_User->Ville__c ?>" />
 
 
             <div class="aif-dropdown__container">
@@ -222,15 +223,15 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
 
             <label for="tel">N° de téléphone portable</label>
-            <input placeholder="06 00 00 00 00" autocomplete="tel" name="MobilePhone" class="aif-input" id="tel" type="text"
-                value="<?= $SF_User->MobilePhone ?>" />
-            <label  for="HomePhone">N° de téléphone domicile</label>
+            <input placeholder="06 00 00 00 00" autocomplete="tel" name="MobilePhone" class="aif-input" id="tel"
+                type="text" value="<?= $SF_User->MobilePhone ?>" />
+            <label for="HomePhone">N° de téléphone domicile</label>
             <input placeholder="01 00 00 00 00" name="HomePhone" class="aif-input" id="HomePhone" type="text"
                 value="<?= $SF_User->HomePhone ?>" />
 
 
             <button class="btn aif-mt1w aif-button--full"
-                <?= $disable_button ? 'disabled' : '' ?>
+                onclick="this.form.submit(); this.disabled=true;"
                 type="submit">Transmettre les modifications</button>
 
             <button class="btn btn--dark aif-mt1w aif-button--full" type="reset">Annuler</button>

@@ -302,7 +302,7 @@ body {
 }
 
 .aif-input--disabled {
-    color: black;
+    color: #A7AAAD;
     border: 1px solid #A7AAAD;
     background-color: #F6F7F7 !important;
 }
