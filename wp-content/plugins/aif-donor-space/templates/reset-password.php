@@ -2,7 +2,8 @@
 /* Template Name: Check email */
 get_header();
 
-if (!isset($_GET['user'])) {
+
+if (!isset($_GET['user']) || !isset($_GET['token'])) {
     $error_title = "Une erreur est survenue";
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 
@@ -103,11 +104,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
             </button>
         </div>
    
-         <?php
+        <?php
          aif_include_partial("info-message", [
             "id" => "passwordHelp",
             "content" => "Exemple : Mon@MotDePasse123"]); ?>
-         
+
+            
             <div id="password-error-too-weak" class="aif-text-red aif-hide">
                 Le mot de passe est trop faible
             </div>

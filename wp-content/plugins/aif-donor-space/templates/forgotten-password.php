@@ -4,19 +4,12 @@ get_header();
 $disable_button = false;
 
 
-$email = "";
-
-if (!isset($_GET['user'])) {
-    $error_title = "Une erreur est survenue";
-    $error_message = "Nous ne pouvons récupérer l'utilisateur associé à votre email.";
-    $disable_button = true;
-} else {
-    $email = $_GET['user'];
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    $email = sanitize_email($_POST['email']);
     $user = get_user_by("email", $email);
+
 
     if ($user) {
         $token = aif_generate_random_hash();
@@ -29,8 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $htmlMessage = "Pour réinitialiser votre mot de passe, veuillez vous rendre sur <a href='".$url."'>". $url  ."</a> ";
         $textMessae = "Pour réinitialiser votre mot de passe, veuillez vous rendre sur" . $url;
-
-
         send_reset_password_email($user->user_email, $htmlMessage, $textMessae);
 
         $success_title = "Votre demande à bien été prise en compte";
@@ -51,11 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main class="aif-container--main">
 
 
-    <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-        <h1 class="aif-mb1w">Mon espace Don</h1>
-    </header>
-    <div class="aif-container--form">
-        <h2> Mot de passe oublié </h2>
+<header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
+            <h1 class="aif-mb1w">Mon espace Don</h1>
+        </header>
+<div class="aif-container--form">
+<h2> Mot de passe oublié </h2>
         <?php
 
         if (isset($error_message)) {
@@ -82,8 +73,9 @@ if (isset($success_message)) {
 
         <section>
             <form class="aif-form-container" action="" method="POST">
-                <button class="btn aif-mt1w aif-button--full" <?= $disable_button ? "disabled" : '' ?> type="submit" id="submit-btn">Réinitialiser mon mot de
-                    passe</button>
+                <label for="email">Votre email (obligatoire) :</label>
+                <input placeholder="adresse@mail.fr" type="email" class="aif-input" id="email" name="email" required aria-required="true">
+                <button class="btn aif-mt1w aif-button--full" type="submit" id="submit-btn">Réinitialiser mon mot de passe</button>
 
             </form>
         </section>
