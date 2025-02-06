@@ -69,6 +69,7 @@ function aif_donor_space_create_pages()
                 'modification-coordonnees-bancaire' => ['title' => 'Mon espace don - Mettre à jour ses coordonées bancaires'],
                 'mes-informations-personelles' => ['title' => 'Mon espace don - Mes informations personelles'],
                 'mes-demandes' => ['title' => 'Mon espace don - Mes demandes'],
+                'nous-contacter' => ['title' => 'Mon espace don - Nous contacter'],
 
             ]
 
@@ -124,6 +125,7 @@ function aif_donor_space_load_template($template)
         'modification-coordonnees-bancaire' => $templates_dir . 'update-iban.php',
         'mes-informations-personelles' => $templates_dir . 'my-personal-informations.php',
         'mes-demandes' => $templates_dir . 'my-demand.php',
+        'nous-contacter' => $templates_dir . 'contact.php',
     ];
 
     if (array_key_exists($page_slug, $templates_map) && file_exists($templates_map[ $page_slug ])) {

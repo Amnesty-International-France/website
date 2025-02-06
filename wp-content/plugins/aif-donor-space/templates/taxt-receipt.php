@@ -19,47 +19,38 @@ if ($tax_reciept->totalSize > 0) {
 
 ?>
 
-<div class="aif-grid-container aif-mt1w">
 
-    <nav class="aif-flex aif-mr1w aif-lg-justify-end aif-container aif-mb1w" aria-label="menu retour a l'espace don">
-        <a class=""
-            href="<?= get_permalink(get_page_by_path('espace-don')) ?>">
+<main class="aif-container--main">
 
-            <svg class="" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g id="Frame">
-                    <path id="Vector" d="M3.5 1L3.9 1.4L2.2 3.2H12V3.8H2.2L3.9 5.6L3.5 6L1 3.5L3.5 1Z" fill="#2B2B2B" />
-                </g>
-            </svg>
-            Revenir à mon espace don
-        </a>
-    </nav>
+    <div class="aif-container--form"">
 
-    <main class="aif-container">
-        <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="article-title wp-block-post-title">Mes reçus fiscaux</h1>
+
+        <header class=" wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
+        <h1 class="article-title wp-block-post-title">Mes reçus fiscaux</h1>
         </header>
-
-        <p> Retrouvez dans cet espace tous vos reçus fiscaux. </p>
-
-        <p>Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant
-            l'année
-            de vos dons. </p>
-
-        <p>Pour toutes questions ou modifications sur vos dons et/ou adhésion,
-            <a class="aif-link--primary " href="mailto:smd@amnesty.fr">contactez-nous
-            </a>
-        </p>
 
 
         <section>
             <h2> Historique de vos reçus fiscaux </h2>
+            <p> Retrouvez dans cet espace tous vos reçus fiscaux. </p>
+
+            <?php
+
+$content = "";
+aif_include_partial("alert", [
+"content" => "Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant l'année de vos dons.",
+"additional_content" => 'Pour toutes questions ou modifications sur vos dons et/ou adhésion <a class="aif-link--secondary " href="mailto:smd@amnesty.fr">contactez-nous </a>',
+           ]);
+
+?>
+
             <?php if ($tax_reciept->totalSize > 0): ?>
             <?php $index = 0 ?>
-   
+
 
             <?php foreach ($groupped as $year => $records): ?>
-            <details  class="wp-block-details" <?= $index < 2 ? 'open' : '' ?>>
-                <summary>
+            <details class="wp-block-details" <?= $index < 2 ? 'open' : '' ?>>
+                <summary class="">
                     <h3> <?=  $year ?> </h3>
 
                 </summary>
@@ -71,10 +62,10 @@ if ($tax_reciept->totalSize > 0) {
                     <div id="aif-success-message-<?=$name?>"
                         class="aif-hide">
                         <?php
-                        aif_include_partial("alert", [
-                            "title" => "Votre demande à bien été prise en compte",
-                        "content" => "Vous le receverez d'ici quelques heures dans votre boite email",
-                    "state" => "success"]);
+             aif_include_partial("alert", [
+                 "title" => "Votre demande à bien été prise en compte",
+             "content" => "Vous le receverez d'ici quelques heures dans votre boite email",
+         "state" => "success"]);
 
                     ?>
                     </div>
@@ -111,18 +102,31 @@ if ($tax_reciept->totalSize > 0) {
             <p>Vous n'avez pas encore de reçu fiscaux</p>
             <?php endif; ?>
 
-            <p>Les dons de plus de 5 ans et inférieurs à 7 € ne sont pas affichés dans cet espace. Le montant de votre
-                abonnement au magazine la Chronique n’est pas déductible des impôts. Pour toutes autres demandes
-                concernant vos reçus fiscaux, <a class="aif-link--primary"
-                    title="contacter le service SMD d'Amnesty France" href="mailto:smd@amnesty.fr">contactez-nous </a>.
+            <p>
             </p>
+
+            <?php
+
+$content = "Les dons de plus de 5 ans et inférieurs à 7 € ne sont pas affichés dans cet espace";
+
+aif_include_partial("alert", ["content" => $content, ]);
+
+$url = get_permalink(get_page_by_path('espace-don/nous-contacter'));
+
+$content2 = "Le montant de votre abonnement au magazine la Chronique n’est pas déductible des impôts. Pour toutes autres demandes concernant vos reçus fiscaux, <a class='aif-link--secondary' title='contacter le service SMD d'Amnesty France' href='{$url}'>contactez-nous </a>";
+
+
+aif_include_partial("alert", ["content" => $content2, ]);
+
+
+?>
+
+
         </section>
-
-    </main>
-
-    <div>
-        <!-- Leave Empty -->
     </div>
+</main>
+
+
 </div>
 
 

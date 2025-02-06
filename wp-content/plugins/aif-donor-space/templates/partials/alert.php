@@ -41,11 +41,23 @@ $has_error =  isset($state) && $state == "error";
             <p class=" aif-text-bold <?= $has_success ? 'aif-text-green' : '' ?> <?= $has_success ? 'aif-text-green' : '' ?>"><?= $title ?></p>
         <?php endif ?>
           
-            <p class="aif-mb0">
+            <p class="aif-m0">
 
                 <?= $content ?>
 
             </p>
+
+
+        <?php if (isset($additional_content)) : ?>
+
+          
+            <p class="">
+
+                <?= $additional_content ?>
+
+            </p>
+
+        <?php endif ?>
 
         </div>
     </div>
