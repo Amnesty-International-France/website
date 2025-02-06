@@ -1,12 +1,15 @@
 <?php
 get_header();
 
+$disable_button = false;
+
 
 $email = "";
 
 if (!isset($_GET['user'])) {
     $error_title = "Une erreur est survenue";
-    $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
+    $error_message = "Nous ne pouvons récupérer l'utilisateur associé à votre email.";
+    $disable_button = true;
 } else {
     $email = $_GET['user'];
 }
@@ -79,7 +82,7 @@ if (isset($success_message)) {
 
         <section>
             <form class="aif-form-container" action="" method="POST">
-                <button class="btn aif-mt1w aif-button--full" type="submit" id="submit-btn">Réinitialiser mon mot de
+                <button class="btn aif-mt1w aif-button--full" <?= $disable_button ? "disabled" : '' ?> type="submit" id="submit-btn">Réinitialiser mon mot de
                     passe</button>
 
             </form>

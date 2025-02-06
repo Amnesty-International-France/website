@@ -10,7 +10,7 @@ $has_error =  isset($state) && $state == "error";
 <div class="aif-bg-grey--lighter aif-p1w aif-mb1w aif-mt1w">
 
     <div class="aif-flex aif-gap-single">
-        <div class="<?= $has_success ? 'aif-text-green' : '' ?> <?= $has_success ? 'aif-text-green' : '' ?>">
+        <div class="<?= $has_success ? 'aif-text-green' : '' ?> <?= $has_error ? 'aif-text-red' : '' ?>">
 
         <?php if($has_success) : ?>
             <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,7 +38,7 @@ $has_error =  isset($state) && $state == "error";
 
         <?php if (isset($title)) : ?>
 
-            <p class=" aif-text-bold <?= $has_success ? 'aif-text-green' : '' ?> <?= $has_success ? 'aif-text-green' : '' ?>"><?= $title ?></p>
+            <p class=" aif-text-bold <?= $has_success ? 'aif-text-green' : '' ?> <?= $has_error ? 'aif-text-red' : '' ?>"><?= $title ?></p>
         <?php endif ?>
           
             <p class="aif-m0">
