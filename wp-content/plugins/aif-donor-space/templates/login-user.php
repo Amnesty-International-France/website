@@ -41,6 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 'remember'      => true
             );
 
+            $sf_member = get_salesforce_member_data($email);
+
+            store_SF_user_ID($stored_user->ID, $sf_member->Id);
+
             $user = wp_signon($creds, true);
 
             if (!is_wp_error($user)) {
@@ -93,8 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 <label for="email">Votre adresse email (obligatoire)</label>
                 <input placeholder="adresse@mail.fr"
                     value="<?= $email ? $email : '' ?>"
-                    class="aif-input" type="email" name="email" id="email"
-                    autocomplete="email" required="true">
+                    class="aif-input" type="email" name="email" id="email" autocomplete="email" required="true">
                 <div class="aif-password-container">
                     <label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
                     <div class="aif-password-container__input-wrapper">

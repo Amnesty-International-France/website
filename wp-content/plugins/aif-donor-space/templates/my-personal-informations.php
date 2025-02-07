@@ -180,6 +180,11 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             <input placeholder="N° d'appartement, étage, bâtiment" autocomplete="address-level3"
                 name="Adresse_Ligne_3__c" class="aif-input" id="address-level3" type="text"
                 value="<?= $SF_User->Adresse_Ligne_3__c ?>" />
+
+                <label for="address-level5">Lieu dit</label>
+            <input autocomplete="address-level5"
+                name="Adresse_Ligne_5__c" class="aif-input" id="address-level5" type="text"
+                value="<?= $SF_User->Adresse_Ligne_5__c ?>" />
             <label for="postal-code">Code Postal (obligatoire)</label>
             <input placeholder="Code Postal" autocomplete="postal-code" name="Code_Postal__c" class="aif-input"
                 id="postal-code" type="text"
