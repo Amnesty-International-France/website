@@ -20,9 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
 
     if ($user) {
         $stored_token = get_email_token($user->ID);
-
-
-        print_r($stored_token);
         if ($token === $stored_token) {
 
             if ($password == $_POST['confirm-password']) {

@@ -2,6 +2,7 @@
 get_header();
 
 $disable_button = false;
+$display_form = true;
 
 
 
@@ -26,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $success_title = "Votre demande à bien été prise en compte";
         $success_message = "Si votre adresse est reconnue vous allez recevoir un email pour pouvoir réinitialiser votre mot de passe";
+        $display_form = false;
 
 
     } else {
@@ -70,8 +72,9 @@ if (isset($success_message)) {
 ?>
 
 
+<?php if ($display_form) : ?>
 
-        <section>
+    <section>
             <form class="aif-form-container" action="" method="POST">
                 <label for="email">Votre email (obligatoire) :</label>
                 <input placeholder="adresse@mail.fr" type="email" class="aif-input" id="email" name="email" required aria-required="true">
@@ -79,8 +82,7 @@ if (isset($success_message)) {
 
             </form>
         </section>
-
-
+<?php endif ?>
 
     </div>
 
