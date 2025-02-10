@@ -43,5 +43,6 @@ wp-config.php
 
 # Themes
 /wp-content/themes/*
+!/wp-content/themes/child-humanity-theme
 
 docker-compose.yml
