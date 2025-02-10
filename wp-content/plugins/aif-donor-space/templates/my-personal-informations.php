@@ -97,6 +97,8 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
     patch_salesforce_user_data($data, $sf_user_ID);
 
+    $SF_User = get_salesforce_user_data($sf_user_ID);
+
     $action_succeed = true;
 
 
@@ -121,7 +123,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             aif_include_partial("alert", [
                 "state" => "success",
                 "title" => "Votre demande de changement d'informations ont bien été pris en compte",
-            "content" => "Revenez sur cette page d'ici quelques minutes pour les visualiser"]);
+            "content" => "Les changements seront effectifs d'ici quelques minutes"]);
 
         }
 
@@ -150,14 +152,14 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
                         <div class="aif-radio-button-container">
                             <div class="aif-radio-button-container__button">
                                 <input
-                                    checked="<?= $SF_User->Civility == 'M' ?>"
+                                  <?= $SF_User->Salutation == 'M' ? "checked" : '' ?>
                                     type="radio" id="M" name="Salutation" value="M" />
                                 <label for="M">Monsieur</label>
                             </div>
                             <div class="aif-radio-button-container__button">
                                 <input type="radio" id="Mme"
-                                    checked="<?= $SF_User->Civility == 'Mme' ?>"
-                                    name="Salutation" value="Mme" />
+                                <?= $SF_User->Salutation == 'MME' ? "checked" : '' ?>
+                                    name="Salutation" value="MME" />
                                 <label for="Mme">Madame</label>
                             </div>
 
@@ -198,8 +200,10 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
                 <label for="select">Pays</label>
                 <button type="button" role="combobox" id="select" id="dropdown-button"
                     class="checkboxGroup-button i aif-dropdown__container_button">
-                    Séléctionner votre pays
 
+
+                    <?=isset($SF_User->Pays__c) ? $SF_User->Pays__c : "Sélectionner votre Pays" ?>
+                 
                 </button>
 
 
@@ -220,7 +224,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
             <div class="aif-hidden">
                 <label for="inputResult">Votre pays</label>
-                <input autocomplete="tel"
+                <input autocomplete="country"
                     value="<?= $SF_User->Pays__c ?>" name="Pays__c"
                     class="aif-input" id="inputResult" type="text" />
             </div>
