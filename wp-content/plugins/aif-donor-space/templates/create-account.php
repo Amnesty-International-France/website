@@ -23,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $sf_member = get_salesforce_member_data($email);
 
+        print_r($sf_member);
+
         if (has_access_to_donation_space($sf_member)) {
 
             $user = get_salesforce_user_data($sf_member->Id);
@@ -39,8 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user_id = wp_insert_user($userdata);
 
             if (!is_wp_error($user_id)) {
-                store_SF_user_ID($user_id, $sf_member->Id);
-
                 $code = generate_2fa_code();
                 store_2fa_code($user_id, $code);
 
@@ -61,6 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
         } else {
+
+
             $error_no_access_to_donor_space = true;
         }
     }
@@ -92,11 +94,11 @@ if (!empty($error_message)) {
 
 }
 
-if (!empty($send_code_error_message)) {
+if (!empty($error_no_access_to_donor_space)) {
 
     $title = "L’adresse email renseignée ne trouve pas de correspondance dans notre système.";
-    $content = 'Devenez donateur en <a>réalisant un don </a> ou <a
-                                            class="aif-link--primary" href="mailto:smd@amnesty.fr">contacter le Service
+    $content = 'Devenez donateur en <a href="#" class="aif-link--secondary">réalisant un don </a> ou <a
+                                            class="aif-link--secondary" href="mailto:smd@amnesty.fr">contacter le Service
                                             membres et donateurs</a> si vous pensez que c’est une erreur.';
 
     aif_include_partial("alert", [
