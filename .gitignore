@@ -24,6 +24,12 @@ wp-config.php
 # Uploads
 /wp-content/uploads/
 
+# Upgrade
+/wp-content/upgrade/
+
+# Jetpack-Waf
+/wp-content/jetpack-waf/
+
 # Log files
 *.log
 

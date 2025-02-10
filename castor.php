@@ -116,7 +116,7 @@ function update_github_plugins(string $path = '.', string $token = ''): void {
     $actual_theme_version = run('wp theme get humanity-theme --field=version', context: $context->withQuiet())->getOutput();
     $remote_version = get_github_latest_version("https://github.com/amnestywebsite/humanity-theme/releases/latest");
     if( ! str_contains($actual_theme_version, substr($remote_version, 1)) ) {
-        run("wp theme install https://github.com/amnestywebsite/humanity-theme/releases/download/$remote_version/humanity-theme.zip --activate", context: $context);
+        run("wp theme install https://github.com/amnestywebsite/humanity-theme/releases/download/$remote_version/humanity-theme.zip --force", context: $context);
     } else {
         io()->info("Theme humanity-theme is already up to date.");
     }
@@ -127,7 +127,7 @@ function update_github_plugins(string $path = '.', string $token = ''): void {
         $remote_version = get_github_latest_version("{$plugin_data['repo_url']}releases/latest");
         if( ! str_contains($actual_plugin_version, substr($remote_version, 1)) ) {
             $zip_url = str_replace("%version%", $remote_version, $plugin_data['zip_url']);
-            run("wp plugin install $zip_url --activate", context: $context);
+            run("wp plugin install $zip_url --force", context: $context);
         } else {
             io()->info("Plugin $plugin is already up to date.");
         }
@@ -157,8 +157,8 @@ function update_github_plugins(string $path = '.', string $token = ''): void {
             $zipball_url = $last_plugin_release_json['zipball_url'];
             http_download($zipball_url, $path."/$plugin.zip", options: ['auth_bearer' => $token]);
 
-            run("wp plugin install $plugin.zip --activate", context: $context);
-            fs()->remove($path."/$plugin.zip");
+            run("wp plugin install $path/$plugin.zip --force", context: $context);
+            //fs()->remove($path."/$plugin.zip");
             io()->success("Plugin $plugin updated.");
         }
     }
