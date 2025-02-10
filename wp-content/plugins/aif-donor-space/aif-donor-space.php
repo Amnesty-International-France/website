@@ -70,6 +70,7 @@ function aif_donor_space_create_pages()
                 'mes-informations-personelles' => ['title' => 'Mon espace don - Mes informations personelles'],
                 'mes-demandes' => ['title' => 'Mon espace don - Mes demandes'],
                 'nous-contacter' => ['title' => 'Mon espace don - Nous contacter'],
+                'se-deconnecter' => ['title' => 'Mon espace don - Se déconnecter'],
 
             ]
 
@@ -126,6 +127,7 @@ function aif_donor_space_load_template($template)
         'mes-informations-personelles' => $templates_dir . 'my-personal-informations.php',
         'mes-demandes' => $templates_dir . 'my-demand.php',
         'nous-contacter' => $templates_dir . 'contact.php',
+        'se-deconnecter' => $templates_dir . 'logout.php',
     ];
 
     if (array_key_exists($page_slug, $templates_map) && file_exists($templates_map[ $page_slug ])) {
