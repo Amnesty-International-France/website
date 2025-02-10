@@ -13,4 +13,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( defined( 'WP_CLI' ) && WP_CLI) {
     require_once __DIR__ . '/prismic-import-cli.php';
+    require_once __DIR__ . '/poc_render_block.php';
 }

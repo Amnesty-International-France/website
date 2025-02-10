@@ -118,6 +118,7 @@ class Prismic_Import_Command {
         foreach ( $json_data as $document ) {
             $type = $document['type'];
             if( $type === 'news') {
+                echo $document['uid'].PHP_EOL;
                 treat_news($document);
             }
         }
