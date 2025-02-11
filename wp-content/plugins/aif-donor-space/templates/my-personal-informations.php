@@ -9,8 +9,8 @@ check_user_page_access();
 $current_user = wp_get_current_user();
 $sf_user_ID = get_SF_user_ID($current_user->ID);
 
-$SF_User = get_salesforce_user_data($sf_user_ID);
-$SF_membre_data = get_salesforce_member_data($current_user->user_email);
+$sf_user = get_salesforce_user_data($sf_user_ID);
+$sf_member = get_salesforce_member_data($current_user->user_email);
 $SEPA_mandates = get_salesforce_user_SEPA_mandate($sf_user_ID);
 
 $actifMandate  = null;
@@ -64,14 +64,16 @@ $countries = [
 
 
 $actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
+$next_payement = "";
 
-if($actifMandate) {
+if($sf_member->hasMandatActif) {
     $day_of_payment = date("d", strtotime($actifMandate->Date_paiement_Avenir__c));
     $ibanBlocks = str_split($actifMandate->Tech_Iban__c, 4);
     $last4IBANDigit = substr($actifMandate->Tech_Iban__c, -4);
+    $next_payement = date_format(date_create($actifMandate->Date_paiement_Avenir__c), "d/m/Y");
 }
 
-$user_status = aif_get_user_status($SF_membre_data);
+$user_status = aif_get_user_status($sf_member);
 
 
 function checkKeys($requiredFields, $array_to_check)
@@ -90,14 +92,14 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
     $disable_button = true;
 
     $partial_data = [
-        "Identifiant_contact__c" => $SF_User->Identifiant_contact__c
+        "Identifiant_contact__c" => $sf_user->Identifiant_contact__c
     ];
 
     $data  = array_merge($_POST, $partial_data);
 
     patch_salesforce_user_data($data, $sf_user_ID);
 
-    $SF_User = get_salesforce_user_data($sf_user_ID);
+    $sf_user = get_salesforce_user_data($sf_user_ID);
 
     $action_succeed = true;
 
@@ -131,9 +133,18 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
         <h2>Mes informations personelles</h2>
 
-        <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$SF_User->Identifiant_contact__c}" ?>
-        </p>
+ 
+        <?php if($sf_member->hasMandatActif) :  ?>
 
+<p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} €. Votre prochain prélèvement sera effectué le {$next_payement}." ?>
+</p>
+
+<?php else : ?>
+
+    <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c}" ?>
+</p>
+
+<?php endif ?>
 
         <form class="" onsubmit="disablePersonalInformationsButtons()" role="form" method="POST" action="">
             <label for="email">Adresse email (obligatoire)</label>
@@ -152,13 +163,13 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
                         <div class="aif-radio-button-container">
                             <div class="aif-radio-button-container__button">
                                 <input
-                                  <?= $SF_User->Salutation == 'M' ? "checked" : '' ?>
+                                  <?= $sf_user->Salutation == 'M' ? "checked" : '' ?>
                                     type="radio" id="M" name="Salutation" value="M" />
                                 <label for="M">Monsieur</label>
                             </div>
                             <div class="aif-radio-button-container__button">
                                 <input type="radio" id="Mme"
-                                <?= $SF_User->Salutation == 'MME' ? "checked" : '' ?>
+                                <?= $sf_user->Salutation == 'MME' ? "checked" : '' ?>
                                     name="Salutation" value="MME" />
                                 <label for="Mme">Madame</label>
                             </div>
@@ -169,31 +180,31 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             <label for="firstname">Prénom (obligatoire)</label>
             <input placeholder="Prénom" autocomplete="gi<dven-name" name="FirstName" class="aif-input" required
                 aria-required="" id="firstname" read type="text"
-                value="<?= $SF_User->FirstName ?>" />
+                value="<?= $sf_user->FirstName ?>" />
             <label for="lastname">Nom (obligatoire)</label>
             <input placeholder="Nom" autocomplete="lastName" name="LastName" class="aif-input" required aria-required=""
                 id="lastname" read type="text"
-                value="<?= $SF_User->LastName ?>" />
+                value="<?= $sf_user->LastName ?>" />
             <label for="street-address">Adresse postale (obligatoire)</label>
             <input placeholder="N° et nom de la rue" autocomplete="street-address" name="Adresse_Ligne_4__c"
                 class="aif-input" required aria-required="" id="street-address" type="text"
-                value="<?= $SF_User->Adresse_Ligne_4__c ?>" />
+                value="<?= $sf_user->Adresse_Ligne_4__c ?>" />
             <label for="address-level3">Complément adresse</label>
             <input placeholder="N° d'appartement, étage, bâtiment" autocomplete="address-level3"
                 name="Adresse_Ligne_3__c" class="aif-input" id="address-level3" type="text"
-                value="<?= $SF_User->Adresse_Ligne_3__c ?>" />
+                value="<?= $sf_user->Adresse_Ligne_3__c ?>" />
 
                 <label for="address-level5">Lieu dit</label>
             <input autocomplete="address-level5"
                 name="Adresse_Ligne_5__c" class="aif-input" id="address-level5" type="text"
-                value="<?= $SF_User->Adresse_Ligne_5__c ?>" />
+                value="<?= $sf_user->Adresse_Ligne_5__c ?>" />
             <label for="postal-code">Code Postal (obligatoire)</label>
             <input placeholder="Code Postal" autocomplete="postal-code" name="Code_Postal__c" class="aif-input"
                 id="postal-code" type="text"
-                value="<?= $SF_User->Code_Postal__c ?>" />
+                value="<?= $sf_user->Code_Postal__c ?>" />
             <label for="city">Ville (obligatoire)</label>
             <input placeholder="Ville" autocomplete="address-level3" name="Ville__c" class="aif-input" id="city"
-                type="text" value="<?= $SF_User->Ville__c ?>" />
+                type="text" value="<?= $sf_user->Ville__c ?>" />
 
 
             <div class="aif-dropdown__container">
@@ -202,7 +213,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
                     class="checkboxGroup-button i aif-dropdown__container_button">
 
 
-                    <?=isset($SF_User->Pays__c) ? $SF_User->Pays__c : "Sélectionner votre Pays" ?>
+                    <?=isset($sf_user->Pays__c) ? $sf_user->Pays__c : "Sélectionner votre Pays" ?>
                  
                 </button>
 
@@ -225,7 +236,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             <div class="aif-hidden">
                 <label for="inputResult">Votre pays</label>
                 <input autocomplete="country"
-                    value="<?= $SF_User->Pays__c ?>" name="Pays__c"
+                    value="<?= $sf_user->Pays__c ?>" name="Pays__c"
                     class="aif-input" id="inputResult" type="text" />
             </div>
 
@@ -233,10 +244,10 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
             <label for="tel">N° de téléphone portable</label>
             <input placeholder="06 00 00 00 00" autocomplete="tel" name="MobilePhone" class="aif-input" id="tel"
-                type="text" value="<?= $SF_User->MobilePhone ?>" />
+                type="text" value="<?= $sf_user->MobilePhone ?>" />
             <label for="HomePhone">N° de téléphone domicile</label>
             <input placeholder="01 00 00 00 00" name="HomePhone" class="aif-input" id="HomePhone" type="text"
-                value="<?= $SF_User->HomePhone ?>" />
+                value="<?= $sf_user->HomePhone ?>" />
 
 
             <button class="btn aif-mt1w aif-button--full"
@@ -250,7 +261,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
 
 
-    <?php if($actifMandate) :  ?>
+    <?php if($sf_member->hasMandatActif) :  ?>
 
 
     <section class="aif-container--form">
@@ -258,7 +269,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             Mes informations bancaires
         </h2>
 
-        <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$SF_User->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} € le {$day_of_payment} de chaque mois." ?>
+        <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} € le {$day_of_payment} de chaque mois." ?>
         </p>
 
 

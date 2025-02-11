@@ -151,15 +151,15 @@ function get_email_token($user_id)
 function aif_get_user_status($sf_user)
 {
 
-    if ($sf_user->isMembre && $sf_user->isDonateur) {
+    if ($sf_user->isMembre == true && $sf_user->isDonateur == true) {
         return "membre donateur";
     }
 
-    if ($sf_user->iisDonateursMembre) {
+    if ($sf_user->isDonateursMembre == true) {
         return "donateur";
     }
 
-    if ($sf_user->isMembre) {
+    if ($sf_user->isMembre == true) {
         return "membre";
     }
 }

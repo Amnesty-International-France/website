@@ -8,6 +8,15 @@ check_user_page_access();
 $current_user = wp_get_current_user();
 $sf_member = get_salesforce_member_data($current_user->user_email);
 $sf_user = get_salesforce_user_data($sf_member->Id);
+$user_status =  aif_get_user_status($sf_member);
+$next_payement = "";
+
+$SEPA_mandates = get_salesforce_user_SEPA_mandate($sf_member->Id);
+$actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
+
+if($actifMandate) {
+    $next_payement = date_format(date_create($actifMandate->Date_paiement_Avenir__c), "d/m/Y");
+}
 
 ?>
 
@@ -22,17 +31,20 @@ $sf_user = get_salesforce_user_data($sf_member->Id);
 
         <section>
 
-            <p>Bonjour <span class="aif-text-bold"> <?= $sf_user->Name ?> </span> vous êtes
+        
 
-                <?php if($sf_member->isDonateur) : ?>
-                membre donateur
-                <?php elseif($sf_member->isMembre): ?>
-                membre
-                <?php else: ?>
-                ancien membre
-                <?php endif; ?>
+               <?php if($sf_member->hasMandatActif) :  ?>
 
-                d'Amnesty International France en prélèvement automatique mensuel sous le n° <?= $sf_user->Identifiant_contact__c ?> </p>
+<p> <?= "Bonjour <span class='aif-text-bold'>  {$sf_user->Name}  </span>. Vous êtes, <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} €. Votre prochain prélèvement sera effectué le {$next_payement}." ?>
+</p>
+
+<?php else : ?>
+
+    <p> <?= "Bonjour <span class='aif-text-bold'>  {$sf_user->Name}  </span>. Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c}" ?>
+</p>
+
+<?php endif ?>
+
 
 
             <p>Bienvenue dans votre espace don qui permet la gestion administrative des informations liées à vos
