@@ -5,7 +5,7 @@ get_header();
 
 $email = "";
 
-
+$reset_email_url = "";
 
 if (!isset($_GET['user'])) {
     $error_title = "Une erreur est survenue";
@@ -15,6 +15,10 @@ if (!isset($_GET['user'])) {
     $user = get_user_by("email", $_GET['user']);
     if ($user) {
         $email = $user->user_email;
+
+        $reset_email_url = add_query_arg([
+            "user" =>  $email,
+        ], get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')));
     }
 
 }
@@ -126,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
                     <div class="aif-flex aif-justify-end">
                         <a class="aif-link--primary aif-mt1w aif-block"
-                            href="<?=  get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>">
+                            href="<?= $reset_email_url ?>">
                             Mot de passe oublié ? </a>
 
                     </div>

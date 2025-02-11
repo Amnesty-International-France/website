@@ -4,6 +4,21 @@ get_header();
 $disable_button = false;
 $display_form = true;
 
+$email = "";
+
+if (!isset($_GET['user'])) {
+    $error_title = "Une erreur est survenue";
+    $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
+
+} else {
+
+    $user = get_user_by("email", $_GET['user']);
+    if ($user) {
+        $email = $user->user_email;
+    }
+
+}
+
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -44,11 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main class="aif-container--main">
 
 
-<header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="aif-mb1w">Mon espace Don</h1>
-        </header>
-<div class="aif-container--form">
-<h2> Mot de passe oublié </h2>
+    <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
+        <h1 class="aif-mb1w">Mon espace Don</h1>
+    </header>
+    <div class="aif-container--form">
+        <h2> Mot de passe oublié </h2>
         <?php
 
         if (isset($error_message)) {
@@ -72,17 +87,19 @@ if (isset($success_message)) {
 ?>
 
 
-<?php if ($display_form) : ?>
+        <?php if ($display_form) : ?>
 
-    <section>
+        <section>
             <form class="aif-form-container" action="" method="POST">
                 <label for="email">Votre email (obligatoire) :</label>
-                <input placeholder="adresse@mail.fr" type="email" class="aif-input" id="email" name="email" required aria-required="true">
-                <button class="btn aif-mt1w aif-button--full" type="submit" id="submit-btn">Réinitialiser mon mot de passe</button>
+                <input value="<?= $email ? $email : '' ?>" placeholder="adresse@mail.fr" type="email" class="aif-input" id="email" name="email" required
+                    aria-required="true">
+                <button class="btn aif-mt1w aif-button--full" type="submit" id="submit-btn">Réinitialiser mon mot de
+                    passe</button>
 
             </form>
         </section>
-<?php endif ?>
+        <?php endif ?>
 
     </div>
 
