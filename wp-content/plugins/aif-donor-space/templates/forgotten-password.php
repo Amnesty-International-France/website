@@ -6,21 +6,6 @@ $display_form = true;
 
 $email = "";
 
-if (!isset($_GET['user'])) {
-    $error_title = "Une erreur est survenue";
-    $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
-
-} else {
-
-    $user = get_user_by("email", $_GET['user']);
-    if ($user) {
-        $email = $user->user_email;
-    }
-
-}
-
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $email = sanitize_email($_POST['email']);
