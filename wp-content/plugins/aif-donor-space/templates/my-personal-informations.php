@@ -122,7 +122,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
             aif_include_partial("alert", [
                 "state" => "success",
-                "title" => "Votre demande de changement d'informations ont bien été pris en compte",
+                "title" => "Votre demande de changement d'informations a bien été prise en compte",
             "content" => "Les changements seront effectifs d'ici quelques minutes"]);
 
         }
