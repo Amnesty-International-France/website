@@ -155,7 +155,7 @@ function aif_get_user_status($sf_user)
         return "membre donateur";
     }
 
-    if ($sf_user->isDonateursMembre == true) {
+    if ($sf_user->isDonateur == true) {
         return "donateur";
     }
 
