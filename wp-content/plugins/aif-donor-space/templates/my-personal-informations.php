@@ -241,13 +241,23 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             </div>
 
 
-
-            <label for="tel">N° de téléphone portable</label>
+            <?php if(empty($sf_user->MobilePhone)) : ?>
+                <label for="tel">N° de téléphone portable</label>
             <input placeholder="06 00 00 00 00" autocomplete="tel" name="MobilePhone" class="aif-input" id="tel"
                 type="text" value="<?= $sf_user->MobilePhone ?>" />
-            <label for="HomePhone">N° de téléphone domicile</label>
-            <input placeholder="01 00 00 00 00" name="HomePhone" class="aif-input" id="HomePhone" type="text"
+            <?php endif ?>
+
+            <?php $sf_user->HomePhone = null ?>
+
+
+            <?php if(empty($sf_user->HomePhone)) : ?>
+                <label for="HomePhone">N° de téléphone domicile</label>
+             <input placeholder="01 00 00 00 00" name="HomePhone" class="aif-input" id="HomePhone" type="text"
                 value="<?= $sf_user->HomePhone ?>" />
+            <?php endif ?>
+         
+         
+           
 
 
             <button class="btn aif-mt1w aif-button--full"
