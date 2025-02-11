@@ -247,7 +247,6 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
                 type="text" value="<?= $sf_user->MobilePhone ?>" />
             <?php endif ?>
 
-            <?php $sf_user->HomePhone = null ?>
 
 
             <?php if(empty($sf_user->HomePhone)) : ?>
