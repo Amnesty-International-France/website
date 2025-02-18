@@ -163,3 +163,10 @@ function aif_get_user_status($sf_user)
         return "membre";
     }
 }
+
+
+function get_salesforce_user_demands($ID)
+{
+    $url = '/services/apexrest/retrieve/v1/Demandes/?idContact=' . $ID;
+    return get_salesforce_data($url);
+}
