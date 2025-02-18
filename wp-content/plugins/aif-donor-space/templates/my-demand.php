@@ -9,8 +9,8 @@ $current_user = wp_get_current_user();
 $sf_user_ID = get_SF_user_ID($current_user->ID);
 
 
-// $demands =  get_salesforce_user_demands($sf_user_ID);
-$demands = [];
+$demands =  get_salesforce_user_demands($sf_user_ID);
+
 
 function aif_format_date($date)
 {
