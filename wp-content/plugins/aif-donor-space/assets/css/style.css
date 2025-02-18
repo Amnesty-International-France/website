@@ -273,6 +273,10 @@ body {
 .aif-container--form {
     max-width: 440px;
     margin-bottom: var(--wp--preset--spacing--single);
+
+    @media (min-width: 1140px) {
+        padding: 0;
+    }
 }
 
 .aif-button--full {
@@ -442,5 +446,48 @@ body {
 
     display: flex;
     align-items: center;
-    gap: var(--wp--preset--spacing--quarter)
+    gap: var(--wp--preset--spacing--quarter);
+}
+
+.aif-my-demand-container__title-container__date,
+.aif-my-demand-container__title-container__status,
+.aif-my-demand-container__info-container__subject,
+.aif-my-demand-container__info-container__subject {
+    margin-bottom: var(--wp--preset--spacing--quarter) !important;
+}
+
+.aif-my-demand-container {
+
+    margin-bottom: var(--wp--preset--spacing--single);
+}
+
+.aif-my-demand-container__title-container {
+
+    display: flex;
+    gap: var(--wp--preset--spacing--single);
+    align-items: center;
+}
+
+.aif-my-demand-container__title-container__status {
+    padding: var(--wp--preset--spacing--quarter);
+    font-weight: bold;
+}
+
+.aif-my-demand-container__title-container__status--success {
+    background-color: var(--wp--preset--color--vivid-green-cyan);
+}
+
+.aif-my-demand-container__title-container__status--in-progress {
+    background-color: var(--wp--preset--color--primary-state);
+}
+
+.aif-my-demand-container__title-container__status--refused {
+    background-color: var(--wp--preset--color--vivid-red);
+}
+
+
+.aif-my-demand-container__info-container__subject {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: var(--wp--preset--font-family--primary);
 }
