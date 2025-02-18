@@ -52,7 +52,7 @@ function aif_format_date($date)
                     <?= aif_format_date($demand->Date_de_la_demande__c) ?>
                 </p>
                 <p
-                    class="aif-my-demand-container__title-container__status  <?= $demand->Statut_Espace_Don__c == "A traiter" ? "aif-my-demand-container__title-container__status--in-progress" : "" ?> <?= $demand->Statut_Espace_Don__c == "Fermé - échoué" ? "aif-my-demand-container__title-container__status--refused" : "" ?>  <?= $demand->Statut_Espace_Don__c == "En cours" ? "aif-my-demand-container__title-container__status--in-progress" : "" ?> <?= $demand->Statut_Espace_Don__c == "Fermé - Traité" ? "aif-my-demand-container__title-container__status--success" : "" ?>">
+                    class="aif-my-demand-container__title-container__status  <?= $demand->Statut_Espace_Don__c == "A traiter" ? "aif-my-demand-container__title-container__status--in-progress" : "" ?> <?= $demand->Statut_Espace_Don__c == "Fermé - Echoué" ? "aif-my-demand-container__title-container__status--refused" : "" ?>  <?= $demand->Statut_Espace_Don__c == "En cours" ? "aif-my-demand-container__title-container__status--in-progress" : "" ?> <?= $demand->Statut_Espace_Don__c == "Fermé - Traité" ? "aif-my-demand-container__title-container__status--success" : "" ?>">
                     <?= $demand->Statut_Espace_Don__c ?>
                 </p>
 
