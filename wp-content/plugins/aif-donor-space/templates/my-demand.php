@@ -10,10 +10,11 @@ $sf_user_ID = get_SF_user_ID($current_user->ID);
 
 
 $demands =  get_salesforce_user_demands($sf_user_ID);
+$sortedDemands = sortByDateProp($demands, "Date_de_la_demande__c");
 
 function aif_format_date($date)
 {
-    $formatted_date = date_format(date_create($date), "d/m/Y à H:m");
+    $formatted_date = date_format(date_create($date), "d/m/Y");
     return "Le {$formatted_date}" ;
 
 }
@@ -43,7 +44,7 @@ function aif_format_date($date)
 
         <?php else: ?>
 
-        <?php     foreach ($demands as $demand): ?>
+        <?php     foreach ($sortedDemands as $demand): ?>
 
         <div class="aif-my-demand-container">
             <div class="aif-my-demand-container__title-container">

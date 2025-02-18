@@ -1,8 +1,8 @@
 <?php
 
-function sortByDateProp(array $tax_reciept, string $prop): array
+function sortByDateProp(array $objects, string $prop): array
 {
-    $sortedObjects = $tax_reciept;
+    $sortedObjects = $objects;
 
     usort($sortedObjects, function ($a, $b) use ($prop) {
         return   strtotime($b->$prop)   - strtotime($a->$prop) ;
