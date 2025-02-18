@@ -449,11 +449,15 @@ body {
     gap: var(--wp--preset--spacing--quarter);
 }
 
+.aif-my-demand-container__title-container {
+    margin-bottom: var(--wp--preset--spacing--half) !important;
+}
+
+
 .aif-my-demand-container__title-container__date,
 .aif-my-demand-container__title-container__status,
-.aif-my-demand-container__info-container__subject,
 .aif-my-demand-container__info-container__subject {
-    margin-bottom: var(--wp--preset--spacing--quarter) !important;
+    margin-bottom: 0 !important
 }
 
 .aif-my-demand-container {

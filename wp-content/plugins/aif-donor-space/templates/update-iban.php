@@ -41,7 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce'])) {
 
     if(create_duplicate_update_IBAN_request($sf_user_ID, $newIban)) {
         $success_message_title = "Votre demande de modification a bien été prise en compte";
-        $success_message = 'Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans “Mes demandes”';
+
+        $url = get_permalink(get_page_by_path('espace-don/mes-demandes'));
+        $success_message = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
     } else {
         $error_message = "Un problème technique est survenu. Merci de réessayer plus tard";
 

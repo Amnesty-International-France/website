@@ -8,7 +8,7 @@ function create_duplicate_update_IBAN_request($Contact_ID, $IBAN)
 
         "RecordTypeId" => "012060000011IdCAAU",
         "Type_de_demande_AIF__c" => "Changement IBAN",
-        "Origin" => "Web",
+        "Origin" => "Espace Don",
         "ContactId" => $Contact_ID,
         "Date_de_la_demande__c" => date("Y-m-d"),
         "Code_Marketing_Prestataire__c" => "WB_ESPDON",
