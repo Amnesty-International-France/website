@@ -52,8 +52,6 @@ function patch_salesforce_data($url, $params = [])
         return false;
     } else {
         $data = wp_remote_retrieve_body($response);
-
-        print_r($data);
         return json_decode($data);
     }
 }
@@ -74,7 +72,6 @@ function get_salesforce_data($url)
             'Authorization' => 'Bearer ' . $access_token
         )
     ));
-
 
     if (is_wp_error($response)) {
         echo 'Erreur de requête Salesforce : ' . $response->get_error_message();

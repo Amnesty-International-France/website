@@ -11,7 +11,6 @@ $sf_user_ID = get_SF_user_ID($current_user->ID);
 
 $demands =  get_salesforce_user_demands($sf_user_ID);
 
-
 function aif_format_date($date)
 {
     $formatted_date = date_format(date_create($date), "d/m/Y à H:m");
