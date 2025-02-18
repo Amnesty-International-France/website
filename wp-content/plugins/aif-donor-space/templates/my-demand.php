@@ -9,7 +9,8 @@ $current_user = wp_get_current_user();
 $sf_user_ID = get_SF_user_ID($current_user->ID);
 
 
-$demands =  get_salesforce_user_demands($sf_user_ID);
+// $demands =  get_salesforce_user_demands($sf_user_ID);
+$demands = [];
 
 function aif_format_date($date)
 {
@@ -30,6 +31,19 @@ function aif_format_date($date)
             <h1>Mes demandes</h1>
         </header>
 
+        <?php if (count($demands) == 0) : ?>
+
+
+        <p>
+            Vous n’avez pas encore fait de demande.
+        </p>
+
+        <p>
+            Revenez ici pour vérifier le statut de vos prochaines demandes.
+        </p>
+
+        <?php else: ?>
+
         <?php     foreach ($demands as $demand): ?>
 
         <div class="aif-my-demand-container">
@@ -37,7 +51,8 @@ function aif_format_date($date)
                 <p class="aif-my-demand-container__title-container__date">
                     <?= aif_format_date($demand->Date_de_la_demande__c) ?>
                 </p>
-                <p class="aif-my-demand-container__title-container__status <?= $demand->Statut_Espace_Don__c == "Rejetée" ? "aif-my-demand-container__title-container__status--refused" : "" ?>  <?= $demand->Statut_Espace_Don__c == "En cours" ? "aif-my-demand-container__title-container__status--in-progress" : "" ?> <?= $demand->Statut_Espace_Don__c == "Fermé - Traité" ? "aif-my-demand-container__title-container__status--success" : "" ?>">
+                <p
+                    class="aif-my-demand-container__title-container__status <?= $demand->Statut_Espace_Don__c == "Rejetée" ? "aif-my-demand-container__title-container__status--refused" : "" ?>  <?= $demand->Statut_Espace_Don__c == "En cours" ? "aif-my-demand-container__title-container__status--in-progress" : "" ?> <?= $demand->Statut_Espace_Don__c == "Fermé - Traité" ? "aif-my-demand-container__title-container__status--success" : "" ?>">
                     <?= $demand->Statut_Espace_Don__c ?>
                 </p>
 
@@ -50,9 +65,9 @@ function aif_format_date($date)
 
                 <?php  if ($demand->Statut_Espace_Don__c == "Rejetée") : ?>
 
-                    <?php
-        aif_include_partial("info-message", [
-        "content" => "Malheureusement votre demande n'a pas pu aboutir. Contactez-nous pour en savoir plus."]);
+                <?php
+aif_include_partial("info-message", [
+"content" => "Malheureusement votre demande n'a pas pu aboutir. Contactez-nous pour en savoir plus."]);
                     ?>
 
 
@@ -60,6 +75,10 @@ function aif_format_date($date)
             </div>
         </div>
         <?php endforeach ?>
+
+        <?php endif ?>
+
+
 
 
         <a class="btn btn--dark aif-mt1w aif-button--full" href="#">Vous avez une question ?</a>
@@ -75,5 +94,5 @@ function aif_format_date($date)
 
 <?php
 
-                    get_footer();
+                            get_footer();
 ?>
