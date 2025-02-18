@@ -51,7 +51,7 @@ $has_error =  isset($state) && $state == "error";
         <?php if (isset($additional_content)) : ?>
 
           
-            <p class="">
+            <p class="aif-mt1w">
 
                 <?= $additional_content ?>
 

@@ -35,8 +35,6 @@ if ($tax_reciept->totalSize > 0) {
             <p> Retrouvez dans cet espace tous vos reçus fiscaux. </p>
 
             <?php
-
-$content = "";
 aif_include_partial("alert", [
 "content" => "Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant l'année de vos dons.",
 "additional_content" => 'Pour toutes questions ou modifications sur vos dons et/ou adhésion <a class="aif-link--secondary " href="mailto:smd@amnesty.fr">contactez-nous </a>',
@@ -62,9 +60,12 @@ aif_include_partial("alert", [
                     <div id="aif-success-message-<?=$name?>"
                         class="aif-hide">
                         <?php
-             aif_include_partial("alert", [
-                 "title" => "Votre demande à bien été prise en compte",
-             "content" => "Vous le receverez d'ici quelques heures dans votre boite email",
+
+                    $url = get_permalink(get_page_by_path('espace-don/mes-demandes'));
+                    aif_include_partial("alert", [
+                        "title" => "Votre demande à bien été prise en compte",
+                    "content" => "L'envoi de votre reçu fiscal n'est pas immédiat. Vous le receverez d'ici quelques minutes dans votre boîte email.",
+          "additional_content" => "Vous pouvez voir le suivi du traitement de vos demandes sur la page  <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>",
          "state" => "success"]);
 
                     ?>
