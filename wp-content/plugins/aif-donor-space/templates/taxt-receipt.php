@@ -24,7 +24,6 @@ if ($tax_reciept->totalSize > 0) {
 
     <div class="aif-container--form"">
 
-
         <header class=" wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
         <h1 class="article-title wp-block-post-title">Mes reçus fiscaux</h1>
         </header>
@@ -35,9 +34,13 @@ if ($tax_reciept->totalSize > 0) {
             <p> Retrouvez dans cet espace tous vos reçus fiscaux. </p>
 
             <?php
+              $url = add_query_arg([
+                "subject" =>  "Mes reçus fiscaux",
+            ], get_permalink(get_page_by_path('espace-don/nous-contacter')));
+
 aif_include_partial("alert", [
 "content" => "Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant l'année de vos dons.",
-"additional_content" => 'Pour toutes questions ou modifications sur vos dons et/ou adhésion <a class="aif-link--secondary " href="mailto:smd@amnesty.fr">contactez-nous </a>',
+"additional_content" => "Pour toutes questions ou modifications sur vos dons et/ou adhésion <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>",
            ]);
 
 ?>
@@ -112,7 +115,9 @@ $content = "Les dons de plus de 5 ans et inférieurs à 7 € ne sont pas affich
 
 aif_include_partial("alert", ["content" => $content, ]);
 
-$url = get_permalink(get_page_by_path('espace-don/nous-contacter'));
+$url = add_query_arg([
+    "subject" =>  "Mes dons et adhésions",
+], get_permalink(get_page_by_path('espace-don/nous-contacter')));
 
 $content2 = "Le montant de votre abonnement au magazine la Chronique n’est pas déductible des impôts. Pour toutes autres demandes concernant vos reçus fiscaux, <a class='aif-link--secondary' title='contacter le service SMD d'Amnesty France' href='{$url}'>contactez-nous </a>";
 

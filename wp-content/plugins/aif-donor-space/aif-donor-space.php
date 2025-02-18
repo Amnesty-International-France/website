@@ -45,6 +45,7 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/domain/bank/IBAN.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/bank/SEPA-mandate.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/2FA/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/user-authentification.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/contact/index.php';
 
 require_once AIF_DONOR_SPACE_PATH. '/includes/utils.php';
 

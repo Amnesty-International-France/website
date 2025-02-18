@@ -60,14 +60,25 @@ function aif_format_date($date)
 
             <div class="aif-my-demand-container__info-container">
                 <p class="aif-my-demand-container__info-container__subject">
+
+                    <?php if (isset($demand->Type_de_demande_AIF__c)) : ?>
                     <?= $demand->Type_de_demande_AIF__c ?>
+
+                    <?php else : ?>
+                    <?= $demand->Subject ?>
+                    <?php endif ?>
                 </p>
 
-                <?php  if ($demand->Statut_Espace_Don__c == "Rejetée") : ?>
+                <?php  if ($demand->Statut_Espace_Don__c == "Fermé - Echoué") : ?>
 
                 <?php
-aif_include_partial("info-message", [
-"content" => "Malheureusement votre demande n'a pas pu aboutir. Contactez-nous pour en savoir plus."]);
+
+
+$url = add_query_arg([
+    "subject" =>  "Ma demande n'a pas pu aboutir",
+], get_permalink(get_page_by_path('espace-don/nous-contacter')));
+                    aif_include_partial("info-message", [
+                    "content" => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
                     ?>
 
 
@@ -81,7 +92,7 @@ aif_include_partial("info-message", [
 
 
 
-        <a class="btn btn--dark aif-mt1w aif-button--full" href="#">Vous avez une question ?</a>
+        <a class="btn btn--dark aif-mt1w aif-button--full" href="<?= get_permalink(get_page_by_path('espace-don/nous-contacter')) ?>">Vous avez une question ?</a>
 
 
 
