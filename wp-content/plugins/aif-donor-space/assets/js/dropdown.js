@@ -147,9 +147,7 @@ const handleAlphanumericKeyPress = (key) => {
         lastMatchingIndex = 0;
     }
 
-    const matchingOptions = Array.from(elements.options).filter((option) =>
-        option.textContent.toLowerCase().startsWith(typedChar)
-    );
+    const matchingOptions = Array.from(elements.options).filter((option) => option.textContent.toLowerCase().trim().startsWith(typedChar))
 
     if (matchingOptions.length) {
         if (lastMatchingIndex === matchingOptions.length) {

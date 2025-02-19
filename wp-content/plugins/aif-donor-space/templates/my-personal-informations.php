@@ -226,7 +226,7 @@ aif_include_partial("info-message", [
 
                     <?php     foreach ($countries as $country): ?>
 
-                    <li role="option" class="aif-dropdown__container_option-list__item ">
+                    <li role="option" class="aif-dropdown__container_option-list__item <?= $country == $sf_user->Pays__c ? 'aif-dropdown__container_option-list__item--curent' : ''  ?> ">
                         <?= $country ?>
                     </li>
                     <?php     endforeach ?>
@@ -245,23 +245,22 @@ aif_include_partial("info-message", [
             </div>
 
 
-            <?php if(empty($sf_user->MobilePhone)) : ?>
+
             <label for="tel">N° de téléphone portable</label>
             <input placeholder="06 00 00 00 00" autocomplete="tel" name="MobilePhone" class="aif-input" id="tel"
                 type="text" value="<?= $sf_user->MobilePhone ?>" />
-            <?php endif ?>
 
+            <?php
+            if(empty($sf_user->MobilePhone)) {
+                aif_include_partial("info-message", [
+                    "id" => "email-help-message",
+                    "content" => "Nous vous conseillons de renseigner un numéro de téléphone afin de pouvoir vous contacter plus facilement."]);
+            }
+?>
 
-
-            <?php if(empty($sf_user->HomePhone)) : ?>
             <label for="HomePhone">N° de téléphone domicile</label>
             <input placeholder="01 00 00 00 00" name="HomePhone" class="aif-input" id="HomePhone" type="text"
                 value="<?= $sf_user->HomePhone ?>" />
-            <?php endif ?>
-
-
-
-
 
             <button class="btn aif-mt1w aif-button--full" onclick="this.form.submit(); this.disabled=true;"
                 type="submit">Transmettre les modifications</button>
