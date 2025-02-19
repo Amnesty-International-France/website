@@ -95,7 +95,7 @@ if (!empty($error_no_access_to_donor_space)) {
 
     $title = "L’adresse email renseignée ne trouve pas de correspondance dans notre système.";
     $content = 'Devenez donateur en <a href="#" class="aif-link--secondary">réalisant un don </a> ou <a
-                                            class="aif-link--secondary" href="mailto:smd@amnesty.fr">contacter le Service
+                                            class="aif-link--secondary" href="mailto:smd@amnesty.fr">contactez le Service
                                             membres et donateurs</a> si vous pensez que c’est une erreur.';
 
     aif_include_partial("alert", [
@@ -125,9 +125,6 @@ if (!empty($error_no_access_to_donor_space)) {
                     "content" => "Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre adhésion ou de votre don."]); ?>
 
                 </div>
-
-
-
 
                 <div class="aif-password-container">
                     <label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
