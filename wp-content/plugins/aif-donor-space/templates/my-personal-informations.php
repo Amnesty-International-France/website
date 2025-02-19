@@ -133,18 +133,18 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
         <h2>Mes informations personelles</h2>
 
- 
+
         <?php if($sf_member->hasMandatActif) :  ?>
 
-<p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} €. Votre prochain prélèvement sera effectué le {$next_payement}." ?>
-</p>
+        <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} €. Votre prochain prélèvement sera effectué le {$next_payement}." ?>
+        </p>
 
-<?php else : ?>
+        <?php else : ?>
 
-    <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c}" ?>
-</p>
+        <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c}" ?>
+        </p>
 
-<?php endif ?>
+        <?php endif ?>
 
         <form class="" onsubmit="disablePersonalInformationsButtons()" role="form" method="POST" action="">
             <label for="email">Adresse email (obligatoire)</label>
@@ -153,9 +153,13 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
                 name="Email" />
 
             <?php
-                        aif_include_partial("info-message", [
-                        "id" => "email-help-message",
-                        "content" => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, contactez-nous."]); ?>
+
+                        $url = add_query_arg([
+                "subject" =>  "Modifier mon e-mail",
+            ], get_permalink(get_page_by_path('espace-don/nous-contacter')));
+aif_include_partial("info-message", [
+"id" => "email-help-message",
+"content" => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>."]); ?>
 
             <fieldset class="aif-flex aif-fieldset">
                 <legend class="aif-fieldset__legend">Civilité (obligatoire)<legend>
@@ -163,14 +167,14 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
                         <div class="aif-radio-button-container">
                             <div class="aif-radio-button-container__button">
                                 <input
-                                  <?= $sf_user->Salutation == 'M' ? "checked" : '' ?>
-                                    type="radio" id="M" name="Salutation" value="M" />
+                                    <?= $sf_user->Salutation == 'M' ? "checked" : '' ?>
+                                type="radio" id="M" name="Salutation" value="M" />
                                 <label for="M">Monsieur</label>
                             </div>
                             <div class="aif-radio-button-container__button">
                                 <input type="radio" id="Mme"
-                                <?= $sf_user->Salutation == 'MME' ? "checked" : '' ?>
-                                    name="Salutation" value="MME" />
+                                    <?= $sf_user->Salutation == 'MME' ? "checked" : '' ?>
+                                name="Salutation" value="MME" />
                                 <label for="Mme">Madame</label>
                             </div>
 
@@ -194,9 +198,9 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
                 name="Adresse_Ligne_3__c" class="aif-input" id="address-level3" type="text"
                 value="<?= $sf_user->Adresse_Ligne_3__c ?>" />
 
-                <label for="address-level5">Lieu dit</label>
-            <input autocomplete="address-level5"
-                name="Adresse_Ligne_5__c" class="aif-input" id="address-level5" type="text"
+            <label for="address-level5">Lieu dit</label>
+            <input autocomplete="address-level5" name="Adresse_Ligne_5__c" class="aif-input" id="address-level5"
+                type="text"
                 value="<?= $sf_user->Adresse_Ligne_5__c ?>" />
             <label for="postal-code">Code Postal (obligatoire)</label>
             <input placeholder="Code Postal" autocomplete="postal-code" name="Code_Postal__c" class="aif-input"
@@ -214,7 +218,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
 
                     <?=isset($sf_user->Pays__c) ? $sf_user->Pays__c : "Sélectionner votre Pays" ?>
-                 
+
                 </button>
 
 
@@ -242,7 +246,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
 
             <?php if(empty($sf_user->MobilePhone)) : ?>
-                <label for="tel">N° de téléphone portable</label>
+            <label for="tel">N° de téléphone portable</label>
             <input placeholder="06 00 00 00 00" autocomplete="tel" name="MobilePhone" class="aif-input" id="tel"
                 type="text" value="<?= $sf_user->MobilePhone ?>" />
             <?php endif ?>
@@ -250,17 +254,16 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
 
             <?php if(empty($sf_user->HomePhone)) : ?>
-                <label for="HomePhone">N° de téléphone domicile</label>
-             <input placeholder="01 00 00 00 00" name="HomePhone" class="aif-input" id="HomePhone" type="text"
+            <label for="HomePhone">N° de téléphone domicile</label>
+            <input placeholder="01 00 00 00 00" name="HomePhone" class="aif-input" id="HomePhone" type="text"
                 value="<?= $sf_user->HomePhone ?>" />
             <?php endif ?>
-         
-         
-           
 
 
-            <button class="btn aif-mt1w aif-button--full"
-                onclick="this.form.submit(); this.disabled=true;"
+
+
+
+            <button class="btn aif-mt1w aif-button--full" onclick="this.form.submit(); this.disabled=true;"
                 type="submit">Transmettre les modifications</button>
 
             <button class="btn btn--dark aif-mt1w aif-button--full" type="reset">Annuler</button>
