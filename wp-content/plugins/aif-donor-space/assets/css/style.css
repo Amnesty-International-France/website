@@ -494,7 +494,7 @@ body {
 
 
 .aif-my-demand-container__info-container__subject {
-    font-size: 20px;
+    font-size: var(--wp--preset--font-size--regular);
     font-weight: 700;
     font-family: var(--wp--preset--font-family--primary);
 }

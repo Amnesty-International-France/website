@@ -113,21 +113,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
                     <?php
         if (!empty($error_message)) {
-
-
             aif_include_partial("alert", [
                 "state" => "error",
                 "title" => $title,
             "content" => $error_message]);
 
-        }
+        };
 
 ?>
 
                     <div class="aif-flex aif-justify-end">
+                        <div>
                         <a class="aif-link--primary aif-mt1w aif-block"
-                            href="<?= get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>">
-                            Mot de passe oublié ? </a>
+                                href="<?= get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>">
+                                Mot de passe oublié ? </a>
+                        <a class="aif-link--primary aif-block"
+                                href="<?= get_permalink(get_page_by_path('espace-don/foire-aux-questions')) ?>">
+                                Un problème de connexion ? </a>
+                        </div>
+                   
 
                     </div>
 
