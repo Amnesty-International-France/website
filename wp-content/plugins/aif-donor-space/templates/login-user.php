@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                         <a class="aif-link--primary aif-mt1w aif-block"
                                 href="<?= get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>">
                                 Mot de passe oublié ? </a>
-                        <a class="aif-link--primary aif-block"
+                        <a class="aif-link--primary aif-mt05w aif-block"
                                 href="<?= get_permalink(get_page_by_path('espace-don/foire-aux-questions')) ?>">
                                 Un problème de connexion ? </a>
                         </div>

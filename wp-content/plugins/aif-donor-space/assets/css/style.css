@@ -102,6 +102,11 @@ body {
     margin-bottom: 0;
 }
 
+
+.aif-mt05w {
+    margin-top: var(--wp--preset--spacing--half) !important;
+}
+
 .aif-mt1w {
     margin-top: var(--wp--preset--spacing--single) !important;
 }
