@@ -478,15 +478,18 @@ body {
 }
 
 .aif-my-demand-container__title-container__status--success {
-    background-color: var(--wp--preset--color--vivid-green-cyan);
+    background-color: rgb(from var(--wp--preset--color--vivid-green-cyan) r g b / 0.5);
+    border: 2px solid var(--wp--preset--color--vivid-green-cyan)
 }
 
 .aif-my-demand-container__title-container__status--in-progress {
-    background-color: var(--wp--preset--color--primary-state);
+    background-color: rgb(from var(--wp--preset--color--primary-state) r g b / 0.5);
+    border: 2px solid var(--wp--preset--color--primary-state)
 }
 
 .aif-my-demand-container__title-container__status--refused {
-    background-color: var(--wp--preset--color--vivid-red);
+    background-color: rgb(from var(--wp--preset--color--vivid-red) r g b / 0.5);
+    border: 2px solid var(--wp--preset--color--vivid-red)
 }
 
 
