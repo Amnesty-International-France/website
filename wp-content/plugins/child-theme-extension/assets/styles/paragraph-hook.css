@@ -1,0 +1,16 @@
+.is-chapo {
+	padding-top: 24px;
+	padding-left: 24px;
+	border-left: var(--wp--preset--color--primary) solid 4px;
+	font-size: 22px;
+	line-height: 30px;
+	font-weight: bold;
+	position: relative;
+	left: -92px;
+}
+
+@media (max-width: 684px) {
+	.is-chapo {
+		left: 0;
+	}
+}

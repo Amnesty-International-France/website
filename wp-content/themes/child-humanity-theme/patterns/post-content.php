@@ -13,8 +13,8 @@ $article_has_sidebar = $max_post_content ? '' : 'has-sidebar';
 ?>
 <!-- wp:group {"tagName":"section","className":"article <?php echo esc_attr( $article_has_sidebar ); ?>"} -->
 <section class="wp-block-group article <?php echo esc_attr( $article_has_sidebar ); ?>">
-    <!-- wp:group {"tagName":"header","className":"article-header"} -->
-    <header class="wp-block-group article-header">
+    <!-- wp:group {"tagName":"header"} -->
+    <header class="wp-block-group">
         <!-- wp:pattern {"slug":"amnesty/post-metadata"} /-->
         <!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
     </header>

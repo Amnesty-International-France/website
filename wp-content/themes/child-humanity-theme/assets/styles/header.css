@@ -1,0 +1,50 @@
+.page-header .container {
+    max-width: none;
+}
+
+.height-header {
+    height: 72px !important;
+}
+
+.surheader {
+    display: none;
+    height: 36px;
+    background-color: black;
+}
+
+@media (min-width: 64em) {
+    .height-header {
+        height: 108px !important;
+    }
+    .surheader {
+        display: flex;
+    }
+}
+
+.mainheader {
+    height: 72px;
+}
+
+.page-nav--main2 {
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
+    background-color: black;
+    color: white;
+}
+
+.page-nav--main2 ul {
+    gap: 0 20px;
+}
+
+@media (max-width: 47.5em) {
+    .admin-bar .mobile-menu {
+        top: 118px;
+    }
+}
+
+@media (min-width: 47.5em) {
+    .burger {
+        width: 72px !important;
+    }
+}

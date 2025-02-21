@@ -1,0 +1,8 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "child-theme-extension/paragraph-hook",
+	"version": "1.0",
+	"title": "Paragraph hook",
+	"editorScript": "file:./hook.js"
+}

@@ -39,7 +39,7 @@ wp-config.php
 # Plugins
 /wp-content/plugins/*
 # Example of my custom plugin named hello-world
-#!/wp-content/plugins/hello-world/
+!/wp-content/plugins/child-theme-extension
 
 # Themes
 /wp-content/themes/*

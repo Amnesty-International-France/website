@@ -1,0 +1,85 @@
+{
+  "$schema": "https://schemas.wp.org/wp/6.6/theme.json",
+  "version": 3,
+  "settings": {
+    "color": {
+      "palette": [
+        {
+          "slug": "black",
+          "color": "#000",
+          "name": "Black"
+        },
+        {
+          "slug": "white",
+          "color": "#fff",
+          "name": "White"
+        },
+        {
+          "slug": "primary",
+          "color": "#ffff00",
+          "name": "Primary"
+        },
+        {
+          "slug": "primary-state",
+          "color": "#f08300",
+          "name": "Primary State"
+        },
+        {
+          "slug": "secondary",
+          "color": "#2196f3",
+          "name": "Secondary"
+        },
+        {
+          "slug": "accent",
+          "color": "#2196f3",
+          "name": "Accent"
+        },
+        {
+          "slug": "grey-lightest",
+          "color": "#f7f7f7",
+          "name": "Lightest Grey"
+        },
+        {
+          "slug": "grey-lighter",
+          "color": "#e4e4e4",
+          "name": "Lighter Grey"
+        },
+        {
+          "slug": "grey-light",
+          "color": "#b3b3b3",
+          "name": "light Grey"
+        },
+        {
+          "slug": "grey-base",
+          "color": "#767676",
+          "name": "Default Grey"
+        },
+        {
+          "slug": "grey-dark",
+          "color": "#525252",
+          "name": "Dark Grey"
+        },
+        {
+          "slug": "grey-darker",
+          "color": "#262626",
+          "name": "Darker Grey"
+        },
+        {
+          "slug": "grey-darkest",
+          "color": "#111111",
+          "name": "Darkest Grey"
+        },
+        {
+          "slug": "blue-twitter",
+          "color": "#1da1f2",
+          "name": "Twitter Blue"
+        },
+        {
+          "slug": "orange-base",
+          "color": "#ffa500",
+          "name": "Orange"
+        }
+      ]
+    }
+  }
+}
