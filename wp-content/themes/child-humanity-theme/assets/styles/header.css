@@ -9,7 +9,7 @@
 .surheader {
     display: none;
     height: 36px;
-    background-color: black;
+    background-color: var(--wp--preset--color--black);
 }
 
 @media (min-width: 64em) {
@@ -25,12 +25,16 @@
     height: 72px;
 }
 
+.page-nav--main ul span {
+    font-size: 18px;
+}
+
 .page-nav--main2 {
     display: flex;
     justify-content: flex-end;
     margin-left: auto;
-    background-color: black;
-    color: white;
+    background-color: var(--wp--preset--color--black);
+    color: var(--wp--preset--color--white);
 }
 
 .page-nav--main2 ul {

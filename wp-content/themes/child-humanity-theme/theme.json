@@ -78,8 +78,32 @@
           "slug": "orange-base",
           "color": "#ffa500",
           "name": "Orange"
+        },
+        {
+          "slug": "black-bg",
+          "color": "#1a1a1a",
+          "name": "Black Background"
         }
       ]
+    },
+    "typography": {
+      "fontSizes": [],
+      "customFontSize": false,
+      "defaultFontSizes": false,
+      "fluid": false,
+      "fontStyle": false,
+      "fontWeight": false
+    }
+  },
+  "styles": {
+    "blocks": {
+      "core/paragraph": {
+        "typography": {
+          "fontSize": "18px",
+          "lineHeight": "28px",
+          "fontWeight": "lighter"
+        }
+      }
     }
   }
 }

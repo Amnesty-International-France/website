@@ -2,15 +2,20 @@
 	padding-top: 24px;
 	padding-left: 24px;
 	border-left: var(--wp--preset--color--primary) solid 4px;
-	font-size: 22px;
-	line-height: 30px;
+	font-size: 22px !important;
+	line-height: 30px !important;
 	font-weight: bold;
 	position: relative;
-	left: -92px;
+	left: -96px;
 }
 
 @media (max-width: 684px) {
 	.is-chapo {
 		left: 0;
 	}
+}
+
+.block-editor .is-chapo {
+	left: 0;
+	padding-top: 0;
 }
