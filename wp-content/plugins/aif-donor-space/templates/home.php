@@ -9,95 +9,96 @@ $current_user = wp_get_current_user();
 $sf_member = get_salesforce_member_data($current_user->user_email);
 $sf_user = get_salesforce_user_data($sf_member->Id);
 $user_status =  aif_get_user_status($sf_member);
-$next_payement = "";
+$picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
 
-$SEPA_mandates = get_salesforce_user_SEPA_mandate($sf_member->Id);
-$actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
-
-if($actifMandate) {
-    $next_payement = date_format(date_create($actifMandate->Date_paiement_Avenir__c), "d/m/Y");
-}
 
 ?>
 
-<main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-    <?php if (isset($error_message)) : ?>
-    <div class="aif-error-message"><?php echo $error_message; ?></div>
-    <?php endif; ?>
-    <div class="container">
+
+<main class="aif-container--main">
+    <div class="aif-container--form">
         <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="article-title wp-block-post-title">Mon espace donateur</h1>
+            <h1 class="aif-mb1w">Bonjour
+                <?= $current_user->first_name ?>,
+            </h1>
+            <?php
+        aif_include_partial("label", [
+            "content" => "Votre statut : {$user_status} (n° {$sf_user->Identifiant_contact__c}) ",
+            "variant" => "warning"
+            ]);
+?>
+
         </header>
 
-        <section>
+        <p>
+            Bienvenue dans votre espace don qui permet la gestion administrative des informations liées à vos dons et
+            adhésion.
+        </p>
 
-        
+        <nav class="secondary-nav-container" aria-label="menu de navigation secondaire">
+            <ul class="secondary-nav-container__list">
+                <li class="secondary-nav-container__list__item">
 
-               <?php if($sf_member->hasMandatActif) :  ?>
+                    <?php
+        aif_include_partial("nav-card", [
+        "iconName" => "my-info",
+        "url" => get_permalink(get_page_by_path('espace-don/mes-informations-personelles')),
+        "title" => "Mes informations",
+        "content" => "Affichez ou modifiez vos informations personnelles."]); ?>
 
-<p> <?= "Bonjour <span class='aif-text-bold'>  {$sf_user->Name}  </span>. Vous êtes, <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} €. Votre prochain prélèvement sera effectué le {$next_payement}." ?>
-</p>
+                </li>
 
-<?php else : ?>
+                <li class="secondary-nav-container__list__item">
 
-    <p> <?= "Bonjour <span class='aif-text-bold'>  {$sf_user->Name}  </span>. Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c}" ?>
-</p>
+                    <?php
+       aif_include_partial("nav-card", [
+       "iconName" => "paper",
+       "url" => get_permalink(get_page_by_path('espace-don/mes-recus-fiscaux')),
+       "title" => "Mes reçus fiscaux",
+       "content" => "Retrouvez dans cet espace tous vos reçus fiscaux."]); ?>
 
-<?php endif ?>
+                </li>
 
 
+                <li class="secondary-nav-container__list__item">
 
-            <p>Bienvenue dans votre espace don qui permet la gestion administrative des informations liées à vos
-                dons et adhésion
+                    <?php
+       aif_include_partial("nav-card", [
+       "iconName" => "plane",
+       "url" => get_permalink(get_page_by_path('espace-don/mes-demandes')),
+       "title" => "Mes demandes",
+       "content" => "Affichez l’état de vos demandes passées ou en cours."]); ?>
 
-            </p>
+                </li>
+            </ul>
+        </nav>
 
-            <h2>Menu navigation</h2>
-
-            <nav aria-label="navigation espace donateur">
-                <ul class="aif-list-none aif-m0 aif-flex aif-gap-single aif-flex-col">
-                    <li>
-                        <a class="aif-underline"
-                            href="<?= get_permalink(get_page_by_path('espace-don/mes-recus-fiscaux')) ?>">Mes reçus
-                            fiscaux
-                            <svg class="aif-rotate-180" width="13" height="7" viewBox="0 0 13 7" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <g id="Frame">
-                                    <path id="Vector" d="M3.5 1L3.9 1.4L2.2 3.2H12V3.8H2.2L3.9 5.6L3.5 6L1 3.5L3.5 1Z"
-                                        fill="#2B2B2B" />
-                                </g>
-                            </svg>
-
-                        </a>
-                    </li>
-
-                    <li>
-                        <a class="aif-underline"
-                            href="<?= get_permalink(get_page_by_path('espace-don/mes-informations-personelles')) ?>">Modifier mes informations personelles
-                            <svg class="aif-rotate-180" width="13" height="7" viewBox="0 0 13 7" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <g id="Frame">
-                                    <path id="Vector" d="M3.5 1L3.9 1.4L2.2 3.2H12V3.8H2.2L3.9 5.6L3.5 6L1 3.5L3.5 1Z"
-                                        fill="#2B2B2B" />
-                                </g>
-                            </svg>
-
-                        </a>
-                    </li>
-
+        <div class="aif-banner">
+            <div class="aif-banner__image">
+                <img src="<?= $picture_url ?>" />
+            </div>
+            <div class="aif-banner__container">
+                <h2 class="aif-banner__container__title"> <?= $current_user->first_name ?>, renforcez votre soutien </h2>
+                <p class="aif-banner__container__content">
+                Merci de nous soutenir! Vous souhaitez aller plus loin ?
+                  
+                </p>
+                <ul class="aif-banner__container__links">
+                <li>
+                     <a href="#" class="btn btn--primary">Faire un don ponctuel complémentaire</a>
+                </li>
+                <li>
+                <a class="aif-banner__container__links__item" href="#">Passer en prélévement automatique</a>
+                </li>     
                 </ul>
-
-            </nav>
-
-
-        </section>
-
+            </div>
+        </div>
 
 
 
     </div>
-
 </main>
 
 <?php
 get_footer();
+?>
