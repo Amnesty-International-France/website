@@ -9,14 +9,8 @@ $current_user = wp_get_current_user();
 $sf_member = get_salesforce_member_data($current_user->user_email);
 $sf_user = get_salesforce_user_data($sf_member->Id);
 $user_status =  aif_get_user_status($sf_member);
-$next_payement = "";
+$picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
 
-$SEPA_mandates = get_salesforce_user_SEPA_mandate($sf_member->Id);
-$actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
-
-if ($actifMandate) {
-    $next_payement = date_format(date_create($actifMandate->Date_paiement_Avenir__c), "d/m/Y");
-}
 
 ?>
 
@@ -25,7 +19,8 @@ if ($actifMandate) {
     <div class="aif-container--form">
         <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
             <h1 class="aif-mb1w">Bonjour
-                <?= $current_user->first_name ?>,</h1>
+                <?= $current_user->first_name ?>,
+            </h1>
             <?php
         aif_include_partial("label", [
             "content" => "Votre statut : {$user_status} (n° {$sf_user->Identifiant_contact__c}) ",
@@ -77,6 +72,27 @@ if ($actifMandate) {
                 </li>
             </ul>
         </nav>
+
+        <div class="aif-banner">
+            <div class="aif-banner__image">
+                <img src="<?= $picture_url ?>" />
+            </div>
+            <div class="aif-banner__container">
+                <h2 class="aif-banner__container__title"> <?= $current_user->first_name ?>, renforcez votre soutien </h2>
+                <p class="aif-banner__container__content">
+                Merci de nous soutenir! Vous souhaitez aller plus loin ?
+                  
+                </p>
+                <ul class="aif-banner__container__links">
+                <li>
+                     <a href="#" class="btn btn--primary">Faire un don ponctuel complémentaire</a>
+                </li>
+                <li>
+                <a class="aif-banner__container__links__item" href="#">Passer en prélévement automatique</a>
+                </li>     
+                </ul>
+            </div>
+        </div>
 
 
 
