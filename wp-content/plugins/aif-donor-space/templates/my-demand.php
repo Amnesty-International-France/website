@@ -51,10 +51,33 @@ function aif_format_date($date)
                 <p class="aif-my-demand-container__title-container__date">
                     <?= aif_format_date($demand->Date_de_la_demande__c) ?>
                 </p>
-                <p
-                    class="aif-my-demand-container__title-container__status  <?= $demand->Statut_Espace_Don__c == "A traiter" ? "aif-my-demand-container__title-container__status--in-progress" : "" ?> <?= $demand->Statut_Espace_Don__c == "Fermé - Echoué" ? "aif-my-demand-container__title-container__status--refused" : "" ?>  <?= $demand->Statut_Espace_Don__c == "En cours" ? "aif-my-demand-container__title-container__status--in-progress" : "" ?> <?= $demand->Statut_Espace_Don__c == "Fermé - Traité" ? "aif-my-demand-container__title-container__status--success" : "" ?>">
-                    <?= $demand->Statut_Espace_Don__c ?>
-                </p>
+
+                <?php
+
+                $status = "";
+
+            switch ($demand->Statut_Espace_Don__c) {
+                case "A traiter":
+                case "En cours":
+                    $status = "warning";
+                    break;
+                case "Fermé - Echoué":
+                    $status = "error";
+                    break;
+                case "Fermé - Traité":
+                    $status = "success";
+                    break;
+                default:
+                    $status = "warning";
+                    break;
+
+            }
+
+            aif_include_partial("label", [
+            "content" => $demand->Statut_Espace_Don__c,
+            "variant" => $status
+            ]);
+            ?>
 
             </div>
 
@@ -77,6 +100,7 @@ function aif_format_date($date)
 $url = add_query_arg([
     "subject" =>  "Ma demande n'a pas pu aboutir",
 ], get_permalink(get_page_by_path('espace-don/nous-contacter')));
+
                     aif_include_partial("info-message", [
                     "content" => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
                     ?>
@@ -92,7 +116,9 @@ $url = add_query_arg([
 
 
 
-        <a class="btn btn--dark aif-mt1w aif-button--full" href="<?= get_permalink(get_page_by_path('espace-don/nous-contacter')) ?>">Vous avez une question ?</a>
+        <a class="btn btn--dark aif-mt1w aif-button--full"
+            href="<?= get_permalink(get_page_by_path('espace-don/nous-contacter')) ?>">Vous
+            avez une question ?</a>
 
 
 
