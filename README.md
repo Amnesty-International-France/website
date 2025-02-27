@@ -88,7 +88,7 @@ For more information, visit [MailGun](https://app.mailgun.com/).
 
 ### FAQ
 
-### How to manage JS inside the plugin ?
+### How to manage CSS inside the plugin ?
 
 #### Some Principles
 
@@ -98,7 +98,7 @@ Initially, assuming the CSS would remain limited, we adopted a [Tailwind](https:
 
 Some UI elements needed to be built (as they did not exist in the theme), and this approach showed its limitations. Therefore, part of the CSS uses the ["Block Element Modifier" (BEM)](https://getbem.com/) naming convention.
 
-#### How is CSS Included in the Plugin?
+#### How is CSS managed in the Plugin ?
 
 Styles are added to the plugin via the `aif_donor_space_enqueue_assets` function, located in the `aif-donor-space.php` file.
 
