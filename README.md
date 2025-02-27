@@ -85,3 +85,50 @@ This plugin requires access to MailGun for email sending. To enable MailGun, ple
 | `AIF_MAILGUN_DOMAIN`  | The domain name used for sending emails        |
 
 For more information, visit [MailGun](https://app.mailgun.com/).
+
+### FAQ
+
+### How to manage JS inside the plugin ?
+
+#### Some Principles
+
+Each class is prefixed with `aif` to minimize the risk of collision.
+
+Initially, assuming the CSS would remain limited, we adopted a [Tailwind](https://tailwindcss.com/) approach by creating utility CSS classes (e.g., `.aif-mt1w` to add margin-top).
+
+Some UI elements needed to be built (as they did not exist in the theme), and this approach showed its limitations. Therefore, part of the CSS uses the ["Block Element Modifier" (BEM)](https://getbem.com/) naming convention.
+
+#### How is CSS Included in the Plugin?
+
+Styles are added to the plugin via the `aif_donor_space_enqueue_assets` function, located in the `aif-donor-space.php` file.
+
+This function uses the WordPress function [wp_enqueue_style()](https://developer.wordpress.org/reference/functions/wp_enqueue_style/).
+
+### JS Management
+
+#### Some Principles
+
+We have tried to minimize the use of JavaScript as much as possible. The JS files are located in the `assets/js` folder.
+
+#### How is JS Included in the Plugin?
+
+Styles are added to the plugin via the `aif_donor_space_enqueue_assets` function, located in the `aif-donor-space.php` file.
+
+This function uses the WordPress function [wp_enqueue_script()](https://developer.wordpress.org/reference/functions/wp_enqueue_script/).
+
+### Routing and Page Management
+
+The plugin's routing is managed by two functions located in the `aif-donor-space.php` file.
+
+The first function, `aif_donor_space_create_pages`, creates the directory structure, and the second function, `aif_donor_space_load_template`, links a page to a template.
+
+These two functions are triggered by a WordPress hook when the plugin is activated.
+
+### How to Create/Modify/Delete a Page
+
+Each page is associated with a template. To modify a page, you need to modify the template. To add a page, follow these steps:
+
+1. Create the template in the `/template` folder.
+2. Register the page in the `aif_donor_space_create_pages` function.
+3. Associate the template with the page in the `aif_donor_space_load_template` function.
+4. Deactivate and reactivate the plugin in the admin interface.
