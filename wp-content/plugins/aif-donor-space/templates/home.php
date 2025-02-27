@@ -67,32 +67,27 @@ $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
        "iconName" => "plane",
        "url" => get_permalink(get_page_by_path('espace-don/mes-demandes')),
        "title" => "Mes demandes",
-       "content" => "Affichez l’état de vos demandes passées ou en cours."]); ?>
+       "content" => "Affichez l’état de vos demandes passées ou en cours.",
+
+    ]);
+
+
+?>
 
                 </li>
             </ul>
         </nav>
 
-        <div class="aif-banner">
-            <div class="aif-banner__image">
-                <img src="<?= $picture_url ?>" />
-            </div>
-            <div class="aif-banner__container">
-                <h2 class="aif-banner__container__title"> <?= $current_user->first_name ?>, renforcez votre soutien </h2>
-                <p class="aif-banner__container__content">
-                Merci de nous soutenir! Vous souhaitez aller plus loin ?
-                  
-                </p>
-                <ul class="aif-banner__container__links">
-                <li>
-                     <a href="#" class="btn btn--primary">Faire un don ponctuel complémentaire</a>
-                </li>
-                <li>
-                <a class="aif-banner__container__links__item" href="#">Passer en prélévement automatique</a>
-                </li>     
-                </ul>
-            </div>
-        </div>
+        <?php
+       aif_include_partial("aif-banner", [
+       "pictureURL" => $picture_url,
+       "firstName" => $current_user->first_name,
+       "member" => $sf_member,
+
+    ]);
+
+
+?>
 
 
 
