@@ -108,7 +108,7 @@ function has_access_to_donation_space($sf_user)
 }
 function get_salesforce_user_tax_reciept($ID)
 {
-    $url = 'services/data/v57.0/sobjects/Contact/'.$ID.'/Recus_fiscaux__r?fields=Id,Name,IsDeleted,Statut__c,Debut__c,Fin__c,Type_RF__c, Montant_recu__c';
+    $url = '/services/apexrest/retrieve/v1/RecuFiscaux/?idContact='.$ID;
     return get_salesforce_data($url);
 }
 

@@ -12,8 +12,8 @@ $tax_reciept = get_salesforce_user_tax_reciept($sf_user_ID);
 $sorted = [];
 $groupped = [];
 
-if ($tax_reciept->totalSize > 0) {
-    $sorted = sortByDateProp($tax_reciept->records, "Debut__c");
+if (count($tax_reciept) > 0) {
+    $sorted = sortByDateProp($tax_reciept, "Debut__c");
     $groupped = groupByYear($sorted, "Debut__c");
 }
 
@@ -45,7 +45,7 @@ aif_include_partial("alert", [
 
 ?>
 
-            <?php if ($tax_reciept->totalSize > 0): ?>
+            <?php if (count($tax_reciept) > 0): ?>
             <?php $index = 0 ?>
 
 
