@@ -35,7 +35,7 @@ function send_2fa_code($to_email, $code)
     $variables = [
         "code" => $code
     ];
-    
+
     $response = wp_remote_post($url, array(
         'method' => 'POST',
         'body' => array(
@@ -46,9 +46,8 @@ function send_2fa_code($to_email, $code)
             'template' => '2facode'
         ),
         'headers' => array(
-            'Authorization' => 'Basic ' . base64_encode('api:' . $api_key)
-        )
-    ));
+            'Authorization' => 'Basic ' . base64_encode('api:' . $api_key),
+        )));
 
     if (is_wp_error($response)) {
         return false;
