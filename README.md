@@ -86,6 +86,25 @@ This plugin requires access to MailGun for email sending. To enable MailGun, ple
 
 For more information, visit [MailGun](https://app.mailgun.com/).
 
+### Plugin Structure
+
+Here is the structure of the "Espace Don" plugin as of 20/02/25:
+
+```
+├── assets
+│   ├── css // contains the "style.css" file with all the custom CSS for the donation space
+│   └── js // contains the JS for the donation space
+├── includes
+│   ├── domain // contains all the "business" functions of the donation space
+│   │   ├── 2FA // contains everything related to two-factor authentication
+│   │   ├── bank // contains all functions related to users' bank information
+│   │   ├── contact  // contains all functions related to communication methods with Amnesty
+│   │   └── tax-receipt // contains everything related to managing tax receipts
+│   └── sales-force // contains all utility functions for interacting with Salesforce
+└── templates // contains all templates associated with a page
+    └── partials // contains "partials" (reusable UI components on the pages)
+```
+
 ### FAQ
 
 ### How to manage CSS inside the plugin ?
