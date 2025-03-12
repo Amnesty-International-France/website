@@ -4,7 +4,7 @@
     </div>
     <div class="aif-banner__container">
         
-    <?php if($member->isMembre && $member->hasMandatActif): ?>
+    <?php if($member->isMembre && ($member->hasMandatActif || $member->isDonateur)): ?>
         <h2 class="aif-banner__container__title"> Renforcez votre soutien </h2>
         <p class="aif-banner__container__content">
 
