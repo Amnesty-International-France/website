@@ -157,7 +157,7 @@ function update_github_plugins(string $path = '.', string $token = ''): void {
             $zipball_url = $last_plugin_release_json['zipball_url'];
             http_download($zipball_url, $path."/$plugin.zip", options: ['auth_bearer' => $token]);
 
-            run("wp plugin install $path/$plugin.zip --force", context: $context);
+            run("wp plugin install $plugin.zip --force", context: $context);
             //fs()->remove($path."/$plugin.zip");
             io()->success("Plugin $plugin updated.");
         }
