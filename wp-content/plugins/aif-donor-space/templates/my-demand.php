@@ -57,14 +57,13 @@ function aif_format_date($date)
                 $status = "";
 
             switch ($demand->Statut_Espace_Don__c) {
-                case "A traiter":
-                case "En cours":
+                case "En cours de traitement":
                     $status = "warning";
                     break;
-                case "Fermé - Echoué":
+                case "Rejetée":
                     $status = "error";
                     break;
-                case "Fermé - Traité":
+                case "Traitée":
                     $status = "success";
                     break;
                 default:
