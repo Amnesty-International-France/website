@@ -26,16 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function create_block_child_theme_extension_block_init() {
 	register_block_type( __DIR__ . '/build/child-theme-extension' );
-	register_block_type( __DIR__ . '/build/paragraph-hook' );
+	register_block_type( __DIR__ . '/build/button-hook' );
 }
-add_action( 'init', 'create_block_child_theme_extension_block_init' );
 
-function child_theme_extension_hook_assets() {
-	wp_enqueue_style(
-		'paragraph-hook',
-		plugin_dir_url( __FILE__ ) . 'assets/styles/paragraph-hook.css',
-		array(),
-		1.0
-	);
-}
-add_action( 'enqueue_block_assets', 'child_theme_extension_hook_assets' );
+add_action( 'init', 'create_block_child_theme_extension_block_init' );

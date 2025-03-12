@@ -26,7 +26,9 @@
 }
 
 .page-nav--main ul span {
-    font-size: 18px;
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: var(--wp--custom--body-bold--font-size);
+    font-weight: var(--wp--custom--body-bold--font-weight);
 }
 
 .page-nav--main2 {
@@ -39,6 +41,12 @@
 
 .page-nav--main2 ul {
     gap: 0 20px;
+}
+
+.page-nav--main2 ul span {
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: var(--wp--custom--body-secondary-bold--font-size);
+    font-weight: var(--wp--custom--body-secondary-bold--font-weight);
 }
 
 @media (max-width: 47.5em) {

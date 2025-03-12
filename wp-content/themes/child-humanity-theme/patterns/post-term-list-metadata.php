@@ -17,18 +17,14 @@ $post_terms = array_filter($post_terms, static function ($term) {
 })
 ?>
 
-<!-- wp:group {"tagName":"div","className":"topics-container"} -->
-<div class="wp-block-group topics-container">
-<!-- wp:list -->
-<ul class="wp-block-list">
+<!-- wp:group {"tagName":"div","className":"article-chip-categories"} -->
+<div class="wp-block-group article-chip-categories">
+
 <?php foreach ( $post_terms as $post_term ) : ?>
-<!-- wp:list-item -->
-<li class="wp-block-list-item">
-<a class="topic-item" href="<?php echo esc_url( amnesty_term_link( $post_term ) ); ?>"><?php echo esc_html( $post_term->name ); ?></a>
-</li>
-<!-- /wp:list-item -->
+
+<a class="chip-category is-style-yellow chip-category-size-medium" href="<?php echo esc_url( amnesty_term_link( $post_term ) ); ?>"><?php echo esc_html( $post_term->name ); ?></a>
+
 <?php endforeach; ?>
-</ul>
-<!-- /wp:list -->
+
 </div>
 <!-- /wp:group -->

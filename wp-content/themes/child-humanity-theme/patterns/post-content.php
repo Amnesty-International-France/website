@@ -13,14 +13,14 @@ $article_has_sidebar = $max_post_content ? '' : 'has-sidebar';
 ?>
 <!-- wp:group {"tagName":"section","className":"article <?php echo esc_attr( $article_has_sidebar ); ?>"} -->
 <section class="wp-block-group article <?php echo esc_attr( $article_has_sidebar ); ?>">
-    <!-- wp:group {"tagName":"header"} -->
-    <header class="wp-block-group">
+    <!-- wp:group {"tagName":"header","className":"medium-container"} -->
+    <header class="wp-block-group medium-container">
         <!-- wp:pattern {"slug":"amnesty/post-metadata"} /-->
         <!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
     </header>
     <!-- /wp:group -->
-    <!-- wp:group {"tagName":"article","className":"article-content"} -->
-    <article class="wp-block-group article-content">
+    <!-- wp:group {"tagName":"article","className":"article-content small-container"} -->
+    <article class="wp-block-group article-content small-container">
         <!-- wp:post-content /-->
     </article>
     <!-- /wp:group -->

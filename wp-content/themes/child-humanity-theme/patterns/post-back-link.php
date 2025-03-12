@@ -23,8 +23,8 @@ if ( ! $main_category ) {
 
 <!-- wp:buttons -->
 <div class="wp-block-buttons">
-    <!-- wp:button {"className":"is-style-light"} -->
-    <div class="wp-block-button is-style-light">
+    <!-- wp:button {"className":"is-style-black"} -->
+    <div class="wp-block-button is-style-black">
         <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( amnesty_term_link( $main_category ) ); ?>">
             <span><?php echo esc_html( $main_category->name ); ?></span>
         </a>

@@ -1,0 +1,25 @@
+.small-container {
+    width: 100%;
+    max-width: var(--wp--custom--sm-container);
+    margin: 0 auto;
+}
+
+.medium-container {
+    width: 100%;
+    max-width: var(--wp--custom--md-container);
+    margin: 0 auto;
+}
+
+.large-container {
+    width: 100%;
+    max-width: var(--wp--custom--lg-container);
+    margin: 0 auto;
+}
+
+.max-container {
+    width: 100%;
+    max-width: var(--wp--custom--max-container);
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}

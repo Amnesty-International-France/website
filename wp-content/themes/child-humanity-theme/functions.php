@@ -2,8 +2,10 @@
 
 if ( ! function_exists( 'front_assets_styles' ) ) {
     function front_assets_styles() {
+        wp_enqueue_style( 'container', get_stylesheet_directory_uri() . '/assets/styles/container.css', [], wp_get_theme()->get( 'Version' ) );
         wp_enqueue_style( 'article', get_stylesheet_directory_uri() . '/assets/styles/article.css', [], wp_get_theme()->get( 'Version' ) );
         wp_enqueue_style( 'header', get_stylesheet_directory_uri() . '/assets/styles/header.css', [], wp_get_theme()->get( 'Version' ) );
+        wp_enqueue_style( 'chip-category', get_stylesheet_directory_uri() . '/assets/styles/chip-category.css', [], wp_get_theme()->get( 'Version' ) );
     }
 }
 
@@ -12,10 +14,18 @@ add_action( 'wp_enqueue_scripts', 'front_assets_styles' );
 if ( ! function_exists('editor_assets_styles') ) {
     function editor_assets_styles() {
         wp_enqueue_style( 'editor', get_stylesheet_directory_uri() . '/assets/styles/editor.css', [], wp_get_theme()->get( 'Version' ) );
+        wp_enqueue_script( 'button', get_stylesheet_directory_uri() . '/assets/scripts/button.js', [], wp_get_theme()->get( 'Version' ) );
     }
 }
 
-add_action( 'enqueue_block_editor_assets' , 'editor_assets_styles' );
+add_action( 'enqueue_block_editor_assets' , 'editor_assets_styles', 20 );
+
+function block_assets() {
+    wp_enqueue_style('chapo', get_stylesheet_directory_uri() . '/assets/styles/chapo.css', [], wp_get_theme()->get( 'Version' ) );
+    wp_enqueue_style('button-styles', get_stylesheet_directory_uri() . '/assets/styles/button-styles.css', [], wp_get_theme()->get( 'Version' ) );
+}
+
+add_action( 'enqueue_block_assets', 'block_assets' );
 
 function calculate_reading_time() {
     $content = get_post_field( 'post_content', get_the_ID() );
@@ -39,3 +49,48 @@ function override_theme_json( $theme_json ) {
 }
 
 add_filter( 'wp_theme_json_data_theme', 'override_theme_json', 100 );
+
+function mon_sous_theme_desenregistrer_styles_bouton() {
+    register_block_style(
+        'core/paragraph',
+        [
+            'label' => 'Chapo',
+            'name' => 'chapo',
+            'style_handle' => 'chapo',
+        ]
+    );
+    register_block_style(
+        'core/button',
+        [
+            'label' => 'Yellow',
+            'name' => 'yellow',
+            'is_default' => true,
+            'style_handle' => 'button-styles',
+        ]
+    );
+    register_block_style(
+        'core/button',
+        [
+            'label' => 'Black',
+            'name' => 'black',
+            'style_handle' => 'button-styles',
+        ]
+    );
+    register_block_style(
+        'core/button',
+        [
+            'label' => 'Black Outline',
+            'name' => 'black-outline',
+            'style_handle' => 'button-styles',
+        ]
+    );
+    register_block_style(
+        'core/button',
+        [
+            'label' => 'Yellow Outline',
+            'name' => 'yellow-outline',
+            'style_handle' => 'button-styles',
+        ]
+    );
+}
+add_action( 'init', 'mon_sous_theme_desenregistrer_styles_bouton', 20 );

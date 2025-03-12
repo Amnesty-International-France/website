@@ -1,0 +1,22 @@
+.is-style-chapo {
+    padding-top: 24px;
+    padding-left: 24px;
+    border-left: var(--wp--preset--color--primary) solid 4px;
+    font-size: var(--wp--custom--chapo--font-size) !important;
+    line-height: var(--wp--custom--chapo--line-height) !important;
+    font-weight: var(--wp--custom--chapo--font-weight) !important;
+    font-family: var(--wp--custom--chapo--font-family) !important;
+    position: relative;
+}
+
+/* 768 + 256 */
+@media (min-width: 1024px) {
+    .is-style-chapo {
+        left: -128px;
+    }
+}
+
+.block-editor .is-style-chapo {
+    left: 0;
+    padding-top: 0;
+}

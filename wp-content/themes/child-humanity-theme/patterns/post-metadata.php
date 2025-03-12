@@ -34,11 +34,11 @@ $reading_time = calculate_reading_time();
         <!-- /wp:group -->
     <?php endif; ?>
 
-    <!-- wp:post-title {"level":1,"className":"article-title"} /-->
+    <!-- wp:post-title {"level":1} /-->
 
     <?php if ( $show_bottom_row ) : ?>
-        <!-- wp:group {"tagName":"div","className":"bottom-row","layout":{"type":"flex","flexWrap":"nowrap"}} -->
-        <div class="wp-block-group bottom-row">
+        <!-- wp:group {"tagName":"div","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+        <div class="wp-block-group">
             <!-- wp:group -->
             <div class="published-updated"><!-- wp:pattern {"slug":"amnesty/post-published-date"} /--> <!-- wp:pattern {"slug":"amnesty/post-updated-date"} /--></div>
             <!-- /wp:group -->
@@ -49,6 +49,10 @@ $reading_time = calculate_reading_time();
         <!-- /wp:group -->
     <?php endif; ?>
 
-    <!-- wp:pattern {"slug":"amnesty/post-term-list-metadata"} /-->
+    <!-- wp:group {"tagName":"div","className":"article-metaActions"} -->
+    <div class="wp-block-group article-metaActions">
+        <!-- wp:pattern {"slug":"amnesty/post-term-list-metadata"} /-->
+    </div>
+    <!-- /wp:group -->
 </div>
 <!-- /wp:group -->

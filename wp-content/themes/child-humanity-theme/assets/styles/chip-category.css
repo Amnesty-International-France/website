@@ -1,0 +1,70 @@
+.article-chip-categories {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -webkit-box-pack: justify;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.chip-category {
+    font-family: var(--wp--preset--font-family--secondary);
+    font-weight: bold;
+    line-height: 12px;
+    text-decoration: none !important;
+    text-transform: uppercase;
+    transition: opacity 0.5s ease-in-out;
+
+    &:hover, &:focus, &:active {
+        opacity: 60%;
+    }
+}
+
+.chip-category-size-small {
+    padding: 6px 6px;
+    font-size: 12px;
+}
+
+.chip-category-size-medium {
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+.chip-category-size-large {
+    padding: 8px 12px;
+    font-size: 16px;
+}
+
+.chip-category.is-style-yellow {
+    background-color: var(--wp--preset--color--primary);
+    color: var(--wp--preset--color--black);
+}
+
+.chip-category.is-style-black {
+    background-color: var(--wp--preset--color--black);
+    color: var(--wp--preset--color--primary);
+}
+
+.chip-category.is-style-gray {
+    background-color: var(--wp--preset--color--grey-lighter);
+    color: var(--wp--preset--color--black);
+}
+
+.chip-category.is-style-yellow-outline {
+    background-color: transparent;
+    color: var(--wp--preset--color--primary);
+    border: 1px solid var(--wp--preset--color--primary);
+}
+
+.chip-category.is-style-black-outline {
+    background-color: transparent;
+    color: var(--wp--preset--color--black);
+    border: 1px solid var(--wp--preset--color--black);
+}
+
+.chip-category.is-style-gray-outline {
+    background-color: transparent;
+    color: var(--wp--preset--color--grey-dark);
+    border: 1px solid var(--wp--preset--color--grey-dark);
+}

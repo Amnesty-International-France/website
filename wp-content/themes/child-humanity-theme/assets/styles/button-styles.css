@@ -1,0 +1,122 @@
+.btn-settings-panel-parent > .components-panel__body:not(.btn-settings-panel) {
+    display: none;
+}
+
+.editor-styles-wrapper .wp-block-button.btn-size-small .wp-block-button__link,
+.wp-block-button.btn-size-small .wp-block-button__link {
+    padding: 12px 24px;
+    font-family: var(--wp--custom--button-small--font-family);
+    font-size: var(--wp--custom--button-small--font-size);
+    font-weight: var(--wp--custom--button-small--font-weight);
+    line-height: var(--wp--custom--button-small--line-height);
+}
+
+.editor-styles-wrapper .wp-block-button.btn-size-medium .wp-block-button__link,
+.wp-block-button.btn-size-medium .wp-block-button__link {
+    padding: 14px 24px;
+    font-family: var(--wp--custom--button-medium--font-family);
+    font-size: var(--wp--custom--button-medium--font-size);
+    font-weight: var(--wp--custom--button-medium--font-weight);
+    line-height: var(--wp--custom--button-medium--line-height);
+}
+
+.editor-styles-wrapper .wp-block-button.btn-size-large .wp-block-button__link,
+.wp-block-button.btn-size-large .wp-block-button__link {
+    padding: 14px 28px;
+    font-family: var(--wp--custom--button-large--font-family);
+    font-size: var(--wp--custom--button-large--font-size);
+    font-weight: var(--wp--custom--button-large--font-weight);
+    line-height: var(--wp--custom--button-large--line-height);
+}
+
+.editor-styles-wrapper .wp-block-button .wp-block-button__link,
+.wp-block-button .wp-block-button__link {
+    border-radius: 0;
+    transition: opacity .3s ease-in-out;
+
+    &:hover, &:active, &:focus {
+        opacity: 50%;
+        background-color: inherit;
+        color: inherit;
+    }
+}
+
+.editor-styles-wrapper .wp-block-button,
+.editor-styles-wrapper .wp-block-button.is-style-default,
+.editor-styles-wrapper .wp-block-button.is-style-yellow,
+.wp-block-button.is-style-yellow {
+    color: var(--wp--preset--color--black);
+    background-color: var(--wp--preset--color--primary);
+
+    .wp-block-button__link {
+        background-color: inherit;
+        color: inherit;
+        border: 1px solid var(--wp--preset--color--primary);
+    }
+}
+
+.editor-styles-wrapper .wp-block-button.is-style-black,
+.wp-block-button.is-style-black {
+    background-color: var(--wp--preset--color--black);
+    color: var(--wp--preset--color--primary);
+
+    .wp-block-button__link {
+        background-color: inherit;
+        color: inherit;
+        border: 1px solid var(--wp--preset--color--black);
+    }
+}
+
+.editor-styles-wrapper .wp-block-button.is-style-black-outline,
+.wp-block-button.is-style-black-outline {
+    background-color: transparent;
+    color: var(--wp--preset--color--black);
+
+    .wp-block-button__link {
+        background-color: inherit;
+        color: inherit;
+        border: var(--wp--preset--color--black) solid 2px;
+    }
+}
+
+.editor-styles-wrapper .wp-block-button.is-style-yellow-outline,
+.wp-block-button.is-style-yellow-outline {
+    background-color: transparent;
+    color: var(--wp--preset--color--primary);
+
+    .wp-block-button__link {
+        background-color: inherit;
+        color: inherit;
+        border: var(--wp--preset--color--primary) solid 2px;
+    }
+}
+
+.editor-styles-wrapper .wp-block-button.btn-with-icon .wp-block-button__link,
+.wp-block-button.btn-with-icon .wp-block-button__link {
+    padding-left: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+
+    &:before {
+        content: "";
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        background-color: currentColor;
+        -webkit-mask-image: url('../images/icon-arrow-right.svg');
+        mask-image: url('../images/icon-arrow-right.svg');
+        -webkit-mask-size: 1em 1em;
+        mask-size: 1em 1em;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: left center;
+        mask-position: left center;
+    }
+}
+
+.editor-styles-wrapper .wp-block-button.btn-with-icon.btn-size-large .wp-block-button__link,
+.wp-block-button.btn-with-icon.btn-size-large .wp-block-button__link {
+    padding-left: 20px;
+}

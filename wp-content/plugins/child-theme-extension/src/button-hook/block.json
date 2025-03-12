@@ -1,8 +1,8 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "child-theme-extension/paragraph-hook",
+	"name": "child-humanity-theme/button-hook",
 	"version": "1.0",
-	"title": "Paragraph hook",
+	"title": "Button hook",
 	"editorScript": "file:./hook.js"
 }
