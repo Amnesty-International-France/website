@@ -60,10 +60,10 @@ function aif_format_date($date)
                 case "En cours de traitement":
                     $status = "warning";
                     break;
-                case "Rejetée":
+                case "Rejeté":
                     $status = "error";
                     break;
-                case "Traitée":
+                case "Traité":
                     $status = "success";
                     break;
                 default:
