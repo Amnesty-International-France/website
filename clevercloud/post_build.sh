@@ -2,6 +2,7 @@
 set -e
 echo $PATH
 castor install --path=www
+if [ -n "$APP_PLUGIN_TOKEN" ]; then castor update-github-plugins --token "$APP_PLUGIN_TOKEN"; fi
 
 test -f ${APP_HOME}/user.ini && \
   cp ${APP_HOME}/user.ini ${APP_HOME}${CC_WEBROOT}/.user.ini
