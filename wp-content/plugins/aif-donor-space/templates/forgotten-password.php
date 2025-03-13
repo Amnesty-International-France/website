@@ -21,9 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "token" => $token
         ], get_permalink(get_page_by_path('espace-don/modifier-mon-mot-de-passe')));
 
-        $htmlMessage = "Pour réinitialiser votre mot de passe, veuillez vous rendre sur <a href='".$url."'>". $url  ."</a> ";
-        $textMessae = "Pour réinitialiser votre mot de passe, veuillez vous rendre sur" . $url;
-        send_reset_password_email($user->user_email, $htmlMessage, $textMessae);
+        send_reset_password_email($user->user_email, $url);
 
         $success_title = "Votre demande à bien été prise en compte";
         $success_message = "Si votre adresse est reconnue vous allez recevoir un email pour pouvoir réinitialiser votre mot de passe";
