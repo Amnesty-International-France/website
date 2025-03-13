@@ -21,6 +21,7 @@ if ( ! function_exists('editor_assets_styles') ) {
 add_action( 'enqueue_block_editor_assets' , 'editor_assets_styles', 20 );
 
 function block_assets() {
+    wp_enqueue_style( 'site', get_stylesheet_directory_uri() . '/assets/styles/site.css', [], wp_get_theme()->get( 'Version' ) );
     wp_enqueue_style('chapo', get_stylesheet_directory_uri() . '/assets/styles/chapo.css', [], wp_get_theme()->get( 'Version' ) );
     wp_enqueue_style('button-styles', get_stylesheet_directory_uri() . '/assets/styles/button-styles.css', [], wp_get_theme()->get( 'Version' ) );
 }
