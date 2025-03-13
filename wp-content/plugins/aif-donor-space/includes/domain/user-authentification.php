@@ -6,13 +6,13 @@ function aif_generate_random_hash()
 }
 
 
-function send_reset_password_email($to_email, $url)
+function send_reset_password_email($to_email, $authentification_url)
 {
     $api_key = getenv('AIF_MAILGUN_TOKEN');
     $url = getenv('AIF_MAILGUN_URL') . '/'. getenv('AIF_MAILGUN_DOMAIN') . '/messages';
 
     $variables = [
-        "url" => $url
+        "url" => $authentification_url
     ];
 
     $response = wp_remote_post($url, array(
