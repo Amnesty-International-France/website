@@ -50,7 +50,7 @@ function override_theme_json( $theme_json ) {
 
 add_filter( 'wp_theme_json_data_theme', 'override_theme_json', 100 );
 
-function mon_sous_theme_desenregistrer_styles_bouton() {
+function register_styles_bouton() {
     register_block_style(
         'core/paragraph',
         [
@@ -93,4 +93,4 @@ function mon_sous_theme_desenregistrer_styles_bouton() {
         ]
     );
 }
-add_action( 'init', 'mon_sous_theme_desenregistrer_styles_bouton', 20 );
+add_action( 'init', 'register_styles_bouton', 20 );

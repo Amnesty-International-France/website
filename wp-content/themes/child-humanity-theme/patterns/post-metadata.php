@@ -37,14 +37,17 @@ $reading_time = calculate_reading_time();
     <!-- wp:post-title {"level":1} /-->
 
     <?php if ( $show_bottom_row ) : ?>
-        <!-- wp:group {"tagName":"div","layout":{"type":"flex","flexWrap":"nowrap"}} -->
-        <div class="wp-block-group">
-            <!-- wp:group -->
-            <div class="published-updated"><!-- wp:pattern {"slug":"amnesty/post-published-date"} /--> <!-- wp:pattern {"slug":"amnesty/post-updated-date"} /--></div>
-            <!-- /wp:group -->
-            <!-- wp:group -->
-            <div class="reading-time">Temps de lecture estimé : <?php echo esc_html( $reading_time === 1 ? "$reading_time minute" : "$reading_time minutes")?> </div>
-            <!-- /wp:group -->
+        <!-- wp:group {"tagName":"div","className":"article-metadata"} -->
+        <div class="wp-block-group article-metadata">
+            <div class="published-updated">
+                <!-- wp:pattern {"slug":"amnesty/post-published-updated-date"} /-->
+            </div>
+            <div class="reading-time">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="metadata-icon">
+                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z" clip-rule="evenodd" />
+                </svg>
+                Temps de lecture estimé : <?php echo esc_html( $reading_time === 1 ? "$reading_time minute" : "$reading_time minutes")?>
+            </div>
         </div>
         <!-- /wp:group -->
     <?php endif; ?>
