@@ -84,10 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
                 "user" => $email
             ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
 
-            $message = 'Votre nouveau code est '. $code . '. Rendez-vous sur cette url vour activer votre compte: ' . ' '. $verification_url;
 
-
-            if(send_2fa_code($email, $message)) {
+            if(send_2fa_code($email, $code)) {
                 $send_code_success_message = "Nous avons bien reçu votre demande de code. Il arrivera dans votre boîte email d'ici quelques minutes";
             }
 

@@ -27,18 +27,23 @@ function get_2fa_code($user_id)
 }
 
 
-function send_2fa_code($to_email, $message)
+function send_2fa_code($to_email, $code)
 {
     $api_key = getenv('AIF_MAILGUN_TOKEN');
     $url = getenv('AIF_MAILGUN_URL') . '/'. getenv('AIF_MAILGUN_DOMAIN') . '/messages';
 
+    $variables = [
+        "code" => $code
+    ];
+    
     $response = wp_remote_post($url, array(
         'method' => 'POST',
         'body' => array(
             'from' => 'noreply@' .  getenv('AIF_MAILGUN_DOMAIN'),
             'to' => $to_email,
             'subject' => 'Amnesty France- Vérifier votre email',
-            'text' => $message,
+            't:variables' => json_encode($variables),
+            'template' => '2facode'
         ),
         'headers' => array(
             'Authorization' => 'Basic ' . base64_encode('api:' . $api_key)

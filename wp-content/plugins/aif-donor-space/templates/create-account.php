@@ -45,9 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     "user" => $email,
                 ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
 
-                $message = "Le code de vérification est {$code}. Rendez-vous sur cette url vour activer votre compte:  {$verification_url}";
-
-                if (send_2fa_code($email, $message)) {
+                if (send_2fa_code($email, $code)) {
                     wp_redirect($verification_url);
                     exit;
                 }
