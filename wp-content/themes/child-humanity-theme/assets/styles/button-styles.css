@@ -42,7 +42,9 @@
 }
 
 .editor-styles-wrapper .wp-block-button,
+.wp-block-button,
 .editor-styles-wrapper .wp-block-button.is-style-default,
+.wp-block-button.is-style-default,
 .editor-styles-wrapper .wp-block-button.is-style-yellow,
 .wp-block-button.is-style-yellow {
     color: var(--wp--preset--color--black);
