@@ -12,7 +12,7 @@
 /* 768 + 256 */
 @media (min-width: 1024px) {
     .is-style-chapo {
-        left: -128px;
+        left: -12.5%;
     }
 }
 
