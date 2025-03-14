@@ -1,5 +1,6 @@
 /* We don't want an h2 to have this style if it follow a chapo*/
-h2:first-child, :not(.is-style-chapo) + h2 {
+.wp-site-blocks h2:first-child, .wp-site-blocks :not(.is-style-chapo) + h2,
+.editor-visual-editor h2:first-child, .editor-visual-editor :not(.is-style-chapo) + h2 {
     position: relative;
     padding-top: 15px;
 
