@@ -27,6 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function create_block_child_theme_extension_block_init() {
 	register_block_type( __DIR__ . '/build/child-theme-extension' );
 	register_block_type( __DIR__ . '/build/button-hook' );
+	register_block_type( __DIR__ . '/build/read-also' );
 }
 
 add_action( 'init', 'create_block_child_theme_extension_block_init' );
