@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "create-block/small-section",
+	"version": "0.1.0",
+	"title": "Section - Petite",
+	"category": "widgets",
+	"description": "Small section",
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": "Titre"
+		},
+		"showTitle": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"textdomain": "small-section",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}
