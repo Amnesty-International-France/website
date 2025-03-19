@@ -8,6 +8,11 @@ $error_no_access_to_donor_space = false;
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    if (!isset($_POST['create_account_nonce']) || !wp_verify_nonce($_POST['create_account_nonce'], 'create_account_form')) {
+        die('Invalid nonce.');
+    }
+
     $email = sanitize_email($_POST['email']);
     $password = sanitize_text_field($_POST['password']);
     $confirm_password = sanitize_text_field($_POST['confirm-password']);
@@ -110,7 +115,7 @@ if (!empty($error_no_access_to_donor_space)) {
             <form class="aif-form-container" action="" method="POST" onsubmit="return checkPasswordMatch()">
 
                 <div>
-
+                <?php wp_nonce_field('create_account_form', 'create_account_nonce'); ?>
                     <label for="email">Adresse email (obligatoire) :</label>
                     <input type="email" class="aif-input" id="email" name="email" aria-describedby="email-help-message"
                         placeholder="adresse@mail.fr" autocomplete="email" aria-required="true" required>

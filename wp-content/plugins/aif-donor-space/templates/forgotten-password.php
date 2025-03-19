@@ -12,6 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = get_user_by("email", $email);
 
 
+
+    if (!isset($_POST['forgotten_password_nonce']) || !wp_verify_nonce($_POST['forgotten_password_nonce'], 'forgotten_password_form')) {
+        die('Invalid nonce.');
+    }
+
+
     if ($user) {
         $token = aif_generate_random_hash();
         store_email_token($user->ID, $token);
@@ -74,8 +80,11 @@ if (isset($success_message)) {
 
         <section>
             <form class="aif-form-container" action="" method="POST">
+                <?php wp_nonce_field('forgotten_password_form', 'forgotten_password_nonce'); ?>
                 <label for="email">Votre email (obligatoire) :</label>
-                <input value="<?= $email ? $email : '' ?>" placeholder="adresse@mail.fr" type="email" class="aif-input" id="email" name="email" required
+                <input
+                    value="<?= $email ? $email : '' ?>"
+                    placeholder="adresse@mail.fr" type="email" class="aif-input" id="email" name="email" required
                     aria-required="true">
                 <button class="btn aif-mt1w aif-button--full" type="submit" id="submit-btn">Réinitialiser mon mot de
                     passe</button>

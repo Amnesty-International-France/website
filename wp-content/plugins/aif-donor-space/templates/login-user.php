@@ -95,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         <section>
             <h3 class="aif-sr-only"> Formulaire de connexion </h3>
             <form class="aif-form-container" role="form" method="POST" action="">
+            <?php wp_nonce_field('login_form', 'login_nonce'); ?>
                 <label for="email">Votre adresse email (obligatoire)</label>
                 <input placeholder="adresse@mail.fr"
                     value="<?= $email ? $email : '' ?>"
