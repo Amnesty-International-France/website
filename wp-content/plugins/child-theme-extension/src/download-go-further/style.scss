@@ -1,0 +1,86 @@
+.wp-block-download-go-further {
+	width: 100%;
+	padding: 30px 30px 25px 30px;
+	background-color: var(--wp--preset--color--grey-lighter);
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+
+	.wp-block-download-go-further-title {
+		background-color: var(--wp--preset--color--black);
+		padding: 10px 12px 8px 10px !important;
+		width: fit-content;
+
+		h3 {
+			color: var(--wp--preset--color--white);
+			text-transform: uppercase;
+			font-family: var(--wp--custom--heading-third--font-family) !important;
+			font-size: var(--wp--custom--heading-third--font-size) !important;
+			font-weight: var(--wp--custom--heading-third--font-weight) !important;
+			line-height: var(--wp--custom--heading-third--line-height) !important;
+			margin: 0 !important;
+		}
+	}
+
+	.wp-block-download-go-further-download-list {
+		padding: 0;
+		margin: 0;
+
+		.wp-block-download-go-further-download-item {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 20px;
+			padding: 12px 0;
+			border-bottom: 1px solid var(--wp--preset--color--grey-light);
+			list-style-type: none;
+
+			.wp-block-download-go-further-download-item-text {
+				margin: 0;
+				color: var(--wp--preset--color--black);
+				font-family: "Amnesty Trade Gothic";
+				font-size: 16px;
+				font-style: normal;
+				font-weight: 700;
+				line-height: 24px; /* 150% */
+				text-decoration-line: underline;
+				text-decoration-style: solid;
+				text-decoration-skip-ink: auto;
+				text-decoration-thickness: auto;
+				text-underline-offset: auto;
+				text-underline-position: from-font;
+				text-transform: capitalize;
+			}
+
+			a {
+				.wp-block-download-go-further-download-item-button {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					gap: 12px;
+					padding: 12px 24px 12px 16px;
+					color: var(--wp--preset--color--black);
+					background-color: var(--wp--preset--color--primary);
+					font-family: "Amnesty Trade Gothic";
+					font-size: 15px;
+					font-style: normal;
+					font-weight: 700;
+					line-height: 16px;
+					border: 1px solid var(--wp--preset--color--primary);
+					border-radius: 0;
+					box-shadow: none;
+					transition: all 0.2s ease;
+
+					&:hover {
+						opacity: 50%;
+					}
+
+					svg {
+						width: 16px;
+						fill: var(--wp--preset--color--black);
+					}
+				}
+			}
+		}
+	}
+}
