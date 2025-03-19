@@ -21,8 +21,6 @@ if (!isset($_GET['user'])) {
 
 $error_message = "";
 
-print_r($_POST);
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
 
@@ -30,14 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     $password = sanitize_text_field($_POST['password']) ;
 
 
-    // if (!isset($_POST['login_nonce']) || !wp_verify_nonce($_POST['login_nonce'], 'login_form')) {
-    //     die('Invalid nonce.');
-    // }
+    if (!isset($_POST['login_nonce']) || !wp_verify_nonce($_POST['login_nonce'], 'login_form')) {
+        die('Invalid nonce.');
+    }
     $stored_user = get_user_by('email', $email);
-
-    print_r($stored_user);
-
-    print_r(get_email_is_verified(user_id: $stored_user->ID));
 
 
     if ($stored_user) {
