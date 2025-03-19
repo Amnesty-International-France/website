@@ -21,8 +21,6 @@ if (!isset($_GET['user'])) {
 
 $error_message = "";
 
-print_r($_POST);
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
 
@@ -34,10 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         die('Invalid nonce.');
     }
     $stored_user = get_user_by('email', $email);
-
-    print_r($stored_user);
-
-    print_r(get_email_is_verified(user_id: $stored_user->ID));
 
 
     if ($stored_user) {
