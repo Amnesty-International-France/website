@@ -1,0 +1,50 @@
+.wp-block-bigbite-tabs.is-style-default .tabsContainer,
+.wp-block-bigbite-tabs.is-style-grey .tabsContainer {
+  background-color: var(--wp--preset--color--grey-lighter) !important;
+}
+
+.wp-block-bigbite-tabs .tabsContainer {
+  background-color: var(--wp--preset--color--grey-lighter) !important;
+  overflow: scroll !important;
+}
+
+.wp-block-bigbite-tabs.is-style-light .tabsContainer {
+  background-color: var(--wp--preset--color--white) !important;
+  color: var(--wp--preset--color--black) !important;
+}
+
+.wp-block-bigbite-tabs .tabsContainer button.tab {
+  color: var(--wp--preset--color--black) !important;
+  border: none !important;
+}
+
+.wp-block-bigbite-tabs .tabsContainer button.addNewTabButton {
+  background-color: var(--wp--preset--color--white) !important;
+}
+
+.wp-block-bigbite-tabs.tabPanelContainer {
+  border: none;
+}
+
+.wp-block-bigbite-tabs .tabsContainer button.tab[class*="is-selected"] {
+  background: none !important;
+  border-bottom: 6px solid var(--wp--preset--color--black) !important;
+  color: var(--wp--preset--color--black) !important;
+}
+
+.wp-block-bigbite-tabs .tabPanelContainer {
+  border: none !important;
+}
+
+.wp-block-bigbite-tabs .tabsContainer button.tab:hover {
+  background-color: var(--wp--preset--color--grey-light) !important;
+}
+
+.wp-block-bigbite-tabs.is-style-default .tabsContainer button.tab:hover,
+.wp-block-bigbite-tabs.is-style-grey .tabsContainer button.tab:hover {
+  background-color: var(--wp--preset--color--grey-light) !important;
+}
+
+.wp-block-bigbite-tabs.is-style-light .tabsContainer button.tab:hover {
+  background-color: var(--wp--preset--color--grey-light) !important;
+}

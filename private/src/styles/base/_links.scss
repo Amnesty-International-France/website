@@ -1,0 +1,20 @@
+a {
+  transition: color .3s ease-in-out;
+  text-decoration-skip-ink: auto;
+}
+
+.section p > a,
+.section li a,
+.article-content p a,
+.article-content li a {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.single main a {
+  text-decoration: underline;
+}
+
+.single main a.btn {
+  text-decoration: none;
+}
