@@ -35,7 +35,7 @@ if (count($tax_reciept) > 0) {
 
             <?php
               $url = add_query_arg([
-                "subject" =>  "Mes reçus fiscaux",
+                "subject" =>  "Mes dons et adhésions",
             ], get_permalink(get_page_by_path('nous-contacter')));
 
 aif_include_partial("alert", [
@@ -116,7 +116,7 @@ $content = "Les dons de plus de 5 ans et inférieurs à 7 € ne sont pas affich
 aif_include_partial("alert", ["content" => $content, ]);
 
 $url = add_query_arg([
-    "subject" =>  "Mes dons et adhésions",
+    "subject" =>  "Mes reçus fiscaux",
 ], get_permalink(get_page_by_path('nous-contacter')));
 
 $content2 = "Le montant de votre abonnement au magazine la Chronique n’est pas déductible des impôts. Pour toutes autres demandes concernant vos reçus fiscaux, <a class='aif-link--secondary' title='contacter le service SMD d'Amnesty France' href='{$url}'>contactez-nous </a>";
