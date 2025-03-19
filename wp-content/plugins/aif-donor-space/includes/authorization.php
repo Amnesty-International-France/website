@@ -4,7 +4,7 @@ function check_user_page_access()
 {
 
     if (!is_user_logged_in()) {
-        wp_redirect(get_permalink(get_page_by_path('espace-donateur/connectez-vous')));
+        wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
         exit;
     }
 
@@ -13,13 +13,13 @@ function check_user_page_access()
 
 
     if (!$sf_user) {
-        wp_redirect(get_permalink(get_page_by_path('espace-donateur/connectez-vous')));
+        wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
         exit;
     }
 
 
     if (!has_access_to_donation_space($sf_user)) {
-        wp_redirect(get_permalink(get_page_by_path('espace-donateur/connectez-vous')));
+        wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
         exit;
     }
 

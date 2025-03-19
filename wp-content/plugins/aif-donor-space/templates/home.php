@@ -6,71 +6,94 @@ get_header();
 check_user_page_access();
 
 $current_user = wp_get_current_user();
-$sf_user = get_salesforce_member_data($current_user->user_email);
+$sf_member = get_salesforce_member_data($current_user->user_email);
+$sf_user = get_salesforce_user_data($sf_member->Id);
+$user_status =  aif_get_user_status($sf_member);
+$picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
+
 
 ?>
 
-<main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-    <?php if (isset($error_message)) : ?>
-    <div class="aif-error-message"><?php echo $error_message; ?></div>
-    <?php endif; ?>
-    <div class="container">
+
+<main class="aif-container--main">
+    <div class="aif-container--form">
         <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-            <h1 class="article-title wp-block-post-title">Mon espace donateur</h1>
+            <h1 class="aif-mb1w">Bonjour
+                <?= $current_user->first_name ?>,
+            </h1>
+            <?php
+        aif_include_partial("label", [
+            "content" => "Votre statut : {$user_status} (n° {$sf_user->Identifiant_contact__c}) ",
+            "variant" => "warning"
+            ]);
+?>
+
         </header>
 
-        <section>
+        <p>
+            Bienvenue dans votre espace don qui permet la gestion administrative des informations liées à vos dons et
+            adhésion.
+        </p>
 
-            <p>Bonjour <span class="aif-text-bold"> <?= $current_user->display_name ?> </span> vous êtes
+        <nav class="secondary-nav-container" aria-label="menu de navigation secondaire">
+            <ul class="secondary-nav-container__list">
+                <li class="secondary-nav-container__list__item">
 
-                <?php if($sf_user->isDonateur) : ?>
-                membre donateur
-                <?php elseif($sf_user->isMembre): ?>
-                membre
-                <?php else: ?>
-                ancien membre
-                <?php endif; ?>
+                    <?php
+        aif_include_partial("nav-card", [
+        "iconName" => "my-info",
+        "url" => get_permalink(get_page_by_path('mes-informations-personelles')),
+        "title" => "Mes informations",
+        "content" => "Affichez ou modifiez vos informations personnelles."]); ?>
 
-                d'Amnesty International France en prélèvement automatique mensuel sous le n° <?= $sf_user->Id ?> </p>
+                </li>
 
+                <li class="secondary-nav-container__list__item">
 
-            <p>Bienvenue dans votre espace don qui permet la gestion administrative des informations liées à vos
-                dons et adhésion
+                    <?php
+       aif_include_partial("nav-card", [
+       "iconName" => "paper",
+       "url" => get_permalink(get_page_by_path('mes-recus-fiscaux')),
+       "title" => "Mes reçus fiscaux",
+       "content" => "Retrouvez dans cet espace tous vos reçus fiscaux."]); ?>
 
-            </p>
-
-            <h2>Menu navigation</h2>
-
-            <nav aria-label="navigation espace donateur">
-                <ul class="aif-list-none aif-m0">
-                    <li>
-                        <a class="aif-underline"
-                            href="<?= get_permalink(get_page_by_path('espace-donateur/mes-recus-fiscaux')) ?>">Mes reçus
-                            fiscaux
-                            <svg class="aif-rotate-180" width="13" height="7" viewBox="0 0 13 7" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <g id="Frame">
-                                    <path id="Vector" d="M3.5 1L3.9 1.4L2.2 3.2H12V3.8H2.2L3.9 5.6L3.5 6L1 3.5L3.5 1Z"
-                                        fill="#2B2B2B" />
-                                </g>
-                            </svg>
-
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav>
+                </li>
 
 
-        </section>
+                <li class="secondary-nav-container__list__item">
 
+                    <?php
+       aif_include_partial("nav-card", [
+       "iconName" => "plane",
+       "url" => get_permalink(get_page_by_path('mes-demandes')),
+       "title" => "Mes demandes",
+       "content" => "Affichez l’état de vos demandes passées ou en cours.",
+
+    ]);
+
+
+?>
+
+                </li>
+            </ul>
+        </nav>
+
+        <?php
+       aif_include_partial("aif-banner", [
+       "pictureURL" => $picture_url,
+       "firstName" => $current_user->first_name,
+       "member" => $sf_member,
+
+    ]);
+
+
+?>
 
 
 
     </div>
-
 </main>
 
 <?php
-                                    get_footer();
+get_footer();
+?>
