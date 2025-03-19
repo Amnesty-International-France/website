@@ -43,14 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $verification_url = add_query_arg([
                     "user" => $email,
-                ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
+                ], get_permalink(get_page_by_path('verifier-votre-email')));
 
                 if (send_2fa_code($email, $code)) {
                     wp_redirect($verification_url);
                     exit;
                 }
             } else {
-                $url = get_permalink(get_page_by_path('espace-don/connectez-vous'));
+                $url = get_permalink(get_page_by_path('connectez-vous'));
                 $error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>.";
             }
 
@@ -219,7 +219,7 @@ aif_include_partial("info-message", [
 
             <h3> Vous avez déja un compte ? </h3>
 
-            <a href="<?php echo get_permalink(get_page_by_path('espace-don/connectez-vous')) ?>"
+            <a href="<?php echo get_permalink(get_page_by_path('connectez-vous')) ?>"
                 class="btn  btn--white aif-button--full ">
                 Se connecter</a>
 

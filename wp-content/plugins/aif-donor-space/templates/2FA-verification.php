@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
 
             $verification_url = add_query_arg([
                 "user" => $email,
-            ], get_permalink(get_page_by_path('espace-don/connectez-vous')));
+            ], get_permalink(get_page_by_path('connectez-vous')));
             wp_redirect($verification_url);
             exit;
         } else {
@@ -67,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
 
     $sf_user = get_salesforce_member_data($email);
 
-    if($sf_user && has_access_to_donation_space($sf_user)) {
+    if ($sf_user && has_access_to_donation_space($sf_user)) {
 
         $stored_user = get_user_by('email', $email);
 
-        if(!$stored_user) {
+        if (!$stored_user) {
 
-            $url = get_permalink(get_page_by_path('espace-don/creer-votre-compte'));
+            $url = get_permalink(get_page_by_path('creer-votre-compte'));
             $send_code_error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page <a class='aif-link--primary' href='{$url}'>Créer mon compte </a>.";
         } else {
 
@@ -82,10 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
 
             $verification_url = add_query_arg([
                 "user" => $email
-            ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
+            ], get_permalink(get_page_by_path('verifier-votre-email')));
 
 
-            if(send_2fa_code($email, $code)) {
+            if (send_2fa_code($email, $code)) {
                 $send_code_success_message = "Nous avons bien reçu votre demande de code. Il arrivera dans votre boîte email d'ici quelques minutes";
             }
 
@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
 
                 <button class="btn aif-mt1w aif-button--full" type="submit">Recevoir un nouveau code</button>
             </form>
-            
+
             <p class="aif-mt1w">
                 Les données personnelles collectées sur ce formulaire sont traitées par l’association Amnesty
                 International

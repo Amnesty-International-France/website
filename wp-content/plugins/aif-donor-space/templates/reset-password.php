@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
 
                 $url = add_query_arg([
                     "user" => $user->user_email,
-                ], get_permalink(get_page_by_path('espace-don/connectez-vous')));
+                ], get_permalink(get_page_by_path('connectez-vous')));
 
 
                 wp_redirect($url);

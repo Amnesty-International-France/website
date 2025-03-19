@@ -21,15 +21,23 @@ if (!isset($_GET['user'])) {
 
 $error_message = "";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['login_nonce'])) {
+print_r($_POST);
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
 
     $email = sanitize_email($_POST['email']);
     $password = sanitize_text_field($_POST['password']) ;
 
-    if (!isset($_POST['login_nonce']) || !wp_verify_nonce($_POST['login_nonce'], 'login_form')) {
-        die('Invalid nonce.');
-    }
+
+    // if (!isset($_POST['login_nonce']) || !wp_verify_nonce($_POST['login_nonce'], 'login_form')) {
+    //     die('Invalid nonce.');
+    // }
     $stored_user = get_user_by('email', $email);
+
+    print_r($stored_user);
+
+    print_r(get_email_is_verified(user_id: $stored_user->ID));
 
 
     if ($stored_user) {
@@ -63,13 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         } else {
             $verification_url = add_query_arg([
                 "user" => $email,
-            ], get_permalink(get_page_by_path('espace-don/verifier-votre-email')));
+            ], get_permalink(get_page_by_path('verifier-votre-email')));
 
             $title = "Votre email ne semble pas encore vérifié";
             $error_message = "Pour le faire veuillez vous rendre sur la page <a class='aif-link--primary' href='{$verification_url}'> Vérifier mon email</a>.";
         }
     } else {
-        $url = get_permalink(get_page_by_path('espace-don/creer-votre-compte'));
+        $url = get_permalink(get_page_by_path('creer-votre-compte'));
 
         $title = "L'adresse email renseignée ne trouve pas de correspondance dans notre système";
         $error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page  <a class='aif-link--primary' href='{$url}> Créer mon compte </a>.";
@@ -93,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         <section>
             <h3 class="aif-sr-only"> Formulaire de connexion </h3>
             <form class="aif-form-container" role="form" method="POST" action="">
-                <?php wp_nonce_field('login_form', 'login_nonce'); ?>
                 <label for="email">Votre adresse email (obligatoire)</label>
                 <input placeholder="adresse@mail.fr"
                     value="<?= $email ? $email : '' ?>"
@@ -125,10 +132,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                     <div class="aif-flex aif-justify-end">
                         <div>
                         <a class="aif-link--primary aif-mt1w aif-block"
-                                href="<?= get_permalink(get_page_by_path('espace-don/mot-de-passe-oublie')) ?>">
+                                href="<?= get_permalink(get_page_by_path('mot-de-passe-oublie')) ?>">
                                 Mot de passe oublié ? </a>
                         <a class="aif-link--primary aif-mt05w aif-block"
-                                href="<?= get_permalink(get_page_by_path('espace-don/foire-aux-questions')) ?>">
+                                href="<?= get_permalink(get_page_by_path('foire-aux-questions')) ?>">
                                 Un problème de connexion ? </a>
                         </div>
                    
@@ -138,7 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                     <button class="btn aif-mt1w aif-button--full" type="submit">Se connecter</button>
 
             </form>
-
 
 
 
@@ -153,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 jamais
                 créé votre espace, merci de cliquer sur “Créer votre compte”. </p>
 
-            <a href="<?=  get_permalink(get_page_by_path('espace-don/creer-votre-compte')) ?>"
+            <a href="<?=  get_permalink(get_page_by_path('creer-votre-compte')) ?>"
                 class="btn aif-button--full btn--white">Créer
                 votre compte</a>
 

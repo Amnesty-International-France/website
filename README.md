@@ -107,6 +107,10 @@ Here is the structure of the "Espace Don" plugin as of 20/02/25:
 
 ### FAQ
 
+### How to configure the donor space as sub route "/espace-don"
+
+To achieve this just revert the commit `8821b1db0a10f6b0d2e1565b1fe515d874a34846`
+
 ### How to manage CSS inside the plugin ?
 
 #### Some Principles

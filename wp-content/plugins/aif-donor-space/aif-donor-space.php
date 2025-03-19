@@ -58,9 +58,7 @@ function aif_donor_space_create_pages()
 {
 
     $pages = [
-        'espace-don' =>  [
-            'title' =>  'Mon espace don',
-            'children' => [
+                'espace-don' =>  ['title' =>  'Mon espace don'],
                 'verifier-votre-email' =>  ['title' => 'Mon espace don - Vérifier votre email'],
                 'creer-votre-compte' => ['title' => 'Mon espace don - Créer votre compte'],
                 'connectez-vous' => ['title' => 'Mon espace don - Connectez-vous'],
@@ -73,10 +71,7 @@ function aif_donor_space_create_pages()
                 'nous-contacter' => ['title' => 'Mon espace don - Nous contacter'],
                 'se-deconnecter' => ['title' => 'Mon espace don - Se déconnecter'],
 
-            ]
-
-        ]
-    ];
+];
 
 
     foreach ($pages as $slug => $pageData) {

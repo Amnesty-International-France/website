@@ -42,7 +42,7 @@ $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
                     <?php
         aif_include_partial("nav-card", [
         "iconName" => "my-info",
-        "url" => get_permalink(get_page_by_path('espace-don/mes-informations-personelles')),
+        "url" => get_permalink(get_page_by_path('mes-informations-personelles')),
         "title" => "Mes informations",
         "content" => "Affichez ou modifiez vos informations personnelles."]); ?>
 
@@ -53,7 +53,7 @@ $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
                     <?php
        aif_include_partial("nav-card", [
        "iconName" => "paper",
-       "url" => get_permalink(get_page_by_path('espace-don/mes-recus-fiscaux')),
+       "url" => get_permalink(get_page_by_path('mes-recus-fiscaux')),
        "title" => "Mes reçus fiscaux",
        "content" => "Retrouvez dans cet espace tous vos reçus fiscaux."]); ?>
 
@@ -65,7 +65,7 @@ $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
                     <?php
        aif_include_partial("nav-card", [
        "iconName" => "plane",
-       "url" => get_permalink(get_page_by_path('espace-don/mes-demandes')),
+       "url" => get_permalink(get_page_by_path('mes-demandes')),
        "title" => "Mes demandes",
        "content" => "Affichez l’état de vos demandes passées ou en cours.",
 

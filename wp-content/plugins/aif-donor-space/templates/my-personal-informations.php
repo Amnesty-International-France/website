@@ -66,7 +66,7 @@ $countries = [
 $actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
 $next_payement = "";
 
-if($sf_member->hasMandatActif) {
+if ($sf_member->hasMandatActif) {
     $day_of_payment = date("d", strtotime($actifMandate->Date_paiement_Avenir__c));
     $ibanBlocks = str_split($actifMandate->Tech_Iban__c, 4);
     $last4IBANDigit = substr($actifMandate->Tech_Iban__c, -4);
@@ -134,7 +134,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
         <h2>Mes informations personelles</h2>
 
 
-        <?php if($sf_member->hasMandatActif) :  ?>
+        <?php if ($sf_member->hasMandatActif) :  ?>
 
         <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} €. Votre prochain prélèvement sera effectué le {$next_payement}." ?>
         </p>
@@ -156,7 +156,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
                         $url = add_query_arg([
                 "subject" =>  "Modifier mon e-mail",
-            ], get_permalink(get_page_by_path('espace-don/nous-contacter')));
+            ], get_permalink(get_page_by_path('nous-contacter')));
 aif_include_partial("info-message", [
 "id" => "email-help-message",
 "content" => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>."]); ?>
@@ -226,7 +226,8 @@ aif_include_partial("info-message", [
 
                     <?php     foreach ($countries as $country): ?>
 
-                    <li role="option" class="aif-dropdown__container_option-list__item <?= $country == $sf_user->Pays__c ? 'aif-dropdown__container_option-list__item--curent' : ''  ?> ">
+                    <li role="option"
+                        class="aif-dropdown__container_option-list__item <?= $country == $sf_user->Pays__c ? 'aif-dropdown__container_option-list__item--curent' : ''  ?> ">
                         <?= $country ?>
                     </li>
                     <?php     endforeach ?>
@@ -251,7 +252,7 @@ aif_include_partial("info-message", [
                 type="text" value="<?= $sf_user->MobilePhone ?>" />
 
             <?php
-            if(empty($sf_user->MobilePhone)) {
+            if (empty($sf_user->MobilePhone)) {
                 aif_include_partial("info-message", [
                     "id" => "email-help-message",
                     "content" => "Nous vous conseillons de renseigner un numéro de téléphone afin de pouvoir vous contacter plus facilement."]);
@@ -272,7 +273,7 @@ aif_include_partial("info-message", [
 
 
 
-    <?php if($sf_member->hasMandatActif) :  ?>
+    <?php if ($sf_member->hasMandatActif) :  ?>
 
 
     <section class="aif-container--form">
@@ -287,7 +288,7 @@ aif_include_partial("info-message", [
         <?php aif_include_partial("alert", ["content" => "Prélèvement automatique sur l'IBAN se terminant par {$last4IBANDigit}"]); ?>
 
         <p>
-            <a href="<?= get_permalink(get_page_by_path('espace-don/modification-coordonnees-bancaire')) ?>"
+            <a href="<?= get_permalink(get_page_by_path('modification-coordonnees-bancaire')) ?>"
                 class="btn btn--white  aif-button--full"> Modifier l'IBAN</a>
         </p>
 

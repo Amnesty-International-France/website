@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $url = add_query_arg([
             "user" =>  $email,
             "token" => $token
-        ], get_permalink(get_page_by_path('espace-don/modifier-mon-mot-de-passe')));
+        ], get_permalink(get_page_by_path('modifier-mon-mot-de-passe')));
 
         send_reset_password_email($user->user_email, $url);
 
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } else {
 
-        $url = get_permalink(get_page_by_path('espace-don/creer-votre-compte'));
+        $url = get_permalink(get_page_by_path('creer-votre-compte'));
         $error_title = "Votre utilisateur nous est inconnu";
         $error_message = "Vous pouvez créer votre compte en allant sur <a class='aif-link--primary' href='{$url}'> Créer mon compte </a>";
     }

@@ -20,7 +20,7 @@ $ibanBlocks = [];
 
 $actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
 
-if($actifMandate) {
+if ($actifMandate) {
     $day_of_payment = date("d", strtotime($actifMandate->Date_paiement_Avenir__c));
     $ibanBlocks = str_split($actifMandate->Tech_Iban__c, 4);
     $formattedIban = implode(' ', $ibanBlocks);
@@ -39,10 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
     $ibandirty = $_POST['iban'];
     $newIban = str_replace(' ', '', $ibandirty);
 
-    if(create_duplicate_update_IBAN_request($sf_user_ID, $newIban)) {
+    if (create_duplicate_update_IBAN_request($sf_user_ID, $newIban)) {
         $success_message_title = "Votre demande de modification a bien été prise en compte";
 
-        $url = get_permalink(get_page_by_path('espace-don/mes-demandes'));
+        $url = get_permalink(get_page_by_path('mes-demandes'));
         $success_message = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
     } else {
         $error_message = "Un problème technique est survenu. Merci de réessayer plus tard";
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
         </header>
 
 
-        <?php if($SF_membre_data->hasMandatActif) :  ?>
+        <?php if ($SF_membre_data->hasMandatActif) :  ?>
 
         <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$SF_User->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} € le {$day_of_payment} de chaque mois." ?>
         </p>
@@ -106,7 +106,7 @@ if (!empty($success_message)) {
 
             <?php
 
-               $url = get_permalink(get_page_by_path('espace-don/mes-demandes'));
+               $url = get_permalink(get_page_by_path('mes-demandes'));
 $content = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
 aif_include_partial("info-message", [
          "id" => "iban-help-message",

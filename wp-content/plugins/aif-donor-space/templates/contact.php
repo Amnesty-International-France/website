@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['subject']) && isset(
     if (create_contact_request($sf_user_ID, $message, $subject, $SF_User->Tech_Lien_Mandat_Actif__c)) {
 
         $success_message_title = "Votre demande de contact à bien été prise en compte";
-        $url = get_permalink(get_page_by_path('espace-don/mes-demandes'));
+        $url = get_permalink(get_page_by_path('mes-demandes'));
         $success_message = "Vous pouvez voir le suivi du traitement de vos demandes sur la page  <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
     } else {
         $error_message = "Votre demande n'a pas pu aboutir. Veuillez réessayer plus tard.";
@@ -81,7 +81,7 @@ if (!empty($success_message)) {
                 class="aif-input <?= $has_error ? 'aif-input-error' : '' ?>"
                 required id="subject" maxlength="255" />
             <?php
-                $url = get_permalink(get_page_by_path('espace-don/mes-demandes'));
+                $url = get_permalink(get_page_by_path('mes-demandes'));
 $content = "Indiquez le sujet de votre demande. 255 caractères maximum.";
 aif_include_partial("info-message", [
  "id" => "contact-subject-help-message",
@@ -92,7 +92,7 @@ aif_include_partial("info-message", [
                 class="aif-input <?= $has_error ? 'aif-input-error' : '' ?>"
                 required id="message"></textarea>
             <?php
-                $url = get_permalink(get_page_by_path('espace-don/mes-demandes'));
+                $url = get_permalink(get_page_by_path('mes-demandes'));
 $content = "Décrivez en détail votre demande.";
 aif_include_partial("info-message", [
  "id" => "contact-message-help-message",
