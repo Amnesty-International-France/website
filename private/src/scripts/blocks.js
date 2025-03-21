@@ -51,6 +51,8 @@ import './editor/fse-blocks/search-form/index.jsx';
 import './editor/fse-blocks/search-header/index.jsx';
 import './editor/fse-blocks/sidebar/index.jsx';
 
+import './editor/blocks/read-also/index.jsx';
+
 // To remove in v2.0.0
 import './editor/blocks-deprecated/background-media/index.jsx';
 import './editor/blocks-deprecated/banner/index.jsx';
