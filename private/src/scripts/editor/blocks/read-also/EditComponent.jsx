@@ -1,3 +1,5 @@
+import './style.scss';
+
 const { __ } = wp.i18n;
 const { useEffect, useState } = wp.element;
 const { useBlockProps, InspectorControls } = wp.blockEditor;

@@ -8,7 +8,6 @@ registerBlockType('amnesty-core/read-also', {
   title: __('Lire aussi', 'amnesty'),
   description: 'Block lire aussi',
   category: 'amnesty-core',
-
   attributes: {
     text: {
       type: 'string',
@@ -19,8 +18,6 @@ registerBlockType('amnesty-core/read-also', {
       default: '',
     },
   },
-
   edit: EditComponent,
-
   save: SaveComponent,
 });

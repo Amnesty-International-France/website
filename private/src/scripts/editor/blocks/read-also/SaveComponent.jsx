@@ -1,3 +1,5 @@
+import './style.scss';
+
 const { useBlockProps } = wp.blockEditor;
 const { __ } = wp.i18n;
 
