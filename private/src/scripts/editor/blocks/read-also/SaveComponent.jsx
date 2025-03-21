@@ -1,7 +1,7 @@
 const { useBlockProps } = wp.blockEditor;
 const { __ } = wp.i18n;
 
-const SaveComponent = (attributes) => (
+const SaveComponent = ({ attributes }) => (
   <div {...useBlockProps.save()} className="read-also-block">
     <p>
       {__('À lire aussi', 'amnesty')}:
