@@ -116,8 +116,20 @@ function install(string $path = '.', string $token = ''): void
 			])->request('GET', "https://api.github.com/repos/{$plugin_data['repo_owner']}/$plugin/releases/latest")->getContent();
 			$last_plugin_release_json = json_decode($last_plugin_release, true);
 
-			$zipball_url = $last_plugin_release_json['zipball_url'];
-			http_download($zipball_url, $path."/$plugin.zip", options: ['auth_bearer' => $token]);
+			foreach ($last_plugin_release_json['assets'] as $asset) {
+				if(str_replace('.zip', "", $asset['name']) === $plugin) {
+					$asset_id = $asset['id'];
+					break;
+				}
+			}
+
+			if( !isset($asset_id)) {
+				io()->warning("Can't find asset for $plugin");
+				continue;
+			}
+
+			$zip_url = "https://api.github.com/repos/{$plugin_data['repo_owner']}/$plugin/releases/assets/$asset_id";
+			http_download($zip_url, $path."/$plugin.zip", options: ['auth_bearer' => $token, 'headers' => ['Accept' => 'application/octet-stream']]);
 
 			run("wp plugin install $plugin.zip --activate", context: $context);
 			fs()->remove($path."/$plugin.zip");
@@ -161,14 +173,26 @@ function update_github_plugins(string $path = '.', string $token = ''): void {
 
             if( $is_installed ) {
                 $actual_plugin_version = run("wp plugin get $plugin --field=version", context: $context)->getOutput();
-                if( str_contains($actual_plugin_version, substr($last_plugin_release_json['tag_name'], 1))) {
+                if( str_contains($actual_plugin_version, substr($last_plugin_release_json['name'], 1))) {
                     io()->info("Plugin $plugin is already up to date.");
                     continue;
                 }
             }
 
-            $zipball_url = $last_plugin_release_json['zipball_url'];
-            http_download($zipball_url, $path."/$plugin.zip", options: ['auth_bearer' => $token]);
+			foreach ($last_plugin_release_json['assets'] as $asset) {
+				if(str_replace('.zip', "", $asset['name']) === $plugin) {
+					$asset_id = $asset['id'];
+					break;
+				}
+			}
+
+			if( !isset($asset_id)) {
+				echo "Can't find asset for $plugin".PHP_EOL;
+				continue;
+			}
+
+			$zip_url = "https://api.github.com/repos/{$plugin_data['repo_owner']}/$plugin/releases/assets/$asset_id";
+			http_download($zip_url, $path."/$plugin.zip", options: ['auth_bearer' => $token, 'headers' => ['Accept' => 'application/octet-stream']]);
 
             run("wp plugin install $plugin.zip --force", context: $context);
             fs()->remove($path."/$plugin.zip");
