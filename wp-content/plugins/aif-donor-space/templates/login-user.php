@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         $url = get_permalink(get_page_by_path('creer-votre-compte'));
 
         $title = "L'adresse email renseignée ne trouve pas de correspondance dans notre système";
-        $error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page  <a class='aif-link--primary' href='{$url}> Créer mon compte </a>.";
+        $error_message = "Pour créer votre compte, veuillez vous rendre sur la page  <a class='aif-link--primary' href='{$url}'> Créer mon compte </a>.";
     }
 
 }

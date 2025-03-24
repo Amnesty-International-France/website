@@ -295,7 +295,7 @@ body {
 
 .aif-link--primary {
     font-family: var(--wp--preset--font-family--secondary);
-    font-size: var(--wp--preset--font-size--small);
+    font-size: var(--wp--preset--font-size--regular);
     text-transform: uppercase;
     font-weight: 700;
     text-decoration: underline;
@@ -363,6 +363,10 @@ body {
 /*
     Button
 */
+
+.btn {
+    font-size: var(--wp--preset--font-size--regular) !important;
+}
 
 .btn:hover {
     background-color: var(--aif-orange) !important;
