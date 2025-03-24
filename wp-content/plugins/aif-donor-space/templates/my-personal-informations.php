@@ -178,6 +178,13 @@ aif_include_partial("info-message", [
                                 <label for="Mme">Madame</label>
                             </div>
 
+                            <div class="aif-radio-button-container__button">
+                                <input type="radio" id="Autre"
+                                    <?= $sf_user->Salutation == '' ? "checked" : '' ?>
+                                name="Salutation" value=" " />
+                                <label for="Autre">Autre</label>
+                            </div>
+
                         </div>
             </fieldset>
 
