@@ -135,7 +135,7 @@ if (!empty($error_no_access_to_donor_space)) {
                         <input class="aif-password-container__input aif-input" placeholder="Mot de passe"
                             name="password" aria-describedby="passwordHelp passphraseRequirements" type="password"
                             id="password" autocomplete="new-password" required aria-required="true"
-                            oninput="checkPassphraseStrength()">
+                            oninput="checkPassphraseStrength(); checkPasswordMatch();">
                         <button class="aif-password-container__button" type="button" id="toggle-password"
                             data-target="password" aria-label="Afficher ou masquer le mot de passe">
                             Afficher
