@@ -26,6 +26,7 @@ require_once __DIR__ . '/custom-card/register.php';
 require_once __DIR__ . '/custom-card/render.php';
 require_once __DIR__ . '/download/register.php';
 require_once __DIR__ . '/download/render.php';
+require_once __DIR__ . '/download-go-further/register.php';
 require_once __DIR__ . '/embed-flourish/register.php';
 require_once __DIR__ . '/embed-flourish/render.php';
 require_once __DIR__ . '/embed-infogram/register.php';
@@ -90,6 +91,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_cta_block();
 		register_custom_card_block();
 		register_download_block();
+		register_download_go_further_block();
 		register_flourish_embed_block();
 		register_header_block();
 		register_hero_block();
