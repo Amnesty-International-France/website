@@ -65,6 +65,7 @@ require_once __DIR__ . '/section/class-section-block-renderer.php';
 require_once __DIR__ . '/section/register.php';
 require_once __DIR__ . '/slider/register.php';
 require_once __DIR__ . '/slider/render.php';
+require_once __DIR__ . '/small-section/register.php';
 require_once __DIR__ . '/stat-counter/register.php';
 require_once __DIR__ . '/stat-counter/render.php';
 require_once __DIR__ . '/term-list/register.php';
@@ -107,6 +108,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_related_content_block();
 		register_section_block();
 		register_slider_block();
+		register_small_section_block();
 		register_stat_counter_block();
 		register_sutori_embed_block();
 		register_term_list_block();
