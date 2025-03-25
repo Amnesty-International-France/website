@@ -40,6 +40,7 @@ import './editor/blocks/regions/index.jsx';
 import './editor/blocks/related-content/index.jsx';
 import './editor/blocks/section/index.jsx';
 import './editor/blocks/slider/index.jsx';
+import './editor/blocks/small-section/index.jsx';
 import './editor/blocks/stat-counter/index.jsx';
 import './editor/blocks/term-list/index.jsx';
 import './editor/blocks/tweet/index.jsx';

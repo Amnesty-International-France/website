@@ -2,17 +2,17 @@
 
 declare( strict_types = 1 );
 
-if (!function_exists('register_read_also_block')) {
+if (!function_exists('register_small_section_block')) {
 	/**
-	 * Register the Read Also block
+	 * Register the Small Section block
 	 *
 	 * @package Amnesty\Blocks
 	 *
 	 * @return void
 	 */
-	function register_read_also_block(): void {
+	function register_small_section_block(): void {
 		register_block_type(
-			'amnesty-core/read-also',
+			'amnesty-core/small-section',
 		);
 	}
 }
