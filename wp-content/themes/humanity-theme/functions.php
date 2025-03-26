@@ -87,6 +87,7 @@ require_once realpath( __DIR__ . '/includes/admin/settings-general.php' );
  */
 #region theme setup
 require_once realpath( __DIR__ . '/includes/theme-setup/text-domain.php' );
+require_once realpath( __DIR__ . '/includes/theme-setup/theme-json.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/cookie-control-fix.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/no-js.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/rewrite-rules.php' );
