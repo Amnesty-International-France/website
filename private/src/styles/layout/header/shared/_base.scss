@@ -16,6 +16,10 @@
   @include mq(small) {
     height: 72px;
   }
+
+  @include mq(mobile-nav) {
+    height: 108px;
+  }
 }
 
 .page-header .container {
@@ -51,6 +55,7 @@
 .page-header a {
   color: inherit;
   transition: unset;
+  text-decoration: none;
 }
 
 .page-header .btn {
@@ -63,4 +68,23 @@
 
 .page-header .menu-item {
   transition: background-color .2s ease-in-out, color .2s ease-in-out;
+}
+
+.main-header {
+  height: 60px;
+
+  @include mq(small) {
+    height: 72px;
+  }
+}
+
+.top-header {
+  display: none;
+  height: 36px;
+  background-color: var(--wp--preset--color--black);
+  color: var(--wp--preset--color--white);
+
+  @include mq(mobile-nav) {
+    display: flex;
+  }
 }

@@ -80,7 +80,7 @@
   display: block;
 }
 
-.page-nav--main {
+.page-nav--main, .page-nav--top-main {
   display: flex;
   justify-content: flex-end;
   margin-left: auto;
@@ -91,12 +91,28 @@
   }
 }
 
-.page-nav--main > ul > .menu-item {
+.page-nav--top-main > ul {
+  gap: 0 20px;
+}
+
+.page-nav--main > ul > .menu-item, .page-nav--top-main > ul > .menu-item {
   display: none;
 
   @include mq(mobile-nav) {
     display: flex;
   }
+}
+
+.page-nav--main ul span {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: var(--wp--custom--body-bold--font-size);
+  font-weight: var(--wp--custom--body-bold--font-weight);
+}
+
+.page-nav--top-main ul span {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: var(--wp--custom--body-secondary-bold--font-size);
+  font-weight: var(--wp--custom--body-secondary-bold--font-weight);
 }
 
 .page-nav--main > ul > .menu-item.donate-menu-item {

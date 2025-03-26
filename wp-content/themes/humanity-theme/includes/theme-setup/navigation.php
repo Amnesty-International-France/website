@@ -185,6 +185,7 @@ if ( ! function_exists( 'amnesty_register_menu' ) ) {
 			[
 				/* translators: [admin] */
 				'main-menu'         => __( 'Main Menu', 'amnesty' ),
+				'main-menu-top'   => __( 'Dessus du menu principal', 'amnesty' ),
 				/* translators: [admin] */
 				'site-selection'    => __( 'Site Selector', 'amnesty' ),
 				/* translators: [admin] */

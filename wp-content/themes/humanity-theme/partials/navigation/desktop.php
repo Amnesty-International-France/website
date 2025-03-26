@@ -15,8 +15,13 @@ $menu_item_lang  = strtolower( preg_replace( '/^(\w{2})[-_]\w{2}$/', '$1', get_l
 
 ?>
 <header class="page-header is-<?php echo esc_attr( $header_style ); ?>" role="banner" aria-label="<?php /* translators: [front] ARIA */ esc_attr_e( 'Page Header', 'amnesty' ); ?>">
-	<div class="container">
-		<div class="page-headerItems">
+	<div class="container--max-width">
+		<div class="page-headerItems top-header">
+			<nav class="page-nav page-nav--top-main" aria-label="<?php /* translators: [front] ARIA */ esc_attr_e( 'Primary navigation top', 'amnesty' ); ?>">
+				<ul><?php amnesty_nav("main-menu-top"); ?></ul>
+			</nav>
+		</div>
+		<div class="page-headerItems main-header">
 		<?php amnesty_logo(); ?>
 
 		<?php if ( is_multilingualpress_enabled() ) : ?>
