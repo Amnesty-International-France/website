@@ -31,5 +31,6 @@ jobs:
         CLEVER-TOKEN: ${{ secrets.CLEVER_TOKEN }}
         CLEVER-SECRET: ${{ secrets.CLEVER_SECRET }}
       run: |
+        echo "---------${APP_ID}----"
         clever link $APP_ID
         clever deploy -p ignore # if already deployed, do nothing
