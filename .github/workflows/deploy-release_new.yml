@@ -25,8 +25,8 @@ jobs:
         tar -xvf /tmp/clever-tools-latest_linux.tar.gz -C /usr/local/bin/  --strip-components=1
     - name: createAssets
       run: |
-        cd private &&  corepack enable && yarn &&  && yarn build
-        cd .. && rm -rf private
+        cd private &&  corepack enable && yarn &&  yarn build
+        cd .. &&  ls && rm -rf private
     - name: Deploy
       env:
         CLEVER-TOKEN: ${{ secrets.CLEVER_TOKEN }}
