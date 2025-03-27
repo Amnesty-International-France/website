@@ -24,14 +24,9 @@ jobs:
         tar -xvf /tmp/clever-tools-latest_linux.tar.gz -C /usr/local/bin/  --strip-components=1
     - name: createAssets
       run: |
+        git fetch --prune --unshallow
         cd private &&  corepack enable && yarn &&  yarn build
         cd .. &&  ls && rm -rf private
-    - name: updateLocalGit
-      run: |
-        git config --global user.email "gihub_workflow@example.com"
-        git config --global user.name "gihub_workflow"
-        git add -A ; git commit -m"git ${{ github.sha }}"
-        git fetch --prune --unshallow
     - name: Deploy
       env:
         CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
