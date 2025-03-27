@@ -25,9 +25,7 @@ jobs:
         tar -xvf /tmp/clever-tools-latest_linux.tar.gz -C /usr/local/bin/  --strip-components=1
     - name: createAssets
       run: |
-        corepack enable
-        corepack install --global yarn@4.3.1
-        cd private &&  yarn install
+        cd private &&  corepack enable && yarn &&  && yarn build
         cd .. && rm -rf private
     - name: Deploy
       env:
