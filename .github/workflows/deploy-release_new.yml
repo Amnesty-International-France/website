@@ -27,7 +27,7 @@ jobs:
         git fetch --prune --unshallow
         cd private &&  corepack enable && yarn &&  yarn build
         cd .. &&  ls && rm -rf private
-        sed -i '/wp-content\/themes\/humanity-theme\/assets/d' .gitignore
+        sed -i '/wp-content\/themes\/humanity-theme\/assets/d'' .gitignore
     - name: updateLocalGit
       run: |
         git config --global user.email "gihub_workflow@example.com"
@@ -39,4 +39,4 @@ jobs:
         CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
       run: |
         clever link ${{ vars.APP_ID }}
-        clever deploy -p ignore # if already deployed, do nothing
+        clever deploy --force # if already deployed, do nothing
