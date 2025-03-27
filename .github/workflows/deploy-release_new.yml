@@ -10,7 +10,7 @@ permissions:
 jobs:
   deploy:
     name: Deploy
-    runs-on: node:latest
+    runs-on: node-latest
     environment:
       name: RELEASE
     steps:
