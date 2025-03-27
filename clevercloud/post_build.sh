@@ -18,6 +18,10 @@ if test -d ${APP_HOME}/wp-content/plugins  ; then
     rsync -a ${APP_HOME}/wp-content/plugins/ ${APP_HOME}${CC_WEBROOT}/wp-content/plugins/
 fi
 
+# rysnc plugins if exists on repo
+if test -d ${APP_HOME}/wp-content/themes  ; then
+    rsync -a ${APP_HOME}/wp-content/themes/ ${APP_HOME}${CC_WEBROOT}/wp-content/themes/
+fi
 
 # install restic for FS backup
 RESTIC_TAG=0.17.3
