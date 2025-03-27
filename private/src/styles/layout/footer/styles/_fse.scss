@@ -1,0 +1,128 @@
+.amnesty-footer-template-part {
+  background-color: var(--wp--preset--color--black);
+  padding: 28px 20px;
+  color: var(--wp--preset--color--white);
+  min-width: 100%;
+}
+
+.amnesty-footer-template-part p {
+  font-size: var(--wp--preset--font-size--x-small);
+}
+
+.amnesty-footer-template-part h4,
+.amnesty-footer-template-part .linkGroup-title {
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  font-size: var(--wp--preset--font-size--heading-4);
+  text-transform: uppercase;
+  color: var(--wp--preset--color--grey-light);
+  font-family: var(--wp--preset--font-family--secondary);
+  border-bottom: 1px solid var(--wp--preset--color--grey-dark);
+  font-weight: bold;
+}
+
+.amnesty-footer-template-part .linkGroup-title a {
+  color: inherit;
+  font: inherit;
+}
+
+.amnesty-footer-template-part h2 {
+  font-size: var(--wp--preset--font-size--regular);
+  color: var(--wp--preset--color--white);
+  text-transform: uppercase;
+  margin-bottom: 0;
+  padding: 0 24px;
+}
+
+.amnesty-footer-template-part ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.amnesty-footer-template-part a {
+  color: var(--wp--preset--color--white);
+
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: underline;
+  }
+}
+
+.amnesty-footer-template-part .amnesty-policy-links {
+  display: flex;
+  font-size: var(--wp--preset--font-size--x-small);
+}
+
+.amnesty-footer-template-part .amnesty-policy-links li {
+  padding-right: 12px;
+  display: flex;
+  align-self: center;
+}
+
+.amnesty-footer-template-part .amnesty-copyright {
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--wp--preset--color--white) 70%, transparent);
+  padding-top: 8px;
+}
+
+.amnesty-footer-template-part .amnesty-policy-links li+li::before {
+  content: "|";
+  display: inline-block;
+  padding-right: 12px;
+}
+
+.amnesty-footer-template-part .btn.btn--white {
+  color: var(--wp--preset--color--black);
+}
+
+.amnesty-footer-template-part .amnesty-social-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.amnesty-footer-template-part .amnesty-social-group {
+  display: flex;
+  align-items: center;
+  color: var(--wp--preset--color--white);
+}
+
+.amnesty-footer-template-part .amnesty-social-container ul {
+  display: flex;
+}
+
+.amnesty-footer-template-part .amnesty-social-container ul li {
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.amnesty-footer-template-part .wp-block-buttons {
+  justify-content: flex-start;
+}
+
+.amnesty-footer-template-part .wp-block-group .wp-block-separator {
+  border-color: var(--wp--preset--color--grey-dark);
+}
+
+.amnesty-footer-template-part .wp-block-columns:first-of-type .wp-block-column {
+  flex-basis: 17.5%;
+}
+
+.amnesty-footer-template-part .wp-block-columns:first-of-type .wp-block-column:last-of-type {
+  flex-basis: 30%;
+}
+
+.amnesty-footer-template-part .amnesty-social-group .wp-social-link {
+  background: none;
+  color: var(--wp--preset--color--black);
+}
+
+.amnesty-footer-template-part .wp-block-button.is-style-light .wp-block-button__link:hover,
+.amnesty-footer-template-part .wp-block-button.is-style-light .wp-block-button__link:active,
+.amnesty-footer-template-part .wp-block-button.is-style-light .wp-block-button__link:focus {
+  background-color: var(--wp--preset--color--grey-light);
+  color: var(--wp--preset--color--black);
+}

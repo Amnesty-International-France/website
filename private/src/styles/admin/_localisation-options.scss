@@ -1,0 +1,30 @@
+.cmb2-id-ol-locale-option {
+  display: flex;
+  align-items: center;
+
+  .cmb-th {
+    width: 100%;
+  }
+
+  .cmb-td {
+    margin-left: 0 !important;
+  }
+
+  ol {
+    display: flex;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  p {
+    margin-left: 25px;
+  }
+}
+
+.cmb2-wrap .cmb2-id-ol-locale-option li {
+  margin-left: 25px;
+}
+
+.cmb2-id-enforce-grouping-separators .cmb-td label {
+  margin-left: 25px;
+}

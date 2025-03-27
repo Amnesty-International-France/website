@@ -1,0 +1,34 @@
+.wp-block-image {
+  margin-bottom: 24px;
+}
+
+.wp-block-image.alignright {
+  float: right;
+}
+
+.wp-block-image.alignleft {
+  float: left;
+}
+
+.wp-block-image [class*="wp-image-"] {
+  max-width: 100%;
+}
+
+.wp-block-image figcaption {
+  font-size: var(--wp--preset--font-size--small);
+  color: var(--wp--preset--color--grey-darker);
+  text-align: left;
+
+  .rtl & {
+    text-align: initial;
+  }
+}
+
+.wp-block-image img[width][height] {
+  max-width: 100%;
+  height: auto;
+}
+
+.wp-block-image > div {
+  width: fit-content;
+}

@@ -1,0 +1,33 @@
+.read-also-block {
+  display: flex;
+  align-items: center;
+  border-left: solid 4px var(--wp--preset--color--primary);
+  background-color: var(--wp--preset--color--white);
+  width: 100%;
+  margin: 20px 0;
+
+  p {
+    padding: 8px 20px;
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 20px;
+    color: var(--wp--preset--color--black);
+    margin: 0;
+
+    a {
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 16px;
+      font-weight: bold;
+      padding-left: 12px;
+      color: var(--wp--preset--color--grey-dark);
+      text-decoration: none !important;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: var(--wp--preset--color--grey-light);
+        background-color: transparent;
+      }
+    }
+  }
+}

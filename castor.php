@@ -36,7 +36,7 @@ const PRIVATE_PLUGINS = [
 ];
 
 #[AsTask(description: 'Install wordpress with humanity theme and plugins')]
-function install(string $path = '.'): void
+function install(string $path = '.', string $token = ''): void
 {
     io()->title("Installation of WordPress for Amnesty International France");
 
@@ -86,22 +86,56 @@ function install(string $path = '.'): void
     io()->info("Starting installation of WordPress environment");
     run('wp core download --locale=fr_FR --skip-content --path='.$path, context: $context);
     run('wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbhost=$DB_HOST --dbprefix=$DB_PREFIX', context: $context);
-    //run('wp db create', context: $context);
+
+	$db_exists = run("wp db check", context: $context->withQuiet())->isSuccessful();
+	if( !$db_exists ) {
+		run('wp db create', context: $context);
+	}
+
     run('wp core install --locale=fr_FR --url=$WP_URL --title="$WP_TITLE" --admin_user=$WP_ADMIN_USER --admin_password=$WP_ADMIN_PASSWORD --admin_email=$WP_ADMIN_EMAIL', context: $context);
 
     io()->info("Core installed.".PHP_EOL."Installing required plugins...");
     run("wp plugin install cloudflare --activate", context: $context);
+	run("wp plugin install cmb2 jetpack --activate", context: $context);
 
-    $theme_version = get_github_latest_version('https://github.com/amnestywebsite/humanity-theme/releases/latest');
-    run("wp theme install https://github.com/amnestywebsite/humanity-theme/releases/download/$theme_version/humanity-theme.zip --activate", context: $context);
-
-    run("wp plugin install cmb2 jetpack --activate", context: $context);
+    run("wp theme activate humanity-theme", context: $context);
 
     foreach (PUBLIC_PLUGINS as $plugin => $plugin_data) {
         $plugin_version = get_github_latest_version("{$plugin_data['repo_url']}releases/latest");
         $zip_url = str_replace("%version%", $plugin_version, $plugin_data['zip_url']);
         run("wp plugin install $zip_url --activate", context: $context);
     }
+
+	if($token) {
+		foreach (PRIVATE_PLUGINS as $plugin => $plugin_data) {
+			$last_plugin_release = http_client()->withOptions([
+				'headers' => [
+					'Accept' => 'application/vnd.github+json'
+				],
+				'auth_bearer' => $token,
+			])->request('GET', "https://api.github.com/repos/{$plugin_data['repo_owner']}/$plugin/releases/latest")->getContent();
+			$last_plugin_release_json = json_decode($last_plugin_release, true);
+
+			foreach ($last_plugin_release_json['assets'] as $asset) {
+				if(str_replace('.zip', "", $asset['name']) === $plugin) {
+					$asset_id = $asset['id'];
+					break;
+				}
+			}
+
+			if( !isset($asset_id)) {
+				io()->warning("Can't find asset for $plugin");
+				continue;
+			}
+
+			$zip_url = "https://api.github.com/repos/{$plugin_data['repo_owner']}/$plugin/releases/assets/$asset_id";
+			http_download($zip_url, $path."/$plugin.zip", options: ['auth_bearer' => $token, 'headers' => ['Accept' => 'application/octet-stream']]);
+
+			run("wp plugin install $plugin.zip --activate", context: $context);
+			fs()->remove($path."/$plugin.zip");
+			io()->success("Plugin $plugin updated.");
+		}
+	}
 
     run("wp plugin auto-updates enable --all", context: $context);
 }
@@ -111,15 +145,6 @@ function update_github_plugins(string $path = '.', string $token = ''): void {
     io()->title("Update the theme and required plugins from github repositories");
 
     $context = context()->withEnvironment(load_dot_env())->withWorkingDirectory($path)->withAllowFailure();
-
-    // Check Theme
-    $actual_theme_version = run('wp theme get humanity-theme --field=version', context: $context->withQuiet())->getOutput();
-    $remote_version = get_github_latest_version("https://github.com/amnestywebsite/humanity-theme/releases/latest");
-    if( ! str_contains($actual_theme_version, substr($remote_version, 1)) ) {
-        run("wp theme install https://github.com/amnestywebsite/humanity-theme/releases/download/$remote_version/humanity-theme.zip --force", context: $context);
-    } else {
-        io()->info("Theme humanity-theme is already up to date.");
-    }
 
     // Check public plugins
     foreach (PUBLIC_PLUGINS as $plugin => $plugin_data) {
@@ -148,17 +173,29 @@ function update_github_plugins(string $path = '.', string $token = ''): void {
 
             if( $is_installed ) {
                 $actual_plugin_version = run("wp plugin get $plugin --field=version", context: $context)->getOutput();
-                if( str_contains($actual_plugin_version, substr($last_plugin_release_json['tag_name'], 1))) {
+                if( str_contains($actual_plugin_version, substr($last_plugin_release_json['name'], 1))) {
                     io()->info("Plugin $plugin is already up to date.");
                     continue;
                 }
             }
 
-            $zipball_url = $last_plugin_release_json['zipball_url'];
-            http_download($zipball_url, $path."/$plugin.zip", options: ['auth_bearer' => $token]);
+			foreach ($last_plugin_release_json['assets'] as $asset) {
+				if(str_replace('.zip', "", $asset['name']) === $plugin) {
+					$asset_id = $asset['id'];
+					break;
+				}
+			}
+
+			if( !isset($asset_id)) {
+				echo "Can't find asset for $plugin".PHP_EOL;
+				continue;
+			}
+
+			$zip_url = "https://api.github.com/repos/{$plugin_data['repo_owner']}/$plugin/releases/assets/$asset_id";
+			http_download($zip_url, $path."/$plugin.zip", options: ['auth_bearer' => $token, 'headers' => ['Accept' => 'application/octet-stream']]);
 
             run("wp plugin install $plugin.zip --force", context: $context);
-            //fs()->remove($path."/$plugin.zip");
+            fs()->remove($path."/$plugin.zip");
             io()->success("Plugin $plugin updated.");
         }
     }

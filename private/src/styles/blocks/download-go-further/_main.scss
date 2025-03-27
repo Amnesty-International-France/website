@@ -1,0 +1,94 @@
+.download-go-further-block {
+  width: 100%;
+  padding: 30px 30px 25px 30px;
+  background-color: var(--wp--preset--color--grey-lighter);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .title-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: var(--wp--preset--color--black);
+    padding: 8px 16px;
+    width: fit-content;
+
+    svg {
+      width: 30px;
+      fill: var(--wp--preset--color--primary);
+    }
+
+    .title {
+      color: var(--wp--preset--color--white);
+      text-transform: uppercase;
+      font-size: 29.5px;
+      font-style: normal;
+      font-weight: bold;
+      line-height: 33px;
+      margin: 0;
+    }
+  }
+
+  .list {
+    padding: 0;
+    margin: 0;
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--wp--preset--color--grey-light);
+      list-style-type: none;
+
+      .item-text {
+        margin: 0;
+        color: var(--wp--preset--color--black);
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 24px;
+        text-decoration-line: underline;
+        text-decoration-style: solid;
+        text-decoration-skip-ink: auto;
+        text-decoration-thickness: auto;
+        text-underline-offset: auto;
+        text-underline-position: from-font;
+        text-transform: capitalize;
+      }
+
+      a {
+        text-decoration: none;
+
+        .item-button {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 24px 12px 16px;
+          color: var(--wp--preset--color--black);
+          background-color: var(--wp--preset--color--primary);
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 15px;
+          font-weight: bold;
+          line-height: 16px;
+          border: 1px solid var(--wp--preset--color--primary);
+          border-radius: 0;
+          box-shadow: none;
+          transition: all 0.2s ease;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #fcff9a;
+          }
+
+          svg {
+            width: 16px;
+            fill: var(--wp--preset--color--black);
+          }
+        }
+      }
+    }
+  }
+}
