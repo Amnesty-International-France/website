@@ -13,8 +13,6 @@ require_once __DIR__ . '/_deprecated/header/register.php';
 require_once __DIR__ . '/action/register.php';
 require_once __DIR__ . '/action/render.php';
 require_once __DIR__ . '/banner/register.php';
-require_once __DIR__ . '/blockquote/register.php';
-require_once __DIR__ . '/blockquote/render.php';
 require_once __DIR__ . '/button/register.php';
 require_once __DIR__ . '/call-to-action/register.php';
 require_once __DIR__ . '/call-to-action/render.php';
@@ -56,6 +54,7 @@ require_once __DIR__ . '/post-list/register.php';
 require_once __DIR__ . '/post-list/render.php';
 require_once __DIR__ . '/post-meta/register.php';
 require_once __DIR__ . '/post-meta/render.php';
+require_once __DIR__ . '/quote/register.php';
 require_once __DIR__ . '/raw-code/register.php';
 require_once __DIR__ . '/read-also/register.php';
 require_once __DIR__ . '/regions/register.php';
@@ -85,7 +84,6 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 	function amnesty_register_php_rendered_blocks() {
 		register_action_block();
 		register_banner_block();
-		register_blockquote_block();
 		register_button_block();
 		register_collapsable_block();
 		register_countdown_block();
@@ -105,6 +103,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_list_block();
 		register_menu_block();
 		register_petition_list_block();
+		register_quote_block();
 		register_raw_code_block();
 		register_read_also_block();
 		register_regions_block();

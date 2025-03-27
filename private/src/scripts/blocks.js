@@ -16,7 +16,6 @@ import './editor/plugins/appearance-options/index.jsx';
 import './editor/plugins/pop-in/index.jsx';
 
 import './editor/blocks/action/index.jsx';
-import './editor/blocks/blockquote/index.jsx';
 import './editor/blocks/button/index.jsx';
 import './editor/blocks/core-mods';
 import './editor/blocks/countdown-timer/index.jsx';
@@ -36,6 +35,7 @@ import './editor/blocks/menu/index.jsx';
 import './editor/blocks/petition-list/index.jsx';
 import './editor/blocks/post-list/index.jsx';
 import './editor/blocks/post-meta/index.jsx';
+import './editor/blocks/quote/index.jsx';
 import './editor/blocks/raw-code/index.jsx';
 import './editor/blocks/read-also/index.jsx';
 import './editor/blocks/regions/index.jsx';

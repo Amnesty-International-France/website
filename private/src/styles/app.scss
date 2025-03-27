@@ -34,7 +34,6 @@
 @import 'base/base';
 @import 'base/type';
 @import 'base/links';
-@import 'base/blockquotes';
 @import 'base/images';
 @import 'base/container';
 @import 'base/overlay';
@@ -64,7 +63,6 @@
 @import 'blocks/button/main';
 @import 'blocks/call-to-action/all';
 @import 'blocks/collapsable/main';
-@import 'blocks/core-blocks/blockquote';
 @import 'blocks/core-blocks/columns';
 @import 'blocks/core-blocks/cover';
 @import 'blocks/core-blocks/details';
@@ -100,6 +98,7 @@
 @import 'blocks/list-block/main';
 @import 'blocks/petition-list/main';
 @import 'blocks/postlist/main';
+@import 'blocks/quote/main';
 @import 'blocks/read-also/main';
 @import 'blocks/regions/main';
 @import 'blocks/section/main';
