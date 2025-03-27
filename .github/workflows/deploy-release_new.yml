@@ -1,0 +1,33 @@
+name: Deploy to Clever Cloud
+
+on:
+  push:
+    branches: [ "refactor/remove-child-theme" ]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: node:latest
+    environment:
+      name: RELEASE
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: installCleverCli
+      run: |
+        curl -s  https://clever-tools.clever-cloud.com/releases/latest/clever-tools-latest_linux.tar.gz -o /tmp/clever-tools-latest_linux.tar.gz
+        tar -xvf /tmp/clever-tools-latest_linux.tar.gz -C /usr/local/bin/  --strip-components=1
+    - name: createAssets
+      run: |
+        cd private && yarn install
+        cd .. && rm -rf private
+    - name: Deploy
+      env:
+        CLEVER-TOKEN: ${{ secrets.CLEVER_TOKEN }}
+        CLEVER-SECRET: ${{ secrets.CLEVER_SECRET }}
+      run: |
+        clever link $APP_ID
+        clever deploy -p ignore # if already deployed, do nothing
