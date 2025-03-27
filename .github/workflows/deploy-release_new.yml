@@ -27,6 +27,12 @@ jobs:
         git fetch --prune --unshallow
         cd private &&  corepack enable && yarn &&  yarn build
         cd .. &&  ls && rm -rf private
+        sed -i '@wp-content/themes/humanity-theme/assets@d' .gitignore
+    - name: updateLocalGit
+      run: |
+        git config --global user.email "gihub_workflow@example.com"
+        git config --global user.name "gihub_workflow"
+        git add -A ; git commit -m"git ${{ github.sha }}"
     - name: Deploy
       env:
         CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
