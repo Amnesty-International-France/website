@@ -20,11 +20,13 @@ jobs:
         node-version : 22
     - name: installCleverCli
       run: |
+        ls wp-content/themes/humanity-theme/includes/blocks/
         curl -s  https://clever-tools.clever-cloud.com/releases/latest/clever-tools-latest_linux.tar.gz -o /tmp/clever-tools-latest_linux.tar.gz
         tar -xvf /tmp/clever-tools-latest_linux.tar.gz -C /usr/local/bin/  --strip-components=1
     - name: createAssets
       run: |
         git fetch --prune --unshallow
+        ls wp-content/themes/humanity-theme/includes/blocks/
         cd private &&  corepack enable && yarn &&  yarn build --verbose
         cd .. &&  ls && rm -rf private
         sed -i '/wp-content\/themes\/humanity-theme\/assets/d' .gitignore
@@ -33,6 +35,7 @@ jobs:
         git config --global user.email "gihub_workflow@example.com"
         git config --global user.name "gihub_workflow"
         git add -A ; git commit -m"git ${{ github.sha }}"
+        ls wp-content/themes/humanity-theme/includes/blocks/
     - name: Deploy
       env:
         CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
