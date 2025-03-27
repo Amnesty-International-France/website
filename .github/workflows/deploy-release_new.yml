@@ -31,6 +31,7 @@ jobs:
         git config --global user.email "gihub_workflow@example.com"
         git config --global user.name "gihub_workflow"
         git add -A ; git commit -m"git ${{ github.sha }}"
+        git fetch --prune --unshallow
     - name: Deploy
       env:
         CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
