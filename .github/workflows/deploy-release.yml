@@ -25,7 +25,7 @@ jobs:
     - name: createAssets
       run: |
         git fetch --prune --unshallow
-        cd private &&  corepack enable && yarn &&  yarn build
+        cd private &&  corepack enable && yarn &&  yarn build --verbose
         cd .. &&  ls && rm -rf private
         sed -i '/wp-content\/themes\/humanity-theme\/assets/d' .gitignore
     - name: updateLocalGit
