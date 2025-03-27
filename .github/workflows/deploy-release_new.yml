@@ -28,9 +28,8 @@ jobs:
         cd .. &&  ls && rm -rf private
     - name: Deploy
       env:
-        CLEVER-TOKEN: ${{ secrets.CLEVER_TOKEN }}
-        CLEVER-SECRET: ${{ secrets.CLEVER_SECRET }}
+        CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
+        CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
       run: |
-        echo "---------${{ vars.APP_ID }} ----"
         clever link ${{ vars.APP_ID }}
         clever deploy -p ignore # if already deployed, do nothing
