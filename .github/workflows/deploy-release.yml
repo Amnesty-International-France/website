@@ -27,7 +27,7 @@ jobs:
       run: |
         git fetch --prune --unshallow
         ls wp-content/themes/humanity-theme/includes/blocks/
-        cd private &&  corepack enable && yarn &&  yarn build --verbose
+        cd private &&  corepack enable && yarn &&  yarn build
         cd .. &&  ls && rm -rf private
         sed -i '/wp-content\/themes\/humanity-theme\/assets/d' .gitignore
     - name: updateLocalGit
