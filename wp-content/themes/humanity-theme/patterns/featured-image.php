@@ -27,16 +27,29 @@ $image = new Get_Image_Data( $image_id );
 
 $attributes = [
 	'id'              => $image_id,
-	'className'       => 'article-figure is-stretched' . ( $image->credit() ? ' has-caption' : '' ),
+	'className'       => 'article-figure is-stretched',
 	'sizeSlug'        => 'hero-md',
 	'linkDestination' => 'none',
 ];
 
 ?>
-<!-- wp:group {"tagName":"div","className":"container container--feature"} -->
-<div class="wp-block-group container container--feature">
-	<!-- wp:image <?php echo wp_kses_data( wp_json_encode( $attributes ) ); ?> -->
-	<figure class="wp-block-image <?php echo esc_attr( $attributes['className'] ); ?>"><img src="<?php echo esc_url( amnesty_get_attachment_image_src( $image_id, 'hero-md' ) ); ?>" alt="" class="wp-image-<?php echo absint( $image_id ); ?>"/></figure>
+<!-- wp:group {"tagName":"div"} -->
+<div class="wp-block-group">
+	<!-- wp:image <?php echo wp_kses_data( wp_json_encode( $attributes ) ); ?> {"className":"container--full-width"} -->
+	<figure class="wp-block-image container--full-width <?php echo esc_attr( $attributes['className'] ); ?>">
+		<img src="<?php echo esc_url( amnesty_get_attachment_image_src( $image_id, 'hero-md' ) ); ?>" alt="" class="wp-image-<?php echo absint( $image_id ); ?>"/>
+	</figure>
 	<!-- /wp:image -->
+
+	<div class="container--lg mx-auto">
+		<div class="feature-image-caption-block">
+			<div class="feature-image-description">
+				<?php echo esc_html($image->credit()) ?>
+			</div>
+			<div class="feature-image-caption">
+				<?php echo esc_html($image->caption()) ?>
+			</div>
+		</div>
+	</div>
 </div>
 <!-- /wp:group -->

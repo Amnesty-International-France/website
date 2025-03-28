@@ -41,13 +41,10 @@ if ( ! function_exists( 'amnesty_core_register_meta' ) ) {
 
 		register_meta( 'post', '_nav_style', $args );
 		register_meta( 'post', '_disable_share_icons', $boolean );
-		register_meta( 'post', '_disable_sidebar', $boolean );
 		register_meta( 'post', '_display_author_info', $boolean );
 		register_meta( 'post', '_hide_featured_image', $boolean );
 		register_meta( 'post', '_hide_featured_image_caption', $bool_true );
-		register_meta( 'post', '_maximize_post_content', $boolean );
 		register_meta( 'post', '_reduce_content_width', $boolean );
-		register_meta( 'post', '_sidebar_id', $integer );
 		register_meta( 'post', '_stretch_thumbnail', $boolean );
 		register_meta( 'post', 'byline_context', $string );
 		register_meta( 'post', 'byline_entity', $string );

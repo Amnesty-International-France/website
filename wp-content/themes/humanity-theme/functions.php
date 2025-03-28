@@ -41,6 +41,7 @@ require_once realpath( __DIR__ . '/includes/helpers/media.php' );
 require_once realpath( __DIR__ . '/includes/helpers/pagination.php' );
 require_once realpath( __DIR__ . '/includes/helpers/archive.php' );
 require_once realpath( __DIR__ . '/includes/helpers/list-alignment.php' );
+require_once realpath( __DIR__ . '/includes/helpers/reading-time.php' );
 #endregion helpers
 
 /**
@@ -88,6 +89,7 @@ require_once realpath( __DIR__ . '/includes/admin/settings-general.php' );
 #region theme setup
 require_once realpath( __DIR__ . '/includes/theme-setup/text-domain.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/theme-json.php' );
+require_once realpath( __DIR__ . '/includes/theme-setup/categories.php');
 require_once realpath( __DIR__ . '/includes/theme-setup/cookie-control-fix.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/no-js.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/rewrite-rules.php' );

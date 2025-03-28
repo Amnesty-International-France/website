@@ -3,7 +3,6 @@ import FeaturedImage from './components/FeaturedImage.jsx';
 import Header from './components/Header.jsx';
 import Metadata from './components/Metadata.jsx';
 import RelatedContent from './components/RelatedContent.jsx';
-import Sidebar from './components/Sidebar.jsx';
 import TermFeature from './components/TermFeature.jsx';
 
 const { PanelBody } = wp.components;
@@ -67,7 +66,6 @@ const AppearanceOptions = ({ createMetaUpdate, ...props }) => (
     <PluginSidebar name="amnesty-appearance" title={__('Appearance', 'amnesty')}>
       <PageOptions createMetaUpdate={createMetaUpdate} props={props} />
       <PostOptions createMetaUpdate={createMetaUpdate} props={props} />
-      <Sidebar createMetaUpdate={createMetaUpdate} props={props} />
       <Metadata createMetaUpdate={createMetaUpdate} props={props} />
     </PluginSidebar>
   </>
