@@ -56,7 +56,7 @@ class Taxonomy_Resource_Types extends Taxonomy {
 	 *
 	 * @var bool
 	 */
-	protected $default_enabled = false;
+	protected $default_enabled = true;
 
 	/**
 	 * {@inheritDoc}

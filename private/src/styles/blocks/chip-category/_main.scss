@@ -1,0 +1,94 @@
+.chip-category {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-weight: bold;
+  line-height: 12px;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &:hover {
+    background-color: transparent;
+  }
+
+  &.small {
+    padding: 6px 6px;
+    font-size: 12px;
+  }
+
+  &.medium {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  &.large {
+    padding: 8px 12px;
+    font-size: 16px;
+  }
+
+  &.bg-yellow {
+    background-color: var(--wp--preset--color--primary);
+    color: var(--wp--preset--color--black);
+    border-color: var(--wp--preset--color--primary);
+
+    &:hover {
+      background-color: #f0e000;
+      border-color: #f0e000;
+    }
+  }
+
+  &.bg-black {
+    background-color: var(--wp--preset--color--black);
+    color: var(--wp--preset--color--primary);
+    border-color: var(--wp--preset--color--black);
+
+    &:hover {
+      background-color: #2a2a2a;
+      border-color: #2a2a2a;
+    }
+  }
+
+  &.bg-gray {
+    background-color: var(--wp--preset--color--grey-lighter);
+    color: var(--wp--preset--color--black);
+
+    &:hover {
+      background-color: #f2f2f2;
+      border-color: #f2f2f2;
+    }
+  }
+
+  &.outline-yellow {
+    background-color: transparent;
+    color: var(--wp--preset--color--primary);
+    border-color: var(--wp--preset--color--primary);
+
+    &:hover {
+      color: #f0e000;
+      border-color: #f0e000;
+    }
+  }
+
+  &.outline-black {
+    background-color: transparent;
+    color: var(--wp--preset--color--black);
+    border-color: var(--wp--preset--color--black);
+
+    &:hover {
+      color: #303030;
+      border-color: #303030;
+    }
+  }
+
+  &.outline-gray {
+    background-color: transparent;
+    color: var(--wp--preset--color--grey-dark);
+    border: 1px solid var(--wp--preset--color--grey-dark);
+
+    &:hover {
+      color: var(--wp--preset--color--black);
+      border-color: var(--wp--preset--color--black);
+    }
+  }
+}

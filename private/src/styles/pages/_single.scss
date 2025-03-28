@@ -10,36 +10,3 @@
 .article-footer .article-metaActions .article-share {
   margin: 0;
 }
-
-.article-footer .article-metaActions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: var(--wp--preset--spacing--half);
-  margin-bottom: 0;
-}
-
-.topics-container ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--wp--preset--spacing--half);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.topics-container li a {
-  display: block;
-  text-decoration: none;
-  text-transform: uppercase;
-  background-color: var(--wp--preset--color--grey-lightest);
-  padding: 10px;
-  transition: background-color .25s;
-  font-family: var(--wp--preset--font-family--secondary);
-  font-size: var(--wp--preset--font-size--small);
-}
-
-.topics-container li a:hover,
-.topics-container li a:focus,
-.topics-container li a:active {
-  background-color: var(--wp--preset--color--grey-lighter);
-}
