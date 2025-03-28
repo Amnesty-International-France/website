@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import ArrowLeft from './icons/ArrowLeft.jsx';
 import ArrowRight from './icons/ArrowRight.jsx';
+import ZoomIn from './icons/ZoomIn.jsx';
 
 const { __ } = wp.i18n;
 const { useEffect, useState } = wp.element;
@@ -87,6 +88,7 @@ const EditComponent = (props) => {
               { label: 'Aucune', value: '' },
               { label: 'Flèche gauche', value: 'arrow-left' },
               { label: 'Flèche droite', value: 'arrow-right' },
+              { label: 'Loupe +', value: 'zoom-in' },
             ]}
             onChange={(value) => setAttributes({ icon: value })}
           />
@@ -116,6 +118,7 @@ const EditComponent = (props) => {
               <div className="icon-container">
                 {icon === 'arrow-left' && <ArrowLeft />}
                 {icon === 'arrow-right' && <ArrowRight />}
+                {icon === 'zoom-in' && <ZoomIn />}
               </div>
             )}
             <RichText

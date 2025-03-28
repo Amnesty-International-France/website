@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import ArrowLeft from './icons/ArrowLeft.jsx';
 import ArrowRight from './icons/ArrowRight.jsx';
+import ZoomIn from './icons/ZoomIn.jsx';
 
 const { useBlockProps } = wp.blockEditor;
 
@@ -21,6 +22,7 @@ const SaveComponent = ({ attributes }) => {
             <div className="icon-container">
               {icon === 'arrow-left' && <ArrowLeft />}
               {icon === 'arrow-right' && <ArrowRight />}
+              {icon === 'zoom-in' && <ZoomIn />}
             </div>
           )}
           <span>{label}</span>
