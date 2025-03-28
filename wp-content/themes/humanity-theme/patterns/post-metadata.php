@@ -23,30 +23,32 @@ $show_top_row    = ( $main_category && $show_back_link ) || $show_share_icons;
 $show_bottom_row = $show_byline || $show_publish_date || $show_updated_date;
 
 ?>
-<!-- wp:group {"tagName":"div","className":"article-meta"} -->
-<div class="wp-block-group article-meta">
-<?php if ( $show_top_row ) : ?>
+<!-- wp:group {"tagName":"div","className":"article-meta mx-auto"} -->
+<div class="wp-block-group article-meta mx-auto">
+
 	<!-- wp:group {"tagName":"div","className":"article-metaActions"} -->
 	<div class="wp-block-group article-metaActions">
 		<!-- wp:pattern {"slug":"amnesty/post-back-link"} /-->
-		<!-- wp:pattern {"slug":"amnesty/post-share"} /-->
 	</div>
 	<!-- /wp:group -->
-<?php endif; ?>
 
-<?php if ( $show_bottom_row ) : ?>
+	<!-- wp:post-title {"level":1,"className":"article-title"} /-->
+
 	<!-- wp:group {"tagName":"div","className":"article-metaData"} -->
 	<div class="wp-block-group article-metaData">
-		<!-- wp:group {"tagName":"div"} -->
-		<div class="wp-block-group">
-			<!-- wp:pattern {"slug":"amnesty/post-byline"} /-->
-			<!-- wp:pattern {"slug":"amnesty/post-published-date"} /-->
+		<div class="published-updated">
+			<!-- wp:pattern {"slug":"amnesty/post-published-updated-date"} /-->
 		</div>
-		<!-- /wp:group -->
-
-		<!-- wp:pattern {"slug":"amnesty/post-updated-date"} /-->
+		<div class="reading-time">
+			<!-- wp:pattern {"slug":"amnesty/post-reading-time"} /-->
+		</div>
 	</div>
 	<!-- /wp:group -->
-<?php endif; ?>
+
+	<!-- wp:group {"tagName":"div","className":"article-metaActions article-chip-categories"} -->
+	<div class="wp-block-group article-metaActions article-chip-categories">
+		<!-- wp:pattern {"slug":"amnesty/post-term-list-metadata"} /-->
+	</div>
+	<!-- /wp:group -->
 </div>
 <!-- /wp:group -->

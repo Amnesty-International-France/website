@@ -20,10 +20,12 @@ if ( ! $main_category ) {
 }
 
 ?>
-
-<!-- wp:buttons -->
-<div class="wp-block-buttons"><!-- wp:button {"className":"is-style-light"} -->
-<div class="wp-block-button is-style-light"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( amnesty_term_link( $main_category ) ); ?>"><span class="icon-arrow-left"></span>
-<span><?php echo esc_html( $main_category->name ); ?></span></a></div>
-<!-- /wp:button --></div>
-<!-- /wp:buttons -->
+<!-- wp:amnesty-core/button -->
+<div class="wp-block-amnesty-core-button button-container left">
+    <a href="<?php esc_url( amnesty_term_link( $main_category ) ); ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
+        <div class="content medium bg-black">
+            <span><?php echo esc_html($main_category->name); ?></span>
+        </div>
+    </a>
+</div>
+<!-- /wp:amnesty-core/button -->

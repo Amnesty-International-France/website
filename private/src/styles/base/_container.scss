@@ -1,27 +1,39 @@
-.container {
+%container {
   display: block;
   width: 100%;
-  max-width: $flexy-container;
-  margin: 0 auto;
-  padding: 0 flexy-gutter();
-
-  @include mq(1490px) {
-    padding: 0 $flexy-outer-gutter;
-  }
-}
-
-.container .container {
+  position: relative;
   padding: 0;
 }
 
-.container--small {
-  max-width: 1113px;
+.container--small, .container--sm {
+  @extend %container;
+  max-width: $container-sm;
 }
 
-.container--max-width {
+.container--medium, .container--md {
+  @extend %container;
+  max-width: $container-md;
+}
+
+.container--large, .container--lg {
+  @extend %container;
+  max-width: $container-lg;
+}
+
+.container--huge, .container--hg {
+  @extend %container;
+  max-width: $container-hg;
+}
+
+.container--full-width {
+  @extend %container;
   max-width: none;
 }
 
-.has-gutter {
-  padding: 0 40px;
+.mx-auto {
+  margin: 0 auto;
+}
+
+.px-4 {
+  padding: 0 1rem;
 }
