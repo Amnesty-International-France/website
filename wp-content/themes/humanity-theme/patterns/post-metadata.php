@@ -23,8 +23,8 @@ $show_top_row    = ( $main_category && $show_back_link ) || $show_share_icons;
 $show_bottom_row = $show_byline || $show_publish_date || $show_updated_date;
 
 ?>
-<!-- wp:group {"tagName":"div","className":"article-meta mx-auto"} -->
-<div class="wp-block-group article-meta mx-auto">
+<!-- wp:group {"tagName":"div","className":"article-meta container--md mx-auto"} -->
+<div class="wp-block-group article-meta container--md mx-auto">
 
 	<!-- wp:group {"tagName":"div","className":"article-metaActions"} -->
 	<div class="wp-block-group article-metaActions">

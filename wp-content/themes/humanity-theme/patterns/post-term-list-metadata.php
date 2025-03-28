@@ -21,6 +21,6 @@ $post_terms = array_filter($post_terms, static function ($term) use ($main_categ
 
 <?php foreach ( $post_terms as $post_term ) : ?>
 
-<a href="<?php echo esc_url( amnesty_term_link( $post_term ) ); ?>"><?php echo esc_html( $post_term->name ); ?></a>
+<!-- wp:amnesty-core/chip-category {"label":"<?php echo esc_html( $post_term->name ); ?>","link":"<?php echo esc_url( amnesty_term_link( $post_term ) ); ?>","size":"medium","style":"bg-yellow"} /-->
 
 <?php endforeach; ?>
