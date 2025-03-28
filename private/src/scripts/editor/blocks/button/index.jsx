@@ -29,6 +29,10 @@ registerBlockType('amnesty-core/button', {
       type: 'string',
       default: '',
     },
+    alignment: {
+      type: 'string',
+      default: 'left',
+    },
   },
   edit: EditComponent,
   save: SaveComponent,
