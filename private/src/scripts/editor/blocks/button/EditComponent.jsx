@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import ArrowLeft from './icons/ArrowLeft.jsx';
 import ArrowRight from './icons/ArrowRight.jsx';
+import ZoomIn from './icons/ZoomIn.jsx';
 
 const { __ } = wp.i18n;
 const { useEffect, useState } = wp.element;
@@ -9,7 +10,7 @@ const { PanelBody, SelectControl } = wp.components;
 
 const EditComponent = (props) => {
   const { attributes, setAttributes } = props;
-  const { label, size, style, icon, link } = attributes;
+  const { label, size, style, icon, link, alignment } = attributes;
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,34 +88,48 @@ const EditComponent = (props) => {
               { label: 'Aucune', value: '' },
               { label: 'Flèche gauche', value: 'arrow-left' },
               { label: 'Flèche droite', value: 'arrow-right' },
+              { label: 'Loupe +', value: 'zoom-in' },
             ]}
             onChange={(value) => setAttributes({ icon: value })}
+          />
+          <SelectControl
+            label={__('Alignement', 'amnesty')}
+            value={alignment}
+            options={[
+              { label: 'Gauche', value: 'left' },
+              { label: 'Centre', value: 'center' },
+              { label: 'Droite', value: 'right' },
+            ]}
+            onChange={(value) => setAttributes({ alignment: value })}
           />
         </PanelBody>
       </InspectorControls>
 
-      <a
-        {...useBlockProps()}
-        href={link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="custom-button"
-      >
-        <div className={classnames('content', size, style)}>
-          {icon && (
-            <div className="icon-container">
-              {icon === 'arrow-left' && <ArrowLeft />}
-              {icon === 'arrow-right' && <ArrowRight />}
-            </div>
-          )}
-          <RichText
-            tagName="div"
-            value={label}
-            placeholder={__('Texte du bouton…', 'amnesty')}
-            onChange={(value) => setAttributes({ label: value })}
-          />
-        </div>
-      </a>
+      <div className={classnames('button-container', alignment)}>
+        <a
+          {...useBlockProps()}
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="custom-button"
+        >
+          <div className={classnames('content', size, style)}>
+            {icon && (
+              <div className="icon-container">
+                {icon === 'arrow-left' && <ArrowLeft />}
+                {icon === 'arrow-right' && <ArrowRight />}
+                {icon === 'zoom-in' && <ZoomIn />}
+              </div>
+            )}
+            <RichText
+              tagName="div"
+              value={label}
+              placeholder={__('Texte du bouton…', 'amnesty')}
+              onChange={(value) => setAttributes({ label: value })}
+            />
+          </div>
+        </a>
+      </div>
     </>
   );
 };
