@@ -1,0 +1,29 @@
+.key-figure {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 24px;
+  background-color: var(--wp--preset--color--black);
+  border-left: 6px solid var(--wp--preset--color--primary);
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 25px;
+
+  .title {
+    color: var(--wp--preset--color--primary) !important;
+    font-family: var(--wp--preset--font-family--secondary) !important;
+    font-size: 40px !important;
+    font-weight: bold !important;
+    line-height: 44px !important;
+    text-transform: uppercase !important;
+    margin: 0 !important;
+  }
+
+  .text {
+    color: var(--wp--preset--color--white) !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    line-height: 20px !important;
+    margin: 0 !important;
+  }
+}
