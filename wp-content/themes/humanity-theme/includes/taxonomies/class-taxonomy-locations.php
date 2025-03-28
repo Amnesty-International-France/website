@@ -55,7 +55,7 @@ class Taxonomy_Locations extends Taxonomy {
 	 *
 	 * @var bool
 	 */
-	protected $default_enabled = false;
+	protected $default_enabled = true;
 
 	/**
 	 * Add hooks

@@ -16,6 +16,8 @@ require_once __DIR__ . '/banner/register.php';
 require_once __DIR__ . '/button/register.php';
 require_once __DIR__ . '/call-to-action/register.php';
 require_once __DIR__ . '/call-to-action/render.php';
+require_once __DIR__ . '/chip-category/register.php';
+require_once __DIR__ . '/chip-category/render.php';
 require_once __DIR__ . '/collapsable/register.php';
 require_once __DIR__ . '/collapsable/render.php';
 require_once __DIR__ . '/countdown-timer/register.php';
@@ -85,6 +87,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_action_block();
 		register_banner_block();
 		register_button_block();
+		register_chip_category_block();
 		register_collapsable_block();
 		register_countdown_block();
 		register_cta_block();
