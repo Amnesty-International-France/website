@@ -1,6 +1,7 @@
 .small-section-block {
   position: relative;
   background-color: var(--wp--preset--color--black);
+  margin-bottom: 25px;
 
   &::before {
     content: '';
@@ -36,7 +37,6 @@
       flex-direction: column;
       gap: 25px;
       color: var(--wp--preset--color--white);
-      padding-top: 20px;
 
       .wp-block-heading {
         color: var(--wp--preset--color--white);
@@ -65,6 +65,14 @@
 
       .wp-block-columns {
         margin-bottom: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+      }
+
+      .key-figure {
+        margin: 0;
+        height: 100%;
       }
 
       p {

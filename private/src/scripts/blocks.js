@@ -30,6 +30,7 @@ import './editor/blocks/hero/replaceHeaders';
 import './editor/blocks/iframe-button/index.jsx';
 import './editor/blocks/iframe/index.jsx';
 import './editor/blocks/key-facts/index.jsx';
+import './editor/blocks/key-figure/index.jsx';
 import './editor/blocks/link-group/index.jsx';
 import './editor/blocks/menu/index.jsx';
 import './editor/blocks/petition-list/index.jsx';

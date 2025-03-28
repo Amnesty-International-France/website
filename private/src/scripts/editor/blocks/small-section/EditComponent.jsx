@@ -31,7 +31,13 @@ const EditComponent = (props) => {
           )}
           <div className="small-section-block-inner-blocks-container">
             <InnerBlocks
-              allowedBlocks={['core/list', 'core/paragraph', 'core/button', 'core/columns']}
+              allowedBlocks={[
+                'core/list',
+                'core/paragraph',
+                'core/button',
+                'core/columns',
+                'amnesty-core/key-figure',
+              ]}
             />
           </div>
         </div>
