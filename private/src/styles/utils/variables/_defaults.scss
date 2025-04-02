@@ -1,5 +1,5 @@
 // This file uses spacing to align, disable disalowing more than 1 space after colon.
-@use "sass:math";
+@use 'sass:math';
 
 /* stylelint-disable scss/comment-no-empty */
 
@@ -32,13 +32,13 @@ $base-line-height: 27px !default;
 $spacing-unit: $base-line-height !default;
 
 /// Double `$spacing-unit`.
-$spacing-unit--double:  round($spacing-unit * 2);
+$spacing-unit--double: round($spacing-unit * 2);
 
 /// Half `$spacing-unit`.
-$spacing-unit--half:    round(math.div($spacing-unit, 2));
+$spacing-unit--half: round(math.div($spacing-unit, 2));
 
 /// Half `$spacing-unit`.
-$spacing-unit--quad:    round($spacing-unit * 4);
+$spacing-unit--quad: round($spacing-unit * 4);
 
 /// Half `$spacing-unit`.
 $spacing-unit--quarter: round(math.div($spacing-unit, 4));
@@ -50,7 +50,7 @@ $base-border-radius: 0 !default;
 $base-border-size: 2px !default;
 
 // Containers
-$container-sm: 768px;
-$container-md: 1024px;
-$container-lg: 1280px;
-$container-hg: 1536px;
+$container-sm: 640px;
+$container-md: 768px;
+$container-lg: 1024px;
+$container-hg: 1280px;

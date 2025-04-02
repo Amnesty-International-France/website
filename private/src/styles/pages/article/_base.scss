@@ -1,7 +1,6 @@
 .article {
   flex: 1 1 100%;
   width: 100%;
-  max-width: 100%;
 }
 
 .article-container--report .article-content {
@@ -20,7 +19,7 @@
   margin-bottom: 0;
 
   // aiic-added wrapper for metadata
-  > div[style="position:relative"] {
+  > div[style='position:relative'] {
     width: 100%;
   }
 

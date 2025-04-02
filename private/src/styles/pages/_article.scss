@@ -1,9 +1,12 @@
-@import "./article/base";
-@import "./article/featured-image";
-@import "./article/byline";
-@import "./article/back-link";
-@import "./article/meta";
-@import "./article/header";
-@import "./article/footer";
-@import "./article/sidebar";
-@import "./article/share";
+@import './article/base';
+@import './article/featured-image';
+@import './article/byline';
+@import './article/back-link';
+@import './article/meta';
+@import './article/header';
+@import './article/footer';
+@import './article/sidebar';
+@import './article/share';
+
+// Style by post type
+@import './article/type/actuality';

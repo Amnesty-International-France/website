@@ -1,10 +1,12 @@
-.article-content > h2, .article-content > * > h2,
+.article-content > h2,
+.article-content > * > h2,
 .editor-visual-editor .wp-block-post-content > h2 {
   position: relative;
   padding-top: 15px;
+  margin-top: 60px;
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     background-color: var(--wp--preset--color--primary);
     height: 4px;
