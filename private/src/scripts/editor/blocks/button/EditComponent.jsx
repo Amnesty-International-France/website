@@ -1,7 +1,4 @@
-import classnames from 'classnames';
-import ArrowLeft from './icons/ArrowLeft.jsx';
-import ArrowRight from './icons/ArrowRight.jsx';
-import ZoomIn from './icons/ZoomIn.jsx';
+import Button from './Button.jsx';
 
 const { __ } = wp.i18n;
 const { useEffect, useState } = wp.element;
@@ -105,30 +102,15 @@ const EditComponent = (props) => {
         </PanelBody>
       </InspectorControls>
 
-      <div className={classnames('button-container', alignment)}>
-        <a
-          {...useBlockProps()}
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="custom-button"
-        >
-          <div className={classnames('content', size, style)}>
-            {icon && (
-              <div className="icon-container">
-                {icon === 'arrow-left' && <ArrowLeft />}
-                {icon === 'arrow-right' && <ArrowRight />}
-                {icon === 'zoom-in' && <ZoomIn />}
-              </div>
-            )}
-            <RichText
-              tagName="div"
-              value={label}
-              placeholder={__('Texte du bouton…', 'amnesty')}
-              onChange={(value) => setAttributes({ label: value })}
-            />
-          </div>
-        </a>
+      <div {...useBlockProps()}>
+        <Button
+          label={<RichText value={label} onChange={(value) => setAttributes({ label: value })} />}
+          size={size}
+          style={style}
+          icon={icon}
+          link={link}
+          alignment={alignment}
+        />
       </div>
     </>
   );

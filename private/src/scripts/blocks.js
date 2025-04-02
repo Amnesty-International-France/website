@@ -47,7 +47,6 @@ import './editor/blocks/small-section/index.jsx';
 import './editor/blocks/stat-counter/index.jsx';
 import './editor/blocks/term-list/index.jsx';
 import './editor/blocks/tweet/index.jsx';
-
 import './editor/fse-blocks/archive-filters/index.jsx';
 import './editor/fse-blocks/archive-header/index.jsx';
 import './editor/fse-blocks/pop-in/index.jsx';

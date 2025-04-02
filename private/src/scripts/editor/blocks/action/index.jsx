@@ -1,61 +1,43 @@
-import DisplayComponent from './DisplayComponent.jsx';
-import deprecated from './deprecated.jsx';
+import EditComponent from './EditComponent.jsx';
+import SaveComponent from './SaveComponent.jsx';
 
-const { assign, omit } = lodash;
 const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
 
-const blockAttributes = {
-  style: {
-    type: 'string',
-  },
-  centred: {
-    type: 'boolean',
-  },
-  label: {
-    type: 'string',
-  },
-  content: {
-    type: 'string',
-  },
-  imageID: {
-    type: 'integer',
-  },
-  imageURL: {
-    type: 'string',
-  },
-  imageAlt: {
-    type: 'string',
-  },
-  link: {
-    type: 'string',
-  },
-  buttonBackground: {
-    type: 'string',
-  },
-};
-
-registerBlockType('amnesty-core/action-block', {
-  // translators: [admin]
-  title: __('Action', 'amnesty'),
-  // translators: [admin]
-  description: __('Add an Action block', 'amnesty'),
-  icon: 'megaphone',
+registerBlockType('amnesty-core/action', {
+  title: __('Agir', 'amnesty'),
+  description: 'Block Agir (Pétition/Action)',
   category: 'amnesty-core',
-  supports: {
-    className: false,
-    align: true,
+  attributes: {
+    type: {
+      type: 'string',
+      default: 'petition',
+    },
+    title: {
+      type: 'string',
+      default: 'Titre',
+    },
+    subtitle: {
+      type: 'string',
+      default: 'Sous titre',
+    },
+    imageUrl: {
+      type: 'string',
+      default: '',
+    },
+    bgColor: {
+      type: 'string',
+      default: 'bg-white',
+    },
+    buttonLink: {
+      type: 'string',
+      default: '',
+    },
+    lignment: {
+      type: 'string',
+      default: 'left',
+    },
   },
-  attributes: assign({}, omit(blockAttributes, 'buttonBackground'), {
-    linkText: {
-      type: 'string',
-    },
-    largeImageURL: {
-      type: 'string',
-    },
-  }),
-
-  deprecated,
-  edit: DisplayComponent,
-  save: () => null,
+  edit: EditComponent,
+  save: SaveComponent,
 });
