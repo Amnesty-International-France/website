@@ -13,7 +13,7 @@
     font-weight: bold;
     line-height: 20px;
     color: var(--wp--preset--color--black);
-    margin: 0;
+    margin: 0 !important;
 
     a {
       font-family: var(--wp--preset--font-family--secondary);
