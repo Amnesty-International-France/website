@@ -1,11 +1,5 @@
 .article.actualite {
   .article-content {
-    .wp-block-post-content {
-      display: flex;
-      flex-direction: column;
-      gap: 25px;
-    }
-
     p,
     .wp-block-columns,
     .wp-block-heading,
@@ -13,6 +7,7 @@
     .wp-block-amnesty-core-action,
     .wp-block-amnesty-core-blockquote,
     .wp-block-amnesty-core-button,
+    .wp-block-amnesty-core-image,
     .wp-block-amnesty-core-read-also,
     .wp-block-amnesty-core-small-section {
       max-width: $container-sm;
