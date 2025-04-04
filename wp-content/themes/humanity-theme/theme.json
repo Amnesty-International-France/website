@@ -3,51 +3,6 @@
   "version": 3,
   "settings": {
     "appearanceTools": false,
-    "blocks": {
-      "core/quote": {
-        "color": {
-          "text": true,
-          "palette": [
-            {
-              "slug": "black",
-              "color": "#000",
-              "name": "Black"
-            },
-            {
-              "slug": "white",
-              "color": "#fff",
-              "name": "White"
-            },
-            {
-              "slug": "amnesty-grey_brand",
-              "color": "#b3b3b3",
-              "name": "Grey Brand"
-            }
-          ]
-        },
-        "typography": {
-          "fluid": false,
-          "fontSizes": [
-            {
-              "slug": "small",
-              "size": "1.75rem",
-              "name": "Small"
-            },
-            {
-              "slug": "medium",
-              "size": "2rem",
-              "name": "Medium"
-            },
-            {
-              "slug": "large",
-              "size": "2.25rem",
-              "name": "Large"
-            }
-          ],
-          "textTransform": true
-        }
-      }
-    },
     "color": {
       "background": false,
       "text": false,
@@ -70,69 +25,34 @@
           "name": "Primary"
         },
         {
-          "slug": "primary-state",
-          "color": "#f8d72b",
-          "name": "Primary State"
+          "slug": "primary-dark",
+          "color": "#f0e000",
+          "name": "Primary Dark"
         },
         {
-          "slug": "secondary",
-          "color": "#2196f3",
-          "name": "Secondary"
-        },
-        {
-          "slug": "accent",
-          "color": "#2196f3",
-          "name": "Accent"
-        },
-        {
-          "slug": "grey-lightest",
-          "color": "#f7f7f7",
-          "name": "Lightest Grey"
-        },
-        {
-          "slug": "grey-lighter",
-          "color": "#e4e4e4",
-          "name": "Lighter Grey"
-        },
-        {
-          "slug": "grey-light",
-          "color": "#b3b3b3",
-          "name": "light Grey"
-        },
-        {
-          "slug": "grey-base",
-          "color": "#767676",
-          "name": "Default Grey"
-        },
-        {
-          "slug": "grey-dark",
-          "color": "#575757",
-          "name": "Dark Grey"
-        },
-        {
-          "slug": "grey-darker",
-          "color": "#262626",
-          "name": "Darker Grey"
-        },
-        {
-          "slug": "grey-darkest",
-          "color": "#111111",
-          "name": "Darkest Grey"
-        },
-        {
-          "slug": "blue-twitter",
-          "color": "#1da1f2",
-          "name": "Twitter Blue"
-        },
-        {
-          "slug": "orange-base",
+          "slug": "orange",
           "color": "#ffa500",
           "name": "Orange"
         },
         {
-          "slug": "black-bg",
-          "color": "#1a1a1a",
-          "name": "Black Background"
+          "slug": "grey-light",
+          "color": "#f2f2f2",
+          "name": "Grey Light"
+        },
+        {
+          "slug": "grey",
+          "color": "#e4e4e4",
+          "name": "Grey"
+        },
+        {
+          "slug": "grey-dark",
+          "color": "#575756",
+          "name": "Grey Dark"
+        },
+        {
+          "slug": "grey-darkest",
+          "color": "#303030",
+          "name": "Grey Darkest"
         }
       ]
     },

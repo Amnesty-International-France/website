@@ -14,8 +14,8 @@
       border: 2px solid var(--wp--preset--color--primary);
 
       &:hover {
-        background-color: #f0e000;
-        border-color: #f0e000;
+        background-color: var(--wp--preset--color--primary-dark);
+        border-color: var(--wp--preset--color--primary-dark);
       }
     }
   }
@@ -30,8 +30,8 @@
       border: 2px solid var(--wp--preset--color--black);
 
       &:hover {
-        color: #303030;
-        border-color: #303030;
+        color: var(--wp--preset--color--grey-darkest);
+        border-color: var(--wp--preset--color--grey-darkest);
       }
     }
   }

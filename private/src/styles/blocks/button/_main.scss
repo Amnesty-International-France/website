@@ -96,7 +96,7 @@
         padding-left: 0;
 
         &:hover {
-          color: #303030;
+          color: var(--wp--preset--color--grey-darkest);
         }
       }
 
@@ -106,8 +106,8 @@
         color: var(--wp--preset--color--primary);
 
         &:hover {
-          color: #f0e000;
-          border-color: #f0e000;
+          color: var(--wp--preset--color--primary-dark);
+          border-color: var(--wp--preset--color--primary-dark);
         }
       }
 
@@ -117,8 +117,8 @@
         color: var(--wp--preset--color--black);
 
         &:hover {
-          color: #303030;
-          border-color: #303030;
+          color: var(--wp--preset--color--grey-darkest);
+          border-color: var(--wp--preset--color--grey-darkest);
         }
       }
 
@@ -128,8 +128,8 @@
         border-color: var(--wp--preset--color--black);
 
         &:hover {
-          background-color: #2a2a2a;
-          border-color: #2a2a2a;
+          background-color: var(--wp--preset--color--grey-darkest);
+          border-color: var(--wp--preset--color--grey-darkest);
         }
       }
 
@@ -139,8 +139,8 @@
         border-color: var(--wp--preset--color--primary);
 
         &:hover {
-          background-color: #f0e000;
-          border-color: #f0e000;
+          background-color: var(--wp--preset--color--primary-dark);
+          border-color: var(--wp--preset--color--primary-dark);
         }
       }
     }
