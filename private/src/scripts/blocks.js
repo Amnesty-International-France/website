@@ -17,6 +17,7 @@ import './editor/plugins/pop-in/index.jsx';
 
 import './editor/blocks/action/index.jsx';
 import './editor/blocks/button/index.jsx';
+import './editor/blocks/chapo/index.jsx';
 import './editor/blocks/core-mods';
 import './editor/blocks/countdown-timer/index.jsx';
 import './editor/blocks/download/index.jsx';

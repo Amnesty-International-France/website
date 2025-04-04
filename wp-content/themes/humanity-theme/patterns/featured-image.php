@@ -40,11 +40,10 @@ $attributes = [
 		<img src="<?php echo esc_url( amnesty_get_attachment_image_src( $image_id, 'hero-md' ) ); ?>" alt="" class="wp-image-<?php echo absint( $image_id ); ?>"/>
 	</figure>
 	<!-- /wp:image -->
-
-	<div class="container--lg mx-auto">
+	<div class="feature-image">
 		<div class="feature-image-caption-block">
 			<div class="feature-image-description">
-				<?php echo esc_html($image->credit()) ?>
+			<?php echo esc_html($image->credit()) ?>
 			</div>
 			<div class="feature-image-caption">
 				<?php echo esc_html($image->caption()) ?>

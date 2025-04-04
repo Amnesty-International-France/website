@@ -1,0 +1,16 @@
+.chapo {
+  .text {
+    width: 100%;
+    padding-top: 24px;
+    padding-left: 24px;
+    border-left: 4px solid var(--wp--preset--color--primary);
+    font-size: var(--wp--custom--chapo--font-size);
+    line-height: var(--wp--custom--chapo--line-height);
+    font-weight: var(--wp--custom--chapo--font-weight);
+    font-family: var(--wp--custom--chapo--font-family) !important;
+
+    @media (min-width: 768px) {
+      width: 65%;
+    }
+  }
+}
