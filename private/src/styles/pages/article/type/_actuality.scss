@@ -1,6 +1,6 @@
 .article.actualite {
   .article-content {
-    p,
+    p:not(.wp-block-amnesty-core-chapo p),
     .wp-block-columns,
     .wp-block-heading,
     .wp-block-image,
@@ -11,6 +11,12 @@
     .wp-block-amnesty-core-read-also,
     .wp-block-amnesty-core-small-section {
       max-width: $container-sm;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .wp-block-amnesty-core-chapo {
+      max-width: $container-lg;
       margin-left: auto;
       margin-right: auto;
     }
