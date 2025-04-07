@@ -35,6 +35,7 @@ require_once __DIR__ . '/embed-sutori/register.php';
 require_once __DIR__ . '/embed-sutori/render.php';
 require_once __DIR__ . '/embed-tickcounter/register.php';
 require_once __DIR__ . '/embed-tickcounter/render.php';
+require_once __DIR__ . '/get-informed/register.php';
 require_once __DIR__ . '/hero/helpers.php';
 require_once __DIR__ . '/hero/register.php';
 require_once __DIR__ . '/hero/render.php';
@@ -96,6 +97,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_download_block();
 		register_download_go_further_block();
 		register_flourish_embed_block();
+		register_get_informed_block();
 		register_header_block();
 		register_hero_block();
 		register_iframe_block();

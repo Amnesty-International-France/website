@@ -26,6 +26,7 @@ import './editor/blocks/embed-infogram/index.jsx';
 import './editor/blocks/embed-sutori/index.jsx';
 import './editor/blocks/embed-tickcounter/index.jsx';
 import './editor/blocks/download-go-further/index.jsx';
+import './editor/blocks/get-informed/index.jsx';
 import './editor/blocks/hero/index.jsx';
 import './editor/blocks/hero/replaceHeaders';
 import './editor/blocks/iframe-button/index.jsx';
