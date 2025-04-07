@@ -30,18 +30,18 @@
           "name": "Primary Dark"
         },
         {
-          "slug": "orange",
-          "color": "#ffa500",
-          "name": "Orange"
+          "slug": "grey-lighter",
+          "color": "#f2f2f2",
+          "name": "Grey Lighter"
         },
         {
           "slug": "grey-light",
-          "color": "#f2f2f2",
+          "color": "#e4e4e4",
           "name": "Grey Light"
         },
         {
           "slug": "grey",
-          "color": "#e4e4e4",
+          "color": "#818181",
           "name": "Grey"
         },
         {
@@ -88,9 +88,76 @@
       ]
     },
     "typography": {
-      "fontSizes": [],
-      "customFontSize": false,
-      "defaultFontSizes": false,
+      "fontFamilies": [
+        {
+          "fontFamily": "\"Amnesty Trade Gothic\", sans-serif",
+          "name": "Amnesty Trade Gothic",
+          "slug": "primary",
+          "fontFace": [
+            {
+              "fontFamily": "Amnesty Trade Gothic",
+              "fontStyle": "normal",
+              "fontWeight": 300,
+              "fontDisplay": "swap",
+              "src": [
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-Light.ttf"
+              ]
+            },
+            {
+              "fontFamily": "Amnesty Trade Gothic",
+              "fontStyle": "oblique",
+              "fontWeight": 300,
+              "fontDisplay": "swap",
+              "src": [
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-LightObl.ttf"
+              ]
+            },
+            {
+              "fontFamily": "Amnesty Trade Gothic",
+              "fontStyle": "normal",
+              "fontWeight": "bold",
+              "fontDisplay": "swap",
+              "src": [
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-Bd2.ttf"
+              ]
+            }
+          ]
+        },
+        {
+          "fontFamily": "\"Amnesty Trade Gothic Condensed\", sans-serif",
+          "name": "Amnesty Trade Gothic Condensed",
+          "slug": "secondary",
+          "fontFace": [
+            {
+              "fontFamily": "Amnesty Trade Gothic Condensed",
+              "fontStyle": "normal",
+              "fontWeight": "normal",
+              "fontDisplay": "swap",
+              "src": [
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-BdCn20.ttf"
+              ]
+            },
+            {
+              "fontFamily": "Amnesty Trade Gothic Condensed",
+              "fontStyle": "oblique",
+              "fontWeight": "normal",
+              "fontDisplay": "swap",
+              "src": [
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-Cn18Obl.ttf"
+              ]
+            },
+            {
+              "fontFamily": "Amnesty Trade Gothic Condensed",
+              "fontStyle": "normal",
+              "fontWeight": "bold",
+              "fontDisplay": "swap",
+              "src": [
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-BdCn20.ttf"
+              ]
+            }
+          ]
+        }
+      ],
       "dropCap": false,
       "fluid": false,
       "fontStyle": false,
