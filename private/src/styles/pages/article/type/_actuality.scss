@@ -1,5 +1,19 @@
 .article.actualite {
+  .article-meta {
+    padding: 0 24px;
+
+    @media (min-width: 768px) {
+      padding: 0;
+    }
+  }
+
   .article-content {
+    padding: 0 24px;
+
+    @media (min-width: 768px) {
+      padding: 0;
+    }
+
     p:not(.wp-block-amnesty-core-chapo p),
     .wp-block-columns,
     .wp-block-heading,
@@ -8,7 +22,7 @@
     .wp-block-amnesty-core-blockquote,
     .wp-block-amnesty-core-button,
     .wp-block-amnesty-core-image,
-    .wp-block-amnesty-core-get-informed .content,
+    .wp-block-amnesty-core-get-informed,
     .wp-block-amnesty-core-read-also,
     .wp-block-amnesty-core-small-section {
       max-width: $container-sm;
