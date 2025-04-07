@@ -100,7 +100,9 @@
               "fontWeight": 300,
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-Light.ttf"
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-Light.eot",
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-Light.ttf",
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-Light.woff"
               ]
             },
             {
@@ -109,7 +111,9 @@
               "fontWeight": 300,
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-LightObl.ttf"
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-LightObl.eot",
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-LightObl.ttf",
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-LightObl.woff"
               ]
             },
             {
@@ -118,7 +122,9 @@
               "fontWeight": "bold",
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-Bd2.ttf"
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-Bd2.eot",
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-Bd2.ttf",
+                "file:./assets/fonts/trade-gothic/AmnestyTradeGothic-Bd2.woff"
               ]
             }
           ]
@@ -134,7 +140,9 @@
               "fontWeight": "normal",
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-BdCn20.ttf"
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-BdCn20.eot",
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-BdCn20.ttf",
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-BdCn20.woff"
               ]
             },
             {
@@ -143,7 +151,9 @@
               "fontWeight": "normal",
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-Cn18Obl.ttf"
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-Cn18Obl.eot",
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-Cn18Obl.ttf",
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-Cn18Obl.woff"
               ]
             },
             {
@@ -152,7 +162,9 @@
               "fontWeight": "bold",
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-BdCn20.ttf"
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-BdCn20.eot",
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-BdCn20.ttf",
+                "file:./assets/fonts/trade-gothic-condensed/AmnestyTradeGothic-BdCn20.woff"
               ]
             }
           ]
