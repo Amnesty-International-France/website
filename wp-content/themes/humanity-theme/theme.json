@@ -30,6 +30,11 @@
           "name": "Primary Dark"
         },
         {
+          "slug": "orange",
+          "color": "#ef8200",
+          "name": "Orange"
+        },
+        {
           "slug": "grey-lighter",
           "color": "#f2f2f2",
           "name": "Grey Lighter"

@@ -7,11 +7,6 @@
  */
 
 $header_style = amnesty_get_header_style( amnesty_get_header_object_id() );
-$donate_url   = amnesty_get_option( '_header_donation' );
-$donate_txt   = amnesty_get_option( '_header_donation_label' );
-
-$menu_item_count = count_top_level_menu_items();
-$menu_item_lang  = strtolower( preg_replace( '/^(\w{2})[-_]\w{2}$/', '$1', get_locale() ) );
 
 ?>
 <header class="page-header is-<?php echo esc_attr( $header_style ); ?>" role="banner" aria-label="<?php /* translators: [front] ARIA */ esc_attr_e( 'Page Header', 'amnesty' ); ?>">
@@ -22,19 +17,15 @@ $menu_item_lang  = strtolower( preg_replace( '/^(\w{2})[-_]\w{2}$/', '$1', get_l
 			</nav>
 		</div>
 		<div class="page-headerItems main-header">
-		<?php amnesty_logo(); ?>
-
-		<?php if ( is_multilingualpress_enabled() ) : ?>
-			<?php render_language_selector_dropdown(); ?>
-		<?php elseif ( amnesty_nav_should_display( 'site-selection' ) ) : ?>
-			<nav class="page-nav page-nav--left" aria-label="<?php /* translators: [front] ARIA */ esc_attr_e( 'Amnesty Group Websites', 'amnesty' ); ?>">
-				<ul class="site-selector">
-					<?php amnesty_nav( 'site-selection' ); ?>
-					<div class="site-separator"></div>
-				</ul>
-			</nav>
-		<?php endif; ?>
-
+			<?php amnesty_logo(); ?>
+			<div class="donate-button-mobile">
+				<a href="https://soutenir.amnesty.fr/menu/~mon-don" class="link" >
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" style="width: 1.25rem; height: 1.25rem;">
+						<path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+					</svg>
+					<p class="label">Faire un don</p>
+				</a>
+			</div>
 			<nav class="page-nav page-nav--main" aria-label="<?php /* translators: [front] ARIA */ esc_attr_e( 'Primary navigation', 'amnesty' ); ?>">
 				<ul><?php amnesty_nav( 'main-menu' ); ?></ul>
 				<button
@@ -48,6 +39,14 @@ $menu_item_lang  = strtolower( preg_replace( '/^(\w{2})[-_]\w{2}$/', '$1', get_l
 				><span class="icon icon-burger"></span><span class="icon icon-close"></span></button>
 				<?php get_template_part( 'partials/navigation/mobile' ); ?>
 			</nav>
+			<div class="donate-button-desktop">
+				<a href="https://soutenir.amnesty.fr/menu/~mon-don" class="link" >
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" style="width: 1.25rem; height: 1.25rem;">
+						<path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+					</svg>
+					<p class="label">Faire un don</p>
+				</a>
+			</div>
 		</div>
 	</div>
 </header>
