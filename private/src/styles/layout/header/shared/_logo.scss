@@ -1,11 +1,7 @@
 .logo {
   display: flex;
   align-items: center;
-  height: 60px;
-
-  @include mq(small) {
-    height: 72px;
-  }
+  height: 100%;
 }
 
 .logo:empty::after {
@@ -27,14 +23,6 @@
 .logo-logoType,
 .logo-logoMark {
   max-height: 100% !important;
-}
-
-.logo-logoType {
-  display: none;
-
-  @include mq(small) {
-    display: block;
-  }
 }
 
 .logo-logoMark {

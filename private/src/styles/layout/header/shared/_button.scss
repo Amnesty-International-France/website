@@ -19,7 +19,9 @@
   box-shadow: none;
   color: inherit;
   font-size: inherit;
-  transition: background-color .2s ease-in-out, color .2s ease-in-out;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
   cursor: pointer;
 
   @include mq(small) {
@@ -46,4 +48,94 @@
 
 .page-headerButton span {
   pointer-events: none;
+}
+
+.donate-button-desktop {
+  display: none;
+
+  @media (min-width: 1024px) {
+    background-color: var(--wp--preset--color--primary);
+    color: var(--wp--preset--color--black);
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.1s ease-in-out;
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background-color: var(--wp--preset--color--primary-dark);
+    }
+
+    .link {
+      height: 100%;
+      width: 100%;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      &:hover {
+        background-color: transparent;
+      }
+
+      svg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .label {
+        margin: 0;
+        font-family: var(--wp--preset--font-family--secondary);
+      }
+    }
+  }
+}
+
+.donate-button-mobile {
+  display: flex;
+  background-color: var(--wp--preset--color--orange);
+  color: var(--wp--preset--color--black);
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.1s ease-in-out;
+  height: 100%;
+  width: fit-content;
+  align-items: center;
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+
+  &:hover {
+    background-color: var(--wp--preset--color--primary-dark);
+  }
+
+  .link {
+    height: 100%;
+    width: 100%;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    svg {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .label {
+      margin: 0;
+      font-family: var(--wp--preset--font-family--secondary);
+    }
+  }
 }
