@@ -1,6 +1,24 @@
 .article {
   flex: 1 1 100%;
   width: 100%;
+
+  .wp-block-list {
+    list-style-type: disc;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 20px 55px 20px 55px;
+
+    li {
+      margin-left: 55px;
+      line-height: 1.5rem;
+    }
+
+    & ::marker {
+      color: var(--wp--preset--color--black);
+      font-size: 1.5em;
+    }
+  }
 }
 
 .article-container--report .article-content {
