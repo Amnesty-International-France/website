@@ -75,4 +75,62 @@ class Desktop_Nav_Walker extends Walker_Nav_Menu {
 		$output .= "$indent</ul></nav>{$n}";
 	}
 
+	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+		if ( isset( $args->item_spacing ) && 'discard' === $args->item_spacing ) {
+			$t = '';
+			$n = '';
+		} else {
+			$t = "\t";
+			$n = "\n";
+		}
+		$indent = ( $depth ) ? str_repeat( $t, $depth ) : '';
+	
+		$classes = empty( $item->classes ) ? [] : (array) $item->classes;
+		$classes[] = 'menu-item-' . $item->ID;
+	
+		$class_names = join( ' ', array_filter( $classes ) );
+		$class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
+	
+		$output .= $indent . '<li' . $class_names . '>';
+	
+		$atts = [];
+		$atts['title']  = ! empty( $item->attr_title ) ? $item->attr_title : '';
+		$atts['target'] = ! empty( $item->target )     ? $item->target     : '';
+		$atts['rel']    = ! empty( $item->xfn )        ? $item->xfn        : '';
+		$atts['href']   = ! empty( $item->url )        ? $item->url        : '';
+	
+		$attributes = '';
+		foreach ( $atts as $attr => $value ) {
+			if ( ! empty( $value ) ) {
+				$attributes .= ' ' . $attr . '="' . esc_attr( $value ) . '"';
+			}
+		}
+	
+		$title = apply_filters( 'the_title', $item->title, $item->ID );
+	
+		// SVG flèche pour les éléments avec sous-menu
+		$arrow = in_array( 'menu-item-has-children', $classes, true )
+			? '<svg class="submenu-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+				</svg>'
+			: '';
+	
+		// Construction du lien
+		$item_output  = $args->before ?? '';
+		$item_output .= '<a' . $attributes . '>';
+		$item_output .= $args->link_before ?? '';
+	
+		// Structure propre pour aligner texte + flèche
+		$item_output .= '<span class="menu-item-content">';
+		$item_output .= '<span class="menu-label">' . esc_html( $title ) . '</span>';
+		$item_output .= $arrow;
+		$item_output .= '</span>';
+	
+		$item_output .= $args->link_after ?? '';
+		$item_output .= '</a>';
+		$item_output .= $args->after ?? '';
+	
+		$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+	}
+	
 }

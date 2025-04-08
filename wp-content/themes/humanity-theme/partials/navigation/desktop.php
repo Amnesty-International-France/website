@@ -1,4 +1,5 @@
 <?php
+use Amnesty\Desktop_Nav_Walker;
 
 /**
  * Navigation partial, desktop
@@ -27,7 +28,7 @@ $header_style = amnesty_get_header_style( amnesty_get_header_object_id() );
 				</a>
 			</div>
 			<nav class="page-nav page-nav--main" aria-label="<?php /* translators: [front] ARIA */ esc_attr_e( 'Primary navigation', 'amnesty' ); ?>">
-				<ul><?php amnesty_nav( 'main-menu' ); ?></ul>
+				<ul><?php amnesty_nav( 'main-menu', new Desktop_Nav_Walker() ); ?></ul>
 				<button
 					class="burger"
 					data-toggle=".mobile-menu"

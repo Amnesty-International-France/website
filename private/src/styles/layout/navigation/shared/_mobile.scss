@@ -10,13 +10,13 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   backface-visibility: hidden;
-  transition: transform .2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
   transform: translate3d(100%, 0, 0);
   font-size: var(--wp--preset--font-size--small);
   background-color: var(--wp--preset--color--white);
 
   @include mq(small) {
-    top: 72px; // header height on larger screens
+    top: 64px; // header height on larger screens
     max-height: calc(100vh - 72px);
   }
 }
@@ -37,7 +37,7 @@
   max-height: calc(100vh - 118px);
 
   @include mq(small) {
-    top: 118px; // admin bar + header height
+    top: 110px; // admin bar + header height
   }
 
   @include mq(wp-adminbar) {
@@ -85,7 +85,7 @@
   display: flex;
   align-items: center;
   padding: var(--wp--preset--spacing--single);
-  transition: background-color .2s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
   color: var(--wp--preset--color--black);
 
   &:hover,
@@ -127,7 +127,7 @@
   width: 100%;
   max-height: 0;
   overflow: hidden;
-  transition: max-height .3s ease-in-out;
+  transition: max-height 0.3s ease-in-out;
   background-color: var(--wp--preset--color--grey-lighter);
 }
 
@@ -161,7 +161,7 @@
 
 .mobile-menu .icon-arrow-down {
   @extend %icon-arrow-down-dark;
-  transition: transform .2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
   position: absolute;
   right: 18px;
 

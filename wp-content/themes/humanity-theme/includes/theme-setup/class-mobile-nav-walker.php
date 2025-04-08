@@ -27,21 +27,6 @@ class Mobile_Nav_Walker extends Walker_Nav_Menu {
 	 */
 	public function start_lvl( &$output, $depth = 0, $args = null ) {
 		parent::start_lvl( $output, $depth, $args );
-
-		// add the list item in as the first item in the sub list.
-		// see https://github.com/amnestywebsite/amnesty-wp-theme/issues/2059#issuecomment-1334074413
-		preg_match( '/.*(<li.*?>.*?)<ul class="sub-menu">/s', $output, $matches );
-
-		if ( isset( $matches[1] ) ) {
-			$parent = str_replace( 'menu-item-has-children ', '', $matches[1] );
-			$parent = preg_replace(
-				'/<li(.*?)>.*?data-href="([^"]*?)".*<span>(.*?)<\/span>.*/s',
-				'<li$1><a href="$2"><span>$3</span></a></li>',
-				$parent,
-			);
-
-			$output .= $parent;
-		}
 	}
 
 	/**
