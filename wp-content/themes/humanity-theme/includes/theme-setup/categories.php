@@ -4,13 +4,16 @@ if( !function_exists( 'setup_categories' ) ) {
 	function setup_categories() {
 		$categories_defaut = [
 			'Actualité' => [
-				'slug' => 'actualite'
+				'slug' => 'actualites'
 			],
 			'Dossier' => [
-				'slug' => 'dossier'
+				'slug' => 'dossiers'
 			],
 			'Campagne' => [
-				'slug' => 'campagne'
+				'slug' => 'campagnes'
+			],
+			'Article Chronique' => [
+				'slug' => 'chroniques'
 			]
 		];
 
