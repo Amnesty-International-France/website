@@ -20,6 +20,20 @@
     }
   }
 
+  .article-header {
+    .yoast-breadcrumb-wrapper {
+      background-color: var(--wp--preset--color--black);
+
+      .yoast-breadcrumb {
+        color: var(--wp--preset--color--white);
+
+        a {
+          color: var(--wp--preset--color--white);
+        }
+      }
+    }
+  }
+
   .article-content {
     padding: 0 24px;
 
