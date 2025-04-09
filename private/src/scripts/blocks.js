@@ -34,6 +34,7 @@ import './editor/blocks/iframe/index.jsx';
 import './editor/blocks/image/index.jsx';
 import './editor/blocks/key-facts/index.jsx';
 import './editor/blocks/key-figure/index.jsx';
+import './editor/blocks/link-icon/index.jsx';
 import './editor/blocks/link-group/index.jsx';
 import './editor/blocks/menu/index.jsx';
 import './editor/blocks/petition-list/index.jsx';
