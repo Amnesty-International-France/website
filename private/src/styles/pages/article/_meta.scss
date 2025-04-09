@@ -1,8 +1,13 @@
+.article-meta-wrapper {
+  padding: var(--wp--preset--spacing--half);
+  padding-bottom: var(--wp--preset--spacing--half);
+  width: 100%;
+  height: 100%;
+}
+
 .article-meta {
   display: flex;
   flex-direction: column;
-  margin-top: var(--wp--preset--spacing--half);
-  margin-bottom: var(--wp--preset--spacing--half);
   gap: 12px;
 }
 
@@ -24,7 +29,8 @@
   content: var(--list-separator);
 }
 
-.published-updated, .reading-time {
+.published-updated,
+.reading-time {
   display: flex;
   align-items: center;
   color: var(--wp--preset--color--grey-dark);
