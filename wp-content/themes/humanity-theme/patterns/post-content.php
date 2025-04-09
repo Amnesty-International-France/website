@@ -14,6 +14,11 @@ $category = amnesty_get_a_post_term( get_the_ID() )->slug;
 <section class="wp-block-group article <?php echo $category ?>">
 	<!-- wp:group {"tagName":"header","className":"article-header"} -->
 	<header class="wp-block-group article-header">
+		<?php
+		if ( function_exists('yoast_breadcrumb') ) {
+			yoast_breadcrumb( '<nav class="yoast-breadcrumb">','</nav>' );
+		}
+		?>
 		<!-- wp:pattern {"slug":"amnesty/post-metadata"} /-->
 		<!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
 	</header>
