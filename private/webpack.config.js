@@ -193,6 +193,14 @@ const config = (env, argv) => ({
           target: 'es2015',
         },
       },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: '@svgr/webpack',
+          },
+        ],
+      },
     ],
   },
 });
