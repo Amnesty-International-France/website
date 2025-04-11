@@ -44,6 +44,7 @@ require_once __DIR__ . '/iframe-button/render.php';
 require_once __DIR__ . '/iframe/register.php';
 require_once __DIR__ . '/iframe/render.php';
 require_once __DIR__ . '/image/register.php';
+require_once __DIR__ . '/image/render.php';
 require_once __DIR__ . '/key-figure/register.php';
 require_once __DIR__ . '/link-icon/register.php';
 require_once __DIR__ . '/link-group/register.php';

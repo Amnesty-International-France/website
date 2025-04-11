@@ -1,45 +1,57 @@
 const { __ } = wp.i18n;
-const { useBlockProps, InspectorControls, MediaUpload } = wp.blockEditor;
+const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
 const { PanelBody, Button } = wp.components;
+const { useSelect } = wp.data;
 
 const EditComponent = (props) => {
   const { attributes, setAttributes } = props;
-  const { imageUrl, altText, caption, description } = attributes;
+  const { mediaId } = attributes;
 
-  const onSelectImage = (media) => {
-    setAttributes({
-      imageUrl: media.url,
-      altText: media.alt,
-      caption: media.caption,
-      description: media.description,
-    });
+  const selectedMedia = useSelect(
+    (select) => (mediaId ? select('core').getMedia(mediaId) : null),
+    [mediaId],
+  );
+
+  const onSelectImage = (newMedia) => {
+    setAttributes({ mediaId: newMedia.id });
   };
 
   return (
     <>
       <InspectorControls>
         <PanelBody title={__('Paramètres de l’image', 'amnesty')}>
-          <MediaUpload
-            onSelect={onSelectImage}
-            allowedTypes={['image']}
-            render={({ open }) => (
-              <Button onClick={open} isPrimary>
-                {imageUrl ? __('Changer l’image', 'amnesty') : __('Ajouter une image', 'amnesty')}
-              </Button>
-            )}
-          />
+          <MediaUploadCheck>
+            <MediaUpload
+              onSelect={onSelectImage}
+              allowedTypes={['image']}
+              value={mediaId}
+              render={({ open }) => (
+                <Button onClick={open} isPrimary>
+                  {mediaId ? __('Changer l’image', 'amnesty') : __('Ajouter une image', 'amnesty')}
+                </Button>
+              )}
+            />
+          </MediaUploadCheck>
         </PanelBody>
       </InspectorControls>
 
       <div {...useBlockProps()} className="image-block">
-        {imageUrl && (
+        {selectedMedia ? (
           <>
             <div className="image-wrapper">
-              <img src={imageUrl} alt={altText} />
-              {caption && <p className="image-caption">{caption}</p>}
+              <img src={selectedMedia.source_url} alt={selectedMedia.alt_text || ''} />
+              {selectedMedia.caption && (
+                <p className="image-caption">{selectedMedia.caption.raw}</p>
+              )}
             </div>
-            {description && <p className="image-description">{description}</p>}
+            {selectedMedia.description && (
+              <p className="image-description">
+                {selectedMedia.description.raw || selectedMedia.description.rendered}
+              </p>
+            )}
           </>
+        ) : (
+          <p>{__('Aucune image sélectionnée', 'amnesty')}</p>
         )}
       </div>
     </>
