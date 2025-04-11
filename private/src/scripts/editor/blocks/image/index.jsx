@@ -1,5 +1,4 @@
 import EditComponent from './EditComponent.jsx';
-import SaveComponent from './SaveComponent.jsx';
 
 const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
@@ -9,23 +8,14 @@ registerBlockType('amnesty-core/image', {
   description: 'Block Image',
   category: 'amnesty-core',
   attributes: {
-    imageUrl: {
-      type: 'string',
-      default: '',
+    mediaId: {
+      type: 'number',
     },
-    description: {
-      type: 'string',
-      default: '',
-    },
-    caption: {
-      type: 'string',
-      default: '',
-    },
-    altText: {
+    className: {
       type: 'string',
       default: '',
     },
   },
   edit: EditComponent,
-  save: SaveComponent,
+  save: () => null,
 });
