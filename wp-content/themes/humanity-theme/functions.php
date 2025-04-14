@@ -181,8 +181,11 @@ require_once realpath( __DIR__ . '/includes/taxonomies/taxonomy-descriptions.php
 require_once realpath( __DIR__ . '/includes/taxonomies/abstract-class-taxonomy.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-content-types.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-locations.php' );
-require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-resource-types.php' );
-require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-topics.php' );
+require_once realpath( __DIR__ . '/includes/theme-setup/countries.php');
+require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-keywords.php' );
+require_once realpath( __DIR__ . '/includes/theme-setup/keywords.php');
+require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-combats.php' );
+require_once realpath( __DIR__ . '/includes/theme-setup/combats.php');
 require_once realpath( __DIR__ . '/includes/taxonomies/custom-fields/precedence.php' );
 #endregion taxonomies
 

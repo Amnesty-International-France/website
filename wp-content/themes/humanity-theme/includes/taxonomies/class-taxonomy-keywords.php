@@ -6,35 +6,35 @@ namespace Amnesty;
 
 use WP_Term;
 
-new Taxonomy_Topics();
+new Taxonomy_Keywords();
 
 /**
- * Register the Topics taxonomy
+ * Register the Resource Types taxonomy
  *
  * @package Amnesty\Taxonomies
  */
-class Taxonomy_Topics extends Taxonomy {
+class Taxonomy_Keywords extends Taxonomy {
+
+	/**
+	 * Taxonomy source slug
+	 *
+	 * @var string
+	 */
+	protected $name = 'keyword';
 
 	/**
 	 * Taxonomy slug
 	 *
 	 * @var string
 	 */
-	protected $name = 'topic';
-
-	/**
-	 * Taxonomy slug
-	 *
-	 * @var string
-	 */
-	protected $slug = 'topic';
+	protected $slug = 'keyword';
 
 	/**
 	 * Object type(s) to register the taxonomy for
 	 *
 	 * @var array
 	 */
-	protected $object_types = [ 'attachment', 'page', 'post' ];
+	protected $object_types = [ 'page', 'post' ];
 
 	/**
 	 * Taxonomy registration arguments
@@ -42,20 +42,13 @@ class Taxonomy_Topics extends Taxonomy {
 	 * @var array
 	 */
 	protected $args = [
-		'hierarchical'          => true,
 		'rewrite'               => false,
 		'show_admin_column'     => true,
 		'show_in_rest'          => true,
 		'query_var'             => false,
+		'rest_base'             => 'keyword',
 		'update_count_callback' => '_update_generic_term_count',
 	];
-
-	/**
-	 * Whether the taxonomy is enabled by default
-	 *
-	 * @var bool
-	 */
-	protected $default_enabled = true;
 
 	/**
 	 * {@inheritDoc}
@@ -153,43 +146,43 @@ class Taxonomy_Topics extends Taxonomy {
 	public static function labels( bool $defaults = false ): object {
 		$default_labels = [
 			/* translators: [admin] */
-			'name'                  => _x( 'Topics', 'taxonomy general name', 'amnesty' ),
+			'name'                  => _x( 'Mots clés', 'taxonomy general name', 'amnesty' ),
 			/* translators: [admin] */
-			'singular_name'         => _x( 'Topic', 'taxonomy singular name', 'amnesty' ),
+			'singular_name'         => _x( 'Mot clé', 'taxonomy singular name', 'amnesty' ),
 			/* translators: [admin] */
-			'search_items'          => __( 'Search Topics', 'amnesty' ),
+			'search_items'          => __( 'Recherche par Mots clés', 'amnesty' ),
 			/* translators: [admin] */
-			'all_items'             => __( 'All Topics', 'amnesty' ),
+			'all_items'             => __( 'Tout les Mots clés', 'amnesty' ),
 			/* translators: [admin] */
-			'parent_item'           => __( 'Parent Topic', 'amnesty' ),
+			'parent_item'           => __( 'Mot clé parent', 'amnesty' ),
 			/* translators: [admin] */
-			'parent_item_colon'     => __( 'Parent Topic:', 'amnesty' ),
+			'parent_item_colon'     => __( 'Mot clé parent:', 'amnesty' ),
 			/* translators: [admin] */
-			'edit_item'             => __( 'Edit Topic', 'amnesty' ),
+			'edit_item'             => __( 'Editer un Mot clé', 'amnesty' ),
 			/* translators: [admin] */
-			'view_item'             => __( 'View Topic', 'amnesty' ),
+			'view_item'             => __( 'Voir le Mot clé', 'amnesty' ),
 			/* translators: [admin] */
-			'update_item'           => __( 'Update Topic', 'amnesty' ),
+			'update_item'           => __( 'Mettre à jour le Mot clé', 'amnesty' ),
 			/* translators: [admin] */
-			'add_new_item'          => __( 'Add New Topic', 'amnesty' ),
+			'add_new_item'          => __( 'Ajouter un nouveau Mot clé', 'amnesty' ),
 			/* translators: [admin] */
-			'new_item_name'         => __( 'New Topic', 'amnesty' ),
+			'new_item_name'         => __( 'Nouveau Mot clé', 'amnesty' ),
 			/* translators: [admin] */
-			'add_or_remove_items'   => __( 'Add or remove Topics', 'amnesty' ),
+			'add_or_remove_items'   => __( 'Ajouter ou enlever des Mots clés', 'amnesty' ),
 			/* translators: [admin] */
-			'choose_from_most_used' => __( 'Choose from most frequently used Topics', 'amnesty' ),
+			'choose_from_most_used' => __( 'Choisir parmi les Mots clés les plus fréquents', 'amnesty' ),
 			/* translators: [admin] */
-			'not_found'             => __( 'No Topics found.', 'amnesty' ),
+			'not_found'             => __( 'Aucun Mot clé trouvé.', 'amnesty' ),
 			/* translators: [admin] */
-			'no_terms'              => __( 'No Topics', 'amnesty' ),
+			'no_terms'              => __( 'Aucun Mots clés', 'amnesty' ),
 			/* translators: [admin] */
-			'items_list_navigation' => __( 'Topics list navigation', 'amnesty' ),
+			'items_list_navigation' => __( 'Navigation dans la liste des Mots clés', 'amnesty' ),
 			/* translators: [admin] */
-			'items_list'            => __( 'Topics list', 'amnesty' ),
+			'items_list'            => __( 'Liste des Mots clés', 'amnesty' ),
 			/* translators: [admin] Tab heading when selecting from the most used terms. */
-			'most_used'             => _x( 'Most Used', 'topics', 'amnesty' ),
+			'most_used'             => _x( 'Most Used', 'Mots clés', 'amnesty' ),
 			/* translators: [admin] */
-			'back_to_items'         => __( '&larr; Back to Topics', 'amnesty' ),
+			'back_to_items'         => __( '&larr; Retour vers les Mots clés', 'amnesty' ),
 		];
 
 		if ( $defaults ) {
@@ -198,14 +191,14 @@ class Taxonomy_Topics extends Taxonomy {
 
 		$options = get_option( 'amnesty_localisation_options_page' );
 
-		if ( ! isset( $options['topic_labels'][0] ) ) {
+		if ( ! isset( $options['keyword_labels'][0] ) ) {
 			return (object) $default_labels;
 		}
 
 		$config_labels = [];
 
-		foreach ( $options['topic_labels'][0] as $key => $value ) {
-			$key = str_replace( 'topic_label_', '', $key );
+		foreach ( $options['keyword_labels'][0] as $key => $value ) {
+			$key = str_replace( 'keyword_label_', '', $key );
 
 			$config_labels[ $key ] = $value;
 		}
