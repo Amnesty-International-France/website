@@ -34,7 +34,7 @@ class Taxonomy_Locations extends Taxonomy {
 	 *
 	 * @var array
 	 */
-	protected $object_types = [ 'attachment', 'page', 'post' ];
+	protected $object_types = [ 'page', 'post' ];
 
 	/**
 	 * Taxonomy registration arguments
@@ -49,13 +49,6 @@ class Taxonomy_Locations extends Taxonomy {
 		'query_var'             => false,
 		'update_count_callback' => '_update_generic_term_count',
 	];
-
-	/**
-	 * Whether the taxonomy is enabled by default
-	 *
-	 * @var bool
-	 */
-	protected $default_enabled = true;
 
 	/**
 	 * Add hooks

@@ -6,35 +6,35 @@ namespace Amnesty;
 
 use WP_Term;
 
-new Taxonomy_Resource_Types();
+new Taxonomy_Combats();
 
 /**
- * Register the Resource Types taxonomy
+ * Register the Topics taxonomy
  *
  * @package Amnesty\Taxonomies
  */
-class Taxonomy_Resource_Types extends Taxonomy {
-
-	/**
-	 * Taxonomy source slug
-	 *
-	 * @var string
-	 */
-	protected $name = 'resource-type';
+class Taxonomy_Combats extends Taxonomy {
 
 	/**
 	 * Taxonomy slug
 	 *
 	 * @var string
 	 */
-	protected $slug = 'resource-type';
+	protected $name = 'combat';
+
+	/**
+	 * Taxonomy slug
+	 *
+	 * @var string
+	 */
+	protected $slug = 'combat';
 
 	/**
 	 * Object type(s) to register the taxonomy for
 	 *
 	 * @var array
 	 */
-	protected $object_types = [ 'attachment', 'page', 'post' ];
+	protected $object_types = [ 'page', 'post' ];
 
 	/**
 	 * Taxonomy registration arguments
@@ -47,16 +47,8 @@ class Taxonomy_Resource_Types extends Taxonomy {
 		'show_admin_column'     => true,
 		'show_in_rest'          => true,
 		'query_var'             => false,
-		'rest_base'             => 'resourceType',
 		'update_count_callback' => '_update_generic_term_count',
 	];
-
-	/**
-	 * Whether the taxonomy is enabled by default
-	 *
-	 * @var bool
-	 */
-	protected $default_enabled = true;
 
 	/**
 	 * {@inheritDoc}
@@ -154,43 +146,43 @@ class Taxonomy_Resource_Types extends Taxonomy {
 	public static function labels( bool $defaults = false ): object {
 		$default_labels = [
 			/* translators: [admin] */
-			'name'                  => _x( 'Resource Types', 'taxonomy general name', 'amnesty' ),
+			'name'                  => _x( 'Combats', 'taxonomy general name', 'amnesty' ),
 			/* translators: [admin] */
-			'singular_name'         => _x( 'Resource Type', 'taxonomy singular name', 'amnesty' ),
+			'singular_name'         => _x( 'Combat', 'taxonomy singular name', 'amnesty' ),
 			/* translators: [admin] */
-			'search_items'          => __( 'Search Resource Types', 'amnesty' ),
+			'search_items'          => __( 'Recherche par Combat', 'amnesty' ),
 			/* translators: [admin] */
-			'all_items'             => __( 'All Resource Types', 'amnesty' ),
+			'all_items'             => __( 'Tout les combats', 'amnesty' ),
 			/* translators: [admin] */
-			'parent_item'           => __( 'Parent Resource Type', 'amnesty' ),
+			'parent_item'           => __( 'Combat parent', 'amnesty' ),
 			/* translators: [admin] */
-			'parent_item_colon'     => __( 'Parent Resource Type:', 'amnesty' ),
+			'parent_item_colon'     => __( 'Combat parent:', 'amnesty' ),
 			/* translators: [admin] */
-			'edit_item'             => __( 'Edit Resource Type', 'amnesty' ),
+			'edit_item'             => __( 'Editer un Combat', 'amnesty' ),
 			/* translators: [admin] */
-			'view_item'             => __( 'View Resource Type', 'amnesty' ),
+			'view_item'             => __( 'Voir un Combat', 'amnesty' ),
 			/* translators: [admin] */
-			'update_item'           => __( 'Update Resource Type', 'amnesty' ),
+			'update_item'           => __( 'Mettre à jour un Combat', 'amnesty' ),
 			/* translators: [admin] */
-			'add_new_item'          => __( 'Add New Resource Type', 'amnesty' ),
+			'add_new_item'          => __( 'Ajouter un nouveau Combat', 'amnesty' ),
 			/* translators: [admin] */
-			'new_item_name'         => __( 'New Resource Type', 'amnesty' ),
+			'new_item_name'         => __( 'Nouveau Combat', 'amnesty' ),
 			/* translators: [admin] */
-			'add_or_remove_items'   => __( 'Add or remove Resource Types', 'amnesty' ),
+			'add_or_remove_items'   => __( 'Ajouter ou enlever un Combat', 'amnesty' ),
 			/* translators: [admin] */
-			'choose_from_most_used' => __( 'Choose from most frequently used Resource Types', 'amnesty' ),
+			'choose_from_most_used' => __( 'Choisir parmi les Combats les plus fréquents', 'amnesty' ),
 			/* translators: [admin] */
-			'not_found'             => __( 'No Resource Types found.', 'amnesty' ),
+			'not_found'             => __( 'Aucun Combat trouvé.', 'amnesty' ),
 			/* translators: [admin] */
-			'no_terms'              => __( 'No Resource Types', 'amnesty' ),
+			'no_terms'              => __( 'Aucun Combat', 'amnesty' ),
 			/* translators: [admin] */
-			'items_list_navigation' => __( 'Resource Types list navigation', 'amnesty' ),
+			'items_list_navigation' => __( 'Navigation dans la liste des Combats', 'amnesty' ),
 			/* translators: [admin] */
-			'items_list'            => __( 'Resource Types list', 'amnesty' ),
+			'items_list'            => __( 'Liste des Combats', 'amnesty' ),
 			/* translators: [admin] Tab heading when selecting from the most used terms. */
-			'most_used'             => _x( 'Most Used', 'Resource Types', 'amnesty' ),
+			'most_used'             => _x( 'Most Used', 'Combats', 'amnesty' ),
 			/* translators: [admin] */
-			'back_to_items'         => __( '&larr; Back to Resource Types', 'amnesty' ),
+			'back_to_items'         => __( '&larr; Retour vers les Combats', 'amnesty' ),
 		];
 
 		if ( $defaults ) {
@@ -199,14 +191,14 @@ class Taxonomy_Resource_Types extends Taxonomy {
 
 		$options = get_option( 'amnesty_localisation_options_page' );
 
-		if ( ! isset( $options['resource-type_labels'][0] ) ) {
+		if ( ! isset( $options['combat_labels'][0] ) ) {
 			return (object) $default_labels;
 		}
 
 		$config_labels = [];
 
-		foreach ( $options['resource-type_labels'][0] as $key => $value ) {
-			$key = str_replace( 'resource-type_label_', '', $key );
+		foreach ( $options['combat_labels'][0] as $key => $value ) {
+			$key = str_replace( 'combat_label_', '', $key );
 
 			$config_labels[ $key ] = $value;
 		}
