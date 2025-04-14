@@ -1,23 +1,17 @@
 import EditComponent from './EditComponent.jsx';
-import SaveComponent from './SaveComponent.jsx';
 
 const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
 
 registerBlockType('amnesty-core/read-also', {
   title: __('Lire aussi', 'amnesty'),
-  description: 'Block lire aussi',
+  description: __('Block lire aussi', 'amnesty'),
   category: 'amnesty-core',
   attributes: {
-    text: {
-      type: 'string',
-      default: '',
-    },
-    link: {
-      type: 'string',
-      default: '',
+    postId: {
+      type: 'number',
     },
   },
   edit: EditComponent,
-  save: SaveComponent,
+  save: () => null,
 });
