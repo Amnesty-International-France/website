@@ -46,7 +46,8 @@
     p:not(
         .wp-block-amnesty-core-chapo p,
         .wp-block-amnesty-core-section.small p,
-        .wp-block-amnesty-core-section.large p
+        .wp-block-amnesty-core-section.large p,
+        .wp-block-amnesty-core-download-go-further p
       ),
     .wp-block-columns,
     .wp-block-details,
@@ -54,10 +55,11 @@
     .wp-block-image,
     .wp-block-list,
     .wp-block-amnesty-core-action,
-    .wp-block-amnesty-core-blockquote,
+    .wp-block-amnesty-core-quote-block,
     .wp-block-amnesty-core-button,
     .wp-block-amnesty-core-image,
     .wp-block-amnesty-core-get-informed,
+    .wp-block-amnesty-core-download-go-further,
     .wp-block-amnesty-core-section.small {
       max-width: $container-sm;
       margin-left: auto;

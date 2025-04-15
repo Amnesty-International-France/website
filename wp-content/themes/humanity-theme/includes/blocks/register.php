@@ -60,6 +60,7 @@ require_once __DIR__ . '/post-list/render.php';
 require_once __DIR__ . '/post-meta/register.php';
 require_once __DIR__ . '/post-meta/render.php';
 require_once __DIR__ . '/quote/register.php';
+require_once __DIR__ . '/quote/render.php';
 require_once __DIR__ . '/raw-code/register.php';
 require_once __DIR__ . '/read-also/register.php';
 require_once __DIR__ . '/read-also/render.php';

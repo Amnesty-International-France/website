@@ -1,12 +1,23 @@
 import classnames from 'classnames';
 
 const { __ } = wp.i18n;
+const { useSelect } = wp.data;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
 const { PanelBody, ToggleControl, Button, SelectControl, TextControl } = wp.components;
 
 const EditComponent = (props) => {
   const { attributes, setAttributes } = props;
-  const { showImage, imageUrl, quoteText, author, bgColor, size } = attributes;
+  const { showImage, imageId, quoteText, author, bgColor, size } = attributes;
+
+  const image = useSelect(
+    (select) => {
+      if (!imageId) return null;
+      return select('core').getMedia(imageId);
+    },
+    [imageId],
+  );
+
+  const imageUrl = image?.source_url;
 
   return (
     <>
@@ -23,16 +34,18 @@ const EditComponent = (props) => {
             onChange={(value) => setAttributes({ author: value })}
           />
         </PanelBody>
+
         <PanelBody title={__('Styles de la citation', 'amnesty')}>
           <ToggleControl
             label={__('Afficher l’image', 'amnesty')}
             checked={showImage}
             onChange={(value) => setAttributes({ showImage: value })}
           />
+
           {showImage && (
             <MediaUploadCheck>
               <MediaUpload
-                onSelect={(media) => setAttributes({ imageUrl: media.url })}
+                onSelect={(media) => setAttributes({ imageId: media.id })}
                 allowedTypes={['image']}
                 render={({ open }) => (
                   <Button onClick={open} isSecondary>
@@ -42,6 +55,7 @@ const EditComponent = (props) => {
               />
             </MediaUploadCheck>
           )}
+
           <SelectControl
             label={__('Taille', 'amnesty')}
             value={size}
@@ -52,6 +66,7 @@ const EditComponent = (props) => {
             ]}
             onChange={(value) => setAttributes({ size: value })}
           />
+
           <SelectControl
             label={__('Couleur de fond', 'amnesty')}
             value={bgColor}

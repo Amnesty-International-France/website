@@ -1,5 +1,4 @@
 import EditComponent from './EditComponent.jsx';
-import SaveComponent from './SaveComponent.jsx';
 
 const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
@@ -11,7 +10,7 @@ registerBlockType('amnesty-core/blockquote', {
   attributes: {
     quoteText: {
       type: 'string',
-      default: 'Saissisez votre citation',
+      default: 'Saisissez votre citation',
     },
     author: {
       type: 'string',
@@ -21,9 +20,9 @@ registerBlockType('amnesty-core/blockquote', {
       type: 'boolean',
       default: false,
     },
-    imageUrl: {
-      type: 'string',
-      default: '',
+    imageId: {
+      type: 'number',
+      default: null,
     },
     bgColor: {
       type: 'string',
@@ -35,5 +34,5 @@ registerBlockType('amnesty-core/blockquote', {
     },
   },
   edit: EditComponent,
-  save: SaveComponent,
+  save: () => null,
 });
