@@ -42,6 +42,7 @@ class Taxonomy_Keywords extends Taxonomy {
 	 * @var array
 	 */
 	protected $args = [
+		'hierarchical' => true,
 		'rewrite'               => false,
 		'show_admin_column'     => true,
 		'show_in_rest'          => true,
