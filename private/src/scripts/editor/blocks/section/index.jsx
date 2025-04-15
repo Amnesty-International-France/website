@@ -1,68 +1,39 @@
-import DisplayComponent from './DisplayComponent.jsx';
-import deprecated from './deprecated.jsx';
+import EditComponent from './EditComponent.jsx';
+import SaveComponent from './SaveComponent.jsx';
 
-const { assign } = lodash;
-const { InnerBlocks } = wp.blockEditor;
 const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
 
-registerBlockType('amnesty-core/block-section', {
-  // translators: [admin]
+registerBlockType('amnesty-core/section', {
   title: __('Section', 'amnesty'),
-  icon: 'editor-table',
+  description: 'Block section',
   category: 'amnesty-core',
-  // translators: [admin]
-  keywords: [__('Section', 'amnesty')],
   attributes: {
-    background: {
+    sectionSize: {
       type: 'string',
+      default: 'large',
     },
-    sectionId: {
-      type: 'string',
-    },
-    sectionName: {
-      type: 'string',
-    },
-    backgroundImage: {
+    title: {
       type: 'string',
       default: '',
     },
-    backgroundImageHeight: {
-      type: 'number',
-      default: 0,
-    },
-    backgroundImageOrigin: {
-      type: 'string',
-      default: '',
-    },
-    enableBackgroundGradient: {
-      type: 'boolean',
-      default: false,
-    },
-    minHeight: {
-      type: 'number',
-      default: 0,
-    },
-    textColour: {
-      type: 'string',
-      default: 'black',
-    },
-    backgroundImageId: {
-      type: 'number',
-      default: 0,
-    },
-    hideImageCaption: {
+    showTitle: {
       type: 'boolean',
       default: true,
     },
-    hideImageCopyright: {
+    fullWidth: {
       type: 'boolean',
-      default: false,
+      default: true,
+    },
+    contentSize: {
+      type: 'string',
+      default: 'sm',
+    },
+    backgroundColor: {
+      type: 'string',
+      default: 'black',
     },
   },
-
-  deprecated,
-
-  edit: DisplayComponent,
-  save: assign(() => <InnerBlocks.Content />, { displayName: 'SectionBlockSave' }),
+  edit: EditComponent,
+  save: SaveComponent,
 });

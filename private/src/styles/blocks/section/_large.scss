@@ -1,0 +1,218 @@
+.section-block.large {
+  position: relative;
+  width: 100%;
+  max-width: $container-hg;
+  margin: 0 auto 24px auto;
+
+  &.white {
+    background-color: var(--wp--preset--color--white);
+
+    .section-block-content-title {
+      background-color: var(--wp--preset--color--black) !important;
+      color: var(--wp--preset--color--primary) !important;
+    }
+
+    .section-block-content {
+      .wp-block-heading {
+        color: var(--wp--preset--color--black);
+      }
+
+      p {
+        color: var(--wp--preset--color--black);
+      }
+
+      .wp-block-list {
+        li {
+          color: var(--wp--preset--color--black);
+        }
+
+        & ::marker {
+          color: var(--wp--preset--color--black);
+        }
+      }
+    }
+  }
+
+  &.black {
+    background-color: var(--wp--preset--color--black);
+
+    .section-block-content-title {
+      background-color: var(--wp--preset--color--primary) !important;
+      color: var(--wp--preset--color--black) !important;
+    }
+
+    .section-block-content {
+      .wp-block-heading {
+        color: var(--wp--preset--color--white);
+      }
+
+      .wp-block-list {
+        li {
+          color: var(--wp--preset--color--white);
+        }
+
+        & ::marker {
+          color: var(--wp--preset--color--primary);
+        }
+      }
+    }
+  }
+
+  &.grey {
+    background-color: var(--wp--preset--color--grey-light);
+
+    .section-block-content-title {
+      background-color: var(--wp--preset--color--black) !important;
+      color: var(--wp--preset--color--primary) !important;
+    }
+
+    .section-block-content {
+      .wp-block-heading {
+        color: var(--wp--preset--color--black);
+      }
+
+      p {
+        color: var(--wp--preset--color--black);
+      }
+
+      .wp-block-list {
+        li {
+          color: var(--wp--preset--color--black);
+        }
+
+        & ::marker {
+          color: var(--wp--preset--color--black);
+        }
+      }
+    }
+  }
+
+  &.full-width {
+    &.black {
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--wp--preset--color--black);
+        width: 100vw;
+        height: 100%;
+        z-index: -1;
+      }
+    }
+
+    &.grey {
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--wp--preset--color--grey-light);
+        width: 100vw;
+        height: 100%;
+        z-index: -1;
+      }
+    }
+
+    &.white {
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--wp--preset--color--white);
+        box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1);
+        width: 100vw;
+        height: 100%;
+        z-index: -1;
+      }
+    }
+  }
+
+  .section-block-content {
+    padding: 27px;
+
+    .section-block-content-title {
+      margin: 0 auto 20px auto;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 29.5px;
+      font-weight: bold;
+      line-height: 100%;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 10px 12px 8px 10px !important;
+      width: fit-content;
+    }
+
+    .section-block-inner-blocks-container {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      color: var(--wp--preset--color--white);
+
+      &.sm {
+        max-width: $container-sm;
+        margin: 0 auto;
+      }
+
+      &.md {
+        max-width: $container-md;
+        margin: 0 auto;
+      }
+
+      &.lg {
+        max-width: $container-lg;
+        margin: 0 auto;
+      }
+
+      &.xl {
+        max-width: $container-hg;
+        margin: 0 auto;
+      }
+
+      .wp-block-list {
+        list-style-type: disc;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-left: 55px;
+        margin-top: 20px;
+        margin-bottom: 0;
+
+        li {
+          font-size: 16px;
+          font-weight: bold;
+          line-height: 24px;
+        }
+      }
+
+      .wp-block-columns {
+        margin-bottom: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+      }
+
+      .key-figure {
+        margin: 0;
+        height: 100%;
+      }
+
+      .wp-block-heading {
+        text-align: center;
+      }
+
+      p {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 18px;
+        font-weight: 300;
+        line-height: 28px;
+      }
+    }
+  }
+}

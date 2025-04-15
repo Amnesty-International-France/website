@@ -1,7 +1,7 @@
-.small-section-block {
+.section-block.small {
   position: relative;
   background-color: var(--wp--preset--color--black);
-  margin-bottom: 25px;
+  margin-bottom: 24px;
 
   &::before {
     content: '';
@@ -13,12 +13,12 @@
     z-index: -1;
   }
 
-  .small-section-block-content {
+  .section-block-content {
     max-width: var(--wp--custom--content-width);
     margin: 0 auto;
     padding: 27px 27px 27px 0;
 
-    .small-section-block-content-title {
+    .section-block-content-title {
       font-family: var(--wp--preset--font-family--secondary);
       font-size: 29.5px;
       font-style: normal;
@@ -28,11 +28,11 @@
       color: var(--wp--preset--color--black) !important;
       text-transform: uppercase;
       padding: 10px 12px 8px 10px !important;
-      margin: 0 !important;
+      margin: 0 0 20px 0 !important;
       width: fit-content;
     }
 
-    .small-section-block-inner-blocks-container {
+    .section-block-inner-blocks-container {
       display: flex;
       flex-direction: column;
       gap: 25px;
@@ -47,9 +47,7 @@
         display: flex;
         flex-direction: column;
         gap: 15px;
-        margin-left: 55px;
-        margin-top: 20px;
-        margin-bottom: 0;
+        margin: 0 0 0 55px;
 
         li {
           font-size: 16px;
@@ -76,6 +74,7 @@
       }
 
       p {
+        text-align: left;
         font-size: 16px;
         font-weight: bold;
         line-height: 24px;
