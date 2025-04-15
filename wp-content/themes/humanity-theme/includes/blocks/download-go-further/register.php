@@ -1,6 +1,6 @@
 <?php
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
 if (!function_exists('register_download_go_further_block')) {
 	/**
@@ -13,6 +13,22 @@ if (!function_exists('register_download_go_further_block')) {
 	function register_download_go_further_block(): void {
 		register_block_type(
 			'amnesty-core/download-go-further',
+			[
+				'render_callback' => 'render_download_go_further_block',
+				'attributes'      => [
+					'title'   => [
+						'type'    => 'string',
+						'default' => 'Titre',
+					],
+					'fileIds' => [
+						'type'    => 'array',
+						'default' => [],
+						'items'   => [
+							'type' => 'number',
+						],
+					],
+				],
+			]
 		);
 	}
 }
