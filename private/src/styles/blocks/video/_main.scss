@@ -1,0 +1,28 @@
+.video-block {
+  width: 100%;
+  max-width: $container-sm;
+  margin: 0 auto 24px;
+
+  iframe {
+     border-bottom: 6px solid var(--wp--preset--color--primary);
+     aspect-ratio: 16 / 9.15;
+  }
+
+  .video-wrapper {
+    display: flex;
+    position: relative;
+  }
+
+  .video-title {
+    width: 100%;
+    border-left: solid 4px var(--wp--preset--color--primary);
+    color: var(--wp--preset--color--grey-dark);
+    font-family: var(--wp--preset--font-family--secondary);
+    padding-left: 20px;
+    margin-top: 10px;
+
+    .video-label {
+      color: var(--wp--preset--color--black);
+    }
+  }
+}

@@ -76,6 +76,8 @@ require_once __DIR__ . '/term-list/register.php';
 require_once __DIR__ . '/term-list/render.php';
 require_once __DIR__ . '/tweet-action/register.php';
 require_once __DIR__ . '/tweet-action/render.php';
+require_once __DIR__ . '/video/register.php';
+require_once __DIR__ . '/video/render.php';
 
 if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 	/**
@@ -124,6 +126,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_term_list_block();
 		register_tickcounter_embed_block();
 		register_tweet_action_block();
+		register_video_block();
 	}
 }
 
