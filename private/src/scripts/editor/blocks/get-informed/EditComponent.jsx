@@ -107,7 +107,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
         </PanelBody>
       </InspectorControls>
 
-      <div {...useBlockProps()} className="get-informed">
+      <div {...useBlockProps()} className="get-informed-block">
         <div className="content">
           <h3 className="title">S&apos;informer</h3>
 

@@ -37,6 +37,7 @@ require_once __DIR__ . '/embed-sutori/render.php';
 require_once __DIR__ . '/embed-tickcounter/register.php';
 require_once __DIR__ . '/embed-tickcounter/render.php';
 require_once __DIR__ . '/get-informed/register.php';
+require_once __DIR__ . '/get-informed/render.php';
 require_once __DIR__ . '/hero/helpers.php';
 require_once __DIR__ . '/hero/register.php';
 require_once __DIR__ . '/hero/render.php';
