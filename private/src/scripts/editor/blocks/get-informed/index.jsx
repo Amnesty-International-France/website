@@ -1,5 +1,4 @@
 import EditComponent from './EditComponent.jsx';
-import SaveComponent from './SaveComponent.jsx';
 
 const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
@@ -15,5 +14,5 @@ registerBlockType('amnesty-core/get-informed', {
     },
   },
   edit: EditComponent,
-  save: SaveComponent,
+  save: () => null,
 });

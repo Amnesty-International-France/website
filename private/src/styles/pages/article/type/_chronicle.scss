@@ -41,6 +41,8 @@
       padding: 0;
     }
 
+    .download-go-further-block,
+    .get-informed-block,
     .image-block,
     .read-also-block,
     p:not(
@@ -58,8 +60,6 @@
     .wp-block-amnesty-core-quote-block,
     .wp-block-amnesty-core-button,
     .wp-block-amnesty-core-image,
-    .wp-block-amnesty-core-get-informed,
-    .download-go-further-block,
     .wp-block-amnesty-core-section.small {
       max-width: $container-sm;
       margin-left: auto;
