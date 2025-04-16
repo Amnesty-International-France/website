@@ -90,7 +90,7 @@ const EditComponent = (props) => {
         )}
         <div className={classnames('quote-content', bgColor)}>
           <blockquote className={classnames('text', size)}>{quoteText}</blockquote>
-          <p className={classnames('author', size)}>{author}</p>
+          {author && <p className={classnames('author', size)}>{author}</p>}
         </div>
       </div>
     </>

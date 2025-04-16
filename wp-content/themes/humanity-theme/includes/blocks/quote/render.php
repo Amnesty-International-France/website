@@ -32,9 +32,11 @@ if (!function_exists('render_quote_block')) {
 				<blockquote class="text <?php echo esc_attr($size); ?>">
 					<?php echo esc_html($quote_text); ?>
 				</blockquote>
-				<p class="author <?php echo esc_attr($size); ?>">
-					<?php echo esc_html($author); ?>
-				</p>
+				<?php if (!empty($author)): ?>
+                    <p class="author <?php echo esc_attr($size); ?>">
+                        <?php echo esc_html($author); ?>
+                    </p>
+                <?php endif; ?>
 			</div>
 		</div>
 		<?php
