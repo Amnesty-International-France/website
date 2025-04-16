@@ -26,14 +26,11 @@ if (!function_exists('render_video_block')) {
 		?>
 
 		<div class="video-block">
-			<div class="video-wrapper"><iframe
-						width="100%"
-
-						src="<?php echo esc_url(str_replace('watch?v=', 'embed/', $video_url)); ?>"
-				frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+			<div class="video-wrapper">
+				<iframe width="100%" src="<?php echo esc_url(str_replace('watch?v=', 'embed/', $video_url)); ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 			</div>
 			<?php if (!empty($video_title)): ?>
-				 <p class="video-title"><span class="video-label">Vidéo : </span><?php echo esc_html($video_title); ?></p>
+				<p class="video-title"><span class="video-label">Vidéo : </span><?php echo esc_html($video_title); ?></p>
 			<?php endif; ?>
 		</div>
 
