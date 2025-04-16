@@ -27,6 +27,7 @@ require_once __DIR__ . '/custom-card/render.php';
 require_once __DIR__ . '/download/register.php';
 require_once __DIR__ . '/download/render.php';
 require_once __DIR__ . '/download-go-further/register.php';
+require_once __DIR__ . '/download-go-further/render.php';
 require_once __DIR__ . '/embed-flourish/register.php';
 require_once __DIR__ . '/embed-flourish/render.php';
 require_once __DIR__ . '/embed-infogram/register.php';
