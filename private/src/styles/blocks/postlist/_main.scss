@@ -6,6 +6,8 @@
 
 .postlist {
   display: flex;
+  max-width: $container-lg;
+  margin: 12px auto;
 
   @include mq($until: medium-sm) {
     flex-wrap: wrap;

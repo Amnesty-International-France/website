@@ -7,6 +7,10 @@
   transition: all 0.3s ease;
   cursor: pointer;
   border: 1px solid transparent;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover {
     background-color: transparent;
@@ -91,4 +95,8 @@
       border-color: var(--wp--preset--color--black);
     }
   }
+}
+
+div.chip-category {
+  pointer-events: none;
 }
