@@ -22,7 +22,8 @@
         .wp-block-amnesty-core-chapo p,
         .wp-block-amnesty-core-section.small p,
         .wp-block-amnesty-core-section.large p,
-        .download-go-further-block p
+        .download-go-further-block p,
+        .call-to-action-block p
       ),
     .wp-block-columns,
     .wp-block-details,
@@ -39,6 +40,7 @@
       margin-right: auto;
     }
 
+    .call-to-action-block,
     .wp-block-amnesty-core-chapo {
       max-width: $container-lg;
       margin-left: auto;

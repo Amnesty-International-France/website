@@ -1,60 +1,55 @@
 <?php
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
-if ( ! function_exists( 'amnesty_render_cta_block' ) ) {
-	/**
-	 * Render the call to action block
-	 *
-	 * @package Amnesty\Blocks
-	 *
-	 * @param array  $attrs   the block attributes
-	 * @param string $content the block content
-	 *
-	 * @return string
-	 */
-	function amnesty_render_cta_block( array $attrs, string $content = '' ): string {
-		if ( false !== strpos( $content, 'class="callToAction' ) ) {
-			return $content;
-		}
+if (!function_exists('render_call_to_action_block')) {
+    /**
+     * Render the "Call to Action" block
+     *
+     * @param array<string, mixed> $attributes Block attributes
+     * @return string HTML output
+     */
+    function render_call_to_action_block(array $attributes): string {
+        $title        = $attributes['title'] ?? '';
+        $subTitle     = $attributes['subTitle'] ?? '';
+        $buttonLabel  = $attributes['buttonLabel'] ?? __('En savoir plus', 'amnesty');
+        $buttonLink   = $attributes['buttonLink'] ?? '';
+        $direction    = $attributes['direction'] ?? 'horizontal';
 
-		$attrs = wp_parse_args(
-			$attrs,
-			[
-				'preheading' => '',
-				'title'      => '',
-				'content'    => '',
-				'background' => '',
-			]
-		);
 
-		$pre_heading = $attrs['preheading'];
-		$heading     = $attrs['title'];
-		$cta_content = $attrs['content'];
+        ob_start();
+        ?>
+        <div class="call-to-action-block <?php echo esc_attr($direction); ?>">
+            <div class="call-to-action-content">
+                <?php if ($title): ?>
+                    <p class="title"><?php echo esc_html($title); ?></p>
+                <?php endif; ?>
 
-		// Set the classes
-		$classes = classnames(
-			'callToAction',
-			[
-				"callToAction--{$attrs['background']}" => (bool) $attrs['background'],
-			]
-		);
+                <?php if ($subTitle): ?>
+                    <p class="subTitle"><?php echo esc_html($subTitle); ?></p>
+                <?php endif; ?>
+            </div>
+            <div class='button-container'>
+                <a href="<?php echo esc_url($buttonLink); ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
+                <div class='content bg-yellow medium'>
+                    <div class="icon-container">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                    </div>
+                    <div class="button-label"><?php echo esc_html($buttonLabel); ?></div>
+                </div>
+                </a>
+            </div>
+        </div>
+        <?php
 
-		return sprintf(
-			'<div class="%1$s" role="note" aria-label="%2$s">
-				<h2 class="callToAction-preHeading">%3$s</h2>
-				<h1 class="callToAction-heading">%4$s</h1>
-				<p class="callToAction-content">%5$s</p>
-        		<div className="innerBlocksContainer">
-					%6$s
-        		</div>
-      		</div>',
-			esc_attr( $classes ),
-			esc_attr( $heading ),
-			wp_kses_post( $pre_heading ),
-			wp_kses_post( $heading ),
-			wp_kses_post( $cta_content ),
-			wp_kses_post( $content ),
-		);
-	}
+        return ob_get_clean();
+    }
 }
