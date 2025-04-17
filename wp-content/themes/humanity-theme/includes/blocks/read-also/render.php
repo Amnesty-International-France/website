@@ -10,33 +10,38 @@ if (!function_exists('render_read_also_block')) {
 	 * @return string
 	 */
 	function render_read_also_block(array $attributes): string {
-		if (empty($attributes['postId'])) {
-			return '<p>' . esc_html__('Aucun article sélectionné', 'amnesty') . '</p>';
+		$link_type = $attributes['linkType'] ?? 'internal';
+		$html      = '<div class="read-also-block"><p>' . esc_html__('À lire aussi', 'amnesty') . ' : ';
+
+		if ($link_type === 'external') {
+			$url   = esc_url($attributes['externalUrl'] ?? '');
+			$label = esc_html($attributes['externalLabel'] ?? $url);
+
+			if ($url) {
+				$html .= '<a href="' . $url . '" target="_blank" rel="noopener noreferrer">' . $label . '</a>';
+			} else {
+				$html .= '<span>' . esc_html__('Aucun lien externe fourni.', 'amnesty') . '</span>';
+			}
+		} else {
+			if (empty($attributes['postId'])) {
+				$html .= '<span>' . esc_html__('Aucun article sélectionné.', 'amnesty') . '</span>';
+			} else {
+				$post_id = (int) $attributes['postId'];
+				$post    = get_post($post_id);
+
+				if (!$post) {
+					$html .= esc_html__('Article introuvable.', 'amnesty') ;
+				} else {
+					$title     = get_the_title($post_id);
+					$permalink = get_permalink($post_id);
+
+					$html .= '<a href="' . esc_url($permalink) . '" target="_blank" rel="noopener noreferrer">'
+						. esc_html($title) . '</a>';
+				}
+			}
 		}
 
-		$post_id = (int) $attributes['postId'];
-		$post = get_post($post_id);
-
-		if (!$post) {
-			return '<p>' . esc_html__('Article introuvable', 'amnesty') . '</p>';
-		}
-
-		$title = get_the_title($post_id);
-		$permalink = get_permalink($post_id);
-
-		ob_start();
-		?>
-
-		<div class="read-also-block">
-			<p>
-				<?php esc_html_e('À lire aussi', 'amnesty'); ?> :
-				<a href="<?php echo esc_url($permalink); ?>" target="_blank" rel="noopener noreferrer">
-					<?php echo esc_html($title); ?>
-				</a>
-			</p>
-		</div>
-
-		<?php
-		return ob_get_clean();
+		$html .= '</p></div>';
+		return $html;
 	}
 }

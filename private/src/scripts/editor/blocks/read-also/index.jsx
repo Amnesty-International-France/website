@@ -11,6 +11,18 @@ registerBlockType('amnesty-core/read-also', {
     postId: {
       type: 'number',
     },
+    linkType: {
+      type: 'string',
+      default: 'internal',
+    },
+    externalLabel: {
+      type: 'string',
+      default: '',
+    },
+    externalUrl: {
+      type: 'string',
+      default: '',
+    },
   },
   edit: EditComponent,
   save: () => null,
