@@ -30,12 +30,13 @@ $category = amnesty_get_a_post_term( get_the_ID() )->slug;
 		<!-- wp:post-content /-->
 	</article>
 	<!-- /wp:group -->
-<?php if ( ( $category === 'actualites' || $category === 'chroniques') && get_the_ID() ) : // prevent weird output in the site editor ?>
-	<!-- wp:group {"tagName":"footer","className":"article-footer"} -->
-	<footer class="wp-block-group article-footer">
-		<!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
-	</footer>
-	<!-- /wp:group -->
-<?php endif; ?>
+	<?php if ( ( $category === 'actualites' || $category === 'chroniques') && get_the_ID() ) : // prevent weird output in the site editor ?>
+		<!-- wp:group {"tagName":"footer","className":"article-footer"} -->
+		<footer class="wp-block-group article-footer">
+			<!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
+		</footer>
+		<!-- /wp:group -->
+	<?php endif; ?>
+	<!-- wp:amnesty-core/related-posts {"title":"Sur le même thème"} /-->
 </section>
 <!-- /wp:group -->
