@@ -17,7 +17,7 @@ add_filter( 'get_the_terms', 'amnesty_limit_post_terms_results_for_archive' );
 		<!-- wp:pattern {"slug":"amnesty/archive-loop-results"} /-->
 		<!-- wp:group {"tagName":"div","className":"postlist"} -->
 		<div class="wp-block-group postlist">
-			<!-- wp:post-template {"layout":{"type":"grid","columnCount":"3"}} -->
+			<!-- wp:post-template {"layout":{"type":"grid","columnCount":3},"className":"post-grid"} -->
 			<!-- wp:amnesty-core/article-card {"direction":"portrait"} /-->
 			<!-- /wp:post-template -->
 		</div>

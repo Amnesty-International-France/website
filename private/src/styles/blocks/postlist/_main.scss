@@ -1,15 +1,27 @@
-@import "./categories";
-@import "./header";
-@import "./pagination";
-@import "./post";
-@import "./post-search";
+@import './categories';
+@import './header';
+@import './pagination';
+@import './post';
+@import './post-search';
 
 .postlist {
   display: flex;
+  justify-content: center;
   max-width: $container-lg;
-  margin: 12px auto;
+  padding: 12px 24px;
+  margin: 0 auto;
 
-  @include mq($until: medium-sm) {
-    flex-wrap: wrap;
+  .post-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 }
