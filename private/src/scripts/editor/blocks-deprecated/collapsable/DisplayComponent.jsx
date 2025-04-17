@@ -7,7 +7,6 @@ const { applyFilters } = wp.hooks;
 const { __ } = wp.i18n;
 
 const ALLOWED_BLOCKS = applyFilters('amnesty.blocks.collapsable.allowedBlocks', [
-  'amnesty-core/block-call-to-action',
   'amnesty-core/block-download',
   'amnesty-core/block-section',
   'amnesty-core/countdown-timer',

@@ -2,21 +2,39 @@
 
 declare( strict_types = 1 );
 
-if ( ! function_exists( 'register_cta_block' ) ) {
+if (!function_exists('register_call_to_action_block')) {
 	/**
-	 * Register the Download block
+	 * Register the CTA block
 	 *
 	 * @package Amnesty\Blocks
 	 *
 	 * @return void
 	 */
-	function register_cta_block(): void {
-		register_block_type(
-			'amnesty-core/block-call-to-action',
-			[
-				'render_callback' => 'amnesty_render_cta_block',
-				'editor_script'   => 'amnesty-core-blocks-js',
-			]
-		);
+	function register_call_to_action_block(): void {
+		register_block_type('amnesty-core/call-to-action', [
+			'render_callback' => 'render_call_to_action_block',
+			'attributes' => [
+				'direction' => [
+					'type' => 'string',
+					'default' => 'horizontal',
+				],
+				'title' => [
+					'type' => 'string',
+					'default' => 'Title',
+				],
+				'subTitle' => [
+					'type' => 'string',
+					'default' => 'Subtitle',
+				],
+				'buttonLabel' => [
+					'type' => 'string',
+					'default' => 'Button Label',
+				],
+				'buttonLink' => [
+					'type' => 'string',
+					'default' => '#',
+				],
+			],
+		]);
 	}
 }

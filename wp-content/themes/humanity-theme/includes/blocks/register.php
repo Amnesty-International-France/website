@@ -98,7 +98,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_chip_category_block();
 		register_collapsable_block();
 		register_countdown_block();
-		register_cta_block();
+		register_call_to_action_block();
 		register_custom_card_block();
 		register_download_block();
 		register_download_go_further_block();
