@@ -15,7 +15,8 @@
     color: var(--wp--preset--color--black);
     margin: 0 !important;
 
-    a {
+    a,
+    span {
       font-family: var(--wp--preset--font-family--secondary);
       font-size: 16px;
       font-weight: bold;
