@@ -38,6 +38,7 @@
 @import 'base/container';
 @import 'base/overlay';
 @import 'base/title';
+@import 'base/headings';
 
 // Layout
 @import 'layout/language-banner';
@@ -61,6 +62,7 @@
 
 // Blocks
 @import 'blocks/action/main';
+@import 'blocks/article-card/main';
 @import 'blocks/button/main';
 @import 'blocks/call-to-action/main';
 @import 'blocks/chapo/main';

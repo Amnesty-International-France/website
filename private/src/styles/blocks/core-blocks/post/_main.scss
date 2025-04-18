@@ -1,12 +1,12 @@
 .wp-block-post {
-  min-height: 460px;
+  // min-height: 460px;
   background: var(--wp--preset--color--white);
 }
 
 .wp-block-post > .wp-block-group:not(.post--result) {
   display: flex;
   flex-direction: column;
-  min-height: 460px;
+  //min-height: 460px;
   background: var(--wp--preset--color--white);
 }
 

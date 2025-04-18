@@ -24,12 +24,17 @@ if( ! function_exists( 'render_chip_category_block' ) ) {
 			]
 		);
 
+		$tag = !empty($attributes['link']) ? 'a' : 'div';
+
 		return sprintf(
-			'<a class="chip-category %s %s" href="%s">%s</a>',
-			esc_attr($attributes['style']),
-			esc_attr($attributes['size']),
-			esc_url($attributes['link']),
-			esc_html($attributes['label'])
+			'<%1$s class="chip-category %2$s %3$s"%4$s>%5$s</%1$s>',
+			esc_attr($tag),                            // %1$s : tag = a ou div
+			esc_attr($attributes['style']),            // %2$s : style class
+			esc_attr($attributes['size']),             // %3$s : size class
+			$tag === 'a' ? ' href="' . esc_url($attributes['link']) . '"' : '', // %4$s : href uniquement si <a>
+			esc_html($attributes['label'])             // %5$s : contenu
 		);
+
+
 	}
 }
