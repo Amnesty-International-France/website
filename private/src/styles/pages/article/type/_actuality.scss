@@ -40,5 +40,11 @@
       margin-left: auto;
       margin-right: auto;
     }
+
+    .carousel-block {
+      .swiper-slide {
+        max-width: $container-sm;
+      }
+    }
   }
 }
