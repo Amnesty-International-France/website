@@ -72,6 +72,8 @@ require_once __DIR__ . '/regions/register.php';
 require_once __DIR__ . '/regions/render.php';
 require_once __DIR__ . '/related-content/register.php';
 require_once __DIR__ . '/related-content/render.php';
+require_once __DIR__ . '/related-posts/register.php';
+require_once __DIR__ . '/related-posts/render.php';
 require_once __DIR__ . '/section/register.php';
 require_once __DIR__ . '/slider/register.php';
 require_once __DIR__ . '/slider/render.php';
@@ -125,6 +127,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_read_also_block();
 		register_regions_block();
 		register_related_content_block();
+		register_related_posts_block();
 		register_section_block();
 		register_slider_block();
 		register_stat_counter_block();
