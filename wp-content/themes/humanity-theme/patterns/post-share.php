@@ -17,23 +17,48 @@ spaceless();
 
 ?>
 
-<!-- wp:list {"className":"article-share"} -->
-<ul class="wp-block-list article-share"><!-- wp:list-item -->
-	<li>
-		<a class="article-shareFacebook" target="_blank" rel="noreferrer noopener" href="https://www.facebook.com/sharer.php?u=<?php the_permalink(); ?>" title="<?php /* translators: [front] https://wordpresstheme.amnesty.org/the-theme/global-elements/m004-social-share/ text shows on hover  */ esc_attr_e( 'Share on Facebook', 'amnesty' ); ?>">
-			<img src="<?php echo esc_url( amnesty_asset_uri( 'images' ) ); ?>/icon-facebook.svg" alt="<?php /* translators: [front] https://wordpresstheme.amnesty.org/the-theme/global-elements/m004-social-share/ */ esc_attr_e( 'Facebook Logo', 'amnesty' ); ?>">
-		</a>
-	</li>
-	<!-- /wp:list-item -->
-	<!-- wp:list-item -->
-	<li>
-		<a class="article-shareTwitter" target="_blank" rel="noreferrer noopener" href="https://twitter.com/intent/tweet?url=<?php the_permalink(); ?>&text=<?php the_title(); ?>" title="<?php /* translators: [front] https://wordpresstheme.amnesty.org/the-theme/global-elements/m004-social-share/ text shows on hover */ esc_attr_e( 'Share on Twitter', 'amnesty' ); ?>">
-			<img src="<?php echo esc_url( amnesty_asset_uri( 'images' ) ); ?>/icon-twitter.svg" alt="<?php /* translators: [front] https://wordpresstheme.amnesty.org/the-theme/global-elements/m004-social-share/ */ esc_attr_e( 'Twitter Logo', 'amnesty' ); ?>">
-		</a>
-	</li>
-<!-- /wp:list-item --></ul>
-<!-- /wp:list -->
+<div class="article-share">
+	<p class="title">Partager</p>
+	<a class="article-shareFacebook" target="_blank" rel="noreferrer noopener"
+	href="https://www.facebook.com/sharer.php?u=<?php the_permalink(); ?>"
+	title="<?php esc_attr_e( 'Share on Facebook', 'amnesty' ); ?>">
+		<div class="icon-container">
+			<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-facebook.svg' ); ?>
+		</div>
+	</a>
+	<a class="article-shareBluesky" target="_blank" rel="noreferrer noopener"
+	href="https://bsky.app/intent/compose?text=<?php echo urlencode( get_the_title() . ' ' . get_permalink() ); ?>"
+	title="<?php esc_attr_e( 'Share on Bluesky', 'amnesty' ); ?>">
+		<div class="icon-container">
+			<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-bluesky.svg' ); ?>
+		</div>
+	</a>
+	<a class="article-shareMastodon" target="_blank" rel="noreferrer noopener"
+	href="https://mastodon.social/share?text=<?php echo urlencode( get_the_title() . ' ' . get_permalink() ); ?>"
+	title="<?php esc_attr_e( 'Share on Mastodon', 'amnesty' ); ?>">
+		<div class="icon-container">
+			<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-mastodon.svg' ); ?>
+		</div>
+	</a>
+	<div class="article-shareCopy" 
+		title="<?php esc_attr_e( 'Copier le lien', 'amnesty' ); ?>"
+		data-url="<?php echo esc_url( get_permalink() ); ?>"
+	>
+		<div class="icon-container">
+			<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-copy.svg' ); ?>
+		</div>
+	</div>
+	<a class="article-shareEmail" target="_blank" rel="noreferrer noopener"
+	href="mailto:?subject=<?php echo rawurlencode( get_the_title() ); ?>&body=<?php echo rawurlencode( get_the_title() . "\n\n" . get_permalink() ); ?>"
+	title="<?php esc_attr_e( 'Partager par email', 'amnesty' ); ?>">
+		<div class="icon-container">
+			<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-mail.svg' ); ?>
+		</div>
+	</a>
+</div>
 
 <?php
 
 endspaceless();
+
+

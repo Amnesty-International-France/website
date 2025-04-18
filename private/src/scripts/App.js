@@ -17,6 +17,7 @@ import loadVideos from './modules/video-loaded';
 import fluidIframe from './modules/fluid-iframe';
 import tweetAction from './modules/tweet-action';
 import categorySlider from './modules/category-slider';
+import copyShare from './modules/copy-share';
 import sliderBlock from './modules/slider-block';
 import counters from './modules/counter';
 import termList from './modules/term-list';
@@ -45,6 +46,7 @@ const App = () => {
   tweetAction();
   categorySlider();
   sliderBlock();
+  copyShare();
   counters();
   termList();
   countdownTimer();
