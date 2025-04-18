@@ -8,6 +8,12 @@
   }
 
   .article-content {
+    padding: 0 24px;
+
+    @media (min-width: 768px) {
+      padding: 0;
+    }
+
     .download-go-further-block,
     .get-informed-block,
     .image-block,

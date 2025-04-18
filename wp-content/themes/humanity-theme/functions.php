@@ -298,12 +298,4 @@ if ( is_multilingualpress_enabled() ) {
 }
 #endregion multilingualpress
 
-/**
- * Theme Multiboxes includes
- */
-#region metaboxes
-require_once realpath(__DIR__ . '/includes/admin/metaboxes/select2-assets.php');
-require_once realpath(__DIR__ . '/includes/admin/metaboxes/related-posts.php');
-#endregion metaboxes
-
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
