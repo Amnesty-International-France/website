@@ -1,3 +1,9 @@
 .wp-block-columns {
   gap: var(--wp--preset--spacing--single);
+  align-items: stretch;
+}
+
+.wp-block-column {
+  display: flex;
+  flex-direction: column;
 }

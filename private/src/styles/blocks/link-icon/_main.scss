@@ -2,6 +2,10 @@
   padding: 16px 22px 20px 22px;
   max-width: 270px;
   width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   &.black {
     background-color: var(--wp--preset--color--black);
