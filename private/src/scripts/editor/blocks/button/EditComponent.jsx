@@ -2,15 +2,16 @@ import Button from './Button.jsx';
 
 const { __ } = wp.i18n;
 const { useEffect, useState } = wp.element;
-const { useBlockProps, RichText, InspectorControls } = wp.blockEditor;
-const { PanelBody, SelectControl } = wp.components;
+const { useBlockProps, InspectorControls } = wp.blockEditor;
+const { PanelBody, SelectControl, TextControl } = wp.components;
 
 const EditComponent = (props) => {
   const { attributes, setAttributes } = props;
-  const { label, size, style, icon, link, alignment } = attributes;
+  const { postId, label, size, style, icon, linkType, externalUrl, alignment } = attributes;
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [internalLink, setInternalLink] = useState('');
 
   useEffect(() => {
     fetch('/wp-json/wp/v2/posts')
@@ -29,8 +30,9 @@ const EditComponent = (props) => {
     const selectedPost = posts.find((post) => post.id === parseInt(selectedPostId, 10));
     if (selectedPost) {
       setAttributes({
-        link: selectedPost.link,
+        postId: selectedPost.id,
       });
+      setInternalLink(selectedPost.link);
     }
   };
 
@@ -38,24 +40,49 @@ const EditComponent = (props) => {
     <>
       <InspectorControls>
         <PanelBody title={__('Paramètres du lien', 'amnesty')} initialOpen={true}>
-          {loading ? (
-            <p>{__('Chargement des posts', 'amnesty')}</p>
-          ) : (
-            <SelectControl
-              label={__('Sélectionner un post', 'amnesty')}
-              value={link}
-              options={[
-                { label: __('Choisir un post', 'amnesty'), value: '' },
-                ...posts.map((post) => ({
-                  label: post.title.rendered,
-                  value: post.id.toString(),
-                })),
-              ]}
-              onChange={handlePostSelect}
+          <SelectControl
+            label={__('Type de lien', 'amnesty')}
+            value={linkType}
+            options={[
+              { label: 'Lien interne (post)', value: 'internal' },
+              { label: 'Lien externe (URL)', value: 'external' },
+            ]}
+            onChange={(value) => setAttributes({ linkType: value, link: '' })}
+          />
+
+          {linkType === 'internal' &&
+            (loading ? (
+              <p>{__('Chargement des posts', 'amnesty')}</p>
+            ) : (
+              <SelectControl
+                label={__('Sélectionner un post', 'amnesty')}
+                value={postId?.toString() || ''}
+                options={[
+                  { label: __('Choisir un post', 'amnesty'), value: '' },
+                  ...posts.map((post) => ({
+                    label: post.title.rendered,
+                    value: post.id.toString(),
+                  })),
+                ]}
+                onChange={handlePostSelect}
+              />
+            ))}
+          {linkType === 'external' && (
+            <TextControl
+              label={__('URL du lien externe', 'amnesty')}
+              value={externalUrl}
+              placeholder="https://exemple.com"
+              onChange={(value) => setAttributes({ externalUrl: value })}
             />
           )}
         </PanelBody>
         <PanelBody title={__('Paramètres du bouton', 'amnesty')}>
+          <TextControl
+            label={__('Texte du bouton', 'amnesty')}
+            value={label}
+            placeholder={__('Ex: En savoir plus', 'amnesty')}
+            onChange={(value) => setAttributes({ label: value })}
+          />
           <SelectControl
             label={__('Taille', 'amnesty')}
             value={size}
@@ -104,11 +131,11 @@ const EditComponent = (props) => {
 
       <div {...useBlockProps()}>
         <Button
-          label={<RichText value={label} onChange={(value) => setAttributes({ label: value })} />}
+          label={label}
           size={size}
           style={style}
           icon={icon}
-          link={link}
+          link={linkType === 'external' ? externalUrl : internalLink}
           alignment={alignment}
         />
       </div>

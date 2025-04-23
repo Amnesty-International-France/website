@@ -1,5 +1,4 @@
 import EditComponent from './EditComponent.jsx';
-import SaveComponent from './SaveComponent.jsx';
 
 const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
@@ -9,6 +8,10 @@ registerBlockType('amnesty-core/button', {
   description: 'Block Bouton',
   category: 'amnesty-core',
   attributes: {
+    postId: {
+      type: 'number',
+      default: 0,
+    },
     label: {
       type: 'string',
       default: 'Bouton',
@@ -25,15 +28,19 @@ registerBlockType('amnesty-core/button', {
       type: 'string',
       default: '',
     },
-    link: {
-      type: 'string',
-      default: '',
-    },
     alignment: {
       type: 'string',
       default: 'left',
     },
+    linkType: {
+      type: 'string',
+      default: 'internal',
+    },
+    externalUrl: {
+      type: 'string',
+      default: '',
+    },
   },
   edit: EditComponent,
-  save: SaveComponent,
+  save: () => null,
 });
