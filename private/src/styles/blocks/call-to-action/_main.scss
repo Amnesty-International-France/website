@@ -13,7 +13,7 @@
     @media (min-width: 768px) {
       flex-direction: row;
       align-items: center;
-      gap: 10px;
+      gap: 20px;
     }
 
     .content {
@@ -22,6 +22,7 @@
 
     .button-container {
       width: fit-content;
+      flex-shrink: 0;
 
       .custom-button {
         margin-left: auto;
@@ -41,6 +42,14 @@
     .button-container {
       width: fit-content;
       justify-content: center;
+    }
+
+    .title {
+      text-align: center;
+    }
+
+    .subTitle {
+      text-align: center;
     }
   }
 
