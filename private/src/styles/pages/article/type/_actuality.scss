@@ -8,6 +8,7 @@
   }
 
   .article-content {
+    .button-block,
     .download-go-further-block,
     .get-informed-block,
     .image-block,
@@ -26,7 +27,6 @@
     .wp-block-list,
     .wp-block-amnesty-core-action,
     .wp-block-amnesty-core-quote-block,
-    .wp-block-amnesty-core-button,
     .wp-block-amnesty-core-image,
     .wp-block-amnesty-core-section.small {
       max-width: $container-sm;

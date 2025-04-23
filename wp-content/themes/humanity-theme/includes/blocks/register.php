@@ -15,6 +15,7 @@ require_once __DIR__ . '/article-card/register.php';
 require_once __DIR__ . '/article-card/render.php';
 require_once __DIR__ . '/banner/register.php';
 require_once __DIR__ . '/button/register.php';
+require_once __DIR__ . '/button/render.php';
 require_once __DIR__ . '/call-to-action/register.php';
 require_once __DIR__ . '/call-to-action/render.php';
 require_once __DIR__ . '/carousel/register.php';
