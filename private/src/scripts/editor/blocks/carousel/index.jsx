@@ -8,7 +8,7 @@ registerBlockType('amnesty-core/carousel', {
   description: "Block carousel d'images",
   category: 'amnesty-core',
   attributes: {
-    images: {
+    mediaIds: {
       type: 'array',
       default: [],
     },

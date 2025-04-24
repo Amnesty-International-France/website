@@ -1,18 +1,19 @@
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
 const { PanelBody, Button } = wp.components;
+const { useSelect } = wp.data;
 
 const EditComponent = ({ attributes, setAttributes }) => {
-  const { images } = attributes;
+  const { mediaIds } = attributes;
 
-  const updateImages = (newImages) => {
-    setAttributes({
-      images: newImages.map((img) => ({
-        id: img.id,
-        url: img.url,
-        alt: img.alt,
-      })),
-    });
+  const selectedMedia = useSelect(
+    (select) =>
+      mediaIds.length > 0 ? mediaIds.map((id) => select('core').getMedia(id)).filter(Boolean) : [],
+    [mediaIds],
+  );
+
+  const onSelectImages = (newMedia) => {
+    setAttributes({ mediaIds: newMedia.map((img) => img.id) });
   };
 
   return (
@@ -21,14 +22,14 @@ const EditComponent = ({ attributes, setAttributes }) => {
         <PanelBody title={__('Paramètres du carousel', 'amnesty')} initialOpen={true}>
           <MediaUploadCheck>
             <MediaUpload
-              onSelect={updateImages}
+              onSelect={onSelectImages}
               allowedTypes={['image']}
               multiple
               gallery
-              value={images.map((img) => img.id)}
+              value={mediaIds}
               render={({ open }) => (
                 <Button onClick={open} isSecondary>
-                  {images.length > 0
+                  {mediaIds.length > 0
                     ? __('Modifier les images', 'amnesty')
                     : __('Sélectionner des images', 'amnesty')}
                 </Button>
@@ -39,12 +40,12 @@ const EditComponent = ({ attributes, setAttributes }) => {
       </InspectorControls>
 
       <div {...useBlockProps()} className="carousel-block">
-        {images.length > 0 ? (
+        {selectedMedia.length > 0 ? (
           <div className="swiper">
             <div className="swiper-wrapper">
-              {images.map((img, i) => (
-                <div key={i} className="swiper-slide">
-                  <img src={img.url} alt={img.alt || ''} loading="lazy" />
+              {selectedMedia.map((img) => (
+                <div key={img.id} className="swiper-slide">
+                  <img src={img.source_url} alt={img.alt_text || ''} />
                 </div>
               ))}
             </div>
@@ -52,9 +53,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
             <div className="carousel-nav next">&#10095;</div>
           </div>
         ) : (
-          <div className="carousel-placeholder">
-            <p>{__('Aucune image sélectionnée', 'amnesty')}</p>
-          </div>
+          <p>{__('Aucune image sélectionnée', 'amnesty')}</p>
         )}
       </div>
     </>
