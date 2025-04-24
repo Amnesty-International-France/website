@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 if (!function_exists('register_carousel_block')) {
     /**
-     * Register the carousel block
+     * Register the Carousel block
      *
      * @return void
      */
@@ -12,11 +12,11 @@ if (!function_exists('register_carousel_block')) {
         register_block_type('amnesty-core/carousel', [
             'render_callback' => 'render_carousel_block',
             'attributes'      => [
-                'images' => [
+                'mediaIds' => [
                     'type'    => 'array',
                     'default' => [],
                     'items'   => [
-                        'type' => 'object',
+                        'type' => 'number',
                     ],
                 ],
             ],
