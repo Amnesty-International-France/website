@@ -17,11 +17,42 @@ if (!function_exists('register_article_card_block')) {
 			[
 				'render_callback' => 'render_article_card_block',
 				'attributes' => [
+					'postId' => [
+						'type' => 'integer',
+						'default' => null,
+					],
 					'direction' => [
 						'type' => 'string',
-						'default' => 'portrait' //portrait ou landscape
+						'default' => 'portrait',
 					],
-				]
+					'title' => [
+						'type' => 'string',
+						'default' => 'Titre par défaut',
+					],
+					'permalink' => [
+						'type' => 'string',
+						'default' => '#',
+					],
+					'date' => [
+						'type' => 'string',
+						'default' => '',
+					],
+					'thumbnail' => [
+						'type' => 'integer',
+						'default' => '',
+					],
+					'main_category' => [
+						'type' => [ 'object', 'string' ],
+						'default' => null,
+					],
+					'terms' => [
+						'type' => 'array',
+						'default' => [],
+						'items' => [
+							'type' => 'object',
+						],
+					],
+				],
 			]
 		);
 	}
