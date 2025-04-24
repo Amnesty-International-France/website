@@ -45,7 +45,7 @@ function render_button_block(array $attributes): string {
     }
 
     $classes = [
-        'button-block',
+        'custom-button-block',
         $alignment,
     ];
     $contentClasses = [

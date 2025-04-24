@@ -13,6 +13,7 @@
     @media (min-width: 768px) {
       flex-direction: row;
       align-items: center;
+      justify-content: space-between;
       gap: 20px;
     }
 
@@ -20,16 +21,16 @@
       flex: 1;
     }
 
-    .button-container {
+    .custom-button-block {
       width: fit-content;
       flex-shrink: 0;
 
       .custom-button {
         margin-left: auto;
-
-        .content {
-          padding: 12px 24px;
-        }
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
       }
     }
   }
@@ -37,17 +38,25 @@
   &.vertical {
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 40px;
 
+    .content {
+      width: 100%;
+    }
+
     .button-container {
-      width: fit-content;
+      width: 100%;
+      display: flex;
       justify-content: center;
     }
 
-    .title {
-      text-align: center;
+    .custom-button {
+      width: auto;
+      padding: 12px 24px;
     }
 
+    .title,
     .subTitle {
       text-align: center;
     }
@@ -75,9 +84,5 @@
       color: var(--wp--preset--color--white);
       margin: 0;
     }
-  }
-
-  .button {
-    background-color: var(--wp--preset--color--primary);
   }
 }

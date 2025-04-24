@@ -79,6 +79,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
           size="medium"
           link={buttonLink}
           style="bg-yellow"
+          alignment={direction === 'horizontal' ? 'right' : 'center'}
         />
       </div>
     </>

@@ -5,7 +5,7 @@ import Pencil from './icons/Pencil.jsx';
 import ZoomIn from './icons/ZoomIn.jsx';
 
 const Button = ({ label, size, style, icon, link, alignment, className }) => (
-  <div className={classnames('button-block', alignment, className)}>
+  <div className={classnames('custom-button-block', alignment, className)}>
     <a href={link} target="_blank" rel="noopener noreferrer" className="custom-button">
       <div className={classnames('content', size, style)}>
         {icon && (
