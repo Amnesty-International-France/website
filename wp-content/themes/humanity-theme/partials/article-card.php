@@ -34,7 +34,8 @@ if (!empty($args['post'])) {
 
 $chip_style = match ($main_category->slug ?? null) {
 	'actualites' => 'bg-yellow',
-	default => 'bg-black',
+	'dossiers' => 'bg-black',
+	default => 'bg-yellow',
 };
 ?>
 
