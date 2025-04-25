@@ -42,7 +42,7 @@ $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
                     <?php
         aif_include_partial("nav-card", [
         "iconName" => "my-info",
-        "url" => get_permalink(get_page_by_path('mes-informations-personelles')),
+        "url" => get_permalink(get_page_by_path('mes-informations-personnelles')),
         "title" => "Mes informations",
         "content" => "Affichez ou modifiez vos informations personnelles."]); ?>
 

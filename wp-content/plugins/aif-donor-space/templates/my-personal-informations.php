@@ -131,7 +131,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
 ?>
 
-        <h2>Mes informations personelles</h2>
+        <h2>Mes informations personnelles</h2>
 
 
         <?php if ($sf_member->hasMandatActif) :  ?>
