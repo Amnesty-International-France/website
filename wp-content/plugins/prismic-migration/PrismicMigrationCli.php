@@ -18,6 +18,10 @@ class PrismicMigrationCli {
 
 			$progress = WP_CLI\Utils\make_progress_bar( 'Importing documents', count($prismic_docs) );
 			foreach ( $prismic_docs as $doc ) {
+				if($this->post_exists_by_slug($doc['uid'])) {
+					$progress->tick();
+					continue;
+				}
 				try {
 					$transformer = DocTransformerFactory::getTransformer( $doc['type'] );
 				} catch ( Exception $e ) {
@@ -58,5 +62,15 @@ class PrismicMigrationCli {
 			WP_CLI::error( $e->getMessage() );
 		}
 		WP_CLI::success( 'Migration successful : ' . $imported . ' documents imported.' );
+	}
+
+	function post_exists_by_slug(string $slug): WP_Post|bool {
+		$query = new WP_Query([
+			'name' => $slug,
+			'post_type' => 'any',
+			'post_status' => 'any',
+			'fields' => 'ids'
+		]);
+		return ! empty( $query->posts );
 	}
 }
