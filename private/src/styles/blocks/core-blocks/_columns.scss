@@ -1,6 +1,11 @@
 .wp-block-columns {
   gap: var(--wp--preset--spacing--single);
   align-items: stretch;
+  padding: 0 24px;
+
+  @media (min-width: $container-sm) {
+    padding: 0;
+  }
 }
 
 .wp-block-column {

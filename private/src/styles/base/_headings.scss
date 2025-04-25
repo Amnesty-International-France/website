@@ -33,3 +33,11 @@
   font-size: 20px;
   line-height: 24px;
 }
+
+.wp-block-heading {
+  padding: 0 24px;
+
+  @media (min-width: $container-sm) {
+    padding: 0;
+  }
+}
