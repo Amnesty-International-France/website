@@ -7,7 +7,7 @@ class PrismicMigrationCli {
 	public static bool $dryrun = false;
 
 	public function __invoke( $args, $assoc_args ) {
-		self::$dryrun = true;
+		self::$dryrun = false;
 		$imported = 0;
 		try {
 			if( self::$dryrun ) {
