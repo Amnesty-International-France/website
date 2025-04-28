@@ -84,7 +84,7 @@ function install(string $path = '.', string $token = ''): void
 
     // Make the installation
     io()->info("Starting installation of WordPress environment");
-    run('wp core download --locale=fr_FR --skip-content --path='.$path, context: $context);
+    run('wp core download --locale=fr_FR --skip-content', context: $context);
     run('wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbhost=$DB_HOST --dbprefix=$DB_PREFIX', context: $context);
 
 	$db_exists = run("wp db check", context: $context->withQuiet())->isSuccessful();
