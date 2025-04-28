@@ -79,6 +79,9 @@ function install(string $path = '.', string $token = ''): void
     $wp_installation = run('wp core is-installed', context: $context->withQuiet());
     if($wp_installation->isSuccessful()) {
         io()->info('A wordpress installation already exists.');
+        io()->info("Updating wp-config.php...");
+        fs()->remove("$path/wp-config.php");
+        run('wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbhost=$DB_HOST --dbprefix=$DB_PREFIX', context: $context);
         return;
     }
 
