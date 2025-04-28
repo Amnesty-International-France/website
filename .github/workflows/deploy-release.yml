@@ -2,7 +2,7 @@ name: Deploy to Clever Cloud
 
 on:
   push:
-    branches: [ "refactor/remove-child-theme", "main" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
