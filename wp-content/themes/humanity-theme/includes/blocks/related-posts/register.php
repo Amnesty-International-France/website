@@ -30,4 +30,4 @@ if( !function_exists( 'register_related_posts_block' ) ) {
 		);
 	}
 }
-add_action( 'init', 'register_related_posts_block' );
+
