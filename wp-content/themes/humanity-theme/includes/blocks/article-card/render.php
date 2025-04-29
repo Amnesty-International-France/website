@@ -13,7 +13,7 @@ if (!function_exists('render_article_card_block')) {
 	 * @package Amnesty\Blocks
 	 *
 	 */
-	function render_article_card_block($attributes, $content, $block) {
+	function render_article_card_block($attributes, $content, $block): string {
 		$direction = $attributes['direction'] ?? 'portrait';
 		$thumbnail = $attributes['thumbnail'] ?? '';
 		$date = $attributes['date'] ?? date('Y-m-d');
@@ -34,7 +34,7 @@ if (!function_exists('render_article_card_block')) {
 			} elseif (is_array($main_category)) {
 				$main_category = (object) $main_category;
 			}
-			
+
 			if (is_numeric($thumbnail)) {
 				$thumbnail = wp_get_attachment_image((int) $thumbnail, 'medium', false, ['class' => 'article-image']);
 			}
@@ -51,20 +51,24 @@ if (!function_exists('render_article_card_block')) {
 		} else {
 			if (!empty($attributes['postId']) && !is_admin()) {
 				$post = get_post((int) $attributes['postId']);
+				if ($post) {
+					setup_postdata($post);
+					$permalink = get_permalink($post);
+					$title = get_the_title($post);
+					$date = get_the_date('', $post);
+					$thumbnail = get_the_post_thumbnail($post->ID, 'medium', ['class' => 'article-image']);
+					$post_terms = wp_get_object_terms($post->ID, get_object_taxonomies(get_post_type($post)));
+					$main_category = amnesty_get_a_post_term($post->ID);
+					wp_reset_postdata();
+				}
+			} elseif (empty($attributes['postId']) && isset($GLOBALS['post'])) {
+				$post = $GLOBALS['post'];
 				$permalink = get_permalink($post);
 				$title = get_the_title($post);
 				$date = get_the_date('', $post);
 				$thumbnail = get_the_post_thumbnail($post->ID, 'medium', ['class' => 'article-image']);
 				$post_terms = wp_get_object_terms($post->ID, get_object_taxonomies(get_post_type($post)));
 				$main_category = amnesty_get_a_post_term($post->ID);
-			} elseif (empty($attributes['postId']) && have_posts()) {
-				the_post();
-				$permalink = get_permalink();
-				$title = get_the_title();
-				$date = get_the_date();
-				$thumbnail = get_the_post_thumbnail(null, 'medium', ['class' => 'article-image']);
-				$post_terms = wp_get_object_terms(get_the_ID(), get_object_taxonomies(get_post_type()));
-				$main_category = amnesty_get_a_post_term(get_the_ID());
 			}
 
 			$args = [
@@ -79,8 +83,13 @@ if (!function_exists('render_article_card_block')) {
 		}
 
 		ob_start();
-		get_template_part('partials/article-card', null, $args);
+		$template_path = locate_template('partials/article-card.php');
+		if ($template_path) {
+			extract($args);
+			include $template_path;
+		} else {
+			error_log('❌ Template "partials/article-card.php" introuvable');
+		}
 		return ob_get_clean();
 	}
 }
-
