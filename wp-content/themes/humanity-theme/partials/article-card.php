@@ -1,9 +1,15 @@
 <?php
 $direction = $args['direction'] ?? 'portrait';
 
+global $post;
+
 if (!empty($args['post'])) {
-	$post_id = $args['post_id'] ?? $post->ID;
+	$post_id = $args['post_id'] ?? (isset($post) && $post instanceof WP_Post ? $post->ID : null);
 	$post_object = get_post($post_id);
+
+	if (!$post_object instanceof WP_Post) {
+		return;
+	}
 
 	$permalink = get_permalink($post_object);
 	$title = get_the_title($post_object);
@@ -11,6 +17,9 @@ if (!empty($args['post'])) {
 	$thumbnail = get_the_post_thumbnail($post_id, 'medium', ['class' => 'article-image']);
 
 	$main_category = amnesty_get_a_post_term($post_id);
+	if (!($main_category instanceof WP_Term)) {
+		$main_category = null;
+	}
 
 	$taxonomies = get_object_taxonomies(get_post_type($post_object));
 	$post_terms = wp_get_object_terms($post_id, $taxonomies);
@@ -47,17 +56,12 @@ $chip_style = match ($main_category->slug ?? null) {
 	<?php endif; ?>
 
 	<?php if ($main_category): ?>
-		<?php
-		echo render_block([
-			'blockName' => 'amnesty-core/chip-category',
-			'attrs' => [
-				'label' => $main_category->name,
-				'link' => '',
-				'size' => 'large',
-				'style' => $chip_style,
-			],
-		]);
-		?>
+		<?= render_chip_category_block([
+			'label' => $main_category->name,
+			'link' => '',
+			'size' => 'large',
+			'style' => $chip_style,
+		]); ?>
 	<?php endif; ?>
 
 	<div class="article-content">
@@ -71,17 +75,13 @@ $chip_style = match ($main_category->slug ?? null) {
 		</div>
 		<div class="article-terms <?php if (empty($post_terms)) echo 'is-empty'; ?>">
 			<?php foreach ($post_terms as $term): ?>
-				<?= render_block([
-					'blockName' => 'amnesty-core/chip-category',
-					'attrs' => [
-						'label' => $term->name,
-						'size' => 'small',
-						'style' => 'bg-gray',
-						'link' => '',
-					],
+				<?= render_chip_category_block([
+					'label' => $term->name,
+					'size' => 'small',
+					'style' => 'bg-gray',
+					'link' => '',
 				]); ?>
 			<?php endforeach; ?>
 		</div>
 	</div>
 </article>
-
