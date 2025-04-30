@@ -13,7 +13,7 @@ class FileUploader {
 		}
 
 		$url = strtok( $url, '?' );
-		$file_name = substr(sanitize_file_name( transliterator_transliterate( 'Latin-ascii',$name ?? urldecode( basename( parse_url( $url, PHP_URL_PATH ) ) ) ) ), -100);
+		$file_name = substr( sanitize_file_name( transliterator_transliterate( 'Latin-ascii',$name ?? urldecode( basename( parse_url( $url, PHP_URL_PATH ) ) ) ) ), -100 );
 		$file_title = $title ?? self::format_title($file_name);
 		$id = self::media_exists( $file_title );
 		if( $id > 0 ) {
