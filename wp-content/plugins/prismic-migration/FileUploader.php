@@ -24,7 +24,7 @@ class FileUploader {
 		$tmp_file = download_url( $url );
 
 		if( is_wp_error( $tmp_file ) ) {
-			throw new Exception( print_r($tmp_file, true), $tmp_file->get_error_code() );
+			throw new Exception( print_r($tmp_file, true) );
 		}
 
 		if( empty( $file_name ) ) {
@@ -75,7 +75,7 @@ class FileUploader {
 
 		if( is_wp_error( $attachment_id ) ) {
 			@unlink( $tmp_file );
-			throw new Exception( print_r($attachment_id, true), $attachment_id->get_error_code() );
+			throw new Exception( print_r($attachment_id, true) );
 		}
 
 		add_post_meta( $attachment_id, '_wp_attachment_image_alt', $alt ?? '' );
