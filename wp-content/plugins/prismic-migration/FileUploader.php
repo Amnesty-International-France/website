@@ -1,7 +1,6 @@
 <?php
 
 class FileUploader {
-
 	public static function uploadMedia( $url, $legende = '', $description = '', $alt = '', $name = null, $title = null ) {
 		if(PrismicMigrationCli::$dryrun) {
 			return 1;
@@ -14,7 +13,7 @@ class FileUploader {
 		}
 
 		$url = strtok( $url, '?' );
-		$file_name = $name ?? urldecode( basename( parse_url( $url, PHP_URL_PATH ) ) );
+		$file_name = sanitize_file_name( $name ?? urldecode( basename( parse_url( $url, PHP_URL_PATH ) ) ) );
 		$file_title = $title ?? self::format_title($file_name);
 		$id = self::media_exists( $file_title );
 		if( $id > 0 ) {
