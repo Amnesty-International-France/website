@@ -6,13 +6,14 @@
 .checkboxGroup-button {
   appearance: none;
   position: relative;
-  border: 1px solid var(--wp--preset--color--black);
+  border: 1px solid transparent;
   padding: 12px 32px 12px 10px;
   height: 100%;
+  font-size: 13px;
   font-family: var(--wp--preset--font-family--secondary);
   font-weight: bold;
   text-align: start;
-  text-transform: uppercase;
+  text-transform: capitalize;
   background: var(--wp--preset--color--white);
   color: var(--wp--preset--color--black);
   cursor: pointer;
@@ -23,7 +24,7 @@
     top: calc(50% - 8px);
     right: 10px;
     display: inline-block;
-    content: "";
+    content: '';
   }
 
   .rtl & {
@@ -89,9 +90,9 @@
     color: var(--wp--preset--color--primary);
   }
 
-  &:has(label[data-value=""]),
-  &:has(label[data-value="0"]),
-  &:has(input[value=""]) {
+  &:has(label[data-value='']),
+  &:has(label[data-value='0']),
+  &:has(input[value='']) {
     display: none;
   }
 

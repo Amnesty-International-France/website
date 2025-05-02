@@ -25,7 +25,7 @@
   width: 100%;
   padding: 0 !important;
 
-  @include mq(medium) {
+  @media (min-width: $container-sm) {
     flex-direction: row;
   }
 }
@@ -47,6 +47,10 @@
 .taxonomyArchive-filters .checkboxGroup {
   flex: 1 1 auto;
   width: 100%;
+
+  @media (min-width: $container-sm) {
+    max-width: 200px;
+  }
 }
 
 .taxonomyArchive-filters .checkboxGroup-button,

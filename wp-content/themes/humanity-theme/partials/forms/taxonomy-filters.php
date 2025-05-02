@@ -29,4 +29,4 @@ foreach ( $taxonomies as $tax_item ) {
 
 ?>
 </div>
-<button id="search-filters-submit" class="btn btn--dark"><?php /* translators: [front] search results left hand side of page button */ esc_html_e( 'Apply', 'amnesty' ); ?></button>
+<button id="search-filters-submit" class="filter-button btn btn--dark">Filtrer</button>

@@ -3,7 +3,24 @@
   width: 100%;
   flex-direction: column;
 
-  @include mq(medium) {
+  @media (min-width: $container-sm) {
     flex-direction: row;
+  }
+
+  .filter-button {
+    border: none;
+    padding: 12px 24px;
+    color: var(--wp--preset--color--white);
+    background-color: var(--wp--preset--color--black);
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 16px;
+    text-transform: uppercase;
+    margin-top: 24px;
+
+    @media (min-width: $container-sm) {
+      margin: 0;
+    }
   }
 }

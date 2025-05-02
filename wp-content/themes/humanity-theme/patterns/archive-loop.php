@@ -14,7 +14,6 @@ add_filter( 'get_the_terms', 'amnesty_limit_post_terms_results_for_archive' );
 <div class="wp-block-query">
 	<!-- wp:group {"tagName":"div","className":""} -->
 	<div class="wp-block-group news-section section section--small section--tinted has-gutter">
-		<!-- wp:pattern {"slug":"amnesty/archive-loop-results"} /-->
 		<!-- wp:group {"tagName":"div","className":"postlist"} -->
 		<div class="wp-block-group postlist">
 			<!-- wp:post-template {"layout":{"type":"grid","columnCount":3},"className":"post-grid"} -->
