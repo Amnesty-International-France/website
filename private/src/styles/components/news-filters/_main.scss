@@ -5,6 +5,7 @@
 
   @media (min-width: $container-sm) {
     flex-direction: row;
+    gap: 24px;
   }
 
   .filter-button {
@@ -18,9 +19,15 @@
     line-height: 16px;
     text-transform: uppercase;
     margin-top: 24px;
+    transition: all 0.2s ease;
 
     @media (min-width: $container-sm) {
       margin: 0;
+    }
+
+    &:hover {
+      background-color: var(--wp--preset--color--grey-darkest);
+      cursor: pointer;
     }
   }
 }
