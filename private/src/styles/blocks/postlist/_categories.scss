@@ -1,6 +1,18 @@
 .postlist-categoriesContainer {
   display: flex;
   align-items: center;
+  width: 100vw;
+  background-color: var(--wp--preset--color--grey-light);
+
+  form {
+    max-width: $container-lg;
+    padding: 22px 24px 22px 24px;
+    margin: 0 auto;
+
+    @media (min-width: $container-lg) {
+      padding: 22px 0;
+    }
+  }
 }
 
 .postlist-categoriesContainer nav {
@@ -19,16 +31,16 @@
 }
 
 .postlist-categories::after {
-  content: "flickity";
+  content: 'flickity';
   display: none;
 
   @include mq(medium) {
-    content: "";
+    content: '';
   }
 }
 
 .postlist-categories.use-flickity::after {
-  content: "flickity";
+  content: 'flickity';
   display: none;
 }
 
@@ -121,7 +133,9 @@ _:-ms-fullscreen,
   display: none;
   background-color: transparent;
   border: 2px solid transparent;
-  transition: background-color .3s ease-in-out, opacity .3s ease-in-out;
+  transition:
+    background-color 0.3s ease-in-out,
+    opacity 0.3s ease-in-out;
   cursor: pointer;
 
   &:hover {
@@ -141,7 +155,7 @@ _:-ms-fullscreen,
 
 [data-slider-next][disabled],
 [data-slider-prev][disabled] {
-  opacity: .4;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -163,7 +177,7 @@ _:-ms-fullscreen,
 
 [data-slider-prev]::after {
   @include icon_scale(234px, 240px, 16px, 16px, 2);
-  content: "";
+  content: '';
   display: block;
 
   .rtl & {
@@ -173,7 +187,7 @@ _:-ms-fullscreen,
 
 [data-slider-next]::after {
   @include icon_scale(110px, 265px, 16px, 16px, 2);
-  content: "";
+  content: '';
   display: block;
 
   .rtl & {

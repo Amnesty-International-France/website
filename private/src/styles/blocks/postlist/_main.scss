@@ -8,11 +8,11 @@
   display: flex;
   justify-content: center;
   max-width: $container-lg;
-  padding: 12px 24px 64px 24px;
+  padding: 30px 24px 64px 24px;
   margin: 0 auto;
 
-  @media (min-width: $container-sm) {
-    padding: 12px 0 64px 0;
+  @media (min-width: $container-lg) {
+    padding: 30px 0 64px 0;
   }
 
   .post-grid {
@@ -20,11 +20,11 @@
     gap: 2rem;
     grid-template-columns: 1fr;
 
-    @media (min-width: 640px) {
+    @media (min-width: $container-md) {
       grid-template-columns: repeat(2, 1fr);
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: $container-lg) {
       grid-template-columns: repeat(3, 1fr);
     }
   }
