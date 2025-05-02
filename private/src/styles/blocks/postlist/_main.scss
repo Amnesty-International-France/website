@@ -8,8 +8,12 @@
   display: flex;
   justify-content: center;
   max-width: $container-lg;
-  padding: 12px 24px;
+  padding: 12px 24px 64px 24px;
   margin: 0 auto;
+
+  @media (min-width: $container-sm) {
+    padding: 12px 0 64px 0;
+  }
 
   .post-grid {
     display: grid;

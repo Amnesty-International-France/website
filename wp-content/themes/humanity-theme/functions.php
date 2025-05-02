@@ -23,6 +23,7 @@ require_once realpath( __DIR__ . '/includes/root/permalinks.php' );
  * Theme helper includes
  */
 #region helpers
+require_once realpath(__DIR__ . '/includes/helpers/category-rewrite.php');
 require_once realpath( __DIR__ . '/includes/helpers/class-classnames.php' );
 require_once realpath( __DIR__ . '/includes/helpers/class-get-image-data.php' );
 require_once realpath( __DIR__ . '/includes/helpers/site.php' );
