@@ -32,7 +32,7 @@
     width: 100%;
 
     .yoast-breadcrumb {
-      padding: 16px 0 10px 24px;
+      padding: 16px 24px 10px 24px;
       color: var(--wp--preset--color--grey-dark);
       max-width: $container-hg;
       margin: 0 auto;
@@ -56,6 +56,7 @@
       }
 
       span + span::before {
+        flex: 0 0 auto;
         content: '';
         display: inline-block;
         width: 16px;
@@ -79,6 +80,7 @@
       }
 
       & .breadcrumb_last {
+        flex: 1 1 auto;
         display: inline;
         align-items: center;
         font-size: 13px;
