@@ -7,25 +7,32 @@
  * Inserter: no
  */
 
-$post_terms = wp_get_object_terms(get_the_ID(), get_object_taxonomies(get_post_type()));
-$main_category = amnesty_get_a_post_term(get_the_ID());
+$post_id = get_the_ID();
 
-if (empty($post_terms) || ! $main_category) {
+$post_terms = wp_get_object_terms($post_id, get_object_taxonomies(get_post_type()));
+
+if (empty($post_terms)) {
     return;
 }
+
+$main_category = amnesty_get_a_post_term($post_id);
+
+$default_chip_style = match ($main_category->slug ?? '') {
+    'actualites', 'dossier' => 'bg-yellow',
+    'chroniques' => 'bg-black',
+    default => 'outline-black',
+};
 
 $post_terms = array_filter($post_terms, static function ($term) use ($main_category) {
     return $term->slug !== $main_category->slug;
 });
 
-$chip_style = match ($main_category->slug) {
-    'actualites', 'dossier' => 'bg-yellow',
-    'chroniques' => 'outline-yellow',
-    default => 'black-outline',
-};
-
-?>
-
-<?php foreach ($post_terms as $post_term) : ?>
+foreach ($post_terms as $post_term) :
+    if ($post_term->taxonomy === 'location') {
+        $chip_style = 'bg-yellow';
+    } else {
+        $chip_style = $default_chip_style;
+    }
+    ?>
     <!-- wp:amnesty-core/chip-category {"label":"<?php echo esc_html($post_term->name); ?>","link":"<?php echo esc_url(amnesty_term_link($post_term)); ?>","size":"medium","style":"<?php echo esc_attr($chip_style); ?>"} /-->
 <?php endforeach; ?>

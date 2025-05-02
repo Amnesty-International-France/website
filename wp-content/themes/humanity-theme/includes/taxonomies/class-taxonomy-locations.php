@@ -34,7 +34,7 @@ class Taxonomy_Locations extends Taxonomy {
 	 *
 	 * @var array
 	 */
-	protected $object_types = [ 'page', 'post' ];
+	protected $object_types = [ 'page', 'post', 'fiche_pays' ];
 
 	/**
 	 * Taxonomy registration arguments
