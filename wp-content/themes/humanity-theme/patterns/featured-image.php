@@ -40,15 +40,27 @@ $attributes = [
 		<img src="<?php echo esc_url( amnesty_get_attachment_image_src( $image_id, 'hero-md' ) ); ?>" alt="" class="wp-image-<?php echo absint( $image_id ); ?>"/>
 	</figure>
 	<!-- /wp:image -->
-	<div class="feature-image">
-		<div class="feature-image-caption-block">
-			<div class="feature-image-description">
-			<?php echo esc_html($image->credit()) ?>
-			</div>
-			<div class="feature-image-caption">
-				<?php echo esc_html($image->caption()) ?>
+	<?php
+	$credit  = trim( $image->credit() );
+	$caption = trim( $image->caption() );
+
+	if ( $credit || $caption ) :
+	?>
+		<div class="feature-image">
+			<div class="feature-image-caption-block">
+				<?php if ( $credit ) : ?>
+					<div class="feature-image-description">
+						<?php echo esc_html( $credit ); ?>
+					</div>
+				<?php endif; ?>
+
+				<?php if ( $caption ) : ?>
+					<div class="feature-image-caption">
+						<?php echo esc_html( $caption ); ?>
+					</div>
+				<?php endif; ?>
 			</div>
 		</div>
-	</div>
+	<?php endif; ?>
 </div>
 <!-- /wp:group -->
