@@ -115,14 +115,15 @@
       justify-content: space-around;
     }
 
-    @media (min-width: 1440px) {
+    @media (min-width: 1700px) {
       justify-content: flex-end;
     }
 
     > li {
       flex: 1 1 0;
+      min-width: 200px;
 
-      @media (min-width: 1440px) {
+      @media (min-width: 1700px) {
         flex: 0 0 auto;
       }
     }

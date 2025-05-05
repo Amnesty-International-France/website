@@ -35,6 +35,11 @@
           "name": "Orange"
         },
         {
+          "slug": "pink",
+          "color": "#e5007d",
+          "name": "Pink"
+        },
+        {
           "slug": "grey-lighter",
           "color": "#f2f2f2",
           "name": "Grey Lighter"

@@ -54,8 +54,7 @@
   display: none;
 
   @media (min-width: 1024px) {
-    background-color: var(--wp--preset--color--primary);
-    color: var(--wp--preset--color--black);
+    background-color: var(--wp--preset--color--pink);
     font-size: 14px;
     font-weight: bold;
     text-decoration: none;
@@ -70,6 +69,7 @@
     }
 
     .link {
+      color: var(--wp--preset--color--white);
       height: 100%;
       width: 100%;
       padding: 0 14px;
