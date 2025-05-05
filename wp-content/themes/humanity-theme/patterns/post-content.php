@@ -32,7 +32,7 @@
 		<!-- wp:post-content /-->
 	</article>
 	<!-- /wp:group -->
-	<?php if ( ( $category === 'actualites' || $category === 'chroniques') && get_the_ID() ) : // prevent weird output in the site editor ?>
+	<?php if ( ( $category_class === 'actualites' || $category_class === 'chroniques') && get_the_ID() ) : // prevent weird output in the site editor ?>
 		<!-- wp:group {"tagName":"footer","className":"article-footer"} -->
 		<footer class="wp-block-group article-footer">
 			<!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
