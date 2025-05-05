@@ -97,7 +97,7 @@
   }
 
   &:has(input:checked) {
-    background: var(--wp--preset--color--primary-state);
+    background: var(--wp--preset--color--grey-dark);
   }
 
   &:has(input:checked):hover,

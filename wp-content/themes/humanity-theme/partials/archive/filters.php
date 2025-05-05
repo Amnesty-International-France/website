@@ -12,8 +12,7 @@ $form_url = get_post_type_archive_link( 'post' );
 if ( is_category() ) {
 	unset( $taxonomies['category'] );
 
-	// pass category archive id to form URI
-	$form_url = add_query_arg( [ 'qcategory' => get_queried_object_id() ], $form_url );
+	$form_url = get_category_link( get_queried_object_id() );
 }
 
 if ( ! $taxonomies ) {
