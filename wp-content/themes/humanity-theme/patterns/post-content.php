@@ -39,6 +39,6 @@
 		</footer>
 		<!-- /wp:group -->
 	<?php endif; ?>
-	<!-- wp:amnesty-core/related-posts {"title":"Sur le même thème"} /-->
+	<!-- wp:amnesty-core/related-posts {"title":"Voir aussi"} /-->
 </section>
 <!-- /wp:group -->

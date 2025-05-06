@@ -1,0 +1,9 @@
+.homepage {
+  max-width: $container-lg;
+  margin: 0 auto;
+  padding: 0 24px;
+
+  @media (min-width: $container-lg) {
+    padding: 0;
+  }
+}

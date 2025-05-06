@@ -35,17 +35,29 @@
 
 .page-nav.page-nav--main .menu-item {
   a {
-    color: var(--wp--preset--color--black) !important;
+    color: var(--wp--preset--color--black);
+
+    &:hover {
+      background-color: var(--wp--preset--color--grey-light);
+    }
   }
 
-  .sub-menu :hover {
-    background-color: var(--wp--preset--color--grey) !important;
-    color: var(--wp--preset--color--white) !important;
+  .sub-menu {
+    background-color: var(--wp--preset--color--grey-light);
+
+    &:hover {
+      background-color: var(--wp--preset--color--grey-lighter);
+    }
   }
 }
 
 .page-nav.page-nav--top-main .menu-item a {
   color: var(--wp--preset--color--white);
+
+  &:hover {
+    background-color: var(--wp--preset--color--grey-light);
+    color: var(--wp--preset--color--black);
+  }
 }
 
 .page-nav .site-selector span {
