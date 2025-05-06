@@ -2,7 +2,7 @@ name: Deploy to Clever Cloud
 
 on:
   push:
-    branches: [ "fix/permalinks-not-generated" , "main" ]
+    branches: [ "chore/improve-debugging" , "main" ]
 
 permissions:
   contents: read
