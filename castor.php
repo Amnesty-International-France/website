@@ -91,7 +91,10 @@ function install(string $path = '.', string $token = ''): void
     run('wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbhost=$DB_HOST --dbprefix=$DB_PREFIX', context: $context);
 
 	$db_exists = run("wp db check", context: $context->withQuiet())->isSuccessful();
-	if( !$db_exists ) {
+	if( $db_exists ) {
+        // we regenerate permalinks in .htaccess
+		run('wp rewrite flush', context: $context);
+    } else {
 		run('wp db create', context: $context);
 	}
 
