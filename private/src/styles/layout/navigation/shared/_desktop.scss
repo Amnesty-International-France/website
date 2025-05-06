@@ -133,9 +133,9 @@
 
     > li {
       flex: 1 1 0;
-      min-width: 200px;
 
       @media (min-width: 1700px) {
+        min-width: 200px;
         flex: 0 0 auto;
       }
     }

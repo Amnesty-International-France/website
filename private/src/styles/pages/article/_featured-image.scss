@@ -5,7 +5,8 @@
 .article-figure {
   img {
     max-width: 100%;
-    height: 540px !important;
+    height: 540px;
+    max-height: 540px;
     object-fit: cover;
   }
 
