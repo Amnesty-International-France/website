@@ -17,7 +17,7 @@ class ContenuHtmlMapper extends BlockMapper {
 
     protected function getAttributes(): array {
 		return [
-			'content' => $this->contenu
+			'content' => '<div class="wp-block-html">' . $this->contenu . '</div>'
 		];
     }
 
@@ -26,6 +26,6 @@ class ContenuHtmlMapper extends BlockMapper {
     }
 
     protected function getInnerContent(): array {
-        return [$this->contenu];
+        return ['<div class="wp-block-html">' . $this->contenu . '</div>'];
     }
 }
