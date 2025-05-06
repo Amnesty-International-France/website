@@ -6,7 +6,6 @@ use utils\LinksUtils;
 class ReadAlsoMapper extends BlockMapper {
 
 	private bool $intern;
-
 	private $value;
 	private $text;
 	private $url;

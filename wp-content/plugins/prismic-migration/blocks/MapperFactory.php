@@ -2,6 +2,7 @@
 
 namespace blocks;
 
+use AgirSliceMapper;
 use CallToActionMapper;
 use ChapoMapper;
 use EncadreLienMapper;
@@ -43,6 +44,7 @@ class MapperFactory {
 	public function getSliceMapper( $slice ): BlockMapper|null {
 		return match( $slice['slice_type'] ) {
 			'accordion' => new \AccordionMapper( $slice ),
+			'agir' => new AgirSliceMapper( $slice ),
 			'Bloc Info' => new \BlocInfoMapper( $slice ),
 			'bloc_info_riche' => new \BlocInfoRicheMapper( $slice ),
 			'bloc_orange' => new \BlocOrangeMapper( $slice ),
@@ -58,6 +60,7 @@ class MapperFactory {
 			'encadre_lien' => new EncadreLienMapper( $slice ),
 			'image_et_legende' => new \ImageEtLegendeMapper( $slice ),
 			'liens_cartes' => new \LiensCartesMapper( $slice ),
+			'liste_d_actions' => new \ListeDActionsMapper( $slice ),
             'liste_documents' => new \ListeDocumentsMapper( $slice ),
 			'materiel' => new MaterielMapper( $slice ),
 			'mise_a_jour' => new MiseAJourMapper( $slice ),
@@ -96,19 +99,27 @@ class MapperFactory {
 					}
 				}
 				return new \BlockQuoteMapper( $paragraph, $citation, $author );
+			} else if( $paragraph['label'] === 'exergue' ) {
+				return new \ExergueMapper( $paragraph, $paragraph['text'] );
+			} else if( $paragraph['label'] === 'agir' ) {
+				foreach ($paragraph['spans'] as $span) {
+					if( $span['type'] === 'hyperlink' ) {
+						return new \AgirLegacyMapper( $paragraph, $span['data'] );
+					}
+				}
 			}
 		}
 
 		try {
 			$text = $this->formatSpans( $paragraph['text'], $paragraph['spans'] );
 			$paragraph['text'] = $text;
-		} catch ( ReadAlsoException $e) {
+		} catch ( ReadAlsoException $e ) {
 			foreach ($paragraph['spans'] as $span) {
 				if($span['type'] === 'hyperlink') {
 					return new \ReadAlsoMapper( $paragraph, $span['data'] );
 				}
 			}
-		} catch ( BlockQuoteException $e) {
+		} catch ( BlockQuoteException $e ) {
 			$citation = $paragraph['text'];
 			$author = '';
 			if( $iterator->valid() ) {
@@ -121,6 +132,14 @@ class MapperFactory {
 				}
 			}
 			return new \BlockQuoteMapper( $paragraph, $citation, $author );
+		} catch ( ExergueException $e ) {
+			return new \ExergueMapper( $paragraph, $paragraph['text'] );
+		} catch ( AgirException $e ) {
+			foreach ($paragraph['spans'] as $span) {
+				if($span['type'] === 'hyperlink') {
+					return new \AgirLegacyMapper( $paragraph, $span['data'] );
+				}
+			}
 		}
 
 		return new ParagraphMapper( $paragraph );
@@ -145,10 +164,11 @@ class MapperFactory {
 		return new ListMapper( $richText, $items );
 	}
 
-	private function setupEmbedMapper( $rich ): BlockMapper {
+	private function setupEmbedMapper( $rich ): BlockMapper|null {
 		return match( $rich['oembed']['type'] ) {
 			'video' => new \EmbedMapper( $rich ),
 			'rich', 'link' => new \ContenuHtmlMapper( $rich, $rich['oembed']['html'] ?? ''),
+			'embed' => null,
 			default => throw new \Exception( 'Unknow embed type : ' . $rich['oembed']['type'] ),
 		};
 	}
@@ -175,10 +195,14 @@ class MapperFactory {
 					} catch( BrokenTypeException $e ) {}
 					break;
 				case 'label':
-					if( $span['data']['label'] === "lireaussi") {
+					if( $span['data']['label'] === 'lireaussi' ) {
 						throw new ReadAlsoException();
-					} else if( $span['data']['label'] === 'blockquote') {
+					} else if( $span['data']['label'] === 'blockquote' ) {
 						throw new BlockQuoteException();
+					} else if( $span['data']['label'] === 'exergue' ) {
+						throw new ExergueException();
+					} else if( $span['data']['label'] === 'agir' ) {
+						throw new AgirException();
 					}
 					break;
 				default:
@@ -229,3 +253,7 @@ class MapperFactory {
 class ReadAlsoException extends \Exception {}
 
 class BlockQuoteException extends \Exception {}
+
+class ExergueException extends \Exception {}
+
+class AgirException extends \Exception {}

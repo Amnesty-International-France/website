@@ -61,7 +61,7 @@ class PrismicFetcher {
 	private function getPrismicPage($ref, Ordering $ordering, int $page, Type $type) {
 		$query = $type !== Type::ALL ? "&q=[[at(document.type,\"$type->value\")]]" : '';
 		$dateQuery = "&q=[[date.before(my.news.datePub, \"2023-04-24\")]]";
-		$url = PRISMIC_AMNESTY_URL . "/documents/search?page=$page&pageSize=" . PAGE_SIZE . "&ref=$ref$query$dateQuery&orderings=[my.news.datePub" . ($ordering === Ordering::DESC ? " desc" : "") . "]";
+		$url = PRISMIC_AMNESTY_URL . "/documents/search?page=$page&pageSize=" . PAGE_SIZE . "&ref=$ref$query&orderings=[my.news.datePub" . ($ordering === Ordering::DESC ? " desc" : "") . "]";
 		$data = wp_remote_get($url);
 		if (is_wp_error($data)) {
 			throw new Exception("Error fetching documents : " . PRISMIC_AMNESTY_URL . " , page=$page, ordering=$ordering->name");

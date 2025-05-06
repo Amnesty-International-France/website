@@ -63,7 +63,7 @@ class NewsTransformer extends DocTransformer {
 			$wp_post['post_excerpt'] = $data['accroche'];
 		}
 
-		$wp_post['post_date'] = (new \DateTime($data['datePub']))->format('Y-m-d H:i:s');
+		$wp_post['post_date'] = (new \DateTime($data['datePub'] ?? $prismicDoc['last_publication_date']))->format('Y-m-d H:i:s');
 		$wp_post['post_title'] = $data['title'][0]['text'];
 		$wp_post['post_status'] = isset($data['visibility']) && $data['visibility'] === 'member' ? 'private' : 'publish';
 		$wp_post['post_type'] = 'post';
@@ -75,11 +75,12 @@ class NewsTransformer extends DocTransformer {
 			'location' => array_column($terms['countries'], 'slug'),
 			'combat' => array_column($terms['combats'], 'slug')
 		];
+
 		$wp_post['meta_input'] = [
 			'amnesty_updated' => $data['dateUpdate'] !== null ? (new \DateTime($data['dateUpdate']))->format('Y-m-d H:i:s') : null,
 			'prismic_json' => json_encode( $prismicDoc, JSON_UNESCAPED_UNICODE )
 		];
-		$this->addSeoAndOgData( $prismicDoc, $wp_post['meta_input'] );
+
 		$this->addRelatedContent( $prismicDoc, $wp_post);
 
 		return $wp_post;
@@ -103,38 +104,6 @@ class NewsTransformer extends DocTransformer {
 			'description' => isset($descCaption) ? $descCaption['description'] : $desc,
 			'legend' => isset($descCaption) ? $descCaption['caption'] : $legend
 		];
-	}
-
-	private function addSeoAndOgData( $prismicDoc, &$metaInput ): void {
-		$data = $prismicDoc['data'];
-		if( isset($data['seoTitle']) ) {
-			$metaInput['_yoast_wpseo_title'] = $data['seoTitle'];
-		}
-		if( isset($data['description']) ) {
-			$metaInput['_yoast_wpseo_metadesc'] = $data['description'];
-		}
-		if( isset($data['ogTitle']) ) {
-			$metaInput['_yoast_wpseo_opengraph-title'] = $data['ogTitle'];
-			$metaInput['_yoast_wpseo_twitter-title'] = $data['ogTitle'];
-		}
-		if( isset($data['ogDescription']) ) {
-			$metaInput['_yoast_wpseo_opengraph-description'] = $data['ogDescription'];
-			$metaInput['_yoast_wpseo_twitter-description'] = $data['ogDescription'];
-		}
-		if( isset($data['ogImage']['url']) ) {
-			$id = \FileUploader::uploadMedia( $data['ogImage']['url'], alt: $data['ogImage']['alt'] ?? '' );
-			if( $id ) {
-				$metaInput['_yoast_wpseo_opengraph-image'] = wp_get_attachment_image_url( $id, 'large' );
-				$metaInput['_yoast_wpseo_opengraph-image-id'] = $id;
-			}
-		}
-		if( isset($data['ogImageTwitter']['url'] )) {
-			$id = \FileUploader::uploadMedia( $data['ogImageTwitter']['url'], alt: $data['ogImageTwitter']['alt'] ?? '' );
-			if( $id ) {
-				$metaInput['_yoast_wpseo_twitter-image'] = wp_get_attachment_image_url( $id, 'large' );
-				$metaInput['_yoast_wpseo_twitter-image-id'] = $id;
-			}
-		}
 	}
 
 	private function addRelatedContent( $prismicDoc, &$wp_post ): void {

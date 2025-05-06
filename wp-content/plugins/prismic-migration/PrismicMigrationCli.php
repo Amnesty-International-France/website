@@ -12,7 +12,8 @@ class PrismicMigrationCli {
 		if ( self::$dryrun ) {
 			WP_CLI::log('dry-mod activated');
 		}
-		$prismic_docs = (new PrismicFetcher())->fetch(type: Type::NEWS);
+		//$prismic_docs = (new PrismicFetcher())->fetch(type: Type::NEWS);
+        $prismic_docs = (new PrismicFetcher())->fetch_article('ZEJvlBEAACgAU7Xk');
 
 		$progress = WP_CLI\Utils\make_progress_bar( 'Importing documents', count($prismic_docs) );
 		foreach ( $prismic_docs as $doc ) {
@@ -24,7 +25,7 @@ class PrismicMigrationCli {
 
 			$wp_post = $transformer->parse( $doc );
 
-		if ( ! self::$dryrun ) {
+			if ( ! self::$dryrun ) {
 				$postId = wp_insert_post( $wp_post );
 
 				if ( is_wp_error($postId) ) {
@@ -41,6 +42,11 @@ class PrismicMigrationCli {
 				if ( $featured_image !== false ) {
 					$attachment_id = FileUploader::uploadMedia( $featured_image['imageUrl'], $featured_image['legend'], $featured_image['description'], $featured_image['alt'] );
 					set_post_thumbnail( $postId, $attachment_id );
+				}
+
+				$seo_og = $transformer->getSeoAndOgData( $doc );
+				foreach ( $seo_og as $metaKey => $metaValue ) {
+					update_post_meta( $postId, $metaKey, $metaValue );
 				}
 
 				if ( isset($wp_post['relatedArticles']) ) {
