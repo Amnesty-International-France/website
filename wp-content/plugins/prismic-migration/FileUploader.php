@@ -1,6 +1,13 @@
 <?php
 
+/**
+ * Upload a file into Wordpress based on his URL.
+ * The url is sanitized and in our case contains a UUID that we remove by a regex.
+ */
 class FileUploader {
+
+	const REGEX = '/(((amnestyfr)?[0-9a-f]{0,8}-?[0-9a-f]{0,4}-?[0-9a-f]{0,4}-?[0-9a-f]{0,4}-?[0-9a-f]{12})|([a-fA-F0-9]{40}))_+/';
+
 	public static function uploadMedia( $url, $legende = '', $description = '', $alt = '', $name = null, $title = null ) {
 		if(PrismicMigrationCli::$dryrun) {
 			return 1;
@@ -12,16 +19,11 @@ class FileUploader {
 			throw new Exception( 'Invalid URL' );
 		}
 
-		/*
-		$n1 = '637d60f0-7088-4e2a-ae57-3038f21397e6_Iran_ecoles.jpg';
-		$n2 = 'amnestyfr0b360cb2-69f3-4714-89f1-68af43aa29ea_aif-voila-pourquoi-on-meurt-afr6231832016.pdf';
-		$n3 = 'Nigeria-they-betrayed-us-indexAFR4484152018ENGLISH.pdf';
-		$n4 = 'Petition_Ibrahim_10JPS.pdf';
-		 */
 		$url = strtok( $url, '?' );
 		$file_name = substr( sanitize_file_name( transliterator_transliterate( 'Latin-ascii',$name ?? urldecode( basename( parse_url( $url, PHP_URL_PATH ) ) ) ) ), -100 );
-		echo $file_name.PHP_EOL;
+		$file_name = preg_replace(self::REGEX, '', $file_name );
 		$file_title = $title ?? self::format_title($file_name);
+
 		$id = self::media_exists( $file_title );
 		if( $id > 0 ) {
 			return $id;
