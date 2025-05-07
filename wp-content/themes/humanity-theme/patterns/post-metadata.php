@@ -17,7 +17,7 @@ if ( ! get_the_ID() ) {
 <div class="article-meta-wrapper">
 
 	<!-- wp:group {"tagName":"div","className":"article-meta container--md mx-auto"} -->
-	<div class="wp-block-group article-meta">
+	<div class="wp-block-group article-meta container--md mx-auto">
 
 		<!-- wp:group {"tagName":"div","className":"article-metaActions"} -->
 		<div class="wp-block-group article-metaActions">
