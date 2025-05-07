@@ -1,0 +1,143 @@
+.article.campagnes {
+  .article-meta {
+    padding: 12px 24px;
+
+    @media (min-width: $container-hg) {
+      padding: 0;
+    }
+
+    .article-metaData {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+  }
+
+  .article-header {
+    background-color: var(--wp--preset--color--primary);
+  }
+
+  .files-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: $container-hg;
+    margin: 0 auto;
+
+    @media (min-width: $container-lg) {
+      flex-direction: row;
+      gap: 24px;
+    }
+
+    @media (min-width: $container-hg) {
+      padding: 0;
+    }
+
+    &-left {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      @media (min-width: $container-lg) {
+        width: 50%;
+      }
+
+      .article-meta-wrapper {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    &-right {
+      width: 100%;
+
+      @media (min-width: $container-lg) {
+        width: 50%;
+      }
+
+      .article-figure {
+        width: 100%;
+
+        @media (min-width: $container-lg) {
+          width: 50vw;
+        }
+
+        img {
+          height: 100%;
+          min-height: 350px !important;
+          width: 100%;
+
+          @media (min-width: $container-lg) {
+            min-height: 450px !important;
+          }
+        }
+      }
+
+      .feature-image {
+        @media (min-width: $container-lg) {
+          max-width: $container-lg;
+        }
+
+        .feature-image-caption-block {
+          @media (min-width: $container-lg) {
+            width: 50%;
+          }
+        }
+      }
+    }
+  }
+
+  .article-content {
+    .button-block,
+    .download-go-further-block,
+    .get-informed-block,
+    .image-block,
+    .read-also-block,
+    p:not(
+        .wp-block-amnesty-core-chapo p,
+        .wp-block-amnesty-core-section.small p,
+        .wp-block-amnesty-core-section.large p,
+        .download-go-further-block p,
+        .call-to-action-block p
+      ),
+    .wp-block-columns,
+    .wp-block-details,
+    .wp-block-heading,
+    .wp-block-image,
+    .wp-block-list,
+    .wp-block-amnesty-core-action,
+    .wp-block-amnesty-core-quote-block,
+    .wp-block-amnesty-core-image,
+    .wp-block-amnesty-core-section.small {
+      max-width: $container-sm;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .call-to-action-block {
+      max-width: $container-lg;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .wp-block-amnesty-core-chapo {
+      max-width: $container-hg;
+      margin-left: auto;
+      margin-right: auto;
+
+      .text {
+        @media (min-width: $container-lg) {
+          width: 50%;
+          margin-left: 20%;
+        }
+      }
+    }
+
+    .carousel-block {
+      .swiper-slide {
+        max-width: $container-sm;
+      }
+    }
+  }
+}

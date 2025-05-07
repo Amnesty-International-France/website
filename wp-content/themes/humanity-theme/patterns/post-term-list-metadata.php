@@ -28,10 +28,10 @@ $post_terms = array_filter($post_terms, static function ($term) use ($main_categ
 });
 
 foreach ($post_terms as $post_term) :
-    if ($post_term->taxonomy === 'location') {
-        $chip_style = 'bg-yellow';
-    } else {
+    if ($main_category) {
         $chip_style = $default_chip_style;
+    } else {
+        $chip_style = $post_term->taxonomy === 'location' ? 'bg-yellow' : 'outline-black';
     }
     ?>
     <!-- wp:amnesty-core/chip-category {"label":"<?php echo esc_html($post_term->name); ?>","link":"<?php echo esc_url(amnesty_term_link($post_term)); ?>","size":"medium","style":"<?php echo esc_attr($chip_style); ?>"} /-->
