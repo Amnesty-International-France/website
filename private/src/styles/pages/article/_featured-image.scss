@@ -19,7 +19,7 @@
 }
 
 .feature-image {
-  max-width: $container-hg;
+  max-width: $container-lg;
   margin: 0 auto;
   position: relative;
 
@@ -35,9 +35,9 @@
 
     @media (min-width: 768px) {
       position: absolute;
-      width: 25%;
-      transform: translateY(-24px);
+      width: 30.33%;
       margin-right: 3%;
+      transform: translateY(-24px);
     }
 
     .feature-image-description {
