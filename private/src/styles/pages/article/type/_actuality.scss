@@ -1,6 +1,9 @@
 .article.actualites {
   .article-meta {
     padding: 0 24px;
+    max-width: $container-lg;
+    margin-left: auto;
+    margin-right: auto;
 
     @media (min-width: 768px) {
       padding: 0;
@@ -34,11 +37,21 @@
       margin-right: auto;
     }
 
-    .call-to-action-block,
-    .wp-block-amnesty-core-chapo {
+    .call-to-action-block {
       max-width: $container-lg;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .wp-block-amnesty-core-chapo {
+      max-width: $container-hg;
+      margin-left: auto;
+      margin-right: auto;
+
+      .text {
+        width: 50%;
+        margin-left: 20%;
+      }
     }
 
     .carousel-block {
