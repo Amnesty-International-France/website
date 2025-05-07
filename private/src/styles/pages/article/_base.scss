@@ -21,6 +21,14 @@
   }
 }
 
+.article-content {
+  padding: 0 24px;
+
+  @media (min-width: $container-hg) {
+    padding: 0;
+  }
+}
+
 .article-container--report .article-content {
   padding-top: 30px;
   border-top: 1px solid var(--wp--preset--color--grey-lighter);

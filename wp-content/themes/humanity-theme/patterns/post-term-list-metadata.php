@@ -18,7 +18,7 @@ if (empty($post_terms)) {
 $main_category = amnesty_get_a_post_term($post_id);
 
 $default_chip_style = match ($main_category->slug ?? '') {
-    'actualites', 'dossier' => 'bg-yellow',
+    'actualites', 'dossiers' => 'bg-yellow',
     'chroniques' => 'bg-black',
     default => 'outline-black',
 };

@@ -37,7 +37,7 @@
       max-width: $container-hg;
       margin: 0 auto;
 
-      @media (min-width: 1440px) {
+      @media (min-width: $container-hg) {
         padding-left: 0;
       }
 

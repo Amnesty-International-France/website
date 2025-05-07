@@ -40,6 +40,11 @@
           "name": "Pink"
         },
         {
+          "slug": "light-pink",
+          "color": "#ef4d9c",
+          "name": "Light Pink"
+        },
+        {
           "slug": "grey-lighter",
           "color": "#f2f2f2",
           "name": "Grey Lighter"

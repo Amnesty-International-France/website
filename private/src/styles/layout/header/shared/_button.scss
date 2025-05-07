@@ -63,9 +63,12 @@
     width: fit-content;
     display: flex;
     align-items: center;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
 
     &:hover {
-      background-color: var(--wp--preset--color--primary-dark);
+      background-color: var(--wp--preset--color--light-pink);
     }
 
     .link {
@@ -85,11 +88,13 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-shrink: 0;
       }
 
       .label {
         margin: 0;
         font-family: var(--wp--preset--font-family--secondary);
+        white-space: nowrap;
       }
     }
   }
