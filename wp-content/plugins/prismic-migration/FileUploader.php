@@ -1,6 +1,13 @@
 <?php
 
+/**
+ * Upload a file into Wordpress based on his URL.
+ * The url is sanitized and in our case contains a UUID that we remove by a regex.
+ */
 class FileUploader {
+
+	const REGEX = '/(((amnestyfr)?[0-9a-f]{0,8}-?[0-9a-f]{0,4}-?[0-9a-f]{0,4}-?[0-9a-f]{0,4}-?[0-9a-f]{12})|([a-fA-F0-9]{40}))_+/';
+
 	public static function uploadMedia( $url, $legende = '', $description = '', $alt = '', $name = null, $title = null ) {
 		if(PrismicMigrationCli::$dryrun) {
 			return 1;
@@ -14,7 +21,9 @@ class FileUploader {
 
 		$url = strtok( $url, '?' );
 		$file_name = substr( sanitize_file_name( transliterator_transliterate( 'Latin-ascii',$name ?? urldecode( basename( parse_url( $url, PHP_URL_PATH ) ) ) ) ), -100 );
+		$file_name = preg_replace(self::REGEX, '', $file_name );
 		$file_title = $title ?? self::format_title($file_name);
+
 		$id = self::media_exists( $file_title );
 		if( $id > 0 ) {
 			return $id;
@@ -70,7 +79,7 @@ class FileUploader {
 			'post_title' => $file_title
 		];
 
-		$attachment_id = media_handle_sideload( $file_array, post_data: $post_data);
+		$attachment_id = media_handle_sideload( $file_array, post_data: $post_data );
 
 		if( is_wp_error( $attachment_id ) ) {
 			@unlink( $tmp_file );
@@ -80,7 +89,6 @@ class FileUploader {
 		add_post_meta( $attachment_id, '_wp_attachment_image_alt', $alt ?? '' );
 		return $attachment_id;
 	}
-
 
 	static function media_exists( $title ): int {
 		return post_exists( title: self::format_title($title), type: 'attachment' );

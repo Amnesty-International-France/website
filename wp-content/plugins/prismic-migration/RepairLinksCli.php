@@ -2,8 +2,16 @@
 
 use utils\LinksUtils;
 
+/**
+ * Implements repair-links command
+ */
 class RepairLinksCli {
 
+	/**
+	 * Replaces all placeholders placed by prismic-migration command by the good value if he can.
+	 *
+	 * @when after_wp_load
+	 */
 	public function __invoke() {
 		WP_CLI::log( 'Repairing links in pages...' );
 
@@ -49,5 +57,4 @@ class RepairLinksCli {
 			WP_CLI::log( 'No posts found.' );
 		}
 	}
-
 }
