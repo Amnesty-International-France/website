@@ -25,6 +25,21 @@ Example with all arguments : `castor install --path www --token my-github-token`
 
 It will install the environment with the [humanity theme](https://github.com/amnestywebsite/humanity-theme) and its required plugins.
 
+## Clever Cloud hosting
+
+on clever cloud hooks in the `clevercloud` directory will be executed at build time and script `infogerance/aif-clever-cloud.php` will be included in `wp-config.php`
+
+These environment variables should be defined :
+
+^ name             ^ purpose ^
+| WP_HOME          | base URL of the WP admin |
+| WP_SITEURL       | base URL of the website |
+| MYSQL_ADDON_HOST | host name of the database (should be automatically set) |
+| MYSQL_ADDON_PORT | port number of the database (should be automatically set) |
+| DB_NAME          | database name (should be automatically set) |
+| DB_USER          | database user name (should be automatically set) |
+| DB_PASSWORD      | database password (should be automatically set) |
+
 ## Update plugins from Github repositories
 
 To update plugins from Github repositories, you can use the following script :
