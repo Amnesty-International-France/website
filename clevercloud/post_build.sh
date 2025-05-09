@@ -6,12 +6,7 @@ if [ -n "$APP_PLUGIN_TOKEN" ]; then castor install --token "$APP_PLUGIN_TOKEN" -
 test -f ${APP_HOME}/user.ini && \
   cp ${APP_HOME}/user.ini ${APP_HOME}${CC_WEBROOT}/.user.ini
 
-cp -f ${APP_HOME}/infogerance/aif-clever-cloud.php  ${APP_HOME}${CC_WEBROOT}/
-
-# patch wp-config.php
-if ! grep -q  aif-clever-cloud.php   www/wp-config.php  ; then
-    sed -i "/Add any custom values between this line/a require ABSPATH . '/aif-clever-cloud.php';" www/wp-config.php
-fi
+cp -f ${APP_HOME}/infogerance/aif-clever-cloud.php  ${APP_HOME}${CC_WEBROOT}/wp-config.php
 
 # rysnc plugins if exists on repo
 if test -d ${APP_HOME}/wp-content/plugins  ; then
