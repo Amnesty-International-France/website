@@ -11,6 +11,22 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  .chip-icon {
+    width: 17px;
+    height: 17px;
+
+    svg {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+  }
 
   &:hover {
     background-color: transparent;
