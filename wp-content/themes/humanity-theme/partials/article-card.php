@@ -3,14 +3,25 @@ $direction = $args['direction'] ?? 'portrait';
 
 global $post;
 
-if (!empty($args['post'])) {
-	$post_id = $args['post_id'] ?? (isset($post) && $post instanceof WP_Post ? $post->ID : null);
-	$post_object = get_post($post_id);
+$post_id = $args['post_id'] ?? ($args['post']->ID ?? ($post->ID ?? null));
+$post_object = get_post($post_id);
 
-	if (!$post_object instanceof WP_Post) {
-		return;
-	}
+if (!$post_object instanceof WP_Post) {
+	$title = $args['title'] ?? 'Titre par défaut';
+	$permalink = $args['permalink'] ?? '#';
+	$date = $args['date'] ?? date('Y-m-d');
+	$thumbnail = $args['thumbnail'] ?? null;
+	$main_category = $args['main_category'] ?? null;
+	$post_terms = $args['terms'] ?? [];
 
+	$label = $args['label'] ?? ($main_category->name ?? null);
+	$link = $args['label_link'] ?? '';
+	$chip_style = $args['chip_style'] ?? match ($main_category->slug ?? null) {
+		'actualites' => 'bg-yellow',
+		'dossiers' => 'bg-black',
+		default => 'bg-yellow',
+	};
+} else {
 	$permalink = get_permalink($post_object);
 	$title = get_the_title($post_object);
 	$date = get_the_date('', $post_object);
@@ -32,20 +43,45 @@ if (!empty($args['post'])) {
 			);
 		});
 	}
-} else {
-	$title = $args['title'] ?? 'Titre par défaut';
-	$permalink = $args['permalink'] ?? '#';
-	$date = $args['date'] ?? date('Y-m-d');
-	$thumbnail = $args['thumbnail'] ?? null;
-	$main_category = $args['main_category'] ?? null;
-	$post_terms = $args['terms'] ?? [];
-}
 
-$chip_style = match ($main_category->slug ?? null) {
-	'actualites' => 'bg-yellow',
-	'dossiers' => 'bg-black',
-	default => 'bg-yellow',
-};
+	if ($main_category) {
+		$chip_style = match ($main_category->slug) {
+			'actualites' => 'bg-yellow',
+			'dossiers' => 'bg-black',
+			default => 'bg-yellow',
+		};
+		$label = $main_category->name;
+		$link = '';
+	} else {
+		$post_type = get_post_type($post_object);
+		$chip_style = 'bg-yellow';
+
+		if ('landmark' === $post_type) {
+			$repere_terms = wp_get_object_terms($post_id, 'landmark_category');
+
+			if (!empty($repere_terms) && !is_wp_error($repere_terms)) {
+				$main_category = $repere_terms[0];
+				$label = $main_category->name;
+				$link = '';
+				$icon = match (strtolower($main_category->slug)) {
+					'decryptage' => 'decoding',
+					'droit-international' => 'employment-law',
+					'data' => 'data',
+					'desintox' => 'detox',
+					default => '',
+				};
+			} else {
+				$post_type_object = get_post_type_object($post_type);
+				$label = $post_type_object->labels->singular_name;
+				$link = get_post_type_archive_link($post_type);
+			}
+		} else {
+			$post_type_object = get_post_type_object($post_type);
+			$label = $post_type_object->labels->singular_name;
+			$link = get_post_type_archive_link($post_type);
+		}
+	}
+}
 ?>
 
 <article class="article-card card-<?php echo esc_attr($direction); ?>">
@@ -55,12 +91,14 @@ $chip_style = match ($main_category->slug ?? null) {
 		</a>
 	<?php endif; ?>
 
-	<?php if ($main_category): ?>
+	<?php if (!empty($label)): ?>
 		<?= render_chip_category_block([
-			'label' => $main_category->name,
-			'link' => '',
+			'label' => esc_html($label),
+			'link' => esc_url($link),
 			'size' => 'large',
-			'style' => $chip_style,
+			'style' => esc_attr($chip_style),
+			'isLandmark' => ('landmark' === get_post_type($post_object)),
+			'icon' => $icon ?? '',
 		]); ?>
 	<?php endif; ?>
 
@@ -76,7 +114,7 @@ $chip_style = match ($main_category->slug ?? null) {
 		<div class="article-terms <?php if (empty($post_terms)) echo 'is-empty'; ?>">
 			<?php foreach ($post_terms as $term): ?>
 				<?= render_chip_category_block([
-					'label' => $term->name,
+					'label' => esc_html($term->name),
 					'size' => 'small',
 					'style' => 'bg-gray',
 					'link' => '',
