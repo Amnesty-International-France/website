@@ -27,18 +27,27 @@ It will install the environment with the [humanity theme](https://github.com/amn
 
 ## Clever Cloud hosting
 
-on clever cloud hooks in the `clevercloud` directory will be executed at build time and script `infogerance/aif-clever-cloud.php` will be included in `wp-config.php`
+on clever cloud hooks in the `clevercloud` directory will be executed at build time and script `infogerance/aif-clever-cloud.php` will replace `wp-config.php`
 
-These environment variables should be defined :
+These environment variables must be defined :
 
 ^ name             ^ purpose ^
 | WP_HOME          | base URL of the WP admin |
 | WP_SITEURL       | base URL of the website |
 | MYSQL_ADDON_HOST | host name of the database (should be automatically set) |
 | MYSQL_ADDON_PORT | port number of the database (should be automatically set) |
-| DB_NAME          | database name (should be automatically set) |
-| DB_USER          | database user name (should be automatically set) |
-| DB_PASSWORD      | database password (should be automatically set) |
+| DB_NAME             | database name (should be automatically set) |
+| DB_USER             | database user name (should be automatically set) |
+| DB_PASSWORD         | database password (should be automatically set) |
+| WP_AUTH_KEY         | random string |
+| WP_AUTH_SALT        | random string |
+| WP_CACHE_KEY_SALT   | random string |
+| WP_LOGGED_IN_KEY    | random string |
+| WP_LOGGED_IN_SALT   | random string |
+| WP_NONCE_KEY        | random string |
+| WP_NONCE_SALT       | random string |
+| WP_SECURE_AUTH_KEY  | random string |
+| WP_SECURE_AUTH_SALT | random string |
 
 ## Update plugins from Github repositories
 
