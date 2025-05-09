@@ -23,7 +23,8 @@ require_once realpath( __DIR__ . '/includes/root/permalinks.php' );
  * Theme helper includes
  */
 #region helpers
-require_once realpath(__DIR__ . '/includes/helpers/category-rewrite.php');
+require_once realpath( __DIR__ . '/includes/helpers/query-filters.php');
+require_once realpath( __DIR__ . '/includes/helpers/category-rewrite.php');
 require_once realpath( __DIR__ . '/includes/helpers/class-classnames.php' );
 require_once realpath( __DIR__ . '/includes/helpers/class-get-image-data.php' );
 require_once realpath( __DIR__ . '/includes/helpers/site.php' );
@@ -185,6 +186,7 @@ require_once realpath( __DIR__ . '/includes/post-types/abstract-class-post-type.
 require_once realpath( __DIR__ . '/includes/post-types/pop-in.php' );
 require_once realpath( __DIR__ . '/includes/post-types/sidebar.php' );
 require_once realpath( __DIR__ . '/includes/post-types/countries.php' );
+require_once realpath( __DIR__ . '/includes/post-types/landmarks.php' );
 #endregion post types
 
 /**

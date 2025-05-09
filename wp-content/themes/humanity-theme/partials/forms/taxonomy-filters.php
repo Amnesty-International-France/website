@@ -29,4 +29,4 @@ foreach ( $taxonomies as $tax_item ) {
 
 ?>
 </div>
-<button id="search-filters-submit" class="filter-button btn btn--dark">Filtrer</button>
+<button id="search-filters-submit" class="filter-button">Filtrer</button>
