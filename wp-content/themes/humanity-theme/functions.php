@@ -96,6 +96,7 @@ require_once realpath( __DIR__ . '/includes/admin/class-accessibility.php' );
 require_once realpath( __DIR__ . '/includes/admin/class-permalink-settings.php' );
 require_once realpath( __DIR__ . '/includes/admin/user-options.php' );
 require_once realpath( __DIR__ . '/includes/admin/settings-general.php' );
+require_once realpath( __DIR__ . '/includes/admin/landmarks-featured.php' );
 #endregion admin
 
 /**

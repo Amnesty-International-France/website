@@ -1,6 +1,6 @@
 <?php
 /**
- * Register Custom Post Type: Repère
+ * Register Custom Post Type: Landmark
  */
 
 function amnesty_register_landmarks_cpt() {
