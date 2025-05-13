@@ -32,10 +32,16 @@ function render_related_posts_block( $attributes, $content = '' ) {
 			'posts_per_page' => 3,
 			'post__not_in'   => [ $post_id ],
 			'tax_query'      => [
+				'relation' => 'OR',
 				[
 					'taxonomy' => 'category',
 					'field'    => 'slug',
 					'terms'    => $term->slug,
+				],
+				[
+					'taxonomy' => 'category',
+					'field' => 'term_id',
+					'terms' => $term->parent,
 				]
 			],
 			'orderby' => 'date',

@@ -9,12 +9,13 @@
 
 $term = amnesty_get_a_post_term(get_the_ID());
 $category_class = $term ? $term->slug : '';
+$parent_class = $term && $term->parent > 0 ? get_term($term->parent, $term->taxonomy)->slug : '';
 $post_type_class = get_post_type() ?: '';
 
 
 ?>
 <!-- wp:group {"tagName":"section","className":"article"} -->
-<section class="wp-block-group article <?php echo esc_attr($category_class); ?> <?php echo esc_attr($post_type_class); ?>">
+<section class="wp-block-group article <?php echo esc_attr($category_class); ?> <?php echo esc_attr($parent_class)?> <?php echo esc_attr($post_type_class); ?>">
 	<!-- wp:group {"tagName":"header","className":"article-header"} -->
 	<header class="wp-block-group article-header">
 		<?php if ( $category_class === "dossiers" || $category_class === "campagnes" ) : ?>
@@ -55,7 +56,7 @@ $post_type_class = get_post_type() ?: '';
 	</article>
 	<!-- /wp:group -->
 
-	<?php if ( ( $category_class === 'actualites' || $category_class === 'chroniques') && get_the_ID() ) : ?>
+	<?php if ( ( $category_class === 'actualites' || $parent_class === 'actualites' || $category_class === 'chroniques') && get_the_ID() ) : ?>
 		<!-- wp:group {"tagName":"footer","className":"article-footer"} -->
 		<footer class="wp-block-group article-footer">
 			<!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
