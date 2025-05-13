@@ -81,3 +81,32 @@ For your plugin to be versioned on git, you need to add the following line to th
 ## Start wordpress
 
 To start wordpress, run : `wp server`
+
+## Configuration
+
+### Theme Options
+
+Go in `Options du thème` tab, you can set the logo of the website.
+
+In `Apparence > Menus` tab, you can define the menus that are show in the website (Header and Footer).
+
+### Permalinks
+
+`Réglages > Permaliens` :
+- Set the permalink structure to `/%category%/%postname%/`
+- Set the category prefix to `.`
+
+### Homepage
+
+You can create a Page in the **Pages** tab.
+
+`Réglages > Lecture` :
+- Select **static page** for showing the homepage and select your page as homepage.
+
+### Yoast SEO
+
+Go in `Yoast SEO > Settings` tab and `Advanced > Breadcrumbs`:
+- Set `Separator between breadcrumbs` to empty
+- Set `Anchor text for the Homepage` to **Accueil**
+- Set `Articles post` to **Types de contenu**
+
