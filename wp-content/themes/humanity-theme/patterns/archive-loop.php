@@ -9,7 +9,46 @@
 
 add_filter( 'get_the_terms', 'amnesty_limit_post_terms_results_for_archive' );
 
+if (is_post_type_archive('landmark')) {
+
+    $featured_query = amnesty_get_featured_landmarks();
+
+    if ($featured_query->have_posts()) {
+        echo '<div class="featured-landmarks">';
+        echo '<div class="content">';
+
+        echo '<h2 class="wp-heading-block title">À la une</h2>';
+        echo '<div class="wp-block-group postlist">';
+        echo '<div class="post-grid">';
+
+        while ($featured_query->have_posts()) {
+            $featured_query->the_post();
+
+            $block = array(
+                'blockName' => 'amnesty-core/article-card',
+                'attrs' => array(
+                    'direction' => 'portrait'
+                ),
+                'innerBlocks' => array(),
+                'innerHTML' => '',
+                'innerContent' => array()
+            );
+
+            echo render_block($block);
+        }
+
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+        wp_reset_postdata();
+    }
+}
+
+
 ?>
+
 <!-- wp:query {"inherit":true} -->
 <div class="wp-block-query">
 	<!-- wp:group {"tagName":"div","className":""} -->
