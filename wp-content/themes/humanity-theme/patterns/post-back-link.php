@@ -25,7 +25,8 @@ if ($main_category) {
     $link = amnesty_term_link($main_category);
 } else {
     $chip_style = 'bg-black'; 
-    $post_type_object = get_post_type_object('fiche_pays');
+    $post_type = get_post_type();
+    $post_type_object = get_post_type_object($post_type);
     $label = $post_type_object->labels->singular_name;
     $link = get_post_type_archive_link(get_post_type());
 }
