@@ -52,6 +52,13 @@ if ('landmark' === $post_type) {
         $label = $post_type_object->labels->singular_name;
         $link = get_post_type_archive_link($post_type);
     }
+
+	$editorial_category = get_field('editorial_category', $post_id);
+
+	if( $editorial_category ) {
+		$label = $editorial_category['label'];
+	}
+
 }
 
 echo render_chip_category_block([
