@@ -18,7 +18,13 @@ $post_type = get_post_type($post_id);
 
 $label = '';
 $link = '';
-$chip_style = 'bg-black';
+
+$main_category = amnesty_get_a_post_term($post_id);
+$chip_style = match ($main_category->slug) {
+    'actualites', 'dossiers' => 'bg-black',
+    'chroniques' => 'bg-yellow',
+    default => 'bg-black',
+};
 
 if ('landmark' === $post_type) {
     $repere_terms = wp_get_object_terms($post_id, 'landmark_category');
@@ -27,6 +33,7 @@ if ('landmark' === $post_type) {
         $main_category = $repere_terms[0];
         $label = $main_category->name;
         $link = '';
+
     } else {
         $post_type_object = get_post_type_object($post_type);
         $label = $post_type_object->labels->singular_name;
