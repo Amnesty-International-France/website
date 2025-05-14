@@ -51,7 +51,7 @@ web.config
 /wp-signup.php
 /wp-trackback.php
 /xmlrpc.php
-
+license.txt
 # Jetpack-Waf
 /wp-content/jetpack-waf/
 
