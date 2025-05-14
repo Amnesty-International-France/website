@@ -162,6 +162,52 @@ add_action( 'acf/include_fields', function() {
 		'description' => '',
 		'show_in_rest' => 0,
 	) );
+
+	acf_add_local_field_group( array(
+		'key' => 'group_6824a398670a2',
+		'title' => 'Sommaire',
+		'fields' => array(
+			array(
+				'key' => 'field_6824a39804731',
+				'label' => 'Afficher le sommaire',
+				'name' => 'display_toc',
+				'aria-label' => '',
+				'type' => 'true_false',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => 0,
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'message' => '',
+				'default_value' => 0,
+				'allow_in_bindings' => 0,
+				'ui' => 0,
+				'ui_on_text' => '',
+				'ui_off_text' => '',
+			),
+		),
+		'location' => array(
+			array(
+				array(
+					'param' => 'post_taxonomy',
+					'operator' => '==',
+					'value' => 'category:dossiers',
+				),
+			),
+		),
+		'menu_order' => -1,
+		'position' => 'side',
+		'style' => 'default',
+		'label_placement' => 'top',
+		'instruction_placement' => 'label',
+		'hide_on_screen' => '',
+		'active' => true,
+		'description' => '',
+		'show_in_rest' => 0,
+	) );
 } );
 
 add_action('acf/save_post', function($post_id) {
