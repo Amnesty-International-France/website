@@ -163,3 +163,15 @@ add_action( 'acf/include_fields', function() {
 		'show_in_rest' => 0,
 	) );
 } );
+
+add_action('acf/save_post', function($post_id) {
+	if (get_post_type($post_id) !== 'post') {
+		return;
+	}
+
+	$categories = wp_get_post_categories($post_id, ['fields' => 'slugs']);
+
+	if (!in_array('actualites', $categories, true)) {
+		delete_field('editorial_category', $post_id);
+	}
+}, 20);
