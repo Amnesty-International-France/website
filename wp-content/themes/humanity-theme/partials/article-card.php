@@ -50,7 +50,8 @@ if (!$post_object instanceof WP_Post) {
 			'dossiers' => 'bg-black',
 			default => 'bg-yellow',
 		};
-		$label = $main_category->name;
+		$editorial_category = get_field('editorial_category', $post_id);
+		$label = $editorial_category ? $editorial_category['label'] : $main_category->name;
 		$link = '';
 	} else {
 		$post_type = get_post_type($post_object);

@@ -103,6 +103,7 @@ require_once realpath( __DIR__ . '/includes/admin/landmarks-featured.php' );
  * Theme setup includes
  */
 #region theme setup
+require_once realpath( __DIR__ . '/includes/theme-setup/acf.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/text-domain.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/theme-json.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/categories.php');
