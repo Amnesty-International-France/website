@@ -29,6 +29,7 @@ import collapsableBlock from './modules/collapsable-block';
 import addFlickityToTabs from './modules/tabbed-content-flickity';
 import downloadBlock from './modules/download-block';
 import initCarousels from './modules/carousel';
+import tableOfContents from './modules/table-of-contents';
 
 const App = () => {
   browserDetector();
@@ -57,6 +58,7 @@ const App = () => {
   collapsableBlock();
   addFlickityToTabs();
   initCarousels();
+  tableOfContents();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
