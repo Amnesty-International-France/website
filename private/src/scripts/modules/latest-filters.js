@@ -10,7 +10,14 @@ const handleFilterSubmit = (event) => {
   const request = inputsToObject(inputs);
   const { search } = window.location;
 
-  const params = merge(queryStringToObject(queryString), queryStringToObject(search), request);
+  const allQuery = merge({}, queryStringToObject(queryString), queryStringToObject(search));
+  const params = merge({}, allQuery, request);
+
+  Object.keys(allQuery).forEach((key) => {
+    if (!(key in request)) {
+      delete params[key];
+    }
+  });
 
   window.location = [formTarget, objectToQueryString(params)].filter(Boolean).join('?');
 };

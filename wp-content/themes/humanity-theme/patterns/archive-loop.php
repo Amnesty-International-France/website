@@ -45,8 +45,6 @@ if (is_post_type_archive('landmark')) {
         wp_reset_postdata();
     }
 }
-
-
 ?>
 
 <!-- wp:query {"inherit":true} -->
@@ -58,6 +56,12 @@ if (is_post_type_archive('landmark')) {
 			<!-- wp:post-template {"layout":{"type":"grid","columnCount":3},"className":"post-grid"} -->
 			<!-- wp:amnesty-core/article-card {"direction":"portrait"} /-->
 			<!-- /wp:post-template -->
+
+            <!-- wp:query-no-results -->
+                <div class="wp-block-query-no-results">
+                    <p>Nous n’avons pas trouvé d’articles correspondant à vos critères de recherche.</p>
+                </div>
+            <!-- /wp:query-no-results -->
 		</div>
 		<!-- /wp:group -->
 	</div>
