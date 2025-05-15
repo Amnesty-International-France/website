@@ -12,7 +12,7 @@ $post_type_class = get_post_type() ?: '';
 ?>
 
 <!-- wp:group {"tagName":"section","className":"article"} -->
-<section class="wp-block-group article <?php echo esc_attr($category_class); ?> <?php echo esc_attr($parent_class); ?> <?php echo esc_attr($post_type_class); ?>">
+<section class="wp-block-group article <?php echo esc_attr($category_class); ?> <?php echo esc_attr($post_type_class); ?>">
 
   <!-- wp:group {"tagName":"header","className":"article-header"} -->
   <header class="wp-block-group article-header">
@@ -40,20 +40,12 @@ $post_type_class = get_post_type() ?: '';
   </header>
   <!-- /wp:group -->
 
-  <?php if ( ( $category_class === 'actualites' || $category_class === 'chroniques') && get_the_ID() ) : ?>
-	<!-- wp:group {"tagName":"footer","className":"article-footer"} -->
-	<footer class="wp-block-group article-footer">
-		<!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
-	</footer>
-	<!-- /wp:group -->
-  <?php endif; ?>
-
   <?php if ( $category_class === "dossiers" ) : ?>
 	<?php
 		$display_toc = get_field( 'display_toc' );
 	?>
 
-	<?php if ( $display_toc ) : ?> 
+	<?php if ( $display_toc ) : ?>
 		<div id="toc-container" class="toc-container">
 		<div id="toc-button" class="toc-button">
 			<div class="icon-container">
@@ -82,7 +74,7 @@ $post_type_class = get_post_type() ?: '';
   </article>
   <!-- /wp:group -->
 
-  <?php if ( in_array($category_class, ['actualites', 'chroniques']) || $parent_class === 'actualites' ) : ?>
+  <?php if ( in_array($category_class, ['actualites', 'chroniques']) && get_the_ID()) : ?>
     <!-- wp:group {"tagName":"footer","className":"article-footer"} -->
     <footer class="wp-block-group article-footer">
       <!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
