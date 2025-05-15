@@ -57,3 +57,22 @@ function amnesty_register_landmark_category_taxonomy() {
     ));
 }
 add_action('init', 'amnesty_register_landmark_category_taxonomy');
+
+function amnesty_add_default_landmark_categories() {
+    if (!taxonomy_exists('landmark_category')) return;
+
+    $categories = [
+        'Droit international' => 'droit-international',
+        'Décryptage' => 'decryptage',
+        'Désintox' => 'desintox',
+        'Data' => 'data',
+    ];
+
+    foreach ($categories as $name => $slug) {
+        if (!term_exists($name, 'landmark_category')) {
+            wp_insert_term($name, 'landmark_category', ['slug' => $slug]);
+        }
+    }
+}
+add_action('init', 'amnesty_add_default_landmark_categories', 20);
+

@@ -57,3 +57,117 @@
 .taxonomyArchive-filters .checkboxGroup-list {
   width: 100%;
 }
+
+.archive-hero-img-container {
+  width: 100vw;
+  height: 160px;
+  position: relative;
+  background: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
+
+  .archive-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    filter: brightness(50%) grayscale(1);
+  }
+
+  .archive-hero-title-container {
+    position: absolute;
+    max-width: $container-lg;
+    margin: 0 auto;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    padding: 0 24px;
+
+    @media (min-width: $container-lg) {
+      padding-left: 0;
+    }
+
+    .archive-hero-title {
+      width: fit-content;
+      padding: 5px 8px;
+      color: var(--wp--preset--color--primary);
+      background-color: var(--wp--preset--color--black);
+      font-size: 45px;
+      font-weight: bold;
+      line-height: 51px;
+      text-transform: uppercase;
+
+      h1 {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .yoast-breadcrumb-wrapper {
+    position: absolute;
+    max-width: $container-hg;
+    margin: 0 auto;
+    width: 100%;
+    top: 20px;
+    left: 0;
+    right: 0;
+
+    .yoast-breadcrumb {
+      color: var(--wp--preset--color--white);
+      max-width: $container-hg;
+      margin: 0 auto;
+      padding: 0 24px;
+
+      @media (min-width: $container-hg) {
+        padding-left: 0;
+      }
+
+      > span:first-of-type {
+        display: flex;
+        align-items: center;
+
+        > span {
+          display: inline-flex;
+          align-items: center;
+        }
+      }
+
+      span::before {
+        vertical-align: middle;
+      }
+
+      span + span::before {
+        flex: 0 0 auto;
+        content: '';
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin: 0 6px;
+        background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E")
+          no-repeat center;
+        background-size: contain;
+      }
+
+      a {
+        font-size: 13px;
+        font-weight: 300;
+        text-decoration: none;
+        color: var(--wp--preset--color--white);
+
+        &:hover {
+          text-decoration: underline;
+          background-color: transparent;
+        }
+      }
+
+      & .breadcrumb_last {
+        flex: 1 1 auto;
+        display: inline;
+        align-items: center;
+        font-size: 13px;
+        font-weight: bold;
+      }
+    }
+  }
+}
