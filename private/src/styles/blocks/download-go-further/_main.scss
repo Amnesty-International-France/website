@@ -56,10 +56,13 @@
         text-underline-offset: auto;
         text-underline-position: from-font;
         text-transform: capitalize;
+        flex: 1;
+        word-break: break-word;
       }
 
       a {
         text-decoration: none;
+        flex-shrink: 0;
 
         .item-button {
           display: flex;
