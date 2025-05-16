@@ -30,6 +30,7 @@ import addFlickityToTabs from './modules/tabbed-content-flickity';
 import downloadBlock from './modules/download-block';
 import initCarousels from './modules/carousel';
 import tableOfContents from './modules/table-of-contents';
+import readMoreBlock from './modules/read-more';
 
 const App = () => {
   browserDetector();
@@ -59,6 +60,7 @@ const App = () => {
   addFlickityToTabs();
   initCarousels();
   tableOfContents();
+  readMoreBlock();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
