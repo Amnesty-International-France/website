@@ -154,7 +154,6 @@ add_action('admin_footer', function () {
     <?php
 });
 
-
 function amnesty_get_featured_landmarks() {
     return new WP_Query([
         'post_type'      => 'landmark',
@@ -170,3 +169,24 @@ function amnesty_get_featured_landmarks() {
         ],
     ]);
 }
+
+// Exclude featured landmarks from the main query on the archive page
+function amnesty_exclude_featured_landmarks($query) {
+    if (!is_admin() && $query->is_main_query() && is_post_type_archive('landmark')) {
+        $featured_query = amnesty_get_featured_landmarks();
+        $featured_ids = [];
+
+        if ($featured_query->have_posts()) {
+            while ($featured_query->have_posts()) {
+                $featured_query->the_post();
+                $featured_ids[] = get_the_ID();
+            }
+            wp_reset_postdata();
+        }
+
+        if (!empty($featured_ids)) {
+            $query->set('post__not_in', $featured_ids);
+        }
+    }
+}
+add_action('pre_get_posts', 'amnesty_exclude_featured_landmarks');
