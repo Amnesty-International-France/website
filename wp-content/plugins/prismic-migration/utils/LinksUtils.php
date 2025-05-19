@@ -4,90 +4,91 @@ namespace utils;
 
 use WP_Query;
 
+enum ReturnType {
+	case URL;
+	case ID;
+	case NAME;
+}
+
 class LinksUtils {
 
-	public static function processLink( $data, bool $geturl = true ): string|int {
+	/**
+	 * @throws BrokenTypeException
+	 */
+	public static function processLink($data, ReturnType $returnType = ReturnType::URL ): string|int {
 		if( $data['link_type'] === 'Document' ) {
             if( isset($data['type']) && $data['type'] === 'broken_type') {
                 throw new BrokenTypeException();
             }
-			if( isset($data['type']) && $data['type'] === 'rapport' && isset($data['uid']) ) {
-				return $geturl ? self::generatePlaceHolderRapportUrl( $data['uid'] ) : self::generatePlaceHolderRapportId( $data['uid'] );
-			}
 			if( isset($data['type']) && $data['type'] === 'videohome' ) {
-				return $geturl ? self::generatePlaceHolderVideoHomeUrl() : self::generatePlaceHolderVideoHomeId();
+				return ReturnType::URL ? "%PRISMIC_IMPORT_URL_VIDEOHOME%" : "%PRISMIC_IMPORT_ID_VIDEOHOME%";
 			}
-			if( isset($data['uid']) ) {
-				return $geturl ? self::generatePlaceHolderPostUrl( $data['uid'] ) : self::generatePlaceHolderPostId( $data['uid'] );
+			if( isset($data['type'], $data['uid']) ) {
+				return self::generatePlaceHolderDoc( $data['type'], $data['uid'], $returnType);
 			}
-			return '';
-		} else if( $data['link_type'] === 'Media' ) {
+			return '#';
+		}
+
+		if( $data['link_type'] === 'Media' ) {
 			$name = $data['name'] ?? null;
 			$id = \FileUploader::uploadMedia( $data['url'], name: $name );
 			if( $id ) {
-				return $geturl ? wp_get_attachment_url( $id ) : $id;
+				return $returnType === ReturnType::URL ? wp_get_attachment_url( $id ) : $id;
 			}
 		} else if( $data['link_type'] === 'Web' ) {
 			$url = $data['url'];
 			if( str_starts_with($url, 'https://www.amnesty.fr') ) {
-				$uid = basename( parse_url( $url, PHP_URL_PATH ) );
-				return $geturl ? self::generatePlaceHolderPostUrl( $uid ) : self::generatePlaceHolderPostId( $uid );
+				$parsed = parse_url( $url, PHP_URL_PATH );
+				$uid = basename( $parsed );
+				$parts = explode( '/', trim( $parsed, '/' ) );
+				$type = count($parts) > 1 ? $parts[count( $parts ) - 2] : 'page';
+				return self::generatePlaceHolderDoc( $type, $uid, $returnType);
 			} else if( str_starts_with($url, 'https://amnestyfr.cdn.prismic.io') ) {
 				$id = \FileUploader::uploadMedia( $data['url'] );
 				if( $id ) {
-					return $geturl ? wp_get_attachment_url( $id ) : $id;
+					return $returnType === ReturnType::URL ? wp_get_attachment_url( $id ) : $id;
 				}
-			} else if( $geturl ) {
+			} else {
 				return $url;
 			}
 		} else if( $data['link_type'] === 'Any' ) {
-			return $geturl ? '' : 0;
+			return $returnType === ReturnType::URL ? '' : 0;
 		}
 		throw new \Exception('Link-type unknowed.');
 	}
 
-	public static function generatePlaceHolderPostId( $uid ): string {
-		return "%PRISMIC_IMPORT_ID_$uid%";
-	}
-
-	public static function generatePlaceHolderPostUrl( $uid ): string {
-		return "%PRISMIC_IMPORT_URL_$uid%";
-	}
-
-	public static function generatePlaceHolderPostName( $uid ): string {
-		return "%PRISMIC_IMPORT_NAME_$uid%";
-	}
-
-	public static function generatePlaceHolderRapportId( $uid ): string {
-		return "%PRISMIC_IMPORT_RAPPORT_ID_$uid%";
-	}
-
-	public static function generatePlaceHolderRapportUrl( $uid ): string {
-		return "%PRISMIC_IMPORT_RAPPORT_URL_$uid%";
-	}
-
-	public static function generatePlaceHolderRapportName( $uid ): string {
-		return "%PRISMIC_IMPORT_RAPPORT_NAME_$uid%";
-	}
-
-	public static function generatePlaceHolderVideoHomeId() : string {
-		return "%PRISMIC_IMPORT_VIDEOHOME_ID%";
-	}
-
-	public static function generatePlaceHolderVideoHomeUrl() : string {
-		return "%PRISMIC_IMPORT_VIDEOHOME_URL%";
+	public static function generatePlaceHolderDoc( $type, $uid, ReturnType $returnType): string {
+		switch ( $returnType ) {
+			case ReturnType::URL : {
+				return '%PRISMIC_IMPORT_URL_' . strtoupper( $type ) . '_' . $uid . '%';
+			}
+			case ReturnType::ID : {
+				return '%PRISMIC_IMPORT_ID_' . strtoupper( $type ) . '_' . $uid . '%';
+			}
+			case ReturnType::NAME : {
+				return '%PRISMIC_IMPORT_NAME_' . strtoupper( $type ) . '_' . $uid . '%';
+			}
+		}
+		return '';
 	}
 
 	const PATTERN_URL = '/%PRISMIC_IMPORT_URL_([a-zA-Z0-9-_]+)%/';
 	const PATTERN_ID = '/["]*%PRISMIC_IMPORT_ID_([a-zA-Z0-9-_.]+)%["]*/';
+	const PATTERN_NAME = '/%PRISMIC_IMPORT_NAME_([a-zA-Z0-9-_]+)%/';
 
 	public static function repairLinks( string &$content ): int {
 		$count = 0;
 		if(preg_match_all(self::PATTERN_URL, $content, $matches_url)) {
 			foreach ($matches_url[0] as $placeholder) {
-				$uid = trim($placeholder, '%');
-				$uid = substr( $uid, strlen('PRISMIC_IMPORT_URL_') );
-				$post = self::getPostByUid( $uid );
+				$tmp = trim($placeholder, '%');
+				$tmp = substr( $tmp, strlen('PRISMIC_IMPORT_URL_') );
+
+				$parts = explode( '_', $tmp );
+				if(count($parts) < 2) {
+					continue;
+				}
+				[$type, $uid] = $parts;
+				$post = self::getPostByTypeAndUid( $type, $uid );
 
 				if( $post !== false ) {
 					$new_url = get_permalink( $post );
@@ -100,9 +101,14 @@ class LinksUtils {
 		if(preg_match_all(self::PATTERN_ID, $content, $matches_id)) {
 			foreach ($matches_id[0] as $placeholder_quotes) {
 				$placeholder = trim($placeholder_quotes, '"');
-				$uid = trim($placeholder, '%');
-				$uid = substr( $uid, strlen('PRISMIC_IMPORT_ID_') );
-				$post = self::getPostByUid( $uid );
+				$tmp = trim($placeholder, '%');
+				$tmp = substr( $tmp, strlen('PRISMIC_IMPORT_ID_') );
+				$parts = explode( '_', $tmp );
+				if(count($parts) < 2) {
+					continue;
+				}
+				[$type, $uid] = $parts;
+				$post = self::getPostByTypeAndUid( $type, $uid );
 
 				if( $post !== false ) {
 					$content = str_replace($placeholder_quotes, $post->ID, $content);
@@ -110,13 +116,37 @@ class LinksUtils {
 				}
 			}
 		}
+
+		if(preg_match_all(self::PATTERN_NAME, $content, $matches_name)) {
+			foreach ($matches_name[0] as $placeholder) {
+				$tmp = trim($placeholder, '%');
+				$tmp = substr( $tmp, strlen('PRISMIC_IMPORT_NAME_') );
+
+				$parts = explode( '_', $tmp );
+				if(count($parts) < 2) {
+					continue;
+				}
+				[$type, $uid] = $parts;
+				$post = self::getPostByTypeAndUid( $type, $uid );
+
+				if( $post !== false ) {
+					$content = str_replace($placeholder, $post->post_title, $content);
+					$count++;
+				}
+			}
+		}
 		return $count;
 	}
 
-	private static function getPostByUid( $uid ): \WP_Post|false {
+	private static function getPostByTypeAndUid( $type, $uid ): \WP_Post|false {
+		$article_type = \Type::tryFrom( strtolower( $type ) ) ?? self::mapUrlType( $type );
+		if( $article_type === null) {
+			return false;
+		}
+
 		$args = [
 			'name' => $uid,
-			'post_type' => 'any',
+			'post_type' => \Type::get_wp_post_type( $article_type ),
 			'posts_per_page' => 1,
 		];
 		$query = new WP_Query( $args );
@@ -126,6 +156,13 @@ class LinksUtils {
 		}
 
 		return false;
+	}
+
+	private static function mapUrlType( $urlType ): \Type|null {
+		return match (strtolower($urlType)) {
+			'actualites' => \Type::NEWS,
+			default =>null,
+		};
 	}
 }
 

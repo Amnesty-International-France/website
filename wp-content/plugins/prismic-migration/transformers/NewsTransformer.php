@@ -2,78 +2,36 @@
 
 namespace transformers;
 
-use blocks\MapperFactory;
+use Type;
 use utils\BrokenTypeException;
-use utils\ImageDescCaptionUtils;
 use utils\LinksUtils;
+use utils\ReturnType;
 
 class NewsTransformer extends DocTransformer {
 
     public function parse( $prismicDoc ): array {
-		$wp_post = [];
+		$wp_post = parent::parse( $prismicDoc );
 
 		$data = $prismicDoc['data'];
 
-        $chapoContent = isset($data['chapo']) ? trim( implode( " ", array_column( $data['chapo'], 'text')) ) : '';
-
-        $chapoBlock = !empty( $chapoContent) ? array(MapperFactory::getInstance()->getRichTextMapper([
-            'type' => 'chapo',
-            'text' => $chapoContent,
-            'spans' => []
-        ], new \ArrayIterator())->map()) : [];
-
-        $contenuBlocks = [];
-        $itContenu = isset($data['contenu']) ? new \ArrayIterator( $data['contenu'] ) : new \ArrayIterator();
-        while( $itContenu->valid() ) {
-            $contenu = $itContenu->current();
-            try {
-				$mapper = MapperFactory::getInstance()->getRichTextMapper( $contenu, $itContenu );
-				if( $mapper !== null ) {
-					$contenuBlocks[] = $mapper->map();
-				}
-            } catch (\Exception $e) {
-                echo $e->getMessage().PHP_EOL;
-            }
-
-            $itContenu->next();
-        }
-
-        $slicesBlocks = [];
-        foreach( $data['contenuEtendu'] as $slice ) {
-            try {
-				$mapper = MapperFactory::getInstance()->getSliceMapper($slice);
-				if( $mapper !== null) {
-					$slicesBlocks[] = $mapper->map();
-				}
-            } catch (\Exception $e) {
-                echo $e->getMessage().PHP_EOL;
-            }
-        }
-
 		$terms = $this->getTerms( $prismicDoc );
 
-		$informed_block = $this->createGetInformedBlock( $prismicDoc, $terms ) ?? [];
+		$informed_block = $this->createGetInformedBlock( $prismicDoc, $terms );
 
-        $wp_post['post_content'] = wp_slash(serialize_blocks(array_merge($chapoBlock, $contenuBlocks, $slicesBlocks, $informed_block)));
-
-        if( $data['authorName'] !== null ) {
-            $wp_post['post_author'] = $this->getAuthor($data['authorName']);
-        }
-		if( $data['accroche'] !== null ) {
-			$wp_post['post_excerpt'] = $data['accroche'];
+		if ( $informed_block ) {
+			$wp_post['post_content'] .= wp_slash(serialize_block($informed_block));
 		}
 
-		$wp_post['post_date'] = (new \DateTime($data['datePub'] ?? $prismicDoc['last_publication_date']))->format('Y-m-d H:i:s');
-		$wp_post['post_title'] = $data['title'][0]['text'];
-		$wp_post['post_status'] = isset($data['visibility']) && $data['visibility'] === 'member' ? 'private' : 'publish';
-		$wp_post['post_type'] = 'post';
-		$wp_post['comment_status'] = 'closed';
-		$wp_post['ping_status'] = 'closed';
-		$wp_post['post_name'] = $prismicDoc['uid'];
+        if ( $data['authorName'] !== null ) {
+            $wp_post['post_author'] = $this->getAuthor($data['authorName']);
+        }
+
+		$wp_post['post_type'] = Type::get_wp_post_type(\Type::NEWS);
+
 		$wp_post['post_category'] = $this->getCategories(array('actualites'));
 		$wp_post['terms'] = [
-			'location' => array_column($terms['countries'], 'slug'),
-			'combat' => array_column($terms['combats'], 'slug')
+			'location' => array_filter( array_column($terms['countries'], 'slug'), static fn($s) => $s !== null ),
+			'combat' => array_filter( array_column($terms['combats'], 'slug'), static fn($s) => $s !== null )
 		];
 
 		$wp_post['meta_input'] = [
@@ -81,30 +39,14 @@ class NewsTransformer extends DocTransformer {
 			'prismic_json' => json_encode( $prismicDoc, JSON_UNESCAPED_UNICODE )
 		];
 
+		$subCat = $this->getSubCategory( $data );
+		$wp_post['meta_input']['editorial_category'] = $subCat ?? '';
+		$wp_post['meta_input']['_editorial_category'] = 'field_68248747c71a5';
+
 		$this->addRelatedContent( $prismicDoc, $wp_post);
 
 		return $wp_post;
     }
-
-	public function featuredImage( $prismicDoc ): array|false {
-		$data = $prismicDoc['data'];
-
-		if( ! isset($data['image']['url'])) {
-			return false;
-		}
-
-		$desc = '';
-		$legend = '';
-		if( isset($data['legend']) ) {
-			$descCaption = ImageDescCaptionUtils::getDescAndCaption( $data['legend'] );
-		}
-		return [
-			'alt' => $data['image']['alt'] ?? '',
-			'imageUrl' => $data['image']['url'],
-			'description' => isset($descCaption) ? $descCaption['description'] : $desc,
-			'legend' => isset($descCaption) ? $descCaption['caption'] : $legend
-		];
-	}
 
 	private function addRelatedContent( $prismicDoc, &$wp_post ): void {
 		$data = $prismicDoc['data'];
@@ -115,7 +57,7 @@ class NewsTransformer extends DocTransformer {
 				if( $count < 3 ) {
 					$content = $related['relatedcontent'];
 					try {
-						$id = LinksUtils::processLink($content, false);
+						$id = LinksUtils::processLink($content, ReturnType::ID);
 					} catch (BrokenTypeException $e) {}
 					if( !empty($id) ) {
 						$result[] = $id;
@@ -133,33 +75,49 @@ class NewsTransformer extends DocTransformer {
 	private function createGetInformedBlock( $prismicDoc, $terms ): array|null {
 		$links = [];
 		foreach ($terms['countries'] as $country) {
-			$links[] = ['type' => 'pays', 'title' => $country['name'], 'url' => LinksUtils::generatePlaceHolderPostUrl($country['slug']), 'customLabel' => ''];
+			$links[] = ['type' => 'pays', 'title' => $country['name'], 'url' => $country['url'], 'customLabel' => ''];
 		}
 		foreach ($terms['combats'] as $combat) {
-			$links[] = ['type' => 'combat', 'title' => $combat['name'], 'url' => LinksUtils::generatePlaceHolderPostUrl($combat['slug']), 'customLabel' => ''];
+			$links[] = ['type' => 'combat', 'title' => $combat['name'], 'url' => $combat['url'], 'customLabel' => ''];
 		}
 		foreach ($terms['dossiers'] as $dossier) {
-			$links[] = ['type' => 'dossier', 'title' => $dossier['name'], 'url' => LinksUtils::generatePlaceHolderPostUrl($dossier['slug']), 'customLabel' => ''];
+			$links[] = ['type' => 'dossier', 'title' => $dossier['name'], 'url' => $dossier['url'], 'customLabel' => ''];
 		}
 		foreach ($terms['chroniques'] as $chronique) {
-			$links[] = ['type' => 'libre', 'title' => $chronique['name'], 'url' => LinksUtils::generatePlaceHolderPostUrl($chronique['slug']), 'customLabel' => 'Chronique'];
+			$links[] = ['type' => 'libre', 'title' => $chronique['name'], 'url' => $chronique['url'], 'customLabel' => 'Chronique'];
 		}
 		if( isset($prismicDoc['data']['relatedResources']) ) {
 			foreach ( $prismicDoc['data']['relatedResources'] as $related ) {
 				$content = $related['relatedcontent'];
 				if( isset($content['type'], $content['uid']) && $content['type'] === 'rapport' ) {
-					$links[] = ['type' => 'libre', 'title' => LinksUtils::generatePlaceHolderRapportName($content['uid']), 'url' => LinksUtils::generatePlaceHolderRapportUrl($content['uid']), 'customLabel' => 'Rapport'];
+					$links[] = ['type' => 'libre', 'title' => LinksUtils::generatePlaceHolderDoc('rapport', $content['uid'], ReturnType::NAME), 'url' => LinksUtils::generatePlaceHolderDoc('rapport', $content['uid'], ReturnType::URL), 'customLabel' => 'Rapport'];
 				}
 			}
 		}
 		if( empty($links) ) {
 			return null;
 		}
-		return [[
+		return [
 			'blockName' => 'amnesty-core/get-informed',
 			'attrs' => ['links' => $links],
 			'innerBlocks' => [],
 			'innerContent' => []
-		]];
+		];
+	}
+
+	private function getSubCategory( $data ) : string|null {
+		$first = match ( $data['smallTitle'] ) {
+			'enquête' => 'enquetes',
+			'entretien' => 'entretiens',
+			'témoignage' => 'temoignages',
+			'tribune' => 'tribunes',
+			default => null
+		};
+		$second = match ( $data['smallTitle2'] ) {
+			'Portrait' => 'portraits',
+			'Rapport' => 'rapports',
+			default => null
+		};
+		return $first ?? $second;
 	}
 }

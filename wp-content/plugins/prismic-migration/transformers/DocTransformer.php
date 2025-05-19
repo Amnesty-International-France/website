@@ -1,13 +1,89 @@
 <?php
 
 namespace transformers;
+use blocks\MapperFactory;
+use utils\ImageDescCaptionUtils;
 use utils\LinksUtils;
+use utils\ReturnType;
 
 abstract class DocTransformer {
 
-	public abstract function parse( $prismicDoc ): array;
+	public function parse( $prismicDoc ): array {
+		$wp_post = [];
 
-	public abstract function featuredImage( $prismicDoc ): array|false;
+		$data = $prismicDoc['data'];
+
+		$chapoContent = isset($data['chapo']) ? trim( implode( " ", array_column( $data['chapo'], 'text')) ) : '';
+
+		$chapoBlock = !empty( $chapoContent) ? array(MapperFactory::getInstance()->getRichTextMapper([
+			'type' => 'chapo',
+			'text' => $chapoContent,
+			'spans' => []
+		], new \ArrayIterator())->map()) : [];
+
+		$contenuBlocks = [];
+		$itContenu = isset($data['contenu']) ? new \ArrayIterator( $data['contenu'] ) : new \ArrayIterator();
+		while( $itContenu->valid() ) {
+			$contenu = $itContenu->current();
+			try {
+				$mapper = MapperFactory::getInstance()->getRichTextMapper( $contenu, $itContenu );
+				if( $mapper !== null ) {
+					$contenuBlocks[] = $mapper->map();
+				}
+			} catch (\Exception $e) {
+				echo $e->getMessage().PHP_EOL;
+			}
+
+			$itContenu->next();
+		}
+
+		$slicesBlocks = [];
+		foreach( $data['contenuEtendu'] as $slice ) {
+			try {
+				$mapper = MapperFactory::getInstance()->getSliceMapper($slice);
+				if( $mapper !== null) {
+					$slicesBlocks[] = $mapper->map();
+				}
+			} catch (\Exception $e) {
+				echo $e->getMessage().PHP_EOL;
+			}
+		}
+
+		$wp_post['post_content'] = wp_slash(serialize_blocks(array_merge($chapoBlock, $contenuBlocks, $slicesBlocks)));
+
+		if( $data['accroche'] !== null ) {
+			$wp_post['post_excerpt'] = $data['accroche'];
+		}
+
+		$wp_post['post_date'] = (new \DateTime($data['datePub'] ?? $prismicDoc['last_publication_date']))->format('Y-m-d H:i:s');
+		$wp_post['post_title'] = $data['title'][0]['text'];
+		$wp_post['post_status'] = isset($data['visibility']) && $data['visibility'] === 'member' ? 'private' : 'publish';
+		$wp_post['comment_status'] = 'closed';
+		$wp_post['ping_status'] = 'closed';
+		$wp_post['post_name'] = $prismicDoc['uid'];
+
+		return $wp_post;
+	}
+
+	public function featuredImage( $prismicDoc ): array|false {
+		$data = $prismicDoc['data'];
+
+		if( ! isset($data['image']['url'])) {
+			return false;
+		}
+
+		$desc = '';
+		$legend = '';
+		if( isset($data['legend']) ) {
+			$descCaption = ImageDescCaptionUtils::getDescAndCaption( $data['legend'] );
+		}
+		return [
+			'alt' => $data['image']['alt'] ?? '',
+			'imageUrl' => $data['image']['url'],
+			'description' => isset($descCaption) ? $descCaption['description'] : $desc,
+			'legend' => isset($descCaption) ? $descCaption['caption'] : $legend
+		];
+	}
 
 	public function getSeoAndOgData( $prismicDoc ): array {
 		$res = [];
@@ -74,9 +150,13 @@ abstract class DocTransformer {
 				continue;
 			}
 
+			$name = LinksUtils::processLink( $content, ReturnType::NAME );
+			$url = LinksUtils::processLink( $content );
 			$term = get_term_by( 'slug', \TaxMapper::mapCountry( $content['uid'] ), 'location');
 			if( $term ) {
-				$countries[] = ['slug' => $term->slug, 'name' => $term->name];
+				$countries[] = ['slug' => $term->slug, 'name' => $name, 'url' => $url ];
+			} else {
+				$countries[] = ['slug' => null, 'name' => $name, 'url' => $url];
 			}
 		}
 
@@ -86,9 +166,13 @@ abstract class DocTransformer {
 				continue;
 			}
 
+			$name = LinksUtils::processLink( $content, ReturnType::NAME );
+			$url = LinksUtils::processLink( $content );
 			$term = get_term_by( 'slug', \TaxMapper::mapCombat( $content['uid'] ), 'combat');
 			if( $term ) {
-				$combats[] = ['slug' => $term->slug, 'name' => $term->name];
+				$combats[] = ['slug' => $term->slug, 'name' => $name, 'url' => $url];
+			} {
+				$combats[] = ['slug' => null, 'name' => $name, 'url' => $url];
 			}
 		}
 
@@ -98,13 +182,17 @@ abstract class DocTransformer {
 				continue;
 			}
 
+			$name = LinksUtils::processLink( $content, ReturnType::NAME );
+			$url = LinksUtils::processLink( $content );
 			if( $content['type'] === 'thematique' ) {
 				$term = get_term_by( 'slug', \TaxMapper::mapCombat( $content['uid'] ), 'combat');
 				if( $term ) {
-					$combats[] = ['slug' => $term->slug, 'name' => $term->name];
+					$combats[] = ['slug' => $term->slug, 'name' => $name, 'url' => $url];
+				} else {
+					$combats[] = ['slug' => null, 'name' => $name, 'url' => $url];
 				}
 			} else if( $content['type'] === 'dossier' ) {
-				$dossiers[] = ['slug' => $content['uid'], 'name' => LinksUtils::generatePlaceHolderPostName( $content['uid'] )];
+				$dossiers[] = ['name' => $name, 'url' => $url];
 			}
 		}
 
@@ -115,7 +203,9 @@ abstract class DocTransformer {
 				continue;
 			}
 
-			$chroniques[] = ['slug' => $content['uid'], 'name' => LinksUtils::generatePlaceHolderPostName( $content['uid'] )];
+			$name = LinksUtils::processLink( $content, ReturnType::NAME );
+			$url = LinksUtils::processLink( $content );
+			$chroniques[] = ['name' => $name, 'url' => $url];
 		}
 
 		return [

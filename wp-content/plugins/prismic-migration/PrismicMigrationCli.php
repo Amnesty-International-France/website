@@ -82,11 +82,16 @@ class PrismicMigrationCli {
 
 		$progress = WP_CLI\Utils\make_progress_bar( 'Importing documents', count($prismic_docs) );
 		foreach ( $prismic_docs as $doc ) {
-			if ( $this->post_exists_by_slug($doc['uid']) ) {
+			$docType = Type::tryFrom( $doc['type'] );
+			if( $docType === null) {
+				WP_CLI::warning( 'Document type not supported : ' . $doc['type'] . ' (' . $doc['uid'] . ')' );
+			}
+
+			if ( $this->post_exists_by_slug($doc['uid'], $docType) ) {
 				$progress->tick();
 				continue;
 			}
-			$transformer = DocTransformerFactory::getTransformer( $doc['type'] );
+			$transformer = DocTransformerFactory::getTransformer( $docType );
 
 			$wp_post = $transformer->parse( $doc );
 
@@ -128,10 +133,10 @@ class PrismicMigrationCli {
 		WP_CLI::success( 'Migration successful: ' . $imported . ' documents imported.' );
 	}
 
-	function post_exists_by_slug(string $slug): WP_Post|bool {
+	function post_exists_by_slug(string $slug, Type $type): WP_Post|bool {
 		$query = new WP_Query([
 			'name' => $slug,
-			'post_type' => 'any',
+			'post_type' => Type::get_wp_post_type($type),
 			'post_status' => 'any',
 			'fields' => 'ids'
 		]);

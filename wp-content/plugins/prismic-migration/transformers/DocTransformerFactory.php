@@ -2,14 +2,16 @@
 
 namespace transformers;
 
+use Type;
+
 class DocTransformerFactory
 {
 
-	public static function getTransformer($type): DocTransformer
-	{
+	public static function getTransformer( Type $type ): DocTransformer {
 		return match ($type) {
-			'news' => new NewsTransformer(),
-			default => throw new \Exception("Not found transformer for type : $type")
+			Type::NEWS => new NewsTransformer(),
+			Type::PAYS => new PaysTransformer(),
+			default => throw new \Exception("Not found transformer for type : $type->value")
 		};
 	}
 }

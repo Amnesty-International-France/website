@@ -28,7 +28,7 @@ class RepairLinksCli {
 				$post = get_post( $post_id );
 
 				$related = get_post_meta( $post_id, '_related_posts_selected', true );
-				if( $related !== false && !empty( $related ) && is_array( $related ) ) {
+				if( !empty( $related ) && is_array( $related ) ) {
 					foreach ( $related as $key => $related_article ) {
 						if(is_string( $related_article )) {
 							$count = LinksUtils::repairLinks( $related_article );
@@ -45,7 +45,7 @@ class RepairLinksCli {
 					$total += $count;
 					$updatedPost = [
 						'ID' => $post_id,
-						'post_content' => $content,
+						'post_content' => wp_slash($content),
 					];
 					wp_update_post( $updatedPost );
 				}

@@ -2,6 +2,7 @@
 
 use blocks\BlockMapper;
 use utils\LinksUtils;
+use utils\ReturnType;
 
 class ListeDActionsMapper extends BlockMapper {
 
@@ -15,7 +16,7 @@ class ListeDActionsMapper extends BlockMapper {
 			$this->blocks[] = [
 				'blockName' => 'amnesty-core/article-card',
 				'attrs' => [
-					'postId' => LinksUtils::processLink($item['action_link'], false),
+					'postId' => LinksUtils::processLink($item['action_link'], ReturnType::ID),
 					'direction' => 'landscape',
 				],
 				'innerContent' => [],
