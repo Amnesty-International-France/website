@@ -20,7 +20,7 @@ $label = '';
 $link = '';
 
 $main_category = amnesty_get_a_post_term($post_id);
-$chip_style = match ($main_category->slug) {
+$chip_style = match ($main_category->slug ?? '') {
     'actualites', 'dossiers' => 'bg-black',
     'chroniques' => 'bg-yellow',
     default => 'bg-black',
@@ -62,7 +62,7 @@ if ('landmark' === $post_type) {
 
 	$editorial_category = get_field('editorial_category', $post_id);
 
-	if( $editorial_category ) {
+	if( is_array( $editorial_category ) ) {
 		$label = $editorial_category['label'];
 	}
 

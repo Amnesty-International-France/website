@@ -2,53 +2,30 @@
 
 use blocks\BlockMapper;
 use utils\LinksUtils;
+use utils\ReturnType;
 
 class EncadreLienMapper extends BlockMapper {
 
 	private bool $intern;
-
 	private $value;
 	private $text;
-	private $url;
 
 	public function __construct($prismicBlock) {
 		parent::__construct( $prismicBlock );
 		$this->text = $prismicBlock['primary']['content'] ?? '';
 		$this->intern = true;
 		$data = $prismicBlock['primary']['link'];
-		if( $data['link_type'] === 'Document' ) {
-			if( $data['type'] === 'broken_type') {
+		try {
+			$this->value = LinksUtils::processLink( $data, ReturnType::ID);
+			if( $data['link_type'] === 'Web' && !str_starts_with($data['url'], 'https://www.amnesty.fr') && !str_starts_with($data['url'], 'https://amnestyfr.cdn.prismic.io') ) {
 				$this->intern = false;
-				$this->url = '#';
-			} else if( $data['type'] === 'rapport' ) {
-				$this->value = LinksUtils::generatePlaceHolderRapportId( $data['uid'] );
-			} else if( $data['type'] === 'videohome' ) {
-				$this->value = LinksUtils::generatePlaceHolderVideoHomeId();
-			} else {
-				$this->value = LinksUtils::generatePlaceHolderPostId( $data['uid'] );
 			}
-		} else if( $data['link_type'] === 'Media' ) {
-			$this->processMedia( $data['url'], $data['name'] );
-		} else if( $data['link_type'] === 'Web') {
-			$url = $data['url'];
-			if( str_starts_with($url, 'https://www.amnesty.fr') ) {
-				$uid = basename( parse_url( $url, PHP_URL_PATH ) );
-				$this->value = LinksUtils::generatePlaceHolderPostId( $uid );
-			} else if( str_starts_with($url, 'https://amnestyfr.cdn.prismic.io') ) {
-				$this->processMedia( $url );
-			} else {
-				$this->intern = false;
-				$this->url = $url;
-			}
+		} catch ( Exception $e ) {
+			$this->intern = false;
+			$this->value = '#';
 		}
 	}
 
-	private function processMedia( $url, $name = null ) {
-		$id = FileUploader::uploadMedia( $url, name: $name );
-		if( $id ) {
-			$this->value = $id;
-		}
-	}
 	protected function getBlockName(): string {
         return 'amnesty-core/read-also';
     }
@@ -62,7 +39,7 @@ class EncadreLienMapper extends BlockMapper {
 		return [
 			'linkType' => 'external',
 			'externalLabel' => $this->text,
-			'externalUrl' => $this->url
+			'externalUrl' => $this->value
 		];
     }
 

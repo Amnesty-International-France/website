@@ -87,7 +87,7 @@ if (!function_exists('setup_countries')) {
 			'Liban' => ['slug' => 'liban'],
 			'Libye' => ['slug' => 'libye'],
 			'Lituanie' => ['slug' => 'lituanie'],
-			'Macédoine du Nord' => ['slug' => 'macedoine-du-nord'],
+			'Macédoine du Nord' => ['slug' => 'macedoine'],
 			'Madagascar' => ['slug' => 'madagascar'],
 			'Malaisie' => ['slug' => 'malaisie'],
 			'Malawi' => ['slug' => 'malawi'],

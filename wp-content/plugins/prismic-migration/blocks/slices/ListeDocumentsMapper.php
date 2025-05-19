@@ -2,6 +2,7 @@
 
 use blocks\BlockMapper;
 use utils\LinksUtils;
+use utils\ReturnType;
 
 class ListeDocumentsMapper extends BlockMapper {
 
@@ -18,12 +19,8 @@ class ListeDocumentsMapper extends BlockMapper {
 				$name = $doc['name'] ?? null;
 				$attachmentId = FileUploader::uploadMedia( $url, name: $name, title: $title );
 				$this->docsId[] = $attachmentId;
-			} else if( $doc['link_type'] === 'Document' ) {
-				if( $doc['type'] === 'rapport' ) {
-					$this->docsId[] = LinksUtils::generatePlaceHolderRapportId( $doc['uid'] );
-				} else if( $doc['type'] !== 'broken_type' ) {
-					$this->docsId[] = LinksUtils::generatePlaceHolderPostId( $doc['uid'] );
-				}
+			} else if(($doc['link_type'] === 'Document') && isset($doc['type'], $doc['uid']) && $doc['type'] !== 'broken_type') {
+				$this->docsId[] = LinksUtils::generatePlaceHolderDoc( $doc['type'], $doc['uid'], ReturnType::ID);
 			}
 		}
 	}

@@ -74,8 +74,3 @@ enum Ordering: string {
 	case ASC = 'ASC';
 	case DESC = 'DESC';
 }
-
-enum Type: string {
-	case ALL = '';
-	case NEWS = 'news';
-}

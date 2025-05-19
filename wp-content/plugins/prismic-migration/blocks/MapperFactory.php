@@ -228,16 +228,33 @@ class MapperFactory {
 		$offset = 0;
 		foreach ($insertions as $insertion) {
 			$position = $insertion['position'] + $offset;
-			$res = $this->utf8_substr_replace($res, $insertion['tag'], $position, 0);
+			$res = $this->utf8_substr_replace($res, $insertion['tag'], $position);
 			$offset += strlen($insertion['tag']);
 		}
 
 		return $res;
 	}
 
-	private function utf8_substr_replace($original, $replacement, $position, $length): string {
-		$startString = mb_substr($original, 0, $position, "UTF-8");
-		$endString = mb_substr($original, $position + $length, mb_strlen($original), "UTF-8");
+	private function utf8_substr_replace($original, $replacement, $position): string {
+		$realIndex = 0;
+		$utf16Count = 0;
+
+		// détecte les surrogate pair (caractère UTF-16 composé de deux "mots" de 16 bits)
+		foreach (mb_str_split($original) as $char) {
+			$utf16 = mb_convert_encoding($char, 'UTF-16BE', 'UTF-8');
+			$utf16Units = unpack('n*', $utf16);
+			$utf16Count += count($utf16Units);
+
+			if ($utf16Count > $position) {
+				break;
+			}
+
+			$realIndex++;
+		}
+
+		// $realIndex correspond à l'index "UTF-8" où couper
+		$startString = mb_substr($original, 0, $realIndex, "UTF-8");
+		$endString = mb_substr($original, $realIndex, null, "UTF-8");
 
 		return $startString . $replacement . $endString;
 	}

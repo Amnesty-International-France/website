@@ -6,8 +6,6 @@
  */
 class FileUploader {
 
-	const REGEX = '/(((amnestyfr)?[0-9a-f]{0,8}-?[0-9a-f]{0,4}-?[0-9a-f]{0,4}-?[0-9a-f]{0,4}-?[0-9a-f]{12})|([a-fA-F0-9]{40}))_+/';
-
 	public static function uploadMedia( $url, $legende = '', $description = '', $alt = '', $name = null, $title = null ) {
 		if(PrismicMigrationCli::$dryrun) {
 			return 1;
@@ -21,7 +19,6 @@ class FileUploader {
 
 		$url = strtok( $url, '?' );
 		$file_name = substr( sanitize_file_name( transliterator_transliterate( 'Latin-ascii',$name ?? urldecode( basename( parse_url( $url, PHP_URL_PATH ) ) ) ) ), -100 );
-		$file_name = preg_replace(self::REGEX, '', $file_name );
 		$file_title = $title ?? self::format_title($file_name);
 
 		$id = self::media_exists( $file_title );

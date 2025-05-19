@@ -9,6 +9,7 @@
 if( ! defined( 'ABSPATH' ) ) exit;
 
 if( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once __DIR__ . '/Type.php';
 	require_once __DIR__ . '/FileUploader.php';
 	require_once __DIR__ . '/PrismicFetcher.php';
 	require_once __DIR__ . '/TaxMapper.php';

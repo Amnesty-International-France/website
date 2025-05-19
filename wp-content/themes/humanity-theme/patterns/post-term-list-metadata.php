@@ -24,12 +24,11 @@ $default_chip_style = match ($main_category->slug ?? '') {
     default => 'outline-black',
 };
 
-$post_terms = array_filter($post_terms, static function ($term) use ($main_category) {
-    return $term->slug !== $main_category->slug;
-});
-
 foreach ($post_terms as $post_term) :
     if ($main_category) {
+		if( $post_term->slug === $main_category->slug ) {
+			continue;
+		}
         $chip_style = $default_chip_style;
     } else {
         if ($post_type === 'landmark') {
