@@ -2,6 +2,7 @@
 
 namespace transformers;
 use blocks\MapperFactory;
+use Exception;
 use utils\ImageDescCaptionUtils;
 use utils\LinksUtils;
 use utils\ReturnType;
@@ -150,8 +151,13 @@ abstract class DocTransformer {
 				continue;
 			}
 
-			$name = LinksUtils::processLink( $content, ReturnType::NAME );
-			$url = LinksUtils::processLink( $content );
+			try {
+				$name = LinksUtils::processLink( $content, ReturnType::NAME );
+				$url = LinksUtils::processLink( $content );
+			} catch ( Exception $e ) {
+				continue;
+			}
+
 			$term = get_term_by( 'slug', \TaxMapper::mapCountry( $content['uid'] ), 'location');
 			if( $term ) {
 				$countries[] = ['slug' => $term->slug, 'name' => $name, 'url' => $url ];
@@ -166,8 +172,13 @@ abstract class DocTransformer {
 				continue;
 			}
 
-			$name = LinksUtils::processLink( $content, ReturnType::NAME );
-			$url = LinksUtils::processLink( $content );
+			try {
+				$name = LinksUtils::processLink( $content, ReturnType::NAME );
+				$url = LinksUtils::processLink( $content );
+			} catch ( Exception $e ) {
+				continue;
+			}
+
 			$term = get_term_by( 'slug', \TaxMapper::mapCombat( $content['uid'] ), 'combat');
 			if( $term ) {
 				$combats[] = ['slug' => $term->slug, 'name' => $name, 'url' => $url];
@@ -182,8 +193,13 @@ abstract class DocTransformer {
 				continue;
 			}
 
-			$name = LinksUtils::processLink( $content, ReturnType::NAME );
-			$url = LinksUtils::processLink( $content );
+			try {
+				$name = LinksUtils::processLink( $content, ReturnType::NAME );
+				$url = LinksUtils::processLink( $content );
+			} catch ( Exception $e ) {
+				continue;
+			}
+
 			if( $content['type'] === 'thematique' ) {
 				$term = get_term_by( 'slug', \TaxMapper::mapCombat( $content['uid'] ), 'combat');
 				if( $term ) {
@@ -203,8 +219,13 @@ abstract class DocTransformer {
 				continue;
 			}
 
-			$name = LinksUtils::processLink( $content, ReturnType::NAME );
-			$url = LinksUtils::processLink( $content );
+			try {
+				$name = LinksUtils::processLink( $content, ReturnType::NAME );
+				$url = LinksUtils::processLink( $content );
+			} catch ( Exception $e ) {
+				continue;
+			}
+
 			$chroniques[] = ['name' => $name, 'url' => $url];
 		}
 

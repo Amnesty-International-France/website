@@ -87,7 +87,7 @@ class PrismicMigrationCli {
 				WP_CLI::warning( 'Document type not supported : ' . $doc['type'] . ' (' . $doc['uid'] . ')' );
 			}
 
-			if ( $this->post_exists_by_slug($doc['uid'], $docType) ) {
+			if ( $this->post_exists_by_slug_and_type($doc['uid'], $docType) ) {
 				$progress->tick();
 				continue;
 			}
@@ -133,7 +133,7 @@ class PrismicMigrationCli {
 		WP_CLI::success( 'Migration successful: ' . $imported . ' documents imported.' );
 	}
 
-	function post_exists_by_slug(string $slug, Type $type): WP_Post|bool {
+	function post_exists_by_slug_and_type(string $slug, Type $type): WP_Post|bool {
 		$query = new WP_Query([
 			'name' => $slug,
 			'post_type' => Type::get_wp_post_type($type),
