@@ -1,0 +1,9 @@
+@import './page/base';
+@import './page/featured-image';
+@import './page/meta';
+@import './page/header';
+@import './page/hero';
+@import './page/footer';
+
+// Style by page type
+@import './page/type/standard';

@@ -1,8 +1,8 @@
 <?php
 /**
- * Title: Post Content
+ * Title: Article Content
  * Description: Output the content of a single post
- * Slug: amnesty/post-content
+ * Slug: amnesty/article-content
  * Inserter: no
  */
 
