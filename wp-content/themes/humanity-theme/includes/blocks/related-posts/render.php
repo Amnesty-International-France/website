@@ -5,6 +5,8 @@ function render_related_posts_block( $attributes, $content = '' ) {
 		return '';
 	}
 
+	$nb_posts = (int) $attributes['nb_posts'];
+
 	$post_id = get_the_ID();
 	if ( ! $post_id ) {
 		return '';
@@ -13,13 +15,13 @@ function render_related_posts_block( $attributes, $content = '' ) {
 	$selected_posts = get_post_meta( $post_id, '_related_posts_selected', true );
 
 	if ( is_array( $selected_posts ) && count( $selected_posts ) > 0 ) {
-		$selected_posts = array_filter( array_slice( $selected_posts, 0, 3 ) );
+		$selected_posts = array_filter( array_slice( $selected_posts, 0, $nb_posts ) );
 
 		$query = new WP_Query( [
 			'post_type'      => 'post',
 			'post__in'       => $selected_posts,
 			'orderby'        => 'post__in',
-			'posts_per_page' => 3,
+			'posts_per_page' => $nb_posts,
 		] );
 	} else {
 		$term = amnesty_get_a_post_term( $post_id );
@@ -29,7 +31,7 @@ function render_related_posts_block( $attributes, $content = '' ) {
 
 		$query = new WP_Query( [
 			'post_type'      => 'post',
-			'posts_per_page' => 3,
+			'posts_per_page' => $nb_posts,
 			'post__not_in'   => [ $post_id ],
 			'tax_query'      => [
 				[
@@ -47,9 +49,10 @@ function render_related_posts_block( $attributes, $content = '' ) {
 		return '';
 	}
 
+	$card_direction = $attributes['display'] === 'chronique' ? 'landscape' : 'portrait';
 	ob_start();
 	?>
-	<div class="related-posts-block">
+	<div class="related-posts-block <?php echo esc_attr($attributes['display'])?>">
 		<div class="content">
 			<h2 class="title"><?php echo esc_html( $attributes['title'] ?? 'À lire aussi' ); ?></h2>
 			<div class="list">
@@ -58,7 +61,7 @@ function render_related_posts_block( $attributes, $content = '' ) {
 					$block = [
 						'blockName' => 'amnesty-core/article-card',
 						'attrs'     => [
-							'direction' => 'portrait',
+							'direction' => $card_direction,
 							'postId'    => get_the_ID(),
 						],
 						'innerBlocks' => [],
