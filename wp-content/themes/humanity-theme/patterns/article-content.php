@@ -82,7 +82,12 @@ $post_type_class = get_post_type() ?: '';
     <!-- /wp:group -->
   <?php endif; ?>
 
-  <!-- wp:amnesty-core/related-posts {"title":"Voir aussi"} /-->
+	<?php if ( $category_class === 'chroniques') : ?>
+		<!-- wp:amnesty-core/related-posts {"title":"ET AUSSI", "nb_posts": 4, "display": "chronique"} /-->
+	<?php else : ?>
+		<!-- wp:amnesty-core/related-posts {"title":"Voir aussi"} /-->
+	<?php endif; ?>
+
 
 </section>
 <!-- /wp:group -->

@@ -20,6 +20,14 @@ if( !function_exists( 'register_related_posts_block' ) ) {
 						'type' => 'string',
 						'default' => 'À lire aussi'
 					],
+					'nb_posts' => [
+						'type' => 'number',
+						'default' => 3
+					],
+					'display' => [
+						'type' => 'string',
+						'default' => ''
+					],
 					'postIds' => [
 						'type'    => 'array',
 						'items'   => [ 'type' => 'number' ],
