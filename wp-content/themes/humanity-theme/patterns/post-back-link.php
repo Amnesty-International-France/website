@@ -51,8 +51,9 @@ if ('landmark' === $post_type) {
         }
     }
 
-    if ($found_term) {
-        $label = $found_term->name;
+    if ($found_term instanceof WP_Term) {
+        $acf_singular = get_field('category_singular_name', $found_term);
+        $label = $acf_singular ?: $found_term->name;
         $link = get_term_link($found_term);
     } else {
         $post_type_object = get_post_type_object($post_type);
@@ -60,12 +61,10 @@ if ('landmark' === $post_type) {
         $link = get_post_type_archive_link($post_type);
     }
 
-	$editorial_category = get_field('editorial_category', $post_id);
-
-	if( is_array( $editorial_category ) ) {
-		$label = $editorial_category['label'];
-	}
-
+    $editorial_category = get_field('editorial_category', $post_id);
+    if (is_array($editorial_category) && !empty($editorial_category['label'])) {
+        $label = $editorial_category['label'];
+    }
 }
 
 echo render_chip_category_block([
@@ -75,4 +74,3 @@ echo render_chip_category_block([
     'style' => $chip_style,
     'isLandmark' => ('landmark' === $post_type),
 ]);
-
