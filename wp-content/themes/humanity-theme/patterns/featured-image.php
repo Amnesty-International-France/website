@@ -25,13 +25,14 @@ if ( ! $image_id ) {
 
 $image = new Get_Image_Data( $image_id );
 
+$class_name = is_page() ? 'page-figure is-stretched' : 'article-figure is-stretched';
+
 $attributes = [
 	'id'              => $image_id,
-	'className'       => 'article-figure is-stretched',
+	'className'       => $class_name,
 	'sizeSlug'        => 'hero-md',
 	'linkDestination' => 'none',
 ];
-
 ?>
 <!-- wp:group {"tagName":"div"} -->
 <div class="wp-block-group">
