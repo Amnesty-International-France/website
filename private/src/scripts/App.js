@@ -32,6 +32,7 @@ import initCarousels from './modules/carousel';
 import tableOfContents from './modules/table-of-contents';
 import readMoreBlock from './modules/read-more';
 import legsMenu from './modules/legs-menu';
+import initAZFilter from './modules/az-filter';
 
 const App = () => {
   browserDetector();
@@ -63,6 +64,7 @@ const App = () => {
   tableOfContents();
   readMoreBlock();
   legsMenu();
+  initAZFilter();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
