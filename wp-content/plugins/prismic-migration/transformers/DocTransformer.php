@@ -63,6 +63,11 @@ abstract class DocTransformer {
 		$wp_post['ping_status'] = 'closed';
 		$wp_post['post_name'] = $prismicDoc['uid'];
 
+		$wp_post['meta_input'] = [
+			'amnesty_updated' => $data['dateUpdate'] !== null ? (new \DateTime($data['dateUpdate']))->format('Y-m-d H:i:s') : null,
+			'prismic_json' => json_encode( $prismicDoc, JSON_UNESCAPED_UNICODE )
+		];
+
 		return $wp_post;
 	}
 
