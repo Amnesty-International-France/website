@@ -114,12 +114,14 @@ if (!$post_object instanceof WP_Post) {
 		</div>
 		<div class="article-terms <?php if (empty($post_terms)) echo 'is-empty'; ?>">
 			<?php foreach ($post_terms as $term): ?>
-				<?= render_chip_category_block([
-					'label' => esc_html($term->name),
-					'size' => 'small',
-					'style' => 'bg-gray',
-					'link' => '',
-				]); ?>
+				<?php if ($term->taxonomy !== 'landmark_category') : ?>
+					<?= render_chip_category_block([
+						'label' => esc_html($term->name),
+						'size' => 'small',
+						'style' => 'bg-gray',
+						'link' => '',
+					]); ?>
+				<?php endif; ?>
 			<?php endforeach; ?>
 		</div>
 	</div>
