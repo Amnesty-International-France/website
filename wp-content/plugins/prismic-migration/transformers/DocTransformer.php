@@ -50,9 +50,9 @@ abstract class DocTransformer {
 			}
 		}
 
-		$wp_post['post_content'] = wp_slash(serialize_blocks(array_merge($chapoBlock, $contenuBlocks, $slicesBlocks)));
+		$wp_post['post_content'] = [$chapoBlock, $contenuBlocks, $slicesBlocks];
 
-		if( $data['accroche'] !== null ) {
+		if(isset( $data['accroche'] )) {
 			$wp_post['post_excerpt'] = $data['accroche'];
 		}
 
@@ -61,7 +61,7 @@ abstract class DocTransformer {
 		$wp_post['post_status'] = isset($data['visibility']) && $data['visibility'] === 'member' ? 'private' : 'publish';
 		$wp_post['comment_status'] = 'closed';
 		$wp_post['ping_status'] = 'closed';
-		$wp_post['post_name'] = $prismicDoc['uid'];
+		$wp_post['post_name'] = sanitize_title($prismicDoc['uid']);
 
 		$wp_post['meta_input'] = [
 			'amnesty_updated' => $data['dateUpdate'] !== null ? (new \DateTime($data['dateUpdate']))->format('Y-m-d H:i:s') : null,
@@ -150,7 +150,7 @@ abstract class DocTransformer {
 		$dossiers = [];
 		$chroniques = [];
 
-		foreach ( $prismicDoc['data']['country'] as $country ) {
+		foreach ( $prismicDoc['data']['country'] ?? [] as $country ) {
 			$content = $country['relatedcontent'];
 			if ( ! isset( $content['type'] ) || $content['type'] !== 'pays' ) {
 				continue;
@@ -171,7 +171,7 @@ abstract class DocTransformer {
 			}
 		}
 
-		foreach ( $prismicDoc['data']['thematique'] as $thematique ) {
+		foreach ( $prismicDoc['data']['thematique'] ?? [] as $thematique ) {
 			$content = $thematique['relatedcontent'];
 			if( ! isset( $content['type'] ) || $content['type'] !== 'thematique' ) {
 				continue;
@@ -192,7 +192,7 @@ abstract class DocTransformer {
 			}
 		}
 
-		foreach ( $prismicDoc['data']['dossier'] as $dossier ) {
+		foreach ( $prismicDoc['data']['dossier'] ?? [] as $dossier ) {
 			$content = $dossier['relatedcontent'];
 			if( ! isset( $content['type'] ) ) {
 				continue;
@@ -217,7 +217,7 @@ abstract class DocTransformer {
 			}
 		}
 
-		foreach ( $prismicDoc['data']['chronique'] as $chronique ) {
+		foreach ( $prismicDoc['data']['chronique'] ?? [] as $chronique ) {
 			$content = $chronique['relatedcontent'];
 
 			if( ! isset( $content['type'] ) || $content['type'] !== 'chronique' ) {

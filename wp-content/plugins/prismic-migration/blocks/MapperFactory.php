@@ -43,7 +43,7 @@ class MapperFactory {
 
 	public function getSliceMapper( $slice ): BlockMapper|null {
 		return match( $slice['slice_type'] ) {
-			'accordion' => new \AccordionMapper( $slice ),
+			'accordion', 'accordeon' => new \AccordionMapper( $slice ),
 			'agir' => new AgirSliceMapper( $slice ),
 			'Bloc Info' => new \BlocInfoMapper( $slice ),
 			'bloc_info_riche' => new \BlocInfoRicheMapper( $slice ),

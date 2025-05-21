@@ -145,7 +145,7 @@ class LinksUtils {
 		}
 
 		$args = [
-			'name' => $uid,
+			'name' => sanitize_title($uid),
 			'post_type' => \Type::get_wp_post_type( $article_type ),
 			'posts_per_page' => 1,
 		];

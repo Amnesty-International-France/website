@@ -19,7 +19,7 @@ class NewsTransformer extends DocTransformer {
 		$informed_block = $this->createGetInformedBlock( $prismicDoc, $terms );
 
 		if ( $informed_block ) {
-			$wp_post['post_content'] .= wp_slash(serialize_block($informed_block));
+			$wp_post['post_content'][] = [$informed_block];
 		}
 
         if ( isset($data['authorName']) ) {

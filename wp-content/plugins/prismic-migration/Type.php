@@ -4,11 +4,15 @@ enum Type: string {
 	case ALL = '';
 	case NEWS = 'news';
 	case PAYS = 'pays';
+	case ARTICLE_CHRONIQUE = 'articlechronique';
+
+	case FOCUS = 'index';
 
 	public static function get_wp_post_type(Type $type): string|null {
 		return match($type) {
-			self::NEWS => 'post',
+			self::NEWS, self::ARTICLE_CHRONIQUE => 'post',
 			self::PAYS => 'fiche_pays',
+			self::FOCUS => 'landmark',
 			default => null,
 		};
 	}
