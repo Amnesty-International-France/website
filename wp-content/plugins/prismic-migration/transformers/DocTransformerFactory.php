@@ -11,6 +11,8 @@ class DocTransformerFactory
 		return match ($type) {
 			Type::NEWS => new NewsTransformer(),
 			Type::PAYS => new PaysTransformer(),
+			Type::ARTICLE_CHRONIQUE => new ArticleChroniqueTransformer(),
+			Type::FOCUS => new FocusTransformer(),
 			default => throw new \Exception("Not found transformer for type : $type->value")
 		};
 	}

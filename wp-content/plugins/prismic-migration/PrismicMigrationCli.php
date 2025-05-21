@@ -9,6 +9,8 @@ class PrismicMigrationCli {
 
 	public static bool $dryrun = false;
 
+	public static bool $forceMod = false;
+
 	/**
 	 * Fetch documents from Prismic Repository and import them into Wordpress.
 	 *
@@ -40,6 +42,9 @@ class PrismicMigrationCli {
 	 *
 	 * [--id=<value>]
 	 * : Imports a document by his id
+	 *
+	 * [--force]
+	 * : Force the import, will replace the existing content (not medias)
 	 *
 	 * ## EXAMPLES
 	 *
@@ -73,6 +78,13 @@ class PrismicMigrationCli {
 			WP_CLI::log('dry-mod activated');
 		}
 
+		self::$forceMod = isset( $assoc_args['force'] ) && $assoc_args['force'] === true;
+		if( self::$forceMod ) {
+			WP_CLI::log('force mod activated, existing content will be replaced.');
+			WP_CLI::log('Starting in 5 seconds, you can still cancel...');
+			sleep(5);
+		}
+
 		$imported = 0;
 
 		$fetcher = new PrismicFetcher();
@@ -87,16 +99,24 @@ class PrismicMigrationCli {
 				WP_CLI::warning( 'Document type not supported : ' . $doc['type'] . ' (' . $doc['uid'] . ')' );
 			}
 
-			if ( $this->post_exists_by_slug_and_type($doc['uid'], $docType) ) {
+			$id = $this->post_exists_by_slug_and_type($doc['uid'], $docType);
+			if ( !self::$forceMod && $id !== false ) {
 				$progress->tick();
 				continue;
 			}
+
 			$transformer = DocTransformerFactory::getTransformer( $docType );
 
 			$wp_post = $transformer->parse( $doc );
+			$wp_post['post_content'] = wp_slash(serialize_blocks(array_merge(...$wp_post['post_content'])));
 
 			if ( ! self::$dryrun ) {
-				$postId = wp_insert_post( $wp_post );
+				if( self::$forceMod && $id !== false ) {
+					$wp_post['ID'] = $id;
+					$postId = wp_update_post( $wp_post );
+				} else {
+					$postId = wp_insert_post( $wp_post );
+				}
 
 				if ( is_wp_error($postId) ) {
 					WP_CLI::warning( 'Error inserting post: ' . $postId->get_error_message() );
@@ -110,8 +130,10 @@ class PrismicMigrationCli {
 
 				$featured_image = $transformer->featuredImage( $doc );
 				if ( $featured_image !== false ) {
-					$attachment_id = FileUploader::uploadMedia( $featured_image['imageUrl'], $featured_image['legend'], $featured_image['description'], $featured_image['alt'] );
-					set_post_thumbnail( $postId, $attachment_id );
+					try {
+						$attachment_id = FileUploader::uploadMedia( $featured_image['imageUrl'], $featured_image['legend'], $featured_image['description'], $featured_image['alt'] );
+						set_post_thumbnail( $postId, $attachment_id );
+					} catch( Exception $e ) {}
 				}
 
 				$seo_og = $transformer->getSeoAndOgData( $doc );
@@ -133,13 +155,18 @@ class PrismicMigrationCli {
 		WP_CLI::success( 'Migration successful: ' . $imported . ' documents imported.' );
 	}
 
-	function post_exists_by_slug_and_type(string $slug, Type $type): WP_Post|bool {
+	function post_exists_by_slug_and_type(string $slug, Type $type): int|bool {
 		$query = new WP_Query([
-			'name' => $slug,
+			'name' => sanitize_title($slug),
 			'post_type' => Type::get_wp_post_type($type),
 			'post_status' => 'any',
-			'fields' => 'ids'
+			'fields' => 'ids',
 		]);
-		return ! empty( $query->posts );
+
+		if( ! empty( $query->posts ) ) {
+			return $query->posts[0];
+		}
+
+		return false;
 	}
 }
