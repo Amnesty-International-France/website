@@ -22,7 +22,7 @@ class NewsTransformer extends DocTransformer {
 			$wp_post['post_content'] .= wp_slash(serialize_block($informed_block));
 		}
 
-        if ( $data['authorName'] !== null ) {
+        if ( isset($data['authorName']) ) {
             $wp_post['post_author'] = $this->getAuthor($data['authorName']);
         }
 
@@ -32,11 +32,6 @@ class NewsTransformer extends DocTransformer {
 		$wp_post['terms'] = [
 			'location' => array_filter( array_column($terms['countries'], 'slug'), static fn($s) => $s !== null ),
 			'combat' => array_filter( array_column($terms['combats'], 'slug'), static fn($s) => $s !== null )
-		];
-
-		$wp_post['meta_input'] = [
-			'amnesty_updated' => $data['dateUpdate'] !== null ? (new \DateTime($data['dateUpdate']))->format('Y-m-d H:i:s') : null,
-			'prismic_json' => json_encode( $prismicDoc, JSON_UNESCAPED_UNICODE )
 		];
 
 		$subCat = $this->getSubCategory( $data );
@@ -106,14 +101,14 @@ class NewsTransformer extends DocTransformer {
 	}
 
 	private function getSubCategory( $data ) : string|null {
-		$first = match ( $data['smallTitle'] ) {
+		$first = match ( $data['smallTitle'] ?? '') {
 			'enquête' => 'enquetes',
 			'entretien' => 'entretiens',
 			'témoignage' => 'temoignages',
 			'tribune' => 'tribunes',
 			default => null
 		};
-		$second = match ( $data['smallTitle2'] ) {
+		$second = match ( $data['smallTitle2'] ?? '') {
 			'Portrait' => 'portraits',
 			'Rapport' => 'rapports',
 			default => null
