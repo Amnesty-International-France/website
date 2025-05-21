@@ -1,7 +1,6 @@
 import EditComponent from './EditComponent.jsx';
 
 const { registerBlockType } = wp.blocks;
-const { __ } = wp.i18n;
 
 registerBlockType('amnesty-core/image', {
   title: 'Image + Légende',
