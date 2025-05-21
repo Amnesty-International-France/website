@@ -4,7 +4,7 @@ const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
 
 registerBlockType('amnesty-core/image', {
-  title: __('Image', 'amnesty'),
+  title: 'Image + Légende',
   description: 'Block Image',
   category: 'amnesty-core',
   attributes: {
