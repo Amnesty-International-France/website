@@ -1,8 +1,11 @@
 .article.fiche_pays {
   .article-meta {
     padding: 0 24px;
+    max-width: $container-hg;
+    margin-left: auto;
+    margin-right: auto;
 
-    @media (min-width: 768px) {
+    @media (min-width: $container-hg) {
       padding: 0;
     }
   }
@@ -30,15 +33,10 @@
     .wp-block-amnesty-core-quote-block,
     .wp-block-amnesty-core-image,
     .wp-block-amnesty-core-section.small,
-    .read-more-block {
-      max-width: $container-sm;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
+    .read-more-block,
     .call-to-action-block,
     .wp-block-amnesty-core-chapo {
-      max-width: $container-lg;
+      max-width: $container-hg;
       margin-left: auto;
       margin-right: auto;
     }
