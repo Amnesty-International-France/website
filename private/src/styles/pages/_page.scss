@@ -7,3 +7,7 @@
 
 // Style by page type
 @import './page/type/standard';
+@import './page/type/legs';
+
+// For legs page only
+@import './page/menu-legs';

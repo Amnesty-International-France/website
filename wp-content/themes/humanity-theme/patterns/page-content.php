@@ -12,7 +12,9 @@ if ( is_front_page() ) {
 	$class_name = 'homepage';
 }
 
-?><!-- wp:group {"tagName":"page","className":"page <?php print esc_attr( $class_name ?? '' ); ?>"} -->
+?>
+
+<!-- wp:group {"tagName":"page","className":"page <?php print esc_attr( $class_name ?? '' ); ?>"} -->
 <article class="wp-block-group page">
 	<!-- wp:group {"tagName":"section","className":"page-content"} -->
 		<section class="wp-block-group page-content">

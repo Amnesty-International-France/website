@@ -31,6 +31,7 @@ import downloadBlock from './modules/download-block';
 import initCarousels from './modules/carousel';
 import tableOfContents from './modules/table-of-contents';
 import readMoreBlock from './modules/read-more';
+import legsMenu from './modules/legs-menu';
 
 const App = () => {
   browserDetector();
@@ -61,6 +62,7 @@ const App = () => {
   initCarousels();
   tableOfContents();
   readMoreBlock();
+  legsMenu();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
