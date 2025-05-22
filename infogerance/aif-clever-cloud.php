@@ -81,8 +81,11 @@ if (!defined('WP_ENVIRONMENT_TYPE') && getenv('WP_ENVIRONMENT_TYPE')) {
 }
 
 if (getenv('WP_ENVIRONMENT_TYPE') === 'development') {
-	#
 	define('JETPACK_DEV_DEBUG', true);
+}
+
+if (getenv('WP_ENVIRONMENT_TYPE') === 'staging') {
+	define('JETPACK_STAGING_MODE', true);
 }
 
 /**
