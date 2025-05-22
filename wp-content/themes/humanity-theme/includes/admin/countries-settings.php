@@ -35,6 +35,8 @@ function amnesty_countries_settings_page_callback() {
     $doc_post = $doc_id ? get_post($doc_id) : null;
     $doc_filename = $doc_post ? $doc_post->post_title . '.' . pathinfo($doc_url, PATHINFO_EXTENSION) : '';
 
+    $chapo = get_option('countries_global_chapo', '');
+
     echo '<div class="wrap"><h1>Réglages pour les Fiches Pays</h1>';
     echo '<form method="post">';
     wp_nonce_field('save_countries_settings', 'amnesty_settings_nonce');
@@ -48,6 +50,9 @@ function amnesty_countries_settings_page_callback() {
 
     echo '<input type="hidden" name="countries_global_document_id" id="countries_global_document_id" value="' . esc_attr($doc_id) . '" />';
     echo '<button type="button" class="button" id="upload-countries-report-document">Choisir un document</button>';
+
+    echo '<h2>Texte du chapo</h2>';
+    echo '<textarea name="countries_global_chapo" rows="5" style="width:100%">' . esc_textarea($chapo) . '</textarea>';
 
     echo '<p><input type="submit" class="button-primary" value="Enregistrer les réglages"></p>';
     echo '</form></div>';
@@ -96,5 +101,9 @@ function amnesty_process_countries_settings_form() {
 
     if (!empty($_POST['countries_global_document_id'])) {
         update_option('countries_global_document_id', intval($_POST['countries_global_document_id']));
+    }
+
+    if (isset($_POST['countries_global_chapo'])) {
+        update_option('countries_global_chapo', sanitize_textarea_field($_POST['countries_global_chapo']));
     }
 }
