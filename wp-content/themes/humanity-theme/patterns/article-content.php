@@ -31,10 +31,12 @@ $post_type_class = get_post_type() ?: '';
         </div>
       </div>
     <?php else : ?>
-      <div class="yoast-breadcrumb-wrapper">
-        <?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>
-      </div>
-      <!-- wp:pattern {"slug":"amnesty/post-metadata"} /-->
+      <?php if (get_post_type() !== 'fiche_pays') : ?>
+        <div class="yoast-breadcrumb-wrapper">
+          <?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>
+        </div>
+        <!-- wp:pattern {"slug":"amnesty/post-metadata"} /-->
+      <?php endif; ?>
       <!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
     <?php endif; ?>
   </header>

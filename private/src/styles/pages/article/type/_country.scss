@@ -33,12 +33,29 @@
     .wp-block-amnesty-core-quote-block,
     .wp-block-amnesty-core-image,
     .wp-block-amnesty-core-section.small,
-    .read-more-block,
-    .call-to-action-block,
+    .read-more-block {
+      max-width: $container-md;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .call-to-action-block {
+      max-width: $container-lg;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     .wp-block-amnesty-core-chapo {
       max-width: $container-hg;
       margin-left: auto;
       margin-right: auto;
+
+      .text {
+        @media (min-width: $container-lg) {
+          width: 50%;
+          margin-left: 20%;
+        }
+      }
     }
 
     .carousel-block {
