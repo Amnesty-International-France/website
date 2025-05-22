@@ -264,3 +264,23 @@ if ( ! function_exists( 'amnesty_get_attachment_image_src' ) ) {
 		return $url;
 	}
 }
+
+/**
+ * Returns the singular label for a given editorial category.
+ *
+ * @param string $value The value of the ACF field 'editorial_category'.
+ * @return string|null The singular label, or null if not found.
+ */
+function get_editorial_category_singular_label($value) {
+    $singular_labels = array(
+        'enquetes' => 'Enquête',
+        'entretiens' => 'Entretien',
+        'portraits' => 'Portrait',
+        'rapports' => 'Rapport',
+        'temoignages' => 'Témoignage',
+        'tribunes' => 'Tribune',
+    );
+
+    return isset($singular_labels[$value]) ? $singular_labels[$value] : null;
+}
+

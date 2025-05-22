@@ -62,8 +62,9 @@ if ('landmark' === $post_type) {
     }
 
     $editorial_category = get_field('editorial_category', $post_id);
-    if (is_array($editorial_category) && !empty($editorial_category['label'])) {
-        $label = $editorial_category['label'];
+
+    if (is_array($editorial_category) && !empty($editorial_category['value'])) {
+        $label = get_editorial_category_singular_label($editorial_category['value']);
     }
 }
 
