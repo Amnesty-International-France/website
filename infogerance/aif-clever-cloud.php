@@ -9,7 +9,6 @@
  *
  */
 
-
 // ** Base URL settings ** //
 define('WP_HOME', getenv('WP_HOME'));
 define('WP_SITEURL', getenv('WP_SITEURL'));
@@ -25,13 +24,13 @@ define('DB_USER', getenv('MYSQL_ADDON_USER'));
 define('DB_PASSWORD', getenv('MYSQL_ADDON_PASSWORD'));
 
 /** Database hostname */
-define('DB_HOST', getenv('MYSQL_ADDON_HOST').':'.getenv('MYSQL_ADDON_PORT'));
+define('DB_HOST', getenv('MYSQL_ADDON_HOST') . ':' . getenv('MYSQL_ADDON_PORT'));
 
 /** Database charset to use in creating database tables. */
-define( 'DB_CHARSET', 'utf8' );
+define('DB_CHARSET', 'utf8');
 
 /** The database collate type. Don't change this if in doubt. */
-define( 'DB_COLLATE', '' );
+define('DB_COLLATE', '');
 
 /**#@+
  * Authentication unique keys and salts.
@@ -68,13 +67,22 @@ $table_prefix = 'wp_';
 /* Add any custom values between this line and the "stop editing" line. */
 
 // auto-update
-define( 'WP_AUTO_UPDATE_CORE', true);
+define('WP_AUTO_UPDATE_CORE', true);
 
 # https://www.clever-cloud.com/developers/guides/tutorial-wordpress/#ssl-configuratio
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
-    $_SERVER['HTTPS'] = 'on';
+	$_SERVER['HTTPS'] = 'on';
 } elseif (isset($_SERVER['X_FORWARDED_PROTO']) && $_SERVER['X_FORWARDED_PROTO'] == 'https') {
-    $_SERVER['HTTPS'] = 'on';
+	$_SERVER['HTTPS'] = 'on';
+}
+
+if (!defined('WP_ENVIRONMENT_TYPE') && getenv('WP_ENVIRONMENT_TYPE')) {
+	define('WP_ENVIRONMENT_TYPE', getenv('WP_ENVIRONMENT_TYPE'));
+}
+
+if (getenv('WP_ENVIRONMENT_TYPE') === 'development') {
+	#
+	define('JETPACK_DEV_DEBUG', true);
 }
 
 /**
@@ -89,15 +97,15 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
  *
  * @link https://wordpress.org/support/article/debugging-in-wordpress/
  */
-if ( ! defined( 'WP_DEBUG' ) ) {
-        define( 'WP_DEBUG', false );
+if (!defined('WP_DEBUG')) {
+	define('WP_DEBUG', false);
 }
 
 /* That's all, stop editing! Happy publishing. */
 
 /** Absolute path to the WordPress directory. */
-if ( ! defined( 'ABSPATH' ) ) {
-        define( 'ABSPATH', __DIR__ . '/' );
+if (!defined('ABSPATH')) {
+	define('ABSPATH', __DIR__ . '/');
 }
 
 /** Sets up WordPress vars and included files. */
