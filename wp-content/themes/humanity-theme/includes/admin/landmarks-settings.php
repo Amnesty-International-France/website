@@ -55,6 +55,8 @@ function amnesty_settings_page_callback() {
     $image_id = get_option('landmark_global_image_id');
     $image_url = $image_id ? wp_get_attachment_url($image_id) : '';
 
+    $chapo = get_option('landmark_global_chapo', '');
+
     echo '<div class="wrap"><h1>Réglages pour les Repères</h1>';
     echo '<form method="post">';
     wp_nonce_field('save_landmark_settings', 'amnesty_settings_nonce');
@@ -83,6 +85,9 @@ function amnesty_settings_page_callback() {
 
         echo '</select></p>';
     }
+
+    echo '<h2>Texte du chapo</h2>';
+    echo '<textarea name="landmark_global_chapo" rows="5" style="width:100%">' . esc_textarea($chapo) . '</textarea>';
 
     echo '<p><input type="submit" class="button-primary" value="Enregistrer les réglages"></p>';
     echo '</form></div>';
@@ -121,6 +126,10 @@ function amnesty_process_settings_form() {
 
     if (!empty($_POST['landmark_global_image_id'])) {
         update_option('landmark_global_image_id', intval($_POST['landmark_global_image_id']));
+    }
+
+    if (isset($_POST['landmark_global_chapo'])) {
+        update_option('landmark_global_chapo', sanitize_textarea_field($_POST['landmark_global_chapo']));
     }
 }
 

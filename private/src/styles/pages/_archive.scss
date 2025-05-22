@@ -172,6 +172,19 @@
   }
 }
 
+.chapo {
+  max-width: $container-hg;
+  margin-left: auto;
+  margin-right: auto;
+
+  .text {
+    @media (min-width: $container-lg) {
+      width: 50%;
+      margin-left: 20%;
+    }
+  }
+}
+
 .az-filter {
   max-width: $container-hg;
   padding: 48px 24px 22px 24px;
