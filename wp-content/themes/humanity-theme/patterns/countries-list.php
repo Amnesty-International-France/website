@@ -18,31 +18,52 @@ $all_countries = new WP_Query($args);
 $doc_id = get_option('countries_global_document_id');
 $doc_url = $doc_id ? wp_get_attachment_url($doc_id) : '';
 
+$countries_by_letter = [];
+
+if ($all_countries->have_posts()) {
+    while ($all_countries->have_posts()) {
+        $all_countries->the_post();
+        $title = get_the_title();
+        $first_letter = strtoupper(mb_substr($title, 0, 1));
+
+        if (!isset($countries_by_letter[$first_letter])) {
+            $countries_by_letter[$first_letter] = [];
+        }
+
+        $countries_by_letter[$first_letter][] = [
+            'title' => $title,
+            'link'  => get_permalink()
+        ];
+    }
+    wp_reset_postdata();
+}
+
 ?>
 
 <div class="az-filter">
     <h2 class="title">Pays de A à Z</h2>
     <div class="az-index">
         <?php foreach (range('A', 'Z') as $letter) : ?>
-            <div class="az-letter<?php echo $letter === 'A' ? ' active' : ''; ?>" data-letter="<?php echo $letter; ?>">
-                <?php echo $letter; ?>
-            </div>
+            <?php if (array_key_exists($letter, $countries_by_letter)) : ?>
+                <div class="az-letter<?php echo $letter === 'A' ? ' active' : ''; ?>" data-letter="<?php echo $letter; ?>">
+                    <?php echo $letter; ?>
+                </div>
+            <?php endif; ?>
         <?php endforeach; ?>
     </div>
 
     <div class="az-display">
         <div class="az-letter-display">A</div>
         <div class="country-grid">
-            <?php if ($all_countries->have_posts()) : ?>
-                <?php while ($all_countries->have_posts()) : $all_countries->the_post();
-                    $title = get_the_title();
-                    $first_letter = strtoupper(mb_substr($title, 0, 1));
-                ?>
-                    <div class="country" data-letter="<?php echo esc_attr($first_letter); ?>">
-                        <a href="<?php the_permalink(); ?>"><?php echo esc_html($title); ?></a>
+            <?php foreach ($countries_by_letter as $letter => $countries) : ?>
+                <?php foreach ($countries as $country) : ?>
+                    <div class="country" data-letter="<?php echo esc_attr($letter); ?>">
+                        <a href="<?php echo esc_url($country['link']); ?>">
+                            <?php echo esc_html($country['title']); ?>
+                        </a>
                     </div>
-                <?php endwhile; wp_reset_postdata(); ?>
-            <?php endif; ?>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
         </div>
     </div>
 
