@@ -19,6 +19,7 @@
   position: relative;
 
   .feature-image-caption-overlay {
+    z-index: 1;
     max-width: $container-hg;
     margin: 0 auto;
     display: flex;
@@ -26,7 +27,6 @@
     position: absolute;
     bottom: 8px;
     right: 8px;
-    flex-wrap: wrap;
     padding-left: 8px;
 
     @media (min-width: $container-sm) {
