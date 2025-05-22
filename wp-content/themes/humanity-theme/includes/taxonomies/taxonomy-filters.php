@@ -14,6 +14,7 @@ add_action(
 	function () {
 		//register_taxonomy_for_object_type( 'category', 'attachment' );
 		//register_taxonomy_for_object_type( 'category', 'page' );
+		register_taxonomy_for_object_type( 'category', 'tribe_events' );
 	}
 );
 

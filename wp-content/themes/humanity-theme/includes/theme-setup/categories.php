@@ -19,6 +19,10 @@ if( !function_exists( 'setup_categories' ) ) {
 				'singular_name' => 'Article La Chronique',
 				'slug' => 'chroniques'
 			],
+			'Évènement' => [
+				'singular_name' => 'Évènement',
+				'slug' => 'evenements'
+			],
 		];
 
 		foreach ($categories_defaut as $nom => $details) {
