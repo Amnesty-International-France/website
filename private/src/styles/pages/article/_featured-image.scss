@@ -26,6 +26,12 @@
     position: absolute;
     bottom: 8px;
     right: 8px;
+    flex-wrap: wrap;
+    padding-left: 8px;
+
+    @media (min-width: $container-sm) {
+      padding-left: 0;
+    }
 
     .feature-image-description {
       color: var(--wp--preset--color--white);
