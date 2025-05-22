@@ -297,6 +297,9 @@ if ( class_exists( '\WooCommerce', false ) ) {
 	require_once realpath( __DIR__ . '/includes/woo/select-element.php' );
 	require_once realpath( __DIR__ . '/includes/woo/templates.php' );
 }
+
+// add_post_type_support( 'tribe_events', 'thumbnail' );
+
 #endregion woocommerce
 
 /**

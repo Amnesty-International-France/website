@@ -29,6 +29,7 @@ import collapsableBlock from './modules/collapsable-block';
 import addFlickityToTabs from './modules/tabbed-content-flickity';
 import downloadBlock from './modules/download-block';
 import initCarousels from './modules/carousel';
+import { getUserLocationFromButton, getUserLocationFromForm } from './utils/localisation';
 
 const App = () => {
   browserDetector();
@@ -57,6 +58,8 @@ const App = () => {
   collapsableBlock();
   addFlickityToTabs();
   initCarousels();
+  getUserLocationFromButton();
+  getUserLocationFromForm();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 

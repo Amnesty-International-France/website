@@ -15,6 +15,7 @@ if (!empty($args['post'])) {
 	$title = get_the_title($post_object);
 	$date = get_the_date('', $post_object);
 	$thumbnail = get_the_post_thumbnail($post_id, 'medium', ['class' => 'article-image']);
+	$event_start = $attributes['event_start'] ?? '';
 
 	$main_category = amnesty_get_a_post_term($post_id);
 	if (!($main_category instanceof WP_Term)) {
@@ -47,6 +48,7 @@ $chip_style = match ($main_category->slug ?? null) {
 	default => 'bg-yellow',
 };
 ?>
+
 
 <article class="article-card card-<?php echo esc_attr($direction); ?>">
 	<?php if ($thumbnail): ?>

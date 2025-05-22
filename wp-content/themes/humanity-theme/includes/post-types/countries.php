@@ -1,6 +1,6 @@
 <?php
 /**
- * Register Custom Post Type: Fiche Pays
+ * Register Custom Post Type: Ficheq Pays
  */
 
 function amnesty_register_countries_cpt() {
