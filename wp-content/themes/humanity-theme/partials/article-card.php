@@ -56,6 +56,9 @@ if (!$post_object instanceof WP_Post) {
 
 		$editorial_category = get_field('editorial_category', $post_id);
 		$label = $editorial_category && isset($editorial_category['label']) ? $editorial_category['label'] : $default_label;
+		if ($editorial_category && isset($editorial_category['label'], $editorial_category['value'])) {
+			$label = get_editorial_category_singular_label($editorial_category['value']) ?: $editorial_category['label'];
+		}
 		$link = '';
 	} else {
 		$post_type = get_post_type($post_object);
