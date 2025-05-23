@@ -46,11 +46,16 @@ $caption = trim( $image->caption() );
 			<div class="yoast-breadcrumb-wrapper">
 				<?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>
 			</div>
+			<div class="country-title-wrapper">
+				<div class="container">
+					<h1 class="country-title"><?php the_title(); ?></h1>
+				</div>
+			</div>
 		<?php endif; ?>
 
 		<img src="<?php echo esc_url( amnesty_get_attachment_image_src( $image_id, 'hero-md' ) ); ?>" alt="" class="wp-image-<?php echo absint( $image_id ); ?>"/>
 
-		<?php if ( $is_page && ( $credit || $caption ) ) : ?>
+		<?php if ( ( $is_page || get_post_type() === 'fiche_pays' ) && ( $credit || $caption ) ) : ?>
 			<figcaption class="feature-image-caption-overlay">
 				<?php if ( $credit ) : ?>
 					<span class="feature-image-description"><?php echo esc_html( $credit ); ?></span><br/>
@@ -63,7 +68,7 @@ $caption = trim( $image->caption() );
 	</figure>
 	<!-- /wp:image -->
 
-	<?php if ( ! $is_page && ( $credit || $caption ) ) : ?>
+	<?php if ( ! $is_page && get_post_type() !== 'fiche_pays' && ( $credit || $caption ) ) : ?>
 		<div class="feature-image">
 			<div class="feature-image-caption-block">
 				<?php if ( $credit ) : ?>
