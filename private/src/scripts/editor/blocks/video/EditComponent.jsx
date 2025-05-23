@@ -2,6 +2,28 @@ const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
 const { PanelBody, TextControl } = wp.components;
 
+/**
+ * Extract YouTube video ID from various URL formats.
+ */
+const getYouTubeEmbedUrl = (url) => {
+  try {
+    const parsedUrl = new URL(url);
+
+    if (parsedUrl.hostname === 'youtu.be') {
+      return `https://www.youtube.com/embed/${parsedUrl.pathname.slice(1)}`;
+    }
+
+    if (parsedUrl.hostname.includes('youtube.com') && parsedUrl.searchParams.has('v')) {
+      const videoId = parsedUrl.searchParams.get('v');
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+
+    return url;
+  } catch (e) {
+    return url;
+  }
+};
+
 const EditComponent = (props) => {
   const { attributes, setAttributes } = props;
   const { url, title } = attributes;
@@ -13,6 +35,8 @@ const EditComponent = (props) => {
   const onTitleChange = (value) => {
     setAttributes({ title: value });
   };
+
+  const embedUrl = getYouTubeEmbedUrl(url);
 
   return (
     <>
@@ -38,7 +62,7 @@ const EditComponent = (props) => {
         {url ? (
           <div className="video-wrapper">
             <iframe
-              src={url.replace('watch?v=', 'embed/')}
+              src={embedUrl}
               width="100%"
               frameBorder="0"
               allow="autoplay; encrypted-media"
