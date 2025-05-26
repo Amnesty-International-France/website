@@ -187,7 +187,7 @@ abstract class DocTransformer {
 			$term = get_term_by( 'slug', \TaxMapper::mapCombat( $content['uid'] ), 'combat');
 			if( $term ) {
 				$combats[] = ['slug' => $term->slug, 'name' => $name, 'url' => $url];
-			} {
+			} else {
 				$combats[] = ['slug' => null, 'name' => $name, 'url' => $url];
 			}
 		}
