@@ -9,7 +9,7 @@
 
 $post_id = get_the_ID();
 
-$post_terms = wp_get_object_terms($post_id, get_object_taxonomies(get_post_type()));
+$post_terms = amnesty_get_post_terms($post_id);
 $post_type = get_post_type(post: $post_id);
 
 if (empty($post_terms)) {
@@ -25,6 +25,9 @@ $default_chip_style = match ($main_category->slug ?? '') {
 };
 
 foreach ($post_terms as $post_term) :
+	if( $post_term->taxonomy === 'keyword' || ( $post_term->taxonomy === 'combat' && (int)$post_term->parent !== 0 ) ) {
+		continue;
+	}
     if ($main_category) {
 		if( $post_term->slug === $main_category->slug ) {
 			continue;

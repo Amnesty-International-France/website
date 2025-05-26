@@ -68,7 +68,6 @@ $post_type_class = get_post_type() ?: '';
 	<?php endif; ?>
   <?php endif; ?>
 
-
   <!-- wp:group {"tagName":"article","className":"article-content"} -->
   <article class="wp-block-group article-content">
     <!-- wp:post-content /-->
