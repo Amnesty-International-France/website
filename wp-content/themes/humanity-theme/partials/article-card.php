@@ -32,15 +32,12 @@ if (!$post_object instanceof WP_Post) {
 		$main_category = null;
 	}
 
-	$taxonomies = get_object_taxonomies(get_post_type($post_object));
-	$post_terms = wp_get_object_terms($post_id, $taxonomies);
+	$post_terms = amnesty_get_post_terms($post_id);
+	$post_terms = array_filter($post_terms, static fn($term) => $term->taxonomy !== 'keyword');
 
 	if ($main_category) {
 		$post_terms = array_filter($post_terms, static function ($term) use ($main_category) {
-			return !(
-				$term->taxonomy === $main_category->taxonomy &&
-				$term->term_id === $main_category->term_id
-			);
+			return $term->taxonomy !== $main_category->taxonomy && $term->term_id !== $main_category->term_id;
 		});
 	}
 
@@ -121,14 +118,12 @@ if (!$post_object instanceof WP_Post) {
 		</div>
 		<div class="article-terms <?php if (empty($post_terms)) echo 'is-empty'; ?>">
 			<?php foreach ($post_terms as $term): ?>
-				<?php if ($term->taxonomy !== 'landmark_category') : ?>
 					<?= render_chip_category_block([
 						'label' => esc_html($term->name),
 						'size' => 'small',
 						'style' => 'bg-gray',
 						'link' => '',
-					]); ?>
-				<?php endif; ?>
+					]) ?>
 			<?php endforeach; ?>
 		</div>
 	</div>

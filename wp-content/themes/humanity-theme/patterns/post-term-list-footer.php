@@ -7,7 +7,25 @@
  * Inserter: no
  */
 
-$post_terms = wp_get_object_terms( get_the_ID(), get_object_taxonomies( get_post_type() ) );
+$postId = get_the_ID();
+$main_category = amnesty_get_a_post_term( $postId );
+$post_terms = amnesty_get_post_terms( $postId );
+
+if ($main_category) {
+	$post_terms = array_filter($post_terms, static function ($term) use ($main_category) {
+		return $term->taxonomy !== $main_category->taxonomy && $term->term_id !== $main_category->term_id;
+	});
+}
+
+$post_terms = array_filter($post_terms, static function ($term) {
+	if($term->taxonomy === 'location') {
+		return false;
+	}
+	if($term->taxonomy === 'combat') {
+		return (int) $term->parent !== 0;
+	}
+	return true;
+});
 
 if ( empty( $post_terms ) ) {
 	return;
