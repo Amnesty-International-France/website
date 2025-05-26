@@ -33,6 +33,7 @@ import tableOfContents from './modules/table-of-contents';
 import readMoreBlock from './modules/read-more';
 import legsMenu from './modules/legs-menu';
 import initAZFilter from './modules/az-filter';
+import capitalizeHeadings from './modules/capitalize-headings';
 
 const App = () => {
   browserDetector();
@@ -65,6 +66,7 @@ const App = () => {
   readMoreBlock();
   legsMenu();
   initAZFilter();
+  capitalizeHeadings();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
