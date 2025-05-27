@@ -82,6 +82,7 @@ require_once __DIR__ . '/related-content/render.php';
 require_once __DIR__ . '/related-posts/register.php';
 require_once __DIR__ . '/related-posts/render.php';
 require_once __DIR__ . '/section/register.php';
+require_once __DIR__ . '/section/render.php';
 require_once __DIR__ . '/slider/register.php';
 require_once __DIR__ . '/slider/render.php';
 require_once __DIR__ . '/stat-counter/register.php';
