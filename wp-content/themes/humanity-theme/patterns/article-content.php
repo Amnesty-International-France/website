@@ -88,6 +88,5 @@ $post_type_class = get_post_type() ?: '';
 		<!-- wp:amnesty-core/related-posts {"title":"Voir aussi"} /-->
 	<?php endif; ?>
 
-
 </section>
 <!-- /wp:group -->

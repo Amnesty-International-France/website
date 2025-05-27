@@ -18,28 +18,28 @@ function render_related_posts_block( $attributes, $content = '' ) {
 		$selected_posts = array_filter( array_slice( $selected_posts, 0, $nb_posts ) );
 
 		$query = new WP_Query( [
-			'post_type'      => 'post',
+			'post_type'      => get_post_type( $post_id ),
 			'post__in'       => $selected_posts,
 			'orderby'        => 'post__in',
 			'posts_per_page' => $nb_posts,
 		] );
 	} else {
 		$term = amnesty_get_a_post_term( $post_id );
-		if ( ! $term ) {
-			return '';
-		}
-
-		$query = new WP_Query( [
-			'post_type'      => 'post',
-			'posts_per_page' => $nb_posts,
-			'post__not_in'   => [ $post_id ],
-			'tax_query'      => [
+		if ( $term ) {
+			$tax_query = [
 				[
 					'taxonomy' => 'category',
 					'field'    => 'slug',
 					'terms'    => $term->slug,
 				],
-			],
+			];
+		}
+
+		$query = new WP_Query( [
+			'post_type'      => get_post_type( $post_id ),
+			'posts_per_page' => $nb_posts,
+			'post__not_in'   => [ $post_id ],
+			'tax_query'      => $tax_query ?? [],
 			'orderby' => 'date',
 			'order'   => 'DESC',
 		] );
