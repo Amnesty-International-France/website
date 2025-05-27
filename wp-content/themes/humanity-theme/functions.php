@@ -200,6 +200,8 @@ require_once realpath( __DIR__ . '/includes/taxonomies/taxonomy-filters.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/taxonomy-descriptions.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/abstract-class-taxonomy.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-content-types.php' );
+require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-landmark-categories.php');
+require_once realpath( __DIR__ . '/includes/theme-setup/landmark-categories.php');
 require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-locations.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/countries.php');
 require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-keywords.php' );
