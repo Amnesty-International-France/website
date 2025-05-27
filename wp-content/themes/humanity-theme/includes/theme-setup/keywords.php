@@ -50,7 +50,7 @@ if (!function_exists('setup_keywords')) {
 		];
 
 		foreach ($keywords_default as $nom => $details) {
-			if (!term_exists($nom, 'keyword')) {
+			if (!term_exists($details['slug'], 'keyword')) {
 				wp_insert_term(
 					$nom,
 					'keyword',

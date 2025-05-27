@@ -11,7 +11,7 @@ if (!function_exists('setup_landmark_categories')) {
 		];
 
 		foreach ($categories_default as $name => $slug) {
-			if (!term_exists($name, 'landmark_category')) {
+			if (!term_exists($slug, 'landmark_category')) {
 				wp_insert_term($name, 'landmark_category', ['slug' => $slug]);
 			}
 		}

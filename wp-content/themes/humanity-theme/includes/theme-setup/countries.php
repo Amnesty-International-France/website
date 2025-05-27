@@ -163,7 +163,7 @@ if (!function_exists('setup_countries')) {
 		];
 
 		foreach ($countries_default as $nom => $details) {
-			if (!term_exists($nom, 'location')) {
+			if (!term_exists($details['slug'], 'location')) {
 				wp_insert_term(
 					$nom,
 					'location',

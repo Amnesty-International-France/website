@@ -39,7 +39,7 @@ if( !function_exists( 'setup_combats' ) ) {
 		];
 
 		foreach ($categories_defaut as $nom => $details) {
-			if (!term_exists($nom, 'combat')) {
+			if (!term_exists($details['slug'], 'combat')) {
 				$args = ['slug' => $details['slug']];
 				if( isset($details['parent']) ) {
 					$args['parent'] = get_term_by( 'slug', $details['parent'], 'combat')->term_id;
