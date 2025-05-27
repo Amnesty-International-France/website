@@ -94,11 +94,7 @@ class ArticleChroniqueTransformer extends DocTransformer {
 				'fullWidth' => false
 			],
 			'innerBlocks' => [$cols],
-			'innerContent' => [
-				'<div class="wp-block-amnesty-core-section section-block small black full-width"><div class="section-block-content"><div class="section-block-inner-blocks-container sm">',
-				null,
-				'</div></div></div>'
-			]
+			'innerContent' => [null]
 		];
 	}
 

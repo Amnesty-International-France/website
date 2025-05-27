@@ -68,10 +68,6 @@ class ChiffreClefMapper extends BlockMapper {
     }
 
     protected function getInnerContent(): array {
-		return [
-			'<div class="wp-block-amnesty-core-section section-block small black"><div class="section-block-content"><div class="section-block-inner-blocks-container sm">',
-			null,
-			'</div></div></div>'
-		];
+		return [null];
     }
 }

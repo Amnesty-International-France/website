@@ -31,4 +31,8 @@ class HeadingMapper extends BlockMapper {
 			'<h'. $this->level . ' class="wp-block-heading">' . $this->prismicBlock['text'] . '</h' . $this->level . '>'
 		];
 	}
+
+	public function getLevel(): int {
+		return (int) $this->level;
+	}
 }

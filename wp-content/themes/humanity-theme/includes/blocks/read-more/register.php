@@ -15,5 +15,4 @@ if (!function_exists('register_read_more_block')) {
 			'render_callback' => 'render_read_more_block',
 		]);
 	}
-	add_action('init', 'register_read_more_block');
 }
