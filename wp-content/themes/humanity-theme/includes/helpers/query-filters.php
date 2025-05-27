@@ -9,7 +9,7 @@ function amnesty_filter_cpt_by_multiple_taxonomies( $query ) {
 
 		$tax_query = [];
 
-		$filterable_taxonomies = [ 'combat', 'location', 'type', 'theme' ];
+		$filterable_taxonomies = [ 'landmark_category', 'combat', 'location', 'type', 'theme' ];
 
 		foreach ( $filterable_taxonomies as $taxonomy ) {
 			$param_name = 'q' . $taxonomy;
