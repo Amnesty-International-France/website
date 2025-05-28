@@ -24,7 +24,6 @@ function amnesty_register_landmarks_cpt() {
             'supports' => array('title', 'editor', 'thumbnail', 'custom-fields'),
             'menu_icon' => 'dashicons-admin-page',
             'show_in_rest' => true,
-            'taxonomies' => array('combat', 'landmark_category'),
         )
     );
 }

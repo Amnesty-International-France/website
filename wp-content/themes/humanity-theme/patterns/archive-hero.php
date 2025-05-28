@@ -11,7 +11,7 @@
  $post_type_class = is_post_type_archive() ? get_post_type() : '';
  $image_url = '';
  $image_alt = '';
- 
+
  if (is_post_type_archive()) {
     $post_type = get_post_type();
     $image_id = get_option("{$post_type}_global_image_id");
@@ -27,12 +27,12 @@
         $image_alt = $image['alt'];
     }
 }
- 
+
  if (empty($image_url)) {
 	 $image_url = get_template_directory_uri() . '/assets/images/default-archive-hero.png';
 	 $image_alt = 'Image par défaut';
  }
- 
+
  if (is_post_type_archive()) {
 	 $post_type_obj = get_post_type_object(get_post_type());
 	 $category_name = $post_type_obj ? $post_type_obj->labels->name : '';
@@ -42,8 +42,8 @@
 	 $category_name = '';
  }
  ?>
- 
- 
+
+
  <!-- wp:group {"tagName":"section","className":"archive-hero"} -->
  <section class="wp-block-group archive-hero <?php echo esc_attr($term_slug); ?> <?php echo esc_attr($post_type_class); ?>">
 	 <div class="archive-hero-img-container">
@@ -63,6 +63,6 @@
 			</div>
 		</div>
 	 </div>
-	
+
  </section>
  <!-- /wp:group -->
