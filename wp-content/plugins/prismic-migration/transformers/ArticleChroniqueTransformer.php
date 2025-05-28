@@ -60,20 +60,20 @@ class ArticleChroniqueTransformer extends DocTransformer {
 			'innerBlocks' => [
 				[
 					'blockName' => 'core/column',
-					'attrs' => ['width' => '33.33%'],
+					'attrs' => ['width' => '40%'],
 					'innerBlocks' => [$imgBlock ?? []],
 					'innerContent' => array_merge(
-						['<div class="wp-block-column" style="flex-basis:33.33%">'],
+						['<div class="wp-block-column" style="flex-basis:40%">'],
 						[isset($imgBlock) ? null : ''],
 						['</div>']
 					)
 				],
 				[
 					'blockName' => 'core/column',
-					'attrs' => ['width' => '66.66%'],
+					'attrs' => ['width' => '60%'],
 					'innerBlocks' => $contenuBlocks,
 					'innerContent' => array_merge(
-						['<div class="wp-block-column" style="flex-basis:66.66%">'],
+						['<div class="wp-block-column" style="flex-basis:60%">'],
 						array_map(static fn($v) => null, $contenuBlocks),
 						['</div>']
 					)
@@ -87,14 +87,23 @@ class ArticleChroniqueTransformer extends DocTransformer {
 			]
 		];
 		return [
-			'blockName' => 'amnesty-core/section',
+			'blockName' => 'core/group',
 			'attrs' => [
-				'sectionSize' => 'small',
-				'showTitle' => false,
-				'fullWidth' => false
+				'className' => 'import-summary'
 			],
-			'innerBlocks' => [$cols],
-			'innerContent' => [null]
+			'innerBlocks' => [
+				[
+					'blockName' => 'amnesty-core/section',
+					'attrs' => [
+						'sectionSize' => 'small',
+						'showTitle' => false,
+						'fullWidth' => false
+					],
+					'innerBlocks' => [$cols],
+					'innerContent' => [null]
+				]
+			],
+			'innerContent' => ['<div class="wp-block-group import-summary">', null, '</div>']
 		];
 	}
 
