@@ -18,9 +18,13 @@ class CTAPushMapper extends BlockMapper {
 			$data = $prismicBlock['primary'];
 			$this->btnLabel = $data['button_label'] ?? '';
 
-			foreach( $data['content'] as $contenu ) {
+			foreach( $data['content'] as $key => $contenu ) {
 				if( $contenu['type'] ==='paragraph' ) {
-					$this->subtitle .= $contenu['text'];
+					if( $key === 0 ) {
+						$this->title .= $contenu['text'];
+					} else {
+						$this->subtitle .= $contenu['text'];
+					}
 				}
 			}
 			$this->btnLink = LinksUtils::processLink($data['button_link']);
