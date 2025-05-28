@@ -90,5 +90,35 @@
         max-width: $container-sm;
       }
     }
+
+    .import-summary {
+      .image-block {
+        margin-bottom: 0;
+      }
+
+      .image-wrapper {
+        border-bottom: none;
+      }
+
+      p:not(:first-child) {
+        color: var(--wp--preset--color--grey-light);
+        font-weight: normal;
+      }
+    }
+  }
+}
+
+.wp-block-post-content .import-summary {
+  .image-block {
+    margin-bottom: 0;
+  }
+
+  .image-wrapper {
+    border-bottom: none;
+  }
+
+  p:not(:first-child) {
+    color: var(--wp--preset--color--grey-light);
+    font-weight: normal;
   }
 }
