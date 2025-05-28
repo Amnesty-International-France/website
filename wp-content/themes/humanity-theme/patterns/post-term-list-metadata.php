@@ -25,7 +25,7 @@ $default_chip_style = match ($main_category->slug ?? '') {
 };
 
 foreach ($post_terms as $post_term) :
-	if( $post_term->taxonomy === 'keyword' || ( $post_term->taxonomy === 'combat' && (int)$post_term->parent !== 0 ) ) {
+	if( ( $post_term->taxonomy === 'combat' && (int)$post_term->parent !== 0 ) || in_array($post_term->taxonomy, ['keyword', 'landmark_category']) ) {
 		continue;
 	}
     if ($main_category) {
