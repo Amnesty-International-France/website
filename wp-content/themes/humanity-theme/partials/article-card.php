@@ -33,7 +33,7 @@ if (!$post_object instanceof WP_Post) {
 	}
 
 	$post_terms = amnesty_get_post_terms($post_id);
-	$post_terms = array_filter($post_terms, static fn($term) => $term->taxonomy !== 'keyword');
+	$post_terms = array_filter($post_terms, static fn($term) => !in_array($term->taxonomy, ['keyword', 'landmark_category']));
 
 	if ($main_category) {
 		$post_terms = array_filter($post_terms, static function ($term) use ($main_category) {
