@@ -88,7 +88,7 @@ class FileUploader {
 	}
 
 	static function media_exists( $title ): int {
-		return post_exists( title: self::format_title($title), type: 'attachment' );
+		return post_exists( title: $title, type: 'attachment' );
 	}
 
 	private static function format_title( $title ) {
