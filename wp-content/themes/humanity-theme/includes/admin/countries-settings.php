@@ -52,7 +52,7 @@ function amnesty_countries_settings_page_callback() {
     echo '<button type="button" class="button" id="upload-countries-report-document">Choisir un document</button>';
 
     echo '<h2>Texte du chapo</h2>';
-    echo '<textarea name="countries_global_chapo" rows="5" style="width:100%">' . esc_textarea($chapo) . '</textarea>';
+    echo '<textarea name="countries_global_chapo" rows="5" style="width:100%">' . esc_textarea( stripslashes($chapo) ) . '</textarea>';
 
     echo '<p><input type="submit" class="button-primary" value="Enregistrer les réglages"></p>';
     echo '</form></div>';
