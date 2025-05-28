@@ -13,6 +13,7 @@ class DocTransformerFactory
 			Type::PAYS => new PaysTransformer(),
 			Type::ARTICLE_CHRONIQUE => new ArticleChroniqueTransformer(),
 			Type::FOCUS => new FocusTransformer(),
+			Type::DOSSIER => new DossierTransformer(),
 			default => throw new \Exception("Not found transformer for type : $type->value")
 		};
 	}
