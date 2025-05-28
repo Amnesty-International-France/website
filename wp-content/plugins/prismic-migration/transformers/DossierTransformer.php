@@ -3,6 +3,8 @@
 namespace transformers;
 
 use Type;
+use utils\LinksUtils;
+use utils\ReturnType;
 
 class DossierTransformer extends DocTransformer {
 
@@ -20,6 +22,27 @@ class DossierTransformer extends DocTransformer {
 
 		if( isset($wp_post['status']) && $wp_post['status'] === 'archivé' ) {
 			$wp_post['post_status'] = 'private';
+		}
+
+		if( isset($prismicDoc['data']['relatedResources']) ) {
+			$ids = [];
+			foreach ( $prismicDoc['data']['relatedResources'] as $related ) {
+				$content = $related['relatedcontent'];
+				if( isset($content['type'], $content['uid']) && $content['type'] === 'rapport' ) {
+					$ids[] = LinksUtils::generatePlaceHolderDoc('rapport', $content['uid'], ReturnType::ID);
+				}
+			}
+			if( !empty($ids) ) {
+				$download_block = [
+					'blockName' => 'amnesty-core/download-go-further',
+					'attrs' => [
+						'title' => 'POUR ALLER PLUS LOIN',
+						'fileIds' => $ids
+					],
+					'innerContent' => []
+				];
+				$wp_post['post_content'][] = [$download_block];
+			}
 		}
 		return $wp_post;
 	}
