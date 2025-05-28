@@ -1,22 +1,22 @@
 <?php
 /**
- * Register Custom Post Type: Fiche Pays
+ * Register Custom Post Type: Pays
  */
 
 function amnesty_register_countries_cpt() {
     register_post_type('fiche_pays',
         array(
             'labels' => array(
-                'name' => 'Fiches Pays',
-                'singular_name' => 'Fiche Pays',
-                'add_new' => 'Ajouter une Fiche Pays',
-                'add_new_item' => 'Ajouter une nouvelle Fiche Pays',
-                'edit_item' => 'Modifier la Fiche Pays',
-                'new_item' => 'Nouvelle Fiche Pays',
-                'view_item' => 'Voir la Fiche Pays',
-                'search_items' => 'Rechercher une Fiche Pays',
-                'not_found' => 'Aucune Fiche Pays trouvée',
-                'not_found_in_trash' => 'Aucune Fiche Pays dans la corbeille'
+                'name' => 'Pays',
+                'singular_name' => 'Pays',
+                'add_new' => 'Ajouter un Pays',
+                'add_new_item' => 'Ajouter une nouveau Pays',
+                'edit_item' => 'Modifier un Pays',
+                'new_item' => 'Nouveau Pays',
+                'view_item' => 'Voir le Pays',
+                'search_items' => 'Rechercher un Pays',
+                'not_found' => 'Aucun Pays trouvé',
+                'not_found_in_trash' => 'Aucun Pays dans la corbeille'
             ),
             'public' => true,
             'has_archive' => true,
@@ -24,7 +24,6 @@ function amnesty_register_countries_cpt() {
             'supports' => array('title', 'editor', 'thumbnail', 'custom-fields'),
             'menu_icon' => 'dashicons-admin-page',
             'show_in_rest' => true,
-            'taxonomies' => array('location'),
         )
     );
 }

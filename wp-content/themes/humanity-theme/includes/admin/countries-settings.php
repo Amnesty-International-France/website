@@ -14,7 +14,7 @@ add_action('admin_menu', 'amnesty_add_countries_settings_page');
 function amnesty_add_countries_settings_page() {
     add_submenu_page(
         'edit.php?post_type=fiche_pays',
-        'Réglages Fiches Pays',
+        'Réglages Pays',
         'Réglages Pays',
         'manage_options',
         'countries_settings',
@@ -37,7 +37,7 @@ function amnesty_countries_settings_page_callback() {
 
     $chapo = get_option('countries_global_chapo', '');
 
-    echo '<div class="wrap"><h1>Réglages pour les Fiches Pays</h1>';
+    echo '<div class="wrap"><h1>Réglages pour les Pays</h1>';
     echo '<form method="post">';
     wp_nonce_field('save_countries_settings', 'amnesty_settings_nonce');
 
