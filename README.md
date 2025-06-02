@@ -17,7 +17,7 @@ You can create different env file like `.env.local`, `.env.dev`, ...
 
 The installation script takes two optional arguments which are `--path` and `--token`. They correspond respectively to the location where the environment will be created (default: current folder) and the github token to have access to private repositories.
 
-The script need to have the path `$HOME/.local/bin` into your `$PATH` because `wp-cli` will be installed there.  
+The script needs to have the path `$HOME/.local/bin` into your `$PATH` because `wp-cli` will be installed there.  
 If it is not, add the following line in your `.bashrc` or `.zschrc` : `export PATH="$HOME/.local/bin:$PATH"` 
 
 To start the installation script : `castor install`.  
@@ -51,7 +51,7 @@ These environment variables must be defined :
 
 ## Update plugins from Github repositories
 
-To update plugins from Github repositories, you can use the following script :
+To update plugins from GitHub repositories, you can use the following script :
 
 `castor update-github-plugins`
 
@@ -59,7 +59,7 @@ To update plugins from private repositories (especially the amnesty branding plu
 
 `castor update-github-plugins --token my-access-token`
 
-Like the install script, you can specify the path of the wordpress installation with `--path`.
+Like the install script, you can specify the path of the WordPress installation with `--path`.
 
 ## Build blocks and assets
 
@@ -74,13 +74,13 @@ pushing on branch `fairness-dev` deploys on http://app-0feb7822-eaf8-4f15-ba3d-d
 ## Custom Plugins
 
 A custom plugin must be developed directly in a folder under `<path>/wp-content/plugins` (example: wp-content/plugins/hello-world).  
-This will allow the plugin to be loaded directly into wordpress. Note that it is not activated by default, so you need to activate it in wp-admin.
+This will allow the plugin to be loaded directly into WordPress. Note that it is not activated by default, so you need to activate it in wp-admin.
 
 For your plugin to be versioned on git, you need to add the following line to the plugins section of the `.gitignore` file : `!wp-content/plugins/your-plugin/`
 
-## Start wordpress
+## Start WordPress
 
-To start wordpress, run : `wp server`
+To start WordPress, run : `wp server`
 
 ## Configuration
 
