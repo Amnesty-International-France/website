@@ -1,4 +1,4 @@
-const reqSvgs = require.context('./icons', false, /\.svg$/);
+const reqSvgs = require.context('../icons', false, /\.svg$/);
 
 const icons = reqSvgs.keys().reduce((acc, filePath) => {
   const iconName = filePath.replace('./', '').replace('.svg', '');

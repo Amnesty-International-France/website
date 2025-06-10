@@ -1,0 +1,236 @@
+.section-home {
+  width: 100vw;
+
+  &.black {
+    background-color: var(--wp--preset--color--black);
+
+    .title {
+      color: var(--wp--preset--color--black);
+      background-color: var(--wp--preset--color--primary);
+    }
+
+    .text {
+      color: var(--wp--preset--color--white);
+    }
+  }
+
+  &.white {
+    background-color: var(--wp--preset--color--white);
+
+    .title {
+      color: var(--wp--preset--color--primary);
+      background-color: var(--wp--preset--color--black);
+    }
+  }
+
+  &.grey {
+    background-color: var(--wp--preset--color--grey-light);
+
+    .title {
+      color: var(--wp--preset--color--black);
+      background-color: var(--wp--preset--color--primary);
+    }
+  }
+
+  .section-inner {
+    max-width: $container-hg;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    @media (min-width: $container-lg) {
+      flex-direction: row;
+      align-items: stretch;
+      gap: 36px;
+    }
+
+    &.without-image {
+      justify-content: center;
+
+      .section-content {
+        align-items: center;
+        width: 100%;
+        padding-left: 36px;
+        padding-right: 36px;
+
+        .text {
+          text-align: center;
+        }
+      }
+    }
+
+    &.with-image {
+      .section-content {
+        width: 100%;
+
+        @media (min-width: $container-lg) {
+          flex: 1;
+        }
+      }
+    }
+
+    &.left {
+      @media (min-width: $container-lg) {
+        flex-direction: row;
+      }
+
+      .section-content {
+        padding-left: 36px;
+        padding-right: 36px;
+
+        @media (min-width: $container-lg) {
+          padding-left: 0;
+        }
+      }
+
+      .section-media {
+        .section-media-image-wrapper {
+          right: 0;
+        }
+      }
+    }
+
+    &.right {
+      @media (min-width: $container-lg) {
+        flex-direction: row-reverse;
+      }
+
+      .section-media {
+        .section-media-image-wrapper {
+          left: 0;
+        }
+      }
+
+      .section-content {
+        padding-left: 36px;
+        padding-right: 36px;
+
+        @media (min-width: $container-lg) {
+          padding-right: 0;
+        }
+      }
+    }
+
+    .section-media {
+      width: 100%;
+      height: 250px;
+      position: relative;
+
+      @media (min-width: $container-lg) {
+        width: 40%;
+        height: auto;
+        min-height: 500px;
+        position: relative;
+      }
+
+      .section-media-image-wrapper {
+        width: 100vw;
+        height: 100%;
+        position: absolute;
+        top: 0;
+
+        @media (min-width: $container-lg) {
+          width: 40vw;
+          height: 100%;
+          position: absolute;
+          top: 0;
+        }
+
+        @media (min-width: $container-hg) {
+          width: 50vw;
+        }
+
+        .section-media-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          max-width: none;
+        }
+      }
+    }
+
+    .section-content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 24px 0;
+
+      @media (min-width: $container-lg) {
+        padding: 40px 0;
+      }
+
+      .title {
+        display: inline;
+        font-size: 36px;
+        font-weight: bold;
+        line-height: 41px;
+        padding: 4px 8px;
+        text-transform: uppercase;
+        width: fit-content;
+        margin: 0;
+        box-decoration-break: clone;
+      }
+
+      .text {
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 28px;
+        padding-bottom: 12px;
+        margin: 0;
+        max-width: $container-hg;
+      }
+
+      .icons {
+        max-width: $container-sm;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 36px;
+        justify-content: center;
+        align-items: start;
+        padding-bottom: 12px;
+
+        @media (min-width: $container-md) {
+          justify-content: left;
+        }
+
+        .icon-with-text {
+          width: 100px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+
+          .container-icon {
+            margin: 0 auto;
+            width: 70px;
+            height: 70px;
+
+            .icon {
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          .icon-description {
+            text-align: center;
+            font-size: 20px;
+            font-family: var(--wp--preset--font-family--secondary);
+            font-weight: bold;
+            line-height: 24px;
+            max-width: 115px;
+            margin: 0;
+
+            &.black {
+              color: var(--wp--preset--color--white);
+            }
+          }
+        }
+      }
+    }
+
+    .button-label {
+      text-transform: uppercase;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import CustomButton from '../button/Button.jsx';
-import Icon from './Icon.jsx';
+import Icon from '../../components/Icon.jsx';
 
 const { useBlockProps } = wp.blockEditor;
 
