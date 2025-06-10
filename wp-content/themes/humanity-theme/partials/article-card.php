@@ -94,6 +94,8 @@ if (!$post_object instanceof WP_Post) {
 		<a href="<?= esc_url($permalink); ?>" class="article-thumbnail">
 			<?= $thumbnail; ?>
 		</a>
+	<?php else: ?>
+		<div class="article-thumbnail"></div>
 	<?php endif; ?>
 
 	<?php if (!empty($label)): ?>
