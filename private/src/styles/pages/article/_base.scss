@@ -27,6 +27,10 @@
   @media (min-width: $container-hg) {
     padding: 0;
   }
+
+  .wp-block-group {
+    margin-bottom: var(--wp--preset--spacing--single);
+  }
 }
 
 .article-container--report .article-content {
