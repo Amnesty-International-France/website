@@ -84,10 +84,6 @@
     right: 0;
     padding: 0 24px;
 
-    @media (min-width: $container-lg) {
-      padding-left: 0;
-    }
-
     .archive-hero-title {
       width: fit-content;
       padding: 5px 8px;
@@ -118,10 +114,6 @@
       max-width: $container-hg;
       margin: 0 auto;
       padding: 0 24px;
-
-      @media (min-width: $container-hg) {
-        padding-left: 0;
-      }
 
       > span:first-of-type {
         display: flex;
@@ -176,6 +168,7 @@
   max-width: $container-hg;
   margin-left: auto;
   margin-right: auto;
+  padding: 0 24px;
 
   .text {
     @media (min-width: $container-lg) {
@@ -189,14 +182,6 @@
   max-width: $container-hg;
   padding: 48px 24px 22px 24px;
   margin: 0 auto;
-
-  @media (min-width: $container-md) {
-    padding: 24 0 64px 0;
-  }
-
-  @media (min-width: $container-hg) {
-    padding-left: 0;
-  }
 
   .title {
     text-align: center;
