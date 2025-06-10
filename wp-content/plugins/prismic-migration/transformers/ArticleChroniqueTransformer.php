@@ -16,6 +16,11 @@ class ArticleChroniqueTransformer extends DocTransformer {
 
 		array_splice( $wp_post['post_content'], 1, 0, [[$this->createSummaryBlock($data)]] );
 
+		$lastBlocks = $wp_post['post_content'][count($wp_post['post_content']) - 1];
+		if( count($lastBlocks) > 0 && $lastBlocks[count($lastBlocks)-1]['blockName'] === 'amnesty-core/call-to-action' ) {
+			array_pop( $wp_post['post_content'][count($wp_post['post_content']) - 1] );
+		}
+
 		$wp_post['post_type'] = Type::get_wp_post_type(\Type::ARTICLE_CHRONIQUE);
 		$wp_post['post_category'] = $this->getCategories(array('chroniques'));
 		$wp_post['terms'] = [
