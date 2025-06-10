@@ -39,7 +39,7 @@
  } elseif (isset($term->name)) {
 	 $category_name = $term->name;
  } else {
-	 $category_name = '';
+	 $category_name = 'Actualités';
  }
  ?>
 
