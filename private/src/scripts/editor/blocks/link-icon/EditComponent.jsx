@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import CustomButton from '../button/Button.jsx';
-import Icon from './Icon.jsx';
+import Icon from '../../components/Icon.jsx';
 
 const { useEffect, useState } = wp.element;
 const { __ } = wp.i18n;
@@ -11,7 +11,7 @@ const EditComponent = (props) => {
   const { attributes, setAttributes } = props;
   const { title, titleSize, description, icon, bgColor, buttonLink } = attributes;
 
-  const reqSvgs = require.context('./icons', false, /\.svg$/);
+  const reqSvgs = require.context('../../icons', false, /\.svg$/);
 
   const iconOptions = reqSvgs.keys().map((filePath) => {
     const fileName = filePath.replace('./', '').replace('.svg', '');
