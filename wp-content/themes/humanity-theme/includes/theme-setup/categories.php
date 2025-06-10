@@ -15,8 +15,8 @@ if( !function_exists( 'setup_categories' ) ) {
 				'singular_name' => 'Campagne',
 				'slug' => 'campagnes'
 			],
-			'Articles Magazine La Chronique' => [
-				'singular_name' => 'Article Magazine La Chronique',
+			'Articles La Chronique' => [
+				'singular_name' => 'Article La Chronique',
 				'slug' => 'chroniques'
 			],
 		];
