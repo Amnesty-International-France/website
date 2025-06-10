@@ -12,6 +12,14 @@ class ListeDActionsMapper extends BlockMapper {
 		parent::__construct($prismicBlock);
 		$this->blocks = [];
 
+		if(!empty( $prismicBlock['primary']['list_title'] )) {
+			$this->blocks[] = [
+				'blockName' => 'core/heading',
+				'attrs' => ['level' => 2],
+				'innerContent' => ['<h2 class="wp-block-heading">' . $this->prismicBlock['primary']['list_title'] . '</h2>']
+			];
+		}
+
 		foreach ( $prismicBlock['items'] as $item ) {
 			$this->blocks[] = [
 				'blockName' => 'amnesty-core/article-card',
