@@ -60,13 +60,13 @@ class LinksUtils {
 	public static function generatePlaceHolderDoc( $type, $uid, ReturnType $returnType): string {
 		switch ( $returnType ) {
 			case ReturnType::URL : {
-				return '%PRISMIC_IMPORT_URL_' . strtoupper( $type ) . '_' . $uid . '%';
+				return '%PRISMIC_IMPORT_URL_' . strtoupper( $type ) . '_' . sanitize_title($uid) . '%';
 			}
 			case ReturnType::ID : {
-				return '%PRISMIC_IMPORT_ID_' . strtoupper( $type ) . '_' . $uid . '%';
+				return '%PRISMIC_IMPORT_ID_' . strtoupper( $type ) . '_' . sanitize_title($uid) . '%';
 			}
 			case ReturnType::NAME : {
-				return '%PRISMIC_IMPORT_NAME_' . strtoupper( $type ) . '_' . $uid . '%';
+				return '%PRISMIC_IMPORT_NAME_' . strtoupper( $type ) . '_' . sanitize_title($uid) . '%';
 			}
 		}
 		return '';
@@ -145,7 +145,7 @@ class LinksUtils {
 		}
 
 		$args = [
-			'name' => sanitize_title($uid),
+			'name' => $uid,
 			'post_type' => \Type::get_wp_post_type( $article_type ),
 			'posts_per_page' => 1,
 		];
