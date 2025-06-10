@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-bottom: var(--wp--preset--spacing--single);
 
   .title-container {
     display: flex;
