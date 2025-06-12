@@ -36,8 +36,8 @@
 			<div class="event-filters-search">
 				<div class="event-filters-form">
 					<form class="form-location" action="">
-						<label for="location"></label>
-						<input id="location" name="location" type="text" placeholder="Code postal ou ville">
+						<label for="input-localisation"></label>
+						<input id="input-localisation" name="location" type="text" placeholder="Code postal ou ville">
 						<button class="filter-button">
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
 								xmlns="http://www.w3.org/2000/svg">
@@ -62,7 +62,7 @@
 			<?php foreach ( $events as $event ) : ?>
 				<?php
 				$block = [
-					'blockName'   => 'amnesty-core/article-card',
+					'blockName'   => 'amnesty-core/event-card',
 					'attrs'       => [ 'postId' => $event->ID ],
 					'innerBlocks' => [],
 				];
