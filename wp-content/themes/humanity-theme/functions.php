@@ -190,6 +190,7 @@ require_once realpath( __DIR__ . '/includes/post-types/pop-in.php' );
 require_once realpath( __DIR__ . '/includes/post-types/sidebar.php' );
 require_once realpath( __DIR__ . '/includes/post-types/countries.php' );
 require_once realpath( __DIR__ . '/includes/post-types/landmarks.php' );
+require_once realpath( __DIR__ . '/includes/post-types/local-structures.php');
 #endregion post types
 
 /**

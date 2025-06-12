@@ -10,7 +10,7 @@ function amnesty_register_countries_cpt() {
                 'name' => 'Pays',
                 'singular_name' => 'Pays',
                 'add_new' => 'Ajouter un Pays',
-                'add_new_item' => 'Ajouter une nouveau Pays',
+                'add_new_item' => 'Ajouter un nouveau Pays',
                 'edit_item' => 'Modifier un Pays',
                 'new_item' => 'Nouveau Pays',
                 'view_item' => 'Voir le Pays',
