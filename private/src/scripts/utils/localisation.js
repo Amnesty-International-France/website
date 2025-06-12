@@ -38,15 +38,15 @@ const fetchApiGeoFrance = async (userLocation) => {
 };
 
 const createResultList = (cities) => {
-  const resultList = document.getElementById('search-results');
+  const resultList = document.getElementsByClassName('search-results');
   const input = document.getElementById('location');
-  resultList.innerHTML = '';
+  resultList[0].innerHTML = '';
 
   cities.forEach((res) => {
     const li = document.createElement('li');
     li.classList.add('element-list');
     li.textContent = `${res.nom} - ${res.codesPostaux[0]}`;
-    resultList.appendChild(li);
+    resultList[0].appendChild(li);
 
     li.addEventListener('click', () => {
       input.value = `${res.nom} - ${res.codesPostaux[0]}`;
@@ -57,7 +57,7 @@ const createResultList = (cities) => {
 };
 
 function closeList() {
-  const ul = document.getElementById('search-results');
+  const ul = document.getElementsByClassName('search-results');
 
   while (ul.firstChild) {
     ul.removeChild(ul.firstChild);
@@ -111,14 +111,14 @@ export const getUserLocationFromButton = () => {
 
 export const getUserLocationFromForm = () => {
   document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('form-location');
-    const blockResult = document.getElementById('event-filters-results');
+    const form = document.getElementsByClassName('form-location');
+    const blockResult = document.getElementsByClassName('event-filters-results');
 
-    form.elements.location.addEventListener('input', async (e) => {
+    form[0].elements.location.addEventListener('input', async (e) => {
       const inputValue = e.target.value;
 
       setTimeout(async () => {
-        blockResult.classList.remove('hidden');
+        blockResult[0].classList.remove('hidden');
         const results = await fetchApiGeoFrance(inputValue);
         createResultList([...results]);
       }, 300);

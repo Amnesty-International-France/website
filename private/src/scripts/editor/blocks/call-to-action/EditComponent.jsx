@@ -3,10 +3,10 @@ import CustomButton from '../button/Button.jsx';
 
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
-const { PanelBody, TextControl, SelectControl, ToggleControl } = wp.components;
+const { PanelBody, TextControl, SelectControl } = wp.components;
 
 const EditComponent = ({ attributes, setAttributes }) => {
-  const { direction, title, subTitle, buttonLabel, buttonLink, geolocation, customId } = attributes;
+  const { direction, title, subTitle, buttonLabel, buttonLink } = attributes;
 
   const updateDirection = (value) => {
     setAttributes({ direction: value });
@@ -26,14 +26,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
   const updateButtonLink = (newButtonLink) => {
     setAttributes({ buttonLink: newButtonLink });
-  };
-
-  const updateGeolocation = (newGeolocation) => {
-    setAttributes({ geolocation: newGeolocation });
-  };
-
-  const updateCustomId = (newCustomId) => {
-    setAttributes({ customId: newCustomId });
   };
 
   return (
@@ -73,21 +65,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
             onChange={updateButtonLink}
             placeholder={__('Lien du bouton', 'amnesty')}
           />
-
-          <ToggleControl
-            label={__('Activer la géolocalisation', 'amnesty')}
-            checked={geolocation}
-            onChange={updateGeolocation}
-          />
-
-          {geolocation && (
-            <TextControl
-              label={__('Id du bouton', 'amnesty')}
-              value={customId}
-              onChange={updateCustomId}
-              placeholder={__('ID du bouton', 'amnesty')}
-            />
-          )}
         </PanelBody>
       </InspectorControls>
 
@@ -97,7 +74,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
           <p className="subTitle">{subTitle}</p>
         </div>
         <CustomButton
-          customId={customId}
           icon="arrow-right"
           label={buttonLabel}
           size="medium"

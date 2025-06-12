@@ -26,7 +26,7 @@
  */
 
 ?>
-<div id="events" class="wp-site-blocks">
+<div class="events wp-site-blocks">
 	<div class="hero-events"></div>
 	<div class="event-filters">
 		<div class="event-filters-container">
@@ -35,7 +35,7 @@
 			</a>
 			<div class="event-filters-search">
 				<div class="event-filters-form">
-					<form id="form-location" action="">
+					<form class="form-location" action="">
 						<label for="location"></label>
 						<input id="location" name="location" type="text" placeholder="Code postal ou ville">
 						<button class="filter-button">
@@ -49,10 +49,10 @@
 
 					</form>
 					<span>ou</span>
-					<button id="localisation" class="btn btn--yellow">Me Géocaliser</button>
+					<button id="localisation" class="btn btn--yellow">Me Géolocaliser</button>
 				</div>
-				<div id="event-filters-results" class="hidden">
-					<ul id="search-results"></ul>
+				<div class="event-filters-results hidden">
+					<ul class="search-results"></ul>
 				</div>
 			</div>
 		</div>

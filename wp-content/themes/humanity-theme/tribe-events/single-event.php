@@ -78,7 +78,7 @@ if ( ! ( $main_category instanceof WP_Term ) ) {
 }
 ?>
 
-<div id="event">
+<div class="event">
 	<div class="current-event">
 		<?php if ( $main_category ) : ?>
 			<?=

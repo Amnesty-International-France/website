@@ -61,8 +61,8 @@
   }
 
   .article-event-date {
-    font-family: Amnesty Trade Gothic;
-    font-weight: 700;
+    font-family: var(--wp--preset--font-family--secondary), serif;
+    font-weight: bold;
     font-size: 14px;
     line-height: 20px;
     letter-spacing: 0;
@@ -86,7 +86,7 @@
   }
 
   .article-date {
-    font-family: var(--wp--preset--font-family--secondary);
+    font-family: var(--wp--preset--font-family--secondary), serif;
     font-size: 14px;
     line-height: 20px;
     color: var(--wp--preset--color--grey-dark);
