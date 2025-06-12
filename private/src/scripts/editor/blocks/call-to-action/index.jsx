@@ -28,14 +28,6 @@ registerBlockType('amnesty-core/call-to-action', {
       type: 'string',
       default: '#',
     },
-    customId: {
-      type: 'string',
-      default: '',
-    },
-    geolocation: {
-      type: 'boolean',
-      default: false,
-    },
   },
   edit: EditComponent,
   save: () => null,
