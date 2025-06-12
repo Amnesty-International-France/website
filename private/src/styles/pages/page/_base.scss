@@ -21,12 +21,14 @@
   }
 }
 
-.page-content .wp-block-post-content > *:not(.wp-block-amnesty-core-section-home) {
+.page-content .wp-block-post-content > *:not(.wp-block-amnesty-core-section-home, .hero-homepage) {
   padding: 0 24px;
 }
 
 @media (min-width: $container-hg) {
-  .page-content .wp-block-post-content > *:not(.wp-block-amnesty-core-section-home) {
+  .page-content
+    .wp-block-post-content
+    > *:not(.wp-block-amnesty-core-section-home, .hero-homepage) {
     padding: 0;
   }
 }
