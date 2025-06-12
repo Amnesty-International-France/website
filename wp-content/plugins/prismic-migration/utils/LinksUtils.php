@@ -30,8 +30,7 @@ class LinksUtils {
 		}
 
 		if( $data['link_type'] === 'Media' ) {
-			$name = $data['name'] ?? null;
-			$id = \FileUploader::uploadMedia( $data['url'], name: $name );
+			$id = \FileUploader::uploadMedia( $data['url'] );
 			if( $id ) {
 				return $returnType === ReturnType::URL ? wp_get_attachment_url( $id ) : $id;
 			}
