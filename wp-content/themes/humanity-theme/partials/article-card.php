@@ -125,7 +125,7 @@ if ( ! $post_object instanceof WP_Post ) {
 				<?= esc_html( $title ); ?>
 			</a>
 		</div>
-		<div class="article-terms 
+		<div class="article-terms
 		<?php
 		if ( empty( $post_terms ) ) {
 			echo 'is-empty';

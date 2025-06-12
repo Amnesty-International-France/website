@@ -19,11 +19,14 @@
 
   & > .event-filters-container {
     max-width: 1024px;
-    height: 40px;
     margin: 0 auto;
     display: flex;
     width: 100%;
     justify-content: space-between;
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+    }
 
     .filter-button {
       border: none;
@@ -36,9 +39,10 @@
       text-transform: uppercase;
       transition: all .2s ease;
       background-color: var(--wp--preset--color--black);
+      text-align: center;
 
       &:first-child {
-        color: var(--wp--preset--color--var(--wp--preset--color--white))
+        color: var(--wp--preset--color--white);
       }
 
       &:hover {
@@ -53,12 +57,23 @@
       & > .event-filters-form {
         display: flex;
         box-sizing: content-box;
+        width: 100%;
+
+        @media (max-width: 640px) {
+          flex-direction: column;
+          margin-top: 1rem;
+          row-gap: 1rem;
+        }
 
         & > form {
           display: flex;
 
+          & > label {
+            display: none;
+          }
+
           & > input[type='text'] {
-            width: 200px;
+            min-width: 200px;
             margin-right: 12px;
             border: none;
 
@@ -95,6 +110,10 @@
           font-weight: bold;
           line-height: 1rem;
           text-transform: uppercase;
+
+          @media (max-width: 640px) {
+            display: none;
+          }
         }
 
         & > button {
@@ -115,7 +134,9 @@
         margin-top: 5px;
         position: absolute;
         z-index: 4;
-        top: 38px;
+        top: 50px;
+        max-height: 200px;
+        overflow-x: hidden;
 
         & > .search-results {
           list-style: none;
@@ -127,8 +148,13 @@
 
             &:hover {
               background-color: var(--wp--preset--color--grey-darkest);
+              color: var(--wp--preset--color--white);
             }
           }
+        }
+
+        @media (max-width: 640px) {
+          top: 65px;
         }
       }
 

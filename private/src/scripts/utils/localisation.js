@@ -38,15 +38,16 @@ const fetchApiGeoFrance = async (userLocation) => {
 };
 
 const createResultList = (cities) => {
-  const resultList = document.getElementsByClassName('search-results');
-  const input = document.getElementById('location');
-  resultList[0].innerHTML = '';
+  const resultList = document.getElementsByClassName('search-results')[0];
+  const input = document.getElementById('input-localisation');
+
+  resultList.innerHTML = '';
 
   cities.forEach((res) => {
     const li = document.createElement('li');
     li.classList.add('element-list');
     li.textContent = `${res.nom} - ${res.codesPostaux[0]}`;
-    resultList[0].appendChild(li);
+    resultList.appendChild(li);
 
     li.addEventListener('click', () => {
       input.value = `${res.nom} - ${res.codesPostaux[0]}`;
@@ -57,11 +58,14 @@ const createResultList = (cities) => {
 };
 
 function closeList() {
-  const ul = document.getElementsByClassName('search-results');
+  const ul = document.getElementsByClassName('search-results')[0];
+  const blockResult = document.getElementsByClassName('event-filters-results')[0];
 
   while (ul.firstChild) {
     ul.removeChild(ul.firstChild);
   }
+
+  blockResult.classList.add('hidden');
 }
 
 export const getUserLocationFromButton = () => {
@@ -111,14 +115,17 @@ export const getUserLocationFromButton = () => {
 
 export const getUserLocationFromForm = () => {
   document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementsByClassName('form-location');
-    const blockResult = document.getElementsByClassName('event-filters-results');
+    const form = document.getElementsByClassName('form-location')[0];
+    const input = document.getElementById('input-localisation');
 
-    form[0].elements.location.addEventListener('input', async (e) => {
+    const blockResult = document.getElementsByClassName('event-filters-results')[0];
+    blockResult.style.width = `${input.clientWidth}px`;
+
+    form.elements.location.addEventListener('input', async (e) => {
       const inputValue = e.target.value;
 
       setTimeout(async () => {
-        blockResult[0].classList.remove('hidden');
+        blockResult.classList.remove('hidden');
         const results = await fetchApiGeoFrance(inputValue);
         createResultList([...results]);
       }, 300);
