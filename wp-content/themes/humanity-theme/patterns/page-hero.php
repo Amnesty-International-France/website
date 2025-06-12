@@ -11,17 +11,21 @@ $featured_image_url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 $page_title = get_the_title();
 
 ?>
-<section class="page-hero-block">
-    <!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
-    <div class="yoast-breadcrumb-wrapper">
-        <?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>
-    </div>
-    <div class="page-hero-title-wrapper">
-        <div class="container">
-            <h1 class="page-hero-title"><?php echo esc_html( $page_title ); ?></h1>
+
+<?php if ( ! is_front_page() ) : ?>
+    <section class="page-hero-block">
+        <!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
+        <div class="yoast-breadcrumb-wrapper">
+            <?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>
         </div>
-    </div>
-</section>
+        <div class="page-hero-title-wrapper">
+            <div class="container">
+                <h1 class="page-hero-title"><?php echo esc_html( $page_title ); ?></h1>
+            </div>
+        </div>
+    </section>
+<?php endif; ?>
+
 
 <?php
 if ( ! is_admin() ) {

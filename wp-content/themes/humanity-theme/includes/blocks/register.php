@@ -48,6 +48,8 @@ require_once __DIR__ . '/get-informed/render.php';
 require_once __DIR__ . '/hero/helpers.php';
 require_once __DIR__ . '/hero/register.php';
 require_once __DIR__ . '/hero/render.php';
+require_once __DIR__ . '/hero-homepage/register.php';
+require_once __DIR__ . '/hero-homepage/render.php';
 require_once __DIR__ . '/iframe-button/register.php';
 require_once __DIR__ . '/iframe-button/render.php';
 require_once __DIR__ . '/iframe/register.php';
@@ -122,6 +124,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_get_informed_block();
 		register_header_block();
 		register_hero_block();
+		register_hero_homepage_block();
 		register_iframe_block();
 		register_iframe_button_block();
 		register_image_block();
