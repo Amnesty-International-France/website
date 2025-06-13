@@ -34,6 +34,7 @@ require_once __DIR__ . '/slices/ListeDocumentsMapper.php';
 require_once __DIR__ . '/slices/MaterielMapper.php';
 require_once __DIR__ . '/slices/MiseAJourMapper.php';
 require_once __DIR__ . '/slices/PostTwitterMapper.php';
+require_once __DIR__ . '/slices/PromotionPageMapper.php';
 require_once __DIR__ . '/slices/SectionImageMapper.php';
 require_once __DIR__ . '/slices/SlideshowMapper.php';
 require_once __DIR__ . '/slices/SommaireMapper.php';
