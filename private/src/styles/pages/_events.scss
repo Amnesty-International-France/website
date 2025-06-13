@@ -10,12 +10,9 @@
 .event-filters {
   font-family: var(--wp--preset--font-family--secondary), serif;
   width: 100vw;
-  padding: 22px 24px;
+  height: 80px;
   background-color: var(--wp--preset--color--grey-light);
 
-  @media (min-width: 1024px) {
-    padding: 22px 0;
-  }
 
   & > .event-filters-container {
     max-width: 1024px;
@@ -23,6 +20,9 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+    padding: 21px 0;
+    box-sizing: border-box;
+    height: 80px;
 
     @media (max-width: 640px) {
       flex-direction: column;
@@ -131,10 +131,9 @@
       & > .event-filters-results {
         box-shadow: 1px 15px 10px #1a1a1acb;
         background-color: var(--wp--preset--color--white);
-        margin-top: 5px;
         position: absolute;
         z-index: 4;
-        top: 50px;
+        top: 45px;
         max-height: 200px;
         overflow-x: hidden;
 
@@ -217,15 +216,13 @@
       letter-spacing: 0;
     }
 
-    & > .event-content {
-      & > .event-date {
-        font-family: var(--wp--preset--font-family--secondary), serif;
-        font-weight: bold;
-        font-size: 14px;
-        line-height: 12px;
-        letter-spacing: 0;
-      }
+    & > .event-details {
+      width: fit-content;
+      border-top: 1px solid var(--wp--preset--color--grey-light);
+      padding-top: 8px;
+    }
 
+    & > .event-content {
       p {
         font-family: var(--wp--preset--font-family--primary), serif;
         font-weight: normal;
@@ -251,32 +248,14 @@
 
       & .tribe-events-event-image {
         margin: 40px auto;
-      }
+        width: 100%;
+        height: 432px;
 
-      .call-to-action-block {
-        & > .call-to-action-content > .title {
-          font-family: var(--wp--preset--font-family--primary), serif;
-          font-weight: bold;
-          font-size: 29.5px;
-          line-height: 33px;
-          letter-spacing: 0;
-          text-align: center;
-          vertical-align: middle;
-          color: var(--wp--preset--color--primary);
+        & > img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
         }
-
-        & > .call-to-action-content > .subTitle {
-          font-family: var(--wp--preset--font-family--primary), serif;
-          font-weight: bold;
-          font-size: 22px;
-          line-height: 25px;
-          letter-spacing: 0;
-          text-align: center;
-          vertical-align: middle;
-          color: var(--wp--preset--color--var(--wp--preset--color--white));
-        }
-
-        margin: 90px 0;
       }
     }
   }
@@ -291,7 +270,7 @@
     background-color: var(--wp--preset--color--black);
 
     & > h3 {
-      font-family: var(--wp--preset--font-family--primary), serif;
+      font-family: var(--wp--preset--font-family--secondary), serif;
       font-weight: bold;
       font-size: 29.5px;
       line-height: 33px;
@@ -302,14 +281,14 @@
     }
 
     & > h5 {
-      font-family: var(--wp--preset--font-family--primary), serif;
+      font-family: var(--wp--preset--font-family--secondary), serif;
       font-weight: bold;
       font-size: 22px;
       line-height: 25px;
       letter-spacing: 0;
       text-align: center;
       vertical-align: middle;
-      color: var(--wp--preset--color--var(--wp--preset--color--white));
+      color: var(--wp--preset--color--white);
     }
 
     > button {
@@ -317,7 +296,7 @@
       align-items: center;
       justify-content: space-evenly;
       padding: 18px 24px;
-      font-family: var(--wp--preset--font-family--primary), serif;
+      font-family: var(--wp--preset--font-family--secondary), serif;
       font-weight: bold;
       font-size: 18px;
       line-height: 19px;
@@ -333,11 +312,8 @@
     }
   }
 
-  & > .event-tag {
-    margin-top: 6rem;
-    border-top: solid 1px var(--wp--preset--color--primary);
-    border-bottom: solid 1px var(--wp--preset--color--primary);
-    padding: 8px 0;
+  & > footer > .container--sm {
+    max-width: 100% !important;
   }
 }
 
