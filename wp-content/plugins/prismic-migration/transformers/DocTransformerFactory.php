@@ -14,6 +14,7 @@ class DocTransformerFactory
 			Type::ARTICLE_CHRONIQUE => new ArticleChroniqueTransformer(),
 			Type::FOCUS => new FocusTransformer(),
 			Type::DOSSIER => new DossierTransformer(),
+			Type::STRUCTURE_LOCALE => new StructureLocaleTransformer(),
 			default => throw new \Exception("Not found transformer for type : $type->value")
 		};
 	}

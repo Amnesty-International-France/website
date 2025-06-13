@@ -13,6 +13,7 @@ use MaterielMapper;
 use MiseAJourMapper;
 use ParagraphMapper;
 use PostTwitterMapper;
+use PromotionPageMapper;
 use SectionImageMapper;
 use SommaireMapper;
 use utils\BrokenTypeException;
@@ -66,6 +67,7 @@ class MapperFactory {
 			'mise_a_jour' => new MiseAJourMapper( $slice ),
 			'NewsLetter' => null,
 			'post_twitter' => new PostTwitterMapper( $slice ),
+			'promotion_page' => new PromotionPageMapper( $slice ),
 			'section_image' => new SectionImageMapper( $slice ),
 			'slideshow' => new \SlideshowMapper( $slice ),
 			'sommaire' => new SommaireMapper( $slice ),

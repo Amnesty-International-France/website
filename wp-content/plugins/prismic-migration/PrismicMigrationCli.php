@@ -66,7 +66,7 @@ class PrismicMigrationCli {
 	 * @when after_wp_load
 	 */
 	public function __invoke( $args, $assoc_args ) {
-		$type = Type::tryFrom( strtolower( $assoc_args['type'] ) );
+		$type = Type::tryFrom( $assoc_args['type'] );
 
 		if( !$type ) {
 			WP_CLI::error( 'Invalid content type: ' . $assoc_args['type'] );
@@ -124,7 +124,7 @@ class PrismicMigrationCli {
 					continue;
 				}
 
-				foreach ( $wp_post['terms'] as $term => $ids ) {
+				foreach ( $wp_post['terms'] ?? [] as $term => $ids ) {
 					wp_set_object_terms( $postId, $ids, $term );
 				}
 
