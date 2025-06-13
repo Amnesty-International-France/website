@@ -87,7 +87,7 @@ $post_type_class = get_post_type() ?: '';
 			<!-- wp:amnesty-core/call-to-action {"title":"Découvrez La Chronique sans plus tarder : recevez un numéro \"découverte\" gratuit","subTitle":"Remplissez ce formulaire en indiquant votre adresse postale et recevez gratuitement votre premier numéro dans votre boîte aux lettres !","buttonLabel":"","buttonLink":"#"} /-->
 		</div>
 		<!-- wp:amnesty-core/related-posts {"title":"ET AUSSI", "nb_posts": 4, "display": "chronique"} /-->
-	<?php else : ?>
+	<?php elseif ( $post_type_class !== 'fiche_pays' ) : ?>
 		<!-- wp:amnesty-core/related-posts {"title":"Voir aussi"} /-->
 	<?php endif; ?>
 
