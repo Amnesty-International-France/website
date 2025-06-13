@@ -305,6 +305,7 @@ if ( class_exists( '\WooCommerce', false ) ) {
 	require_once realpath( __DIR__ . '/includes/woo/select-element.php' );
 	require_once realpath( __DIR__ . '/includes/woo/templates.php' );
 }
+
 #endregion woocommerce
 
 /**

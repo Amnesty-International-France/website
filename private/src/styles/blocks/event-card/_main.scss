@@ -1,4 +1,4 @@
-.article-card {
+.event-card {
   display: flex;
   box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1);
   background: var(--wp--preset--color--white);
@@ -8,7 +8,7 @@
   margin-bottom: var(--wp--preset--spacing--single);
 
   &:hover {
-    .article-thumbnail img {
+    .event-thumbnail img {
       transform: scale(1.1);
     }
   }
@@ -18,7 +18,7 @@
     min-height: 380px;
     max-width: 400px;
 
-    .article-thumbnail {
+    .event-thumbnail {
       width: 100%;
       aspect-ratio: 16 / 10;
     }
@@ -28,7 +28,7 @@
     flex-direction: row;
     min-height: 200px;
 
-    .article-thumbnail {
+    .event-thumbnail {
       width: 35%;
       max-width: 250px;
     }
@@ -40,7 +40,7 @@
     top: 12px;
   }
 
-  .article-thumbnail {
+  .event-thumbnail {
     border-bottom: 4px solid var(--wp--preset--color--primary);
     overflow: hidden;
 
@@ -52,52 +52,44 @@
     }
   }
 
-  .article-content {
+  .event-content {
     padding: 12px 12px 0 12px;
     display: flex;
     flex: 1;
     flex-direction: column;
     gap: 10px;
-  }
 
-  .article-event-date {
-    font-family: var(--wp--preset--font-family--secondary), serif;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 20px;
-    letter-spacing: 0;
-    margin: 0;
-  }
-
-  .article-title {
-    flex: 1;
-    padding-bottom: 12px;
-  }
-
-  .article-terms {
-    padding: 8px 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-
-    &:not(.is-empty) {
-      border-top: 1px solid var(--wp--preset--color--grey-light);
+    & > .event-date {
+      font-family: var(--wp--preset--font-family--secondary), serif;
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--wp--preset--color--grey-dark);
+      margin: 0;
     }
-  }
 
-  .article-date {
-    font-family: var(--wp--preset--font-family--secondary), serif;
-    font-size: 14px;
-    line-height: 20px;
-    color: var(--wp--preset--color--grey-dark);
-  }
+    & > .event-title {
+      flex: 1;
+      padding-bottom: 12px;
 
-  .article-title a {
-    text-decoration: none;
+      & > a {
+        text-decoration: none;
 
-    &:hover {
-      background: none;
-      text-decoration: underline;
+        &:hover {
+          background: none;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    & > .event-terms {
+      padding: 8px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+
+      &:not(.is-empty) {
+        border-top: 1px solid var(--wp--preset--color--grey-light);
+      }
     }
   }
 }
