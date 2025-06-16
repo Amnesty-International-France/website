@@ -63,3 +63,13 @@ if ( ! function_exists( 'bind_param_to_hook' ) ) {
 		return fn ( ...$params ) => call_user_func_array( $callback, [ ...$params, $extra ] );
 	}
 }
+
+add_filter('rest_prepare_category', function($response, $term, $request) {
+    $acf = get_fields($term->term_id);
+    if ($acf) {
+        $data = $response->get_data();
+        $data['acf'] = $acf;
+        $response->set_data($data);
+    }
+    return $response;
+}, 10, 3);

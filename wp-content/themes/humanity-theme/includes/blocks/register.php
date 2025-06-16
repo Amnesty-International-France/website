@@ -15,6 +15,8 @@ require_once __DIR__ . '/agir-legacy/register.php';
 require_once __DIR__ . '/agir-legacy/render.php';
 require_once __DIR__ . '/article-card/register.php';
 require_once __DIR__ . '/article-card/render.php';
+require_once __DIR__ . '/articles-homepage/register.php';
+require_once __DIR__ . '/articles-homepage/render.php';
 require_once __DIR__ . '/banner/register.php';
 require_once __DIR__ . '/button/register.php';
 require_once __DIR__ . '/button/render.php';
@@ -109,6 +111,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_action_block();
 		register_agir_legacy_block();
 		register_article_card_block();
+		register_articles_homepage_block();
 		register_banner_block();
 		register_button_block();
 		register_carousel_block();
