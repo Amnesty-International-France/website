@@ -42,8 +42,11 @@ if (!$post_object instanceof WP_Post) {
     $chip_style = 'bg-yellow';
 
     $post_type_object = get_post_type_object($post_type);
-    $label = $post_type_object->name === 'tribe_events' ? $post_type_object->label : 'Évènement';
-    
+
+	if ($post_type_object->name === 'tribe_events') {
+		$label =  'Évènement';
+	}
+
     $link = get_post_type_archive_link($post_type);
 
     $use_yearless_format = apply_filters(

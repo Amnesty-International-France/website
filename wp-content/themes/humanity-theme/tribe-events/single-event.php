@@ -81,7 +81,10 @@ $post_type = get_post_type($event);
 $chip_style = 'bg-yellow';
 
 $post_type_object = get_post_type_object($post_type);
-$main_category = $post_type_object->name === 'tribe_events' ? $post_type_object->label : 'Évènement';
+
+if ($post_type_object->name === 'tribe_events') {
+	$main_category =  'Évènement';
+}
 
 ?>
 
