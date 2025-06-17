@@ -27,7 +27,9 @@
 
 ?>
 <div class="events wp-site-blocks">
-	<div class="hero-events"></div>
+	<?php
+	echo do_blocks( WP_Block_Patterns_Registry::get_instance()->get_registered( 'amnesty/archive-hero' )['content'] );
+	?>
 	<div class="event-filters">
 		<div class="event-filters-container">
 			<a class="filter-button" href="<?php echo esc_url( tribe_get_events_link() ); ?>">
