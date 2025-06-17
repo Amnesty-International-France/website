@@ -3,6 +3,7 @@
 namespace blocks;
 
 use AgirSliceMapper;
+use BlocFocusMapper;
 use CallToActionMapper;
 use ChapoMapper;
 use EncadreLienMapper;
@@ -15,7 +16,9 @@ use ParagraphMapper;
 use PostTwitterMapper;
 use PromotionPageMapper;
 use SectionImageMapper;
+use SectionMapper;
 use SommaireMapper;
+use TrombiMapper;
 use utils\BrokenTypeException;
 use utils\LinksUtils;
 use VerbatimsMapper;
@@ -42,14 +45,18 @@ class MapperFactory {
 		};
 	}
 
-	public function getSliceMapper( $slice ): BlockMapper|null {
+	public function getSliceMapper( $slice, \ArrayIterator $it ): BlockMapper|null {
 		return match( $slice['slice_type'] ) {
 			'accordion', 'accordeon' => new \AccordionMapper( $slice ),
+			'actionurgente' => null,
+			'Agenda' => null,
 			'agir' => new AgirSliceMapper( $slice ),
+			'Bloc Focus' => new BlocFocusMapper( $slice ),
 			'Bloc Info' => new \BlocInfoMapper( $slice ),
 			'bloc_info_riche' => new \BlocInfoRicheMapper( $slice ),
 			'bloc_orange' => new \BlocOrangeMapper( $slice ),
 			'bouton' => new \ButtonMapper( $slice, $slice['primary']['textlink'] ?? '', $slice['primary']['actionlink'] ),
+			'Bouton suppression de cookie' => null,
 			'Call to action' => new CallToActionMapper( $slice ),
 			'Call to action Calculette' => null,
 			'Call to action Twitter' => null,
@@ -58,21 +65,27 @@ class MapperFactory {
             'Contenu supplementaire' => new \ContenuSupplementaireMapper( $slice ),
 			'Contenu supplementaire spécial' => new \ContenuSupplementaireSpecialMapper( $slice ),
 			'cta_push' => new \CTAPushMapper( $slice ),
+			'diaporama' => null,
 			'encadre_lien' => new EncadreLienMapper( $slice ),
-			'image_et_legende' => new \ImageEtLegendeMapper( $slice ),
+			'formulaire_contact' => null,
+			'image_et_legende', 'image' => new \ImageEtLegendeMapper( $slice ),
 			'liens_cartes' => new \LiensCartesMapper( $slice ),
 			'liste_d_actions' => new \ListeDActionsMapper( $slice ),
             'liste_documents' => new \ListeDocumentsMapper( $slice ),
+			'liste_films' => new \ListeFilmsMapper( $slice ),
 			'materiel' => new MaterielMapper( $slice ),
 			'mise_a_jour' => new MiseAJourMapper( $slice ),
 			'NewsLetter' => null,
 			'post_twitter' => new PostTwitterMapper( $slice ),
 			'promotion_page' => new PromotionPageMapper( $slice ),
+			'section' => new SectionMapper( $slice, $it ),
 			'section_image' => new SectionImageMapper( $slice ),
 			'slideshow' => new \SlideshowMapper( $slice ),
 			'sommaire' => new SommaireMapper( $slice ),
 			'Temoignage Photo' => new \TemoignagePhoto( $slice ),
 			'texte_illustre' => new \TexteIllustreMapper( $slice ),
+			'thematiques' => null,
+			'trombi' => new TrombiMapper( $slice ),
 			'wrap_image' => new WrapImageMapper( $slice ),
 			'verbatims' => new VerbatimsMapper( $slice ),
 			default => throw new \Exception( 'Unknown slice type: ' . $slice['slice_type'] ),

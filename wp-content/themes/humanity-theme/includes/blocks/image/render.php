@@ -20,15 +20,17 @@ if (!function_exists('render_image_block')) {
 		$image_id = (int) $attributes['mediaId'];
 		$image_url = wp_get_attachment_image_url($image_id, 'large');
 		$alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
-		
+
 		$image_post = get_post($image_id);
 		$caption = $image_post->post_excerpt;
 		$description = $image_post->post_content;
 
+		$classes = $attributes['className'];
+
 		ob_start();
 		?>
 
-        <div class="image-block">
+        <div class="image-block <?php echo esc_attr($classes) ?>">
             <div class="image-wrapper">
                 <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($alt); ?>" />
                 <?php if (!empty($caption)) : ?>

@@ -39,24 +39,4 @@ class StructureLocaleTransformer extends DocTransformer {
 		return $wp_post;
 	}
 
-    private function addRelatedContent( $prismicDoc, &$wp_post ): void {
-        $data = $prismicDoc['data'];
-        if( isset($data['relatedArticle']) ) {
-            $result = [];
-            foreach ( $data['relatedArticle'] as $related ) {
-                $content = $related['relatedcontent'];
-                try {
-                    $id = LinksUtils::processLink($content, ReturnType::ID);
-                } catch (BrokenTypeException $e) {}
-                if( !empty($id) ) {
-                    $result[] = $id;
-                }
-            }
-
-            if( ! empty($result) ) {
-                $wp_post['relatedArticles'] = $result;
-            }
-        }
-    }
-
 }

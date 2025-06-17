@@ -3,16 +3,17 @@
 use blocks\BlockMapper;
 use blocks\MapperFactory;
 
-class BlocInfoMapper extends BlockMapper {
+class BlocFocusMapper extends BlockMapper {
 
 	private array $blocks;
 	private bool $showTitle = false;
+
 	private string $title = '';
 
 	public function __construct( $prismicBlock ) {
 		parent::__construct($prismicBlock);
 		$this->blocks = [];
-		$it = new ArrayIterator( $prismicBlock['value'][0]['contenu'] ?? [] );
+		$it = isset($prismicBlock['items'][0]['texte']) ? new ArrayIterator( $prismicBlock['items'][0]['texte'] ) : new ArrayIterator();
 		while( $it->valid() ) {
 			$currentKey = $it->key();
 			$contenu = $it->current();
@@ -35,22 +36,22 @@ class BlocInfoMapper extends BlockMapper {
 	}
 
 	protected function getBlockName(): string {
-		return 'amnesty-core/section';
-	}
+        return 'amnesty-core/section';
+    }
 
-	protected function getAttributes(): array {
+    protected function getAttributes(): array {
 		return array_merge([
 			'showTitle' => $this->showTitle,
 			'fullWidth' => false,
 			'backgroundColor' => 'grey'
 		], ($this->showTitle ? ['title' => $this->title] : []));
-	}
+    }
 
-	protected function getInnerBlocks(): array {
+    protected function getInnerBlocks(): array {
 		return $this->blocks;
-	}
+    }
 
-	protected function getInnerContent(): array {
-		return array_map(static fn($v) => null, $this->blocks);
-	}
+    protected function getInnerContent(): array {
+		return array_map( static fn($v) => null, $this->blocks);
+    }
 }

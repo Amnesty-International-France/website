@@ -1,8 +1,10 @@
 <?php
 
 namespace transformers;
+use ArrayIterator;
 use blocks\MapperFactory;
 use Exception;
+use utils\BrokenTypeException;
 use utils\ImageDescCaptionUtils;
 use utils\LinksUtils;
 use utils\ReturnType;
@@ -39,15 +41,18 @@ abstract class DocTransformer {
 		}
 
 		$slicesBlocks = [];
-		foreach( $data['contenuEtendu'] as $slice ) {
+		$itContenuEtendu = isset($data['contenuEtendu']) ? new \ArrayIterator( $data['contenuEtendu'] ) : new ArrayIterator();
+		while($itContenuEtendu->valid()) {
+			$contenuEtendu = $itContenuEtendu->current();
 			try {
-				$mapper = MapperFactory::getInstance()->getSliceMapper($slice);
+				$mapper = MapperFactory::getInstance()->getSliceMapper($contenuEtendu, $itContenuEtendu);
 				if( $mapper !== null) {
 					$slicesBlocks[] = $mapper->map();
 				}
 			} catch (\Exception $e) {
 				echo $e->getMessage().PHP_EOL;
 			}
+			$itContenuEtendu->next();
 		}
 
 		$wp_post['post_content'] = [$chapoBlock, $contenuBlocks, $slicesBlocks];
@@ -125,7 +130,27 @@ abstract class DocTransformer {
 		return $res;
 	}
 
-	function getCategories( array $categories ): array {
+	protected function addRelatedContent($prismicDoc, &$wp_post ): void {
+		$data = $prismicDoc['data'];
+		if( isset($data['relatedArticle']) ) {
+			$result = [];
+			foreach ( $data['relatedArticle'] as $related ) {
+				$content = $related['relatedcontent'];
+				try {
+					$id = LinksUtils::processLink($content, ReturnType::ID);
+				} catch (BrokenTypeException $e) {}
+				if( !empty($id) ) {
+					$result[] = $id;
+				}
+			}
+
+			if( ! empty($result) ) {
+				$wp_post['relatedArticles'] = $result;
+			}
+		}
+	}
+
+	protected function getCategories( array $categories ): array {
 		$categoriesIds = [];
 		foreach ( $categories as $category ) {
 			$categoriesIds[] = get_category_by_slug( $category )->term_id;
@@ -133,7 +158,7 @@ abstract class DocTransformer {
 		return $categoriesIds;
 	}
 
-	function getAuthor( $authorName ) {
+	protected function getAuthor( $authorName ) {
 		if ( $authorName !== null ) {
 			$id = username_exists( $authorName );
 			if( !$id ) {
@@ -144,7 +169,7 @@ abstract class DocTransformer {
 		return null;
 	}
 
-	function getTerms( array $prismicDoc ): array {
+	protected function getTerms( array $prismicDoc ): array {
 		$countries = [];
 		$combats = [];
 		$dossiers = [];

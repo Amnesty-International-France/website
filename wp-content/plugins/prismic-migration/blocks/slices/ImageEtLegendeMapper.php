@@ -14,7 +14,7 @@ class ImageEtLegendeMapper extends BlockMapper {
 		if( isset($image['url']) ) {
 			$url = $image['url'];
 			$alt = $image['alt'] ?? '';
-			$descCaption = ImageDescCaptionUtils::getDescAndCaption( $prismicBlock['primary']['caption'] );
+			$descCaption = ImageDescCaptionUtils::getDescAndCaption( $prismicBlock['primary']['caption'] ?? '');
 			$this->mediaId = FileUploader::uploadMedia($url, $descCaption['caption'], $descCaption['description'], $alt);
 		}
 	}

@@ -15,6 +15,7 @@ class DocTransformerFactory
 			Type::FOCUS => new FocusTransformer(),
 			Type::DOSSIER => new DossierTransformer(),
 			Type::STRUCTURE_LOCALE => new StructureLocaleTransformer(),
+			Type::PAGE_FROIDE => new PageFroideTransformer(),
 			default => throw new \Exception("Not found transformer for type : $type->value")
 		};
 	}
