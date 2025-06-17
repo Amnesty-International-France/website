@@ -11,6 +11,8 @@ if ( ! function_exists( 'register_block_type' ) ) {
 require_once __DIR__ . '/_deprecated/header/class-header-block-renderer.php';
 require_once __DIR__ . '/_deprecated/header/register.php';
 require_once __DIR__ . '/action/register.php';
+require_once __DIR__ . '/actions-homepage/register.php';
+require_once __DIR__ . '/actions-homepage/render.php';
 require_once __DIR__ . '/agir-legacy/register.php';
 require_once __DIR__ . '/agir-legacy/render.php';
 require_once __DIR__ . '/article-card/register.php';
@@ -109,6 +111,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 	 */
 	function amnesty_register_php_rendered_blocks() {
 		register_action_block();
+		register_actions_homepage_block();
 		register_agir_legacy_block();
 		register_article_card_block();
 		register_articles_homepage_block();
