@@ -34,7 +34,7 @@ class AccordionMapper extends BlockMapper {
 			$block['innerBlocks'] = $innerBlocks;
 
 			$content = [];
-			$content[] = '<details class="wp-block-details"><summary>' . $item['question'][0]['text'] . '</summary>';
+			$content[] = '<details class="wp-block-details"><summary>' . ( $item['question'][0]['text'] ?? '' ) . '</summary>';
 			foreach ( $innerBlocks as $innerBlock ) {
 				$content[] = null;
 			}

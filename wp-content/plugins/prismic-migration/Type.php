@@ -5,11 +5,10 @@ enum Type: string {
 	case NEWS = 'news';
 	case PAYS = 'pays';
 	case ARTICLE_CHRONIQUE = 'articlechronique';
-
 	case FOCUS = 'index';
 	case DOSSIER = 'dossier';
-
 	case STRUCTURE_LOCALE = 'structureMilitante';
+	case PAGE_FROIDE = 'page';
 
 	public static function get_wp_post_type(Type $type): string|null {
 		return match($type) {
@@ -17,6 +16,7 @@ enum Type: string {
 			self::PAYS => 'fiche_pays',
 			self::FOCUS => 'landmark',
 			self::STRUCTURE_LOCALE => 'local-structures',
+			self::PAGE_FROIDE => 'page',
 			default => null,
 		};
 	}
