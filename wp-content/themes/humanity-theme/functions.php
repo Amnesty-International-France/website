@@ -347,4 +347,15 @@ add_action('add_meta_boxes', function () {
 }, 20);
 
 
+/*
+ * Get Longitude and Latitude for Venue
+ */
+add_filter('tribe_rest_venue_data', function ($data) {
+
+	$data['longitude'] = get_post_meta($data['id'], '_VenueLongitude', true);
+	$data['latitude'] = get_post_meta($data['id'], '_VenueLatitude', true);
+	return $data;
+}, 10, 2);
+
+
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
