@@ -19,7 +19,9 @@ if ( is_front_page() ) {
 	<!-- wp:group {"tagName":"section","className":"page-content"} -->
 		<section class="wp-block-group page-content">
 			<!-- wp:post-content /-->
+			<?php if ( ! is_front_page() ) : ?>
 			<!-- wp:amnesty-core/related-posts {"title":"Voir aussi"} /-->
+			<?php endif; ?>
 		</section>
 	<!-- /wp:group -->
 </article>
