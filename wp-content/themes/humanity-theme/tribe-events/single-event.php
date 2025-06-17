@@ -83,12 +83,19 @@ $chip_style = 'bg-yellow';
 $post_type_object = get_post_type_object($post_type);
 
 if ($post_type_object->name === 'tribe_events') {
-	$main_category =  'Évènement';
+	$main_category = 'Évènement';
 }
 
 ?>
 
 <div class="event">
+	<div class="yoast-breadcrumb-wrapper">
+		<?php
+		if (function_exists('yoast_breadcrumb')) {
+			yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
+		}
+		?>
+	</div>
 	<div class="current-event">
 		<?php if ($main_category) : ?>
 			<?=
@@ -116,7 +123,7 @@ if ($post_type_object->name === 'tribe_events') {
 							  fill="#575756"/>
 					</svg>
 
-					<?php if (tribe_get_start_date($event_id, false, 'd M Y') === tribe_get_end_date($event_id, false, 'd M Y')) : ?>
+					<?php if (tribe_get_start_date($event_id, false, 'd M Y') !== tribe_get_end_date($event_id, false, 'd M Y')) : ?>
 						<p>Du <?php echo tribe_get_start_date($event_id, false, 'd M Y'); ?>
 							au <?php echo tribe_get_end_date($event_id, false, 'd M Y'); ?>
 						</p>
@@ -147,15 +154,15 @@ if ($post_type_object->name === 'tribe_events') {
 					</div>
 				<?php endif; ?>
 				<?php if (!empty(tribe_get_organizer_email($event_id))) : ?>
-				<div class="event-info-icon">
-					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path fill-rule="evenodd" clip-rule="evenodd"
-							  d="M2.00016 2H14.0002C14.3684 2 14.6668 2.29848 14.6668 2.66667V13.3333C14.6668 13.7015 14.3684 14 14.0002 14H2.00016C1.63197 14 1.3335 13.7015 1.3335 13.3333V2.66667C1.3335 2.29848 1.63197 2 2.00016 2ZM8.04016 7.78867L3.7655 4.15867L2.90216 5.17467L8.04883 9.54467L13.1028 5.17133L12.2308 4.16267L8.04016 7.78867Z"
-							  fill="#575756"/>
-					</svg>
-					<p><?php echo tribe_get_organizer_email($event_id) ?></p>
-					<?php endif; ?>
-				</div>
+					<div class="event-info-icon">
+						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path fill-rule="evenodd" clip-rule="evenodd"
+								  d="M2.00016 2H14.0002C14.3684 2 14.6668 2.29848 14.6668 2.66667V13.3333C14.6668 13.7015 14.3684 14 14.0002 14H2.00016C1.63197 14 1.3335 13.7015 1.3335 13.3333V2.66667C1.3335 2.29848 1.63197 2 2.00016 2ZM8.04016 7.78867L3.7655 4.15867L2.90216 5.17467L8.04883 9.54467L13.1028 5.17133L12.2308 4.16267L8.04016 7.78867Z"
+								  fill="#575756"/>
+						</svg>
+						<p><?php echo tribe_get_organizer_email($event_id) ?></p>
+					</div>
+				<?php endif; ?>
 			</div>
 		</div>
 
@@ -168,24 +175,24 @@ if ($post_type_object->name === 'tribe_events') {
 			</div>
 			<?php if (get_post_type() == Tribe__Events__Main::POSTTYPE && tribe_get_option('showComments', false)) comments_template() ?>
 		<?php endwhile; ?>
-	</div>
-	<div class="event-near">
-		<h3>Près de chez vous</h3>
-		<h5>Trouvez d’autres événements pour agir avec nous</h5>
-		<button id="localisation">
-			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path fill-rule="evenodd" clip-rule="evenodd"
-					  d="M16.172 11L10.808 5.636L12.222 4.222L20 12L12.222 19.778L10.808 18.364L16.172 13H4V11H16.172Z"
-					  fill="black"/>
-			</svg>
-			rechercher
-		</button>
-	</div>
+		<div class="event-near">
+			<h3>Près de chez vous</h3>
+			<h5>Trouvez d’autres événements pour agir avec nous</h5>
+			<button id="localisation">
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd" clip-rule="evenodd"
+						  d="M16.172 11L10.808 5.636L12.222 4.222L20 12L12.222 19.778L10.808 18.364L16.172 13H4V11H16.172Z"
+						  fill="black"/>
+				</svg>
+				rechercher
+			</button>
+		</div>
 
-	<!-- wp:group {"tagName":"footer","className":"article-footer"} -->
-	<footer class="wp-block-group article-footer">
-		<!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
-	</footer>
-	<!-- /wp:group -->
+		<!-- wp:group {"tagName":"footer","className":"article-footer"} -->
+		<footer class="wp-block-group article-footer">
+			<!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
+		</footer>
+		<!-- /wp:group -->
+	</div>
 </div>
 

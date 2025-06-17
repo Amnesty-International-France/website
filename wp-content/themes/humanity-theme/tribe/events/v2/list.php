@@ -35,7 +35,7 @@
 			<a class="filter-button" href="<?php echo esc_url( tribe_get_events_link() ); ?>">
 				Tous les évènements
 			</a>
-			<div class="event-filters-search">
+			<!-- <div class="event-filters-search">
 				<div class="event-filters-form">
 					<form class="form-location" action="">
 						<label for="input-localisation"></label>
@@ -56,7 +56,7 @@
 				<div class="event-filters-results hidden">
 					<ul class="search-results"></ul>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 	<div class="events-list">

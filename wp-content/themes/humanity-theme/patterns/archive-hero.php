@@ -41,6 +41,10 @@
  } else {
 	 $category_name = 'Actualités';
  }
+
+ if ($category_name === 'Évènements') {
+	$category_name = 'Agenda';
+}
  ?>
 
 
