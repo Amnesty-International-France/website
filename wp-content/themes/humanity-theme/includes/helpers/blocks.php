@@ -75,8 +75,13 @@ add_filter('allowed_block_types_all', function ($allowed_blocks, $editor_context
         if ($allowed_blocks === true) {
             return true;
         }
-        if (is_array($allowed_blocks) && !in_array('amnesty-core/hero-homepage', $allowed_blocks, true)) {
-            $allowed_blocks[] = 'amnesty-core/hero-homepage';
+        if (is_array($allowed_blocks)) {
+            if (!in_array('amnesty-core/hero-homepage', $allowed_blocks, true)) {
+                $allowed_blocks[] = 'amnesty-core/hero-homepage';
+            }
+            if (!in_array('amnesty-core/articles-homepage', $allowed_blocks, true)) {
+                $allowed_blocks[] = 'amnesty-core/articles-homepage';
+            }
         }
         return $allowed_blocks;
     }
@@ -88,7 +93,8 @@ add_filter('allowed_block_types_all', function ($allowed_blocks, $editor_context
 
     if (is_array($allowed_blocks)) {
         $allowed_blocks = array_filter($allowed_blocks, function($block_name) {
-            return $block_name !== 'amnesty-core/hero-homepage';
+            return $block_name !== 'amnesty-core/hero-homepage' &&
+                   $block_name !== 'amnesty-core/articles-homepage';
         });
         $allowed_blocks = array_values($allowed_blocks);
     }

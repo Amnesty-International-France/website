@@ -4,31 +4,33 @@
     "prettier",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
-    "plugin:@wordpress/eslint-plugin/i18n"
+    "plugin:@wordpress/eslint-plugin/i18n",
   ],
   "plugins": ["prettier"],
   "globals": {
     "lodash": true,
     "React": true,
     "ReactDOM": true,
-    "wp": true
+    "wp": true,
   },
   "env": {
-    "browser": true
+    "browser": true,
   },
   "parser": "@babel/eslint-parser",
   "parserOptions": {
-    "requireConfigFile": false
+    "requireConfigFile": false,
   },
   "rules": {
     "prettier/prettier": ["error"],
     "react/prop-types": "off",
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
-    "@wordpress/i18n-text-domain": ["error", { "allowedTextDomain": ["amnesty", "default"] }]
+    "@wordpress/i18n-text-domain": ["error", { "allowedTextDomain": ["amnesty", "default"] }],
+    "no-underscore-dangle": ["error", { "allow": ["_embedded"] }],
+    "prefer-destructuring": "off",
   },
   "settings": {
     "react": {
-      "version": "18.3.1"
-    }
-  }
+      "version": "18.3.1",
+    },
+  },
 }
