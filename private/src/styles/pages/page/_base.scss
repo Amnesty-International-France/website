@@ -23,7 +23,12 @@
 
 .page-content
   .wp-block-post-content
-  > *:not(.wp-block-amnesty-core-section-home, .hero-homepage, .articles-homepage) {
+  > *:not(
+    .wp-block-amnesty-core-section-home,
+    .hero-homepage,
+    .articles-homepage,
+    .actions-homepage
+  ) {
   padding: 0 24px;
 }
 
