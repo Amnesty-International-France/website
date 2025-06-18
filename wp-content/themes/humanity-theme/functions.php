@@ -348,7 +348,7 @@ add_action('add_meta_boxes', function () {
 
 
 /*
- * Get Longitude and Latitude for Venue
+ * Added Longitude and Latitude for Venue in API results /wp-json/tribe/events/v1/venues
  */
 add_filter('tribe_rest_venue_data', function ($data) {
 
