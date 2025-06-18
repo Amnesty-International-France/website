@@ -19,7 +19,7 @@ $header_style = amnesty_get_header_style( amnesty_get_header_object_id() );
 					<li>
 						<a href="#" class="menu-item menu-user" aria-current="page">
 							<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-lock.svg'); ?>
-							Mon compte
+							<span>Mon espace</span>
 						</a>
 					</li>
 				</ul>
