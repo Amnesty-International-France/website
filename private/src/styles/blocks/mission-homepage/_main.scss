@@ -1,0 +1,115 @@
+.mission-homepage {
+  width: 100%;
+  background-color: var(--wp--preset--color--black);
+
+  @media (min-width: $container-hg) {
+    padding: 0;
+  }
+
+  .mission-homepage-wrapper {
+    max-width: $container-hg;
+    margin: 0 auto;
+    padding: 54px 0;
+
+    .title {
+      width: fit-content;
+      margin: 0 auto 24px auto;
+      text-transform: uppercase;
+      text-align: center;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 36px;
+      font-weight: bold;
+      line-height: 41px;
+      background-color: var(--wp--preset--color--primary);
+      padding: 0 8px;
+
+      @media (min-width: $container-lg) {
+        font-size: 45px;
+        line-height: 51px;
+      }
+    }
+
+    .subtitle {
+      color: var(--wp--preset--color--white);
+      text-align: center;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 25px;
+      margin-bottom: 8px;
+
+      @media (min-width: $container-lg) {
+        font-size: 26px;
+        line-height: 29px;
+      }
+    }
+
+    .chapo {
+      color: var(--wp--preset--color--white);
+      text-align: center;
+      font-size: 18px;
+      font-weight: lighter;
+      line-height: 28px;
+      margin: 0;
+    }
+
+    .items {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      padding: 40px 0;
+
+      @media (min-width: $container-md) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      @media (min-width: $container-lg) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .item {
+        max-width: 280px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        padding-bottom: 40px;
+
+        .item-title {
+          color: var(--wp--preset--color--white);
+          font-family: var(--wp--preset--font-family--secondary);
+          text-align: center;
+          font-size: 36px;
+          font-weight: bold;
+          line-height: 41px;
+          margin: 0;
+        }
+
+        .icon-container {
+          width: 130px;
+          height: 130px;
+
+          .icon {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        .description {
+          color: var(--wp--preset--color--white);
+          text-align: center;
+          font-size: 18px;
+          font-weight: 300;
+          line-height: 24px;
+          margin: 0;
+        }
+      }
+    }
+
+    .button-label {
+      text-transform: uppercase;
+    }
+  }
+}
