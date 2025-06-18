@@ -14,7 +14,15 @@ $header_style = amnesty_get_header_style( amnesty_get_header_object_id() );
 	<div class="container--full-width">
 		<div class="page-headerItems top-header">
 			<nav class="page-nav page-nav--top-main" aria-label="<?php /* translators: [front] ARIA */ esc_attr_e( 'Primary navigation top', 'amnesty' ); ?>">
-				<ul><?php amnesty_nav("main-menu-top"); ?></ul>
+				<ul>
+					<?php amnesty_nav("main-menu-top"); ?>
+					<li>
+						<a href="#" class="menu-item menu-user" aria-current="page">
+							<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-lock.svg'); ?>
+							<span>Mon espace</span>
+						</a>
+					</li>
+				</ul>
 			</nav>
 		</div>
 		<div class="page-headerItems main-header">

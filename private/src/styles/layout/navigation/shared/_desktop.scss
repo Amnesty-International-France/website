@@ -51,7 +51,7 @@
   }
 }
 
-.page-nav.page-nav--top-main .menu-item a {
+.page-nav.page-nav--top-main .menu-item a, .menu-user {
   color: var(--wp--preset--color--white);
 
   &:hover {
@@ -202,6 +202,7 @@
   font-family: var(--wp--preset--font-family--secondary);
   font-size: var(--wp--custom--body-secondary-bold--font-size);
   font-weight: var(--wp--custom--body-secondary-bold--font-weight);
+  text-transform: none;
 }
 
 .page-nav--main > ul > .menu-item.donate-menu-item {
@@ -211,4 +212,35 @@
 .site-separator {
   width: 1px;
   height: 100%;
+}
+
+
+.page-nav ul li .menu-user {
+  font-family: var(--wp--preset--font-family--secondary), sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0;
+  vertical-align: middle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 12px 22px;
+  column-gap: 8px;
+
+  & > svg {
+    width: 22px;
+    height: 22px;
+
+    path {
+      fill: var(--wp--preset--color--white);
+    }
+  }
+
+  &:hover {
+    svg > path {
+      fill: var(--wp--preset--color--black);;
+    }
+  }
 }
