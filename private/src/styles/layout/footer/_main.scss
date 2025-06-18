@@ -80,6 +80,7 @@
 
         & > .social-network {
           display: flex;
+          flex-wrap: wrap;
           column-gap: 40px;
           margin-top: 58px;
           width: fit-content;
@@ -104,7 +105,7 @@
         @media (max-width: $container-sm) {
           width: 100%;
         }
-        
+
         & > .call-to-action {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
