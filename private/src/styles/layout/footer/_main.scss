@@ -2,6 +2,161 @@
   width: 100%;
   background-color: var(--wp--preset--color--black);
 
+  & > .over-footer {
+    width: 100vw;
+    background-color: var(--wp--preset--color--primary);
+
+    & > .over-footer-container {
+      padding: 36px 0;
+      max-width: $container-lg;
+      margin: 0 auto;
+      display: flex;
+
+      @media (max-width: $container-sm) {
+        flex-direction: column;
+      }
+
+      @media (max-width: $container-lg) {
+        padding: 36px 24px;
+      }
+
+      & > .over-footer-action, .over-footer-social {
+        display: flex;
+
+
+      }
+
+      & > .over-footer-social {
+        display: flex;
+        flex-direction: column;
+        width: 55%;
+
+        @media (max-width: $container-sm) {
+          width: 100%;
+        }
+
+        & > .title {
+          font-family: var(--wp--preset--font-family--secondary), sans-serif;
+          font-weight: bold;
+          font-size: 36px;
+          line-height: 41px;
+          letter-spacing: 0;
+          margin-bottom: 1rem;
+        }
+
+        & > .subtitle {
+          font-family: var(--wp--preset--font-family--primary), sans-serif;
+          font-size: 18px;
+          line-height: 28px;
+          letter-spacing: 0;
+          margin-bottom: 1rem;
+        }
+
+        & > .register {
+          display: flex;
+          align-items: center;
+          column-gap: 13.5px;
+          width: fit-content;
+          padding: 2px 12px;
+          font-family: var(--wp--preset--font-family--secondary), sans-serif;
+          font-weight: bold;
+          font-size: 24px;
+          line-height: 100%;
+          letter-spacing: 0;
+          vertical-align: middle;
+          border: 2px solid var(--wp--preset--color--black);
+          text-decoration: none;
+          transition: all .2s ease-in;
+
+          &:hover {
+            background-color: var(--wp--preset--color--black);
+            color: var(--wp--preset--color--white);
+
+            & > svg > path {
+              fill: var(--wp--preset--color--white);
+            }
+          }
+        }
+
+        & > .social-network {
+          display: flex;
+          flex-wrap: wrap;
+          column-gap: 40px;
+          margin-top: 58px;
+          width: fit-content;
+
+          svg {
+            width: 32px;
+            height: 32px;
+          }
+
+          @media (max-width: $container-lg) {
+            margin-top: 20px;
+            column-gap: 20px;
+          }
+
+        }
+      }
+
+      & > .over-footer-action {
+        margin: auto;
+        width: 45%;
+
+        @media (max-width: $container-sm) {
+          width: 100%;
+        }
+
+        & > .call-to-action {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+          width: 100%;
+
+          @media (max-width: $container-lg) {
+            grid-template-columns: repeat(1, 1fr);
+          }
+
+          & > a {
+            border: 4px solid var(--wp--preset--color--black);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            height: 62px;
+            background-color: #1A1A1A;
+            color: var(--wp--preset--color--white);
+            gap: 12px;
+            padding: 4px 12px;
+            font-family: var(--wp--preset--font-family--secondary), sans-serif;
+            transition: all .2s ease-in;
+            font-weight: bold;
+            font-size: 24px;
+            line-height: 100%;
+            letter-spacing: 0;
+
+
+            &:hover {
+              background-color: var(--wp--preset--color--primary);
+              color: var(--wp--preset--color--black);
+
+              & > svg > path {
+                fill: var(--wp--preset--color--black);
+              }
+            }
+
+            @media (max-width: $container-sm) {
+              justify-content: center;
+              width: 100%;
+            }
+          }
+        }
+
+        @media (max-width: $container-lg) {
+          margin-top: 31px;
+        }
+      }
+    }
+  }
+
   .main-footer {
     max-width: $container-lg;
     margin: 0 auto;
@@ -23,7 +178,7 @@
     .main-footer-item {
       .title {
         position: relative;
-        font-family: var(--wp--preset--font-family--secondary);
+        font-family: var(--wp--preset--font-family--secondary), sans-serif;
         font-size: 20px;
         font-weight: bold;
         line-height: 24px;
