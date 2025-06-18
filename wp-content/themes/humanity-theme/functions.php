@@ -305,6 +305,7 @@ if ( class_exists( '\WooCommerce', false ) ) {
 	require_once realpath( __DIR__ . '/includes/woo/select-element.php' );
 	require_once realpath( __DIR__ . '/includes/woo/templates.php' );
 }
+
 #endregion woocommerce
 
 /**
@@ -328,5 +329,22 @@ if ( is_multilingualpress_enabled() ) {
 require_once realpath(__DIR__ . '/includes/admin/metaboxes/select2-assets.php');
 require_once realpath(__DIR__ . '/includes/admin/metaboxes/related-posts.php');
 #endregion metaboxes
+
+/**
+ * Plugin The Events Calendar
+ *
+ * Remove post_tag, event categories, unused box
+ */
+add_action('init', function () {
+	unregister_taxonomy_for_object_type('post_tag', 'tribe_events');
+	unregister_taxonomy_for_object_type('tribe_events_cat', 'tribe_events');
+});
+
+add_action('add_meta_boxes', function () {
+	remove_meta_box('tribe_events_event_options', 'tribe_events', 'side');
+	remove_meta_box('tec-events-qr-code', 'tribe_events', 'side');
+	remove_meta_box('tribe-events-status', 'tribe_events', 'side');
+}, 20);
+
 
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle

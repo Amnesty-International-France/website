@@ -8,6 +8,7 @@
  */
 
 $postId = get_the_ID();
+$post_type = get_post_type( $postId );
 $main_category = amnesty_get_a_post_term( $postId );
 $post_terms = amnesty_get_post_terms( $postId );
 
@@ -17,15 +18,17 @@ if ($main_category) {
 	});
 }
 
-$post_terms = array_filter($post_terms, static function ($term) {
-	if($term->taxonomy === 'location') {
-		return false;
-	}
-	if($term->taxonomy === 'combat') {
-		return (int) $term->parent !== 0;
-	}
-	return true;
-});
+if ( $post_type !== 'tribe_events' ) {
+	$post_terms = array_filter($post_terms, static function ($term) {
+		if($term->taxonomy === 'location') {
+			return false;
+		}
+		if($term->taxonomy === 'combat') {
+			return (int) $term->parent !== 0;
+		}
+		return true;
+	});
+}
 
 if ( empty( $post_terms ) ) {
 	return;

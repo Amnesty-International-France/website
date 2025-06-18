@@ -34,6 +34,7 @@ import readMoreBlock from './modules/read-more';
 import legsMenu from './modules/legs-menu';
 import initAZFilter from './modules/az-filter';
 import capitalizeHeadings from './modules/capitalize-headings';
+import { getUserLocationFromButton, getUserLocationFromForm } from './utils/localisation';
 
 const App = () => {
   browserDetector();
@@ -67,6 +68,8 @@ const App = () => {
   legsMenu();
   initAZFilter();
   capitalizeHeadings();
+  getUserLocationFromButton();
+  getUserLocationFromForm();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
