@@ -1,17 +1,30 @@
 // eslint-disable-next-line consistent-return
+const fetchZipCodeFromLaPosteApi = async (city) => {
+  try {
+    const apiLaPoste =
+      'https://datanova.laposte.fr/data-fair/api/v1/datasets/laposte-hexasmal/lines';
+    const queryForLaPosteApi = new URLSearchParams({
+      select: 'code_postal',
+      q: city,
+      size: 1,
+    });
+
+    const getAssociatedCitiesZipCode = await fetch(`${apiLaPoste}?${queryForLaPosteApi}`);
+    return getAssociatedCitiesZipCode.json();
+  } catch (e) {
+    return null;
+  }
+};
+
+// eslint-disable-next-line consistent-return
 const fetchApiGeoFrance = async (userLocation) => {
-  const apiAddress = 'https://geo.api.gouv.fr/communes';
+  const defaultApiGouvUrl = 'https://geo.api.gouv.fr';
+  const apiGeoAddress = `${defaultApiGouvUrl}/communes`;
+
   let queryString = {};
   const userLocationIsCP = /^[0-9]{5}$/.test(userLocation);
 
   try {
-    if (userLocation !== null && typeof userLocation === 'object' && !Array.isArray(userLocation)) {
-      queryString = {
-        lon: userLocation.longitude,
-        lat: userLocation.latitude,
-      };
-    }
-
     if (userLocation !== null && userLocationIsCP) {
       queryString = {
         codePostal: userLocation,
@@ -29,13 +42,42 @@ const fetchApiGeoFrance = async (userLocation) => {
     }
 
     const query = new URLSearchParams(queryString).toString();
-    const response = await fetch(`${apiAddress}?${query}`);
+    const responseFromCities = await fetch(`${apiGeoAddress}?${query}`);
+    const dataFromCities = await responseFromCities.json();
 
-    return await response.json();
+    if (dataFromCities.length === 0) {
+      const apiAssociatedCities = `${defaultApiGouvUrl}/communes_associees_deleguees`;
+
+      const responseFromAssociatedCities = await fetch(`${apiAssociatedCities}?${query}`);
+      const dataFromAssociatedCities = await responseFromAssociatedCities.json();
+
+      return await Promise.all(
+        dataFromAssociatedCities.map(async (city) => {
+          const getDataFromLaPosteAPI = await fetchZipCodeFromLaPosteApi(city.nom);
+          return {
+            ...city,
+            codesPostaux: [getDataFromLaPosteAPI.results[0].code_postal],
+          };
+        }),
+      );
+    }
+
+    return dataFromCities;
   } catch (err) {
     console.error(`error fetch: ${err.code} - ${err.message}`);
   }
 };
+
+function closeList() {
+  const ul = document.getElementsByClassName('search-results')[0];
+  const blockResult = document.getElementsByClassName('event-filters-results')[0];
+
+  while (ul.firstChild) {
+    ul.removeChild(ul.firstChild);
+  }
+
+  blockResult.classList.add('hidden');
+}
 
 const createResultList = (cities) => {
   const resultList = document.getElementsByClassName('search-results')[0];
@@ -51,21 +93,20 @@ const createResultList = (cities) => {
 
     li.addEventListener('click', () => {
       input.value = `${res.nom} - ${res.codesPostaux[0]}`;
-      // eslint-disable-next-line no-use-before-define
+      input.dataset.longitude = res.centre.coordinates[0];
+      input.dataset.latitude = res.centre.coordinates[1];
       closeList(input);
     });
   });
 };
 
-function closeList() {
-  const ul = document.getElementsByClassName('search-results')[0];
-  const blockResult = document.getElementsByClassName('event-filters-results')[0];
+function redirectToEventsListWithParams(lon, lat) {
+  const query = new URLSearchParams({
+    lon,
+    lat,
+  });
 
-  while (ul.firstChild) {
-    ul.removeChild(ul.firstChild);
-  }
-
-  blockResult.classList.add('hidden');
+  window.location.href = `/evenements?${query}`;
 }
 
 export const getUserLocationFromButton = () => {
@@ -79,19 +120,7 @@ export const getUserLocationFromButton = () => {
 
         const success = async (position) => {
           try {
-            const userPosition = {
-              longitude: position.coords.longitude,
-              latitude: position.coords.latitude,
-            };
-
-            await fetchApiGeoFrance(userPosition);
-
-            const query = new URLSearchParams({
-              lon: userPosition.longitude,
-              lat: userPosition.latitude,
-            });
-
-            window.location.href = `/evenements?${query}`;
+            redirectToEventsListWithParams(position.coords.longitude, position.coords.latitude);
           } catch (err) {
             alert(`error get position: ${err.code}: ${err.message}`);
           }
@@ -136,9 +165,11 @@ export const getUserLocationFromForm = () => {
     if (buttonLocationForm) {
       buttonLocationForm.addEventListener('click', async (e) => {
         e.preventDefault();
-        const locationValue = form.elements.location.value;
 
-        await fetchApiGeoFrance(locationValue.trim());
+        redirectToEventsListWithParams(
+          form.elements.location.attributes['data-longitude'].value,
+          form.elements.location.attributes['data-latitude'].value,
+        );
       });
     }
   });
