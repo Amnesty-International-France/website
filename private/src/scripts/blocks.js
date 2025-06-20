@@ -42,6 +42,7 @@ import './editor/blocks/key-figure/index.jsx';
 import './editor/blocks/link-icon/index.jsx';
 import './editor/blocks/link-group/index.jsx';
 import './editor/blocks/menu/index.jsx';
+import './editor/blocks/mission-homepage/index.jsx';
 import './editor/blocks/petition-list/index.jsx';
 import './editor/blocks/post-list/index.jsx';
 import './editor/blocks/post-meta/index.jsx';

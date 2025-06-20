@@ -70,6 +70,8 @@ require_once __DIR__ . '/links-with-icons/register.php';
 require_once __DIR__ . '/links-with-icons/render.php';
 require_once __DIR__ . '/menu/register.php';
 require_once __DIR__ . '/menu/render.php';
+require_once __DIR__ . '/mission-homepage/register.php';
+require_once __DIR__ . '/mission-homepage/render.php';
 require_once __DIR__ . '/petition-list/register.php';
 require_once __DIR__ . '/petition-list/render.php';
 require_once __DIR__ . '/post-list/register.php';
@@ -144,6 +146,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_links_with_icons_block();
 		register_list_block();
 		register_menu_block();
+		register_mission_homepage_block();
 		register_petition_list_block();
 		register_quote_block();
 		register_raw_code_block();
