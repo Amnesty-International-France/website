@@ -24,7 +24,7 @@ class PrismicFetcher {
 		return $docs;
 	}
 
-	public function fetch(int $limit = -1, Ordering $ordering = Ordering::DESC, Type $type = Type::ALL): array {
+	public function fetch(int $limit = -1, Ordering $ordering = Ordering::DESC, Type $type = Type::ALL, DateTime $since = null): array {
 		WP_CLI::log( "Fetching documents..." );
 		$refRequest = wp_remote_get(PRISMIC_AMNESTY_URL);
 		if (is_wp_error($refRequest)) {
@@ -38,7 +38,7 @@ class PrismicFetcher {
 
 		$limitReached = false;
 		do {
-			$pageData = $this->getPrismicPage($ref, $ordering, $page, $type);
+			$pageData = $this->getPrismicPage($ref, $ordering, $page, $type, $since);
 			if (!$pageData || !isset($pageData['results'])) {
 				break;
 			}
@@ -59,9 +59,10 @@ class PrismicFetcher {
 		return $data;
 	}
 
-	private function getPrismicPage($ref, Ordering $ordering, int $page, Type $type) {
+	private function getPrismicPage($ref, Ordering $ordering, int $page, Type $type, DateTime $since) {
 		$query = $type !== Type::ALL ? "&q=[[at(document.type,\"$type->value\")]]" : '';
-		$url = PRISMIC_AMNESTY_URL . "/documents/search?page=$page&pageSize=" . PAGE_SIZE . "&ref=$ref$query&orderings=[document.last_publication_date" . ($ordering === Ordering::DESC ? " desc" : "") . "]";
+		$qsince = $since !== null ? '&q=[[date.after(document.last_publication_date, "' . $since->format('Y-m-d') .'")]]' : '';
+		$url = PRISMIC_AMNESTY_URL . "/documents/search?page=$page&pageSize=" . PAGE_SIZE . "&ref=$ref$query$qsince&orderings=[document.last_publication_date" . ($ordering === Ordering::DESC ? " desc" : "") . "]";
 		$data = wp_remote_get($url);
 		if (is_wp_error($data)) {
 			throw new Exception("Error fetching documents : " . PRISMIC_AMNESTY_URL . " , page=$page, ordering=$ordering->name");

@@ -194,4 +194,3 @@ if ($post_type_object->name === 'tribe_events') {
 	</div>
 </div>
 
-x
