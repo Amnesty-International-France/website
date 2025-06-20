@@ -13,8 +13,18 @@ $header_style = amnesty_get_header_style( amnesty_get_header_object_id() );
 <header class="page-header is-<?php echo esc_attr( $header_style ); ?>" role="banner" aria-label="<?php /* translators: [front] ARIA */ esc_attr_e( 'Page Header', 'amnesty' ); ?>">
 	<div class="container--full-width">
 		<div class="page-headerItems top-header">
+
 			<nav class="page-nav page-nav--top-main" aria-label="<?php /* translators: [front] ARIA */ esc_attr_e( 'Primary navigation top', 'amnesty' ); ?>">
 				<ul>
+					<li>
+						<a href="#"
+						   class="menu-item menu-user jetpack-search-filter__link"
+						   aria-label="Ouvrir la recherche">
+							<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-search.svg'); ?>
+							Rechercher
+						</a>
+					</li>
+
 					<?php amnesty_nav("main-menu-top"); ?>
 					<li>
 						<a href="#" class="menu-item menu-user" aria-current="page">

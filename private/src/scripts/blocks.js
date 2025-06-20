@@ -17,6 +17,7 @@ import './editor/plugins/pop-in/index.jsx';
 
 import './editor/blocks/action/index.jsx';
 import './editor/blocks/actions-homepage/index.jsx';
+import './editor/blocks/agenda-homepage/index.jsx';
 import './editor/blocks/articles-homepage/index.jsx';
 import './editor/blocks/button/index.jsx';
 import './editor/blocks/call-to-action/index.jsx';
@@ -42,6 +43,7 @@ import './editor/blocks/key-figure/index.jsx';
 import './editor/blocks/link-icon/index.jsx';
 import './editor/blocks/link-group/index.jsx';
 import './editor/blocks/menu/index.jsx';
+import './editor/blocks/mission-homepage/index.jsx';
 import './editor/blocks/petition-list/index.jsx';
 import './editor/blocks/post-list/index.jsx';
 import './editor/blocks/post-meta/index.jsx';

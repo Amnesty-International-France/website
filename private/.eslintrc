@@ -25,7 +25,12 @@
     "react/prop-types": "off",
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "@wordpress/i18n-text-domain": ["error", { "allowedTextDomain": ["amnesty", "default"] }],
-    "no-underscore-dangle": ["error", { "allow": ["_embedded"] }],
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": ["_embedded", "_EventStartDate", "_EventEndDate", "_VenueCity", "_OrganizerEmail"],
+      },
+    ],
     "prefer-destructuring": "off",
   },
   "settings": {

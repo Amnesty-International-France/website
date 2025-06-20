@@ -1,0 +1,244 @@
+.agenda-chronicle-homepage {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 38px 24px !important;
+  max-width: $container-hg;
+  margin: 0 auto;
+
+  @media (min-width: $container-lg) {
+    flex-direction: row;
+  }
+
+  @media (min-width: $container-hg) {
+    padding: 38px 0;
+  }
+
+  .agenda-homepage {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: $container-lg) {
+      width: 60%;
+    }
+
+    .agenda-homepage-title {
+      width: fit-content;
+      background-color: var(--wp--preset--color--primary);
+      text-transform: uppercase;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 45px;
+      font-weight: bold;
+      line-height: 51px;
+      padding: 0 6px;
+      margin-bottom: 38px;
+    }
+
+    .agenda-homepage-events {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      flex: 1;
+
+      .event-card {
+        display: flex;
+        box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1);
+        background: var(--wp--preset--color--white);
+        position: relative;
+        width: 100%;
+        margin-bottom: 0;
+
+        &:hover {
+          .event-thumbnail img {
+            transform: scale(1.1);
+          }
+        }
+
+        &.card-landscape {
+          flex-direction: row;
+          height: 210px;
+
+          .event-thumbnail {
+            width: 35%;
+            max-width: 250px;
+            border-bottom: 4px solid var(--wp--preset--color--primary);
+            overflow: hidden;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              transition: all ease 0.7s;
+            }
+          }
+        }
+
+        & > .chip-category {
+          position: absolute;
+          left: -8px;
+          top: 12px;
+        }
+
+        .event-content {
+          padding: 12px 12px 0 12px;
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          gap: 10px;
+
+          & > .event-date {
+            font-family: var(--wp--preset--font-family--secondary);
+            font-size: 14px;
+            line-height: 20px;
+            color: var(--wp--preset--color--grey-dark);
+            margin: 0;
+          }
+
+          & > .event-title {
+            font-family: var(--wp--preset--font-family--secondary);
+            flex: 1;
+            padding-bottom: 12px;
+
+            & > a {
+              text-decoration: none;
+
+              &:hover {
+                background: none;
+                text-decoration: underline;
+              }
+            }
+          }
+
+          & > .event-terms {
+            padding: 8px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+
+            .event-date,
+            .event-info,
+            .event-info-icon {
+              display: flex;
+              align-items: center;
+
+              > p {
+                margin: 0;
+                color: var(--wp--preset--color--grey-dark);
+                font-family: var(--wp--preset--font-family--secondary), serif;
+                font-weight: bold;
+                font-size: 14px;
+                line-height: 12px;
+                letter-spacing: 0;
+              }
+
+              & > svg {
+                margin-right: 6px;
+              }
+            }
+
+            .event-info {
+              column-gap: 12px !important;
+            }
+
+            &:not(.is-empty) {
+              border-top: 1px solid var(--wp--preset--color--grey-light);
+            }
+          }
+        }
+      }
+    }
+
+    .custom-button-block {
+      margin-top: 38px;
+      margin-bottom: 24px;
+      margin-left: 0 !important;
+
+      @media (min-width: $container-lg) {
+        padding: 0;
+        margin-left: auto;
+      }
+    }
+  }
+
+  .chronicle-homepage {
+    width: 100%;
+
+    @media (min-width: $container-lg) {
+      width: 40%;
+    }
+
+    .chronicle-homepage-title {
+      width: fit-content;
+      color: var(--wp--preset--color--primary);
+      background-color: var(--wp--preset--color--black);
+      text-transform: uppercase;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 45px;
+      font-weight: bold;
+      line-height: 51px;
+      padding: 0 6px;
+      margin-bottom: 38px;
+    }
+
+    .chronicle-card {
+      width: 100%;
+      flex: 1;
+      margin-top: 90px;
+      box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1);
+      position: relative;
+      padding: 0 0 24px 0;
+      background-color: var(--wp--preset--color--white);
+      display: flex;
+      flex-direction: column;
+
+      .chronicle-card-image-container {
+        width: 100%;
+        max-width: 350px;
+        margin: -50px auto 0 auto;
+        padding: 0 24px;
+
+        @media (min-width: $container-lg) {
+          max-width: 440px;
+        }
+
+        .chronicle-card-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .chronicle-card-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding-top: 24px;
+
+        .chronicle-card-title {
+          text-align: center;
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 36px;
+          font-weight: bold;
+          line-height: 41px;
+          margin: 0;
+        }
+
+        .chronicle-card-chapo {
+          text-align: center;
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 29.5px;
+          font-weight: bold;
+          line-height: 33px;
+          margin: 0;
+        }
+
+        .custom-button-block {
+          margin-top: 62px;
+        }
+      }
+    }
+  }
+}
