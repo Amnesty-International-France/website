@@ -46,6 +46,9 @@ class PrismicMigrationCli {
 	 * [--force]
 	 * : Force the import, will replace the existing content (not medias)
 	 *
+	 * [--since=<value>]
+	 * : Define a minimum import date
+	 *
 	 * ## EXAMPLES
 	 *
 	 *     # Import all documents of all content
@@ -62,6 +65,9 @@ class PrismicMigrationCli {
 	 *
 	 *     # Import a document referenced by his prismic id
 	 *     $ wp prismic-migration --id=LDR4LF
+	 *
+	 *     # Import all documents of the content 'news' since a minimum date
+	 *     $ wp prismic-migration --type=news --since=2025-01-01
 	 *
 	 * @when after_wp_load
 	 */
@@ -87,10 +93,12 @@ class PrismicMigrationCli {
 
 		$imported = 0;
 
+		$since = isset( $assoc_args['since']) ? new \DateTime( $assoc_args['since'] ) : null;
+
 		$fetcher = new PrismicFetcher();
 		$prismic_docs = isset( $assoc_args['id'] )
 			? $fetcher->fetch_article( $assoc_args['id'] )
-			: $fetcher->fetch(limit: $assoc_args['limit'], ordering: Ordering::from($assoc_args['ordering']), type: $type);
+			: $fetcher->fetch(limit: $assoc_args['limit'], ordering: Ordering::from($assoc_args['ordering']), type: $type, since: $since);
 
 		$progress = WP_CLI\Utils\make_progress_bar( 'Importing documents', count($prismic_docs) );
 		foreach ( $prismic_docs as $doc ) {
@@ -111,7 +119,7 @@ class PrismicMigrationCli {
 			$wp_post['post_content'] = wp_slash(serialize_blocks(array_merge(...$wp_post['post_content'])));
 
 			if ( ! self::$dryrun ) {
-				if( self::$forceMod && $id !== false ) {
+				if ( self::$forceMod && $id !== false ) {
 					$wp_post['ID'] = $id;
 					$postId = wp_update_post( $wp_post );
 				} else {

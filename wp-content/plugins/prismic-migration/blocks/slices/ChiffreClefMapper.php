@@ -15,9 +15,9 @@ class ChiffreClefMapper extends BlockMapper {
 			$suffix = $item['suffix'];
 			if( $number !== null && $suffix !== null ) {
 				$title = (string)$number . ' ' . $suffix;
-			} else if( $number !=null ) {
+			} else if( $number !== null ) {
 				$title = (string)$number;
-			} else if( $suffix != null ) {
+			} else if( $suffix !== null ) {
 				$title = $suffix;
 			} else {
 				$title = '';
@@ -29,11 +29,11 @@ class ChiffreClefMapper extends BlockMapper {
 				'innerBlocks' => [[
 					'blockName' => 'amnesty-core/key-figure',
 					'attrs' => [
-						'title' => $title,
-						'text' => $text
+						'title' => $title ?? '',
+						'text' => $text ?? ''
 					],
 					'innerBlocks' => [],
-					'innerContent' => ['<div class="wp-block-amnesty-core-key-figure key-figure"><p class="title">' . $title . '</p><p class="text">' . $text . '</p></div>']
+					'innerContent' => ['<div class="wp-block-amnesty-core-key-figure key-figure"><p class="title">' . ($title ?? '') . '</p><p class="text">' . ($text ?? '') . '</p></div>']
 				]],
 				'innerContent' => ['<div class="wp-block-column">', null, '</div>']
 			];

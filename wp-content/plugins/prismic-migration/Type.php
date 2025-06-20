@@ -9,6 +9,7 @@ enum Type: string {
 	case DOSSIER = 'dossier';
 	case STRUCTURE_LOCALE = 'structureMilitante';
 	case PAGE_FROIDE = 'page';
+	case EVENEMENT = 'evenement';
 
 	public static function get_wp_post_type(Type $type): string|null {
 		return match($type) {
@@ -17,6 +18,7 @@ enum Type: string {
 			self::FOCUS => 'landmark',
 			self::STRUCTURE_LOCALE => 'local-structures',
 			self::PAGE_FROIDE => 'page',
+			self::EVENEMENT => 'tribe_events',
 			default => null,
 		};
 	}
