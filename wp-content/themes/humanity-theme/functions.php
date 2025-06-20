@@ -8,6 +8,7 @@
 
 // phpcs:disable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
 
+
 /**
  * Theme root includes
  */
