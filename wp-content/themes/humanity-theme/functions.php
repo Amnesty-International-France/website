@@ -99,6 +99,7 @@ require_once realpath( __DIR__ . '/includes/admin/user-options.php' );
 require_once realpath( __DIR__ . '/includes/admin/settings-general.php' );
 require_once realpath( __DIR__ . '/includes/admin/landmarks-settings.php' );
 require_once realpath( __DIR__ . '/includes/admin/countries-settings.php' );
+require_once realpath( __DIR__ . '/includes/admin/event-venue-auto-geocode.php' );
 #endregion admin
 
 /**
@@ -346,6 +347,17 @@ add_action('add_meta_boxes', function () {
 	remove_meta_box('tec-events-qr-code', 'tribe_events', 'side');
 	remove_meta_box('tribe-events-status', 'tribe_events', 'side');
 }, 20);
+
+
+/*
+ * Added Longitude and Latitude for Venue in API results /wp-json/tribe/events/v1/venues
+ */
+add_filter('tribe_rest_venue_data', function ($data) {
+
+	$data['longitude'] = get_post_meta($data['id'], '_VenueLongitude', true);
+	$data['latitude'] = get_post_meta($data['id'], '_VenueLatitude', true);
+	return $data;
+}, 10, 2);
 
 
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
