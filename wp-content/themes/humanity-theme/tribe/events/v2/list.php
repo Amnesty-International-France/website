@@ -68,7 +68,7 @@ if ($userLongitude && $userLatitude) {
     FROM {$wpdb->posts} post
     WHERE post_type = 'tribe_events'
     AND post_status = 'publish'
-    ORDER BY distance ASC
+    ORDER BY (distance IS NULL) ASC, distance ASC
 ", $userLongitude, $userLatitude));
 }
 

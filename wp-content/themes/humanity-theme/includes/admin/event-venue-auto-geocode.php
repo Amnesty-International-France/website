@@ -60,6 +60,11 @@ function auto_geocode_venue_address($post_id): void
 {
 	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
+	$nom_du_lieu = get_the_title( $post_id );
+
+
+
+
 	$address_parts = [
 		get_post_meta($post_id, '_VenueAddress', true),
 		get_post_meta($post_id, '_VenueCity', true),
@@ -83,7 +88,12 @@ function auto_geocode_venue_address($post_id): void
 	$location = $json_response['features'][0]['geometry']['coordinates'];
 
 	if (!empty($location)) {
-		update_post_meta($post_id, '_VenueLatitude', $location[1]);
 		update_post_meta($post_id, '_VenueLongitude', $location[0]);
+		update_post_meta($post_id, '_VenueLatitude', $location[1]);
+	}
+
+	if ($nom_du_lieu === 'Partout en France') {
+		update_post_meta($post_id, '_VenueLongitude', '2.213749');
+		update_post_meta($post_id, '_VenueLatitude', '46.227638');
 	}
 }
