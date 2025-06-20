@@ -68,7 +68,23 @@ if ($userLongitude && $userLatitude) {
     FROM {$wpdb->posts} post
     WHERE post_type = 'tribe_events'
     AND post_status = 'publish'
-    ORDER BY (distance IS NULL) ASC, distance ASC
+    AND (
+    SELECT meta_value
+    FROM {$wpdb->postmeta}
+    WHERE post_id = post.ID
+      AND meta_key = '_EventEndDate'
+    LIMIT 1
+) >= NOW()
+    ORDER BY
+	(distance IS NULL) ASC,
+        distance ASC,
+        (
+        SELECT meta_value
+        FROM {$wpdb->postmeta}
+        WHERE post_id = post.ID
+          AND meta_key = '_EventStartDate'
+        LIMIT 1
+    ) ASC
 ", $userLongitude, $userLatitude));
 }
 
