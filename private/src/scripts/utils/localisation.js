@@ -70,13 +70,15 @@ const fetchApiGeoFrance = async (userLocation) => {
 
 function closeList() {
   const ul = document.getElementsByClassName('search-results')[0];
-  const blockResult = document.getElementsByClassName('event-filters-results')[0];
+  if (ul) {
+    const blockResult = document.getElementsByClassName('event-filters-results')[0];
 
-  while (ul.firstChild) {
-    ul.removeChild(ul.firstChild);
+    while (ul.firstChild) {
+      ul.removeChild(ul.firstChild);
+    }
+
+    blockResult.classList.add('hidden');
   }
-
-  blockResult.classList.add('hidden');
 }
 
 const createResultList = (cities) => {
@@ -145,35 +147,40 @@ export const getUserLocationFromButton = () => {
 export const getUserLocationFromForm = () => {
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementsByClassName('form-location')[0];
-    const input = document.getElementById('input-localisation');
 
-    const blockResult = document.getElementsByClassName('event-filters-results')[0];
-    blockResult.style.width = `${input.clientWidth}px`;
+    if (form) {
+      const input = document.getElementById('input-localisation');
 
-    form.elements.location.addEventListener('input', async (e) => {
-      const inputValue = e.target.value;
+      const blockResult = document.getElementsByClassName('event-filters-results')[0];
 
-      setTimeout(async () => {
-        blockResult.classList.remove('hidden');
-        const results = await fetchApiGeoFrance(inputValue);
-        createResultList([...results]);
-      }, 300);
-    });
+      blockResult.style.width = `${input.clientWidth}px`;
 
-    const buttonLocationForm = form.lastElementChild;
+      form.elements.location.addEventListener('input', async (e) => {
+        const inputValue = e.target.value;
 
-    if (buttonLocationForm) {
-      buttonLocationForm.addEventListener('click', async (e) => {
-        e.preventDefault();
-
-        redirectToEventsListWithParams(
-          form.elements.location.attributes['data-longitude'].value,
-          form.elements.location.attributes['data-latitude'].value,
-        );
+        setTimeout(async () => {
+          blockResult.classList.remove('hidden');
+          const results = await fetchApiGeoFrance(inputValue);
+          createResultList([...results]);
+        }, 300);
       });
+
+      const buttonLocationForm = form.lastElementChild;
+
+      if (buttonLocationForm) {
+        buttonLocationForm.addEventListener('click', async (e) => {
+          e.preventDefault();
+
+          redirectToEventsListWithParams(
+            form.elements.location.attributes['data-longitude'].value,
+            form.elements.location.attributes['data-latitude'].value,
+          );
+        });
+      }
     }
   });
 };
+
 document.addEventListener('click', (e) => {
   closeList(e.target);
 });
