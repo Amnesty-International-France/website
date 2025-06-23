@@ -91,7 +91,7 @@ if (!$post_object instanceof WP_Post) {
 		<div
 			class="event-terms
 			<?php
-			if (empty(tribe_get_city($post_id)) && empty(tribe_get_start_time($post_id)) && empty(tribe_get_organizer_email($post_id))) {
+			if (empty(tribe_get_city($post_id)) && empty(tribe_get_start_time($post_id))) {
 				echo 'is-empty';
 			}
 			?>
@@ -117,16 +117,7 @@ if (!$post_object instanceof WP_Post) {
 						<p><?php echo tribe_get_start_time($post_id); ?></p>
 					</div>
 				<?php endif; ?>
-				<?php if (!empty(tribe_get_organizer_email($post_id))) : ?>
-				<div class="event-info-icon">
-					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path fill-rule="evenodd" clip-rule="evenodd"
-							  d="M2.00016 2H14.0002C14.3684 2 14.6668 2.29848 14.6668 2.66667V13.3333C14.6668 13.7015 14.3684 14 14.0002 14H2.00016C1.63197 14 1.3335 13.7015 1.3335 13.3333V2.66667C1.3335 2.29848 1.63197 2 2.00016 2ZM8.04016 7.78867L3.7655 4.15867L2.90216 5.17467L8.04883 9.54467L13.1028 5.17133L12.2308 4.16267L8.04016 7.78867Z"
-							  fill="#575756"/>
-					</svg>
-					<p><?php echo tribe_get_organizer_email($post_id); ?></p>
-					<?php endif; ?>
-				</div>
 			</div>
 		</div>
+	</div>
 </article>
