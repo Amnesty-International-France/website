@@ -34,7 +34,7 @@ class Taxonomy_Combats extends Taxonomy {
 	 *
 	 * @var array
 	 */
-	protected $object_types = [ 'page', 'post', 'landmark', 'tribe_events'];
+	protected $object_types = [ 'page', 'post', 'landmark', 'tribe_events', 'petitions'];
 
 	/**
 	 * Taxonomy registration arguments
