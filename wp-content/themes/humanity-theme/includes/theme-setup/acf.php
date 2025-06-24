@@ -254,6 +254,94 @@ add_action( 'acf/include_fields', function() {
 		'description' => '',
 		'show_in_rest' => 1,
 	) );
+
+	acf_add_local_field_group( array(
+		'key' => 'group_685a9d583a748',
+		'title' => 'Articles associés',
+		'fields' => array(
+			array(
+				'key' => 'field_685a9d59c62d3',
+				'label' => 'Articles associés',
+				'name' => '_related_posts_selected',
+				'aria-label' => '',
+				'type' => 'relationship',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => 0,
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'post_type' => array(
+					0 => 'post',
+					1 => 'landmark',
+				),
+				'post_status' => array(
+					0 => 'publish',
+				),
+				'taxonomy' => '',
+				'filters' => array(
+					0 => 'search',
+					1 => 'post_type',
+				),
+				'return_format' => 'object',
+				'min' => '',
+				'max' => 3,
+				'allow_in_bindings' => 0,
+				'elements' => '',
+				'bidirectional' => 0,
+				'bidirectional_target' => array(
+				),
+			),
+		),
+		'location' => array(
+			array(
+				array(
+					'param' => 'post_category',
+					'operator' => '==',
+					'value' => 'category:actualites',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_category',
+					'operator' => '==',
+					'value' => 'category:chroniques',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_category',
+					'operator' => '==',
+					'value' => 'category:campagnes',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_category',
+					'operator' => '==',
+					'value' => 'category:dossiers',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
+					'value' => 'landmark',
+				),
+			),
+		),
+		'menu_order' => 0,
+		'position' => 'normal',
+		'style' => 'default',
+		'label_placement' => 'top',
+		'instruction_placement' => 'label',
+		'hide_on_screen' => '',
+		'active' => true,
+		'description' => '',
+		'show_in_rest' => 1,
+	) );
 } );
 
 add_action('acf/save_post', function($post_id) {

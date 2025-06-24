@@ -325,14 +325,6 @@ if ( is_multilingualpress_enabled() ) {
 #endregion multilingualpress
 
 /**
- * Theme Multiboxes includes
- */
-#region metaboxes
-require_once realpath(__DIR__ . '/includes/admin/metaboxes/select2-assets.php');
-require_once realpath(__DIR__ . '/includes/admin/metaboxes/related-posts.php');
-#endregion metaboxes
-
-/**
  * Plugin The Events Calendar
  *
  * Remove post_tag, event categories, unused box
