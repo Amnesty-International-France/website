@@ -33,58 +33,43 @@ $userLatitude = isset($_GET['lat']) ? sanitize_text_field($_GET['lat']) : null;
 if ($userLongitude && $userLatitude) {
 	$events = $wpdb->get_results($wpdb->prepare("
     SELECT
-		*,
-        ST_Distance_Sphere(
-		  POINT(%f, %f),
-		  POINT(
-			(
-			  SELECT pm1.meta_value
-			  FROM {$wpdb->postmeta} pm1
-			  WHERE pm1.post_id = (
-				SELECT pm_event.meta_value
-				FROM {$wpdb->postmeta} pm_event
-				WHERE pm_event.post_id = post.ID
-				  AND pm_event.meta_key = '_EventVenueID'
-				LIMIT 1
-			  )
-			  AND pm1.meta_key = '_VenueLongitude'
-			  LIMIT 1
-			),
-			(
-			  SELECT pm2.meta_value
-			  FROM {$wpdb->postmeta} pm2
-			  WHERE pm2.post_id = (
-				SELECT pm_event.meta_value
-				FROM {$wpdb->postmeta} pm_event
-				WHERE pm_event.post_id = post.ID
-				  AND pm_event.meta_key = '_EventVenueID'
-				LIMIT 1
-			  )
-			  AND pm2.meta_key = '_VenueLatitude'
-			  LIMIT 1
-			)
-		  )
-		) AS distance
-    FROM {$wpdb->posts} post
-    WHERE post_type = 'tribe_events'
-    AND post_status = 'publish'
-    AND (
-    SELECT meta_value
-    FROM {$wpdb->postmeta}
-    WHERE post_id = post.ID
-      AND meta_key = '_EventEndDate'
-    LIMIT 1
-) >= NOW()
-    ORDER BY
-	(distance IS NULL) ASC,
-        distance ASC,
-        (
-        SELECT meta_value
-        FROM {$wpdb->postmeta}
-        WHERE post_id = post.ID
-          AND meta_key = '_EventStartDate'
-        LIMIT 1
-    ) ASC
+    *,
+    ST_Distance_Sphere(
+        POINT(%f, %f),
+        POINT(
+            CAST(venue_long.meta_value AS DECIMAL(10,6)),
+            CAST(venue_lat.meta_value AS DECIMAL(10,6))
+        )
+    ) AS distance
+	FROM {$wpdb->posts} post
+	LEFT JOIN {$wpdb->postmeta} venue_id
+		ON venue_id.post_id = post.ID
+		AND venue_id.meta_key = '_EventVenueID'
+	LEFT JOIN {$wpdb->postmeta} venue_long
+		ON venue_long.post_id = venue_id.meta_value
+		AND venue_long.meta_key = '_VenueLongitude'
+	LEFT JOIN {$wpdb->postmeta} venue_lat
+		ON venue_lat.post_id = venue_id.meta_value
+		AND venue_lat.meta_key = '_VenueLatitude'
+	WHERE post.post_type = 'tribe_events'
+	AND post.post_status = 'publish'
+	AND (
+		SELECT meta_value
+		FROM {$wpdb->postmeta}
+		WHERE post_id = post.ID
+		  AND meta_key = '_EventEndDate'
+		LIMIT 1
+	) >= NOW()
+	HAVING distance <= 100000
+	ORDER BY (distance IS NULL) ASC,
+		distance ASC,
+		(
+			SELECT meta_value
+			FROM {$wpdb->postmeta}
+			WHERE post_id = post.ID
+			  AND meta_key = '_EventStartDate'
+			LIMIT 1
+		) ASC
 ", $userLongitude, $userLatitude));
 }
 
@@ -119,16 +104,20 @@ if ($userLongitude && $userLatitude) {
 	</div>
 	<div class="events-list">
 		<section class="events-list-container grid-three-columns">
-			<?php foreach ($events as $event) : ?>
-				<?php
-				$block = [
-					'blockName' => 'amnesty-core/event-card',
-					'attrs' => ['postId' => $event->ID],
-					'innerBlocks' => [],
-				];
-				echo render_block($block);
-				?>
-			<?php endforeach; ?>
+			<?php if ( \count($events) === 0 ) : ?>
+				<p class="no-events"> Désolé, il n'y a aucun résultat pour cette recherche</p>
+			<?php else : ?>
+				<?php foreach ($events as $event) : ?>
+					<?php
+					$block = [
+						'blockName' => 'amnesty-core/event-card',
+						'attrs' => ['postId' => $event->ID],
+						'innerBlocks' => [],
+					];
+					echo render_block($block);
+					?>
+				<?php endforeach; ?>
+			<?php endif; ?>
 		</section>
 	</div>
 </div>
