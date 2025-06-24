@@ -34,7 +34,7 @@ class Taxonomy_Keywords extends Taxonomy {
 	 *
 	 * @var array
 	 */
-	protected $object_types = [ 'page', 'post', 'tribe_events'];
+	protected $object_types = [ 'page', 'post', 'tribe_events', 'petitions'];
 
 	/**
 	 * Taxonomy registration arguments
