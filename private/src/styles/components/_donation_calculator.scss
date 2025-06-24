@@ -1,0 +1,275 @@
+.donation-calculator,
+.donation-header,
+.donation-calculator-amount,
+.donation-calculator-simulation,
+.amount-monthly,
+.amount-punctual,
+.amount-free {
+  display: flex;
+  flex-direction: column;
+}
+
+.donation-calculator {
+  max-width: 360px;
+
+  &.medium {
+    width: 272px;
+  }
+
+  margin-top: 100px;
+  box-shadow: 0 0 20px 0 #00000026;
+
+  > .donation-header {
+    cursor: pointer;
+    background-color: var(--wp--preset--color--grey-lighter);
+
+    .donation-title {
+      padding: 15px;
+      height: calc(100% - 37px);
+
+      > .tax-deduction {
+        position: relative;
+        width: 300px;
+        height: 135px;
+        top: -37px;
+        left: -20px;
+      }
+
+      > .subtitle {
+        margin-bottom: 0;
+        font-family: Amnesty Trade Gothic;
+        font-weight: 700;
+        font-size: 21px;
+        line-height: 29px;
+        letter-spacing: 0;
+        text-align: center;
+
+        & > span {
+          font-family: Amnesty Trade Gothic;
+          font-weight: 700;
+          font-size: 18px;
+          line-height: 25px;
+          letter-spacing: 0;
+          text-align: center;
+        }
+      }
+    }
+
+    .donation-tabs {
+      display: flex;
+
+      > .punctual,
+      > .monthly {
+        flex: 1 1;
+        width: 50%;
+        padding: 20px 0;
+        text-transform: uppercase;
+        font-family: Amnesty Trade Gothic;
+        font-weight: bold;
+        font-size: 18px;
+        text-align: center;
+        white-space: nowrap;
+        background-color: var(--wp--preset--color--grey-light);
+        color: var(--wp--preset--color--grey-dark);
+        user-select: none;
+        horiz-align: center;
+
+        &.active {
+          background-color: var(--wp--preset--color--white);
+          color: var(--wp--preset--color--black)
+        }
+      }
+    }
+  }
+
+  .donation-calculator-amount {
+    padding: 26px 13px;
+    border-bottom: 1px solid var(--wp--preset--color--grey-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    > .give {
+      display: flex;
+      width: 100%;
+
+      > .text{
+        width: 50%;
+
+        > p {
+          font-family: Amnesty Trade Gothic;
+          font-size: 26px;
+          font-style: normal;
+          font-weight: bold;
+          line-height: 29px;
+          margin-bottom: 0;
+        }
+      }
+
+      .input {
+        width: 50%;
+
+        > .input-donation {
+          width: 77px;
+          background-color: var(--wp--preset--color--grey-light);
+        }
+      }
+    }
+
+    > .cost {
+      width: 100%;
+    }
+
+    > .amount-monthly,
+    > .amount-punctual {
+      display: none;
+
+      &.active {
+        display: flex;
+      }
+    }
+
+    .amount-monthly,
+    .amount-punctual {
+      width: 100%;
+
+      > .radio-choices {
+        display: flex;
+        column-gap: 11px;
+        justify-content: space-between;
+
+        > .don-radio {
+          width: 70px;
+          height: 46px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 9px 14px;
+          position: relative;
+          border: 1px solid var(--wp--preset--color--black);
+          cursor: pointer;
+          z-index: 2;
+
+          > input[type='radio'] {
+            opacity: 0;
+            position: absolute;
+            pointer-events: none;
+          }
+
+          > label {
+            cursor: pointer;
+            font-family: Amnesty Trade Gothic;
+            font-weight: bold;
+            font-size: 22px;
+            line-height: 29px;
+            letter-spacing: 0;
+            text-align: center;
+          }
+
+          &.active {
+            background-color: var(--wp--preset--color--black);
+
+            > label {
+              color: var(--wp--preset--color--primary);
+            }
+          }
+        }
+      }
+
+      > .amount-free {
+        > p {
+          margin-top: 1rem;
+          margin-bottom: 4px;
+          font-family: Amnesty Trade Gothic;
+          font-weight: bold;
+          font-size: 16px;
+          line-height: 24px;
+          letter-spacing: 0;
+
+        }
+
+        > .input-container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          > .input-don-free {
+            max-width: 66%;
+            font-size: 18px;
+
+            &::placeholder {
+              color: var(--wp--preset--color--grey-dark);
+              text-transform: none;
+              font-family: Amnesty Trade Gothic;
+              font-weight: bold;
+
+            }
+          }
+
+          > label {
+            font-family: Amnesty Trade Gothic;
+            font-weight: bold;
+            font-size: 26px;
+            line-height: 29px;
+            letter-spacing: 0;
+
+            > span {
+              font-family: Amnesty Trade Gothic;
+              font-size: 20px;
+              text-transform: none;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .donation-calculator-simulation {
+    padding: 1rem 1.25rem;
+
+    & > p {
+      font-family: Amnesty Trade Gothic;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 18px;
+      letter-spacing: 0;
+      text-align: center;
+      color: var(--wp--preset--color--grey-dark);
+
+      &:first-child {
+        margin-bottom: 3px;
+      }
+    }
+
+    & > .price-simulated {
+      font-family: Amnesty Trade Gothic;
+      font-weight: bold;
+      font-size: 26px;
+      line-height: 29px;
+      letter-spacing: 0;
+      color: var(--wp--preset--color--black);
+
+      & > span {
+        font-size: 20px;
+      }
+    }
+
+    & > .donation-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      text-transform: uppercase;
+      column-gap: 12px;
+      padding: 14px 0;
+      width: 100%;
+      background-color: var(--wp--preset--color--primary);
+      font-family: Amnesty Trade Gothic;
+      font-weight: bold;
+      font-size: 23px;
+      line-height: 26px;
+      letter-spacing: 0;
+
+    }
+  }
+}
