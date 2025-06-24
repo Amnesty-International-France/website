@@ -17,6 +17,7 @@ function amnesty_register_local_structures_cpt() {
 		'labels' => $labels,
 		'public' => true,
 		'has_archive' => true,
+		'rewrite' => array('slug' => 'structures-locales'),
 		'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
 		'menu_icon' => 'dashicons-admin-page',
 		'show_in_rest' => true,
