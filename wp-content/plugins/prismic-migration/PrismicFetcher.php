@@ -59,7 +59,7 @@ class PrismicFetcher {
 		return $data;
 	}
 
-	private function getPrismicPage($ref, Ordering $ordering, int $page, Type $type, DateTime $since) {
+	private function getPrismicPage($ref, Ordering $ordering, int $page, Type $type, ?DateTime $since) {
 		$query = $type !== Type::ALL ? "&q=[[at(document.type,\"$type->value\")]]" : '';
 		$qsince = $since !== null ? '&q=[[date.after(document.last_publication_date, "' . $since->format('Y-m-d') .'")]]' : '';
 		$url = PRISMIC_AMNESTY_URL . "/documents/search?page=$page&pageSize=" . PAGE_SIZE . "&ref=$ref$query$qsince&orderings=[document.last_publication_date" . ($ordering === Ordering::DESC ? " desc" : "") . "]";
