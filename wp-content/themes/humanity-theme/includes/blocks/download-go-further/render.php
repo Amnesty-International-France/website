@@ -106,9 +106,11 @@ if (!function_exists('render_download_go_further_block')) {
                         ?>
                         <?php if ($url && $title): ?>
                             <li class="item">
-                                <p class="item-text">
-                                    <?php echo esc_html(sprintf('%s (%s, %s)', $title, $type, $size)); ?>
-                                </p>
+                                <a class="item-link" href="<?php echo esc_url($url); ?>" download>
+                                    <p class="item-text">
+                                        <?php echo esc_html(sprintf('%s (%s, %s)', $title, $type, $size)); ?>
+                                    </p>
+                                </a>    
                                 <a href="<?php echo esc_url($url); ?>" download>
                                     <button class="item-button">
                                         <svg
@@ -122,7 +124,7 @@ if (!function_exists('render_download_go_further_block')) {
                                                 clip-rule="evenodd"
                                             />
                                         </svg>
-                                        <?php esc_html_e('Télécharger', 'amnesty'); ?>
+                                        <span class="item-button-label"><?php esc_html_e('Télécharger', 'amnesty'); ?></span>
                                     </button>
                                 </a>
                             </li>
