@@ -98,6 +98,10 @@
         margin-bottom: 0;
       }
     }
+
+    @media (min-width: $container-lg) {
+      padding-left: 0 !important;
+    }
   }
 
   .yoast-breadcrumb-wrapper {
@@ -136,8 +140,7 @@
         width: 16px;
         height: 16px;
         margin: 0 6px;
-        background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E")
-          no-repeat center;
+        background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E") no-repeat center;
         background-size: contain;
       }
 
