@@ -9,11 +9,11 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    padding: 21px;
+    padding: 1rem;
     box-sizing: border-box;
 
     @media (min-width: $container-lg) {
-      padding: 21px 0;
+      padding: 1rem 0;
     }
 
     @media (max-width: $container-sm) {
@@ -27,7 +27,6 @@
       text-decoration: none;
       font-size: 0.9375rem;
       font-weight: bold;
-      line-height: 1rem;
       text-transform: uppercase;
       transition: all 0.2s ease;
       background-color: var(--wp--preset--color--black);

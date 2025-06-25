@@ -15,7 +15,7 @@ $page_numbers = amnesty_paginate_links(
 		'mid_size'  => 1,
 		'prev_next' => false,
 		'type'      => 'array',
-	] 
+	]
 );
 
 if ( empty( $page_numbers ) ) {
