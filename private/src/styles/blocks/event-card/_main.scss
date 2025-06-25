@@ -5,8 +5,7 @@
   position: relative;
   height: 100%;
   width: 100%;
-  margin-bottom: var(--wp--preset--spacing--single);
-
+  
   &:hover {
     .event-thumbnail img {
       transform: scale(1.1);
@@ -38,6 +37,10 @@
     position: absolute;
     left: -8px;
     top: 12px;
+  }
+
+  &.bg-yellow {
+    background-color: var(--wp--preset--color--primary);;
   }
 
   .event-thumbnail {

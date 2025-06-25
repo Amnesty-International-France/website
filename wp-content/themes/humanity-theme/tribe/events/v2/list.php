@@ -27,20 +27,23 @@
 
 global $wpdb;
 
-$userLongitude = isset($_GET['lon']) ? sanitize_text_field($_GET['lon']) : null;
-$userLatitude = isset($_GET['lat']) ? sanitize_text_field($_GET['lat']) : null;
+$user_longitude = isset( $_GET['lon'] ) ? sanitize_text_field( $_GET['lon'] ) : null;
+$user_latitude  = isset( $_GET['lat'] ) ? sanitize_text_field( $_GET['lat'] ) : null;
 
-if ($userLongitude && $userLatitude) {
-	$events = $wpdb->get_results($wpdb->prepare("
+if ( $user_longitude && $user_latitude ) {
+	$events = $wpdb->get_results(
+		$wpdb->prepare(
+			"
     SELECT
-    *,
+		*,
     ST_Distance_Sphere(
         POINT(%f, %f),
         POINT(
             CAST(venue_long.meta_value AS DECIMAL(10,6)),
             CAST(venue_lat.meta_value AS DECIMAL(10,6))
         )
-    ) AS distance
+    ) AS distance,
+     event_national.meta_value AS national_event
 	FROM {$wpdb->posts} post
 	LEFT JOIN {$wpdb->postmeta} venue_id
 		ON venue_id.post_id = post.ID
@@ -51,6 +54,9 @@ if ($userLongitude && $userLatitude) {
 	LEFT JOIN {$wpdb->postmeta} venue_lat
 		ON venue_lat.post_id = venue_id.meta_value
 		AND venue_lat.meta_key = '_VenueLatitude'
+	LEFT JOIN {$wpdb->postmeta} event_national
+		ON event_national.post_id = post.ID
+		AND event_national.meta_key = '_EventNational'
 	WHERE post.post_type = 'tribe_events'
 	AND post.post_status = 'publish'
 	AND (
@@ -60,9 +66,8 @@ if ($userLongitude && $userLatitude) {
 		  AND meta_key = '_EventEndDate'
 		LIMIT 1
 	) >= NOW()
-	HAVING distance <= 100000
-	ORDER BY (distance IS NULL) ASC,
-		distance ASC,
+	HAVING distance <= 100000 OR event_national.meta_value = 1
+	ORDER BY distance ASC,
 		(
 			SELECT meta_value
 			FROM {$wpdb->postmeta}
@@ -70,17 +75,21 @@ if ($userLongitude && $userLatitude) {
 			  AND meta_key = '_EventStartDate'
 			LIMIT 1
 		) ASC
-", $userLongitude, $userLatitude));
+",
+			$user_longitude,
+			$user_latitude
+		)
+	);
 }
 
 ?>
 <div class="events wp-site-blocks">
 	<?php
-	echo do_blocks(WP_Block_Patterns_Registry::get_instance()->get_registered('amnesty/archive-hero')['content']);
+	echo do_blocks( WP_Block_Patterns_Registry::get_instance()->get_registered( 'amnesty/archive-hero' )['content'] );
 	?>
 	<div class="event-filters">
 		<div class="event-filters-container">
-			<a class="filter-button" href="<?php echo esc_url(tribe_get_events_link()); ?>">
+			<a class="filter-button" href="<?php echo esc_url( tribe_get_events_link() ); ?>">
 				Tous les évènements
 			</a>
 			<div class="event-filters-search">
@@ -89,7 +98,7 @@ if ($userLongitude && $userLatitude) {
 						<label for="input-localisation"></label>
 						<input id="input-localisation" name="location" type="text" placeholder="Code postal ou ville">
 						<button class="filter-button">
-							<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-search.svg'); ?>
+							<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-search.svg' ); ?>
 						</button>
 
 					</form>
@@ -103,25 +112,34 @@ if ($userLongitude && $userLatitude) {
 		</div>
 	</div>
 	<div class="events-list">
-		<?php if (\count($events) === 0) : ?>
+		<?php if ( \count( $events ) === 0 ) : ?>
 			<p class="no-events"> Désolé, il n'y a aucun résultat pour cette recherche</p>
 		<?php else : ?>
 			<section class="events-list-container grid-three-columns">
-				<?php foreach ($events as $event) : ?>
+				<?php foreach ( $events as $event ) : ?>
 					<?php
-					$block = [
-						'blockName' => 'amnesty-core/event-card',
-						'attrs' => ['postId' => $event->ID],
-						'innerBlocks' => [],
-					];
-					echo render_block($block);
+					echo render_block(
+						[
+							'blockName'   => 'amnesty-core/event-card',
+							'attrs'       => [ 'postId' => $event->ID ],
+							'innerBlocks' => [],
+						]
+					);
 					?>
 				<?php endforeach; ?>
 			</section>
-
 		<?php endif; ?>
-
 	</div>
 </div>
 
-<?php $this->template('components/breakpoints'); ?>
+<?php echo do_blocks(
+	'
+<!-- wp:query {"inherit":true} -->
+ <!-- wp:query-pagination {"align":"center","className":"section section--small","paginationArrow":"none","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
+            <!-- wp:query-pagination-previous {"label":"<?php echo esc_html( __( "Previous", "amnesty" ) ); ?>"} /-->
+            <!-- wp:query-pagination-numbers {"midSize":1,"className":"page-numbers"} /-->
+            <!-- wp:query-pagination-next {"label":"<?php echo esc_html( __( "Next", "amnesty" ) ); ?>"} /-->
+        <!-- /wp:query-pagination -->
+<!-- /wp:query -->
+'
+)?>
