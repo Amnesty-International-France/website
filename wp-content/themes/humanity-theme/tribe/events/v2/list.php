@@ -109,7 +109,7 @@ if ($userLongitude && $userLatitude) {
 
 					</form>
 					<span>ou</span>
-					<button id="localisation" class="btn btn--yellow">Me Géolocaliser</button>
+					<button id="localisation" class="btn btn--yellow">Me Localiser</button>
 				</div>
 				<div class="event-filters-results hidden">
 					<ul class="search-results"></ul>

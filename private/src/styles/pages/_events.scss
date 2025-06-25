@@ -1,11 +1,6 @@
-.events .archive-hero-img-container .archive-hero-title-container {
-  padding-left: 0;
-}
-
 .event-filters {
   font-family: var(--wp--preset--font-family--secondary), serif;
   width: 100vw;
-  height: 80px;
   background-color: var(--wp--preset--color--grey-light);
 
   & > .event-filters-container {
@@ -14,11 +9,14 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    padding: 21px 0;
+    padding: 21px;
     box-sizing: border-box;
-    height: 80px;
 
-    @media (max-width: 640px) {
+    @media (min-width: $container-lg) {
+      padding: 21px 0;
+    }
+
+    @media (max-width: $container-sm) {
       flex-direction: column;
     }
 
@@ -67,12 +65,16 @@
           }
 
           & > input[type='text'] {
-            min-width: 200px;
             margin-right: 12px;
             border: none;
+            min-width: 120px;
 
             &::placeholder {
               color: var(--wp--preset--color--grey-dark);
+            }
+
+            @media (min-width: $container-md) {
+              min-width: 200px;
             }
           }
 
@@ -128,7 +130,7 @@
         background-color: var(--wp--preset--color--white);
         position: absolute;
         z-index: 4;
-        top: 45px;
+        top: 55px;
         max-height: 200px;
         overflow-x: hidden;
 
