@@ -11,7 +11,7 @@ registerBlockType('amnesty-core/link-icon', {
   attributes: {
     title: {
       type: 'string',
-      default: 'Titre du lien',
+      default: 'Titre',
     },
     titleSize: {
       type: 'string',
@@ -19,7 +19,7 @@ registerBlockType('amnesty-core/link-icon', {
     },
     description: {
       type: 'string',
-      default: 'Description du lien',
+      default: 'Description',
     },
     icon: {
       type: 'string',
