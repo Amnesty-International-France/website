@@ -189,5 +189,3 @@ if ($post_type_object->name === 'tribe_events') {
 		<!-- /wp:group -->
 	</div>
 </div>
-
-x
