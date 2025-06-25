@@ -103,10 +103,10 @@ if ($userLongitude && $userLatitude) {
 		</div>
 	</div>
 	<div class="events-list">
-		<section class="events-list-container grid-three-columns">
-			<?php if ( \count($events) === 0 ) : ?>
-				<p class="no-events"> Désolé, il n'y a aucun résultat pour cette recherche</p>
-			<?php else : ?>
+		<?php if (\count($events) === 0) : ?>
+			<p class="no-events"> Désolé, il n'y a aucun résultat pour cette recherche</p>
+		<?php else : ?>
+			<section class="events-list-container grid-three-columns">
 				<?php foreach ($events as $event) : ?>
 					<?php
 					$block = [
@@ -117,8 +117,10 @@ if ($userLongitude && $userLatitude) {
 					echo render_block($block);
 					?>
 				<?php endforeach; ?>
-			<?php endif; ?>
-		</section>
+			</section>
+
+		<?php endif; ?>
+
 	</div>
 </div>
 
