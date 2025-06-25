@@ -22,7 +22,7 @@ function amnesty_register_petitions_cpt() {
 		'show_in_rest' => true,
 	];
 
-	register_post_type( 'petitions', $args);
+	register_post_type( 'petition', $args);
 }
 
 add_action( 'init', 'amnesty_register_petitions_cpt' );
@@ -205,7 +205,7 @@ add_action( 'acf/include_fields', function() {
 				array(
 					'param' => 'post_type',
 					'operator' => '==',
-					'value' => 'petitions',
+					'value' => 'petition',
 				),
 			),
 		),
