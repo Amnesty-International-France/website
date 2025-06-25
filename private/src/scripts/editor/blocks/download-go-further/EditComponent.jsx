@@ -179,10 +179,12 @@ const EditComponent = ({ attributes, setAttributes }) => {
               (file) =>
                 file && (
                   <li key={file.id} className="item">
-                    <p className="item-text">
-                      {file.title?.rendered || file.slug} (
-                      {getHumanReadableFileType(file.mime_type)}, {formatFileSize(file)})
-                    </p>
+                    <a className="item-link" href={file.source_url} download>
+                      <p className="item-text">
+                        {file.title?.rendered || file.slug} (
+                        {getHumanReadableFileType(file.mime_type)}, {formatFileSize(file)})
+                      </p>
+                    </a>
                     <a href={file.source_url} download>
                       <button className="item-button">
                         <svg
@@ -196,7 +198,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                             clipRule="evenodd"
                           />
                         </svg>
-                        {__('Télécharger', 'amnesty')}
+                        <span className="item-button-label">{__('Télécharger', 'amnesty')}</span>
                       </button>
                     </a>
                   </li>
