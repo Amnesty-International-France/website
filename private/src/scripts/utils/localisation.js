@@ -1,4 +1,5 @@
 // eslint-disable-next-line consistent-return
+
 const fetchZipCodeFromLaPosteApi = async (city) => {
   try {
     const apiLaPoste =
@@ -19,12 +20,35 @@ const fetchZipCodeFromLaPosteApi = async (city) => {
 // eslint-disable-next-line consistent-return
 const fetchApiGeoFrance = async (userLocation) => {
   const defaultApiGouvUrl = 'https://geo.api.gouv.fr';
-  const apiGeoAddress = `${defaultApiGouvUrl}/communes`;
+  const apiGeoCities = `${defaultApiGouvUrl}/communes`;
+  const apiGeoDep = `${defaultApiGouvUrl}/departements`;
 
   let queryString = {};
   const userLocationIsCP = /^[0-9]{5}$/.test(userLocation);
 
   try {
+    if (userLocation !== null && /^[0-9]{2,4}$/.test(userLocation)) {
+      const codeDep = userLocation.match(/^(\d{2})/)?.[1];
+
+      const query = new URLSearchParams({
+        format: 'json',
+        geometry: 'centre',
+      }).toString();
+
+      const responseFromDep = await fetch(`${apiGeoDep}/${codeDep}/communes?${query}`);
+      const dataFromDep = await responseFromDep.json();
+
+      if (/^[0-9]{2}$/.test(userLocation)) {
+        return dataFromDep.slice(0, 10);
+      }
+
+      if (/^[0-9]{3,4}$/.test(userLocation)) {
+        return dataFromDep
+          .filter((city) => city.codesPostaux.some((cp) => cp.startsWith(userLocation)))
+          .slice(0, 10);
+      }
+    }
+
     if (userLocation !== null && userLocationIsCP) {
       queryString = {
         codePostal: userLocation,
@@ -42,7 +66,8 @@ const fetchApiGeoFrance = async (userLocation) => {
     }
 
     const query = new URLSearchParams(queryString).toString();
-    const responseFromCities = await fetch(`${apiGeoAddress}?${query}`);
+    const responseFromCities = await fetch(`${apiGeoCities}?${query}`);
+
     const dataFromCities = await responseFromCities.json();
 
     if (dataFromCities.length === 0) {

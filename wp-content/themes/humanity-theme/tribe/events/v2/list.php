@@ -113,7 +113,7 @@ if ( $user_longitude && $user_latitude ) {
 	</div>
 	<div class="events-list">
 		<?php if ( \count( $events ) === 0 ) : ?>
-			<p class="no-events"> Désolé, il n'y a aucun résultat pour cette recherche</p>
+			<p class="no-events"> Désolé, il n'y a aucun résultat pour cette recherche.</p>
 		<?php else : ?>
 			<section class="events-list-container grid-three-columns">
 				<?php foreach ( $events as $event ) : ?>
