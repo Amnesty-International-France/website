@@ -128,18 +128,8 @@ if ( $user_longitude && $user_latitude ) {
 					?>
 				<?php endforeach; ?>
 			</section>
+			<?php $this->template( 'list/nav' ); ?>
 		<?php endif; ?>
 	</div>
 </div>
 
-<?php echo do_blocks(
-	'
-<!-- wp:query {"inherit":true} -->
- <!-- wp:query-pagination {"align":"center","className":"section section--small","paginationArrow":"none","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-            <!-- wp:query-pagination-previous {"label":"<?php echo esc_html( __( "Previous", "amnesty" ) ); ?>"} /-->
-            <!-- wp:query-pagination-numbers {"midSize":1,"className":"page-numbers"} /-->
-            <!-- wp:query-pagination-next {"label":"<?php echo esc_html( __( "Next", "amnesty" ) ); ?>"} /-->
-        <!-- /wp:query-pagination -->
-<!-- /wp:query -->
-'
-)?>
