@@ -33,6 +33,7 @@ const fetchApiGeoFrance = async (userLocation) => {
       const query = new URLSearchParams({
         format: 'json',
         geometry: 'centre',
+        fields: 'codesPostaux,nom,centre',
       }).toString();
 
       const responseFromDep = await fetch(`${apiGeoDep}/${codeDep}/communes?${query}`);
@@ -111,6 +112,7 @@ const createResultList = (cities) => {
   const input = document.getElementById('input-localisation');
 
   resultList.innerHTML = '';
+  console.log(cities);
 
   cities.forEach((res) => {
     const li = document.createElement('li');
