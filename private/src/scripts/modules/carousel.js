@@ -10,7 +10,7 @@ const initCarousels = () => {
       centeredSlides: true,
       slidesPerView: 'auto',
       spaceBetween: 20,
-
+      loop: true,
       navigation: {
         nextEl: container.querySelector('.carousel-nav.next'),
         prevEl: container.querySelector('.carousel-nav.prev'),

@@ -1,10 +1,12 @@
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
-const { PanelBody, Button } = wp.components;
+const { PanelBody, Button, Notice } = wp.components;
 const { useSelect } = wp.data;
+const { useState } = wp.element;
 
 const EditComponent = ({ attributes, setAttributes }) => {
   const { mediaIds } = attributes;
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const selectedMedia = useSelect(
     (select) =>
@@ -13,13 +15,19 @@ const EditComponent = ({ attributes, setAttributes }) => {
   );
 
   const onSelectImages = (newMedia) => {
-    setAttributes({ mediaIds: newMedia.map((img) => img.id) });
+    if (newMedia.length < 5) {
+      setErrorMessage(__('Veuillez sélectionner au moins 5 images.', 'amnesty'));
+      setAttributes({ mediaIds: [] });
+    } else {
+      setErrorMessage(null);
+      setAttributes({ mediaIds: newMedia.map((img) => img.id) });
+    }
   };
 
   return (
     <>
       <InspectorControls>
-        <PanelBody title={__('Paramètres du carousel', 'amnesty')} initialOpen={true}>
+        <PanelBody title={__('Paramètres du carrousel', 'amnesty')} initialOpen={true}>
           <MediaUploadCheck>
             <MediaUpload
               onSelect={onSelectImages}
@@ -36,6 +44,11 @@ const EditComponent = ({ attributes, setAttributes }) => {
               )}
             />
           </MediaUploadCheck>
+          {errorMessage && (
+            <Notice status="error" isDismissible={false}>
+              {errorMessage}
+            </Notice>
+          )}
         </PanelBody>
       </InspectorControls>
 
@@ -53,7 +66,12 @@ const EditComponent = ({ attributes, setAttributes }) => {
             <div className="carousel-nav next">&#10095;</div>
           </div>
         ) : (
-          <p>{__('Aucune image sélectionnée', 'amnesty')}</p>
+          <p>
+            {__(
+              "Aucune image sélectionnée ou pas assez d'images sélectionnées (minimum 5).",
+              'amnesty',
+            )}
+          </p>
         )}
       </div>
     </>

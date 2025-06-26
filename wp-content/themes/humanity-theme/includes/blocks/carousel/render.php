@@ -11,9 +11,13 @@ if (!function_exists('render_carousel_block')) {
      */
     function render_carousel_block(array $attributes): string {
         $image_ids = $attributes['mediaIds'] ?? [];
-    
-        if (empty($image_ids)) {
-            return '<p>' . esc_html__('Aucune image sélectionnée', 'amnesty') . '</p>';
+
+        if (empty($image_ids) || count($image_ids) < 5) {
+            if (is_admin()) {
+                return '<p>' . esc_html__('Veuillez sélectionner au moins 5 images pour le carrousel.', 'amnesty') . '</p>';
+            } else {
+                return ''; 
+            }
         }
     
         ob_start();
