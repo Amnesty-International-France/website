@@ -5,7 +5,7 @@ const { __ } = wp.i18n;
 
 registerBlockType('amnesty-core/carousel', {
   title: __('Carousel', 'amnesty'),
-  description: "Block carousel d'images",
+  description: "Block carrousel d'images",
   category: 'amnesty-core',
   attributes: {
     mediaIds: {
