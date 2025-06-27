@@ -1,5 +1,7 @@
 .events .archive-hero-img-container .archive-hero-title-container {
-  padding-left: 0;
+  @media (min-width: 640px) {
+    padding-left: 0;
+  }
 }
 
 .event-filters {
