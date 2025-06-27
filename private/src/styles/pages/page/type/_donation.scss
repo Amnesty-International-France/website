@@ -10,7 +10,6 @@
   }
 
   .page-donation-layout {
-    padding-top: 38px;
     display: flex;
     gap: 24px;
     max-width: $container-hg;
@@ -29,232 +28,19 @@
     margin-bottom: 60px;
     padding: 0 24px;
 
-
     @media (min-width: $container-lg) {
       flex: 0 0 60%;
       max-width: 60%;
     }
 
-    .get-informed-block {
-      padding: 29px 0;
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 50%;
-        transform: translateX(80%);
-        width: 100vw;
-        height: 100%;
-        background-color: var(--wp--preset--color--grey-lighter);
-        z-index: -1;
-      }
-    }
-  }
-
-  .page-donation-aside {
-    flex: 1;
-    min-width: 0;
-    padding: 0 24px;
-
-    @media (min-width: $container-lg) {
-      padding-left: 0;
-    }
-
-    .sticky-card {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      z-index: 1;
-      position: sticky;
-      top: 180px;
-      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
-      max-width: 350px;
-      margin: 0 auto 24px auto;
-
-      @media (min-width: $container-sm) {
-        flex-direction: row;
-        max-width: 600px;
-      }
-
-      @media (min-width: $container-lg) {
-        max-width: none;
-        flex-direction: column;
-      }
-
-
-      .sticky-card-image-container {
-        width: 100%;
-        height: 240px;
-        border-bottom: 8px solid var(--wp--preset--color--primary);
-
-        @media (min-width: $container-sm) {
-          width: 50%;
-          border-right: 8px solid var(--wp--preset--color--primary);
-          border-bottom: none;
-        }
-
-        @media (min-width: $container-lg) {
-          width: 100%;
-          border-bottom: 8px solid var(--wp--preset--color--primary);
-          border-right: none;
-        }
-
-        .sticky-card-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-      }
-
-      .sticky-card-content {
-        width: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 22px;
-        padding: 14px 0 24px 0;
-        background-color: var(--wp--preset--color--white);
-
-        @media (min-width: $container-sm) {
-          width: 50%;
-        }
-
-        @media (min-width: $container-lg) {
-          align-items: center;
-          width: auto;
-        }
-
-        .officers {
-          .names {
-            text-align: center;
-            font-family: var(--wp--preset--font-family--secondary);
-            font-size: 18px;
-            font-weight: bold;
-            line-height: 25px;
-            margin-bottom: 0;
-          }
-
-          .role {
-            text-align: center;
-            font-family: var(--wp--preset--font-family--secondary);
-            font-size: 14px;
-            font-weight: bold;
-            line-height: 30px;
-            margin-bottom: 0;
-          }
-        }
-
-        .phone-container {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-
-          .icon-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 25px;
-            height: 25px;
-
-            svg {
-              width: 100%;
-              height: 100%;
-            }
-          }
-
-          .phone {
-            text-align: center;
-            font-family: var(--wp--preset--font-family--secondary);
-            font-size: 36px;
-            font-weight: bold;
-            line-height: 41px;
-            margin-bottom: 0;
-          }
-        }
-
-        .button {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 16px;
-          background-color: var(--wp--preset--color--primary);
-
-          .icon-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 24px;
-            height: 24px;
-
-            svg {
-              width: 100%;
-              height: 100%;
-            }
-          }
-
-          .label {
-            font-family: var(--wp--preset--font-family--secondary);
-            font-size: 18px;
-            font-weight: bold;
-            line-height: 19px;
-            margin-bottom: 0;
-          }
-        }
-      }
-    }
-  }
-
-  .page-content {
-    .custom-button-block,
-    .download-go-further-block,
-    .get-informed-block,
-    .image-block,
-    .read-also-block,
-    p:not(
-        .wp-block-amnesty-core-chapo p,
-        .wp-block-amnesty-core-section.small p,
-        .wp-block-amnesty-core-section.large p,
-        .download-go-further-block p,
-        .call-to-action-block p
-      ),
-    .wp-block-columns,
-    .wp-block-details,
-    .wp-block-heading,
-    .wp-block-image,
-    .wp-block-list,
-    .wp-block-amnesty-core-action,
-    .wp-block-amnesty-core-quote-block,
-    .wp-block-amnesty-core-image,
-    .wp-block-amnesty-core-section.small {
-      max-width: $container-hg;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .call-to-action-block {
-      max-width: $container-lg;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .wp-block-amnesty-core-chapo {
-      max-width: $container-hg;
-      margin-left: auto;
-      margin-right: auto;
-
-      .text {
-        @media (min-width: $container-lg) {
-          width: 100%;
-        }
+    .chapo > .text {
+      @media (min-width: 768px) {
+          width: 85%;
       }
     }
 
-    .carousel-block {
-      .swiper-slide {
-        max-width: $container-sm;
-      }
+    .wp-block-heading {
+      padding: 15px 0 0;
     }
   }
 
