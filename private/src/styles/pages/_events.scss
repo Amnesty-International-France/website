@@ -1,11 +1,6 @@
-.events .archive-hero-img-container .archive-hero-title-container {
-  padding-left: 0;
-}
-
 .event-filters {
   font-family: var(--wp--preset--font-family--secondary), serif;
   width: 100vw;
-  height: 80px;
   background-color: var(--wp--preset--color--grey-light);
 
   & > .event-filters-container {
@@ -14,11 +9,14 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    padding: 21px 0;
+    padding: 1rem;
     box-sizing: border-box;
-    height: 80px;
 
-    @media (max-width: 640px) {
+    @media (min-width: $container-lg) {
+      padding: 1rem 0;
+    }
+
+    @media (max-width: $container-sm) {
       flex-direction: column;
     }
 
@@ -29,7 +27,6 @@
       text-decoration: none;
       font-size: 0.9375rem;
       font-weight: bold;
-      line-height: 1rem;
       text-transform: uppercase;
       transition: all 0.2s ease;
       background-color: var(--wp--preset--color--black);
@@ -67,12 +64,16 @@
           }
 
           & > input[type='text'] {
-            min-width: 200px;
             margin-right: 12px;
             border: none;
+            min-width: 120px;
 
             &::placeholder {
               color: var(--wp--preset--color--grey-dark);
+            }
+
+            @media (min-width: $container-md) {
+              min-width: 200px;
             }
           }
 
@@ -109,6 +110,10 @@
           @media (max-width: $container-sm) {
             display: none;
           }
+
+          @media (max-width: $container-md) {
+            margin: auto 20px;
+          }
         }
 
         & > button {
@@ -128,7 +133,7 @@
         background-color: var(--wp--preset--color--white);
         position: absolute;
         z-index: 4;
-        top: 45px;
+        top: 55px;
         max-height: 200px;
         overflow-x: hidden;
 
@@ -162,15 +167,15 @@
 .events-list {
   width: 100vw;
   box-sizing: border-box;
-  padding: 30px 24px 64px 24px;
 
   @media (min-width: $container-lg) {
-    padding: 30px 0 64px 0;
+    padding: 0 64px;
   }
 
   > .events-list-container {
     max-width: $container-lg;
-    margin: 0 auto;
+    padding: 30px 24px 60px 24px;
+    align-items: center;
 
     &.grid-three-columns {
       display: grid;
@@ -190,6 +195,12 @@
     .list-style-none {
       list-style: none !important;
     }
+  }
+
+  .no-events {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0;
   }
 }
 
@@ -233,8 +244,7 @@
         width: 16px;
         height: 16px;
         margin: 0 6px;
-        background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23575756'/%3E%3C/svg%3E")
-          no-repeat center;
+        background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23575756'/%3E%3C/svg%3E") no-repeat center;
         background-size: contain;
       }
 
@@ -402,4 +412,14 @@
 
 .event-info {
   column-gap: 12px !important;
+}
+
+
+.events-pagination {
+  width: 100%;
+  margin: auto;
+
+  & > .is-layout-flex {
+    flex-wrap: nowrap;
+  }
 }
