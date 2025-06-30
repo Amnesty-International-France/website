@@ -1,5 +1,11 @@
 .article.local-structures {
+  .yoast-breadcrumb {
+    padding-bottom: 30px;
+  }
+
   > .article-header {
+    padding-bottom: 60px;
+
     .wp-block-image.container--full-width.article-figure.is-stretched {
       margin: auto;
       width: $container-lg;
@@ -9,6 +15,26 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+    }
+
+    .feature-image {
+      max-width: $container-lg;
+
+      @media (min-width: 768px) {
+        .feature-image-caption-block {
+          position: absolute;
+          width: 100%;
+          transform: translateY(-24px);
+          color: var(--wp--preset--color--white);
+          margin-right: 0;
+          border-bottom: 4px solid var(--wp--preset--color--primary);
+
+          > .feature-image-description {
+            text-align: end;
+            font-weight: bold;
+          }
+        }
       }
     }
   }
@@ -77,62 +103,15 @@
         max-width: $container-sm;
       }
     }
+
+    .wp-block-html {
+      display: flex;
+      margin: 45px auto;
+      justify-content: center;
+    }
   }
-}
 
-.featured-landmarks {
-  position: relative;
-  background-color: #e0e0e0;
-
-  .content {
-    max-width: $container-lg;
-    margin: 0 auto;
-    padding: 40px 24px 0 24px;
-
-    @media (min-width: $container-hg) {
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 15%;
-      background-color: var(--wp--preset--color--primary);
-      z-index: 0;
-
-      @media (min-width: $container-md) {
-        height: 20%;
-      }
-
-      @media (min-width: $container-lg) {
-        height: 40%;
-      }
-    }
-
-    > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .title {
-      padding: 5px 10px;
-      text-transform: uppercase;
-      color: var(--wp--preset--color--primary);
-      background-color: var(--wp--preset--color--black);
-      font-size: 29.5px;
-      font-weight: bold;
-      line-height: 33px;
-      width: fit-content;
-    }
-
-    .postlist {
-      padding-top: 24px;
-      padding-left: 0;
-      padding-right: 0;
-    }
+  > .article-content h2 {
+    margin-top: 0 !important;
   }
 }
