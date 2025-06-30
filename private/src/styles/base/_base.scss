@@ -21,6 +21,7 @@ html.lang-open {
 *::after,
 *::before {
   box-sizing: inherit;
+  max-width: 100%;
 }
 
 /**
