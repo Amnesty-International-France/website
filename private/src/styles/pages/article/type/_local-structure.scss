@@ -9,6 +9,7 @@
     .wp-block-image.container--full-width.article-figure.is-stretched {
       margin: auto;
       width: $container-lg;
+      max-width: 100%;
       height: 432px;
 
       & > img {
@@ -25,10 +26,10 @@
         .feature-image-caption-block {
           position: absolute;
           width: 100%;
-          transform: translateY(-24px);
+          transform: translateY(-35px);
           color: var(--wp--preset--color--white);
           margin-right: 0;
-          border-bottom: 4px solid var(--wp--preset--color--primary);
+          background-color: transparent;
 
           > .feature-image-description {
             text-align: end;
