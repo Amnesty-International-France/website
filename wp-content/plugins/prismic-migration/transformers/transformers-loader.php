@@ -11,3 +11,4 @@ require_once __DIR__ . '/DossierTransformer.php';
 require_once __DIR__ . '/StructureLocaleTransformer.php';
 require_once __DIR__ . '/PageFroideTransformer.php';
 require_once __DIR__ . '/EvenementTransformer.php';
+require_once __DIR__ . '/PetitionTransformer.php';

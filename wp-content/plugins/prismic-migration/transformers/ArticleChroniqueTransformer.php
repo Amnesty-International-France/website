@@ -23,7 +23,7 @@ class ArticleChroniqueTransformer extends DocTransformer {
 
 		$wp_post['post_type'] = Type::get_wp_post_type(\Type::ARTICLE_CHRONIQUE);
 		$wp_post['post_category'] = $this->getCategories(array('chroniques'));
-		$wp_post['terms'] = [
+		$wp_post['tax_terms'] = [
 			'location' => array_filter( array_column($terms['countries'], 'slug'), static fn($s) => $s !== null ),
 			'combat' => array_filter( array_column($terms['combats'], 'slug'), static fn($s) => $s !== null )
 		];

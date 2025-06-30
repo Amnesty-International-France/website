@@ -17,6 +17,7 @@ class DocTransformerFactory
 			Type::STRUCTURE_LOCALE => new StructureLocaleTransformer(),
 			Type::PAGE_FROIDE => new PageFroideTransformer(),
 			Type::EVENEMENT => new EvenementTransformer(),
+			Type::PETITION => new PetitionTransformer(),
 			default => throw new \Exception("Not found transformer for type : $type->value")
 		};
 	}

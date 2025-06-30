@@ -15,7 +15,7 @@ class DossierTransformer extends DocTransformer {
 		$wp_post['post_category'] = $this->getCategories(array('dossiers'));
 
 		$terms = $this->getTerms( $prismicDoc );
-		$wp_post['terms'] = [
+		$wp_post['tax_terms'] = [
 			'location' => array_filter( array_column($terms['countries'], 'slug'), static fn($s) => $s !== null ),
 			'combat' => array_filter( array_column($terms['combats'], 'slug'), static fn($s) => $s !== null )
 		];

@@ -13,7 +13,7 @@ class EvenementTransformer extends DocTransformer {
 
 		$terms = $this->getTerms( $prismicDoc );
 
-		$wp_post['terms'] = [
+		$wp_post['tax_terms'] = [
 			'location' => array_filter( array_column($terms['countries'], 'slug'), static fn($s) => $s !== null ),
 			'combat' => array_filter( array_column($terms['combats'], 'slug'), static fn($s) => $s !== null )
 		];
@@ -70,16 +70,6 @@ class EvenementTransformer extends DocTransformer {
 		$wp_post['ID'] = $post_id;
 
 		return $wp_post;
-	}
-
-	public function featuredImage($prismicDoc): array|false {
-		$img = parent::featuredImage($prismicDoc);
-
-		if( $img !== false && isset($prismicDoc['data']['legend']) ) {
-			$img['legend'] = $prismicDoc['data']['legend'];
-		}
-
-		return $img;
 	}
 
 	private function getOrCreateOrganizer( string $contact ): int {

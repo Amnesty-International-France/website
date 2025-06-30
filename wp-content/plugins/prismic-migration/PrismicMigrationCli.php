@@ -132,7 +132,7 @@ class PrismicMigrationCli {
 					continue;
 				}
 
-				foreach ( $wp_post['terms'] ?? [] as $term => $ids ) {
+				foreach ( $wp_post['tax_terms'] ?? [] as $term => $ids ) {
 					wp_set_object_terms( $postId, $ids, $term );
 				}
 
