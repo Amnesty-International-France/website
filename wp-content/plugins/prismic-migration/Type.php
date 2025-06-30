@@ -11,6 +11,8 @@ enum Type: string {
 	case PAGE_FROIDE = 'page';
 	case EVENEMENT = 'evenement';
 
+	case PETITION = 'petition';
+
 	public static function get_wp_post_type(Type $type): string|null {
 		return match($type) {
 			self::NEWS, self::ARTICLE_CHRONIQUE, self::DOSSIER => 'post',
@@ -19,6 +21,7 @@ enum Type: string {
 			self::STRUCTURE_LOCALE => 'local-structures',
 			self::PAGE_FROIDE => 'page',
 			self::EVENEMENT => 'tribe_events',
+			self::PETITION => 'petition',
 			default => null,
 		};
 	}
