@@ -5,11 +5,185 @@ import Icon from '../../components/Icon.jsx';
 const { useEffect, useState } = wp.element;
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
-const { PanelBody, SelectControl, TextControl } = wp.components;
+const { PanelBody, SelectControl, TextControl, Spinner } = wp.components;
+const { useSelect } = wp.data;
+const apiFetch = wp.apiFetch;
+
+const PostSearchControl = ({ selectedPostId, selectedPostTitle, categorySlug, onChange }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const categories = useSelect(
+    (select) => select('core').getEntityRecords('taxonomy', 'category', { per_page: 100 }),
+    [],
+  );
+
+  useEffect(() => {
+    if (!searchTerm || !categorySlug) {
+      setResults([]);
+      return;
+    }
+
+    setLoading(true);
+
+    let path = '';
+    if (categorySlug === 'landmark') {
+      path = `/wp/v2/landmark?search=${encodeURIComponent(searchTerm)}&per_page=10&_embed`;
+    } else {
+      const categoryObj = categories?.find((cat) => cat.slug === categorySlug);
+      if (!categoryObj) {
+        setResults([]);
+        setLoading(false);
+        return;
+      }
+      path = `/wp/v2/posts?search=${encodeURIComponent(searchTerm)}&category=${categoryObj.id}&per_page=10&_embed`;
+    }
+
+    apiFetch({ path })
+      .then((posts) => {
+        setResults(posts);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching posts:', error);
+        setResults([]);
+        setLoading(false);
+      });
+  }, [searchTerm, categorySlug, categories]);
+
+  const extractAllCustomTerms = (embeddedData) => {
+    if (!embeddedData || !Array.isArray(embeddedData['wp:term'])) {
+      return [];
+    }
+
+    let allCustomTerms = [];
+    embeddedData['wp:term'].forEach((termGroup) => {
+      if (Array.isArray(termGroup)) {
+        const customTermsInGroup = termGroup.filter(
+          (term) => term.taxonomy !== 'category' && term.taxonomy !== 'post_tag',
+        );
+        allCustomTerms = allCustomTerms.concat(
+          customTermsInGroup.map(({ id, name, slug, taxonomy }) => ({ id, name, slug, taxonomy })),
+        );
+      }
+    });
+    return allCustomTerms;
+  };
+
+  return (
+    <div>
+      <TextControl
+        label={__('Rechercher un contenu', 'amnesty')}
+        value={searchTerm}
+        onChange={setSearchTerm}
+        placeholder={__('Tapez pour chercher un article ou une page&hellip;', 'amnesty')}
+      />
+
+      {loading && <Spinner />}
+
+      {!loading && results.length > 0 && (
+        <ul
+          style={{
+            border: '1px solid #ccc',
+            padding: 5,
+            maxHeight: 150,
+            overflowY: 'auto',
+            margin: 0,
+            listStyle: 'none',
+          }}
+        >
+          {results.map((post) => {
+            const postLink = post.link;
+            const postTitle = post.title.rendered;
+
+            const featuredImageUrl = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
+            const allExtractedTerms = extractAllCustomTerms(post._embedded);
+
+            return (
+              <li
+                key={post.id}
+                style={{
+                  cursor: 'pointer',
+                  padding: '8px 10px',
+                  backgroundColor: postLink === selectedPostId ? '#e0f2f7' : 'transparent',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  borderBottom: '1px solid #eee',
+                  transition: 'background-color 0.2s ease-in-out',
+                }}
+                onClick={() => {
+                  onChange(postLink, postTitle);
+                  setSearchTerm('');
+                  setResults([]);
+                }}
+              >
+                {featuredImageUrl && (
+                  <img
+                    src={featuredImageUrl}
+                    alt={post.title.rendered}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      objectFit: 'cover',
+                      borderRadius: 4,
+                      flexShrink: 0,
+                    }}
+                  />
+                )}
+                <div style={{ flexGrow: 1 }}>
+                  <strong dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
+                  <div style={{ fontSize: '0.85em', color: '#666', marginTop: '4px' }}>
+                    {allExtractedTerms.length > 0 && (
+                      <span style={{ marginRight: '8px' }}>
+                        {allExtractedTerms.map((term) => term.name).join(', ')}
+                      </span>
+                    )}
+                    {post._embedded?.['wp:term']?.[0]?.[0]?.name &&
+                      post._embedded['wp:term'][0][0].taxonomy === 'category' && (
+                        <span
+                          style={{
+                            marginLeft: allExtractedTerms.length > 0 ? '0' : '0',
+                            marginRight: '8px',
+                          }}
+                        >
+                          {allExtractedTerms.length > 0 ? '| ' : ''}
+                          {post._embedded['wp:term'][0][0].name}
+                        </span>
+                      )}
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {selectedPostTitle && (
+        <p>
+          {__('Article sélectionné :', 'amnesty')} <strong>{selectedPostTitle}</strong>
+        </p>
+      )}
+      {!selectedPostTitle && !searchTerm && !loading && (
+        <p>{__('Aucun contenu sélectionné.', 'amnesty')}</p>
+      )}
+    </div>
+  );
+};
 
 const EditComponent = (props) => {
   const { attributes, setAttributes } = props;
-  const { title, titleSize, description, icon, bgColor, buttonLink } = attributes;
+  const {
+    title,
+    titleSize,
+    description,
+    icon,
+    bgColor,
+    buttonLink,
+    selectedCategory,
+    selectedPostTitle,
+  } = attributes;
 
   const reqSvgs = require.context('../../icons', false, /\.svg$/);
 
@@ -21,47 +195,27 @@ const EditComponent = (props) => {
     };
   });
 
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const categories = useSelect(
+    (select) => select('core').getEntityRecords('taxonomy', 'category', { per_page: 100 }),
+    [],
+  );
 
-  useEffect(() => {
-    fetch('/wp-json/wp/v2/posts')
-      .then((response) => response.json())
-      .then((data) => {
-        setPosts(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Erreur de récupération des posts', error);
-        setLoading(false);
-      });
-  }, []);
+  const categoryOptions = categories
+    ? [
+        { label: __('Choisir une catégorie', 'amnesty'), value: '' },
+        ...categories
+          .filter((cat) => cat.name !== 'Non classé')
+          .map((cat) => ({ label: cat.name, value: cat.slug })),
+        { label: __('Repères', 'amnesty'), value: 'landmark' },
+      ]
+    : [];
 
-  const handlePostSelect = (selectedLink) => {
+  const handlePostSelect = (link, postTitle) => {
     setAttributes({
-      buttonLink: selectedLink,
+      buttonLink: link,
+      selectedPostTitle: postTitle,
     });
   };
-
-  const selectedPost = posts.find((post) => post.link === buttonLink);
-
-  const postOptions = [
-    { label: __('Choisir un post', 'amnesty'), value: '' },
-    ...(selectedPost
-      ? [
-          {
-            label: selectedPost.title.rendered,
-            value: selectedPost.link,
-          },
-        ]
-      : []),
-    ...posts
-      .filter((post) => post.link !== buttonLink)
-      .map((post) => ({
-        label: post.title.rendered,
-        value: post.link,
-      })),
-  ];
 
   return (
     <>
@@ -83,18 +237,31 @@ const EditComponent = (props) => {
             options={iconOptions}
             onChange={(value) => setAttributes({ icon: value })}
           />
-          {loading ? (
-            <p>{__('Chargement des posts', 'amnesty')}</p>
-          ) : (
-            <SelectControl
-              label={__('Lien du bouton', 'amnesty')}
-              value={buttonLink || ''}
-              options={postOptions}
+          <SelectControl
+            label={__('Filtrer par catégorie', 'amnesty')}
+            value={selectedCategory || ''}
+            options={categoryOptions}
+            onChange={(value) => {
+              setAttributes({
+                selectedCategory: value,
+                buttonLink: '',
+                selectedPostTitle: '',
+              });
+            }}
+          />
+          {selectedCategory ? (
+            <PostSearchControl
+              selectedPostId={buttonLink}
+              selectedPostTitle={selectedPostTitle}
+              categorySlug={selectedCategory}
               onChange={handlePostSelect}
             />
+          ) : (
+            <p>
+              {__('Sélectionnez une catégorie pour afficher les contenus disponibles.', 'amnesty')}
+            </p>
           )}
         </PanelBody>
-
         <PanelBody title={__('Styles', 'amnesty')}>
           <SelectControl
             label={__('Taille du titre', 'amnesty')}
