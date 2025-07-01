@@ -21,18 +21,6 @@
   }
 }
 
-.page-content
-  .wp-block-post-content
-  > *:not(
-    .wp-block-amnesty-core-section-home,
-    .hero-homepage,
-    .articles-homepage,
-    .actions-homepage,
-    .agenda-chronicle-homepage
-  ) {
-  padding: 0 24px;
-}
-
 @media (min-width: $container-hg) {
   .page-content {
     padding: 0;
