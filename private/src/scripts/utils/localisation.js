@@ -1,9 +1,24 @@
-// eslint-disable-next-line consistent-return
+const defaultApiGouvUrl = 'https://geo.api.gouv.fr';
 
+const checkSizeNumber = (sizeMin, sizeMax, value) => {
+  let regex = new RegExp(`^[0-9]{${sizeMin}}$`);
+
+  if (sizeMax && sizeMax > sizeMin) {
+    regex = new RegExp(`^[0-9]{${sizeMin},${sizeMax}}$`);
+  }
+  if (sizeMin === 0 && sizeMax === 0) {
+    regex = /^[0-9]+$/;
+  }
+
+  return regex.test(value);
+};
+
+// eslint-disable-next-line consistent-return
 const fetchZipCodeFromLaPosteApi = async (city) => {
   try {
     const apiLaPoste =
       'https://datanova.laposte.fr/data-fair/api/v1/datasets/laposte-hexasmal/lines';
+
     const queryForLaPosteApi = new URLSearchParams({
       select: 'code_postal',
       q: city,
@@ -12,72 +27,162 @@ const fetchZipCodeFromLaPosteApi = async (city) => {
 
     const getAssociatedCitiesZipCode = await fetch(`${apiLaPoste}?${queryForLaPosteApi}`);
     return getAssociatedCitiesZipCode.json();
-  } catch (e) {
-    return null;
+  } catch (err) {
+    console.error(`error fetch: ${err.code} - ${err.message}`);
   }
+};
+
+const fetchCitiesFromDep = async (codeDep, query) => {
+  const queryString = new URLSearchParams(query).toString();
+  const apiGeoDep = `${defaultApiGouvUrl}/departements`;
+  const responseFromDep = await fetch(`${apiGeoDep}/${codeDep}/communes?${queryString}`);
+
+  return responseFromDep.json();
+};
+
+const fetchCitiesFromQuery = async (query) => {
+  const apiGeoCities = `${defaultApiGouvUrl}/communes`;
+  const queryString = new URLSearchParams(query).toString();
+  const response = await fetch(`${apiGeoCities}?${queryString}`);
+
+  return response.json();
+};
+
+const fetchAssociatedCities = async (query) => {
+  const queryString = new URLSearchParams(query).toString();
+  const apiAssociatedCities = `${defaultApiGouvUrl}/communes_associees_deleguees`;
+  const responseFromAssociatedCities = await fetch(`${apiAssociatedCities}?${queryString}`);
+
+  return responseFromAssociatedCities.json();
 };
 
 // eslint-disable-next-line consistent-return
 const fetchApiGeoFrance = async (userLocation) => {
-  const defaultApiGouvUrl = 'https://geo.api.gouv.fr';
-  const apiGeoCities = `${defaultApiGouvUrl}/communes`;
-  const apiGeoDep = `${defaultApiGouvUrl}/departements`;
+  const userLocationWithTwoDigits = userLocation.match(/^(\d{2})/)?.[1];
+  const unvalidCodeDep = ['20', '96', '97', '98', '99'];
 
-  let queryString = {};
-  const userLocationIsCP = /^[0-9]{5}$/.test(userLocation);
+  if (!userLocation) {
+    return [];
+  }
 
+  const globalQuery = {
+    fields: 'codesPostaux,nom,centre',
+  };
+
+  let query = { ...globalQuery };
+  const userLocationIsNum = checkSizeNumber(0, 0, userLocation);
+  const userLocationIsCP = checkSizeNumber(5, 0, userLocation);
+  const corsicaDep = ['2A', '2B'];
+  const hybridCodeDep = corsicaDep.includes(userLocation);
+  const departmentWithThreeDigits = [
+    '075',
+    '971',
+    '972',
+    '973',
+    '974',
+    '975',
+    '978',
+    '986',
+    '987',
+    '988',
+  ];
   try {
-    if (userLocation !== null && /^[0-9]{2,4}$/.test(userLocation)) {
-      const codeDep = userLocation.match(/^(\d{2})/)?.[1];
+    if (userLocationIsNum && !userLocation.includes('20')) {
+      if (!userLocationWithTwoDigits || unvalidCodeDep.includes(userLocation)) return [];
+      let codeDep;
 
-      const query = new URLSearchParams({
+      if (userLocationWithTwoDigits) {
+        codeDep = userLocation;
+      }
+
+      if (checkSizeNumber(3, 0, userLocation) && departmentWithThreeDigits.includes(userLocation)) {
+        codeDep = userLocation;
+      }
+
+      if (
+        checkSizeNumber(2, 4, userLocation) &&
+        !departmentWithThreeDigits.includes(userLocation)
+      ) {
+        codeDep = userLocationWithTwoDigits;
+      }
+
+      if (checkSizeNumber(2, 4, userLocation)) {
+        query = {
+          format: 'json',
+          geometry: 'centre',
+          ...globalQuery,
+        };
+
+        const dataFromDep = await fetchCitiesFromDep(codeDep, query);
+
+        if (checkSizeNumber(2, 0, userLocation)) {
+          return dataFromDep.slice(0, 10);
+        }
+
+        if (checkSizeNumber(3, 4, userLocation)) {
+          return dataFromDep.filter((city) =>
+            city.codesPostaux.some((item) => item.startsWith(userLocation)),
+          );
+        }
+      }
+    }
+
+    if (userLocationIsCP) {
+      query = {
+        codePostal: userLocation,
+        ...globalQuery,
+      };
+
+      const dataFromCities = await fetchCitiesFromQuery(query);
+
+      return [...dataFromCities];
+    }
+
+    if (hybridCodeDep || userLocation.includes('20')) {
+      query = {
         format: 'json',
         geometry: 'centre',
-        fields: 'codesPostaux,nom,centre',
-      }).toString();
-
-      const responseFromDep = await fetch(`${apiGeoDep}/${codeDep}/communes?${query}`);
-      const dataFromDep = await responseFromDep.json();
-
-      if (/^[0-9]{2}$/.test(userLocation)) {
-        return dataFromDep.slice(0, 10);
-      }
-
-      if (/^[0-9]{3,4}$/.test(userLocation)) {
-        return dataFromDep
-          .filter((city) => city.codesPostaux.some((cp) => cp.startsWith(userLocation)))
-          .slice(0, 10);
-      }
-    }
-
-    if (userLocation !== null && userLocationIsCP) {
-      queryString = {
-        codePostal: userLocation,
-        fields: 'codesPostaux,nom,centre',
         limit: 10,
+        ...globalQuery,
       };
+
+      const corsicaResults = [];
+
+      if (userLocation.includes('20')) {
+        await Promise.all(
+          corsicaDep.map(async (dep) => {
+            const data = await fetchCitiesFromDep(dep, query);
+            corsicaResults.push(...data);
+          }),
+        );
+      }
+
+      if (checkSizeNumber(3, 4, userLocation)) {
+        return corsicaResults.filter((city) =>
+          city.codesPostaux.some((cp) => cp.startsWith(userLocation)),
+        );
+      }
+
+      if (hybridCodeDep && corsicaDep.includes(userLocation)) {
+        const data = await fetchCitiesFromDep(userLocation, query);
+        corsicaResults.push(...data);
+      }
+
+      return corsicaResults;
     }
 
-    if (userLocation !== null && !userLocationIsCP) {
-      queryString = {
+    if (!userLocationIsNum) {
+      query = {
         nom: userLocation,
-        fields: 'codesPostaux,nom,centre',
         limit: 10,
+        ...globalQuery,
       };
-    }
 
-    const query = new URLSearchParams(queryString).toString();
-    const responseFromCities = await fetch(`${apiGeoCities}?${query}`);
+      const dataFromCities = await fetchCitiesFromQuery(query);
 
-    const dataFromCities = await responseFromCities.json();
+      const dataFromAssociatedCities = await fetchAssociatedCities(query);
 
-    if (dataFromCities.length === 0) {
-      const apiAssociatedCities = `${defaultApiGouvUrl}/communes_associees_deleguees`;
-
-      const responseFromAssociatedCities = await fetch(`${apiAssociatedCities}?${query}`);
-      const dataFromAssociatedCities = await responseFromAssociatedCities.json();
-
-      return await Promise.all(
+      const associatedCitiesWithCP = await Promise.all(
         dataFromAssociatedCities.map(async (city) => {
           const getDataFromLaPosteAPI = await fetchZipCodeFromLaPosteApi(city.nom);
           return {
@@ -86,9 +191,11 @@ const fetchApiGeoFrance = async (userLocation) => {
           };
         }),
       );
+
+      return [...dataFromCities, ...associatedCitiesWithCP];
     }
 
-    return dataFromCities;
+    return [];
   } catch (err) {
     console.error(`error fetch: ${err.code} - ${err.message}`);
   }
@@ -112,19 +219,55 @@ const createResultList = (cities) => {
   const input = document.getElementById('input-localisation');
 
   resultList.innerHTML = '';
-  console.log(cities);
 
-  cities.forEach((res) => {
+  if (!cities.length && input.value) {
     const li = document.createElement('li');
     li.classList.add('element-list');
-    li.textContent = `${res.nom} - ${res.codesPostaux[0]}`;
-    resultList.appendChild(li);
+    li.textContent = `${input.value} - pas de résultat.`;
 
-    li.addEventListener('click', () => {
-      input.value = `${res.nom} - ${res.codesPostaux[0]}`;
-      input.dataset.longitude = res.centre.coordinates[0];
-      input.dataset.latitude = res.centre.coordinates[1];
-      closeList(input);
+    return resultList.appendChild(li);
+  }
+
+  return cities.forEach((res) => {
+    res.codesPostaux.forEach((cp) => {
+      const li = document.createElement('li');
+      let currentIndex = -1;
+      const items = Array.from(resultList.querySelectorAll('.element-list'));
+
+      li.classList.add('element-list');
+      li.textContent = `${res.nom} - ${cp}`;
+      resultList.appendChild(li);
+
+      const updateActiveItem = () => {
+        items.forEach((item) => item.classList.remove('active'));
+        if (items[currentIndex]) {
+          items[currentIndex].classList.add('active');
+          items[currentIndex].scrollIntoView({ block: 'nearest' });
+        }
+      };
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          currentIndex = (currentIndex + 1) % items.length;
+          updateActiveItem();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          currentIndex = (currentIndex - 1 + items.length) % items.length;
+          updateActiveItem();
+        } else if (e.key === 'Enter') {
+          if (currentIndex >= 0 && currentIndex < items.length) {
+            items[currentIndex].click();
+          }
+        }
+      });
+
+      li.addEventListener('click', () => {
+        input.value = `${res.nom} - ${res.codesPostaux[0]}`;
+        input.dataset.longitude = res.centre.coordinates[0];
+        input.dataset.latitude = res.centre.coordinates[1];
+        closeList(input);
+      });
     });
   });
 };
@@ -198,10 +341,14 @@ export const getUserLocationFromForm = () => {
         buttonLocationForm.addEventListener('click', async (e) => {
           e.preventDefault();
 
-          redirectToEventsListWithParams(
-            form.elements.location.attributes['data-longitude'].value,
-            form.elements.location.attributes['data-latitude'].value,
-          );
+          if (input.value) {
+            redirectToEventsListWithParams(
+              form.elements.location.attributes['data-longitude'].value,
+              form.elements.location.attributes['data-latitude'].value,
+            );
+          }
+
+          input.focus();
         });
       }
     }
@@ -211,8 +358,3 @@ export const getUserLocationFromForm = () => {
 document.addEventListener('click', (e) => {
   closeList(e.target);
 });
-
-export default {
-  getUserLocationFromButton,
-  getUserLocationFromForm,
-};

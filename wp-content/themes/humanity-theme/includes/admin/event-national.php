@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-
-
 add_action(
 	'acf/include_fields',
 	function () {

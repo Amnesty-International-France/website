@@ -21,12 +21,9 @@ $label = get_previous_posts_link( '<span class="icon"></span><span>' . __( 'Prev
 $events_mobile_friendly_label = get_previous_posts_link( '<span class="icon"></span><span>' . __( 'Previous', 'amnesty' ) . '</span>' );
 ?>
 <a
-	href="<?php echo esc_url( $link ); ?>"
+	href="<?php echo esc_url( preg_replace( '#/liste(/|$)#', '/', $link ) ); ?>"
 	rel="prev"
 	class="wp-block-query-pagination-previous"
-	data-js="tribe-events-view-link"
-	aria-label="<?php echo esc_attr( $label ); ?>"
-	title="<?php echo esc_attr( $label ); ?>"
 >
 	<span class="icon"></span>Précédent
 </a>
