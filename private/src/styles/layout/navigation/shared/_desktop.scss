@@ -237,18 +237,16 @@
         fill: var(--wp--preset--color--white);
       }
 
+      &.search path {
+        fill: var(--wp--preset--color--primary) !important;
+      }
+
     }
 
     &:hover {
       svg > path {
-        fill: var(--wp--preset--color--black);;
+        fill: var(--wp--preset--color--black);
       }
-    }
-  }
-
-  & li:first-child {
-    svg path {
-      fill: var(--wp--preset--color--primary);
     }
   }
 }

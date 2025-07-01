@@ -27,10 +27,17 @@
 
 global $wpdb;
 
-$user_longitude = isset( $_GET['lon'] ) ? sanitize_text_field( $_GET['lon'] ) : null;
-$user_latitude  = isset( $_GET['lat'] ) ? sanitize_text_field( $_GET['lat'] ) : null;
+$current_page = max(1, get_query_var('paged'));
 
-if ( $user_longitude && $user_latitude ) {
+$user_longitude = isset($_GET['lon']) ? sanitize_text_field($_GET['lon']) : null;
+$user_latitude = isset($_GET['lat']) ? sanitize_text_field($_GET['lat']) : null;
+
+if ($user_longitude && $user_latitude) {
+	$posts_per_page = (int)tribe_get_option('postsPerPage');
+
+	$current_page = max(1, get_query_var('paged'));
+	$offset = ($current_page - 1) * $posts_per_page;
+
 	$events = $wpdb->get_results(
 		$wpdb->prepare(
 			"
@@ -75,9 +82,12 @@ if ( $user_longitude && $user_latitude ) {
 			  AND meta_key = '_EventStartDate'
 			LIMIT 1
 		) ASC
+	LIMIT %d OFFSET %d
 ",
 			$user_longitude,
-			$user_latitude
+			$user_latitude,
+			tribe_get_option('postsPerPage'),
+			$offset
 		)
 	);
 }
@@ -85,20 +95,20 @@ if ( $user_longitude && $user_latitude ) {
 ?>
 <div class="events wp-site-blocks">
 	<?php
-	echo do_blocks( WP_Block_Patterns_Registry::get_instance()->get_registered( 'amnesty/archive-hero' )['content'] );
+	echo do_blocks(WP_Block_Patterns_Registry::get_instance()->get_registered('amnesty/archive-hero')['content']);
 	?>
 	<div class="event-filters">
 		<div class="event-filters-container">
-			<a class="filter-button" href="<?php echo esc_url( tribe_get_events_link() ); ?>">
+			<a class="filter-button" href="<?php echo esc_url(tribe_get_events_link()); ?>">
 				Tous les évènements
 			</a>
 			<div class="event-filters-search">
 				<div class="event-filters-form">
 					<form class="form-location" action="">
 						<label for="input-localisation"></label>
-						<input id="input-localisation" name="location" type="text" placeholder="Code postal ou ville">
+						<input id="input-localisation" name="location" type="text" placeholder="Ville ou code postal">
 						<button class="filter-button">
-							<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-search.svg' ); ?>
+							<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-search.svg'); ?>
 						</button>
 
 					</form>
@@ -112,23 +122,23 @@ if ( $user_longitude && $user_latitude ) {
 		</div>
 	</div>
 	<div class="events-list">
-		<?php if ( \count( $events ) === 0 ) : ?>
+		<?php if (\count($events) === 0) : ?>
 			<p class="no-events"> Désolé, il n'y a aucun résultat pour cette recherche.</p>
 		<?php else : ?>
 			<section class="events-list-container grid-three-columns">
-				<?php foreach ( $events as $event ) : ?>
+				<?php foreach ($events as $event) : ?>
 					<?php
 					echo render_block(
 						[
-							'blockName'   => 'amnesty-core/event-card',
-							'attrs'       => [ 'postId' => $event->ID ],
+							'blockName' => 'amnesty-core/event-card',
+							'attrs' => ['postId' => $event->ID],
 							'innerBlocks' => [],
 						]
 					);
 					?>
 				<?php endforeach; ?>
 			</section>
-			<?php $this->template( 'list/nav' ); ?>
+			<?php $this->template('list/nav'); ?>
 		<?php endif; ?>
 	</div>
 </div>
