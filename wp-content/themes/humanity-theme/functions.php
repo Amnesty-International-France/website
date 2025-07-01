@@ -8,7 +8,6 @@
 
 // phpcs:disable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
 
-
 /**
  * Theme root includes
  */
@@ -286,6 +285,13 @@ require_once realpath( __DIR__ . '/includes/users/class-users-controller.php' );
 require_once realpath( __DIR__ . '/includes/users/contact-methods.php' );
 require_once realpath( __DIR__ . '/includes/users/meta.php' );
 #endregion users
+
+/**
+ * Theme Jetpack includes
+ */
+#region jetpack
+require_once realpath( __DIR__ . '/includes/jetpack/go-back-message.php' );
+#endregion jetpack
 
 /**
  * Theme WooCommerce includes
