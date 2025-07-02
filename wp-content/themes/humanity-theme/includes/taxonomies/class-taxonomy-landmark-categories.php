@@ -61,7 +61,7 @@ class Taxonomy_Landmark_Categories extends Taxonomy
 			return;
 		}
 
-		add_filter( 'term_link', [ $this, 'rewrite_links' ], 10, 3 );
+		//add_filter( 'term_link', [ $this, 'rewrite_links' ], 10, 3 );
 
 		// has to be run late to ensure the taxonomy is registered
 		add_action( 'init', [ $this, 'redirect' ] );
