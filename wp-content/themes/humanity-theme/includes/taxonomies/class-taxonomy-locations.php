@@ -43,10 +43,10 @@ class Taxonomy_Locations extends Taxonomy {
 	 */
 	protected $args = [
 		'hierarchical'          => true,
-		'rewrite'               => false,
+		'rewrite'               => ['slug' => 'pays'],
 		'show_admin_column'     => true,
 		'show_in_rest'          => true,
-		'query_var'             => false,
+		'query_var'             => true,
 		'update_count_callback' => '_update_generic_term_count',
 	];
 
@@ -58,7 +58,6 @@ class Taxonomy_Locations extends Taxonomy {
 
 		add_filter( 'body_class', [ $this, 'body_classes' ] );
 		add_action( 'admin_head', [ $this, 'output_css' ] );
-		add_filter( 'term_link', [ $this, 'rewrite_links' ], 10, 3 );
 
 		add_action( 'cmb2_admin_init', [ $this, 'custom_fields' ] );
 		add_action( 'rest_api_init', [ $this, 'register_fields' ] );
@@ -170,29 +169,6 @@ class Taxonomy_Locations extends Taxonomy {
 	 */
 	public function output_css() {
 		echo '<style>.edit-tags-php .cmb-repeatable-group .cmb2-upload-button{float:none}.term-php .cmb-row:not(.cmb-repeatable-grouping){padding:1em 0}</style>';
-	}
-
-	/**
-	 * Filter links for terms in this taxonomy
-	 *
-	 * Rewrites them to filtered search URIs
-	 *
-	 * @param string  $link     the generated link
-	 * @param WP_Term $term     the term object
-	 * @param string  $taxonomy the taxonomy slug
-	 *
-	 * @return string
-	 */
-	public function rewrite_links( string $link, WP_Term $term, string $taxonomy ): string {
-		if ( $taxonomy !== $this->slug ) {
-			return $link;
-		}
-
-		if ( ! apply_filters( 'amnesty_taxonomy_send_to_search', true, $taxonomy ) ) {
-			return $link;
-		}
-
-		return esc_url( sprintf( '%s?q%s=%s', amnesty_search_url(), $this->slug, $term->term_id ) );
 	}
 
 	/**
