@@ -68,4 +68,14 @@
       }
     }
   }
+
+  .page-donation-aside {
+    margin-top: 60px;
+
+    > .donation-calculator {
+
+      position: sticky;
+      top: 150px;
+    }
+  }
 }

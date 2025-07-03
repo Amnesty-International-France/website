@@ -1,6 +1,6 @@
 .donation-calculator,
 .donation-header,
-.donation-calculator-amount,
+.donation-body,
 .donation-calculator-simulation,
 .amount-monthly,
 .amount-punctual,
@@ -11,42 +11,42 @@
 
 .donation-calculator {
   max-width: 360px;
+  box-shadow: 0 0 20px 0 #00000026;
 
   &.medium {
     width: 272px;
   }
 
-  margin-top: 100px;
-  box-shadow: 0 0 20px 0 #00000026;
-
   > .donation-header {
     cursor: pointer;
     background-color: var(--wp--preset--color--grey-lighter);
+    position: relative;
+    height: 200px;
 
-    .donation-title {
+    > .tax-deduction {
+      position: absolute;
+      width: 300px;
+      height: 135px;
+      top: -37px;
+      left: -20px;
+    }
+
+    > .donation-title {
+      margin-top: auto;
       padding: 15px;
-      height: calc(100% - 37px);
-
-      > .tax-deduction {
-        position: relative;
-        width: 300px;
-        height: 135px;
-        top: -37px;
-        left: -20px;
-      }
 
       > .subtitle {
         margin-bottom: 0;
-        font-family: Amnesty Trade Gothic;
-        font-weight: 700;
+        font-family: var(--wp--custom--body--font-family), sans-serif;
+        font-weight: bold;
         font-size: 21px;
         line-height: 29px;
         letter-spacing: 0;
         text-align: center;
 
         & > span {
-          font-family: Amnesty Trade Gothic;
-          font-weight: 700;
+          font-family: var(--wp--custom--body--font-family), sans-serif;
+          font-weight: bold;
           font-size: 18px;
           line-height: 25px;
           letter-spacing: 0;
@@ -64,7 +64,7 @@
         width: 50%;
         padding: 20px 0;
         text-transform: uppercase;
-        font-family: Amnesty Trade Gothic;
+        font-family: var(--wp--custom--body--font-family), sans-serif;
         font-weight: bold;
         font-size: 18px;
         text-align: center;
@@ -82,42 +82,52 @@
     }
   }
 
-  .donation-calculator-amount {
+  .donation-body {
     padding: 26px 13px;
     border-bottom: 1px solid var(--wp--preset--color--grey-light);
     display: flex;
     flex-direction: column;
     align-items: center;
-    
-    > .give {
+
+    .give, .cost {
       display: flex;
       width: 100%;
+      padding-left: 13px;
+      align-items: center;
+      justify-content: space-between;
 
-      > .text{
-        width: 50%;
-
-        > p {
-          font-family: Amnesty Trade Gothic;
-          font-size: 26px;
-          font-style: normal;
-          font-weight: bold;
-          line-height: 29px;
-          margin-bottom: 0;
-        }
+      h4, input, label, input::placeholder {
+        font-style: normal;
+        font-weight: bold;
+        line-height: 29px;
+        margin-bottom: 0;
+        font-size: 26px;
       }
 
       .input {
         width: 50%;
 
-        > .input-donation {
-          width: 77px;
+        > .input-donation, .input-donation-simulated {
+          padding: 12px 6px;
+          width: 80px;
+          height: 44px;
           background-color: var(--wp--preset--color--grey-light);
+          text-align: right;
+        }
+
+        &.yellow > .input-donation-simulated {
+          background-color: var(--wp--preset--color--primary);
+        }
+
+        > label > span {
+          font-size: 20px;
+          text-transform: none;
         }
       }
     }
 
-    > .cost {
-      width: 100%;
+    .give {
+      margin-bottom: 15px;
     }
 
     > .amount-monthly,
@@ -158,7 +168,7 @@
 
           > label {
             cursor: pointer;
-            font-family: Amnesty Trade Gothic;
+            font-family: var(--wp--custom--body--font-family), sans-serif;
             font-weight: bold;
             font-size: 22px;
             line-height: 29px;
@@ -180,7 +190,7 @@
         > p {
           margin-top: 1rem;
           margin-bottom: 4px;
-          font-family: Amnesty Trade Gothic;
+          font-family: var(--wp--custom--body--font-family), sans-serif;
           font-weight: bold;
           font-size: 16px;
           line-height: 24px;
@@ -200,21 +210,21 @@
             &::placeholder {
               color: var(--wp--preset--color--grey-dark);
               text-transform: none;
-              font-family: Amnesty Trade Gothic;
+              font-family: var(--wp--custom--body--font-family), sans-serif;
               font-weight: bold;
 
             }
           }
 
           > label {
-            font-family: Amnesty Trade Gothic;
+            font-family: var(--wp--custom--body--font-family), sans-serif;
             font-weight: bold;
             font-size: 26px;
             line-height: 29px;
             letter-spacing: 0;
 
             > span {
-              font-family: Amnesty Trade Gothic;
+              font-family: var(--wp--custom--body--font-family), sans-serif;
               font-size: 20px;
               text-transform: none;
             }
@@ -224,25 +234,24 @@
     }
   }
 
-  .donation-calculator-simulation {
-    padding: 1rem 1.25rem;
+  .donation-calculator-footer {
+    padding: 18px 21px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
 
-    & > p {
-      font-family: Amnesty Trade Gothic;
-      font-weight: bold;
+    & > .legend {
+      font-family: var(--wp--custom--body--font-family), sans-serif;
       font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
       line-height: 18px;
-      letter-spacing: 0;
-      text-align: center;
-      color: var(--wp--preset--color--grey-dark);
-
-      &:first-child {
-        margin-bottom: 3px;
-      }
+      margin-bottom: 0;
     }
 
     & > .price-simulated {
-      font-family: Amnesty Trade Gothic;
+      font-family: var(--wp--custom--body--font-family), sans-serif;
       font-weight: bold;
       font-size: 26px;
       line-height: 29px;
@@ -255,21 +264,19 @@
     }
 
     & > .donation-link {
-      display: flex;
-      align-items: center;
+      width: fit-content;
+      display: inline-flex;
+      height: 51.429px;
+      padding: 14px 28px 14px 20px;
       justify-content: center;
-      text-decoration: none;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      border: 1px solid var(--wp--preset--color--primary);
+      background: var(--wp--preset--color--primary);
       text-transform: uppercase;
-      column-gap: 12px;
-      padding: 14px 0;
-      width: 100%;
-      background-color: var(--wp--preset--color--primary);
-      font-family: Amnesty Trade Gothic;
-      font-weight: bold;
-      font-size: 23px;
-      line-height: 26px;
-      letter-spacing: 0;
-
+      text-decoration: none;
+      margin: 0 auto;
     }
   }
 }
