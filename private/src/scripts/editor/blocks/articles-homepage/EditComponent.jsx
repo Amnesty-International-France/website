@@ -330,7 +330,10 @@ const EditComponent = ({ attributes, setAttributes }) => {
                         />
                         <div className="article-content">
                           <div className="article-title-wrapper">
-                            <h3 className="article-title">{items[0].selectedPostTitle}</h3>
+                            <h3
+                              className="article-title"
+                              dangerouslySetInnerHTML={{ __html: items[0].selectedPostTitle }}
+                            />
                           </div>
                           {items[0].subtitle && (
                             <div className="article-subtitle-wrapper">
@@ -402,7 +405,10 @@ const EditComponent = ({ attributes, setAttributes }) => {
                           {items[0].selectedPostDate && (
                             <p className="article-date">{formatDate(items[0].selectedPostDate)}</p>
                           )}
-                          <h3 className="article-title">{items[0].selectedPostTitle}</h3>
+                          <h3
+                            className="article-title"
+                            dangerouslySetInnerHTML={{ __html: items[0].selectedPostTitle }}
+                          />
                         </div>
 
                         {items[0].selectedPostCustomTerms &&
@@ -479,9 +485,13 @@ const EditComponent = ({ attributes, setAttributes }) => {
                                     {formatDate(item.selectedPostDate)}
                                   </p>
                                 )}
-                                <h3 className="article-title">
-                                  {item.selectedPostTitle || __('Aucun contenu', 'amnesty')}
-                                </h3>
+                                <h3
+                                  className="article-title"
+                                  dangerouslySetInnerHTML={{
+                                    __html:
+                                      item.selectedPostTitle || __('Aucun contenu', 'amnesty'),
+                                  }}
+                                />
                               </div>
 
                               {item.selectedPostCustomTerms &&
