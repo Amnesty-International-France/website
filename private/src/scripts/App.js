@@ -36,6 +36,7 @@ import initAZFilter from './modules/az-filter';
 import capitalizeHeadings from './modules/capitalize-headings';
 import { getUserLocationFromButton, getUserLocationFromForm } from './utils/localisation';
 import initLegsForm from './modules/legs-form';
+import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
 
 const App = () => {
   browserDetector();
@@ -72,6 +73,7 @@ const App = () => {
   getUserLocationFromButton();
   getUserLocationFromForm();
   initLegsForm();
+  enhanceJetpackFormPlaceholders();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
