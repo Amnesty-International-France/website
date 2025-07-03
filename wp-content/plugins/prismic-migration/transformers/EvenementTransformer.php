@@ -40,6 +40,11 @@ class EvenementTransformer extends DocTransformer {
 				'post_status' => $wp_post['post_status']
 			];
 
+			if( isset($data['national']) && $data['national'] === true) {
+				$args['meta_input']['_EventNational'] = 1;
+				$args['meta_input']['__EventNational'] = 'field_685bfd654bfce';
+			}
+
 			if( isset($organizer_id) ) {
 				$args['EventOrganizerID'] = $organizer_id;
 			}
