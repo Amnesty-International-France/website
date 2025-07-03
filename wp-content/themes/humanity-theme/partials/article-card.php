@@ -98,7 +98,7 @@ if (!$post_object instanceof WP_Post) {
 		<div class="article-thumbnail"></div>
 	<?php endif; ?>
 
-	<?php if (!empty($label)): ?>
+	<?php if (!empty($label) && get_post_type($post_object) !== 'page'): ?>
 		<?= render_chip_category_block([
 			'label' => esc_html($label),
 			'link' => esc_url($link),
