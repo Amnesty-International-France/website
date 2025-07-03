@@ -195,7 +195,7 @@
 
 .tribe-events-pg-template {
   max-width: 1280px !important;
-  padding-top: 0 !important;
+  padding: 0 24px 0 24px !important;
 }
 
 .event {
@@ -203,31 +203,26 @@
     width: 100%;
 
     .yoast-breadcrumb {
-      padding: 12px 24px 30px 24px;
+      padding: 12px 0 30px 0;
       color: var(--wp--preset--color--grey-dark);
       max-width: $container-hg;
       margin: 0 auto;
-
-      @media (min-width: $container-hg) {
-        padding-left: 0;
-      }
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
 
       > span:first-of-type {
-        display: flex;
+        display: inline-flex;
+        flex-wrap: wrap;
         align-items: center;
-
-        > span {
-          display: inline-flex;
-          align-items: center;
-        }
       }
 
-      span::before {
-        vertical-align: middle;
+      span > span {
+        display: inline-flex;
+        align-items: center;
       }
 
-      span + span::before {
-        flex: 0 0 auto;
+      span > span:not(.breadcrumb_last)::after {
         content: '';
         display: inline-block;
         width: 16px;
@@ -236,6 +231,7 @@
         background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23575756'/%3E%3C/svg%3E")
           no-repeat center;
         background-size: contain;
+        vertical-align: middle;
       }
 
       a {
@@ -251,11 +247,15 @@
       }
 
       & .breadcrumb_last {
-        flex: 1 1 auto;
         display: inline;
-        align-items: center;
-        font-size: 13px;
         font-weight: bold;
+        font-size: 13px;
+        color: var(--wp--preset--color--black);
+        white-space: normal;
+        flex-basis: auto;
+        flex-grow: 0;
+        flex-shrink: 1;
+        text-indent: 0;
       }
     }
   }
