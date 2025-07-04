@@ -34,7 +34,7 @@ foreach ($post_terms as $post_term) :
 		}
         $chip_style = $default_chip_style;
     } else {
-        if ($post_type === 'landmark') {
+        if ($post_type === 'landmark' || $post_type === 'petition') {
             $chip_style = 'bg-yellow';
         } else {
             $chip_style = $post_term->taxonomy === 'location' ? 'bg-yellow' : 'outline-black';
