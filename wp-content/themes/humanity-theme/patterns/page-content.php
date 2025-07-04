@@ -7,9 +7,12 @@
  * Inserter: no
  */
 
-$page_template = get_page_template_slug() ?? '';
+global $post;
 
-$template_donation = $page_template === 'page-donation';
+$slug =  '/' . $post->post_name;
+
+$template_donation = $slug === '/don';
+
 
 $no_more_blocks = $template_donation || is_front_page();
 
