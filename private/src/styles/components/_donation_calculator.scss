@@ -36,10 +36,11 @@
       > .subtitle {
         margin-bottom: 0;
         font-weight: bold;
-        font-size: 21px;
+        font-size: 25px;
         line-height: 29px;
         letter-spacing: 0;
         text-align: center;
+        font-family: var(--wp--preset--font-family--secondary);
 
         & > span {
           font-weight: bold;
@@ -63,12 +64,13 @@
       padding: 20px 0;
       text-transform: uppercase;
       font-weight: bold;
-      font-size: 18px;
+      font-size: 20px;
       text-align: center;
       white-space: nowrap;
       background-color: var(--wp--preset--color--grey-light);
       color: var(--wp--preset--color--grey-dark);
       user-select: none;
+      font-family: var(--wp--preset--font-family--secondary);
 
       &.active {
         background-color: var(--wp--preset--color--white);
@@ -162,10 +164,11 @@
         > label {
           cursor: pointer;
           font-weight: bold;
-          font-size: 22px;
+          font-size: 26px;
           line-height: 29px;
           letter-spacing: 0;
           text-align: center;
+          font-family: var(--wp--preset--font-family--secondary);
         }
 
         &.active {
@@ -188,7 +191,7 @@
         font-size: 16px;
         line-height: 24px;
         letter-spacing: 0;
-
+        font-family: var(--wp--preset--font-family--secondary);
       }
 
       > .input-container {
@@ -205,6 +208,14 @@
             text-transform: none;
             font-weight: bold;
 
+          }
+
+          & > label {
+            font-family: var(--wp--preset--font-family--secondary);
+            font-size: 26px;
+            font-style: normal;
+            font-weight: bold;
+            line-height: 29px;
           }
         }
 
@@ -237,6 +248,7 @@
       font-weight: bold;
       line-height: 18px;
       margin-bottom: 0;
+      font-family: var(--wp--preset--font-family--secondary);
     }
 
     & > .legend {
@@ -254,6 +266,7 @@
       letter-spacing: 0;
       color: var(--wp--preset--color--black);
       margin-bottom: 1rem;
+      font-family: var(--wp--preset--font-family--secondary);
 
       & > span {
         font-size: 20px;
@@ -278,6 +291,7 @@
       text-transform: uppercase;
       text-decoration: none;
       margin: 0 auto 1rem;
+      font-family: var(--wp--preset--font-family--secondary);
     }
   }
 }

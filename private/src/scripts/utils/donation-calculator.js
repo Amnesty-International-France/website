@@ -67,6 +67,7 @@ export const selectedAmount = () => {
     const isMonthly = bodyActive.id === 'monthly';
 
     changeAmountValue(taxDeductionCalculation(checkedInput.value), isMonthly);
+    addAmountOnDonationLink(checkedInput.value);
 
     allRadioInput.forEach((radioDiv) => {
       radioDiv.addEventListener('click', () => {
@@ -78,6 +79,7 @@ export const selectedAmount = () => {
           });
           radioDiv.classList.add('active');
           changeAmountValue(taxDeductionCalculation(input.value), isMonthly);
+          addAmountOnDonationLink(input.value);
         }
       });
     });

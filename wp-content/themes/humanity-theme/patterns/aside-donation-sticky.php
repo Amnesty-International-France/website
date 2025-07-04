@@ -7,7 +7,6 @@
  * Inserter: no
  */
 
-
 ?>
 
 <aside class="page-donation-aside">
@@ -15,7 +14,7 @@
 		{
 			"size":"",
 			"with_header": true,
-			"with_tabs": true,
+			"with_tabs": false,
 			"with_legend": true
 		}
 	/-->
