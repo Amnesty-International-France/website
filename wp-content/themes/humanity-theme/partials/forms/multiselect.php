@@ -27,7 +27,7 @@ $active  = is_array( $params['active'] ?? [] ) ? $params['active'] : [ $params['
 	<fieldset class="checkboxGroup-list">
 	<?php foreach ( $params['options'] as $value => $item_label ) : ?>
 		<span class="checkboxGroup-item">
-			<input id="<?php echo esc_attr( $make_id( $value ) ); ?>" type="checkbox" name="<?php echo esc_attr( $params['name'] ); ?>[]" <?php checked( in_array( absint( $value ), $active, true ) ); ?> value="<?php echo esc_attr( $value ); ?>">
+			<input id="<?php echo esc_attr( $make_id( $value ) ); ?>" type="checkbox" name="<?php echo esc_attr( $params['name'] ); ?>[]" <?php checked( in_array( $value, $active, true ) ); ?> value="<?php echo esc_attr( $value ); ?>">
 			<label for="<?php echo esc_attr( $make_id( $value ) ); ?>"><?php echo esc_html( $item_label ); ?></label>
 		</span>
 	<?php endforeach; ?>
