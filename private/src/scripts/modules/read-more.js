@@ -6,11 +6,22 @@ const readMoreBlock = () => {
     const icon = button.querySelector('svg');
 
     if (button && content && span) {
+      const initialReadMoreLabel = button.dataset.readMoreLabel || span.textContent;
+      let readLessLabel = 'Lire moins';
+
+      if (initialReadMoreLabel === 'Afficher la lettre de pétition') {
+        readLessLabel = 'Fermer la lettre de pétition';
+      } else if (initialReadMoreLabel === 'Lire la suite') {
+        readLessLabel = 'Lire moins';
+      }
+
+      span.textContent = initialReadMoreLabel;
+
       button.addEventListener('click', () => {
         const isExpanded = content.classList.toggle('expanded');
         content.classList.toggle('collapsed');
 
-        span.textContent = isExpanded ? 'Lire moins' : 'Lire la suite';
+        span.textContent = isExpanded ? readLessLabel : initialReadMoreLabel;
 
         if (icon) {
           icon.classList.toggle('rotated', isExpanded);
