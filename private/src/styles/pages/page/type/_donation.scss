@@ -25,7 +25,6 @@
   }
 
   .page-donation-main {
-    margin-bottom: 60px;
     padding: 0 24px;
 
     .page-content {
@@ -35,6 +34,7 @@
     @media (min-width: $container-lg) {
       flex: 0 0 60%;
       max-width: 60%;
+      margin-bottom: 60px;
     }
 
     .chapo > .text {
@@ -70,10 +70,9 @@
   }
 
   .page-donation-aside {
-    margin-top: 60px;
+    padding: 60px 24px;
 
     > .donation-calculator {
-
       position: sticky;
       top: 150px;
     }
