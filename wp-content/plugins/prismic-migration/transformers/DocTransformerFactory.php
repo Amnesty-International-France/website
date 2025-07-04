@@ -4,8 +4,7 @@ namespace transformers;
 
 use Type;
 
-class DocTransformerFactory
-{
+class DocTransformerFactory {
 
 	public static function getTransformer( Type $type ): DocTransformer {
 		return match ($type) {
@@ -18,6 +17,7 @@ class DocTransformerFactory
 			Type::PAGE_FROIDE => new PageFroideTransformer(),
 			Type::EVENEMENT => new EvenementTransformer(),
 			Type::PETITION => new PetitionTransformer(),
+			Type::ACTION_SOUTIEN => new ActionSoutienTransformer(),
 			default => throw new \Exception("Not found transformer for type : $type->value")
 		};
 	}

@@ -109,27 +109,6 @@ add_action( 'acf/include_fields', function() {
 				'append' => '',
 			),
 			array(
-				'key' => 'field_685acdfe73c85',
-				'label' => 'Code origine externe',
-				'name' => 'code_origine_ext',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'maxlength' => '',
-				'allow_in_bindings' => 0,
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
 				'key' => 'field_685ace6573c85',
 				'label' => 'Date de fin',
 				'name' => 'date_de_fin',
@@ -200,7 +179,15 @@ add_action( 'acf/include_fields', function() {
 				'type' => 'file',
 				'instructions' => '',
 				'required' => 0,
-				'conditional_logic' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_685aca87362cb',
+							'operator' => '==contains',
+							'value' => 'petition',
+						),
+					),
+				),
 				'wrapper' => array(
 					'width' => '',
 					'class' => '',
@@ -221,7 +208,15 @@ add_action( 'acf/include_fields', function() {
 				'type' => 'text',
 				'instructions' => '',
 				'required' => 0,
-				'conditional_logic' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_685aca87362cb',
+							'operator' => '==contains',
+							'value' => 'petition',
+						),
+					),
+				),
 				'wrapper' => array(
 					'width' => '',
 					'class' => '',
@@ -242,7 +237,15 @@ add_action( 'acf/include_fields', function() {
 				'type' => 'wysiwyg',
 				'instructions' => '',
 				'required' => 0,
-				'conditional_logic' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_685aca87362cb',
+							'operator' => '==contains',
+							'value' => 'petition',
+						),
+					),
+				),
 				'wrapper' => array(
 					'width' => '',
 					'class' => '',
@@ -283,6 +286,153 @@ add_action( 'acf/include_fields', function() {
 				'ui' => 0,
 				'ui_on_text' => '',
 				'ui_off_text' => '',
+			),
+			array(
+				'key' => 'field_6867cd3430784',
+				'label' => 'Téléphone requis',
+				'name' => 'phone_required',
+				'aria-label' => '',
+				'type' => 'true_false',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_685aca87362cb',
+							'operator' => '==contains',
+							'value' => 'action-soutien',
+						),
+					),
+				),
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'message' => '',
+				'default_value' => 0,
+				'allow_in_bindings' => 0,
+				'ui' => 0,
+				'ui_on_text' => '',
+				'ui_off_text' => '',
+			),
+			array(
+				'key' => 'field_6867ccdb30782',
+				'label' => 'Phrase Formulaire',
+				'name' => 'form_contenu',
+				'aria-label' => '',
+				'type' => 'text',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_685aca87362cb',
+							'operator' => '==contains',
+							'value' => 'action-soutien',
+						),
+					),
+				),
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'default_value' => '',
+				'maxlength' => '',
+				'allow_in_bindings' => 0,
+				'placeholder' => '',
+				'prepend' => '',
+				'append' => '',
+			),
+			array(
+				'key' => 'field_6867cd7130785',
+				'label' => 'Texte du bouton',
+				'name' => 'button_text',
+				'aria-label' => '',
+				'type' => 'text',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_685aca87362cb',
+							'operator' => '==contains',
+							'value' => 'action-soutien',
+						),
+					),
+				),
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'default_value' => '',
+				'maxlength' => '',
+				'allow_in_bindings' => 0,
+				'placeholder' => '',
+				'prepend' => '',
+				'append' => '',
+			),
+			array(
+				'key' => 'field_6867cd2430783',
+				'label' => 'Longueur max commentaire',
+				'name' => 'comment_max_length',
+				'aria-label' => '',
+				'type' => 'number',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_685aca87362cb',
+							'operator' => '==contains',
+							'value' => 'action-soutien',
+						),
+					),
+				),
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'default_value' => '',
+				'min' => '',
+				'max' => '',
+				'allow_in_bindings' => 0,
+				'placeholder' => '',
+				'step' => '',
+				'prepend' => '',
+				'append' => '',
+			),
+			array(
+				'key' => 'field_6867cd7c30786',
+				'label' => 'Terms',
+				'name' => 'terms',
+				'aria-label' => '',
+				'type' => 'wysiwyg',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_685aca87362cb',
+							'operator' => '==contains',
+							'value' => 'action-soutien',
+						),
+					),
+				),
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'default_value' => '',
+				'allow_in_bindings' => 0,
+				'tabs' => 'all',
+				'toolbar' => 'full',
+				'media_upload' => 0,
+				'delay' => 0,
 			),
 		),
 		'location' => array(
