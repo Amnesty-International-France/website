@@ -62,7 +62,6 @@
   width: 100vw;
   height: 160px;
   position: relative;
-  background: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
 
   .archive-hero-img {
     width: 100%;
@@ -140,7 +139,8 @@
         width: 16px;
         height: 16px;
         margin: 0 6px;
-        background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E") no-repeat center;
+        background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E")
+          no-repeat center;
         background-size: contain;
       }
 
