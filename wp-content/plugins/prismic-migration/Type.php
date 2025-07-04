@@ -12,6 +12,7 @@ enum Type: string {
 	case EVENEMENT = 'evenement';
 
 	case PETITION = 'petition';
+	case ACTION_SOUTIEN = 'soutien';
 
 	public static function get_wp_post_type(Type $type): string|null {
 		return match($type) {
@@ -21,7 +22,7 @@ enum Type: string {
 			self::STRUCTURE_LOCALE => 'local-structures',
 			self::PAGE_FROIDE => 'page',
 			self::EVENEMENT => 'tribe_events',
-			self::PETITION => 'petition',
+			self::PETITION, self::ACTION_SOUTIEN => 'petition',
 			default => null,
 		};
 	}
