@@ -25,12 +25,12 @@
   }
 
   .page-donation-main {
+    margin-bottom: 60px;
+    padding: 0 24px;
 
     .page-content {
       padding: 30px 0 0;
     }
-    margin-bottom: 60px;
-    padding: 0 24px;
 
     @media (min-width: $container-lg) {
       flex: 0 0 60%;
@@ -39,7 +39,7 @@
 
     .chapo > .text {
       @media (min-width: 768px) {
-          width: 100%;
+        width: 100%;
       }
     }
 
