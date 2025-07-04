@@ -25,6 +25,10 @@
   }
 
   .page-donation-main {
+
+    .page-content {
+      padding: 30px 0 0;
+    }
     margin-bottom: 60px;
     padding: 0 24px;
 
@@ -35,12 +39,20 @@
 
     .chapo > .text {
       @media (min-width: 768px) {
-          width: 85%;
+          width: 100%;
       }
     }
 
     .wp-block-heading {
       padding: 15px 0 0;
+
+      &:first-of-type::before {
+        content: none;
+      }
+    }
+
+    p {
+      max-width: $container-sm;
     }
   }
 
