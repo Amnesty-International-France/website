@@ -214,6 +214,7 @@ require_once realpath( __DIR__ . '/includes/theme-setup/keywords.php');
 require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-combats.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/combats.php');
 require_once realpath( __DIR__ . '/includes/taxonomies/custom-fields/precedence.php' );
+require_once realpath( __DIR__ . '/includes/taxonomies/yoast_breadcrumb_taxonomies.php');
 #endregion taxonomies
 
 /**
