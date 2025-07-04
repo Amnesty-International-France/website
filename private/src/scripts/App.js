@@ -37,6 +37,7 @@ import capitalizeHeadings from './modules/capitalize-headings';
 import { getUserLocationFromButton, getUserLocationFromForm } from './utils/localisation';
 import initLegsForm from './modules/legs-form';
 import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
+import { donationCalculator, selectedAmount, selectedTab } from './utils/donation-calculator';
 
 const App = () => {
   browserDetector();
@@ -74,6 +75,9 @@ const App = () => {
   getUserLocationFromForm();
   initLegsForm();
   enhanceJetpackFormPlaceholders();
+  donationCalculator();
+  selectedTab();
+  selectedAmount();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 

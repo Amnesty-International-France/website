@@ -1,3 +1,69 @@
 .page-donation {
-  background-color: transparent;
+  & > .page-hero-block {
+    & > .wp-block-group.is-layout-flow.wp-block-group-is-layout-flow {
+      & > .wp-block-image.container--full-width.page-figure.is-stretched {
+        & > img {
+          object-position: center top;
+        }
+      }
+    }
+  }
+
+  .page-donation-layout {
+    display: flex;
+    gap: 24px;
+    max-width: $container-hg;
+    margin-inline: auto;
+
+    @media (max-width: $container-lg) {
+      flex-direction: column;
+    }
+
+    @media (min-width: $container-lg) {
+      gap: 100px;
+    }
+  }
+
+  .page-donation-main {
+    margin-bottom: 60px;
+    padding: 0 24px;
+
+    @media (min-width: $container-lg) {
+      flex: 0 0 60%;
+      max-width: 60%;
+    }
+
+    .chapo > .text {
+      @media (min-width: 768px) {
+          width: 85%;
+      }
+    }
+
+    .wp-block-heading {
+      padding: 15px 0 0;
+    }
+  }
+
+  .page-hero-block {
+    .page-hero-title-wrapper {
+      .container {
+        max-width: $container-hg;
+
+        .page-hero-title {
+          color: var(--wp--preset--color--black);
+          background-color: var(--wp--preset--color--primary);
+        }
+      }
+    }
+  }
+
+  .page-donation-aside {
+    margin-top: 60px;
+
+    > .donation-calculator {
+
+      position: sticky;
+      top: 150px;
+    }
+  }
 }
