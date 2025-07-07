@@ -1,6 +1,6 @@
-const legsMenu = () => {
-  const content = document.querySelector('.page-legs-main .page-content');
-  const menuContainer = document.getElementById('legs-menu');
+const pageMenu = () => {
+  const content = document.querySelector('.page-foundation-main .page-content');
+  const menuContainer = document.getElementById('page-menu');
 
   if (!content || !menuContainer) return;
 
@@ -26,4 +26,4 @@ const legsMenu = () => {
   menuContainer.appendChild(list);
 };
 
-export default legsMenu;
+export default pageMenu;

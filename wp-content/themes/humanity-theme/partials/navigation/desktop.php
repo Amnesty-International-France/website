@@ -18,17 +18,19 @@ $header_style = amnesty_get_header_style( amnesty_get_header_object_id() );
 				<ul>
 					<li>
 						<a href="#"
-						   class="menu-item menu-user jetpack-search-filter__link"
-						   aria-label="Ouvrir la recherche">
-							<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-search.svg'); ?>
+							class="menu-item menu-user jetpack-search-filter__link"
+							data-filter-type="year_post_date"
+							data-val="2015-01-01"
+							aria-label="Ouvrir la recherche">
+							<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-search.svg' ); ?>
 							Rechercher
 						</a>
 					</li>
 
-					<?php amnesty_nav("main-menu-top"); ?>
+					<?php amnesty_nav( 'main-menu-top' ); ?>
 					<li>
 						<a href="#" class="menu-item menu-user" aria-current="page">
-							<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-lock.svg'); ?>
+							<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-lock.svg' ); ?>
 							<span>Mon espace</span>
 						</a>
 					</li>

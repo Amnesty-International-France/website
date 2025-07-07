@@ -73,6 +73,11 @@
           "slug": "error",
           "color": "#e60000",
           "name": "Error"
+        },
+        {
+          "name": "Dark Teal",
+          "color": "#006460",
+          "slug": "dark-teal"
         }
       ]
     },

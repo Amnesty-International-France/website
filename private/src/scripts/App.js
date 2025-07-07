@@ -31,7 +31,7 @@ import downloadBlock from './modules/download-block';
 import initCarousels from './modules/carousel';
 import tableOfContents from './modules/table-of-contents';
 import readMoreBlock from './modules/read-more';
-import legsMenu from './modules/legs-menu';
+import pageMenu from './modules/page-menu';
 import initAZFilter from './modules/az-filter';
 import capitalizeHeadings from './modules/capitalize-headings';
 import { getUserLocationFromButton, getUserLocationFromForm } from './modules/localisation';
@@ -68,7 +68,7 @@ const App = () => {
   initCarousels();
   tableOfContents();
   readMoreBlock();
-  legsMenu();
+  pageMenu();
   initAZFilter();
   capitalizeHeadings();
   getUserLocationFromButton();
