@@ -18,6 +18,12 @@ if ( ! function_exists( 'render_donation_calculator_block' ) ) {
 		$with_tabs   = $attributes['with_tabs'] ?? false;
 		$with_legend = $attributes['with_legend'] ?? false;
 		$href        = $attributes['href'] ?? '';
+		$rate        = $attributes['rate'] ?? 66;
+
+
+		if ( ! in_array( $rate, [ 66, 75 ], true ) ) {
+			$taux = 66;
+		}
 
 		$args = [
 			'size'        => $size,
@@ -25,6 +31,7 @@ if ( ! function_exists( 'render_donation_calculator_block' ) ) {
 			'with_tabs'   => $with_tabs,
 			'with_legend' => $with_legend,
 			'href'        => $href,
+			'rate'        => $rate,
 		];
 
 		ob_start();
@@ -34,7 +41,7 @@ if ( ! function_exists( 'render_donation_calculator_block' ) ) {
 			extract( $args );
 			include $template_path;
 		} else {
-			error_log( '❌ Template "partials/donation-calculator.php" introuvable' );
+			error_log( '❌ Tepagemplate "partials/donation-calculator.php" introuvable' );
 		}
 		return ob_get_clean();
 	}
