@@ -12,9 +12,10 @@ global $post;
 $slug =  '/' . $post->post_name;
 
 $template_donation = $slug === '/don';
+$template_fondation = $slug === '/foundation';
 
 
-$no_more_blocks = $template_donation || is_front_page();
+$no_more_blocks = $template_donation || is_front_page() || $template_fondation;
 
 
 if ( is_front_page() ) {

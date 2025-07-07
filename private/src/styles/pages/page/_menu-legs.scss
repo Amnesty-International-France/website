@@ -1,4 +1,4 @@
-.legs-menu {
+.page-menu {
   padding: 14px 0;
   background-color: var(--wp--preset--color--grey-light);
 
@@ -48,4 +48,18 @@
       }
     }
   }
+
+
+  &.green {
+    background-color: var(--wp--preset--color--dark-teal);
+
+    ul li{
+      border: 1px solid var(--wp--preset--color--white);
+
+      a {
+        color: var(--wp--preset--color--white);
+      }
+    }
+  }
+
 }
