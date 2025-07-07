@@ -22,8 +22,8 @@ if ( is_front_page() ) {
 
 ?>
 
-<!-- wp:group {"tagName":"page","className":"page <?php print esc_attr( $class_name ?? '' ); ?>"} -->
-<article class="wp-block-group page">
+<!-- wp:group {"tagName":"page","className":"page"} -->
+<article class="wp-block-group page <?php print esc_attr( $class_name ?? '' ); ?>">
 	<!-- wp:group {"tagName":"section","className":"page-content"} -->
 		<section class="wp-block-group page-content">
 			<!-- wp:post-content /-->
