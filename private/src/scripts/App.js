@@ -34,10 +34,10 @@ import readMoreBlock from './modules/read-more';
 import legsMenu from './modules/legs-menu';
 import initAZFilter from './modules/az-filter';
 import capitalizeHeadings from './modules/capitalize-headings';
-import { getUserLocationFromButton, getUserLocationFromForm } from './utils/localisation';
+import { getUserLocationFromButton, getUserLocationFromForm } from './modules/localisation';
 import initLegsForm from './modules/legs-form';
 import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
-import { donationCalculator, selectedAmount, selectedTab } from './utils/donation-calculator';
+import { donationCalculator, selectedAmount, selectedTab } from './modules/donation-calculator';
 
 const App = () => {
   browserDetector();

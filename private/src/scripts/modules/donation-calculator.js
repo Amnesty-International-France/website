@@ -17,8 +17,8 @@ const elementTextContent = (element, isMonthly = false, amount = null) => {
 const taxDeductionCalculation = (amount) => {
   const finalPrice = amount - amount * 0.66;
   return Number(finalPrice).toLocaleString('fr-FR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   });
 };
 
