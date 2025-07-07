@@ -1,17 +1,20 @@
 <?php
 
 /**
- * Title: Legs Form Pattern
- * Description: Legs form
- * Slug: amnesty/legs-form
+ * Title: Foundation Form Pattern
+ * Description: foundation form
+ * Slug: amnesty/foundation-form
  * Inserter: no
  */
+
+declare(strict_types=1);
+
 
 $image_url      = get_template_directory_uri() . '/assets/images/testator-relations-officers.png';
 $icon_phone_url = get_template_directory_uri() . '/assets/images/icon-phone.svg';
 
 $civility      = $lastName = $firstName = $address = $zipCode = $city = $email = $phone = '';
-$receiveByMail = $receiveByEmail = false;
+$receiveByPostalMail = false;
 
 if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 	$civility       = isset( $_POST['civility'] ) ? htmlspecialchars( $_POST['civility'] ) : '';
@@ -22,33 +25,30 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 	$city           = isset( $_POST['city'] ) ? htmlspecialchars( trim( $_POST['city'] ) ) : '';
 	$email          = isset( $_POST['email'] ) ? htmlspecialchars( trim( $_POST['email'] ) ) : '';
 	$phone          = isset( $_POST['phone'] ) ? htmlspecialchars( trim( $_POST['phone'] ) ) : '';
-	$receiveByMail  = isset( $_POST['receive_by_mail'] );
-	$receiveByEmail = isset( $_POST['receive_by_email'] );
+	$receiveByPostalMail  = isset( $_POST['receive_by_postal_mail'] );
 }
 
 ?>
 
-<div class="page-legs-form">
-	<div class="page-legs-form-wrapper">
+<div class="page-foundation-form">
+	<div class="page-foundation-form-wrapper">
 		<div class="form-container">
 			<div class="officers">
 				<div class="officers-image-container">
 					<img class="officers-image" src="<?php echo esc_url( $image_url ); ?>" alt=""/>
 				</div>
-				<p class="officers-names">Sophie ROUPPERT et Lisa LACOSTE</p>
-				<p class="officers-job">Chargées de relations testateurs</p>
+				<p class="officers-names">Milena Djelic</p>
+				<p class="officers-job">Chargée de la relation avec les donatrices et les donateurs de la Fondation</p>
 				<div class="phone-container">
 					<div class="icon-container">
 						<img src="<?php echo esc_url( $icon_phone_url ); ?>" alt=""/>
 					</div>
-					<p class="phone">01 53 38 66 24</p>
+					<p class="phone">01 53 38 65 31</p>
 				</div>
 			</div>
-			<div class="legs-form">
-				<h2 class="title">DEMANDE DE BROCHURE</h2>
-				<p class="subtitle">Je souhaite recevoir la brochure d'informations sur les legs, donations et
-					assurances-vie gratuitement et sans engagement :</p>
-				<form class="form" id="legsForm" action="" method="POST">
+			<div class="foundation-form">
+				<h2 class="title">À VOTRE ÉCOUTE</h2>
+				<form class="form" id="foundationForm" action="" method="POST">
 					<div id="formMessages"></div>
 
 					<div class="form-group civility">
@@ -119,11 +119,8 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 					<div class="form-group">
 						<div class="receive-by">
 							<input type="checkbox" id="receive_by_mail"
-									name="receive_by_mail" <?php echo( $receiveByMail ? 'checked' : '' ); ?>>
-							<label for="receive_by_mail">Par courrier postal</label>
-							<input type="checkbox" id="receive_by_email"
-									name="receive_by_email" <?php echo( $receiveByEmail ? 'checked' : '' ); ?>>
-							<label for="receive_by_email">Par email</label>
+									name="receive_by_mail" <?php echo( $receiveByPostalMail ? 'checked' : '' ); ?>>
+							<label for="receive_by_mail">Je souhaite recevoir des informations sur la Fondation Amnesty International France par courrier postal</label>
 						</div>
 						<div id="error-receive_options" class="error-message-container"></div>
 					</div>
@@ -150,16 +147,17 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 				</form>
 			</div>
 		</div>
-		<p class="legals">Les informations que vous nous transmettez sont traitées par l’association Amnesty
-			International France (AIF), responsable du traitement, pour répondre à vos demandes et suivre au mieux votre
-			projet de transmission, pour vous communiquer des informations en lien avec notre mission et vous envoyer
-			nos propositions d’engagement, qu’elles soient militantes ou financières.Conformément au Règlement européen
-			général sur la protection des données du 27 avril 2016 et à la loi Informatique et Libertés modifiée, vous
-			disposez d’un droit d’accès, de rectification, d’effacement, de limitation et d’opposition au traitement des
-			données vous concernant, ainsi qu’un droit à la portabilité. Vous pouvez exercer ces droits en contactant le
-			service relations membres et donateurs d’AIF à l’adresse mentionnée au recto, par email (smd@amnesty.fr) ou
-			par téléphone (01 53 38 65 80). Vous pouvez également introduire une réclamation auprès de la CNIL. Pour
-			plus d’informations sur le traitement de vos données personnelles, veuillez consulter notre politique de
-			confidentialité www.amnesty.fr/politique-de-confidentialite.</p>
+		<p class="legals">Les informations recueillies sur ce formulaire sont enregistrées dans un fichier informatisé et sécurisé par Amnesty International France (AIF),
+			à des fins de traitement administratif de votre don et de votre reçu fiscal, pour répondre à vos demandes,
+			pour vous communiquer des informations en lien avec notre mission ou faire appel à votre engagement.
+			Le responsable de traitement est AIF, Association Loi 1901, dont le siège social est situé au 76 bd de la Villette, 75940 Paris cedex 19.
+			AIF est représentée par Anne Savinel-Barras, sa Présidente. Elles sont destinées au secrétariat administratif de la Fondation AIF et aux tiers mandatés par celle-ci.
+			Vos données personnelles sont hébergées sur des serveurs informatiques situés en Europe et aux États-Unis.
+			Des règles assurant la protection et la sécurité de ces données ont été mises en place.
+			Elles sont disponibles sur simple demande adressée à la Fondation.
+			Ces informations sont conservées pendant la durée strictement nécessaire à la réalisation des finalités précitées.
+			Conformément à la loi « informatique et libertés » et à la réglementation européenne,
+			vous disposez d’un droit d’accès, de rectification, de suppression, de restriction et d’opposition au traitement des données vous concernant, ainsi qu’un droit à la portabilité en contactant :
+			Fondation Amnesty International France – Secrétariat administratif – 76 bd de la Villette CS 40088 75939 Paris Cedex 19 – 01 53 38 65 65 – fondation@amnesty.fr. Vous pouvez également introduire une réclamation auprès de la CNIL.</p>
 	</div>
 </div>

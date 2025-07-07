@@ -83,6 +83,11 @@
           "slug": "success-light",
           "color": "#def9d9",
           "name": "Success Light"
+        },
+        {
+          "name": "Dark Teal",
+          "color": "#006460",
+          "slug": "dark-teal"
         }
       ]
     },
