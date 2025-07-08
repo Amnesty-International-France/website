@@ -1,37 +1,90 @@
 <?php
 
 function amnesty_register_petitions_cpt() {
-	$labels = [
-		'name' => 'Pétitions',
-		'singular_name' => 'Pétition',
-		'add_new' => 'Ajouter une Pétition',
-		'add_new_item' => 'Ajouter une nouvelle Pétition',
-		'edit_item' => 'Modifier la Pétition',
-		'new_item' => 'Nouvelle Pétition',
-		'view_item' => 'Voir la Pétition',
-		'search_items' => 'Rechercher une Pétition',
-		'not_found' => 'Aucune Pétition trouvée',
-		'not_found_in_trash' => 'Aucune Pétition dans la corbeille'
-	];
-	$args = [
-		'labels' => $labels,
-		'public' => true,
-		'has_archive' => true,
-		'rewrite' => array('slug' => 'petitions'),
-		'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
-		'menu_icon' => 'dashicons-admin-page',
-		'show_in_rest' => true,
-	];
+    $labels = [
+        'name' => 'Pétitions',
+        'singular_name' => 'Pétition',
+        'add_new' => 'Ajouter une Pétition',
+        'add_new_item' => 'Ajouter une nouvelle Pétition',
+        'edit_item' => 'Modifier la Pétition',
+        'new_item' => 'Nouvelle Pétition',
+        'view_item' => 'Voir la Pétition',
+        'search_items' => 'Rechercher une Pétition',
+        'not_found' => 'Aucune Pétition trouvée',
+        'not_found_in_trash' => 'Aucune Pétition dans la corbeille'
+    ];
+    $args = [
+        'labels' => $labels,
+        'public' => true,
+        'has_archive' => true,
+        'rewrite' => array('slug' => 'petitions'),
+        'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
+        'menu_icon' => 'dashicons-admin-page',
+        'show_in_rest' => true,
+    ];
 
-	register_post_type( 'petition', $args);
+    register_post_type( 'petition', $args);
 }
-
 add_action( 'init', 'amnesty_register_petitions_cpt' );
 
+function amnesty_register_petition_signature_count_meta() {
+    register_post_meta( 'petition', '_amnesty_signature_count', array(
+        'show_in_rest'  => false,
+        'single'        => true,
+        'type'          => 'integer',
+        'default'       => 0,
+        'auth_callback' => 'amnesty_signature_count_auth_callback',
+        'sanitize_callback' => 'absint',
+    ) );
+}
+add_action( 'init', 'amnesty_register_petition_signature_count_meta' );
+
+function amnesty_signature_count_auth_callback( $allowed, $meta_key, $post_id, $user_id, $cap, $scm_cap ) {
+    return current_user_can( 'manage_options' );
+}
+
+function amnesty_get_petition_signature_count( $post_id ) {
+    $count = get_post_meta( $post_id, '_amnesty_signature_count', true );
+    return absint( $count );
+}
+
+function amnesty_handle_petition_signature() {
+    if ( isset( $_POST['sign_petition'] ) && isset( $_POST['user_email'] ) && isset( $_POST['petition_id'] ) ) {
+
+        if ( ! isset( $_POST['amnesty_petition_nonce'] ) || ! wp_verify_nonce( $_POST['amnesty_petition_nonce'], 'amnesty_sign_petition' ) ) {
+            wp_die( 'Security check failed. Please try again.' );
+        }
+
+        $petition_id = absint( $_POST['petition_id'] );
+        $user_email = sanitize_email( $_POST['user_email'] );
+
+        if ( ! is_email( $user_email ) || ! $petition_id ) {
+            wp_redirect( add_query_arg( 'signature_status', 'invalid', wp_get_referer() ) );
+            exit;
+        }
+
+        $current_signatures = amnesty_get_petition_signature_count( $petition_id );
+
+        $new_signatures = $current_signatures + 1;
+
+        $updated = update_post_meta( $petition_id, '_amnesty_signature_count', $new_signatures );
+
+        if ( $updated ) {
+            wp_redirect( add_query_arg( 'signature_status', 'success', wp_get_referer() ) );
+            exit;
+        } else {
+            wp_redirect( add_query_arg( 'signature_status', 'error', wp_get_referer() ) );
+            exit;
+        }
+    }
+}
+add_action( 'template_redirect', 'amnesty_handle_petition_signature' );
+
+
 add_action( 'acf/include_fields', function() {
-	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
-		return;
-	}
+    if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+        return;
+    }
 
 	acf_add_local_field_group( array(
 		'key' => 'group_685aca878b4d7',

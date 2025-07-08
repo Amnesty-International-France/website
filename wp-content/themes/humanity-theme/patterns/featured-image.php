@@ -26,7 +26,15 @@ if ( ! $image_id ) {
 $image = new Get_Image_Data( $image_id );
 
 $is_page   = is_page();
-$class_name = $is_page ? 'page-figure is-stretched' : 'article-figure is-stretched';
+$post_type = get_post_type();
+
+if ( $is_page ) {
+    $class_name = 'page-figure is-stretched';
+} elseif ( 'petition' === $post_type ) {
+    $class_name = 'petition-figure is-stretched';
+} else {
+    $class_name = 'article-figure is-stretched';
+}
 
 $attributes = [
 	'id'              => $image_id,
@@ -55,7 +63,7 @@ $caption = trim( $image->caption() );
 
 		<img src="<?php echo esc_url( amnesty_get_attachment_image_src( $image_id, 'hero-md' ) ); ?>" alt="" class="wp-image-<?php echo absint( $image_id ); ?>"/>
 
-		<?php if ( ( $is_page || get_post_type() === 'fiche_pays' ) && ( $credit || $caption ) ) : ?>
+		<?php if ( ( $is_page || get_post_type() === 'fiche_pays' || get_post_type() === 'petition' ) && ( $credit || $caption ) ) : ?>
 			<figcaption class="feature-image-caption-overlay">
 				<?php if ( $credit ) : ?>
 					<span class="feature-image-description"><?php echo esc_html( $credit ); ?></span><br/>
@@ -68,7 +76,7 @@ $caption = trim( $image->caption() );
 	</figure>
 	<!-- /wp:image -->
 
-	<?php if ( ! $is_page && get_post_type() !== 'fiche_pays' && ( $credit || $caption ) ) : ?>
+	<?php if ( ! $is_page && get_post_type() !== 'fiche_pays' && get_post_type() !== 'petition' && ( $credit || $caption ) ) : ?>
 		<div class="feature-image">
 			<div class="feature-image-caption-block">
 				<?php if ( $credit ) : ?>

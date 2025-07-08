@@ -9,6 +9,7 @@
 $term = amnesty_get_a_post_term(get_the_ID());
 $category_class = $term ? $term->slug : '';
 $post_type_class = get_post_type() ?: '';
+
 ?>
 
 <!-- wp:group {"tagName":"section","className":"article"} -->

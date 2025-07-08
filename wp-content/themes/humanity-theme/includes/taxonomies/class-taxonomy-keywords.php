@@ -43,10 +43,10 @@ class Taxonomy_Keywords extends Taxonomy {
 	 */
 	protected $args = [
 		'hierarchical' => true,
-		'rewrite'               => false,
+		'rewrite'               => ['slug' => 'mot-cle'],
 		'show_admin_column'     => true,
 		'show_in_rest'          => true,
-		'query_var'             => false,
+		'query_var'             => true,
 		'rest_base'             => 'keyword',
 		'update_count_callback' => '_update_generic_term_count',
 	];
@@ -61,29 +61,8 @@ class Taxonomy_Keywords extends Taxonomy {
 			return;
 		}
 
-		add_filter( 'term_link', [ $this, 'rewrite_links' ], 10, 3 );
-
 		// has to be run late to ensure the taxonomy is registered
 		add_action( 'init', [ $this, 'redirect' ] );
-	}
-
-	/**
-	 * Filter links for terms in this taxonomy
-	 *
-	 * Rewrites them to filtered search URIs
-	 *
-	 * @param string  $link     the generated link
-	 * @param WP_Term $term     the term object
-	 * @param string  $taxonomy the taxonomy slug
-	 *
-	 * @return string
-	 */
-	public function rewrite_links( string $link, WP_Term $term, string $taxonomy ): string {
-		if ( $taxonomy !== $this->slug ) {
-			return $link;
-		}
-
-		return esc_url( sprintf( '%s?q%s=%s', amnesty_search_url(), $this->slug, $term->term_id ) );
 	}
 
 	/**

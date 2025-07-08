@@ -39,7 +39,7 @@ class Taxonomy_Content_Types {
 			'init',
 			function () {
 				$GLOBALS['wp']->add_query_var( "q{$this->slug}" );
-			} 
+			}
 		);
 
 		// Term Add
@@ -220,7 +220,7 @@ class Taxonomy_Content_Types {
 		ob_start(
 			function ( $buffer ) {
 				return preg_replace( '/<(tr|div) class="form-field term-description-wrap">(?!<\/\1>).*?<\/\1>/s', '', $buffer );
-			} 
+			}
 		);
 	}
 

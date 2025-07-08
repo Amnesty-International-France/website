@@ -19,7 +19,7 @@ if ( ! function_exists( 'amnesty_add_taxonomy_filter_support_to_query' ) ) {
 		}
 
 		// only targetted index pages
-		if ( ! $query->is_search() && ! $query->is_home() && ! $query->is_category() ) {
+		if ( ! $query->is_search() && ! $query->is_home() && ! $query->is_category() && ! $query->is_tax() ) {
 			return;
 		}
 
