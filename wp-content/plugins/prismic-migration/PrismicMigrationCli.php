@@ -81,7 +81,7 @@ class PrismicMigrationCli {
 
 		self::$dryrun = isset( $assoc_args['dry-run'] ) && $assoc_args['dry-run'] === true;
 		if ( self::$dryrun ) {
-			WP_CLI::log('dry-mod activated');
+			WP_CLI::log('dry-run mod activated');
 		}
 
 		self::$forceMod = isset( $assoc_args['force'] ) && $assoc_args['force'] === true;
