@@ -7,7 +7,6 @@
  */
 
 $featured_image_url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
-$title = get_the_title();
 
 ?>
 
@@ -18,16 +17,6 @@ $title = get_the_title();
             <div class="petition-hero-content">
                 <div class="yoast-breadcrumb-wrapper">
                     <?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>
-                </div>
-                <div class="petition-hero-title-wrapper">
-                    <div class="container">
-                        <h1 class="petition-hero-title"><?php echo esc_html( $title ); ?></h1>
-                        <!-- wp:group {"tagName":"div","className":"article-metaActions article-chip-categories"} -->
-                        <div class="wp-block-group article-metaActions article-chip-categories">
-                            <!-- wp:pattern {"slug":"amnesty/post-term-list-metadata"} /-->
-                        </div>
-                        <!-- /wp:group -->
-                    </div>
                 </div>
             </div>
         </div>

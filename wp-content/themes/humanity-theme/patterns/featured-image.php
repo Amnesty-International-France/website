@@ -63,13 +63,21 @@ $caption = trim( $image->caption() );
 
 		<img src="<?php echo esc_url( amnesty_get_attachment_image_src( $image_id, 'hero-md' ) ); ?>" alt="" class="wp-image-<?php echo absint( $image_id ); ?>"/>
 
-		<?php if ( ( $is_page || get_post_type() === 'fiche_pays' || get_post_type() === 'petition' ) && ( $credit || $caption ) ) : ?>
+		<?php if ( ( $is_page || get_post_type() === 'fiche_pays') && ( $credit || $caption ) ) : ?>
 			<figcaption class="feature-image-caption-overlay">
 				<?php if ( $credit ) : ?>
 					<span class="feature-image-description"><?php echo esc_html( $credit ); ?></span><br/>
 				<?php endif; ?>
 				<?php if ( $caption ) : ?>
 					<span class="feature-image-caption">/<?php echo esc_html( $caption ); ?></span>
+				<?php endif; ?>
+			</figcaption>
+		<?php endif; ?>
+
+		<?php if ( ( $is_page || get_post_type() === 'petition' ) && $caption ) : ?>
+			<figcaption class="feature-image-caption-overlay">
+				<?php if ( $caption ) : ?>
+					<span class="feature-image-caption"><?php echo esc_html( $caption ); ?></span>
 				<?php endif; ?>
 			</figcaption>
 		<?php endif; ?>
