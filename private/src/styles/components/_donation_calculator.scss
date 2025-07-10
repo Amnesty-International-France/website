@@ -249,6 +249,8 @@
       line-height: 18px;
       margin-bottom: 0;
       font-family: var(--wp--preset--font-family--secondary);
+      text-transform: none;
+      white-space: normal;
     }
 
     & > .legend {
