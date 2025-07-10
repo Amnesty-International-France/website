@@ -238,6 +238,23 @@ require_once realpath( __DIR__ . '/includes/query-filters/taxonomy-location-filt
 #endregion query filters
 
 /**
+ * Salesforce connector
+ */
+require_once realpath( __DIR__ . '/includes/salesforce/authentification.php');
+require_once realpath( __DIR__ . '/includes/salesforce/data.php');
+require_once realpath( __DIR__ . '/includes/salesforce/petition.php');
+require_once realpath( __DIR__ . '/includes/salesforce/user.php');
+
+/**
+ * Petition module
+ */
+require_once realpath( __DIR__ . '/includes/petitions/tables.php');
+require_once realpath( __DIR__ . '/includes/petitions/create-petition.php');
+if( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once realpath( __DIR__ . '/includes/petitions/syncs.php');
+}
+
+/**
  * Theme search includes
  */
 #region search
