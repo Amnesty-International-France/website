@@ -105,6 +105,42 @@ const maybeCloseMobileMenu = (event) => {
   }
 };
 
+const hoverDonationMenu = () => {
+  const donateButton = document.querySelector('.donate-button-desktop');
+  const calculator = donateButton.querySelector('.nav-don-calculator');
+
+  let isHover = false;
+
+  donateButton.addEventListener('mouseenter', () => {
+    isHover = true;
+    calculator.style.display = 'block';
+  });
+
+  calculator.addEventListener('mouseenter', () => {
+    isHover = true;
+  });
+
+  calculator.addEventListener('mouseleave', () => {
+    isHover = false;
+
+    if (!isHover) {
+      setTimeout(() => {
+        calculator.style.display = 'none';
+      }, 100);
+    }
+  });
+
+  donateButton.addEventListener('mouseleave', () => {
+    isHover = false;
+
+    if (!isHover) {
+      setTimeout(() => {
+        calculator.style.display = 'none';
+      }, 100);
+    }
+  });
+};
+
 const init = () => {
   pageHeader = document.querySelector('.page-header');
   mobileMenu = document.getElementById('mobile-menu');
@@ -120,6 +156,7 @@ const init = () => {
   mobileMenu.addEventListener('keydown', handleKeyboardEvents);
   menuToggle.addEventListener('keydown', maybeCloseMobileMenu);
 
+  hoverDonationMenu();
   setupFocusTrap();
 };
 
