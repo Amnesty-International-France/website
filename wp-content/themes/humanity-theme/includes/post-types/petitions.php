@@ -64,13 +64,15 @@ function amnesty_handle_petition_signature() {
         }
 
         $current_signatures = amnesty_get_petition_signature_count( $petition_id );
-
         $new_signatures = $current_signatures + 1;
-
         $updated = update_post_meta( $petition_id, '_amnesty_signature_count', $new_signatures );
 
         if ( $updated ) {
-            wp_redirect( add_query_arg( 'signature_status', 'success', wp_get_referer() ) );
+            $petition_permalink = get_permalink( $petition_id );
+
+            $redirect_url = trailingslashit( $petition_permalink ) . 'merci';
+
+            wp_redirect( $redirect_url );
             exit;
         } else {
             wp_redirect( add_query_arg( 'signature_status', 'error', wp_get_referer() ) );
