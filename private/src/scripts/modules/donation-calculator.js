@@ -46,15 +46,17 @@ const addAmountOnDonationLink = (amount) => {
 
 export const donationCalculator = () => {
   const donationBody = document.querySelector('.donation-body');
-  const donationInputEntrance = donationBody.querySelector('#input-donation');
+  if (donationBody) {
+    const donationInputEntrance = donationBody.querySelector('#input-donation');
 
-  if (donationInputEntrance) {
-    donationInputEntrance.addEventListener('input', (event) => {
-      const getPriceWithoutTax = taxDeductionCalculation(event.currentTarget.value);
+    if (donationInputEntrance) {
+      donationInputEntrance.addEventListener('input', (event) => {
+        const getPriceWithoutTax = taxDeductionCalculation(event.currentTarget.value);
 
-      changeAmountValue(getPriceWithoutTax);
-      addAmountOnDonationLink(getPriceWithoutTax);
-    });
+        changeAmountValue(getPriceWithoutTax);
+        addAmountOnDonationLink(getPriceWithoutTax);
+      });
+    }
   }
 };
 
