@@ -2,7 +2,7 @@
   .article-meta {
     padding: 12px 24px;
 
-    @media (min-width: $container-hg) {
+    @media (min-width: 1440px) {
       padding: 0;
     }
 
@@ -16,6 +16,16 @@
 
   .article-header {
     background-color: var(--wp--preset--color--grey-light);
+
+    .yoast-breadcrumb-wrapper {
+      .yoast-breadcrumb {
+        padding: 16px 24px 10px 24px;
+
+        @media (min-width: 1440px) {
+          padding-left: 0;
+        }
+      }
+    }
   }
 
   .files-wrapper {
