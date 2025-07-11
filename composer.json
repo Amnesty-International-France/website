@@ -24,5 +24,8 @@
     "lint": "Runs PHP coding standard checks",
     "makePot": "Re-generates the POT language file",
     "UpdatePoMo": "Updates PO, MO, and JSON translation files"
+  },
+  "require": {
+    "ext-mbstring": "*"
   }
 }

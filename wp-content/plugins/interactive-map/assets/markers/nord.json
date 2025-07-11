@@ -1,0 +1,36 @@
+[
+  {
+    "accroche": "Le cœur du Nord bat à Lille, rejoignez-nous !",
+    "city": "Lille",
+    "content": "Actions, rencontres et convivialité avec le groupe de Lille.",
+    "date1": null,
+    "date2": null,
+    "facet": "Structure Locale",
+    "image": "https://placehold.co/600x400/333333/FFFFFF?text=Lille",
+    "objectID": "nord_lille",
+    "poids": 5,
+    "subfacet": "Groupe local",
+    "title": "Groupe local de Lille",
+    "type": "Structure",
+    "url": "/pres-de-chez-vous/lille",
+    "visibility": 1,
+    "_geoloc": {"lat": 50.6292, "lng": 3.0573}
+  },
+  {
+    "accroche": "Face à la mer, l'action continue à Dunkerque.",
+    "city": "Dunkerque",
+    "content": "Le cercle d'action de Dunkerque est spécialisé dans les actions de sensibilisation.",
+    "date1": null,
+    "date2": null,
+    "facet": "Structure Locale",
+    "image": "",
+    "objectID": "nord_dunkerque",
+    "poids": 3,
+    "subfacet": "Cercle d'actions",
+    "title": "Cercle d'actions de Dunkerque",
+    "type": "Structure",
+    "url": "/pres-de-chez-vous/dunkerque",
+    "visibility": 1,
+    "_geoloc": {"lat": 51.0344, "lng": 2.3768}
+  }
+]
