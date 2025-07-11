@@ -25,4 +25,4 @@ const petitionShareFeedback = () => {
   });
 };
 
-document.addEventListener('DOMContentLoaded', petitionShareFeedback);
+export default petitionShareFeedback;

@@ -1,5 +1,11 @@
 const elementTextContent = (element, isMonthly = false, amount = null) => {
   const el = document.querySelector(element);
+
+  if (!el) {
+    console.error(`elementTextContent: Element ${element} not found.`);
+    return;
+  }
+
   const textWithAmountValue = amount ? `${amount} €` : '€';
 
   el.innerHTML = '';
@@ -34,14 +40,16 @@ const changeAmountValue = (amount, isMonthly = false) => {
 const addAmountOnDonationLink = (amount) => {
   const donationLink = document.querySelector('.donation-link');
 
-  const query = new URLSearchParams({
-    cid: 252,
-    lang: 'fr_FR',
-    reserved_origincode: 'WBF01W1005',
-    amount,
-  });
+  if (donationLink) {
+    const query = new URLSearchParams({
+      cid: 252,
+      lang: 'fr_FR',
+      reserved_origincode: 'WBF01W1005',
+      amount,
+    });
 
-  donationLink.href = `${donationLink.href}?${query.toString()}`;
+    donationLink.href = `${donationLink.href.split('?')[0]}?${query.toString()}`;
+  }
 };
 
 export const donationCalculator = () => {
@@ -68,8 +76,10 @@ export const selectedAmount = () => {
     const checkedInput = bodyActive.querySelector('input[type="radio"]:checked');
     const isMonthly = bodyActive.id === 'monthly';
 
-    changeAmountValue(taxDeductionCalculation(checkedInput.value), isMonthly);
-    addAmountOnDonationLink(checkedInput.value);
+    if (checkedInput) {
+      changeAmountValue(taxDeductionCalculation(checkedInput.value), isMonthly);
+      addAmountOnDonationLink(checkedInput.value);
+    }
 
     allRadioInput.forEach((radioDiv) => {
       radioDiv.addEventListener('click', () => {
@@ -96,10 +106,15 @@ export const selectedTab = () => {
     if (getDonationTabs && getBody) {
       const allTabsCalculator = getDonationTabs.children;
       const allBodyItem = getBody.children;
-      let activeTab = getBody.querySelector('div[class*="amount-"].active');
-      const isMonthly = activeTab.id === 'monthly';
 
-      elementTextContent('#amount-total', isMonthly);
+      let activeTab = getBody.querySelector('div[class*="amount-"].active');
+
+      if (activeTab) {
+        const isMonthly = activeTab.id === 'monthly';
+        elementTextContent('#amount-total', isMonthly);
+      } else {
+        console.warn('selectedTab: No active tab found initially.');
+      }
 
       getDonationTabs.addEventListener('click', (event) => {
         const clickedCurrentTab = event.target;

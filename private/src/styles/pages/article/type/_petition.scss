@@ -783,6 +783,143 @@
           }
         }
 
+        .full-form {
+          display: none;
+          flex-direction: column;
+          gap: 18px;
+          padding: 18px 24px;
+
+          .civility-section {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            gap: 18px;
+
+            .civility-label {
+              color: var(--wp--preset--color--grey-dark);
+              font-family: var(--wp--preset--font-family--primary);
+              font-size: 18px;
+              font-weight: 300;
+              line-height: 28px;
+              text-transform: capitalize;
+            }
+
+            .civilities {
+              display: flex;
+              align-items: center;
+              gap: 18px;
+
+              input {
+                border: 1px solid var(--wp--preset--color--grey-dark);
+                height: auto;
+                padding: 0;
+              }
+
+              input[type='radio'] {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+              }
+
+              label {
+                position: relative;
+                padding-left: 25px;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                font-family: var(--wp--preset--font-family--primary);
+                font-weight: 300;
+                font-size: 18px;
+                text-transform: capitalize;
+                color: var(--wp--preset--color--grey-dark);
+              }
+
+              label::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 18px;
+                height: 18px;
+                border: 2px solid var(--wp--preset--color--grey-dark);
+                border-radius: 50%;
+                background: var(--wp--preset--color--white);
+                box-sizing: border-box;
+              }
+
+              input[type='radio']:checked + label::after {
+                content: '';
+                position: absolute;
+                left: 4px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 10px;
+                height: 10px;
+                background: var(--wp--preset--color--black);
+                border-radius: 50%;
+              }
+            }
+          }
+
+          .firstname-section,
+          .lastname-section,
+          .phone-section {
+            .firstname-input,
+            .lastname-input,
+            .phone-input {
+              border: 1px solid var(--wp--preset--color--grey-light);
+
+              &::placeholder {
+                font-family: var(--wp--preset--font-family--primary);
+                color: var(--wp--preset--color--grey-dark);
+                font-size: 18px;
+                font-weight: 300;
+                line-height: 28px;
+                text-transform: capitalize;
+              }
+            }
+          }
+
+          .zipcode-and-country {
+            display: flex;
+            gap: 18px;
+
+            .zipcode-section {
+              width: 50%;
+
+              .zipcode-input {
+                border: 1px solid var(--wp--preset--color--grey-light);
+
+                &::placeholder {
+                  font-family: var(--wp--preset--font-family--primary);
+                  color: var(--wp--preset--color--grey-dark);
+                  font-size: 18px;
+                  font-weight: 300;
+                  line-height: 28px;
+                  text-transform: capitalize;
+                }
+              }
+            }
+
+            .country-section {
+              width: 50%;
+
+              .country-input {
+                padding: 0 12px;
+                height: 100%;
+                width: 100%;
+                border: 1px solid var(--wp--preset--color--grey-light);
+                color: var(--wp--preset--color--grey-dark);
+                font-family: var(--wp--preset--font-family--secondary);
+                font-size: var(--wp--preset--font-size--small);
+                font-weight: bold;
+                text-transform: capitalize;
+              }
+            }
+          }
+        }
+
         .sign-and-legals {
           padding: 18px 20px 48px 20px;
 

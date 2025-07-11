@@ -29,6 +29,62 @@ $post_id = get_the_ID();
           <input type="hidden" name="petition_id" value="<?php echo esc_attr( $post_id ); ?>">
           <?php wp_nonce_field( 'amnesty_sign_petition', 'amnesty_petition_nonce' ); ?>
         </div>
+
+        <div class="full-form">
+          <div class="form-group civility-section">
+            <label class="civility-label">Civilité :</label>
+            <div class="civilities">
+              <input type="radio" id="civility_m" name="civility" value="M." <?php echo ($civility === 'M.') ? 'checked' : ''; ?>>
+              <label for="civility_m">M.</label>
+              <input type="radio" id="civility_mme" name="civility" value="Mme" <?php echo ($civility === 'Mme') ? 'checked' : ''; ?>>
+              <label for="civility_mme">Mme</label>
+              <input type="radio" id="civility_other" name="civility" value="Autre" <?php echo ($civility === 'Autre') ? 'checked' : ''; ?>>
+              <label for="civility_other">Autre</label>
+            </div>
+          </div>
+
+          <div class="firstname-section">
+            <input class="firstname-input" type="text" name="user_firstname" placeholder="Prénom*" required>
+            <input type="hidden" name="petition_id" value="<?php echo esc_attr( $post_id ); ?>">
+            <?php wp_nonce_field( 'amnesty_sign_petition', 'amnesty_petition_nonce' ); ?>
+          </div>
+
+          <div class="lastname-section">
+            <input class="lastname-input" type="text" name="user_lastname" placeholder="Nom*" required>
+          </div>
+
+          <div class="zipcode-and-country">
+            <div class="zipcode-section">
+              <input class="zipcode-input" type="text" name="user_zipcode" placeholder="Code postal*" required>
+            </div>
+
+            <div class="country-section">
+              <select class="country-input " name="user_country" required>
+                <option value=""><?php _e('Pays*', 'textdomain'); ?></option>
+                <?php
+                $countries = get_posts([
+                  'post_type' => 'fiche_pays',
+                  'posts_per_page' => -1,
+                  'orderby' => 'title',
+                  'order' => 'ASC'
+                ]);
+
+                foreach ($countries as $country) :
+                  $country_name = get_the_title($country->ID);
+                  ?>
+                <option value="<?php echo esc_attr($country_name); ?>">
+                  <?php echo esc_html(ucwords(strtolower($country_name))); ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+          </div>
+
+          <div class="phone-section">
+            <input class="phone-input" type="tel" name="user_phone" placeholder="Téléphone">
+          </div>
+        </div>
+
         <div class="sign-and-legals">
           <div class="custom-button-block center">
               <button type="submit" name="sign_petition" class="custom-button">

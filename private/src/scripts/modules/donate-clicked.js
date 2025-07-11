@@ -17,4 +17,4 @@ const petitionDonateFeedback = () => {
   });
 };
 
-document.addEventListener('DOMContentLoaded', petitionDonateFeedback);
+export default petitionDonateFeedback;
