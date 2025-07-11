@@ -64,3 +64,4 @@ docker-compose.yml
 # Example of my custom plugin named hello-world
 #!/wp-content/plugins/hello-world/
 !/wp-content/plugins/prismic-migration/
+!/wp-content/plugins/interactive-map/
