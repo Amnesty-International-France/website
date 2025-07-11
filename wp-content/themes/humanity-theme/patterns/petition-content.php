@@ -6,9 +6,16 @@
  * Inserter: no
  */
 
+$title = get_the_title();
 $end_date = get_field('date_de_fin');
 $signatures_target = get_field('objectif_signatures');
-$lettre = get_field(selector: 'lettre');
+$letter = get_field(selector: 'lettre');
+$pdf_id = get_field(selector: 'pdf_petition');
+
+$pdf_url = ''; 
+if ( ! empty( $pdf_id ) ) {
+    $pdf_url = wp_get_attachment_url( $pdf_id );
+}
 
 $post_id = get_the_ID();
 $current_signatures = amnesty_get_petition_signature_count( $post_id );
@@ -35,6 +42,19 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
 <article class="wp-block-group article">
 	<!-- wp:group {"tagName":"section","className":"article-content"} -->
 		<section class="wp-block-group article-content">
+            <h1 class="petition-title"><?php echo esc_html( $title ); ?></h1>
+            <!-- wp:group {"tagName":"div","className":"article-metaData"} -->
+            <div class="wp-block-group article-metaData">
+                <div class="published-updated">
+                    <!-- wp:pattern {"slug":"amnesty/post-published-updated-date"} /-->
+                </div>
+            </div>
+            <!-- /wp:group -->
+            <!-- wp:group {"tagName":"div","className":"article-metaActions article-chip-categories"} -->
+            <div class="wp-block-group article-metaActions article-chip-categories">
+                <!-- wp:pattern {"slug":"amnesty/post-term-list-metadata"} /-->
+            </div>
+            <!-- /wp:group -->
             <div class="petition-content">
                 <div class="infos">
                 <p class="end-date">Jusqu&apos;au <?php echo esc_html( $formatted_end_date ); ?></p>
@@ -55,11 +75,25 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
                 </div>
             </div>
             <!-- wp:post-content /-->
-            <?php
-            if ( function_exists( 'render_read_more_block' ) ) {
-                echo render_read_more_block( ['label' => 'Afficher la lettre de pétition'], $lettre );
-            }
-            ?>
+            <div class="read-more-block">
+                <div class="read-more-toggle"
+                    data-read-more-label="<?php echo esc_attr($read_more_label); ?>">
+                    <div class="icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M16.172 10.9999L10.808 5.63592L12.222 4.22192L20 11.9999L12.222 19.7779L10.808 18.3639L16.172 12.9999H4V10.9999H16.172Z" fill="black"/>
+                        </svg>
+                    </div>
+                    <span class="label">Afficher la lettre de pétition</span>
+                </div>
+                <div class="read-more-content collapsed">
+                    <?php echo $letter; ?>
+                </div>
+            </div>
+            <?php if ( ! empty( $pdf_url ) ) : ?>
+            <p class="printable-petition-link">
+                <a href="<?php echo esc_url( $pdf_url ); ?>" target="_blank" rel="noopener">Téléchargez la version imprimable</a> et faites-la signer autour de vous.
+            </p>
+            <?php endif; ?>
 		</section>
 	<!-- /wp:group -->
 </article>

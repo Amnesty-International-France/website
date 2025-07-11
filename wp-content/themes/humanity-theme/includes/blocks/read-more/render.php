@@ -18,7 +18,7 @@ function render_read_more_block($attributes, $content) {
     ?>
     <div class="read-more-block">
         <div class="read-more-toggle"
-            data-read-more-label="<?php echo esc_attr($read_more_label); ?>">
+            data-read-more-label="Afficher la lettre de pétition">
             <div class="icon-container">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="10" viewBox="0 0 15 10" fill="currentColor">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M7.03859 6.3641L12.5133 0L14.0772 1.81795L7.03859 10L0 1.81795L1.56389 0L7.03859 6.3641Z" fill="#FFFF00"/>
