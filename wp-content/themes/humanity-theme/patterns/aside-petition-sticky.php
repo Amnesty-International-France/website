@@ -72,7 +72,7 @@ $post_id = get_the_ID();
                 foreach ($countries as $country) :
                   $country_name = get_the_title($country->ID);
                   ?>
-                <option value="<?php echo esc_attr($country_name); ?>">
+                <option value="<?php echo esc_attr($country_name); ?>" <?php if(esc_attr($country_name) === 'France') :?> selected="selected"<?php endif;?>>
                   <?php echo esc_html(ucwords(strtolower($country_name))); ?>
                 </option>
                 <?php endforeach; ?>
