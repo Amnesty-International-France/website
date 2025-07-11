@@ -6,6 +6,7 @@ $size        = $args['size'] ?? '';
 $with_header = $args['with_header'] ?? false;
 $with_tabs   = $args['with_tabs'] ?? false;
 $with_legend = $args['with_legend'] ?? false;
+$href        = $args['href'] ?? '';
 
 $amount_monthly_donation = [
 	8  => [
@@ -43,7 +44,13 @@ if ( 'medium' === $size ) {
 }
 
 ?>
-<div class="donation-calculator <?php if ( $size ) echo esc_attr( $size ); ?>">
+<div class="donation-calculator
+<?php
+if ( $size ) {
+	echo esc_attr( $size );
+}
+?>
+">
 	<?php if ( $with_header ) : ?>
 		<div id="donation-header" class="donation-header">
 			<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-don.svg' ); ?>
@@ -160,7 +167,7 @@ if ( 'medium' === $size ) {
 			<p class="explanation">Grâce à la réduction d'impôts de 66%, votre don ne vous coûtera que</p>
 			<p id="donation-simulated" class="price-simulated"></p>
 		<?php endif ?>
-		<a href="https://soutenir.amnesty.fr/b"
+		<a href="<?php echo esc_url( $href ); ?>"
 			target="_self"
 			class="donation-link">
 			<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-arrow.svg' ); ?>

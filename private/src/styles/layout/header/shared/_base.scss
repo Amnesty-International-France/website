@@ -46,6 +46,17 @@
 
 .page-headerItems {
   display: flex;
+  position: relative;
+
+  .nav-don-calculator {
+    display: none;
+    width: 275px;
+    background-color: var(--wp--preset--color--white);
+    position: absolute;
+    z-index: 110;
+    top: 66px;
+    right: 2px;
+  }
 }
 
 .page-header a {

@@ -17,12 +17,14 @@ if ( ! function_exists( 'render_donation_calculator_block' ) ) {
 		$with_header = $attributes['with_header'] ?? false;
 		$with_tabs   = $attributes['with_tabs'] ?? false;
 		$with_legend = $attributes['with_legend'] ?? false;
+		$href        = $attributes['href'] ?? '';
 
 		$args = [
 			'size'        => $size,
 			'with_header' => $with_header,
 			'with_tabs'   => $with_tabs,
 			'with_legend' => $with_legend,
+			'href'        => $href,
 		];
 
 		ob_start();
