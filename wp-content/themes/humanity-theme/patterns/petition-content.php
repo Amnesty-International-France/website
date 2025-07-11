@@ -40,7 +40,7 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
 
 <!-- wp:group {"tagName":"page","className":"article <?php print esc_attr( $class_name ?? '' ); ?>"} -->
 <article class="wp-block-group article">
-	<!-- wp:group {"tagName":"section","className":"article-content"} -->
+	<!-- wp:group {"tagName":"div","className":"article-content"} -->
 		<section class="wp-block-group article-content">
             <h1 class="petition-title"><?php echo esc_html( $title ); ?></h1>
             <!-- wp:group {"tagName":"div","className":"article-metaData"} -->
