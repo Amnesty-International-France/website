@@ -38,6 +38,8 @@ import { getUserLocationFromButton, getUserLocationFromForm } from './modules/lo
 import initLegsForm from './modules/legs-form';
 import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
 import { donationCalculator, selectedAmount, selectedTab } from './modules/donation-calculator';
+import petitionShareFeedback from './modules/social-network-clicked';
+import petitionDonateFeedback from './modules/donate-clicked';
 
 const App = () => {
   browserDetector();
@@ -78,6 +80,8 @@ const App = () => {
   donationCalculator();
   selectedTab();
   selectedAmount();
+  petitionShareFeedback();
+  petitionDonateFeedback();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 

@@ -130,6 +130,342 @@
 }
 
 .petition-container {
+  .petition-thanks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1;
+    position: relative;
+    background-color: var(--wp--preset--color--white);
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    margin: -160px auto 48px auto;
+    padding: 24px;
+    max-width: 650px;
+    width: 100%;
+
+    .success {
+      display: flex;
+      background-color: var(--wp--preset--color--success-light);
+
+      .step-one {
+        padding: 24px 0 24px 18px;
+
+        .icon-step-one-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 30px;
+          background-color: var(--wp--preset--color--success);
+          border-radius: 50%;
+
+          svg {
+            width: 70%;
+            height: 70%;
+            fill: var(--wp--preset--color--success-light);
+          }
+        }
+      }
+
+      .success-content {
+        padding: 24px 18px 24px 18px;
+
+        .you-signed {
+          color: var(--wp--preset--color--success);
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 23px;
+          line-height: 28px;
+          padding-bottom: 12px;
+          margin: 0;
+        }
+
+        .petition-title {
+          color: var(--wp--preset--color--success);
+          font-family: var(--wp--preset--font-family--primary);
+          font-size: 18px;
+          font-weight: 300;
+          line-height: 28px;
+          text-decoration: underline;
+        }
+
+        .thanks-for-action {
+          color: var(--wp--preset--color--success);
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 18px;
+          line-height: 28px;
+          margin: 0;
+        }
+      }
+    }
+
+    .petition-share {
+      display: flex;
+
+      &.share-activated {
+        background-color: var(--wp--preset--color--success-light);
+
+        .step-two {
+          .icon-step-two-container {
+            color: var(--wp--preset--color--grey-dark);
+            background-color: var(--wp--preset--color--success);
+
+            svg {
+              width: 70%;
+              height: 70%;
+              fill: var(--wp--preset--color--success-light);
+            }
+          }
+        }
+      }
+
+      .step-two {
+        padding: 24px 0 24px 18px;
+
+        .icon-step-two-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 30px;
+          color: var(--wp--preset--color--grey-dark);
+          background-color: var(--wp--preset--color--grey-light);
+          border-radius: 50%;
+          font-family: var(--wp--preset--font-family--secondary);
+        }
+      }
+
+      .share-content {
+        padding: 24px 18px 24px 18px;
+        flex: 1;
+
+        .share-title {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 23px;
+          line-height: 28px;
+          padding-bottom: 12px;
+          margin: 0;
+        }
+
+        .social-networks {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          a,
+          div {
+            .icon-container {
+              width: 40px;
+              height: 40px;
+              padding: 6px;
+              background-color: var(--wp--preset--color--black);
+
+              &:hover {
+                cursor: pointer;
+              }
+
+              svg {
+                width: 100%;
+                height: auto;
+                fill: var(--wp--preset--color--white);
+                transition: fill 0.3s ease;
+              }
+
+              &:hover svg {
+                fill: var(--wp--preset--color--primary);
+              }
+            }
+          }
+
+          .article-shareCopy {
+            position: relative;
+
+            &.copied::after {
+              content: 'Lien copié !';
+              position: absolute;
+              top: 100%;
+              left: 50%;
+              transform: translateX(-50%);
+              margin-top: 6px;
+              padding: 4px 8px;
+              font-size: 13px;
+              font-weight: bold;
+              white-space: nowrap;
+              background-color: var(--wp--preset--color--black);
+              color: var(--wp--preset--color--primary);
+              opacity: 1;
+              animation: fadeInOut 2s ease-in-out;
+              pointer-events: none;
+            }
+          }
+        }
+      }
+    }
+
+    .petition-donate {
+      display: flex;
+
+      &.donate-activated {
+        background-color: var(--wp--preset--color--success-light);
+
+        .step-three {
+          .icon-step-three-container {
+            color: var(--wp--preset--color--grey-dark);
+            background-color: var(--wp--preset--color--success);
+
+            svg {
+              width: 70%;
+              height: 70%;
+              fill: var(--wp--preset--color--success-light);
+            }
+          }
+        }
+      }
+
+      .step-three {
+        padding: 24px 0 24px 18px;
+
+        .icon-step-three-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 30px;
+          color: var(--wp--preset--color--grey-dark);
+          background-color: var(--wp--preset--color--grey-light);
+          border-radius: 50%;
+          font-family: var(--wp--preset--font-family--secondary);
+        }
+      }
+
+      .donate-content {
+        padding: 24px 18px 24px 18px;
+        flex: 1;
+
+        .donate-title {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 23px;
+          line-height: 28px;
+          padding-bottom: 12px;
+          margin: 0;
+        }
+
+        .need-you {
+          font-size: 18px;
+          line-height: 28px;
+          padding-bottom: 12px;
+          margin: 0;
+        }
+
+        .custom-button {
+          .button-label {
+            text-transform: uppercase !important;
+          }
+        }
+      }
+    }
+
+    .other-petition {
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 30px;
+      line-height: 28px;
+      padding: 18px;
+      margin: 0;
+    }
+
+    .random-petition {
+      border: 1px solid var(--wp--preset--color--grey-light);
+
+      .random-petition-image-container {
+        width: 100%;
+        height: 170px;
+
+        .random-petition-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .random-petition-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 18px;
+
+        .random-petition-title {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 30px;
+          line-height: 28px;
+          padding-bottom: 12px;
+          margin: 0;
+        }
+
+        .random-petition-end-date {
+          color: var(--wp--preset--color--black);
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 20px;
+          font-weight: bold;
+          line-height: 1rem;
+          margin: 0;
+        }
+
+        .progress-bar-container {
+          width: 100%;
+          height: 20px;
+          border: 2px solid var(--wp--preset--color--black);
+          background-color: var(--wp--preset--color--primary);
+          overflow: hidden;
+          position: relative;
+
+          @media (min-width: $container-lg) {
+            width: 85%;
+          }
+        }
+
+        .progress-bar {
+          height: 100%;
+          background-color: var(--wp--preset--color--black);
+          transition: width 0.5s ease-in-out;
+        }
+
+        .supports {
+          font-size: 13px;
+          margin: 0;
+          line-height: 100%;
+
+          .current-signatures {
+            font-size: 13px;
+            font-weight: bold;
+          }
+
+          .help-us {
+            font-weight: bold;
+            margin-right: 6px;
+          }
+        }
+
+        .custom-button {
+          margin-top: 12px;
+
+          .button-label {
+            text-transform: uppercase !important;
+          }
+        }
+      }
+    }
+
+    .all-petitions-link {
+      margin-top: 30px;
+      text-align: center;
+
+      a {
+        font-size: 18px;
+        line-height: 28px;
+        text-decoration: underline;
+      }
+    }
+  }
+
   .petition-layout {
     display: flex;
     gap: 24px;

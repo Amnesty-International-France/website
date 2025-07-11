@@ -73,6 +73,16 @@
           "slug": "error",
           "color": "#e60000",
           "name": "Error"
+        },
+        {
+          "slug": "success",
+          "color": "#21880d",
+          "name": "Success"
+        },
+        {
+          "slug": "success-light",
+          "color": "#def9d9",
+          "name": "Success Light"
         }
       ]
     },
