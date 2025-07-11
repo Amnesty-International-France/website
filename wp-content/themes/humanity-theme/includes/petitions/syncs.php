@@ -24,16 +24,13 @@ class Sync_Command {
 				continue;
 			}
 
-			$petition_id = get_salesforce_petition_by_ext_id( $uidsf );
-			if( ! $petition_id || $petition_id['totalSize'] === 0 ) {
+			$petition = get_salesforce_petition_counter( $uidsf );
+			if( ! $petition || $petition['totalSize'] === 0 ) {
 				continue;
 			}
 
-			$petition = get_salesforce_petition( $petition_id['records'][0]['Id'] );
-			if( $petition !== false ) {
-				$signatures = $petition['Nb_signatures_total__c'];
-				update_field( '_amnesty_signature_count', $signatures, $post_id);
-			}
+			$signatures = $petition['records'][0]['Nb_signatures_total__c'];
+			update_field( '_amnesty_signature_count', $signatures, $post_id);
 		}
 	}
 }
