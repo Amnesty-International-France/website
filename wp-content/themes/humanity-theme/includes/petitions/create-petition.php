@@ -13,6 +13,8 @@ function create_petition( int $post_id ) {
 		return;
 	}
 
+	$terms = get_the_terms( $post, 'combat' );
+
 	$data = [
 		'Name' => $post->post_title,
 		'RecordTypeId' => '0121o000000kdzmAAA',
@@ -20,7 +22,7 @@ function create_petition( int $post_id ) {
 		'Description_de_la_petition__c' => $post->post_excerpt,
 		'Lien_petition__c' => get_post_permalink($post_id),
 		'Type_action__c' => get_field('type', $post_id)['value'] === 'petition' ? 'Pétition' : 'Action de soutien',
-		'Combats__c' => '',
+		'Combats__c' => $terms && !is_wp_error($terms) ? implode(';', wp_list_pluck( $terms, 'name' )) : '',
 	];
 	$response = post_salesforce_petition( $data );
 	if( $response !== false ) {

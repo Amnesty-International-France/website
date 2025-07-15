@@ -40,7 +40,7 @@ import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
 import { donationCalculator, selectedAmount, selectedTab } from './modules/donation-calculator';
 import petitionShareFeedback from './modules/social-network-clicked';
 import petitionDonateFeedback from './modules/donate-clicked';
-import toggleFullFormPetition from './modules/toggle-full-form-petition';
+import { toggleFullFormPetition, submitCodeOrigine } from './modules/petition-form';
 
 const App = () => {
   browserDetector();
@@ -84,6 +84,7 @@ const App = () => {
   petitionShareFeedback();
   petitionDonateFeedback();
   toggleFullFormPetition();
+  submitCodeOrigine();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 

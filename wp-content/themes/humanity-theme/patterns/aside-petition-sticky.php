@@ -23,7 +23,7 @@ $post_id = get_the_ID();
         <p class="punchline"><?php echo esc_html( $punchline ); ?></p>
         <div class="border"></div>
       </div>
-      <form method="post" action="">
+      <form class="signature-petition-form" method="post" action="">
         <div class="email-section">
           <input class="email-input" type="email" name="user_email" placeholder="Email*" required>
           <input type="hidden" name="petition_id" value="<?php echo esc_attr( $post_id ); ?>">
@@ -44,22 +44,22 @@ $post_id = get_the_ID();
           </div>
 
           <div class="firstname-section">
-            <input class="firstname-input" type="text" name="user_firstname" placeholder="Prénom*" required>
+            <input class="firstname-input" type="text" name="user_firstname" placeholder="Prénom*">
             <input type="hidden" name="petition_id" value="<?php echo esc_attr( $post_id ); ?>">
             <?php wp_nonce_field( 'amnesty_sign_petition', 'amnesty_petition_nonce' ); ?>
           </div>
 
           <div class="lastname-section">
-            <input class="lastname-input" type="text" name="user_lastname" placeholder="Nom*" required>
+            <input class="lastname-input" type="text" name="user_lastname" placeholder="Nom*">
           </div>
 
           <div class="zipcode-and-country">
             <div class="zipcode-section">
-              <input class="zipcode-input" type="text" name="user_zipcode" placeholder="Code postal*" required>
+              <input class="zipcode-input" type="text" name="user_zipcode" placeholder="Code postal*">
             </div>
 
             <div class="country-section">
-              <select class="country-input " name="user_country" required>
+              <select class="country-input " name="user_country">
                 <option value=""><?php _e('Pays*', 'textdomain'); ?></option>
                 <?php
                 $countries = get_posts([

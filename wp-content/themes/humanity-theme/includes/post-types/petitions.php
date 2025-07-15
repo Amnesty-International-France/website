@@ -63,21 +63,49 @@ function amnesty_handle_petition_signature() {
             exit;
         }
 
+		$local_user = get_local_user( $user_email );
+
+		if( $local_user !== false ) {
+			$user_id = $local_user->id;
+			if( have_signed( $petition_id, $user_id ) ) {
+				$petition_permalink = get_permalink( $petition_id );
+				$redirect_url = trailingslashit( $petition_permalink ) . 'merci?alreadysigned';
+				wp_redirect( $redirect_url );
+				exit;
+			}
+		} else {
+			$civility = $_POST[ 'civility' ];
+			$firstname = $_POST[ 'user_firstname' ];
+			$lastname = $_POST[ 'user_lastname' ];
+			$postal_code = $_POST[ 'user_zipcode' ];
+			$country = $_POST[ 'user_country' ];
+			$phone = $_POST[ 'user_phone' ];
+
+			$user_id = insert_user( $civility, $firstname, $lastname, $user_email, $country, $postal_code, $phone );
+
+			if( $user_id === false ) {
+				wp_redirect( add_query_arg( 'signature_status', 'error', wp_get_referer() ) );
+				exit;
+			}
+		}
+
+		$code_origine = isset($_POST['code_origine']) && ! empty($_POST['code_origine']) ? $_POST['code_origine'] : get_field( 'code_origine', $petition_id ) ?? '';
+
+		if( insert_petition_signature( $petition_id, $user_id, $code_origine ) === false ) {
+			wp_redirect( add_query_arg( 'signature_status', 'error', wp_get_referer() ) );
+			exit;
+		}
+
         $current_signatures = amnesty_get_petition_signature_count( $petition_id );
         $new_signatures = $current_signatures + 1;
-        $updated = update_post_meta( $petition_id, '_amnesty_signature_count', $new_signatures );
+        update_post_meta( $petition_id, '_amnesty_signature_count', $new_signatures );
 
-        if ( $updated ) {
-            $petition_permalink = get_permalink( $petition_id );
+		$petition_permalink = get_permalink( $petition_id );
 
-            $redirect_url = trailingslashit( $petition_permalink ) . 'merci';
+		$redirect_url = trailingslashit( $petition_permalink ) . 'merci';
 
-            wp_redirect( $redirect_url );
-            exit;
-        } else {
-            wp_redirect( add_query_arg( 'signature_status', 'error', wp_get_referer() ) );
-            exit;
-        }
+		wp_redirect( $redirect_url );
+		exit;
     }
 }
 add_action( 'template_redirect', 'amnesty_handle_petition_signature' );

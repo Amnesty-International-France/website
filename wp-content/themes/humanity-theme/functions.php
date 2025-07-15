@@ -250,6 +250,8 @@ require_once realpath( __DIR__ . '/includes/salesforce/user.php');
  */
 require_once realpath( __DIR__ . '/includes/petitions/tables.php');
 require_once realpath( __DIR__ . '/includes/petitions/create-petition.php');
+require_once realpath( __DIR__ . '/includes/petitions/rest_endpoint.php');
+
 if( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once realpath( __DIR__ . '/includes/petitions/syncs.php');
 }

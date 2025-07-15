@@ -1,13 +1,15 @@
 <?php
 
+const BULK_SIZE = 50;
+
 class Sync_Command {
 
 	public function users() {
 		$response = get_salesforce_users();
-		insert_records( $response );
+		insert_users_records( $response );
 		while( isset($response['nextRecordsUrl']) ) {
 			$response = get_salesforce_users_query( substr( $response['nextRecordsUrl'], 1 ) );
-			insert_records( $response );
+			insert_users_records( $response );
 		}
 	}
 
@@ -33,9 +35,18 @@ class Sync_Command {
 			update_field( '_amnesty_signature_count', $signatures, $post_id);
 		}
 	}
+
+	public function signatures() {
+		$signatures_to_sync = get_signatures_to_sync();
+		if( empty( $signatures_to_sync ) ) {
+			return;
+		}
+
+		// TODO bulk signatures
+	}
 }
 
-function insert_records( $response ) {
+function insert_users_records( $response ) {
 	if( isset( $response['records'] ) ) {
 		global $wpdb;
 		foreach ( $response['records'] as $record ) {
