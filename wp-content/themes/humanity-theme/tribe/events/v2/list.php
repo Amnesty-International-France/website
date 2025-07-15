@@ -44,12 +44,14 @@ if ($user_longitude && $user_latitude) {
     SELECT
 		*,
     ST_Distance_Sphere(
-        POINT(%f, %f),
+    ST_SRID(POINT(%f, %f), 4326),
+    ST_SRID(
         POINT(
             CAST(venue_long.meta_value AS DECIMAL(10,6)),
             CAST(venue_lat.meta_value AS DECIMAL(10,6))
-        )
-    ) AS distance,
+        ), 4326
+    )
+) AS distance,
      event_national.meta_value AS national_event
 	FROM {$wpdb->posts} post
 	LEFT JOIN {$wpdb->postmeta} venue_id
