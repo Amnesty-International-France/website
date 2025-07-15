@@ -102,6 +102,7 @@ require_once realpath( __DIR__ . '/includes/admin/petitions-settings.php' );
 require_once realpath( __DIR__ . '/includes/admin/event-venue-auto-geocode.php' );
 require_once realpath( __DIR__ . '/includes/admin/event-national.php' );
 require_once realpath( __DIR__ . '/includes/admin/event-pagination-redirect.php' );
+require_once realpath( __DIR__ . '/includes/admin/local-structures-search.php' );
 #endregion admin
 
 /**

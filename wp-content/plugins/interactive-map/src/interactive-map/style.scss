@@ -1,281 +1,403 @@
 :root {
-	--wp--style--global--content-size: 815px !important;
+  --wp--style--global--content-size: 815px !important;
 }
 
 // Début de notre bloc BEM
 .interactive-map {
-	position: relative;
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 1rem;
-	width: 100%;
-	height: calc(100vh - 64px);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  width: 100%;
+  height: 650px;
+  background-color: var(--wp--preset--color--white) !important;
 
-	// Modificateur du bloc
-	&.interactive-map--region-view {
-		.interactive-map__back-button {
-			opacity: 1;
-			visibility: visible;
-			transform: translateY(0);
-		}
+  .interactive-map__wrapper {
+    display: flex;
+    height: 100%; /* S'assure que le wrapper prend toute la hauteur disponible du bloc parent */
+    gap: 48px;
 
-		.leaflet-control-zoom {
-			opacity: 1;
-			visibility: visible;
-		}
-	}
+    .interactive-map__search-container {
+      flex: 1 1 50%; /* Prend ~50% de la largeur, peut rétrécir */
+      max-width: 50%; /* Limite à 50% sur les grands écrans */
+      box-sizing: border-box;
 
-	// Éléments du bloc
-	&__container.leaflet-container {
-		flex-grow: 1;
-		align-content: flex-end;
-		min-height: 0;
-		background-color: transparent;
-	}
+      //   .interactive-map__search-form {
+      //     display: flex;
+      //     align-items: center;
+      //     gap: 24px;
+      //   }
 
-	&__back-button {
-		display: flex;
-		visibility: hidden;
-		align-items: center;
-		justify-content: center;
-		position: absolute;
-		z-index: 1000;
-		top: 15px;
-		left: 10px;
-		transform: translateY(-20px);
-		padding: .5rem 1rem;
-		border: 1px solid #ccc;
-		transition: opacity 0.3s, transform 0.3s;
-		background-color: white;
-		font-size: 1rem;
-		text-transform: uppercase;
-		font-weight: bold;
-		opacity: 0;
-		cursor: pointer;
+      .interactive-map__search-form {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        background-color: var(--wp--preset--color--grey-light);
+        padding: 20px 38px;
 
-		svg {
-			width: 1.375rem;
-			height: 1.375rem;
-			margin-right: .625rem;
-			fill: #2b2b2b;
-		}
-	}
+        @media (max-width: 640px) {
+          flex-direction: column;
+          margin-top: 1rem;
+          row-gap: 1rem;
+        }
 
-	&__selectors {
-		position: absolute;
-		bottom: 2.2rem;
-		z-index: 500;
-		width: 100%;
-	}
+        & > form {
+          display: flex;
+          max-height: 40px;
 
-	&__selector-list {
-		display: flex;
-		gap: 35px;
-		flex-shrink: 0;
-		justify-content: space-evenly;
-	}
+          & > label {
+            display: none;
+          }
 
-	&__selector {
-		// Modificateur et pseudo-classe sur l'élément
-		&--active,
-		&:hover {
-			.interactive-map__selector-label { color: #ff7800; }
-			.interactive-map__selector-thumbnail {
-				border-color: #ff7800;
-				.interactive-map__selector-svg-wrapper svg path { fill: #ff7800; }
-			}
-		}
-	}
+          & > input[type="text"] {
+            margin-right: 12px;
+            border: none;
+            min-width: 120px;
 
-	&__selector-label {
-		margin: 0;
-		border: 1px solid transparent;
-		font-size: 1rem;
-		font-weight: 500;
-		text-align: center;
-		background-color: white;
-	}
+            &::placeholder {
+              color: var(--wp--preset--color--grey-dark);
+            }
 
-	&__selector-thumbnail {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		border: 1px solid #757575;
-		width: 130px;
-		height: 126px;
-		cursor: pointer;
-		background-color: white;
-		color: #333;
-	}
+            @media (min-width: 768px) {
+              min-width: 200px;
+            }
+          }
 
-	&__selector-svg-wrapper {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		background: #fff;
-		height: 100%;
-		width: 6.4rem;
-	}
+          & > button {
+            border: none;
+            width: 46px;
+            padding: 12px 8px;
+            line-height: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
 
-	// --- Leaflet ---
-	.leaflet-pane {
-		.leaflet-interactive {
-			stroke: white;
-			stroke-width: .5;
-			fill-opacity: 1;
-			transition: fill-color .2s ease-in-out;
+            &:hover,
+            &:active {
+              background-color: var(--wp--preset--color--grey-darkest);
+            }
 
-			&:focus {
-				outline: none;
-			}
+            > svg {
+              width: 22.5px;
+              height: 22.5px;
+            }
+          }
+        }
 
-			&--highlighted {
-				fill-opacity: .8;
-			}
-		}
+        & > span {
+          margin: auto 30px;
+          font-size: 0.9375rem;
+          font-weight: bold;
+          line-height: 1rem;
+          text-transform: uppercase;
 
-		&.leaflet-tooltip-pane {
-			top: -80px;
-			left: -40px;
-			z-index: 1000;
+          @media (max-width: 640px) {
+            display: none;
+          }
 
-			.leaflet-tooltip-right {
-				right: -15px;
-			}
+          @media (max-width: 768px) {
+            margin: auto 20px;
+          }
+        }
 
-			.interactive-map__department-tooltip {
-				background-color: white;
-				color: black;
-				border: none;
-				border-radius: 0;
-				padding: 8px 12px;
-				font-family: sans-serif;
-				font-weight: bold;
-				font-size: 14px;
-				box-shadow: none;
+        & > button {
+          padding: 12px 24px;
+          line-height: 1rem;
+          text-transform: uppercase;
+          font-size: 15px;
+          font-weight: bold;
+          border: none;
+          cursor: pointer;
+          background-color: var(--wp--preset--color--primary);
+          max-height: 40px;
+        }
+      }
+    }
 
-				&:before { content: none; }
-			}
-		}
-	}
+    .interactive-map__container {
+      flex: 1 1 50%; /* Prend ~50% de la largeur, peut rétrécir */
+      max-width: 50%; /* Limite à 50% sur les grands écrans */
+      min-height: 400px; /* Hauteur minimale pour la carte */
+      box-sizing: border-box;
+    }
+  }
 
-	.leaflet-control-zoom {
-		visibility: hidden;
-	}
+  &.interactive-map--region-view {
+    .interactive-map__back-button {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
 
-	&__marker-icon {
-		background: transparent;
-		border: none;
-		box-shadow: none;
+    .leaflet-control-zoom {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
 
-		svg {
-			width: 24px;
-			height: 32px;
-			fill: #333;
-			path {
-				width: 24px;
-				height: 32px;
-			}
-		}
-	}
+  &__container.leaflet-container {
+    flex-grow: 1;
+    align-content: flex-end;
+    min-height: 0;
+  }
 
-	&__popup {
-		.leaflet-popup-content-wrapper {
-			border-radius: 0;
-			padding: 0;
-			box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-			background-color: white;
-			&:hover {
-				box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
-			}
-		}
-		.leaflet-popup-content {
-			margin: 0;
-			width: 230px;
-			min-height: 286px;
+  &__back-button {
+    display: flex;
+    visibility: hidden;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 1000;
+    top: 15px;
+    left: 10px;
+    transform: translateY(-20px);
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    transition:
+      opacity 0.3s,
+      transform 0.3s;
+    background-color: white;
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    opacity: 0;
+    cursor: pointer;
 
-			.interactive-map {
-				&__popup-link {
-					text-decoration: none;
-				}
+    svg {
+      width: 1.375rem;
+      height: 1.375rem;
+      margin-right: 0.625rem;
+      fill: #2b2b2b;
+    }
+  }
 
-				&__popup-image-wrapper {
-					width: 100%;
-					height: 150px;
-					background-color: #eee;
-				}
+  &__selectors {
+    position: absolute;
+    bottom: 2.2rem;
+    z-index: 500;
+    width: 100%;
+  }
 
-				&__popup-image {
-					width: 100%;
-					height: 100%;
-					object-fit: cover;
-				}
+  &__selector-list {
+    display: flex;
+    gap: 35px;
+    flex-shrink: 0;
+    justify-content: space-evenly;
+  }
 
-				&__popup-content {
-					padding: .8rem;
-					display: flex;
-					flex-direction: column;
-					justify-content: space-between;
-					align-items: flex-start;
-					flex-grow: 1;
-				}
+  &__selector {
+    &--active,
+    &:hover {
+      .interactive-map__selector-label {
+        color: #ff7800;
+      }
+      .interactive-map__selector-thumbnail {
+        border-color: #ff7800;
+        .interactive-map__selector-svg-wrapper svg path {
+          fill: #ff7800;
+        }
+      }
+    }
+  }
 
-				&__popup-city {
-					display: flex;
-					align-items: center;
-					gap: 8px;
-					color: #ff7800;
-					font-size: 1.25rem;
-					font-weight: bold;
-					text-transform: uppercase;
-					margin: 0 0 15px 0;
+  &__selector-label {
+    margin: 0;
+    border: 1px solid transparent;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: center;
+    background-color: white;
+  }
 
-					svg {
-						fill: #ff7800;
-						width: 20px;
-						height: 20px;
-						flex-shrink: 0;
-					}
-				}
+  &__selector-thumbnail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #757575;
+    width: 130px;
+    height: 126px;
+    cursor: pointer;
+    background-color: white;
+    color: #333;
+  }
 
-				&__popup-title {
-					font-size: 1.4em;
-					font-weight: 900;
-					color: #333;
-					margin: 0 0 30px 0;
-					line-height: 1.2;
-				}
+  &__selector-svg-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    height: 100%;
+    width: 6.4rem;
+  }
 
-				&__popup-facet-group {
-					display: flex;
-					align-items: center;
-				}
+  // --- Leaflet ---
+  .leaflet-pane {
+    .leaflet-interactive {
+      stroke: white;
+      stroke-width: 0.5;
+      fill-opacity: 1;
+      transition: fill-color 0.2s ease-in-out;
 
-				&__popup-facet {
-					padding: 8px;
-					font-size: 0.8rem;
-					color: white;
-					background-color: #333;
-				}
+      &:focus {
+        outline: none;
+      }
 
-				&__popup-subfacet {
-					padding: 8px;
-					font-size: 1rem;
-					color: #333;
-				}
-			}
-		}
-		.leaflet-popup-close-button {
-			display: none;
-		}
-		.leaflet-popup-tip {
-			background: white;
-		}
-	}
+      &--highlighted {
+        fill-opacity: 0.8;
+      }
+    }
 
-	svg.leaflet-zoom-animated {
-		transform: translate3d(-48px, -170px, 0px) !important;
-		width: 920px;
-	}
+    &.leaflet-tooltip-pane {
+      top: -80px;
+      left: -40px;
+      z-index: 1000;
+
+      .leaflet-tooltip-right {
+        right: -15px;
+      }
+
+      .interactive-map__department-tooltip {
+        background-color: white;
+        color: black;
+        border: none;
+        border-radius: 0;
+        padding: 8px 12px;
+        font-family: sans-serif;
+        font-weight: bold;
+        font-size: 14px;
+        box-shadow: none;
+
+        &:before {
+          content: none;
+        }
+      }
+    }
+  }
+
+  .leaflet-control-zoom {
+    visibility: hidden;
+  }
+
+  &__marker-icon {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    svg {
+      width: 24px;
+      height: 32px;
+      fill: #333;
+      path {
+        width: 24px;
+        height: 32px;
+      }
+    }
+  }
+
+  .leaflet-popup {
+    margin-bottom: 8px;
+  }
+
+  &__popup {
+    .leaflet-popup-content-wrapper {
+      border-radius: 0;
+      padding: 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      background-color: white;
+
+      &:hover {
+        box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+      }
+    }
+    .leaflet-popup-content {
+      margin: 0;
+      min-width: 300px;
+
+      .interactive-map {
+        &__popup-link {
+          text-decoration: none;
+        }
+
+        &__popup-image-wrapper {
+          width: 100%;
+          height: 150px;
+          background-color: var(--wp--preset--color--white);
+        }
+
+        &__popup-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        &__popup-content {
+          padding: 0.8rem;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          align-items: flex-start;
+        }
+
+        &__popup-city {
+          display: none;
+        }
+
+        &__popup-title {
+          font-size: 1.4em;
+          color: var(--wp--preset--color--black);
+          margin: 0;
+        }
+
+        &__popup-address {
+          margin: 0;
+          color: var(--wp--preset--color--black);
+          font-family: var(--wp--preset--font-family--primary);
+        }
+
+        &__popup-phone {
+          margin: 0;
+          color: var(--wp--preset--color--black);
+        }
+
+        &__popup-email {
+          margin: 0;
+          color: var(--wp--preset--color--black);
+          font-family: var(--wp--preset--font-family--primary);
+          font-weight: 300;
+        }
+
+        &__popup-facet-group {
+          margin: 0;
+        }
+
+        &__popup-facet {
+          padding: 8px;
+          font-size: 0.8rem;
+          color: var(--wp--preset--color--white);
+          background-color: #333;
+          margin: 0;
+        }
+
+        &__popup-subfacet {
+          padding: 8px;
+          font-size: 1rem;
+          color: var(--wp--preset--color--black);
+          margin: 0;
+        }
+      }
+    }
+    .leaflet-popup-close-button {
+      display: none;
+    }
+    .leaflet-popup-tip {
+      background-color: var(--wp--preset--color--white);
+    }
+  }
+
+  svg.leaflet-zoom-animated {
+    transform: translate3d(-48px, -170px, 0px) !important;
+  }
 }
