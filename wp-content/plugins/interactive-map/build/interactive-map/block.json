@@ -69,7 +69,7 @@
         },
         {
           "id": "idf",
-          "label": "\u00cele-de-France",
+          "label": "Île-de-France",
           "lat": 48.85,
           "lng": 2.35,
           "zoom": 8,
@@ -85,7 +85,7 @@
         },
         {
           "id": "reunion",
-          "label": "R\u00e9union",
+          "label": "Réunion",
           "lat": -21.11,
           "lng": 55.53,
           "zoom": 9,

@@ -8,7 +8,7 @@
  */
 
 ?>
-<!-- wp:group {"tagName":"div","className":"article has-sidebar"} -->
+<!-- wp:group {"tagName":"section","className":"article has-sidebar"} -->
 <section class="wp-block-group article has-sidebar">
 	<!-- wp:group {"tagName":"header","className":"article-header"} -->
 	<header class="wp-block-group article-header">
