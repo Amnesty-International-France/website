@@ -41,6 +41,7 @@ import { donationCalculator, selectedAmount, selectedTab } from './modules/donat
 import petitionShareFeedback from './modules/social-network-clicked';
 import petitionDonateFeedback from './modules/donate-clicked';
 import { toggleFullFormPetition, submitCodeOrigine } from './modules/petition-form';
+import { closeUrgentBanner } from './modules/urgent-banner';
 
 const App = () => {
   browserDetector();
@@ -85,6 +86,7 @@ const App = () => {
   petitionDonateFeedback();
   toggleFullFormPetition();
   submitCodeOrigine();
+  closeUrgentBanner();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 

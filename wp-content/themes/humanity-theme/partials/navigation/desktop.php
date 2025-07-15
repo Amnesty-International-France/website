@@ -1,12 +1,12 @@
 <?php
 
-use Amnesty\Desktop_Nav_Walker;
-
 /**
  * Navigation partial, desktop
  *
  * @package Amnesty\Partials
  */
+
+use Amnesty\Desktop_Nav_Walker;
 
 $header_style = amnesty_get_header_style( amnesty_get_header_object_id() );
 
@@ -103,3 +103,5 @@ $header_style = amnesty_get_header_style( amnesty_get_header_object_id() );
 		</div>
 	</div>
 </header>
+
+<?php get_template_part( 'partials/urgent-banner' ); ?>
