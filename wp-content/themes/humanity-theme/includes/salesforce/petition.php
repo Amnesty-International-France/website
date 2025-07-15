@@ -18,3 +18,4 @@ function get_salesforce_petition_counter( string $ext_id ) {
 	$url = "services/data/v57.0/query/?q=SELECT+Nb_signatures_total__c+FROM+Petition__c+WHERE+Ext_ID_Petition__c+=+'$ext_id'";
 	return get_salesforce_data( $url );
 }
+
