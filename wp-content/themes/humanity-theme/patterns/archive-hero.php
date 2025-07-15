@@ -48,7 +48,7 @@
  ?>
 
 
- <!-- wp:group {"tagName":"div","className":"archive-hero"} -->
+ <!-- wp:group {"tagName":"section","className":"archive-hero"} -->
  <section class="wp-block-group archive-hero <?php echo esc_attr($term_slug); ?> <?php echo esc_attr($post_type_class); ?>">
 	 <div class="archive-hero-img-container">
 		 <?php if ($image_url) : ?>

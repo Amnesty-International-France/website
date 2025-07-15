@@ -1,5 +1,16 @@
-.page-standard {
+.page-pres-de-chez-vous {
   .page-content {
+    padding: 0;
+
+    @media (min-width: $container-lg) {
+      padding: 0 24px;
+    }
+
+    @media (min-width: $container-hg) {
+      padding: 0;
+    }
+
+    .custom-button-block,
     .download-go-further-block,
     .get-informed-block,
     .image-block,
@@ -9,10 +20,7 @@
         .wp-block-amnesty-core-section.small p,
         .wp-block-amnesty-core-section.large p,
         .download-go-further-block p,
-        .call-to-action-block p,
-        .wp-block-amnesty-core-section-home p,
-        .wp-block-jetpack-contact-form-container p,
-        .interactive-map p
+        .call-to-action-block p
       ),
     .wp-block-columns,
     .wp-block-details,
@@ -22,19 +30,10 @@
     .wp-block-amnesty-core-action,
     .wp-block-amnesty-core-quote-block,
     .wp-block-amnesty-core-image,
-    .wp-block-amnesty-core-section.small,
-    .read-more-block,
-    .wp-block-jetpack-contact-form-container {
-      max-width: $container-md;
+    .wp-block-amnesty-core-section.small {
+      max-width: $container-hg;
       margin-left: auto;
       margin-right: auto;
-    }
-
-    .custom-button-block {
-      max-width: $container-md;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 30px;
     }
 
     .call-to-action-block {
@@ -44,10 +43,13 @@
     }
 
     .wp-block-amnesty-core-chapo {
+      max-width: $container-hg;
+      margin-left: auto;
+      margin-right: auto;
+
       .text {
         @media (min-width: $container-lg) {
-          width: 50%;
-          margin-left: 20%;
+          width: 100%;
         }
       }
     }
