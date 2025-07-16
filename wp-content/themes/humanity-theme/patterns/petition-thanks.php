@@ -45,10 +45,16 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
                 </div>
             </div>
             <div class="success-content">
-                <p class="you-signed">Vous avez signé la pétition :</p>
+                <p class="you-signed">
+					<?php if (isset($_GET['alreadysigned'])) : ?>
+					Vous aviez déjà signé la pétition :
+					<?php else: ?>
+					Vous avez signé la pétition :
+					<?php endif; ?>
+				</p>
                 <a href="<?php echo esc_url( $permalink ); ?>" class="petition-title"><?php echo esc_html( $title ); ?></a>.
-                <p class="thanks-for-action">Merci pour votre action.</p> 
-            </div>       
+                <p class="thanks-for-action">Merci pour votre action.</p>
+            </div>
         </div>
         <div class="petition-share">
             <div class="step-two">
