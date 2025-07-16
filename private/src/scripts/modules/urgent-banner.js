@@ -1,17 +1,19 @@
 export const closeUrgentBanner = () => {
-  document.addEventListener('DOMContentLoaded', () => {
-    const urgentBanner = document.querySelector('.urgent-banner');
-    const closeCross = urgentBanner.querySelector('.icon-cross');
-    const userIsDoneWithBandeau = sessionStorage.getItem('userIsDoneWithBandeau');
+  const urgentBanner = document.querySelector('.urgent-banner');
 
-    if (userIsDoneWithBandeau) {
-      urgentBanner.style.display = 'none';
-    }
+  if (!urgentBanner) return;
 
-    closeCross.addEventListener('click', () => {
-      sessionStorage.setItem('userIsDoneWithBandeau', 'true');
-      urgentBanner.style.display = 'none';
-    });
+  const closeCross = urgentBanner.querySelector('.icon-cross');
+
+  if (!closeCross) return;
+
+  const userIsDoneWithBandeau = sessionStorage.getItem('userIsDoneWithBandeau') === 'true';
+
+  urgentBanner.classList.toggle('hidden', userIsDoneWithBandeau);
+
+  closeCross.addEventListener('click', () => {
+    sessionStorage.setItem('userIsDoneWithBandeau', 'true');
+    urgentBanner.classList.add('hidden');
   });
 };
 

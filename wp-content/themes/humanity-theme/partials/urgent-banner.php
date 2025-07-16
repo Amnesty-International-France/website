@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 $args = array(
 	'post_type'      => 'pop-in',
 	'posts_per_page' => 1,
@@ -18,7 +17,7 @@ if ( $last_post->have_posts() ) :
 	while ( $last_post->have_posts() ) :
 		$last_post->the_post(); ?>
 
-		<div class="urgent-banner">
+		<div class="urgent-banner hidden">
 			<?php
 			echo wp_kses(
 				$svg,
