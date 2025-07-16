@@ -58,6 +58,13 @@ function amnesty_handle_petition_signature() {
         $petition_id = absint( $_POST['petition_id'] );
         $user_email = sanitize_email( $_POST['user_email'] );
 
+		$current_date = date( 'Y-m-d' );
+		$end_date = get_field('date_de_fin');
+
+		if ( isset($end_date) && (strtotime($end_date) < strtotime($current_date)) ) {
+			exit;
+		}
+
         if ( ! is_email( $user_email ) || ! $petition_id ) {
             wp_redirect( add_query_arg( 'signature_status', 'invalid', wp_get_referer() ) );
             exit;

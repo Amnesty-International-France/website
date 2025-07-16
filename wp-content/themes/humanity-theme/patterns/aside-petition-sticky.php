@@ -10,6 +10,8 @@
 $punchline = get_field('punchline');
 $recipient = get_field('destinataire');
 
+$current_date = date( 'Y-m-d' );
+$end_date = get_field('date_de_fin');
 $post_id = get_the_ID();
 
 ?>
@@ -18,11 +20,13 @@ $post_id = get_the_ID();
   <div class="sticky-card">
     <div class="sticky-card-content">
       <div class="sticky-card-title">SIGNEZ LA PÉTITION</div>
-      <p class="recipient">À <?php echo esc_html( $recipient ); ?></p>
+      <p class="recipient"><?php echo esc_html( $recipient ); ?></p>
       <div class="punchline-wrapper">
         <p class="punchline"><?php echo esc_html( $punchline ); ?></p>
         <div class="border"></div>
       </div>
+		<?php if ( isset($end_date) && (strtotime($end_date) >= strtotime($current_date)) ) : ?>
+
       <form class="signature-petition-form" method="post" action="">
         <div class="email-section">
           <input class="email-input" type="email" name="user_email" placeholder="Email*" required>
@@ -107,6 +111,19 @@ $post_id = get_the_ID();
           <p class="legals">Les données personnelles collectées sur ce formulaire sont traitées par l’association Amnesty International France (AIF), responsable du traitement. Ces données vont nous permettre de vous envoyer nos propositions d’engagement, qu’elles soient militantes ou financières. Notre politique de confidentialité détaille la manière dont Amnesty International France, en sa qualité de responsable de traitement, traite et protège vos données personnelles collectées conformément aux dispositions de la Loi du 6 janvier 1978 relative à l’informatique, aux fichiers et aux libertés dite Loi « Informatique et Libertés », et au Règlement européen du 25 mai 2018 sur la protection des données (« RGPD »). Pour toute demande, vous pouvez contacter le service membres et donateurs d’AIF à l’adresse mentionnée ci-dessus, par email <span class="by-email"><a href="mailto:smd@amnesty.fr">smd@amnesty.fr</a></span> ou par téléphone 01 53 38 65 80. Vous pouvez également introduire une réclamation auprès de la CNIL. Pour plus d’information sur le traitement de vos données personnelles, veuillez consulter <span class="privacy-policy"><a href="/politique-de-confidentialité">notre politique de confidentialité</a></span></p>
         </div>
       </form>
+		<?php else : ?>
+		<div class="close-petition">
+			<p>Cette pétition est désormais <strong>terminée</strong>, merci pour votre soutien.</p>
+			<p>N'hésitez pas à signer une autre des autres pétitions disponibles.</p>
+			<div class="custom-button-block center">
+				<a href="/petitions" class="custom-button">
+					<div class='content outline-black medium'>
+						<div class="button-label">Toutes nos pétitions</div>
+					</div>
+				</a>
+			</div>
+		</div>
+		<?php endif; ?>
     </div>
   </div>
 </aside>
