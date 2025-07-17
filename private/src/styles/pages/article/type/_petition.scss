@@ -765,11 +765,11 @@
           }
         }
 
-        .email-section {
+        .email-section, .message-section {
           padding: 28px 24px;
           border-bottom: 1px solid var(--wp--preset--color--grey-light);
 
-          .email-input {
+          .email-input, .message-input {
             border: 1px solid var(--wp--preset--color--grey-light);
 
             &::placeholder {
@@ -780,6 +780,10 @@
               line-height: 28px;
               text-transform: capitalize;
             }
+          }
+
+          .message-input {
+            text-transform: none;
           }
         }
 

@@ -7,12 +7,13 @@
  */
 
 $title = get_the_title();
+$type = get_field( 'type' )['value'];
 $end_date = get_field('date_de_fin');
 $signatures_target = get_field('objectif_signatures');
 $letter = get_field(selector: 'lettre');
 $pdf_id = get_field(selector: 'pdf_petition');
 
-$pdf_url = ''; 
+$pdf_url = '';
 if ( ! empty( $pdf_id ) ) {
     $pdf_url = wp_get_attachment_url( $pdf_id );
 }
@@ -45,7 +46,7 @@ if ( $is_thank_you_page && is_singular( 'petition' ) ) {
     ?>
     <!-- wp:pattern {"slug":"amnesty/petition-thanks"} /-->
     <?php
-    
+
 } else {
     ?>
 <!-- wp:group {"tagName":"div","className":"container petition-container has-gutter","layout":{"type":"constrained"}} -->
@@ -89,6 +90,7 @@ if ( $is_thank_you_page && is_singular( 'petition' ) ) {
                             </div>
                         </div>
                         <!-- wp:post-content /-->
+						<?php if ( $type === 'petition' ) : ?>
                         <div class="read-more-block">
                             <div class="read-more-toggle"
                                 data-read-more-label="<?php echo esc_attr($read_more_label); ?>">
@@ -108,6 +110,7 @@ if ( $is_thank_you_page && is_singular( 'petition' ) ) {
                             <a href="<?php echo esc_url( $pdf_url ); ?>" target="_blank" rel="noopener">Téléchargez la version imprimable</a> et faites-la signer autour de vous.
                         </p>
                         <?php endif; ?>
+						<?php endif; ?>
                     </section>
                 <!-- /wp:group -->
             </article>

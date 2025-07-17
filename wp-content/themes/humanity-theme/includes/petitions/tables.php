@@ -31,6 +31,7 @@ function aif_create_tables() {
     	last_sync DATETIME DEFAULT NULL,
     	nb_try INT UNSIGNED NOT NULL DEFAULT 0,
     	code_origine VARCHAR(255) NOT NULL,
+    	message VARCHAR(32768),
     	PRIMARY KEY (petition_id, user_id),
     	CONSTRAINT fk_petition FOREIGN KEY (petition_id) REFERENCES $wp_posts_table(ID) ON DELETE CASCADE,
     	CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES $table_name_users(id) ON DELETE CASCADE
@@ -103,7 +104,7 @@ function have_signed( $petitionId, $userId ) {
 	return ! is_null( $wpdb->get_row( $sql ) );
 }
 
-function insert_petition_signature( $petition_id, $user_id, $code_origine ) {
+function insert_petition_signature( $petition_id, $user_id, $code_origine, $message ) {
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'aif_petitions_signatures';
 
@@ -111,7 +112,8 @@ function insert_petition_signature( $petition_id, $user_id, $code_origine ) {
 		'petition_id' => $petition_id,
 		'user_id' => $user_id,
 		'code_origine' => $code_origine,
-	], ['%d', '%d', '%s']);
+		'message' => $message
+	], ['%d', '%d', '%s', '%s']);
 
 	return $inserted !== false;
 }
