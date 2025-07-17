@@ -113,8 +113,8 @@ $post_id = get_the_ID();
       </form>
 		<?php else : ?>
 		<div class="close-petition">
-			<p>Cette pétition est désormais <strong>terminée</strong>, merci pour votre soutien.</p>
-			<p>N'hésitez pas à signer une autre des autres pétitions disponibles.</p>
+			<p>Cette pétition est <strong>terminée</strong>, merci pour votre soutien.</p>
+			<p>N'hésitez pas à signer une des autres pétitions disponibles.</p>
 			<div class="custom-button-block center">
 				<a href="/petitions" class="custom-button">
 					<div class='content outline-black medium'>
