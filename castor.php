@@ -101,7 +101,7 @@ function install(string $path = '.', string $token = ''): void
 
     io()->info("Core installed.".PHP_EOL."Installing required plugins...");
     run("wp plugin install cloudflare --activate", context: $context);
-	run("wp plugin install cmb2 jetpack advanced-custom-fields wordpress-seo --activate", context: $context);
+	run("wp plugin install cmb2 jetpack advanced-custom-fields wordpress-seo the-events-calendar --activate", context: $context);
 
     run("wp theme activate humanity-theme", context: $context);
 
