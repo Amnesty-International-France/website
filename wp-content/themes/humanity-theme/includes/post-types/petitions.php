@@ -58,8 +58,9 @@ function amnesty_handle_petition_signature() {
         $petition_id = absint( $_POST['petition_id'] );
         $user_email = sanitize_email( $_POST['user_email'] );
 
+        $type = get_field( 'type', $petition_id )['value'];
 		$current_date = date( 'Y-m-d' );
-		$end_date = get_field('date_de_fin');
+		$end_date = get_field('date_de_fin', $petition_id );
 
 		if ( isset($end_date) && (strtotime($end_date) < strtotime($current_date)) ) {
 			exit;
@@ -97,8 +98,9 @@ function amnesty_handle_petition_signature() {
 		}
 
 		$code_origine = isset($_POST['code_origine']) && ! empty($_POST['code_origine']) ? $_POST['code_origine'] : get_field( 'code_origine', $petition_id ) ?? '';
+        $message = $type === 'action-soutien' && isset($_POST['user_message']) && ! empty($_POST['user_message']) ? sanitize_textarea_field($_POST['user_message']) : '';
 
-		if( insert_petition_signature( $petition_id, $user_id, $code_origine ) === false ) {
+		if( insert_petition_signature( $petition_id, $user_id, $code_origine, $message ) === false ) {
 			wp_redirect( add_query_arg( 'signature_status', 'error', wp_get_referer() ) );
 			exit;
 		}
@@ -248,7 +250,15 @@ add_action( 'acf/include_fields', function() {
 				'type' => 'text',
 				'instructions' => '',
 				'required' => 0,
-				'conditional_logic' => 0,
+				'conditional_logic' => array(
+                    array(
+                        array(
+                            'field' => 'field_685aca87362cb',
+                            'operator' => '==contains',
+                            'value' => 'petition',
+                        ),
+                    ),
+                ),
 				'wrapper' => array(
 					'width' => '',
 					'class' => '',
@@ -486,8 +496,8 @@ add_action( 'acf/include_fields', function() {
 					'class' => '',
 					'id' => '',
 				),
-				'default_value' => '',
-				'min' => '',
+				'default_value' => 1000,
+				'min' => 0,
 				'max' => '',
 				'allow_in_bindings' => 0,
 				'placeholder' => '',
