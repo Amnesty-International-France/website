@@ -40,7 +40,7 @@ add_action(
 						array(
 							'param'    => 'page_template',
 							'operator' => '==',
-							'value'    => 'page-foundation',
+							'value'    => 'page-fondation',
 						),
 					),
 					array(

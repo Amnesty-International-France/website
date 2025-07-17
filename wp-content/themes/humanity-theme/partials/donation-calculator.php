@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 global $post;
 
-$campaign_url = get_field('lien_vers_la_campagne_de_soutien', $post->ID) ?? '';
+$campaign_url = get_field( 'lien_vers_la_campagne_de_soutien', $post->ID ) ?? '';
 
 $size        = $args['size'] ?? '';
 $with_header = $args['with_header'] ?? false;
@@ -48,21 +48,10 @@ if ( 'medium' === $size ) {
 	$with_legend = false;
 }
 
-
-
 $svg_path = get_template_directory() . "/assets/images/icon-don-{$rate}.svg";
 
-function get_legend( $rate ) {
-	if ( 66 === $rate ) {
-		return 'Vous avez jusqu’au 31 décembre de l\'année en cours pour bénéficier d’une réduction d’impôt
-				égale à 66% du montant de votre don.';
-	}
-
-	if ( 75 === $rate ) {
-		return '75% du montant de votre don à la Fondation Amnesty International France est déductible de votre IFI, dans la limite de 50 000 €.';
-	}
-
-	return '';
+if ( $campaign_url ) {
+	$href = $campaign_url;
 }
 
 ?>
@@ -192,14 +181,20 @@ if ( $size ) {
 			<p class="explanation">Grâce à la réduction d'impôts de 66%, votre don ne vous coûtera que</p>
 			<h4 id="donation-simulated" class="price-simulated"></h4>
 		<?php endif ?>
-		<a href="<?php echo esc_url( $campaign_url ); ?>"
+		<a href="<?php echo esc_url( $href ); ?>"
 			target="_self"
 			class="donation-link">
 			<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-arrow.svg' ); ?>
 			Faire un don
 		</a>
 		<?php if ( $with_legend ) : ?>
-			<p class="legend"><?php echo get_legend( $rate ); ?></p>
+			<p class="legend">
+				<?php if ( 75 === $rate ) : ?>
+				75% du montant de votre don à la Fondation Amnesty International France est déductible de votre IFI, dans la limite de 50 000 €.
+				<?php else : ?>
+					Vous avez jusqu’au 31 décembre de l'année en cours pour bénéficier d’une réduction d’impôt égale à 66% du montant de votre don.
+				<?php endif; ?>
+			</p>
 		<?php endif ?>
 	</div>
 </div>
