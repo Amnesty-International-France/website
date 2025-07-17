@@ -9,4 +9,4 @@
 
 ?>
 
-<nav id="page-menu" class="page-menu green" aria-label="Navigation dans la page"></nav>
+<nav id="page-menu" class="page-menu" aria-label="Navigation dans la page"></nav>
