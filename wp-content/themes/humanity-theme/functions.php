@@ -196,6 +196,7 @@ require_once realpath( __DIR__ . '/includes/post-types/countries.php' );
 require_once realpath( __DIR__ . '/includes/post-types/landmarks.php' );
 require_once realpath( __DIR__ . '/includes/post-types/local-structures.php');
 require_once realpath( __DIR__ . '/includes/post-types/petitions.php');
+require_once realpath( __DIR__ . '/includes/post-types/press-release.php');
 #endregion post types
 
 /**
