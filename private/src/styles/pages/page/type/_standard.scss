@@ -1,6 +1,5 @@
 .page-standard {
   .page-content {
-    .custom-button-block,
     .download-go-further-block,
     .get-informed-block,
     .image-block,
@@ -28,6 +27,13 @@
       max-width: $container-md;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .custom-button-block {
+      max-width: $container-md;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 30px;
     }
 
     .call-to-action-block {
