@@ -21,7 +21,9 @@ const elementTextContent = (element, isMonthly = false, amount = null) => {
 };
 
 const taxDeductionCalculation = (amount) => {
-  const finalPrice = amount - amount * 0.66;
+  const rate = document.querySelector('.donation-calculator').attributes['data-rate'].value;
+  const finalPrice = amount - (amount * parseInt(rate, 10)) / 100;
+
   return Number(finalPrice).toLocaleString('fr-FR', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,

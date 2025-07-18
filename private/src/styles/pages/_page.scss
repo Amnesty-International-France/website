@@ -9,6 +9,7 @@
 @import './page/type/standard';
 @import './page/type/legs';
 @import './page/type/donation';
+@import 'page/type/foundation';
 
 // For legs page only
-@import './page/menu-legs';
+@import 'page/page-menu';
