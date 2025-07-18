@@ -1,0 +1,308 @@
+.post-type-archive-petition .actionBlock-content div {
+  margin-bottom: 16px;
+  font-weight: normal;
+}
+
+.categoryTerm-title {
+  display: flex;
+  align-content: center;
+  padding: 30px 0 10px 0;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
+  text-align: center;
+
+  h1 {
+    text-transform: uppercase;
+  }
+}
+
+.taxonomyArchive-filters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--wp--preset--spacing--single);
+  width: 100%;
+  padding: 0 !important;
+
+  @media (min-width: $container-sm) {
+    flex-direction: row;
+  }
+}
+
+.taxonomyArchive-filters + * {
+  margin-top: var(--wp--preset--spacing--single);
+
+  @include mq(medium) {
+    margin-top: 0;
+    margin-left: var(--wp--preset--spacing--single);
+
+    .rtl & {
+      margin-left: 0;
+      margin-right: var(--wp--preset--spacing--single);
+    }
+  }
+}
+
+.taxonomyArchive-filters .checkboxGroup {
+  flex: 1 1 auto;
+  width: 100%;
+
+  @media (min-width: $container-sm) {
+    max-width: 200px;
+  }
+}
+
+.taxonomyArchive-filters .checkboxGroup-button,
+.taxonomyArchive-filters .checkboxGroup-list {
+  width: 100%;
+}
+
+.archive-hero-img-container {
+  width: 100vw;
+  height: 160px;
+  position: relative;
+
+  .archive-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    filter: brightness(50%) grayscale(1);
+  }
+
+  .archive-hero-title-container {
+    position: absolute;
+    max-width: $container-lg;
+    margin: 0 auto;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    padding: 0 24px;
+
+    .archive-hero-title {
+      width: fit-content;
+      padding: 5px 8px;
+      color: var(--wp--preset--color--primary);
+      background-color: var(--wp--preset--color--black);
+      font-size: 45px;
+      font-weight: bold;
+      line-height: 51px;
+      text-transform: uppercase;
+
+      h1 {
+        margin-bottom: 0;
+      }
+    }
+
+    @media (min-width: $container-lg) {
+      padding-left: 0 !important;
+    }
+  }
+
+  .yoast-breadcrumb-wrapper {
+    position: absolute;
+    max-width: $container-hg;
+    margin: 0 auto;
+    width: 100%;
+    top: 20px;
+    left: 0;
+    right: 0;
+
+    .yoast-breadcrumb {
+      color: var(--wp--preset--color--white);
+      max-width: $container-hg;
+      margin: 0 auto;
+      padding: 0 24px;
+
+      > span:first-of-type {
+        display: flex;
+        align-items: center;
+
+        > span {
+          display: inline-flex;
+          align-items: center;
+        }
+      }
+
+      span::before {
+        vertical-align: middle;
+      }
+
+      span + span::before {
+        flex: 0 0 auto;
+        content: '';
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin: 0 6px;
+        background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E")
+          no-repeat center;
+        background-size: contain;
+      }
+
+      a {
+        font-size: 13px;
+        font-weight: 300;
+        text-decoration: none;
+        color: var(--wp--preset--color--white);
+
+        &:hover {
+          text-decoration: underline;
+          background-color: transparent;
+        }
+      }
+
+      & .breadcrumb_last {
+        flex: 1 1 auto;
+        display: inline;
+        align-items: center;
+        font-size: 13px;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.chapo {
+  max-width: $container-hg;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 24px;
+
+  .text {
+    @media (min-width: $container-lg) {
+      width: 50%;
+      margin-left: 20%;
+    }
+  }
+}
+
+.az-filter {
+  max-width: $container-hg;
+  padding: 48px 24px 22px 24px;
+  margin: 0 auto;
+
+  .title {
+    text-align: center;
+  }
+
+  .az-index {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2px;
+
+    .az-letter {
+      width: 75px;
+      height: 75px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--wp--preset--color--grey-light);
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+
+      &.active {
+        color: var(--wp--preset--color--white);
+        background-color: var(--wp--preset--color--black);
+      }
+
+      &:hover {
+        color: var(--wp--preset--color--white);
+        background-color: var(--wp--preset--color--black);
+      }
+    }
+  }
+
+  .az-display {
+    display: flex;
+    gap: 50px;
+    padding: 48px 0 64px 0;
+
+    .az-letter-display {
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 5rem;
+      line-height: 90%;
+    }
+
+    .country-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 8px;
+
+      .country {
+        a {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .get-report {
+    padding: 24px;
+    background-color: var(--wp--preset--color--grey-light);
+
+    .title {
+      text-align: center;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 38px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 28px;
+    }
+
+    .download {
+      width: fit-content;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 12px 24px;
+      background-color: var(--wp--preset--color--primary);
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--wp--preset--color--primary-dark);
+      }
+
+      .icon-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .label {
+        font-family: var(--wp--preset--font-family--secondary);
+        font-size: 14px;
+        margin-bottom: 0;
+
+        a {
+          text-decoration: none;
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 13px;
+
+          &:hover {
+            background-color: transparent;
+          }
+        }
+      }
+    }
+  }
+}

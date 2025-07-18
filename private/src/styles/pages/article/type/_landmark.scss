@@ -1,0 +1,124 @@
+.article.landmark {
+  .article-meta {
+    padding: 12px 24px;
+    max-width: $container-md;
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (min-width: $container-hg) {
+      padding: 0;
+    }
+  }
+
+  .article-content {
+    .custom-button-block,
+    .download-go-further-block,
+    .get-informed-block,
+    .image-block,
+    .read-also-block,
+    p:not(
+        .wp-block-amnesty-core-chapo p,
+        .wp-block-amnesty-core-section.small p,
+        .wp-block-amnesty-core-section.large p,
+        .download-go-further-block p,
+        .call-to-action-block p
+      ),
+    .wp-block-columns,
+    .wp-block-details,
+    .wp-block-heading,
+    .wp-block-html,
+    .wp-block-image,
+    .wp-block-list,
+    .wp-block-amnesty-core-action,
+    .wp-block-amnesty-core-quote-block,
+    .wp-block-amnesty-core-image,
+    .wp-block-amnesty-core-section.small,
+    .read-more-block {
+      max-width: $container-sm;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .call-to-action-block {
+      max-width: $container-lg;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .wp-block-amnesty-core-chapo {
+      max-width: $container-hg;
+      margin-left: auto;
+      margin-right: auto;
+
+      .text {
+        @media (min-width: $container-lg) {
+          width: 50%;
+          margin-left: 20%;
+        }
+      }
+    }
+
+    .carousel-block {
+      .swiper-slide {
+        max-width: $container-sm;
+      }
+    }
+  }
+}
+
+.featured-landmarks {
+  position: relative;
+  background-color: #e0e0e0;
+
+  .content {
+    max-width: $container-lg;
+    margin: 0 auto;
+    padding: 40px 24px 0 24px;
+
+    @media (min-width: $container-hg) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 15%;
+      background-color: var(--wp--preset--color--primary);
+      z-index: 0;
+
+      @media (min-width: $container-md) {
+        height: 20%;
+      }
+
+      @media (min-width: $container-lg) {
+        height: 40%;
+      }
+    }
+
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .title {
+      padding: 5px 10px;
+      text-transform: uppercase;
+      color: var(--wp--preset--color--primary);
+      background-color: var(--wp--preset--color--black);
+      font-size: 29.5px;
+      font-weight: bold;
+      line-height: 33px;
+      width: fit-content;
+    }
+
+    .postlist {
+      padding-top: 24px;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}

@@ -1,0 +1,989 @@
+.petition-hero-block {
+  width: 100%;
+  position: relative;
+  min-height: 385px;
+
+  .petition-figure {
+    height: 385px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 0;
+    background: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
+
+    @media (min-width: $container-lg) {
+      height: 385px;
+      max-height: 385px;
+    }
+
+    img {
+      height: 100% !important;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(0, 0, 0, 0) 20%,
+        rgba(0, 0, 0, 0) 80%,
+        rgba(0, 0, 0, 0.9) 100%
+      );
+    }
+
+    .image-metadata {
+      display: none;
+    }
+
+    .feature-image-caption-overlay {
+      width: 100%;
+      max-width: 100%;
+      display: flex;
+      justify-content: end;
+      padding: 8px;
+      height: 36px;
+      background: var(--wp--preset--color--black);
+      opacity: 0.75;
+      bottom: 0;
+      right: 0;
+    }
+  }
+
+  .petition-hero-wrapper {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding-left: 24px;
+
+    @media (min-width: $container-hg) {
+      padding: 0;
+    }
+
+    .petition-hero-content {
+      max-width: $container-hg;
+      margin: 0 auto;
+
+      .yoast-breadcrumb-wrapper {
+        .yoast-breadcrumb {
+          padding: 16px 0 10px 0;
+          color: var(--wp--preset--color--white);
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+
+          > span:first-of-type {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+          }
+
+          span > span {
+            display: inline-flex;
+            align-items: center;
+          }
+
+          span > span:not(.breadcrumb_last)::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin: 0 6px;
+            background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E")
+              no-repeat center;
+            background-size: contain;
+            vertical-align: middle;
+          }
+
+          a {
+            font-size: 13px;
+            font-weight: 300;
+            text-decoration: none;
+            color: var(--wp--preset--color--white);
+
+            &:hover {
+              text-decoration: underline;
+              background-color: transparent;
+            }
+          }
+
+          & .breadcrumb_last {
+            display: inline;
+            font-weight: bold;
+            font-size: 13px;
+            color: var(--wp--preset--color--white);
+            white-space: normal;
+            flex-basis: auto;
+            flex-grow: 0;
+            flex-shrink: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+.petition-container {
+  .petition-thanks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1;
+    position: relative;
+    background-color: var(--wp--preset--color--white);
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    margin: -160px auto 48px auto;
+    padding: 24px;
+    max-width: 650px;
+    width: 100%;
+
+    .success {
+      display: flex;
+      background-color: var(--wp--preset--color--success-light);
+
+      .step-one {
+        padding: 24px 0 24px 18px;
+
+        .icon-step-one-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 30px;
+          background-color: var(--wp--preset--color--success);
+          border-radius: 50%;
+
+          svg {
+            width: 70%;
+            height: 70%;
+            fill: var(--wp--preset--color--success-light);
+          }
+        }
+      }
+
+      .success-content {
+        padding: 24px 18px 24px 18px;
+
+        .you-signed {
+          color: var(--wp--preset--color--success);
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 23px;
+          line-height: 28px;
+          padding-bottom: 12px;
+          margin: 0;
+        }
+
+        .petition-title {
+          color: var(--wp--preset--color--success);
+          font-family: var(--wp--preset--font-family--primary);
+          font-size: 18px;
+          font-weight: 300;
+          line-height: 28px;
+          text-decoration: underline;
+        }
+
+        .thanks-for-action {
+          color: var(--wp--preset--color--success);
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 18px;
+          line-height: 28px;
+          margin: 0;
+        }
+      }
+    }
+
+    .petition-share {
+      display: flex;
+
+      &.share-activated {
+        background-color: var(--wp--preset--color--success-light);
+
+        .step-two {
+          .icon-step-two-container {
+            color: var(--wp--preset--color--grey-dark);
+            background-color: var(--wp--preset--color--success);
+
+            svg {
+              width: 70%;
+              height: 70%;
+              fill: var(--wp--preset--color--success-light);
+            }
+          }
+        }
+      }
+
+      .step-two {
+        padding: 24px 0 24px 18px;
+
+        .icon-step-two-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 30px;
+          color: var(--wp--preset--color--grey-dark);
+          background-color: var(--wp--preset--color--grey-light);
+          border-radius: 50%;
+          font-family: var(--wp--preset--font-family--secondary);
+        }
+      }
+
+      .share-content {
+        padding: 24px 18px 24px 18px;
+        flex: 1;
+
+        .share-title {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 23px;
+          line-height: 28px;
+          padding-bottom: 12px;
+          margin: 0;
+        }
+
+        .social-networks {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          a,
+          div {
+            .icon-container {
+              width: 40px;
+              height: 40px;
+              padding: 6px;
+              background-color: var(--wp--preset--color--black);
+
+              &:hover {
+                cursor: pointer;
+              }
+
+              svg {
+                width: 100%;
+                height: auto;
+                fill: var(--wp--preset--color--white);
+                transition: fill 0.3s ease;
+              }
+
+              &:hover svg {
+                fill: var(--wp--preset--color--primary);
+              }
+            }
+          }
+
+          .article-shareCopy {
+            position: relative;
+
+            &.copied::after {
+              content: 'Lien copié !';
+              position: absolute;
+              top: 100%;
+              left: 50%;
+              transform: translateX(-50%);
+              margin-top: 6px;
+              padding: 4px 8px;
+              font-size: 13px;
+              font-weight: bold;
+              white-space: nowrap;
+              background-color: var(--wp--preset--color--black);
+              color: var(--wp--preset--color--primary);
+              opacity: 1;
+              animation: fadeInOut 2s ease-in-out;
+              pointer-events: none;
+            }
+          }
+        }
+      }
+    }
+
+    .petition-donate {
+      display: flex;
+
+      &.donate-activated {
+        background-color: var(--wp--preset--color--success-light);
+
+        .step-three {
+          .icon-step-three-container {
+            color: var(--wp--preset--color--grey-dark);
+            background-color: var(--wp--preset--color--success);
+
+            svg {
+              width: 70%;
+              height: 70%;
+              fill: var(--wp--preset--color--success-light);
+            }
+          }
+        }
+      }
+
+      .step-three {
+        padding: 24px 0 24px 18px;
+
+        .icon-step-three-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 30px;
+          color: var(--wp--preset--color--grey-dark);
+          background-color: var(--wp--preset--color--grey-light);
+          border-radius: 50%;
+          font-family: var(--wp--preset--font-family--secondary);
+        }
+      }
+
+      .donate-content {
+        padding: 24px 18px 24px 18px;
+        flex: 1;
+
+        .donate-title {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 23px;
+          line-height: 28px;
+          padding-bottom: 12px;
+          margin: 0;
+        }
+
+        .need-you {
+          font-size: 18px;
+          line-height: 28px;
+          padding-bottom: 12px;
+          margin: 0;
+        }
+
+        .custom-button {
+          .button-label {
+            text-transform: uppercase !important;
+          }
+        }
+      }
+    }
+
+    .other-petition {
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 30px;
+      line-height: 28px;
+      padding: 18px;
+      margin: 0;
+    }
+
+    .random-petition {
+      border: 1px solid var(--wp--preset--color--grey-light);
+
+      .random-petition-image-container {
+        width: 100%;
+        height: 170px;
+
+        .random-petition-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .random-petition-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 18px;
+
+        .random-petition-title {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 30px;
+          line-height: 28px;
+          padding-bottom: 12px;
+          margin: 0;
+        }
+
+        .random-petition-end-date {
+          color: var(--wp--preset--color--black);
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 20px;
+          font-weight: bold;
+          line-height: 1rem;
+          margin: 0;
+        }
+
+        .progress-bar-container {
+          width: 100%;
+          height: 20px;
+          border: 2px solid var(--wp--preset--color--black);
+          background-color: var(--wp--preset--color--primary);
+          overflow: hidden;
+          position: relative;
+
+          @media (min-width: $container-lg) {
+            width: 85%;
+          }
+        }
+
+        .progress-bar {
+          height: 100%;
+          background-color: var(--wp--preset--color--black);
+          transition: width 0.5s ease-in-out;
+        }
+
+        .supports {
+          font-size: 13px;
+          margin: 0;
+          line-height: 100%;
+
+          .current-signatures {
+            font-size: 13px;
+            font-weight: bold;
+          }
+
+          .help-us {
+            font-weight: bold;
+            margin-right: 6px;
+          }
+        }
+
+        .custom-button {
+          margin-top: 12px;
+
+          .button-label {
+            text-transform: uppercase !important;
+          }
+        }
+      }
+    }
+
+    .all-petitions-link {
+      margin-top: 30px;
+      text-align: center;
+
+      a {
+        font-size: 18px;
+        line-height: 28px;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .petition-layout {
+    display: flex;
+    gap: 24px;
+    max-width: $container-lg;
+    margin-inline: auto;
+
+    @media (max-width: $container-lg) {
+      flex-direction: column;
+    }
+
+    @media (min-width: $container-lg) {
+      gap: 100px;
+      padding: 0 24px 0 24px;
+    }
+  }
+
+  .petition-main {
+    z-index: 1;
+    background-color: var(--wp--preset--color--white);
+    margin-top: -160px;
+    padding: 18px 0;
+
+    @media (min-width: $container-lg) {
+      flex: 0 0 55%;
+      max-width: 55%;
+    }
+
+    .article {
+      .article-content {
+        padding: 0;
+
+        .wp-block-post-content {
+          padding: 0 24px;
+
+          .chapo {
+            padding: 0;
+
+            .text {
+              width: 100%;
+              margin-left: 0;
+            }
+          }
+
+          h2:first-of-type {
+            text-transform: uppercase;
+            font-size: 36px;
+            font-weight: bold;
+            line-height: 41px;
+            border: none;
+            margin-top: 24px;
+            padding: 0;
+
+            &::before {
+              display: none;
+            }
+          }
+        }
+
+        .petition-title {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 45px;
+          font-weight: bold;
+          line-height: 51px;
+          margin-bottom: 18px;
+          padding: 0 24px;
+        }
+
+        .article-metaData {
+          padding: 0 24px;
+          margin-bottom: 18px;
+
+          .published-updated {
+            font-size: 13px;
+          }
+        }
+
+        .article-chip-categories {
+          margin-bottom: 0;
+          padding: 0 0 24px 24px;
+        }
+
+        .petition-content {
+          padding: 18px 24px;
+          margin-bottom: 6px;
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
+          padding-bottom: 24px;
+          background-color: var(--wp--preset--color--grey-lighter);
+
+          .infos {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .end-date {
+              color: var(--wp--preset--color--black);
+              font-family: var(--wp--preset--font-family--secondary);
+              font-size: 20px;
+              font-weight: bold;
+              line-height: 1rem;
+              margin: 0;
+            }
+
+            .progress-bar-container {
+              width: 100%;
+              height: 20px;
+              border: 2px solid var(--wp--preset--color--black);
+              background-color: var(--wp--preset--color--primary);
+              overflow: hidden;
+              position: relative;
+
+              @media (min-width: $container-lg) {
+                width: 85%;
+              }
+            }
+
+            .progress-bar {
+              height: 100%;
+              background-color: var(--wp--preset--color--black);
+              transition: width 0.5s ease-in-out;
+            }
+
+            .supports {
+              font-size: 13px;
+              margin: 0;
+              line-height: 100%;
+
+              .current-signatures {
+                font-size: 13px;
+                font-weight: bold;
+              }
+
+              .help-us {
+                font-weight: bold;
+                margin-right: 6px;
+              }
+            }
+          }
+
+          .button-label {
+            text-transform: uppercase !important;
+          }
+        }
+
+        .read-more-block {
+          margin: 0 24px 24px 24px;
+          padding: 14px 20px;
+          border: 2px solid var(--wp--preset--color--black);
+          margin-bottom: 24px;
+
+          @media (min-width: $container-lg) {
+            margin: 0 0 24px 0;
+          }
+
+          .read-more-toggle {
+            margin: 0;
+            gap: 12px;
+
+            .icon-container {
+              width: 24px;
+              height: 24px;
+            }
+
+            .label {
+              font-family: var(--wp--preset--font-family--secondary);
+              font-size: 23px;
+              font-weight: bold;
+              line-height: 26px;
+            }
+          }
+
+          .read-more-content.expanded {
+            font-style: italic;
+            padding: 24px 24px 0 24px;
+          }
+        }
+
+        .printable-petition-link {
+          margin: 0 24px 24px 24px;
+          color: var(--wp--preset--color--grey-dark);
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 16px;
+          font-weight: bold;
+          line-height: 20px;
+
+          @media (min-width: $container-lg) {
+            margin: 0 0 24px 0;
+          }
+
+          a {
+            text-decoration: underline;
+            color: var(--wp--preset--color--grey-dark);
+            font-family: var(--wp--preset--font-family--secondary);
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .petition-aside {
+    margin-top: 48px;
+    flex: 1;
+    min-width: 0;
+    padding: 0 24px;
+
+    @media (min-width: $container-lg) {
+      padding: 0;
+    }
+
+    .sticky-card {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      z-index: 1;
+      position: sticky;
+      top: 180px;
+      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+      margin: 0 auto 24px auto;
+
+      @media (min-width: $container-sm) {
+        flex-direction: row;
+      }
+
+      @media (min-width: $container-lg) {
+        max-width: none;
+        flex-direction: column;
+      }
+
+      .sticky-card-content {
+        position: relative;
+
+        .sticky-card-title {
+          z-index: 1;
+          position: absolute;
+          top: -13px;
+          left: 50%;
+          transform: translateX(-50%);
+          color: var(--wp--preset--color--primary);
+          background-color: var(--wp--preset--color--black);
+          text-align: center;
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 16px;
+          font-weight: bold;
+          line-height: 12px;
+          padding: 8px 12px;
+        }
+
+        .recipient {
+          text-align: center;
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 22px;
+          font-weight: bold;
+          line-height: 30px;
+          padding: 30px 18px 14px 18px;
+          margin: 0;
+        }
+
+        .punchline-wrapper {
+          position: relative;
+          padding: 47px 26px 34px 26px;
+          width: 100%;
+          background-color: var(--wp--preset--color--grey-lighter);
+          display: flex;
+          flex-direction: column;
+          gap: 18px;
+
+          &::before {
+            content: '“';
+            font-size: 4rem;
+            font-weight: bold;
+            color: inherit;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 20px;
+          }
+
+          .punchline {
+            color: var(--wp--preset--color--grey-dark);
+            text-align: center;
+            font-family: var(--wp--preset--font-family--secondary);
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 24px;
+            margin: 0;
+          }
+
+          .border {
+            height: 4px;
+            background-color: var(--wp--preset--color--primary);
+            width: 60%;
+            margin: 0 auto;
+          }
+        }
+
+        .email-section {
+          padding: 28px 24px;
+          border-bottom: 1px solid var(--wp--preset--color--grey-light);
+
+          .email-input {
+            border: 1px solid var(--wp--preset--color--grey-light);
+
+            &::placeholder {
+              font-family: var(--wp--preset--font-family--primary);
+              color: var(--wp--preset--color--grey-dark);
+              font-size: 18px;
+              font-weight: 300;
+              line-height: 28px;
+              text-transform: capitalize;
+            }
+          }
+        }
+
+        .full-form {
+          display: none;
+          flex-direction: column;
+          gap: 18px;
+          padding: 18px 24px;
+
+          .civility-section {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            gap: 18px;
+
+            .civility-label {
+              color: var(--wp--preset--color--grey-dark);
+              font-family: var(--wp--preset--font-family--primary);
+              font-size: 18px;
+              font-weight: 300;
+              line-height: 28px;
+              text-transform: capitalize;
+            }
+
+            .civilities {
+              display: flex;
+              align-items: center;
+              gap: 18px;
+
+              input {
+                border: 1px solid var(--wp--preset--color--grey-dark);
+                height: auto;
+                padding: 0;
+              }
+
+              input[type='radio'] {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+              }
+
+              label {
+                position: relative;
+                padding-left: 25px;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                font-family: var(--wp--preset--font-family--primary);
+                font-weight: 300;
+                font-size: 18px;
+                text-transform: capitalize;
+                color: var(--wp--preset--color--grey-dark);
+              }
+
+              label::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 18px;
+                height: 18px;
+                border: 2px solid var(--wp--preset--color--grey-dark);
+                border-radius: 50%;
+                background: var(--wp--preset--color--white);
+                box-sizing: border-box;
+              }
+
+              input[type='radio']:checked + label::after {
+                content: '';
+                position: absolute;
+                left: 4px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 10px;
+                height: 10px;
+                background: var(--wp--preset--color--black);
+                border-radius: 50%;
+              }
+            }
+          }
+
+          .firstname-section,
+          .lastname-section,
+          .phone-section {
+            .firstname-input,
+            .lastname-input,
+            .phone-input {
+              border: 1px solid var(--wp--preset--color--grey-light);
+
+              &::placeholder {
+                font-family: var(--wp--preset--font-family--primary);
+                color: var(--wp--preset--color--grey-dark);
+                font-size: 18px;
+                font-weight: 300;
+                line-height: 28px;
+                text-transform: capitalize;
+              }
+            }
+          }
+
+          .zipcode-and-country {
+            display: flex;
+            gap: 18px;
+
+            .zipcode-section {
+              width: 50%;
+
+              .zipcode-input {
+                border: 1px solid var(--wp--preset--color--grey-light);
+
+                &::placeholder {
+                  font-family: var(--wp--preset--font-family--primary);
+                  color: var(--wp--preset--color--grey-dark);
+                  font-size: 18px;
+                  font-weight: 300;
+                  line-height: 28px;
+                  text-transform: capitalize;
+                }
+              }
+            }
+
+            .country-section {
+              width: 50%;
+
+              .country-input {
+                padding: 0 12px;
+                height: 100%;
+                width: 100%;
+                border: 1px solid var(--wp--preset--color--grey-light);
+                color: var(--wp--preset--color--grey-dark);
+                font-family: var(--wp--preset--font-family--secondary);
+                font-size: var(--wp--preset--font-size--small);
+                font-weight: bold;
+                text-transform: capitalize;
+              }
+            }
+          }
+        }
+
+        .sign-and-legals {
+          padding: 18px 20px 48px 20px;
+
+          .custom-button-block {
+            margin: 0 auto 24px auto;
+
+            .custom-button {
+              all: unset;
+
+              .content {
+                padding: 12px 50px;
+
+                .button-label {
+                  font-size: 23px;
+                  text-transform: uppercase !important;
+                }
+              }
+            }
+          }
+
+          .legals {
+            font-family: var(--wp--preset--font-family--primary);
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 18px;
+            margin: 0;
+
+            .by-email {
+              a {
+                font-family: var(--wp--preset--font-family--primary);
+                font-size: 14px;
+                font-weight: 300;
+                text-decoration: underline;
+                line-height: 18px;
+              }
+            }
+
+            .privacy-policy {
+              a {
+                font-family: var(--wp--preset--font-family--primary);
+                font-size: 14px;
+                font-weight: 300;
+                text-decoration: underline;
+                line-height: 18px;
+              }
+            }
+          }
+        }
+
+        .close-petition {
+          padding: 18px 20px 48px 20px;
+
+          p {
+            font-family: var(--wp--preset--font-family--primary);
+            font-size: var(--wp--custom--body--font-size);
+            line-height: var(--wp--custom--body--line-height);
+            font-weight: var(--wp--custom--body--font-weight);
+          }
+
+          .custom-button-block {
+            margin: 0 auto;
+          }
+        }
+      }
+    }
+  }
+}

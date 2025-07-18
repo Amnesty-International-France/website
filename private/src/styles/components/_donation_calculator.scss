@@ -1,0 +1,299 @@
+.donation-calculator,
+.donation-header,
+.donation-body,
+.donation-calculator-simulation,
+.amount-free {
+  display: flex;
+  flex-direction: column;
+}
+
+.donation-calculator {
+  max-width: 360px;
+  box-shadow: 0 0 20px 0 #00000026;
+
+  &.medium {
+    width: 272px;
+  }
+
+  > .donation-header {
+    cursor: pointer;
+    background-color: var(--wp--preset--color--grey-lighter);
+    position: relative;
+    height: 200px;
+
+    > .tax-deduction {
+      position: absolute;
+      width: 300px;
+      height: 135px;
+      top: -37px;
+      left: -20px;
+    }
+
+    > .donation-title {
+      margin-top: auto;
+      padding: 15px;
+
+      > .subtitle {
+        margin-bottom: 0;
+        font-weight: bold;
+        font-size: 25px;
+        line-height: 29px;
+        letter-spacing: 0;
+        text-align: center;
+        font-family: var(--wp--preset--font-family--secondary);
+
+        & > span {
+          font-weight: bold;
+          font-size: 18px;
+          line-height: 25px;
+          letter-spacing: 0;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .donation-tabs {
+    display: flex;
+    cursor: pointer;
+
+    > .punctual,
+    > .monthly {
+      flex: 1 1;
+      width: 50%;
+      padding: 20px 0;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 20px;
+      text-align: center;
+      white-space: nowrap;
+      background-color: var(--wp--preset--color--grey-light);
+      color: var(--wp--preset--color--grey-dark);
+      user-select: none;
+      font-family: var(--wp--preset--font-family--secondary);
+
+      &.active {
+        background-color: var(--wp--preset--color--white);
+        color: var(--wp--preset--color--black)
+      }
+    }
+  }
+
+  .donation-body {
+    padding: 26px 13px;
+    border-bottom: 1px solid var(--wp--preset--color--grey-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .give, .cost {
+      display: flex;
+      width: 100%;
+      padding-left: 13px;
+      align-items: center;
+      justify-content: space-between;
+
+      h4, input, label, input::placeholder {
+        font-style: normal;
+        font-weight: bold;
+        line-height: 29px;
+        margin-bottom: 0;
+        font-size: 26px;
+      }
+
+      .input {
+        width: 50%;
+
+        > .input-donation, .input-donation-simulated {
+          padding: 12px 6px;
+          width: 80px;
+          height: 44px;
+          background-color: var(--wp--preset--color--grey-light);
+          text-align: right;
+        }
+
+        &.yellow > .input-donation-simulated {
+          background-color: var(--wp--preset--color--primary);
+        }
+
+        > label > span {
+          font-size: 20px;
+          text-transform: none;
+        }
+      }
+    }
+
+    .give {
+      margin-bottom: 15px;
+    }
+
+    > .amount-monthly.hidden,
+    > .amount-punctual.hidden {
+      display: none;
+
+      &.active {
+        display: flex;
+      }
+    }
+
+    .amount-monthly,
+    .amount-punctual {
+      width: 100%;
+      display: flex;
+      column-gap: 11px;
+      justify-content: space-between;
+
+      > .don-radio {
+        width: 70px;
+        height: 46px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 9px 14px;
+        position: relative;
+        border: 1px solid var(--wp--preset--color--black);
+        cursor: pointer;
+        z-index: 2;
+
+        > input[type='radio'] {
+          opacity: 0;
+          position: absolute;
+          pointer-events: none;
+        }
+
+        > label {
+          cursor: pointer;
+          font-weight: bold;
+          font-size: 26px;
+          line-height: 29px;
+          letter-spacing: 0;
+          text-align: center;
+          font-family: var(--wp--preset--font-family--secondary);
+        }
+
+        &.active {
+          background-color: var(--wp--preset--color--black);
+
+          > label {
+            color: var(--wp--preset--color--primary);
+          }
+        }
+      }
+    }
+
+    > .amount-free {
+      width: 100%;
+
+      > p {
+        margin-top: 1rem;
+        margin-bottom: 4px;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 24px;
+        letter-spacing: 0;
+        font-family: var(--wp--preset--font-family--secondary);
+      }
+
+      > .input-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        > .input-don-free {
+          max-width: 75%;
+          font-size: 18px;
+
+          &::placeholder {
+            color: var(--wp--preset--color--grey-dark);
+            text-transform: none;
+            font-weight: bold;
+
+          }
+
+          & > label {
+            font-family: var(--wp--preset--font-family--secondary);
+            font-size: 26px;
+            font-style: normal;
+            font-weight: bold;
+            line-height: 29px;
+          }
+        }
+
+        > label {
+          font-weight: bold;
+          font-size: 26px;
+          line-height: 29px;
+          letter-spacing: 0;
+
+          > span {
+            font-size: 20px;
+            text-transform: none;
+          }
+        }
+      }
+    }
+  }
+
+  .donation-calculator-footer {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    & > .explanation {
+      color: var(--wp--preset--color--grey-dark);
+      text-align: center;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: bold;
+      line-height: 18px;
+      margin-bottom: 0;
+      font-family: var(--wp--preset--font-family--secondary);
+      text-transform: none;
+      white-space: normal;
+    }
+
+    & > .legend {
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 18px;
+      margin-bottom: 0;
+    }
+
+    & > .price-simulated {
+      font-weight: bold;
+      font-size: 26px;
+      line-height: 29px;
+      letter-spacing: 0;
+      color: var(--wp--preset--color--black);
+      margin-bottom: 1rem;
+      font-family: var(--wp--preset--font-family--secondary);
+
+      & > span {
+        font-size: 20px;
+      }
+
+      & ~ a {
+        width: 232px;
+      }
+    }
+
+    & > .donation-link {
+      width: fit-content;
+      display: inline-flex;
+      height: 51.429px;
+      padding: 14px 28px 14px 20px;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      border: 1px solid var(--wp--preset--color--primary);
+      background: var(--wp--preset--color--primary);
+      text-transform: uppercase;
+      text-decoration: none;
+      margin: 0 auto 1rem;
+      font-family: var(--wp--preset--font-family--secondary);
+    }
+  }
+}

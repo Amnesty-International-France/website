@@ -1,0 +1,43 @@
+.as-h1 {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 45px;
+  line-height: 51px;
+}
+
+.as-h2 {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 36px;
+  line-height: 41px;
+}
+
+.as-h3 {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 30px;
+  line-height: 33px;
+}
+
+.as-h4 {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 26px;
+  line-height: 29px;
+}
+
+.as-h5 {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 22px;
+  line-height: 25px;
+}
+
+.as-h6 {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.wp-block-heading {
+  padding: 0 24px;
+
+  @media (min-width: $container-sm) {
+    padding: 0;
+  }
+}

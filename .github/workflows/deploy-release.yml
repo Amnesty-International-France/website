@@ -2,19 +2,44 @@ name: Deploy to Clever Cloud
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "fix/permalinks-not-generated" , "main" ]
 
 permissions:
   contents: read
 
 jobs:
   deploy:
-    name: Release
-    uses: coopTilleuls/action-clevercloud-deploy/.github/workflows/deploy.yml@v1
-    with:
-      # variable APP_ID and secrets CLEVER_TOKEN and CLEVER_SECRET
-      # must be defined in this github environment
-      deploy-environment: RELEASE
-    secrets:
-      clever-token: ${{ secrets.CLEVER_TOKEN }}
-      clever-secret: ${{ secrets.CLEVER_SECRET }}
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: RELEASE
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version : 22
+    - name: installCleverCli
+      run: |
+        ls wp-content/themes/humanity-theme/includes/blocks/
+        curl -s  https://clever-tools.clever-cloud.com/releases/latest/clever-tools-latest_linux.tar.gz -o /tmp/clever-tools-latest_linux.tar.gz
+        tar -xvf /tmp/clever-tools-latest_linux.tar.gz -C /usr/local/bin/  --strip-components=1
+    - name: createAssets
+      run: |
+        git fetch --prune --unshallow
+        ls wp-content/themes/humanity-theme/includes/blocks/
+        cd private &&  corepack enable && yarn &&  yarn build
+        cd .. &&  ls && rm -rf private
+        sed -i '/wp-content\/themes\/humanity-theme\/assets/d' .gitignore
+    - name: updateLocalGit
+      run: |
+        git config --global user.email "gihub_workflow@example.com"
+        git config --global user.name "gihub_workflow"
+        git add -A ; git commit -m"git ${{ github.sha }}"
+        ls wp-content/themes/humanity-theme/includes/blocks/
+    - name: Deploy
+      env:
+        CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
+        CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
+      run: |
+        clever link ${{ vars.APP_ID }}
+        clever deploy --force # if already deployed, do nothing

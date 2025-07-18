@@ -1,0 +1,8 @@
+.article-footer {
+  margin-top: var(--wp--preset--spacing--single);
+
+  .article-chip-categories {
+    border-top: 1px solid var(--wp--preset--color--grey-lighter);
+    border-bottom: 1px solid var(--wp--preset--color--grey-lighter);
+  }
+}

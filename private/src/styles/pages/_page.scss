@@ -1,0 +1,14 @@
+@import './page/base';
+@import './page/featured-image';
+@import './page/meta';
+@import './page/header';
+@import './page/hero';
+@import './page/footer';
+
+// Style by page type
+@import './page/type/standard';
+@import './page/type/legs';
+@import './page/type/donation';
+
+// For legs page only
+@import './page/menu-legs';

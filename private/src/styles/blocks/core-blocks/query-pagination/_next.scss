@@ -1,0 +1,29 @@
+span.wp-block-query-pagination-next {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.wp-block-query-pagination-next {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.25;
+  font-family: var(--wp--preset--font-family--secondary);
+  text-decoration: none;
+  padding: 6px 10px;
+
+  .icon {
+    display: inline-block;
+    margin-right: 0;
+    margin-left: 16px;
+    width: 16px;
+    height: 16px;
+    background-image: url('../images/sprite.svg'), none;
+    background-repeat: no-repeat;
+    background-size: 313px 300px;
+    background-position: -110px -265px;
+  }
+}

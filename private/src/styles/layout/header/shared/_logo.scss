@@ -1,0 +1,35 @@
+.logo img {
+  height: auto;
+  width: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.logo:empty::after {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 100%;
+  background-color: var(--wp--preset--color--primary);
+  border-right: 1px solid var(--wp--preset--color--grey-lighter);
+  content: attr(aria-label);
+}
+
+.rtl .logo:empty::after {
+  border-right: none;
+  border-left: 1px solid var(--wp--preset--color--grey-lighter);
+}
+
+.logo-logoType,
+.logo-logoMark {
+  max-height: 100% !important;
+}
+
+.logo-logoMark {
+  display: block;
+
+  @include mq(small) {
+    display: none;
+  }
+}

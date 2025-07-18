@@ -1,0 +1,20 @@
+.add-more-button {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  padding: 24px;
+  width: 100%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: var(--wp--preset--color--white);
+  border: 1px solid var(--wp--preset--color--black);
+
+  .dashicon {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    vertical-align: top;
+  }
+}

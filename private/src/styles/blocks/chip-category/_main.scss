@@ -1,0 +1,118 @@
+.chip-category {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-weight: bold;
+  line-height: 12px;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  .chip-icon {
+    width: 17px;
+    height: 17px;
+
+    svg {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &:hover {
+    background-color: transparent;
+  }
+
+  &.small {
+    padding: 6px 6px;
+    font-size: 12px;
+  }
+
+  &.medium {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  &.large {
+    padding: 8px 12px;
+    font-size: 16px;
+  }
+
+  &.bg-yellow {
+    background-color: var(--wp--preset--color--primary);
+    color: var(--wp--preset--color--black);
+    border-color: var(--wp--preset--color--primary);
+
+    &:hover {
+      background-color: var(--wp--preset--color--primary-dark);
+      border-color: var(--wp--preset--color--primary-dark);
+    }
+  }
+
+  &.bg-black {
+    background-color: var(--wp--preset--color--black);
+    color: var(--wp--preset--color--primary);
+    border-color: var(--wp--preset--color--black);
+
+    &:hover {
+      background-color: var(--wp--preset--color--grey-darkest);
+      border-color: var(--wp--preset--color--grey-darkest);
+    }
+  }
+
+  &.bg-gray {
+    background-color: var(--wp--preset--color--grey-lighter);
+    color: var(--wp--preset--color--black);
+
+    &:hover {
+      background-color: var(--wp--preset--color--grey-light);
+      border-color: var(--wp--preset--color--grey-light);
+    }
+  }
+
+  &.outline-yellow {
+    background-color: transparent;
+    color: var(--wp--preset--color--primary);
+    border-color: var(--wp--preset--color--primary);
+
+    &:hover {
+      color: var(--wp--preset--color--primary-dark);
+      border-color: var(--wp--preset--color--primary-dark);
+    }
+  }
+
+  &.outline-black {
+    background-color: transparent;
+    color: var(--wp--preset--color--black);
+    border-color: var(--wp--preset--color--black);
+
+    &:hover {
+      color: var(--wp--preset--color--grey-darkest);
+      border-color: var(--wp--preset--color--grey-darkest);
+    }
+  }
+
+  &.outline-gray {
+    background-color: transparent;
+    color: var(--wp--preset--color--grey-dark);
+    border: 1px solid var(--wp--preset--color--grey-dark);
+
+    &:hover {
+      color: var(--wp--preset--color--black);
+      border-color: var(--wp--preset--color--black);
+    }
+  }
+}
+
+div.chip-category {
+  pointer-events: none;
+}

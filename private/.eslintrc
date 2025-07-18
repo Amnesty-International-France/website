@@ -1,0 +1,41 @@
+{
+  "extends": [
+    "airbnb-base",
+    "prettier",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:@wordpress/eslint-plugin/i18n",
+  ],
+  "plugins": ["prettier"],
+  "globals": {
+    "lodash": true,
+    "React": true,
+    "ReactDOM": true,
+    "wp": true,
+  },
+  "env": {
+    "browser": true,
+  },
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "requireConfigFile": false,
+  },
+  "rules": {
+    "prettier/prettier": ["error"],
+    "react/prop-types": "off",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "@wordpress/i18n-text-domain": ["error", { "allowedTextDomain": ["amnesty", "default"] }],
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": ["_embedded", "_EventStartDate", "_EventEndDate", "_VenueCity", "_OrganizerEmail"],
+      },
+    ],
+    "prefer-destructuring": "off",
+  },
+  "settings": {
+    "react": {
+      "version": "18.3.1",
+    },
+  },
+}

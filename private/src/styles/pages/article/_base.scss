@@ -1,0 +1,61 @@
+.article {
+  flex: 1 1 100%;
+  width: 100%;
+
+  .wp-block-list {
+    list-style-type: disc;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 20px 55px 20px 55px;
+
+    li {
+      margin-left: 35px;
+      line-height: 1.5rem;
+    }
+
+    & ::marker {
+      color: var(--wp--preset--color--black);
+      font-size: 1.5em;
+    }
+  }
+}
+
+.article-content {
+  padding: 0 24px;
+
+  @media (min-width: $container-hg) {
+    padding: 0;
+  }
+
+  .wp-block-group {
+    margin-bottom: var(--wp--preset--spacing--single);
+  }
+}
+
+.article-container--report .article-content {
+  padding-top: 30px;
+  border-top: 1px solid var(--wp--preset--color--grey-lighter);
+}
+
+.article-figure {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-height: 710px; // hero-md image height
+  background-color: var(--wp--preset--color--grey-lighter);
+  margin-bottom: 0;
+
+  // aiic-added wrapper for metadata
+  > div[style='position:relative'] {
+    width: 100%;
+  }
+
+  &.is-stretched img {
+    min-width: 100%;
+  }
+}
+
+.article-title {
+  margin-bottom: 0;
+}

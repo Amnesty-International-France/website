@@ -1,0 +1,97 @@
+.page-header {
+  position: sticky;
+  top: -100%;
+  z-index: 11;
+  height: 64px;
+  font-size: var(--wp--preset--font-size--regular);
+  color: var(--wp--preset--color--black);
+  transition: top 0.5s ease-in-out;
+  font-family: var(--wp--preset--font-family--secondary);
+  text-transform: uppercase;
+  box-shadow: 0 0 30px 20px rgba(0, 0, 0, 0.05);
+
+  @media (min-width: 1024px) {
+    height: 108px;
+  }
+
+  li button {
+    text-transform: uppercase;
+  }
+}
+
+.page-header .container {
+  padding: 0;
+}
+
+.page-header .container,
+.page-headerItems {
+  height: 100%;
+}
+
+.page-header.stick {
+  top: 0;
+}
+
+.admin-bar .page-header.stick {
+  top: 0;
+
+  @include mq(600px) {
+    top: 46px;
+  }
+
+  @include mq(782px) {
+    top: 32px;
+  }
+}
+
+.page-headerItems {
+  display: flex;
+  position: relative;
+
+  .nav-don-calculator {
+    display: none;
+    width: 275px;
+    background-color: var(--wp--preset--color--white);
+    position: absolute;
+    z-index: 110;
+    top: 66px;
+    right: 2px;
+  }
+}
+
+.page-header a {
+  transition: unset;
+  text-decoration: none;
+}
+
+.page-header .btn {
+  display: flex;
+  align-items: center;
+  font-size: var(--wp--preset--font-size--heading-4);
+  color: var(--wp--preset--color--black);
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+}
+
+.page-header .menu-item {
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+}
+
+.main-header {
+  height: 64px;
+  width: 100%;
+}
+
+.top-header {
+  display: none;
+  height: 44px;
+  background-color: var(--wp--preset--color--black);
+  color: var(--wp--preset--color--white);
+
+  @include mq(mobile-nav) {
+    display: flex;
+  }
+}

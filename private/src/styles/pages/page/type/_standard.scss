@@ -1,0 +1,58 @@
+.page-standard {
+  .page-content {
+    .custom-button-block,
+    .download-go-further-block,
+    .get-informed-block,
+    .image-block,
+    .read-also-block,
+    p:not(
+        .wp-block-amnesty-core-chapo p,
+        .wp-block-amnesty-core-section.small p,
+        .wp-block-amnesty-core-section.large p,
+        .download-go-further-block p,
+        .call-to-action-block p,
+        .wp-block-amnesty-core-section-home p,
+        .wp-block-jetpack-contact-form-container p
+      ),
+    .wp-block-columns,
+    .wp-block-details,
+    .wp-block-heading,
+    .wp-block-image,
+    .wp-block-list,
+    .wp-block-amnesty-core-action,
+    .wp-block-amnesty-core-quote-block,
+    .wp-block-amnesty-core-image,
+    .wp-block-amnesty-core-section.small,
+    .read-more-block,
+    .wp-block-jetpack-contact-form-container {
+      max-width: $container-md;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .call-to-action-block {
+      max-width: $container-lg;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .wp-block-amnesty-core-chapo {
+      max-width: $container-hg;
+      margin-left: auto;
+      margin-right: auto;
+
+      .text {
+        @media (min-width: $container-lg) {
+          width: 50%;
+          margin-left: 20%;
+        }
+      }
+    }
+
+    .carousel-block {
+      .swiper-slide {
+        max-width: $container-sm;
+      }
+    }
+  }
+}
