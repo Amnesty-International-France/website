@@ -106,12 +106,12 @@ if (!function_exists('render_download_go_further_block')) {
                         ?>
                         <?php if ($url && $title): ?>
                             <li class="item">
-                                <a class="item-link" href="<?php echo esc_url($url); ?>" download>
+                                <a class="item-link" href="<?php echo esc_url($url); ?>">
                                     <p class="item-text">
                                         <?php echo esc_html(sprintf('%s (%s, %s)', $title, $type, $size)); ?>
                                     </p>
-                                </a>    
-                                <a href="<?php echo esc_url($url); ?>" download>
+                                </a>
+                                <a href="<?php echo esc_url($url); ?>">
                                     <button class="item-button">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
