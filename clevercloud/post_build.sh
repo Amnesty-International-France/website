@@ -18,7 +18,7 @@ if test -d ${APP_HOME}/wp-content/themes  ; then
     rsync -a ${APP_HOME}/wp-content/themes/ ${APP_HOME}${CC_WEBROOT}/wp-content/themes/
 fi
 
-# install restic for FS backup
+#install restic for FS backup
 RESTIC_TAG=0.17.3
 curl -L https://github.com/restic/restic/releases/download/v${RESTIC_TAG}/restic_${RESTIC_TAG}_linux_amd64.bz2 | bunzip2 > /home/bas/.local/bin/restic
 chmod +x /home/bas/.local/bin/restic
