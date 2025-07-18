@@ -151,6 +151,48 @@ add_action( 'acf/include_fields', function() {
 					'value' => 'post',
 				),
 			),
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
+					'value' => 'page',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
+					'value' => 'tribe_events',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
+					'value' => 'fiche_pays',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
+					'value' => 'landmark',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
+					'value' => 'local-structures',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
+					'value' => 'petition',
+				),
+			),
 		),
 		'menu_order' => 0,
 		'position' => 'normal',
@@ -329,6 +371,18 @@ add_action( 'acf/include_fields', function() {
 					'param' => 'post_type',
 					'operator' => '==',
 					'value' => 'landmark',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
+					'value' => 'page',
+				),
+				array(
+					'param' => 'page_type',
+					'operator' => '!=',
+					'value' => 'front_page',
 				),
 			),
 		),

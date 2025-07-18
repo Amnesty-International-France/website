@@ -22,7 +22,7 @@ function render_related_posts_block( $attributes, $content = '' ) {
 		$selected_posts = array_filter( array_slice( $selected_posts, 0, $nb_posts ) );
 
 		$query = new WP_Query( [
-			'post_type'      => get_post_type( $post_id ),
+			'post_type'      => 'any',
 			'post__in'       => $selected_posts,
 			'orderby'        => 'post__in',
 			'posts_per_page' => $nb_posts,
