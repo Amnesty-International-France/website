@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
 
         $sf_member = get_salesforce_member_data($email);
+
         if (has_access_to_donation_space($sf_member)) {
 
             $user = get_salesforce_user_data($sf_member->Id);
@@ -61,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
         } else {
-
 
             $error_no_access_to_donor_space = true;
         }

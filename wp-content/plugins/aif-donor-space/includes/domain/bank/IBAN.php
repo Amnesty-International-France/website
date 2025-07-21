@@ -14,5 +14,5 @@ function create_duplicate_update_IBAN_request($Contact_ID, $IBAN)
         "Code_Marketing_Prestataire__c" => "WB_ESPDON",
         "Nouvel_IBAN__c" => $IBAN
     ];
-    return  post_salesforce_data($url, $params);
+    return  post_salesforce_data_donor_space($url, $params);
 }

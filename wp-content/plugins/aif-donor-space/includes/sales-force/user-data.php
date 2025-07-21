@@ -1,15 +1,17 @@
 <?php
 
 
-function post_salesforce_data($url, $params = [])
+function post_salesforce_data_donor_space($url, $params = [])
 {
-    $access_token = get_salesforce_access_token();
+    $access_token = get_salesforce_access_token_donor_space_donor_space();
 
     if (is_wp_error($access_token)) {
         echo 'Erreur : ' . $access_token->get_error_message();
         exit;
     }
-    $response = wp_remote_post(getenv("AIF_SALESFORCE_URL") . $url, array(
+
+	$aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
+	$response = wp_remote_post($aif_salesforce_base_url . $url, array(
         'method'    => 'POST',
         'body'      => json_encode($params),
         'timeout'   => 15,
@@ -28,16 +30,17 @@ function post_salesforce_data($url, $params = [])
     }
 }
 
-function patch_salesforce_data($url, $params = [])
+function patch_salesforce_data_donor_space($url, $params = [])
 {
-    $access_token = get_salesforce_access_token();
+    $access_token = get_salesforce_access_token_donor_space_donor_space();
 
     if (is_wp_error($access_token)) {
         echo 'Erreur : ' . $access_token->get_error_message();
         exit;
     }
 
-    $response = wp_remote_request(getenv("AIF_SALESFORCE_URL") . $url, array(
+	$aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
+	$response = wp_remote_request($aif_salesforce_base_url . $url, array(
         'method'    => 'PATCH',
         'body'      => json_encode($params),
         'timeout'   => 15,
@@ -57,17 +60,17 @@ function patch_salesforce_data($url, $params = [])
 }
 
 
-function get_salesforce_data($url)
+function get_salesforce_data_donor_space($url)
 {
-    $access_token = get_salesforce_access_token();
+    $access_token = get_salesforce_access_token_donor_space_donor_space();
 
     if (is_wp_error($access_token)) {
         echo 'Erreur : ' . $access_token->get_error_message();
         exit;
     }
 
-
-    $response = wp_remote_get(getenv("AIF_SALESFORCE_URL") . $url, array(
+	$aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
+    $response = wp_remote_get($aif_salesforce_base_url . $url, array(
         'headers' => array(
             'Authorization' => 'Bearer ' . $access_token
         )
@@ -85,19 +88,19 @@ function get_salesforce_data($url)
 function get_salesforce_member_data($email)
 {
     $url = 'services/apexrest/search/v1/' . $email;
-    return get_salesforce_data($url);
+    return get_salesforce_data_donor_space($url);
 }
 
 function get_salesforce_user_data($ID)
 {
     $url = 'services/data/v57.0/sobjects/Contact/' . $ID;
-    return get_salesforce_data($url);
+    return get_salesforce_data_donor_space($url);
 }
 
 function patch_salesforce_user_data($userData, $ID)
 {
     $url = 'services/data/v57.0/sobjects/Contact/' . $ID;
-    return patch_salesforce_data($url, $userData);
+    return patch_salesforce_data_donor_space($url, $userData);
 }
 
 
@@ -109,13 +112,13 @@ function has_access_to_donation_space($sf_user)
 function get_salesforce_user_tax_reciept($ID)
 {
     $url = '/services/apexrest/retrieve/v1/RecuFiscaux/?idContact='.$ID;
-    return get_salesforce_data($url);
+    return get_salesforce_data_donor_space($url);
 }
 
 function get_salesforce_user_SEPA_mandate($ID)
 {
     $url = 'services/data/v57.0/sobjects/Contact/'.$ID.'/Mandats_SEPA__r?fields=Id,Name,RUM__c,Montant__c,Statut__c,Periodicite__c,Date_paiement_Avenir__c,Tech_Iban__c';
-    return get_salesforce_data($url);
+    return get_salesforce_data_donor_space($url);
 }
 
 
@@ -161,5 +164,5 @@ function aif_get_user_status($sf_user)
 function get_salesforce_user_demands($ID)
 {
     $url = '/services/apexrest/retrieve/v1/Demandes/?idContact=' . $ID;
-    return get_salesforce_data($url);
+    return get_salesforce_data_donor_space($url);
 }

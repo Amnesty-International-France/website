@@ -17,5 +17,5 @@ function create_contact_request($Contact_ID, $messge, $subject, $active_mandate)
         "Mandat_SEPA__c" => $active_mandate,
 
     ];
-    return  post_salesforce_data($url, $params);
+    return  post_salesforce_data_donor_space($url, $params);
 }

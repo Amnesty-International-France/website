@@ -17,7 +17,6 @@ define("AIF_DONOR_SPACE_PATH", plugin_dir_path(__FILE__));
 define('AIF_DONOR_SPACE_VERSION', '1.0.0');
 define('AIF_DONOR_SPACE_URL', plugin_dir_url(__FILE__));
 
-
 /*
 / Includes
 */
@@ -56,7 +55,6 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/utils.php';
 */
 function aif_donor_space_create_pages()
 {
-
     $pages = [
                 'espace-don' =>  ['title' =>  'Mon espace don'],
                 'verifier-votre-email' =>  ['title' => 'Mon espace don - Vérifier votre email'],
@@ -107,8 +105,11 @@ register_activation_hook(__FILE__, 'aif_donor_space_create_pages');
 
 function aif_donor_space_load_template($template)
 {
-    $page_slug = get_post_field('post_name', get_queried_object_id());
+    // Ce code ne marche plus
+    // $page_slug = get_post_field('post_name', get_queried_object_id());
 
+    $request_path = strtok($_SERVER['REQUEST_URI'], '?');
+    $page_slug = basename(rtrim($request_path, '/'));
     $templates_dir = AIF_DONOR_SPACE_PATH . '/templates/';
 
     $templates_map = [
@@ -137,7 +138,7 @@ add_filter('template_include', 'aif_donor_space_load_template');
 /**
  *  Assets
  */
-function aif_donor_space_enqueue_assets()
+function  aif_donor_space_enqueue_assets()
 {
 
     wp_enqueue_style(
@@ -167,9 +168,7 @@ function aif_donor_space_enqueue_assets()
     wp_enqueue_script(
         'aif-donor-space-dropdown',
         AIF_DONOR_SPACE_URL . 'assets/js/dropdown.js',
-        [
-
-        ],
+        ['jquery'],
         '1.0',
         true
     );
@@ -177,9 +176,7 @@ function aif_donor_space_enqueue_assets()
     wp_enqueue_script(
         'aif-donor-iban-formatter',
         AIF_DONOR_SPACE_URL . 'assets/js/iban-formatter.js',
-        [
-
-        ],
+        ['jquery'],
         '1.0',
         true
     );
@@ -188,7 +185,7 @@ function aif_donor_space_enqueue_assets()
         'aif-create-duplicate-tax-receipt',
         plugins_url('/assets/js/create-duplicate-tax-receipt-demand.js', __FILE__),
         [],
-        '1.0.,0',
+        '1.0.0',
         array(
            'in_footer' => false,
         )

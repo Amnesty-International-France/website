@@ -41,5 +41,5 @@ function create_duplicate_taxt_receipt_request($Contact_ID, $taxt_receipt_refere
         "Code_Marketing_Prestataire__c" => "WB_ESPDON",
         "Identifiant__c" => $taxt_receipt_reference
     ];
-    return  post_salesforce_data($url, $params);
+    return  post_salesforce_data_donor_space($url, $params);
 }

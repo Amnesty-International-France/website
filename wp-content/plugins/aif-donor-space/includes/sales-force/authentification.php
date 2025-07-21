@@ -1,6 +1,6 @@
 <?php
 
-function get_salesforce_access_token()
+function get_salesforce_access_token_donor_space_donor_space()
 {
     $access_token = get_option('salesforce_access_token');
     $expiration_time = intval(get_option('salesforce_token_expiration_time'));
@@ -16,15 +16,16 @@ function get_salesforce_access_token()
     //     return $access_token;
     // }
 
-    return refresh_salesforce_token();
+    return refresh_salesforce_token_donor_space();
 }
 
 
-function refresh_salesforce_token()
+function refresh_salesforce_token_donor_space()
 {
-    $client_id = getenv('AIF_SALESFORCE_CLIENT_ID');
-    $client_secret = getenv('AIF_SALESFORCE_SECRET');
-    $url = getenv("AIF_SALESFORCE_URL") . 'services/oauth2/token';
+	$aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
+	$client_id = defined('AIF_SALESFORCE_CLIENT_ID') ? AIF_SALESFORCE_CLIENT_ID : getenv('AIF_SALESFORCE_CLIENT_ID');
+	$client_secret = defined('AIF_SALESFORCE_SECRET') ? AIF_SALESFORCE_SECRET : getenv('AIF_SALESFORCE_SECRET');
+    $url = $aif_salesforce_base_url . 'services/oauth2/token';
 
     $params = array(
         'grant_type'    => 'client_credentials',
@@ -40,7 +41,6 @@ function refresh_salesforce_token()
             'Content-Type' => 'application/x-www-form-urlencoded'
         ),
     ));
-
 
     if (is_wp_error($response)) {
         return new WP_Error('request_failed', 'La requête a échoué', $response->get_error_message());

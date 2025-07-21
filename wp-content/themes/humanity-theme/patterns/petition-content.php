@@ -12,7 +12,7 @@ $signatures_target = get_field('objectif_signatures');
 $letter = get_field(selector: 'lettre');
 $pdf_id = get_field(selector: 'pdf_petition');
 
-$pdf_url = ''; 
+$pdf_url = '';
 if ( ! empty( $pdf_id ) ) {
     $pdf_url = wp_get_attachment_url( $pdf_id );
 }
@@ -38,6 +38,8 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
     $progress_percentage = min( 100, ( $current_signatures / $signatures_target ) * 100 );
 }
 
+$read_more_label = 'Masquer la lettre de pétition';
+
 ?>
 
 <?php
@@ -45,7 +47,7 @@ if ( $is_thank_you_page && is_singular( 'petition' ) ) {
     ?>
     <!-- wp:pattern {"slug":"amnesty/petition-thanks"} /-->
     <?php
-    
+
 } else {
     ?>
 <!-- wp:group {"tagName":"div","className":"container petition-container has-gutter","layout":{"type":"constrained"}} -->
