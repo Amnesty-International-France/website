@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
             if (!is_wp_error($user)) {
                 wp_set_current_user($user->ID);
 
-                $verification_url = get_permalink(get_page_by_path('espace-don'));
+                $verification_url = get_permalink(get_page_by_path('mon-espace'));
                 wp_redirect($verification_url);
                 exit;
             } else {
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 <main class="aif-container--main">
 
     <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-        <h1 class="aif-mb1w">Mon espace Don</h1>
+        <h1 class="aif-mb1w">Mon espace</h1>
 
     </header>
     <div class="aif-container--form">
@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                                 href="<?= get_permalink(get_page_by_path('foire-aux-questions')) ?>">
                                 Un problème de connexion ? </a>
                         </div>
-                   
+
 
                     </div>
 
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         <section class="aif-mt1w aif-mb1w">
             <h3>Première connexion ?</h3>
 
-            <p> La création de votre espace don n’est pas automatique lorsque vous faites un don.Si vous n’avez
+            <p> La création de votre espace n’est pas automatique lorsque vous faites un don.Si vous n’avez
                 jamais
                 créé votre espace, merci de cliquer sur “Créer votre compte”. </p>
 

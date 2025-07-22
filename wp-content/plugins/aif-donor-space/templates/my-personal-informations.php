@@ -1,7 +1,7 @@
 <?php
 
 /* Template Name: Espace Donateur - Home */
-get_header();
+// get_header();
 
 check_user_page_access();
 
@@ -309,6 +309,5 @@ aif_include_partial("info-message", [
 
 
 <?php
-
-get_footer();
+// get_footer();
 ?>

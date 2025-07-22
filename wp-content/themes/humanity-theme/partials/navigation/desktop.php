@@ -39,7 +39,7 @@ $header_style = amnesty_get_header_style( amnesty_get_header_object_id() );
 
 					<?php amnesty_nav( 'main-menu-top' ); ?>
 					<li>
-						<a href="#" class="menu-item menu-user" aria-current="page">
+						<a href="/mon-espace" class="menu-item menu-user" aria-current="page">
 							<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-lock.svg' ); ?>
 							<span>Mon espace</span>
 						</a>

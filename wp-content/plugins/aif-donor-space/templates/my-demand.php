@@ -1,7 +1,5 @@
 <?php
 
-/* Template Name: Espace Donateur - Home */
-get_header();
 
 check_user_page_access();
 
@@ -129,6 +127,5 @@ $url = add_query_arg([
 
 
 <?php
-
-                            get_footer();
+		// get_footer();
 ?>

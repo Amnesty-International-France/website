@@ -1,7 +1,7 @@
 <?php
 
 /* Template Name: Espace Donateur - Home */
-get_header();
+// get_header();
 
 check_user_page_access();
 
@@ -10,7 +10,6 @@ $sf_member = get_salesforce_member_data($current_user->user_email);
 $sf_user = get_salesforce_user_data($sf_member->Id);
 $user_status =  aif_get_user_status($sf_member);
 $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
-
 
 ?>
 
@@ -95,5 +94,5 @@ $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
 </main>
 
 <?php
-get_footer();
+// get_footer();
 ?>
