@@ -36,6 +36,14 @@ registerBlockType('amnesty-core/section-home', {
       type: 'string',
       default: 'left',
     },
+    mediaCaption: {
+      type: 'string',
+      default: '',
+    },
+    mediaDescription: {
+      type: 'string',
+      default: '',
+    },
     icons: {
       type: 'array',
       default: [],
