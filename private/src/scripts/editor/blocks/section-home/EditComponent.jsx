@@ -136,6 +136,7 @@ const EditComponent = (props) => {
             value={bgColor}
             options={[
               { label: __('Blanc', 'amnesty'), value: 'white' },
+              { label: __('Gris clair', 'amnesty'), value: 'grey-lighter' },
               { label: __('Gris', 'amnesty'), value: 'grey' },
               { label: __('Noir', 'amnesty'), value: 'black' },
             ]}
