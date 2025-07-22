@@ -32,6 +32,15 @@
     }
   }
 
+  &.grey-lighter {
+    background-color: var(--wp--preset--color--grey-lighter);
+
+    .title {
+      color: var(--wp--preset--color--black);
+      background-color: var(--wp--preset--color--primary);
+    }
+  }
+
   .section-inner {
     max-width: $container-hg;
     margin: 0 auto;
