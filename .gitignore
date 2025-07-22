@@ -60,7 +60,6 @@ license.txt
 .ddev
 clever.json
 .clever.json
-<<<<<<< HEAD
 vendor/
 composer*
 
