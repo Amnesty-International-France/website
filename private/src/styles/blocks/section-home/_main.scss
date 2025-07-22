@@ -96,6 +96,11 @@
       .section-media {
         .section-media-image-wrapper {
           right: 0;
+
+          .section-media-caption-description {
+            text-align: right;
+            right: 0;
+          }
         }
       }
     }
@@ -108,6 +113,11 @@
       .section-media {
         .section-media-image-wrapper {
           left: 0;
+
+          .section-media-caption-description {
+            text-align: left;
+            left: 0;
+          }
         }
       }
 
@@ -155,6 +165,19 @@
           height: 100%;
           object-fit: cover;
           max-width: none;
+        }
+
+        .section-media-caption-description {
+          position: absolute;
+          width: 100%;
+          bottom: 0;
+          margin: 0;
+          color: var(--wp--preset--color--white);
+          font-weight: bold;
+          line-height: 12px;
+          font-size: 12px;
+          padding: 8px 12px;
+          flex-wrap: wrap;
         }
       }
     }
