@@ -165,7 +165,7 @@ if ( $size ) {
 	<div class="donation-calculator-footer">
 		<?php if ( $with_tabs ) : ?>
 			<p class="explanation">Grâce à la réduction d'impôts de 66%, votre don ne vous coûtera que</p>
-			<p id="donation-simulated" class="price-simulated"></p>
+			<h4 id="donation-simulated" class="price-simulated"></h4>
 		<?php endif ?>
 		<a href="<?php echo esc_url( $href ); ?>"
 			target="_self"
@@ -178,4 +178,8 @@ if ( $size ) {
 				égale à 66% du montant de votre don.</p>
 		<?php endif ?>
 	</div>
+</div>
+
+<div class="parente">
+	<Calculette />
 </div>
