@@ -1,7 +1,7 @@
 const pageMenu = () => {
   const content = document.querySelector('[data-page-group="main"]');
   const menuContainer = document.getElementById('page-menu');
-  const currentPageType = document.querySelector('[data-page-type]').dataset.pageType;
+  const currentPageType = document.querySelector('[data-page-type]')?.dataset?.pageType;
 
   if (!content || !menuContainer || !currentPageType) return;
 

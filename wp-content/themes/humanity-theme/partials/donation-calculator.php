@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 global $post;
 
-$campaign_url = get_field( 'lien_vers_la_campagne_de_soutien', $post->ID ) ?? '';
+$campaign_url = get_field( 'link-donation', $post->ID ) ?? '';
 
 $size        = $args['size'] ?? '';
 $with_header = $args['with_header'] ?? false;
@@ -50,21 +50,13 @@ if ( 'medium' === $size ) {
 
 $svg_path = get_template_directory() . "/assets/images/icon-don-{$rate}.svg";
 
-if ( $campaign_url ) {
+if ( empty( $href ) && !empty( $campaign_url ) ) {
 	$href = $campaign_url;
 }
 
 ?>
 
-<div class="donation-calculator
-<?php
-if ( $size ) {
-	echo esc_attr( $size );
-}
-?>
-"
-	data-rate="<?php echo esc_attr( $rate ); ?>"
->
+<div class="donation-calculator <?php if ( $size ) { echo esc_attr( $size );}?> " data-rate="<?php echo esc_attr( $rate ); ?>">
 	<?php if ( $with_header ) : ?>
 		<div id="donation-header" class="donation-header">
 			<?php echo file_get_contents( $svg_path ); ?>
