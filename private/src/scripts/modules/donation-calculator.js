@@ -12,8 +12,7 @@ const elementTextContent = (calculator, selector, isMonthly = false, amount = nu
   el.innerHTML = `${amountText}${monthlyText}`;
 };
 
-const taxDeductionCalculation = (amount) => {
-  const rate = document.querySelector('.donation-calculator').attributes['data-rate'].value;
+const taxDeductionCalculation = (amount, rate) => {
   const finalPrice = amount - (amount * parseInt(rate, 10)) / 100;
 
   return Number(finalPrice).toLocaleString('fr-FR', {
@@ -40,7 +39,7 @@ const addAmountOnDonationLink = (calculator, amount, frequency = null) => {
   if (!link) return;
 
   const url = new URL(link.href);
-  url.searchParams.set('amount', amount * 100);
+  url.searchParams.set('amount', (amount * 100).toString());
 
   if (frequency) {
     const freq = frequency === 'monthly' ? 'regular' : 'once';
@@ -52,25 +51,19 @@ const addAmountOnDonationLink = (calculator, amount, frequency = null) => {
 
 const donationCalculator = (calculator) => {
   if (!calculator) return;
+
   const bodyActive = calculator.querySelector('.donation-body div[class*="amount-"].active');
   const isMonthly = (bodyActive && bodyActive.id === 'monthly') ?? false;
-
+  const rate = parseInt(calculator.attributes['data-rate'].value, 10);
   const input = calculator.querySelector('.donation-body #input-donation');
 
   if (!input) return;
 
   input.addEventListener('input', (event) => {
     const value = event.currentTarget.value;
-    const amount = taxDeductionCalculation(value);
+    const amount = taxDeductionCalculation(value, rate);
 
-    changeAmountValue(calculator, amount);
-    elementTextContent(
-      calculator,
-      '#donation-simulated',
-      isMonthly,
-      taxDeductionCalculation(value),
-    );
-
+    changeAmountValue(calculator, amount, isMonthly);
     addAmountOnDonationLink(calculator, value);
   });
 };
@@ -87,15 +80,16 @@ const selectedAmount = (calculator, withTabs) => {
   const allRadioInputs = bodyActive.querySelectorAll('.don-radio');
   const checkedInput = bodyActive.querySelector('input[type="radio"]:checked');
   const isMonthly = bodyActive.id === 'monthly';
+  const rate = parseInt(calculator.attributes['data-rate'].value, 10);
 
   if (checkedInput) {
     elementTextContent(
       calculator,
       '#donation-simulated',
       isMonthly,
-      taxDeductionCalculation(checkedInput.value),
+      taxDeductionCalculation(checkedInput.value, rate),
     );
-    changeAmountValue(calculator, taxDeductionCalculation(checkedInput.value), isMonthly);
+    changeAmountValue(calculator, taxDeductionCalculation(checkedInput.value, rate), isMonthly);
     addAmountOnDonationLink(calculator, checkedInput.value);
   }
 
@@ -118,13 +112,13 @@ const selectedAmount = (calculator, withTabs) => {
     radioBlock.classList.add('active');
     input.checked = true;
 
-    changeAmountValue(calculator, taxDeductionCalculation(input.value), isMonthly);
+    changeAmountValue(calculator, taxDeductionCalculation(input.value, rate), isMonthly);
     addAmountOnDonationLink(calculator, input.value);
     elementTextContent(
       calculator,
       '#donation-simulated',
       isMonthly,
-      taxDeductionCalculation(input.value),
+      taxDeductionCalculation(input.value, rate),
     );
   });
 };
@@ -132,6 +126,7 @@ const selectedAmount = (calculator, withTabs) => {
 const selectedTab = (calculator) => {
   if (!calculator) return;
 
+  const rate = parseInt(calculator.attributes['data-rate'].value, 10);
   const tabContainer = calculator.querySelector('.donation-tabs');
   const bodyContainer = calculator.querySelector('#donation-body');
 
@@ -154,7 +149,7 @@ const selectedTab = (calculator) => {
         calculator,
         '#donation-simulated',
         isMonthly,
-        taxDeductionCalculation(defaultSelectedRadio.value),
+        taxDeductionCalculation(defaultSelectedRadio.value, rate),
       );
     } else {
       console.warn('selectedTab: No active tab found.');

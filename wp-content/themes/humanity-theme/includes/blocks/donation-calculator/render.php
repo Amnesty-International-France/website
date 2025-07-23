@@ -20,7 +20,6 @@ if ( ! function_exists( 'render_donation_calculator_block' ) ) {
 		$href        = $attributes['href'] ?? '';
 		$rate        = $attributes['rate'] ?? 66;
 
-
 		if ( ! in_array( $rate, [ 66, 75 ], true ) ) {
 			$taux = 66;
 		}
@@ -41,7 +40,7 @@ if ( ! function_exists( 'render_donation_calculator_block' ) ) {
 			extract( $args );
 			include $template_path;
 		} else {
-			error_log( '❌ Tepagemplate "partials/donation-calculator.php" introuvable' );
+			error_log( '❌ Template "partials/donation-calculator.php" introuvable' );
 		}
 		return ob_get_clean();
 	}
