@@ -57,11 +57,52 @@ license.txt
 
 .env.*
 .castor.stub.php
+.ddev
+clever.json
 .clever.json
+vendor/
+composer*
+
+# Wordpress - ignore core, configuration, examples, uploads and logs.
+# https://github.com/github/gitignore/blob/main/WordPress.gitignore
+
+# Core
+/wp-admin/
+/wp-content/index.php
+/wp-content/languages
+/wp-content/plugins/index.php
+/wp-content/themes/index.php
+/wp-includes/
+/index.php
+/license.txt
+/readme.html
+/wp-*.php
+/xmlrpc.php
+
+# Configuration
+wp-config.php
+
+# Uploads
+/wp-content/uploads/
+
+# Log files
+*.log
+
+# htaccess
+/.htaccess
 docker-compose.yml
 
 # Plugins
 # Example of my custom plugin named hello-world
 #!/wp-content/plugins/hello-world/
+!/wp-content/plugins/wp-plugin-amnesty-branding/
+!/wp-content/plugins/aif-donor-space/
+
+# Themes
+/wp-content/themes/*
+!/wp-content/themes/espace-donateur/
+
+docker-compose.yml
+
 !/wp-content/plugins/prismic-migration/
 !/wp-content/plugins/interactive-map/
