@@ -68,25 +68,6 @@
     p {
       max-width: $container-sm;
     }
-
-    .chapo > .text {
-      @media (min-width: 768px) {
-        width: 100%;
-      }
-    }
-
-    .wp-block-heading {
-      padding: 15px 0 0;
-      margin-top: 0;
-
-      &:first-of-type::before {
-        content: none;
-      }
-    }
-
-    p {
-      max-width: $container-sm;
-    }
   }
 
   .page-hero-block {
