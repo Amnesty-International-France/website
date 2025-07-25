@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   margin-top: 24px;
-  margin-bottom: 48px;
+  margin-bottom: 24px;
   width: 100%;
   height: 750px;
   background-color: transparent !important;
@@ -521,5 +521,81 @@
 
   svg.leaflet-zoom-animated {
     transform: translate3d(-60px, -200px, 0px) !important;
+  }
+}
+
+.join-and-agenda {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 24px 150px 24px;
+
+  @media (min-width: 1024px) {
+    padding: 24px 0 150px 0;
+  }
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+  }
+
+  .join {
+    width: 100%;
+    padding: 16px 24px 28px 24px;
+    background-color: var(--wp--preset--color--black);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    @media (min-width: 1024px) {
+      width: 50%;
+    }
+
+    .join-title {
+      color: var(--wp--preset--color--primary);
+      text-align: center;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 26px;
+      font-weight: bold;
+      line-height: 29px;
+    }
+
+    .join-subtitle {
+      color: var(--wp--preset--color--white);
+      text-align: center;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 25px;
+    }
+  }
+
+  .agenda {
+    width: 100%;
+    padding: 16px 24px 28px 24px;
+    background-color: var(--wp--preset--color--grey-light);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    @media (min-width: 1024px) {
+      width: 50%;
+    }
+
+    .agenda-title {
+      text-align: center;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 26px;
+      font-weight: bold;
+      line-height: 29px;
+    }
+
+    .agenda-subtitle {
+      text-align: center;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 25px;
+    }
   }
 }
