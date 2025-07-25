@@ -83,3 +83,50 @@ $geocode_proxy_api_endpoint = rest_url( 'amnesty/v1/geocode-proxy' );
         </div>
     </div>
 </div>
+
+<div class="join-and-agenda">
+    <div class="join">
+        <p class="join-title">Pas de groupe local près de chez vous ?</p>
+        <p class="join-subtitle">Créez-en un !</p>
+        <div class='custom-button-block center'>
+            <a href="/rejoindre-un-groupe" target="_blank" rel="noopener noreferrer" class="custom-button">
+                <div class='content bg-yellow medium'>
+                    <div class="icon-container">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                    </div>
+                    <div class="button-label">Créer un groupe</div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="agenda">
+        <p class="agenda-title">Agenda</p>
+        <p class="agenda-subtitle">Consultez les événements à venir</p>
+        <div class='custom-button-block center'>
+            <a href="/agenda" target="_blank" rel="noopener noreferrer" class="custom-button">
+                <div class='content bg-yellow medium'>
+                    <div class="icon-container">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                    </div>
+                    <div class="button-label">Voir l'agenda</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
