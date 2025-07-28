@@ -26,6 +26,8 @@ require_once __DIR__ . '/button/register.php';
 require_once __DIR__ . '/button/render.php';
 require_once __DIR__ . '/call-to-action/register.php';
 require_once __DIR__ . '/call-to-action/render.php';
+require_once __DIR__ . '/card-image-text/register.php';
+require_once __DIR__ . '/card-image-text/render.php';
 require_once __DIR__ . '/carousel/register.php';
 require_once __DIR__ . '/carousel/render.php';
 require_once __DIR__ . '/chapo/register.php';
@@ -127,6 +129,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_banner_block();
 		register_button_block();
 		register_carousel_block();
+		register_card_image_text_block();
 		register_chapo_block();
 		register_chip_category_block();
 		register_collapsable_block();
