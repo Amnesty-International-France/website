@@ -10,7 +10,7 @@
 declare(strict_types=1);
 
 
-$image_url      = get_template_directory_uri() . '/assets/images/testator-relations-officers.png';
+$image_url      = get_template_directory_uri() . '/assets/images/amnesty-foundation.jpg';
 $icon_phone_url = get_template_directory_uri() . '/assets/images/icon-phone.svg';
 
 $civility      = $lastName = $firstName = $address = $zipCode = $city = $email = $phone = '';
@@ -20,11 +20,9 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 	$civility       = isset( $_POST['civility'] ) ? htmlspecialchars( $_POST['civility'] ) : '';
 	$lastName       = isset( $_POST['last_name'] ) ? htmlspecialchars( trim( $_POST['last_name'] ) ) : '';
 	$firstName      = isset( $_POST['first_name'] ) ? htmlspecialchars( trim( $_POST['first_name'] ) ) : '';
-	$address        = isset( $_POST['address'] ) ? htmlspecialchars( trim( $_POST['address'] ) ) : '';
-	$zipCode        = isset( $_POST['zip_code'] ) ? htmlspecialchars( trim( $_POST['zip_code'] ) ) : '';
-	$city           = isset( $_POST['city'] ) ? htmlspecialchars( trim( $_POST['city'] ) ) : '';
 	$email          = isset( $_POST['email'] ) ? htmlspecialchars( trim( $_POST['email'] ) ) : '';
 	$phone          = isset( $_POST['phone'] ) ? htmlspecialchars( trim( $_POST['phone'] ) ) : '';
+	$message 		= isset( $_POST['message'] ) ? htmlspecialchars( trim( $_POST['message'] ) ) : '';
 	$receiveByPostalMail  = isset( $_POST['receive_by_postal_mail'] );
 }
 
@@ -37,8 +35,8 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 				<div class="officers-image-container">
 					<img class="officers-image" src="<?php echo esc_url( $image_url ); ?>" alt=""/>
 				</div>
+				<p class="officers-job">Chargée de la relation avec les donatrices et donateurs de la Fondation</p>
 				<p class="officers-names">Milena Djelic</p>
-				<p class="officers-job">Chargée de la relation avec les donatrices et les donateurs de la Fondation</p>
 				<div class="phone-container">
 					<div class="icon-container">
 						<img src="<?php echo esc_url( $icon_phone_url ); ?>" alt=""/>
@@ -48,6 +46,7 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 			</div>
 			<div class="foundation-form">
 				<h2 class="title">À VOTRE ÉCOUTE</h2>
+				<p class="officers-citation">Je suis à votre écoute pour toute question ou pour tout besoin d’information à propos de la Fondation, ou des dispositions fiscales qui accompagnent votre générosité.</p>
 				<form class="form" id="foundationForm" action="" method="POST">
 					<div id="formMessages"></div>
 
@@ -69,58 +68,45 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 
 					<div class="form-row">
 						<div class="form-group">
+							<label for="last_name"></label>
 							<input type="text" id="last_name" name="last_name"
 									value="<?php echo esc_attr( $lastName ); ?>" placeholder="Nom *">
 							<div id="error-last_name" class="error-message-container"></div>
 						</div>
 
 						<div class="form-group">
+							<label for="first_name"></label>
 							<input type="text" id="first_name" name="first_name"
 									value="<?php echo esc_attr( $firstName ); ?>" placeholder="Prénom *">
 							<div id="error-first_name" class="error-message-container"></div>
 						</div>
 					</div>
-
-					<div class="form-group">
-						<input type="text" id="address" name="address" value="<?php echo esc_attr( $address ); ?>"
-								placeholder="Adresse *">
-						<div id="error-address" class="error-message-container"></div>
-					</div>
-
 					<div class="form-row">
 						<div class="form-group">
-							<input type="text" id="zip_code" name="zip_code" value="<?php echo esc_attr( $zipCode ); ?>"
-									placeholder="Code Postal *" pattern="\d{5}"
-									title="Veuillez entrer un code postal de 5 chiffres.">
-							<div id="error-zip_code" class="error-message-container"></div>
-						</div>
-
-						<div class="form-group">
-							<input type="text" id="city" name="city" value="<?php echo esc_attr( $city ); ?>"
-									placeholder="Ville *">
-							<div id="error-city" class="error-message-container"></div>
-						</div>
-					</div>
-
-					<div class="form-row">
-						<div class="form-group">
+							<label for="email"></label>
 							<input type="email" id="email" name="email" value="<?php echo esc_attr( $email ); ?>"
 									placeholder="Email *">
 							<div id="error-email" class="error-message-container"></div>
 						</div>
 
 						<div class="form-group">
+							<label for="phone"></label>
 							<input type="tel" id="phone" name="phone" value="<?php echo esc_attr( $phone ); ?>"
 									placeholder="Téléphone">
 							<div id="error-phone" class="error-message-container"></div>
 						</div>
 					</div>
+					<div class="form-group">
+						<label for="message"></label>
+						<textarea name="message" id="message" cols="30" rows="5" placeholder="Un message à nous laisser ?"></textarea>
 
+						<div id="error-phone" class="error-message-container"></div>
+					</div>
 					<div class="form-group">
 						<div class="receive-by">
 							<input type="checkbox" id="receive_by_mail"
 									name="receive_by_mail" <?php echo( $receiveByPostalMail ? 'checked' : '' ); ?>>
-							<label for="receive_by_mail">Je souhaite recevoir des informations sur la Fondation Amnesty International France par courrier postal</label>
+							<label for="receive_by_mail">Je souhaite recevoir des informations sur la Fondation Amnesty International France par courrier postal.</label>
 						</div>
 						<div id="error-receive_options" class="error-message-container"></div>
 					</div>

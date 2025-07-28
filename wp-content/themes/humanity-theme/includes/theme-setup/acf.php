@@ -576,6 +576,52 @@ add_action( 'acf/include_fields', function() {
 		'description' => '',
 		'show_in_rest' => 1,
 	) );
+
+	acf_add_local_field_group( array(
+		'key' => 'group_6888934b5990e',
+		'title' => 'sur-titre',
+		'fields' => array(
+			array(
+				'key' => 'field_6888934b292bb',
+				'label' => 'Sur-titre',
+				'name' => 'sur-titre',
+				'aria-label' => '',
+				'type' => 'text',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => 0,
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'default_value' => '',
+				'maxlength' => '',
+				'allow_in_bindings' => 0,
+				'placeholder' => '',
+				'prepend' => '',
+				'append' => '',
+			),
+		),
+		'location' => array(
+			array(
+				array(
+					'param' => 'page_template',
+					'operator' => '==',
+					'value' => 'page-fondation',
+				),
+			),
+		),
+		'menu_order' => 0,
+		'position' => 'side',
+		'style' => 'default',
+		'label_placement' => 'top',
+		'instruction_placement' => 'label',
+		'hide_on_screen' => '',
+		'active' => true,
+		'description' => '',
+		'show_in_rest' => 0,
+	) );
 } );
 
 add_action('acf/save_post', function($post_id) {
