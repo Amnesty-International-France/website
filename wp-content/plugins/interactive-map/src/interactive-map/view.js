@@ -191,9 +191,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             <p class="interactive-map__popup-phone">${
                               markerInfo.phone || ""
                             }</p>
-                            <p class="interactive-map__popup-email">${
-                              markerInfo.email || ""
-                            }</p>
                         </div>
                     </a>`;
           const leafletMarker = L.marker(latLng, { icon: customMarkerIcon })
