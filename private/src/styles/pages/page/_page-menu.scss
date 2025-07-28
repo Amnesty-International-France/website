@@ -27,6 +27,8 @@
     li {
       border: 1px solid var(--wp--preset--color--black);
       display: inline-block;
+      transition: all ease 0.4s;
+      position: relative;
 
       a {
         padding: 12px 16px;
@@ -57,6 +59,10 @@
 
       a {
         color: var(--wp--preset--color--white);
+
+        &:hover {
+          background-color: #007d79;
+        }
       }
     }
   }
