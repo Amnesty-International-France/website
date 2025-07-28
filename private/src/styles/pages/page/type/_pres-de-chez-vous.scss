@@ -47,17 +47,12 @@
       max-width: $container-hg;
       margin-left: auto;
       margin-right: auto;
-
-      .text {
-        @media (min-width: $container-lg) {
-          width: 100%;
-        }
-      }
     }
 
     .interactive-map,
     .join-and-agenda {
       max-width: $container-hg;
+      margin-top: 2.1rem;
       margin-left: auto;
       margin-right: auto;
     }
