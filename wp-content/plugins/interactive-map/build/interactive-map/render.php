@@ -25,7 +25,7 @@ $geocode_proxy_api_endpoint = rest_url( 'amnesty/v1/geocode-proxy' );
 <div
     <?php echo get_block_wrapper_attributes(['class' => 'interactive-map']); ?>
     data-geojson-url="<?php echo esc_url($full_geojson_url); ?>"
-    data-tile-layer-url="<?php echo esc_url($attributes['tileLayerUrl']); ?>"
+    data-tile-layer-url="<?php echo esc_attr($attributes['tileLayerUrl']); ?>"
     data-api-endpoint="<?php echo esc_url($custom_local_structures_api_endpoint); ?>" data-geocode-proxy-endpoint="<?php echo esc_url($geocode_proxy_api_endpoint); ?>" data-show-vignettes="<?php echo esc_attr($attributes['showVignettes'] ? 'true' : 'false'); ?>"
     data-map-center-lat="<?php echo esc_attr($attributes['mapCenterLat']); ?>"
     data-map-center-lng="<?php echo esc_attr($attributes['mapCenterLng']); ?>"
