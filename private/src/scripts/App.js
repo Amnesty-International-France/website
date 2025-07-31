@@ -12,6 +12,7 @@ import subcatDrops from './modules/subcategory-dropdown';
 import checkboxGroup from './modules/checkbox-group';
 import latestFilters from './modules/latest-filters';
 import searchFilters from './modules/search-filters';
+import trainingFilters from './modules/search-filters-trainings';
 import filterPosts from './modules/filter-posts';
 import loadVideos from './modules/video-loaded';
 import fluidIframe from './modules/fluid-iframe';
@@ -56,6 +57,7 @@ const App = () => {
   checkboxGroup();
   latestFilters();
   searchFilters();
+  trainingFilters();
   filterPosts();
   fluidIframe();
   tweetAction();

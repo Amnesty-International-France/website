@@ -35,3 +35,46 @@ function amnesty_register_trainings_cpt(): void
 }
 
 add_action('init', 'amnesty_register_trainings_cpt');
+
+/**
+ * Filters the main query on the 'training' CPT archive page based on ACF fields.
+ */
+function my_project_training_filters($query) {
+    if (is_admin() || !$query->is_main_query() || !is_post_type_archive('training')) {
+        return;
+    }
+
+    $meta_query = ['relation' => 'AND'];
+    $conditions_added = false;
+
+    if (isset($_GET['qcategories']) && !empty($_GET['qcategories'])) {
+        $categories = explode(',', sanitize_text_field($_GET['qcategories']));
+        $meta_query[] = ['key' => 'categories', 'value' => $categories, 'compare' => 'IN'];
+        $conditions_added = true;
+    }
+
+    if (isset($_GET['qlieu']) && !empty($_GET['qlieu'])) {
+        $locations = explode(',', sanitize_text_field($_GET['qlieu']));
+        $meta_query[] = ['key' => 'lieu', 'value' => $locations, 'compare' => 'IN'];
+        $conditions_added = true;
+    }
+
+    if (isset($_GET['qperiod']) && !empty($_GET['qperiod'])) {
+        $periods = explode(',', sanitize_text_field($_GET['qperiod']));
+        $date_or_query = ['relation' => 'OR'];
+        foreach ($periods as $period) {
+            if (preg_match('/^\d{4}-\d{2}$/', $period)) {
+                $date_or_query[] = ['key' => 'date', 'value' => $period, 'compare' => 'LIKE'];
+            }
+        }
+        if (count($date_or_query) > 1) {
+            $meta_query[] = $date_or_query;
+            $conditions_added = true;
+        }
+    }
+    
+    if ($conditions_added) {
+        $query->set('meta_query', $meta_query);
+    }
+}
+add_action('pre_get_posts', 'my_project_training_filters');
