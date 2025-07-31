@@ -39,6 +39,8 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
     $progress_percentage = min( 100, ( $current_signatures / $signatures_target ) * 100 );
 }
 
+$read_more_label = 'Masquer la lettre de pétition';
+
 ?>
 
 <?php
