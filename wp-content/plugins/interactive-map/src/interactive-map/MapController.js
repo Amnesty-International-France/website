@@ -24,7 +24,7 @@ export class MapController {
 
     this.tileLayer = L.tileLayer(this.tileLayerUrl, {
       attribution: '&copy; OpenStreetMap contributors',
-      subdomains: 'abcd',
+      subdomains: 'abc',
       maxZoom: 20,
     });
 
