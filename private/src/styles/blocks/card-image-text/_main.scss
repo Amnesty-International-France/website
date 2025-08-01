@@ -98,6 +98,8 @@
         }
 
         .card-image-text-content-text {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
           visibility: hidden;
           color: var(--wp--preset--color--black);
           overflow: hidden;
@@ -270,6 +272,8 @@
         }
 
         .card-image-text-content-text {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
           visibility: hidden;
           color: var(--wp--preset--color--black);
           overflow: hidden;
@@ -289,7 +293,30 @@
         }
 
         .card-image-text-content-see-more {
-          display: none;
+          visibility: hidden;
+          position: absolute;
+          bottom: 0;
+          right: 12px;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          gap: 12px;
+          opacity: 0;
+          transition: opacity 0.1s ease-in-out 0.1s;
+
+          svg {
+            width: 16px;
+            height: 16px;
+          }
+
+          .card-image-text-content-see-more-label {
+            color: var(--wp--preset--color--black);
+            font-family: var(--wp--preset--font-family--secondary);
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 16px;
+            margin: 0;
+          }
         }
       }
     }
@@ -305,9 +332,15 @@
         padding-left: 12px;
 
         .card-image-text-content-text {
+          position: relative;
           visibility: visible;
           opacity: 1;
           max-height: 110px;
+        }
+
+        .card-image-text-content-see-more {
+          visibility: visible;
+          opacity: 1;
         }
       }
     }
