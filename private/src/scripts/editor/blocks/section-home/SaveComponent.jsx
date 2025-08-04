@@ -14,6 +14,8 @@ const SaveComponent = (props) => {
     showImage,
     mediaUrl,
     mediaPosition,
+    mediaCaption,
+    mediaDescription,
     icons,
     displayButton,
     buttonLabel,
@@ -38,6 +40,11 @@ const SaveComponent = (props) => {
                 src={mediaUrl}
                 alt={__('Image de la section', 'amnesty')}
               />
+              {(mediaCaption || mediaDescription) && (
+                <p className="section-media-caption-description">
+                  {`${mediaCaption} /`} {mediaDescription}
+                </p>
+              )}
             </div>
           </div>
         )}

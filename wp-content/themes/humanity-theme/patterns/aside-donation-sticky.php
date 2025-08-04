@@ -15,7 +15,9 @@
 			"size":"",
 			"with_header": true,
 			"with_tabs": false,
-			"with_legend": true
+			"with_legend": true,
+			"href": "https://soutenir.amnesty.fr/b?cid=252&lang=fr_FR&reserved_originecode=WBF01W1005",
+			"rate": 66
 		}
 	/-->
 </aside>

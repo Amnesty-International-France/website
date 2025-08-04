@@ -9,6 +9,8 @@
 
 use Amnesty\Get_Image_Data;
 
+global $post_ID;
+
 if ( amnesty_post_has_hero() || amnesty_post_has_header() ) {
 	return;
 }
@@ -45,6 +47,9 @@ $attributes = [
 
 $credit  = trim( $image->credit() );
 $caption = trim( $image->caption() );
+
+$template = get_page_template_slug( $post_ID );
+
 ?>
 <!-- wp:group {"tagName":"div"} -->
 <div class="wp-block-group">
@@ -63,7 +68,7 @@ $caption = trim( $image->caption() );
 
 		<img src="<?php echo esc_url( amnesty_get_attachment_image_src( $image_id, 'hero-md' ) ); ?>" alt="" class="wp-image-<?php echo absint( $image_id ); ?>"/>
 
-		<?php if ( ( $is_page || get_post_type() === 'fiche_pays') && ( $credit || $caption ) ) : ?>
+		<?php if ( ( $is_page || $template === 'page-fondation' || get_post_type() === 'fiche_pays') && ( $credit || $caption ) ) : ?>
 			<figcaption class="feature-image-caption-overlay">
 				<?php if ( $credit ) : ?>
 					<span class="feature-image-description"><?php echo esc_html( $credit ); ?></span><br/>
@@ -74,10 +79,21 @@ $caption = trim( $image->caption() );
 			</figcaption>
 		<?php endif; ?>
 
-		<?php if ( ( $is_page || get_post_type() === 'petition' ) && $caption ) : ?>
+		<?php if ( ( ($is_page && $template !== 'page-fondation') || get_post_type() === 'petition' ) && $caption ) : ?>
 			<figcaption class="feature-image-caption-overlay">
 				<?php if ( $caption ) : ?>
 					<span class="feature-image-caption"><?php echo esc_html( $caption ); ?></span>
+				<?php endif; ?>
+			</figcaption>
+		<?php endif; ?>
+
+		<?php if ( ( $is_page && $template === 'page-fondation') && ( $credit || $caption ) ) : ?>
+			<figcaption class="feature-image-caption-overlay">
+				<?php if ( $credit ) : ?>
+					<span class="feature-image-description"><?php echo esc_html( $credit ); ?></span><br/>
+				<?php endif; ?>
+				<?php if ( $caption ) : ?>
+					<span class="feature-image-caption">/<?php echo esc_html( $caption ); ?></span>
 				<?php endif; ?>
 			</figcaption>
 		<?php endif; ?>

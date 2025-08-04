@@ -5,7 +5,7 @@ import Icon from '../../components/Icon.jsx';
 const { useBlockProps } = wp.blockEditor;
 
 const SaveComponent = ({ attributes }) => {
-  const { title, titleSize, description, icon, bgColor, buttonLink } = attributes;
+  const { title, titleSize, description, icon, bgColor, buttonLink, displayButton } = attributes;
 
   const iconColorClass = bgColor === 'black' ? 'primary' : 'black';
 
@@ -16,13 +16,15 @@ const SaveComponent = ({ attributes }) => {
         <Icon name={icon} colorClass={iconColorClass} className="icon" />
       </div>
       <p className="description">{description}</p>
-      <CustomButton
-        label="En savoir plus"
-        size="medium"
-        link={buttonLink}
-        alignment="center"
-        style="bg-yellow"
-      />
+      {displayButton && (
+        <CustomButton
+          label="En savoir plus"
+          size="medium"
+          link={buttonLink}
+          alignment="center"
+          style="bg-yellow"
+        />
+      )}
     </div>
   );
 };

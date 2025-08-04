@@ -102,6 +102,7 @@ require_once realpath( __DIR__ . '/includes/admin/petitions-settings.php' );
 require_once realpath( __DIR__ . '/includes/admin/event-venue-auto-geocode.php' );
 require_once realpath( __DIR__ . '/includes/admin/event-national.php' );
 require_once realpath( __DIR__ . '/includes/admin/event-pagination-redirect.php' );
+require_once realpath( __DIR__ . '/includes/admin/local-structures-search.php' );
 #endregion admin
 
 /**
@@ -182,6 +183,7 @@ require_once realpath( __DIR__ . '/includes/core-blocks/social-icons/styles.php'
  */
 #region patterns
 require_once realpath( __DIR__ . '/includes/block-patterns/pattern-category.php' );
+require_once realpath( __DIR__ . '/includes/block-patterns/exclude-page-content-pattern-for-page.php' );
 #endregion patterns
 
 /**
@@ -196,6 +198,8 @@ require_once realpath( __DIR__ . '/includes/post-types/countries.php' );
 require_once realpath( __DIR__ . '/includes/post-types/landmarks.php' );
 require_once realpath( __DIR__ . '/includes/post-types/local-structures.php');
 require_once realpath( __DIR__ . '/includes/post-types/petitions.php');
+require_once realpath( __DIR__ . '/includes/post-types/press-release.php');
+require_once realpath( __DIR__ . '/includes/post-types/trainings.php');
 #endregion post types
 
 /**

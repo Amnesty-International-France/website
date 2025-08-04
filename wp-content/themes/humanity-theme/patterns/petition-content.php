@@ -7,6 +7,7 @@
  */
 
 $title = get_the_title();
+$type = get_field( 'type' )['value'];
 $end_date = get_field('date_de_fin');
 $signatures_target = get_field('objectif_signatures');
 $letter = get_field(selector: 'lettre');
@@ -91,6 +92,7 @@ if ( $is_thank_you_page && is_singular( 'petition' ) ) {
                             </div>
                         </div>
                         <!-- wp:post-content /-->
+						<?php if ( $type === 'petition' ) : ?>
                         <div class="read-more-block">
                             <div class="read-more-toggle"
                                 data-read-more-label="<?php echo esc_attr($read_more_label); ?>">
@@ -110,6 +112,7 @@ if ( $is_thank_you_page && is_singular( 'petition' ) ) {
                             <a href="<?php echo esc_url( $pdf_url ); ?>" target="_blank" rel="noopener">Téléchargez la version imprimable</a> et faites-la signer autour de vous.
                         </p>
                         <?php endif; ?>
+						<?php endif; ?>
                     </section>
                 <!-- /wp:group -->
             </article>

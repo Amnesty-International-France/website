@@ -5,7 +5,7 @@ import Icon from '../../components/Icon.jsx';
 const { useEffect, useState } = wp.element;
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
-const { PanelBody, SelectControl, TextControl, Spinner } = wp.components;
+const { PanelBody, SelectControl, TextControl, Spinner, ToggleControl } = wp.components;
 const { useSelect } = wp.data;
 const apiFetch = wp.apiFetch;
 
@@ -183,6 +183,7 @@ const EditComponent = (props) => {
     buttonLink,
     selectedCategory,
     selectedPostTitle,
+    displayButton,
   } = attributes;
 
   const reqSvgs = require.context('../../icons', false, /\.svg$/);
@@ -237,29 +238,41 @@ const EditComponent = (props) => {
             options={iconOptions}
             onChange={(value) => setAttributes({ icon: value })}
           />
-          <SelectControl
-            label={__('Filtrer par catégorie', 'amnesty')}
-            value={selectedCategory || ''}
-            options={categoryOptions}
-            onChange={(value) => {
-              setAttributes({
-                selectedCategory: value,
-                buttonLink: '',
-                selectedPostTitle: '',
-              });
-            }}
+          <ToggleControl
+            label={__('Afficher le bouton', 'amnesty')}
+            checked={!!displayButton}
+            onChange={() => setAttributes({ displayButton: !displayButton })}
           />
-          {selectedCategory ? (
-            <PostSearchControl
-              selectedPostId={buttonLink}
-              selectedPostTitle={selectedPostTitle}
-              categorySlug={selectedCategory}
-              onChange={handlePostSelect}
-            />
-          ) : (
-            <p>
-              {__('Sélectionnez une catégorie pour afficher les contenus disponibles.', 'amnesty')}
-            </p>
+          {displayButton && (
+            <>
+              <SelectControl
+                label={__('Filtrer par catégorie', 'amnesty')}
+                value={selectedCategory || ''}
+                options={categoryOptions}
+                onChange={(value) => {
+                  setAttributes({
+                    selectedCategory: value,
+                    buttonLink: '',
+                    selectedPostTitle: '',
+                  });
+                }}
+              />
+              {selectedCategory ? (
+                <PostSearchControl
+                  selectedPostId={buttonLink}
+                  selectedPostTitle={selectedPostTitle}
+                  categorySlug={selectedCategory}
+                  onChange={handlePostSelect}
+                />
+              ) : (
+                <p>
+                  {__(
+                    'Sélectionnez une catégorie pour afficher les contenus disponibles.',
+                    'amnesty',
+                  )}
+                </p>
+              )}
+            </>
           )}
         </PanelBody>
         <PanelBody title={__('Styles', 'amnesty')}>
@@ -294,13 +307,15 @@ const EditComponent = (props) => {
           </div>
         )}
         <p className="description">{description}</p>
-        <CustomButton
-          label="En savoir plus"
-          size="medium"
-          link={buttonLink}
-          alignment="center"
-          style="bg-yellow"
-        />
+        {displayButton && (
+          <CustomButton
+            label="En savoir plus"
+            size="medium"
+            link={buttonLink}
+            alignment="center"
+            style="bg-yellow"
+          />
+        )}
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-.legs-menu {
+.page-menu {
   padding: 14px 0;
   background-color: var(--wp--preset--color--grey-light);
 
@@ -26,8 +26,9 @@
 
     li {
       border: 1px solid var(--wp--preset--color--black);
-      min-width: 160px;
       display: inline-block;
+      transition: all ease 0.4s;
+      position: relative;
 
       a {
         padding: 12px 16px;
@@ -41,6 +42,7 @@
         width: 100%;
         height: 100%;
         display: block;
+        min-width: 160px  ;
 
         &:hover {
           background-color: var(--wp--preset--color--grey-lighter);
@@ -48,4 +50,21 @@
       }
     }
   }
+
+  &.green {
+    background-color: var(--wp--preset--color--dark-teal);
+
+    ul li{
+      border: 1px solid var(--wp--preset--color--white);
+
+      a {
+        color: var(--wp--preset--color--white);
+
+        &:hover {
+          background-color: #007d79;
+        }
+      }
+    }
+  }
+
 }

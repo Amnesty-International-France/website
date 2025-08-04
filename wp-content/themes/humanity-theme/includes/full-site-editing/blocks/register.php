@@ -4,6 +4,8 @@ declare( strict_types = 1 );
 
 require_once realpath( __DIR__ ) . '/archive-filters/register.php';
 require_once realpath( __DIR__ ) . '/archive-filters/render.php';
+require_once realpath( __DIR__ ) . '/archive-filters-trainings/register.php';
+require_once realpath( __DIR__ ) . '/archive-filters-trainings/render.php';
 require_once realpath( __DIR__ ) . '/archive-header/register.php';
 require_once realpath( __DIR__ ) . '/archive-header/render.php';
 require_once realpath( __DIR__ ) . '/pop-in/register.php';
@@ -27,6 +29,7 @@ if ( ! function_exists( 'amnesty_register_full_site_editing_blocks' ) ) {
 	 */
 	function amnesty_register_full_site_editing_blocks(): void {
 		register_archive_filters_block();
+		register_archive_filters_trainings_block();
 		register_archive_header_block();
 		register_pop_in_block();
 		register_query_count_block();

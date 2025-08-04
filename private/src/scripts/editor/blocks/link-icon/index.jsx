@@ -33,6 +33,10 @@ registerBlockType('amnesty-core/link-icon', {
       type: 'string',
       default: '#',
     },
+    displayButton: {
+      type: 'boolean',
+      default: true,
+    },
   },
   edit: EditComponent,
   save: SaveComponent,

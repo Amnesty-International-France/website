@@ -36,6 +36,10 @@ if ( ! function_exists( 'register_donation_calculator_block' ) ) {
 						'type'    => 'string',
 						'default' => '',
 					],
+					'rate'        => [
+						'type'    => 'number',
+						'default' => 66,
+					],
 				],
 			]
 		);

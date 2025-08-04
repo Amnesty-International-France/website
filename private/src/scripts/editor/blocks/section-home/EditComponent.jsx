@@ -18,6 +18,8 @@ const EditComponent = (props) => {
     mediaId,
     mediaUrl,
     mediaPosition,
+    mediaCaption,
+    mediaDescription,
     icons,
     displayButton,
     buttonLabel,
@@ -29,6 +31,8 @@ const EditComponent = (props) => {
     setAttributes({
       mediaId: media.id,
       mediaUrl: media.url,
+      mediaCaption: media.caption,
+      mediaDescription: media.description,
     });
   };
 
@@ -136,6 +140,7 @@ const EditComponent = (props) => {
             value={bgColor}
             options={[
               { label: __('Blanc', 'amnesty'), value: 'white' },
+              { label: __('Gris clair', 'amnesty'), value: 'grey-lighter' },
               { label: __('Gris', 'amnesty'), value: 'grey' },
               { label: __('Noir', 'amnesty'), value: 'black' },
             ]}
@@ -258,6 +263,11 @@ const EditComponent = (props) => {
                   src={mediaUrl}
                   alt={__('Image de la section', 'amnesty')}
                 />
+                {(mediaCaption || mediaDescription) && (
+                  <p className="section-media-caption-description">
+                    {`${mediaCaption} /`} {mediaDescription}
+                  </p>
+                )}
               </div>
             </div>
           )}

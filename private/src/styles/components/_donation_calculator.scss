@@ -185,6 +185,7 @@
       width: 100%;
 
       > p {
+        text-transform: lowercase;
         margin-top: 1rem;
         margin-bottom: 4px;
         font-weight: bold;
@@ -207,7 +208,8 @@
             color: var(--wp--preset--color--grey-dark);
             text-transform: none;
             font-weight: bold;
-
+            font-family: var(--wp--preset--font-family--secondary);
+            font-size: 22px;
           }
 
           & > label {
@@ -272,6 +274,7 @@
 
       & > span {
         font-size: 20px;
+        text-transform: lowercase;
       }
 
       & ~ a {

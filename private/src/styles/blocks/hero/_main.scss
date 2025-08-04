@@ -135,3 +135,21 @@
 .wp-block-amnesty-core-hero:has(+ main) {
   margin-bottom: var(--wp--preset--spacing--single);
 }
+
+.page-hero-block {
+  &.page-hero-block--thin {
+    min-height: 160px;
+
+    .page-figure {
+      height: 160px;
+      max-height: 160px;
+    }
+
+    .page-hero-title-wrapper .container .page-hero-title {
+      @include mq($until: small) {
+        font-size: 1.7rem;
+        line-height: 2.425rem;
+      }
+    }
+  }
+}

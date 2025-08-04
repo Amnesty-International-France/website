@@ -1,0 +1,66 @@
+.page-pres-de-chez-vous {
+  .page-content {
+    padding: 0;
+
+    @media (min-width: $container-lg) {
+      padding: 0 24px;
+    }
+
+    @media (min-width: $container-hg) {
+      padding: 0;
+    }
+
+    .custom-button-block,
+    .download-go-further-block,
+    .get-informed-block,
+    .image-block,
+    .read-also-block,
+    p:not(
+        .wp-block-amnesty-core-chapo p,
+        .wp-block-amnesty-core-section.small p,
+        .wp-block-amnesty-core-section.large p,
+        .download-go-further-block p,
+        .call-to-action-block p,
+        .wp-block-amnesty-core-card-image-text p
+      ),
+    .wp-block-columns,
+    .wp-block-details,
+    .wp-block-heading,
+    .wp-block-image,
+    .wp-block-list,
+    .wp-block-amnesty-core-action,
+    .wp-block-amnesty-core-quote-block,
+    .wp-block-amnesty-core-image,
+    .wp-block-amnesty-core-section.small {
+      max-width: $container-hg;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .call-to-action-block {
+      max-width: $container-lg;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .wp-block-amnesty-core-chapo {
+      max-width: $container-hg;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .interactive-map,
+    .join-and-agenda {
+      max-width: $container-hg;
+      margin-top: 2.1rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .carousel-block {
+      .swiper-slide {
+        max-width: $container-sm;
+      }
+    }
+  }
+}

@@ -1,8 +1,11 @@
-const legsMenu = () => {
-  const content = document.querySelector('.page-legs-main .page-content');
-  const menuContainer = document.getElementById('legs-menu');
+const pageMenu = () => {
+  const content = document.querySelector('[data-page-group="main"]');
+  const menuContainer = document.getElementById('page-menu');
+  const currentPageType = document.querySelector('[data-page-type]')?.dataset?.pageType;
 
-  if (!content || !menuContainer) return;
+  if (!content || !menuContainer || !currentPageType) return;
+
+  if (currentPageType === 'foundation') menuContainer.classList.add('green');
 
   const headings = content.querySelectorAll('h2');
   if (!headings.length) {
@@ -26,4 +29,4 @@ const legsMenu = () => {
   menuContainer.appendChild(list);
 };
 
-export default legsMenu;
+export default pageMenu;
