@@ -184,7 +184,7 @@ function amnesty_get_local_structures_by_bounds( $request ) {
         $post_title = get_the_title( $post_id );
         $post_url = get_permalink( $post_id );
 
-        $thumbnail_url = get_the_post_thumbnail_url( $post_id, 'thumbnail' );
+        $thumbnail_url = get_the_post_thumbnail_url( $post_id, [300, 200] );
 
         $markers_data[] = [
             'id'       => $post_id,
