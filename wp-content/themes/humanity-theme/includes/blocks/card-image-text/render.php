@@ -46,13 +46,18 @@ if (!function_exists('render_card_image_text_block')) {
         ob_start();
 
         $wrapper_classes = ['card-image-text-block', $direction];
+
+        $link_extra_attrs = '';
+        if ($custom) {
+            $link_extra_attrs = ' target="_blank" rel="noopener noreferrer"';
+        }
         ?>
         <div <?php echo get_block_wrapper_attributes(['class' => implode(' ', $wrapper_classes)]); ?>>
             <?php if (!empty($category)) : ?>
                 <p class="card-image-text-category"><?php echo esc_html($category); ?></p>
             <?php endif; ?>
             <div class="card-content-wrapper">
-                <a href="<?php echo esc_url($permalink); ?>" class="card-image-text-block-link">
+                <a href="<?php echo esc_url($permalink); ?>" class="card-image-text-block-link"<?php echo $link_extra_attrs; ?>>
                     <div class="card-image-text-thumbnail-wrapper">
                         <?php if (!empty($thumbnail_url)) : ?>
                             <img class="card-image-text-thumbnail" src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($title); ?>" />
