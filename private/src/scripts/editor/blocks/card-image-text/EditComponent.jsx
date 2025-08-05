@@ -12,6 +12,9 @@ const getCategoryLink = (slug) => {
   if (slug === 'landmark') {
     return '/reperes';
   }
+  if (slug === 'page') {
+    return '';
+  }
   return `/${slug}`;
 };
 
@@ -45,6 +48,18 @@ const PostSearchControl = ({ selectedPostId, selectedPostTitle, categorySlug, on
           setResults([]);
           setLoading(false);
         });
+    } else if (categorySlug === 'page') {
+      apiFetch({
+        path: `/wp/v2/pages?search=${encodeURIComponent(searchTerm)}&per_page=10&_embed`,
+      })
+        .then((pages) => {
+          setResults(pages);
+          setLoading(false);
+        })
+        .catch(() => {
+          setResults([]);
+          setLoading(false);
+        });
     } else {
       const categoryObj = categories?.find((cat) => cat.slug === categorySlug);
       if (!categoryObj) {
@@ -54,7 +69,7 @@ const PostSearchControl = ({ selectedPostId, selectedPostTitle, categorySlug, on
       }
 
       apiFetch({
-        path: `/wp/v2/posts?search=${encodeURIComponent(searchTerm)}&category=${categoryObj.id}&per_page=10&_embed`, // Changed `category` to `categories` as per WP REST API for multiple categories
+        path: `/wp/v2/posts?search=${encodeURIComponent(searchTerm)}&category=${categoryObj.id}&per_page=10&_embed`,
       })
         .then((posts) => {
           setResults(posts);
@@ -92,7 +107,7 @@ const PostSearchControl = ({ selectedPostId, selectedPostTitle, categorySlug, on
         label={__('Sélectionner un contenu spécifique (facultatif)', 'amnesty')}
         value={searchTerm}
         onChange={setSearchTerm}
-        placeholder={__('Tapez pour chercher un article&hellip;', 'amnesty')}
+        placeholder={__('Tapez pour chercher un contenu', 'amnesty')}
       />
 
       {loading && <Spinner />}
@@ -112,11 +127,17 @@ const PostSearchControl = ({ selectedPostId, selectedPostTitle, categorySlug, on
             const featuredImageUrl = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
             const allExtractedTerms = extractAllCustomTerms(post._embedded);
 
-            const postCategory = post._embedded?.['wp:term']?.[0]?.find(
-              (term) => term.taxonomy === 'category',
-            );
-            const postCategoryName =
-              categorySlug === 'landmark' ? 'Repères' : postCategory?.name || '';
+            let postCategoryName = '';
+            if (categorySlug === 'landmark') {
+              postCategoryName = 'Repères';
+            } else if (categorySlug === 'page') {
+              postCategoryName = 'Page';
+            } else {
+              const postCategory = post._embedded?.['wp:term']?.[0]?.find(
+                (term) => term.taxonomy === 'category',
+              );
+              postCategoryName = postCategory?.name || '';
+            }
 
             return (
               <li
@@ -189,7 +210,7 @@ const PostSearchControl = ({ selectedPostId, selectedPostTitle, categorySlug, on
 
       {selectedPostTitle && (
         <p>
-          {__('Article sélectionné :', 'amnesty')} <strong>{selectedPostTitle}</strong>
+          {__('Contenu sélectionné :', 'amnesty')} <strong>{selectedPostTitle}</strong>
         </p>
       )}
     </div>
@@ -219,10 +240,11 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
   const categoryOptions = categories
     ? [
-        { label: __('Sélectionnez une catégorie', 'amnesty'), value: '' },
+        { label: __('Sélectionnez un type', 'amnesty'), value: '' },
         ...categories
           .filter((cat) => cat.name !== 'Non classé')
           .map((cat) => ({ label: cat.name, value: cat.slug })),
+        { label: 'Pages', value: 'page' },
         { label: 'Repères', value: 'landmark' },
       ]
     : [];
@@ -230,6 +252,9 @@ const EditComponent = ({ attributes, setAttributes }) => {
   const getCategoryNameFromSlug = (slug) => {
     if (slug === 'landmark') {
       return 'Repères';
+    }
+    if (slug === 'page') {
+      return 'Pages';
     }
     const selectedCat = categories?.find((cat) => cat.slug === slug);
     return selectedCat ? selectedCat.name : '';
@@ -323,9 +348,19 @@ const EditComponent = ({ attributes, setAttributes }) => {
     return (
       <div {...blockProps}>
         <Spinner />
-        <p>{__('Chargement des catégories…', 'amnesty')}</p>
+        <p>{__('Chargement…', 'amnesty')}</p>
       </div>
     );
+  }
+
+  const linkProps = {
+    href: permalink,
+    className: 'card-image-text-block-link',
+  };
+
+  if (custom) {
+    linkProps.target = '_blank';
+    linkProps.rel = 'noopener noreferrer';
   }
 
   return (
@@ -350,7 +385,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
           {!custom && (
             <>
               <SelectControl
-                label={__('Type de contenu (catégorie)', 'amnesty')}
+                label={__('Type de contenu', 'amnesty')}
                 value={selectedPostCategorySlug}
                 options={categoryOptions}
                 onChange={(value) => {
@@ -375,7 +410,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                   onChange={handlePostSearchControlChange}
                 />
               ) : (
-                <p>{__('Sélectionnez une catégorie pour chercher des contenus.', 'amnesty')}</p>
+                <p>{__('Sélectionnez un type pour chercher des contenus.', 'amnesty')}</p>
               )}
             </>
           )}
@@ -434,7 +469,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
       <div {...blockProps} className={classnames('card-image-text-block', direction)}>
         <p className="card-image-text-category">{category}</p>
         <div className="card-content-wrapper">
-          <a href={permalink} className="card-image-text-block-link">
+          <a {...linkProps}>
             <div className="card-image-text-thumbnail-wrapper">
               {selectedMedia && (
                 <img className="card-image-text-thumbnail" src={selectedMedia.source_url} alt="" />
