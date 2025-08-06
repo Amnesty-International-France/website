@@ -119,4 +119,97 @@
       }
     }
   }
+
+  &.page-hero-block--thin {
+    min-height: 160px;
+
+    .page-figure {
+      height: 160px;
+      max-height: 160px;
+    }
+
+    .page-hero-title-wrapper .container .page-hero-title {
+      @include mq($until: small) {
+        font-size: 1.7rem;
+        line-height: 2.425rem;
+      }
+    }
+  }
+
+  &.page-hero-block--large {
+    .page-hero-title-wrapper {
+      top: 22%;
+
+      .container {
+        .page-hero-subtitle {
+          display: inline-block;
+          font-size: 24px;
+          line-height: 33px;
+          padding: 6px 8px;
+          margin-bottom: 0;
+          font-weight: bold;
+          color: var(--wp--preset--color--primary);
+          background-color: var(--wp--preset--color--black);
+          font-family: var(--wp--preset--font-family--secondary);
+
+          @media (min-width: $container-lg) {
+            font-size: 1.875rem;
+            line-height: 2.1rem;
+            padding: .5rem;
+          }
+        }
+
+        .page-hero-title {
+          display: inline-block;
+          padding: 0 .3rem;
+          margin-bottom: .4rem;
+          font-size: 2.7rem;
+          text-transform: inherit;
+          line-height: 1;
+          font-weight: lighter;
+          font-family: var(--wp--preset--font-family--primary);
+          color: var(--wp--preset--color--primary);
+          background-color: var(--wp--preset--color--black);
+
+          @media (min-width: $container-lg) {
+            font-size: 3.2rem;
+            line-height: 3.7rem;
+          }
+        }
+      }
+    }
+
+    .page-figure {
+      min-height: 315px;
+    }
+
+    .custom-button-block {
+      margin-top: 2.2rem;
+
+      .custom-button .content.large .icon-container svg {
+        position: relative;
+        top: 0.1rem;
+        stroke-width: 2;
+      }
+    }
+
+    @media (min-width: $container-lg) {
+      .page-figure {
+        min-height: 420px;
+      }
+
+      .custom-button-block {
+        margin-top: 3.7rem;
+      }
+
+      .page-hero-title-wrapper {
+        top: 24%;
+
+        .container .page-hero-subtitle {
+          font-size: 2.8rem;
+          text-transform: inherit;
+        }
+      }
+    }
+  }
 }
