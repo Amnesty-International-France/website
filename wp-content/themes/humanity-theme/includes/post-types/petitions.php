@@ -119,6 +119,29 @@ function amnesty_handle_petition_signature() {
 }
 add_action( 'template_redirect', 'amnesty_handle_petition_signature' );
 
+add_action( 'rest_api_init', 'amnesty_register_signature_count_field' );
+
+function amnesty_register_signature_count_field() {
+    register_rest_field(
+        'petition',
+        'current_signatures',
+        array(
+            'get_callback'    => 'amnesty_get_signatures_for_api',
+            'update_callback' => null,
+            'schema'          => array(
+                'description' => __( 'Nombre actuel de signatures.' ),
+                'type'        => 'integer',
+                'context'     => array( 'view', 'edit' ),
+            ),
+        )
+    );
+}
+
+function amnesty_get_signatures_for_api( $object ) {
+    $post_id = $object['id'];
+    
+    return amnesty_get_petition_signature_count( $post_id );
+}
 
 add_action( 'acf/include_fields', function() {
     if ( ! function_exists( 'acf_add_local_field_group' ) ) {
@@ -552,6 +575,6 @@ add_action( 'acf/include_fields', function() {
 		'hide_on_screen' => '',
 		'active' => true,
 		'description' => '',
-		'show_in_rest' => 0,
+		'show_in_rest' => 1,
 	) );
 } );
