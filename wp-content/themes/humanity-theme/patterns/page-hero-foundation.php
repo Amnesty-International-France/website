@@ -12,7 +12,6 @@ declare(strict_types=1);
 $featured_image_url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 
 $page_title = get_the_title();
-
 $over_title = get_field( 'sur-titre', $post->ID ) ?? '';
 
 ?>
@@ -27,10 +26,9 @@ $over_title = get_field( 'sur-titre', $post->ID ) ?? '';
 			<div class="container">
 				<div class="container-title">
 					<?php if ( $over_title ) : ?>
-						<h3 class="page-hero-overtitle"><?php echo esc_html( $over_title ); ?></h3>
-						<br>
+						<h1 class="page-hero-overtitle"><?php echo esc_html( $over_title ); ?></h1><br/>
 					<?php endif; ?>
-					<h1 class="page-hero-title"><?php echo esc_html( $page_title ); ?></h1>
+					<span class="page-hero-title"><?php echo esc_html( $page_title ); ?></span>
 				</div>
 			</div>
 		</div>
