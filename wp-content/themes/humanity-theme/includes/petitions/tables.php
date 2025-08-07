@@ -104,16 +104,21 @@ function have_signed( $petitionId, $userId ) {
 	return ! is_null( $wpdb->get_row( $sql ) );
 }
 
-function insert_petition_signature( $petition_id, $user_id, $code_origine, $message ) {
+function insert_petition_signature( $petition_id, $user_id, $date_signature, $code_origine, $message, $pending = 0, $is_synched = 0, $last_sync = null, $nb_try = 0 ) {
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'aif_petitions_signatures';
 
 	$inserted = $wpdb->insert($table_name, [
 		'petition_id' => $petition_id,
 		'user_id' => $user_id,
+		'date_signature' => $date_signature,
+		'pending' => $pending,
+		'is_synched' => $is_synched,
+		'last_sync' => $last_sync,
+		'nb_try' => $nb_try,
 		'code_origine' => $code_origine,
 		'message' => $message
-	], ['%d', '%d', '%s', '%s']);
+	], ['%d', '%d', '%s', '%d', '%d', '%s', '%d', '%s', '%s']);
 
 	return $inserted !== false;
 }
@@ -123,10 +128,30 @@ function get_signatures_to_sync() {
 	$users_table_name = $wpdb->prefix . 'aif_users';
 	$signatures_table_name = $wpdb->prefix . 'aif_petitions_signatures';
 
-	$query = $wpdb->prepare("SELECT * FROM $signatures_table_name s JOIN $users_table_name u ON(s.user_id = u.id) WHERE s.pending = 0 AND s.is_synched = 0 AND s.nb_try = 0");
+	$query = $wpdb->prepare("SELECT * FROM $signatures_table_name s JOIN $users_table_name u ON(s.user_id = u.id) WHERE s.pending = %d AND s.is_synched = %d AND s.nb_try = %d", array(0, 0, 0) );
 
 	return $wpdb->get_results( $query, ARRAY_A );
 }
 
+function get_failed_signatures_to_sync() {
+	global $wpdb;
+	$users_table_name = $wpdb->prefix . 'aif_users';
+	$signatures_table_name = $wpdb->prefix . 'aif_petitions_signatures';
+
+	$query = $wpdb->prepare("SELECT * FROM $signatures_table_name s JOIN $users_table_name u ON(s.user_id = u.id) WHERE s.pending = %d AND s.is_synched = %d AND s.nb_try = %d", array(0, 0, 1) );
+
+	return $wpdb->get_results( $query, ARRAY_A );
+}
+
+function update_signature_status( $petition_id, $user_id, $pending, $is_synched, $last_sync, $increment_nb_try = false ) {
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'aif_petitions_signatures';
+	if( $increment_nb_try ) {
+		$query = $wpdb->prepare("UPDATE $table_name SET pending = %d, nb_try = nb_try + %d, is_synched = %d, last_sync = %s WHERE petition_id = %d AND user_id = %d", array($pending, 1, $is_synched, $last_sync, $petition_id, $user_id) );
+	} else {
+		$query = $wpdb->prepare("UPDATE $table_name SET pending = %d, is_synched = %d, last_sync = %s WHERE petition_id = %d AND user_id = %d", array($pending, $is_synched, $last_sync, $petition_id, $user_id) );
+	}
+	$wpdb->query( $query );
+}
 
 ?>
