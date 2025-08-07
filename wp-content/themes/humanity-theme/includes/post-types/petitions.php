@@ -100,7 +100,7 @@ function amnesty_handle_petition_signature() {
 		$code_origine = isset($_POST['code_origine']) && ! empty($_POST['code_origine']) ? $_POST['code_origine'] : get_field( 'code_origine', $petition_id ) ?? '';
         $message = $type === 'action-soutien' && isset($_POST['user_message']) && ! empty($_POST['user_message']) ? sanitize_textarea_field($_POST['user_message']) : '';
 
-		if( insert_petition_signature( $petition_id, $user_id, $code_origine, $message ) === false ) {
+		if( insert_petition_signature( $petition_id, $user_id, date('Y-m-d'), $code_origine, $message ) === false ) {
 			wp_redirect( add_query_arg( 'signature_status', 'error', wp_get_referer() ) );
 			exit;
 		}
