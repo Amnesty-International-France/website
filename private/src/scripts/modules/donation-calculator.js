@@ -178,18 +178,57 @@ const selectedTab = (calculator) => {
   });
 };
 
-export const Calculator = () => {
-  document.addEventListener('DOMContentLoaded', () => {
-    const calculators = document.querySelectorAll('.donation-calculator');
+export const hoverDonationMenu = () => {
+  const donateButton = document.querySelector('.donate-button-desktop');
+  const calculator = donateButton.querySelector('.nav-don-calculator');
 
-    calculators.forEach((calculator) => {
-      selectedTab(calculator);
-      selectedAmount(calculator);
-      donationCalculator(calculator);
-    });
+  if (!donateButton || !calculator) return;
+
+  let isHover = false;
+
+  donateButton.addEventListener('mouseenter', () => {
+    isHover = true;
+    calculator.style.visibility = 'visible';
+  });
+
+  calculator.addEventListener('mouseenter', () => {
+    isHover = true;
+  });
+
+  calculator.addEventListener('mouseleave', () => {
+    isHover = false;
+
+    if (!isHover) {
+      setTimeout(() => {
+        calculator.style.visibility = 'hidden';
+      }, 100);
+    }
+  });
+
+  donateButton.addEventListener('mouseleave', () => {
+    isHover = false;
+
+    if (!isHover) {
+      setTimeout(() => {
+        calculator.style.visibility = 'hidden';
+      }, 100);
+    }
+  });
+};
+
+export const calculator = () => {
+  const calculators = document.querySelectorAll('.donation-calculator');
+
+  if (!calculators) return;
+
+  calculators.forEach((calc) => {
+    selectedTab(calc);
+    selectedAmount(calc);
+    donationCalculator(calc);
   });
 };
 
 export default {
-  Calculator,
+  calculator,
+  hoverDonationMenu,
 };
