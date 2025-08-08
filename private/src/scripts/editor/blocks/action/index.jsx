@@ -1,43 +1,65 @@
 import EditComponent from './EditComponent.jsx';
-import SaveComponent from './SaveComponent.jsx';
 
 const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
 
 registerBlockType('amnesty-core/action', {
   title: __('Agir', 'amnesty'),
-  description: 'Block Agir (Pétition/Action)',
+  description: __('Affiche un bloc de type "Pétition" ou "Action".', 'amnesty'),
   category: 'amnesty-core',
+  icon: 'megaphone',
   attributes: {
     type: {
       type: 'string',
       default: 'petition',
     },
+    surTitle: {
+      type: 'string',
+      default: '',
+    },
     title: {
       type: 'string',
-      default: 'Titre',
+      default: '',
     },
-    subtitle: {
+    description: {
       type: 'string',
-      default: 'Sous titre',
+      default: '',
     },
     imageUrl: {
       type: 'string',
       default: '',
     },
-    bgColor: {
+    buttonText: {
       type: 'string',
-      default: 'bg-white',
+      default: 'En savoir plus',
     },
     buttonLink: {
       type: 'string',
       default: '',
     },
-    lignment: {
+    buttonPosition: {
       type: 'string',
       default: 'left',
     },
+    backgroundColor: {
+      type: 'string',
+      default: 'primary',
+    },
+    petitionId: {
+      type: 'number',
+    },
+    petitionData: {
+      type: 'object',
+    },
+    overrideTitle: {
+      type: 'string',
+      default: '',
+    },
+    overrideImageUrl: {
+      type: 'string',
+      default: '',
+    },
   },
   edit: EditComponent,
-  save: SaveComponent,
+  save: () => null,
 });
