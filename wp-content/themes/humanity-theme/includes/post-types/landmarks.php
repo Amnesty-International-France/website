@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Register Custom Post Type: Landmark
  */
