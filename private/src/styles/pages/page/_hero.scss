@@ -59,7 +59,8 @@
         width: 16px;
         height: 16px;
         margin: 0 6px;
-        background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E") no-repeat center;
+        background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E")
+          no-repeat center;
         background-size: contain;
         vertical-align: middle;
       }
@@ -103,59 +104,18 @@
         padding-left: 0;
       }
 
-      .container-title {
-        .page-hero-title,
-        .page-hero-overtitle {
-          display: inline;
-          margin-bottom: 0;
-          width: fit-content;
-          padding: 3px 8px;
-          box-decoration-break: clone;
-          font-weight: bold;
-          text-transform: uppercase;
-          color: var(--wp--preset--color--primary);
-          background-color: var(--wp--preset--color--black);
-        }
-
-        .page-hero-title {
-          font-size: 44px;
-          line-height: 3.3rem;
-        }
-
-        .page-hero-overtitle {
-          font-size: 30px;
-          line-height: 33px;
-          letter-spacing: 0;
-          padding: 17px 8px 0;
-        }
-      }
-    }
-
-    @media (max-width: $container-lg) {
-      position: static;
-      background-color: var(--wp--preset--color--primary);
-
-      .container {
-        padding: 1rem 24px;
-
-        .container-title {
-          width: 100%;
-
-          .page-hero-overtitle,
-          .page-hero-title {
-            padding: 0;
-          }
-
-          .page-hero-overtitle {
-            font-size: 1.2rem;
-            line-height: normal;
-          }
-
-          .page-hero-title {
-            font-size: 2.4rem;
-            line-height: 2.8rem;
-          }
-        }
+      .page-hero-title {
+        display: inline;
+        margin-bottom: 0;
+        width: fit-content;
+        padding: 0 8px;
+        font-size: 44px;
+        box-decoration-break: clone;
+        font-weight: bold;
+        line-height: 58px;
+        text-transform: uppercase;
+        color: var(--wp--preset--color--primary);
+        background-color: var(--wp--preset--color--black);
       }
     }
   }
