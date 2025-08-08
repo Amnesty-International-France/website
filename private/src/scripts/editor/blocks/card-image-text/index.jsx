@@ -43,6 +43,10 @@ registerBlockType('amnesty-core/card-image-text', {
       type: 'string',
       default: 'Texte par défaut',
     },
+    selectedPostCategorySlug: {
+      type: 'string',
+      default: '',
+    },
   },
   edit: EditComponent,
   save: () => null,

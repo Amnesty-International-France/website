@@ -719,8 +719,8 @@ add_action( 'acf/include_fields', function() {
 			),
 			array(
 				'key' => 'field_688c7741cfe5c',
-				'label' => 'Catégories',
-				'name' => 'categories',
+				'label' => 'Catégorie',
+				'name' => 'category',
 				'aria-label' => '',
 				'type' => 'taxonomy',
 				'instructions' => '',
@@ -736,7 +736,7 @@ add_action( 'acf/include_fields', function() {
 				'save_terms' => 0,
 				'load_terms' => 0,
 				'return_format' => 'id',
-				'field_type' => 'multi_select',
+				'field_type' => 'select',
 				'allow_null' => 0,
 				'allow_in_bindings' => 0,
 				'bidirectional' => 0,
@@ -762,7 +762,7 @@ add_action( 'acf/include_fields', function() {
 		'hide_on_screen' => '',
 		'active' => true,
 		'description' => '',
-		'show_in_rest' => 0,
+		'show_in_rest' => 1,
 	) );
 } );
 
