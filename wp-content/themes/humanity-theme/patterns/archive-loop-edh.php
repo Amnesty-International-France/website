@@ -1,8 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /**
- * Title: Archive loop for Trainings
- * Description: Template for the loop on archive trainings page
- * Slug: amnesty/archive-loop-trainings
+ * Title: Archive loop for EDH
+ * Description: Template for the loop on archive edh page
+ * Slug: amnesty/archive-loop-edh
  * Inserter: yes
  */
 
