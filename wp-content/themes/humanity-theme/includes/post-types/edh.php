@@ -39,3 +39,44 @@ function amnesty_register_edh_cpt()
 }
 
 add_action('init', 'amnesty_register_edh_cpt');
+
+/**
+ * Filters the main query on the 'edh' CPT archive page based on ACF fields.
+ */
+function my_project_edh_filters($query) {
+	if (is_admin() || !$query->is_main_query() || !is_post_type_archive('edh')) {
+		return;
+	}
+
+	$meta_query = ['relation' => 'AND'];
+	$conditions_added = false;
+
+	if (isset($_GET['qcontent_type']) && !empty($_GET['qcontent_type'])) {
+		$content_type = explode(',', sanitize_text_field($_GET['qcontent_type']));
+		$meta_query[] = ['key' => 'content_type', 'value' => $content_type, 'compare' => 'IN'];
+		$conditions_added = true;
+	}
+
+	if (isset($_GET['qtheme']) && !empty($_GET['qtheme'])) {
+		$requirements = explode(',', sanitize_text_field($_GET['qtheme']));
+		$meta_query[] = ['key' => 'theme', 'value' => $requirements, 'compare' => 'IN'];
+		$conditions_added = true;
+	}
+
+	if (isset($_GET['qrequirements']) && !empty($_GET['qrequirements'])) {
+		$requirements = explode(',', sanitize_text_field($_GET['qrequirements']));
+		$meta_query[] = ['key' => 'requirements', 'value' => $requirements, 'compare' => 'IN'];
+		$conditions_added = true;
+	}
+
+	if (isset($_GET['qactivity_duration']) && !empty($_GET['qactivity_duration'])) {
+		$activity_duration = explode(',', sanitize_text_field($_GET['qactivity_duration']));
+		$meta_query[] = ['key' => 'activity_duration', 'value' => $activity_duration, 'compare' => 'IN'];
+		$conditions_added = true;
+	}
+
+	if ($conditions_added) {
+		$query->set('meta_query', $meta_query);
+	}
+}
+add_action('pre_get_posts', 'my_project_edh_filters');

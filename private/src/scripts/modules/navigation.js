@@ -109,6 +109,10 @@ const hoverDonationMenu = () => {
   const donateButton = document.querySelector('.donate-button-desktop');
   const calculator = donateButton.querySelector('.nav-don-calculator');
 
+  if (!donateButton || !calculator) {
+    return;
+  }
+
   let isHover = false;
 
   donateButton.addEventListener('mouseenter', () => {

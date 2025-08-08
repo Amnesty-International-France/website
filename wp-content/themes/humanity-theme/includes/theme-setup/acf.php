@@ -772,7 +772,7 @@ add_action( 'acf/include_fields', function() {
 			array(
 				'key' => 'field_6892103b14459',
 				'label' => 'Type de contenu',
-				'name' => 'type_de_contenu',
+				'name' => 'content_type',
 				'aria-label' => '',
 				'type' => 'select',
 				'instructions' => '',
