@@ -22,10 +22,10 @@ class ListeDActionsMapper extends BlockMapper {
 
 		foreach ( $prismicBlock['items'] as $item ) {
 			$this->blocks[] = [
-				'blockName' => 'amnesty-core/article-card',
+				'blockName' => 'amnesty-core/card-image-text',
 				'attrs' => [
 					'postId' => LinksUtils::processLink($item['action_link'], ReturnType::ID),
-					'direction' => 'landscape',
+					'direction' => 'horizontal',
 				],
 				'innerContent' => [],
 			];
