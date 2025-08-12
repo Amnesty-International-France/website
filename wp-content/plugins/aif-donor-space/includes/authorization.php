@@ -2,7 +2,6 @@
 
 function check_user_page_access()
 {
-
     if (!is_user_logged_in()) {
         wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
         exit;

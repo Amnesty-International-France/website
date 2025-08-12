@@ -101,6 +101,8 @@ docker-compose.yml
 # Themes
 /wp-content/themes/*
 !/wp-content/themes/espace-donateur/
+!/wp-content/themes/humanity-theme/
+
 
 docker-compose.yml
 
