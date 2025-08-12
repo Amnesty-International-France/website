@@ -54,12 +54,17 @@ if (!function_exists('render_card_image_text_block')) {
 							'desintox' => 'detox',
 							default => '',
 						};
-					} else {
-						$post_type_object = get_post_type_object($post_type);
-						$category = $post_type_object->labels->singular_name;
-						$link = get_post_type_archive_link($post_type);
 					}
-				} else {
+				} else if('document' === $post_type) {
+					$document_terms = wp_get_object_terms($postId, 'document_category');
+					if (!empty($document_terms) && !is_wp_error($document_terms)) {
+						$main_category = $document_terms[0];
+						$category = $main_category->name;
+						$link = '';
+					}
+				}
+
+				if ( empty($category) ) {
 					$post_type_object = get_post_type_object($post_type);
 					$category = $post_type_object->labels->singular_name;
 					$link = get_post_type_archive_link($post_type);

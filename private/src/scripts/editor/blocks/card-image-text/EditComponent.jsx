@@ -312,11 +312,14 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
   const handlePostSearchControlChange = (post) => {
     if (selectedPostCategorySlug === 'document') {
-      const { id, excerpt, date, acf } = post;
-      const categoryId = acf?.category;
+      const { id, _embedded, excerpt, date, acf } = post;
+      const docCategory = _embedded?.['wp:term']
+        ?.flat()
+        ?.find((term) => term.taxonomy === 'document_category')?.name;
 
-      const baseAttributes = {
+      setAttributes({
         postId: id,
+        category: docCategory || '',
         title: post.title.rendered,
         subtitle: '',
         text: excerpt?.rendered || '',
@@ -324,29 +327,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
         selectedPostDate: date,
         selectedPostCustomTerms: [],
         permalink: acf?.upload_du_document?.url || '',
-        thumbnail: acf?.image_du_document?.ID || null,
-      };
-
-      if (categoryId) {
-        apiFetch({ path: `/wp/v2/combat/${categoryId}` })
-          .then((term) => {
-            setAttributes({
-              ...baseAttributes,
-              category: term.name,
-            });
-          })
-          .catch(() => {
-            setAttributes({
-              ...baseAttributes,
-              category: '',
-            });
-          });
-      } else {
-        setAttributes({
-          ...baseAttributes,
-          category: '',
-        });
-      }
+        thumbnail: post.featured_media !== 0 ? post.featured_media : null,
+      });
     } else {
       const { id, slug, _embedded, date, excerpt } = post;
       const allExtractedTerms = extractAllCustomTerms(_embedded);

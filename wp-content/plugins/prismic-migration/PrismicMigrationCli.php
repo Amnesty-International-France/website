@@ -107,6 +107,11 @@ class PrismicMigrationCli {
 				WP_CLI::warning( 'Document type not supported : ' . $doc['type'] . ' (' . $doc['uid'] . ')' );
 			}
 
+			if( ! isset($doc['uid']) ) {
+				//WP_CLI::warning( 'Document without uid : ' . $doc['id'] );
+				continue;
+			}
+
 			$id = $this->post_exists_by_slug_and_type($doc['uid'], $docType);
 			if ( !self::$forceMod && $id !== false ) {
 				$progress->tick();

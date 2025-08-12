@@ -6,35 +6,36 @@ namespace Amnesty;
 
 use WP_Term;
 
-new Taxonomy_Combats();
+new Taxonomy_Document_Categories();
 
 /**
- * Register the Topics taxonomy
+ * Register the Document Category taxonomy
  *
  * @package Amnesty\Taxonomies
  */
-class Taxonomy_Combats extends Taxonomy {
+class Taxonomy_Document_Categories extends Taxonomy
+{
 
 	/**
 	 * Taxonomy slug
 	 *
 	 * @var string
 	 */
-	protected $name = 'combat';
+	protected $name = 'document_category';
 
 	/**
 	 * Taxonomy slug
 	 *
 	 * @var string
 	 */
-	protected $slug = 'combat';
+	protected $slug = 'document_category';
 
 	/**
 	 * Object type(s) to register the taxonomy for
 	 *
 	 * @var array
 	 */
-	protected $object_types = [ 'page', 'post', 'landmark', 'tribe_events', 'petition', 'document'];
+	protected $object_types = [ 'document' ];
 
 	/**
 	 * Taxonomy registration arguments
@@ -43,10 +44,10 @@ class Taxonomy_Combats extends Taxonomy {
 	 */
 	protected $args = [
 		'hierarchical'          => true,
-		'rewrite'               => ['slug' => 'combats'],
+		'rewrite'               => false,
 		'show_admin_column'     => true,
 		'show_in_rest'          => true,
-		'query_var'             => true,
+		'query_var'             => false,
 		'update_count_callback' => '_update_generic_term_count',
 	];
 
@@ -54,14 +55,35 @@ class Taxonomy_Combats extends Taxonomy {
 	 * {@inheritDoc}
 	 */
 	public function __construct() {
-		parent::__construct();
+		Taxonomy::__construct();
 
 		if ( ! $this->is_enabled() ) {
 			return;
 		}
 
+		//add_filter( 'term_link', [ $this, 'rewrite_links' ], 10, 3 );
+
 		// has to be run late to ensure the taxonomy is registered
 		add_action( 'init', [ $this, 'redirect' ] );
+	}
+
+	/**
+	 * Filter links for terms in this taxonomy
+	 *
+	 * Rewrites them to filtered search URIs
+	 *
+	 * @param string  $link     the generated link
+	 * @param WP_Term $term     the term object
+	 * @param string  $taxonomy the taxonomy slug
+	 *
+	 * @return string
+	 */
+	public function rewrite_links( string $link, WP_Term $term, string $taxonomy ): string {
+		if ( $taxonomy !== $this->slug ) {
+			return $link;
+		}
+
+		return esc_url( sprintf( '%s?q%s=%s', amnesty_search_url(), $this->slug, $term->term_id ) );
 	}
 
 	/**
@@ -125,43 +147,44 @@ class Taxonomy_Combats extends Taxonomy {
 	public static function labels( bool $defaults = false ): object {
 		$default_labels = [
 			/* translators: [admin] */
-			'name'                  => _x( 'Combats', 'taxonomy general name', 'amnesty' ),
+			'name'                  => _x( 'Catégories de Document', 'taxonomy general name', 'amnesty' ),
 			/* translators: [admin] */
-			'singular_name'         => _x( 'Combat', 'taxonomy singular name', 'amnesty' ),
+			'singular_name'         => _x( 'Catégorie de Document', 'taxonomy singular name', 'amnesty' ),
 			/* translators: [admin] */
-			'search_items'          => __( 'Recherche par Combat', 'amnesty' ),
+			'search_items'          => __( 'Rechercher des catégories', 'amnesty' ),
 			/* translators: [admin] */
-			'all_items'             => __( 'Tout les combats', 'amnesty' ),
+			'all_items'             => __( 'Toutes les catégories', 'amnesty' ),
 			/* translators: [admin] */
-			'parent_item'           => __( 'Combat parent', 'amnesty' ),
+			'parent_item'           => __( 'Catégorie parent', 'amnesty' ),
 			/* translators: [admin] */
-			'parent_item_colon'     => __( 'Combat parent:', 'amnesty' ),
+			'parent_item_colon'     => __( 'Catégorie parent:', 'amnesty' ),
 			/* translators: [admin] */
-			'edit_item'             => __( 'Editer un Combat', 'amnesty' ),
+			'edit_item'             => __( 'Modifier la catégorie', 'amnesty' ),
 			/* translators: [admin] */
-			'view_item'             => __( 'Voir un Combat', 'amnesty' ),
+			'view_item'             => __( 'Voir une Catégorie', 'amnesty' ),
 			/* translators: [admin] */
-			'update_item'           => __( 'Mettre à jour un Combat', 'amnesty' ),
+			'update_item'           => __( 'Mettre à jour la catégorie', 'amnesty' ),
 			/* translators: [admin] */
-			'add_new_item'          => __( 'Ajouter un nouveau Combat', 'amnesty' ),
+			'add_new_item'          => __( 'Ajouter une nouvelle catégorie', 'amnesty' ),
 			/* translators: [admin] */
-			'new_item_name'         => __( 'Nouveau Combat', 'amnesty' ),
+			'new_item_name'         => __( 'Nom de la nouvelle catégorie', 'amnesty' ),
 			/* translators: [admin] */
-			'add_or_remove_items'   => __( 'Ajouter ou enlever un Combat', 'amnesty' ),
+			'add_or_remove_items'   => __( 'Ajouter ou enlever une Catégorie', 'amnesty' ),
 			/* translators: [admin] */
-			'choose_from_most_used' => __( 'Choisir parmi les Combats les plus fréquents', 'amnesty' ),
+			'choose_from_most_used' => __( 'Choisir parmi les Catégories les plus fréquentes', 'amnesty' ),
 			/* translators: [admin] */
-			'not_found'             => __( 'Aucun Combat trouvé.', 'amnesty' ),
+			'not_found'             => __( 'Aucune Catégorie trouvé.', 'amnesty' ),
 			/* translators: [admin] */
-			'no_terms'              => __( 'Aucun Combat', 'amnesty' ),
+			'no_terms'              => __( 'Aucune Catégorie', 'amnesty' ),
 			/* translators: [admin] */
-			'items_list_navigation' => __( 'Navigation dans la liste des Combats', 'amnesty' ),
+			'items_list_navigation' => __( 'Navigation dans la liste des Catégorie', 'amnesty' ),
 			/* translators: [admin] */
-			'items_list'            => __( 'Liste des Combats', 'amnesty' ),
+			'items_list'            => __( 'Liste des Catégories', 'amnesty' ),
 			/* translators: [admin] Tab heading when selecting from the most used terms. */
-			'most_used'             => _x( 'Most Used', 'Combats', 'amnesty' ),
+			'most_used'             => _x( 'Most Used', 'Catégories', 'amnesty' ),
 			/* translators: [admin] */
-			'back_to_items'         => __( '&larr; Retour vers les Combats', 'amnesty' ),
+			'back_to_items'         => __( '&larr; Retour vers les Catégories', 'amnesty' ),
+			'menu_name' 			=> __( 'Catégories Document', 'amnesty' ),
 		];
 
 		if ( $defaults ) {
@@ -170,14 +193,14 @@ class Taxonomy_Combats extends Taxonomy {
 
 		$options = get_option( 'amnesty_localisation_options_page' );
 
-		if ( ! isset( $options['combat_labels'][0] ) ) {
+		if ( ! isset( $options['document_category_labels'][0] ) ) {
 			return (object) $default_labels;
 		}
 
 		$config_labels = [];
 
-		foreach ( $options['combat_labels'][0] as $key => $value ) {
-			$key = str_replace( 'combat_label_', '', $key );
+		foreach ( $options['document_category_labels'][0] as $key => $value ) {
+			$key = str_replace( 'document_category_label_', '', $key );
 
 			$config_labels[ $key ] = $value;
 		}
