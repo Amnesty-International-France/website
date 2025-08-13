@@ -149,10 +149,13 @@ class PrismicMigrationCli {
 					} catch( Exception $e ) {}
 				}
 
-				$seo_og = $transformer->getSeoAndOgData( $doc );
-				foreach ( $seo_og as $metaKey => $metaValue ) {
-					update_post_meta( $postId, $metaKey, $metaValue );
-				}
+				try {
+					$seo_og = $transformer->getSeoAndOgData( $doc );
+					foreach ( $seo_og as $metaKey => $metaValue ) {
+						update_post_meta( $postId, $metaKey, $metaValue );
+					}
+				} catch( Exception $e ) {}
+
 
 				if ( isset($wp_post['relatedArticles']) ) {
 					update_post_meta( $postId, '_related_posts_selected', $wp_post['relatedArticles'] );
