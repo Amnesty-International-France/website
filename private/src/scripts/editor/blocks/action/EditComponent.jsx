@@ -284,7 +284,8 @@ const EditComponent = (props) => {
   };
 
   const goal = petitionData?.acf?.objectif_signatures || 200000;
-  const current = petitionData?.current_signatures || 0;
+  // eslint-disable-next-line
+  const current = petitionData?.meta?._amnesty_signature_count || 0;
   const percentage = goal > 0 ? (current / goal) * 100 : 0;
   const endDate = formatDate(petitionData?.acf?.date_de_fin) || '30.06.2025';
 

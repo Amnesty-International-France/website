@@ -29,19 +29,14 @@ add_action( 'init', 'amnesty_register_petitions_cpt' );
 
 function amnesty_register_petition_signature_count_meta() {
     register_post_meta( 'petition', '_amnesty_signature_count', array(
-        'show_in_rest'  => false,
+        'show_in_rest'  => true,
         'single'        => true,
         'type'          => 'integer',
         'default'       => 0,
-        'auth_callback' => 'amnesty_signature_count_auth_callback',
         'sanitize_callback' => 'absint',
     ) );
 }
 add_action( 'init', 'amnesty_register_petition_signature_count_meta' );
-
-function amnesty_signature_count_auth_callback( $allowed, $meta_key, $post_id, $user_id, $cap, $scm_cap ) {
-    return current_user_can( 'manage_options' );
-}
 
 function amnesty_get_petition_signature_count( $post_id ) {
     $count = get_post_meta( $post_id, '_amnesty_signature_count', true );
@@ -118,30 +113,6 @@ function amnesty_handle_petition_signature() {
     }
 }
 add_action( 'template_redirect', 'amnesty_handle_petition_signature' );
-
-add_action( 'rest_api_init', 'amnesty_register_signature_count_field' );
-
-function amnesty_register_signature_count_field() {
-    register_rest_field(
-        'petition',
-        'current_signatures',
-        array(
-            'get_callback'    => 'amnesty_get_signatures_for_api',
-            'update_callback' => null,
-            'schema'          => array(
-                'description' => __( 'Nombre actuel de signatures.' ),
-                'type'        => 'integer',
-                'context'     => array( 'view', 'edit' ),
-            ),
-        )
-    );
-}
-
-function amnesty_get_signatures_for_api( $object ) {
-    $post_id = $object['id'];
-    
-    return amnesty_get_petition_signature_count( $post_id );
-}
 
 add_action( 'acf/include_fields', function() {
     if ( ! function_exists( 'acf_add_local_field_group' ) ) {
