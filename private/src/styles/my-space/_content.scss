@@ -47,7 +47,7 @@
         a {
           font-family: var(--wp--preset--font-family--secondary);
           font-size: 13px;
-          font-weight: 400;
+          font-weight: normal;
           text-decoration: none;
           color: var(--wp--preset--color--black);
 
@@ -58,7 +58,7 @@
         }
 
         & .breadcrumb_last {
-          font-weight: 400;
+          font-weight: normal;
           font-family: var(--wp--preset--font-family--secondary);
           display: inline;
           font-size: 13px;
