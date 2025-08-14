@@ -25,7 +25,7 @@ abstract class DocTransformer {
 		], new \ArrayIterator())->map()) : [];
 
 		$contenuBlocks = [];
-		$itContenu = isset($data['contenu']) ? new \ArrayIterator( $data['contenu'] ) : new \ArrayIterator();
+		$itContenu = isset($data['contenu']) && is_array($data['contenu']) ? new \ArrayIterator( $data['contenu'] ) : new \ArrayIterator();
 		while( $itContenu->valid() ) {
 			$contenu = $itContenu->current();
 			try {
@@ -62,7 +62,7 @@ abstract class DocTransformer {
 		}
 
 		$wp_post['post_date'] = (new \DateTime($data['datePub'] ?? $prismicDoc['last_publication_date']))->format('Y-m-d H:i:s');
-		$wp_post['post_title'] = $data['title'][0]['text'];
+		$wp_post['post_title'] = $data['title'][0]['text'] ?? $data['title'] ?? '';
 		$wp_post['post_status'] = isset($data['visibility']) && $data['visibility'] === 'member' ? 'private' : 'publish';
 		$wp_post['comment_status'] = 'closed';
 		$wp_post['ping_status'] = 'closed';

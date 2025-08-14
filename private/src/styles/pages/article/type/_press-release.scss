@@ -1,43 +1,12 @@
-.article.chroniques {
+.article.press-release {
   .article-meta {
     padding: 12px 24px;
-    max-width: $container-lg;
+    max-width: $container-md;
     margin-left: auto;
     margin-right: auto;
 
     @media (min-width: $container-hg) {
       padding: 0;
-    }
-  }
-
-  .article-meta-wrapper {
-    background-color: var(--wp--preset--color--black);
-
-    .article-title {
-      color: var(--wp--preset--color--white);
-    }
-
-    .published-updated,
-    .reading-time {
-      color: var(--wp--preset--color--grey-light);
-    }
-  }
-
-  .article-header {
-    .yoast-breadcrumb-wrapper {
-      background-color: var(--wp--preset--color--black);
-
-      .yoast-breadcrumb {
-        color: var(--wp--preset--color--white);
-
-        a {
-          color: var(--wp--preset--color--white);
-        }
-
-        .breadcrumb_last {
-          color: var(--wp--preset--color--white);
-        }
-      }
     }
   }
 
@@ -97,35 +66,5 @@
         max-width: $container-sm;
       }
     }
-
-    .import-summary {
-      .image-block {
-        margin-bottom: 0;
-      }
-
-      .image-wrapper {
-        border-bottom: none;
-      }
-
-      p:not(:first-child) {
-        color: var(--wp--preset--color--grey-light);
-        font-weight: normal;
-      }
-    }
-  }
-}
-
-.wp-block-post-content .import-summary {
-  .image-block {
-    margin-bottom: 0;
-  }
-
-  .image-wrapper {
-    border-bottom: none;
-  }
-
-  p:not(:first-child) {
-    color: var(--wp--preset--color--grey-light);
-    font-weight: normal;
   }
 }

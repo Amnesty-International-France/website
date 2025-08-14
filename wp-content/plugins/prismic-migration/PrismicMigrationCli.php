@@ -107,6 +107,11 @@ class PrismicMigrationCli {
 				WP_CLI::warning( 'Document type not supported : ' . $doc['type'] . ' (' . $doc['uid'] . ')' );
 			}
 
+			if( ! isset($doc['uid']) ) {
+				//WP_CLI::warning( 'Document without uid : ' . $doc['id'] );
+				continue;
+			}
+
 			$id = $this->post_exists_by_slug_and_type($doc['uid'], $docType);
 			if ( !self::$forceMod && $id !== false ) {
 				$progress->tick();
@@ -144,10 +149,13 @@ class PrismicMigrationCli {
 					} catch( Exception $e ) {}
 				}
 
-				$seo_og = $transformer->getSeoAndOgData( $doc );
-				foreach ( $seo_og as $metaKey => $metaValue ) {
-					update_post_meta( $postId, $metaKey, $metaValue );
-				}
+				try {
+					$seo_og = $transformer->getSeoAndOgData( $doc );
+					foreach ( $seo_og as $metaKey => $metaValue ) {
+						update_post_meta( $postId, $metaKey, $metaValue );
+					}
+				} catch( Exception $e ) {}
+
 
 				if ( isset($wp_post['relatedArticles']) ) {
 					update_post_meta( $postId, '_related_posts_selected', $wp_post['relatedArticles'] );

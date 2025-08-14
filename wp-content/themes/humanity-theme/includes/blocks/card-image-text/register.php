@@ -49,7 +49,11 @@ if (!function_exists('register_card_image_text_block')) {
 				'text' => [
 					'type' => 'string',
 					'default' => 'Texte par défaut',
-				]
+				],
+				'selectedPostCategorySlug' => [
+                    'type' => 'string',
+                    'default' => '',
+                ]
 			],
 		]);
 	}
