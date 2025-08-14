@@ -6,8 +6,6 @@
  * @package Amnesty
  */
 
-// phpcs:disable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
-
 /**
  * Theme root includes
  */
@@ -324,6 +322,14 @@ require_once realpath( __DIR__ . '/includes/jetpack/go-back-message.php' );
 #endregion jetpack
 
 /**
+ * Theme My Space includes
+ */
+#region my-space
+require_once realpath( __DIR__ . '/includes/my-space/breadcrumb.php' );
+require_once realpath( __DIR__ . '/includes/my-space/template.php' );
+#endregion my-space
+
+/**
  * Theme WooCommerce includes
  */
 #region woocommerce
@@ -377,7 +383,6 @@ add_action('add_meta_boxes', function () {
 	remove_meta_box('tribe-events-status', 'tribe_events', 'side');
 }, 20);
 
-
 /*
  * Added Longitude and Latitude for Venue in API results /wp-json/tribe/events/v1/venues
  */
@@ -387,6 +392,5 @@ add_filter('tribe_rest_venue_data', function ($data) {
 	$data['latitude'] = get_post_meta($data['id'], '_VenueLatitude', true);
 	return $data;
 }, 10, 2);
-
 
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle

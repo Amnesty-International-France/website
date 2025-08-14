@@ -5,7 +5,16 @@ let subMenus = [];
 
 // if menu has lost focus inadvertently, restore it
 const setupFocusTrap = () => {
+  if (!pageHeader) {
+    return;
+  }
+
   const lastMenuItem = pageHeader.querySelector('.mobile-menu > ul > li:last-of-type');
+
+  if (!lastMenuItem) {
+    return;
+  }
+
   const menuItemClassList = `.${Array.from(lastMenuItem.classList).join('.')}`;
   let previousFocus;
 
@@ -14,8 +23,9 @@ const setupFocusTrap = () => {
   });
 
   document.addEventListener('focusin', (event) => {
+    const originWasLastItem =
+      lastMenuItem.firstElementChild && previousFocus === lastMenuItem.firstElementChild;
     const closestMenuItemToPrevious = previousFocus?.closest(menuItemClassList);
-    const originWasLastItem = previousFocus === lastMenuItem.firstElementChild;
     const originWasChildOfLastItem = closestMenuItemToPrevious === lastMenuItem;
 
     // previous element wasn't in the mobile nav, or wasn't the last item in it

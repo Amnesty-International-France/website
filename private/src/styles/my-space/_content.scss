@@ -1,0 +1,81 @@
+.aif-donor-space-content {
+  padding: 16px 24px 48px 0;
+  flex: 1;
+
+  .aif-donor-space-content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .yoast-breadcrumb-wrapper {
+      width: 100%;
+
+      .yoast-breadcrumb {
+        color: var(--wp--preset--color--black);
+        max-width: $container-hg;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+
+        @media (min-width: $container-hg) {
+          padding-left: 0;
+        }
+
+        > span:first-of-type {
+          display: inline-flex;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        span > span {
+          display: inline-flex;
+          align-items: center;
+        }
+
+        span > span:not(.breadcrumb_last)::after {
+          content: '';
+          display: inline-block;
+          width: 16px;
+          height: 16px;
+          margin: 0 6px;
+          background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23575756'/%3E%3C/svg%3E")
+            no-repeat center;
+          background-size: contain;
+          vertical-align: middle;
+        }
+
+        a {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 13px;
+          font-weight: normal;
+          text-decoration: none;
+          color: var(--wp--preset--color--black);
+
+          &:hover {
+            text-decoration: underline;
+            background-color: transparent;
+          }
+        }
+
+        & .breadcrumb_last {
+          font-weight: normal;
+          font-family: var(--wp--preset--font-family--secondary);
+          display: inline;
+          font-size: 13px;
+          color: var(--wp--preset--color--black);
+          white-space: normal;
+          flex-basis: auto;
+          flex-grow: 0;
+          flex-shrink: 1;
+          text-indent: 0;
+        }
+      }
+    }
+
+    .custom-button-block {
+      .button-label {
+        text-transform: uppercase;
+      }
+    }
+  }
+}
