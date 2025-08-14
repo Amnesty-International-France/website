@@ -17,7 +17,7 @@ function get_salesforce_data($url)
 	));
 
 	if (is_wp_error($response)) {
-		echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
+		echo 'Erreur de requête Salesforce : ' . $response->get_error_message() . PHP_EOL;
 		return false;
 	} else {
 		$data = wp_remote_retrieve_body($response);
@@ -34,7 +34,6 @@ function post_salesforce_data($url, $params = [])
 		return false;
 	}
 	$response = wp_remote_post(getenv("AIF_SALESFORCE_URL") . $url, array(
-		'method'    => 'POST',
 		'body'      => json_encode($params),
 		'timeout'   => 15,
 		'headers'   => array(
@@ -44,7 +43,7 @@ function post_salesforce_data($url, $params = [])
 	));
 
 	if (is_wp_error($response)) {
-		echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
+		echo 'Erreur de requête Salesforce : ' . $response->get_error_message() . PHP_EOL;
 		return false;
 	} else {
 		$data = wp_remote_retrieve_body($response);
@@ -57,7 +56,7 @@ function patch_salesforce_data($url, $params = [])
 	$access_token = get_salesforce_access_token();
 
 	if (is_wp_error($access_token)) {
-		echo 'Erreur : ' . $access_token->get_error_message();
+		echo 'Erreur : ' . $access_token->get_error_message() . PHP_EOL;
 		return false;
 	}
 
@@ -72,7 +71,7 @@ function patch_salesforce_data($url, $params = [])
 	));
 
 	if (is_wp_error($response)) {
-		echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
+		echo 'Erreur de requête Salesforce : ' . $response->get_error_message() . PHP_EOL;
 		return false;
 	} else {
 		$data = wp_remote_retrieve_body($response);
