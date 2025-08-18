@@ -14,6 +14,7 @@ enum Type: string {
 	case ACTION_SOUTIEN = 'soutien';
 	case DOCUMENT = 'rapport';
 	case ACTION_MOBILISATION = 'actionmobilisation';
+	case ACTION = 'action';
 
 	public static function get_wp_post_type(Type $type): string|null {
 		return match($type) {
@@ -21,7 +22,7 @@ enum Type: string {
 			self::PAYS => 'fiche_pays',
 			self::FOCUS => 'landmark',
 			self::STRUCTURE_LOCALE => 'local-structures',
-			self::PAGE_FROIDE, self::ACTION_MOBILISATION => 'page',
+			self::PAGE_FROIDE, self::ACTION_MOBILISATION, self::ACTION => 'page',
 			self::EVENEMENT => 'tribe_events',
 			self::PETITION, self::ACTION_SOUTIEN => 'petition',
 			self::DOCUMENT => 'document',
