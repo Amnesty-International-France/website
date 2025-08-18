@@ -44,6 +44,7 @@ import petitionDonateFeedback from './modules/donate-clicked';
 import { toggleFullFormPetition, submitCodeOrigine } from './modules/petition-form';
 import { closeUrgentBanner } from './modules/urgent-banner';
 import initFoundationForm from './modules/Form/foundation-form';
+import edhFilters from './modules/search-filters-edh';
 
 const App = () => {
   browserDetector();
@@ -89,6 +90,7 @@ const App = () => {
   submitCodeOrigine();
   closeUrgentBanner();
   initFoundationForm();
+  edhFilters();
   hoverDonationMenu();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);

@@ -3,14 +3,13 @@
 declare(strict_types=1);
 
 /**
- * Title: Training Content
- * Description: Output the content of a single training post
- * Slug: amnesty/training-content
+ * Title: EDH Content
+ * Description: Output the content of a single edh post
+ * Slug: amnesty/edh-content
  * Inserter: no
  */
 
 ?>
-
 
 <!-- wp:group {"tagName":"section","className":"edh"} -->
 <section class="wp-block-group edh-single">
