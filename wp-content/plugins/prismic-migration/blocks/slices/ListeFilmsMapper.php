@@ -15,10 +15,10 @@ class ListeFilmsMapper extends BlockMapper {
 		foreach ( $prismicBlock['items'] as $item ) {
 			try {
 				$this->blocks[] = [
-					'blockName' => 'amnesty-core/article-card',
+					'blockName' => 'amnesty-core/card-image-text',
 					'attrs' => [
 						'postId' => LinksUtils::processLink($item['link'], ReturnType::ID),
-						'direction' => 'landscape',
+						'direction' => 'horizontal',
 					],
 					'innerContent' => [],
 				];

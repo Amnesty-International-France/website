@@ -38,7 +38,6 @@ function refresh_salesforce_token()
 		),
 	));
 
-
 	if (is_wp_error($response)) {
 		return new WP_Error('request_failed', 'La requête a échoué', $response->get_error_message());
 	}
