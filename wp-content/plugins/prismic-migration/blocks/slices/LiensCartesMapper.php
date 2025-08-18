@@ -16,6 +16,7 @@ class LiensCartesMapper extends BlockMapper {
 			$title = $item['titre'] ?? '';
 			$subtitle = $item['soustitre'] ?? '';
 			$cat = $item['surtitre'] ?? '';
+			$desc = $item['desc'] ?? '';
 
 			if( isset( $item['img']['url']) ) {
 				$id = FileUploader::uploadMedia( $item['img']['url'], legende: $item['img']['copyright'] ?? '', alt: $item['img']['alt'] ?? '' );
@@ -33,14 +34,15 @@ class LiensCartesMapper extends BlockMapper {
 				'blockName' => 'core/column',
 				'attrs' => [],
 				'innerBlocks' => [[
-					'blockName' => 'amnesty-core/article-card',
+					'blockName' => 'amnesty-core/card-image-text',
 					'attrs' => [
-						'is_custom' => true,
+						'custom' => true,
 						'title' => $title,
-						'date' => $subtitle,
-						'main_category' => $cat,
+						'subtitle' => $subtitle,
+						'category' => $cat,
 						'thumbnail' => $id ?? 0,
-						'permalink' => $url
+						'permalink' => $url,
+						'text' => $desc,
 					],
 					'innerBlocks' => [],
 					'innerContent' => []

@@ -183,7 +183,7 @@ class Taxonomy_Landmark_Categories extends Taxonomy
 			/* translators: [admin] Tab heading when selecting from the most used terms. */
 			'most_used'             => _x( 'Most Used', 'Catégories', 'amnesty' ),
 			/* translators: [admin] */
-			'back_to_items'         => __( '&larr; Retour vers les Combats', 'amnesty' ),
+			'back_to_items'         => __( '&larr; Retour vers les Catégories', 'amnesty' ),
 			'menu_name' 			=> __( 'Catégories Repères', 'amnesty' ),
 		];
 

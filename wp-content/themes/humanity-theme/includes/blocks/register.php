@@ -11,6 +11,7 @@ if ( ! function_exists( 'register_block_type' ) ) {
 require_once __DIR__ . '/_deprecated/header/class-header-block-renderer.php';
 require_once __DIR__ . '/_deprecated/header/register.php';
 require_once __DIR__ . '/action/register.php';
+require_once __DIR__ . '/action/render.php';
 require_once __DIR__ . '/actions-homepage/register.php';
 require_once __DIR__ . '/actions-homepage/render.php';
 require_once __DIR__ . '/agenda-homepage/register.php';

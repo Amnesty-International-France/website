@@ -29,19 +29,14 @@ add_action( 'init', 'amnesty_register_petitions_cpt' );
 
 function amnesty_register_petition_signature_count_meta() {
     register_post_meta( 'petition', '_amnesty_signature_count', array(
-        'show_in_rest'  => false,
+        'show_in_rest'  => true,
         'single'        => true,
         'type'          => 'integer',
         'default'       => 0,
-        'auth_callback' => 'amnesty_signature_count_auth_callback',
         'sanitize_callback' => 'absint',
     ) );
 }
 add_action( 'init', 'amnesty_register_petition_signature_count_meta' );
-
-function amnesty_signature_count_auth_callback( $allowed, $meta_key, $post_id, $user_id, $cap, $scm_cap ) {
-    return current_user_can( 'manage_options' );
-}
 
 function amnesty_get_petition_signature_count( $post_id ) {
     $count = get_post_meta( $post_id, '_amnesty_signature_count', true );
@@ -100,7 +95,7 @@ function amnesty_handle_petition_signature() {
 		$code_origine = isset($_POST['code_origine']) && ! empty($_POST['code_origine']) ? $_POST['code_origine'] : get_field( 'code_origine', $petition_id ) ?? '';
         $message = $type === 'action-soutien' && isset($_POST['user_message']) && ! empty($_POST['user_message']) ? sanitize_textarea_field($_POST['user_message']) : '';
 
-		if( insert_petition_signature( $petition_id, $user_id, $code_origine, $message ) === false ) {
+		if( insert_petition_signature( $petition_id, $user_id, date('Y-m-d'), $code_origine, $message ) === false ) {
 			wp_redirect( add_query_arg( 'signature_status', 'error', wp_get_referer() ) );
 			exit;
 		}
@@ -118,7 +113,6 @@ function amnesty_handle_petition_signature() {
     }
 }
 add_action( 'template_redirect', 'amnesty_handle_petition_signature' );
-
 
 add_action( 'acf/include_fields', function() {
     if ( ! function_exists( 'acf_add_local_field_group' ) ) {
@@ -552,6 +546,6 @@ add_action( 'acf/include_fields', function() {
 		'hide_on_screen' => '',
 		'active' => true,
 		'description' => '',
-		'show_in_rest' => 0,
+		'show_in_rest' => 1,
 	) );
 } );

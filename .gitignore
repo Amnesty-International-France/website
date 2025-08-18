@@ -1,4 +1,5 @@
 .log
+*.log
 .map
 .vscode
 .DS_Store
@@ -57,11 +58,17 @@ license.txt
 
 .env.*
 .castor.stub.php
+.ddev
+clever.json
 .clever.json
-docker-compose.yml
+vendor/
+composer*
 
 # Plugins
 # Example of my custom plugin named hello-world
 #!/wp-content/plugins/hello-world/
 !/wp-content/plugins/prismic-migration/
 !/wp-content/plugins/interactive-map/
+!/wp-content/plugins/aif-donor-space/
+
+docker-compose.yml

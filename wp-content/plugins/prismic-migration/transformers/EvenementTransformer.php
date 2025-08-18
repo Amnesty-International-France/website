@@ -22,10 +22,15 @@ class EvenementTransformer extends DocTransformer {
 
 		$query = new \WP_Query(
 			[
-				'title'     => $wp_post['post_title'],
-				'post_type' => \Type::get_wp_post_type( \Type::EVENEMENT ),
+				'name' => sanitize_title( $prismicDoc['uid'] ),
+				'post_type' => 'tribe_events',
+				'post_status' => 'any',
 			]
 		);
+
+		if( ! $query->have_posts() ) {
+			echo sanitize_title( $prismicDoc['uid'] ) . ' not found' . PHP_EOL;
+		}
 
 		if ( $query->have_posts() && ! \PrismicMigrationCli::$forceMod ) {
 			$post_id = $query->next_post()->ID;
@@ -39,6 +44,7 @@ class EvenementTransformer extends DocTransformer {
 			}
 			$args = [
 				'post_title'   => $wp_post['post_title'],
+				'post_name'    => sanitize_title( preg_replace('/[^\p{L}\p{N}\s\-\_]/u', '', $prismicDoc['uid'] ) ),
 				'post_content' => '',
 				'post_status'  => $wp_post['post_status'],
 			];
@@ -70,9 +76,10 @@ class EvenementTransformer extends DocTransformer {
 
 			if ( ! \PrismicMigrationCli::$dryrun ) {
 				if($query->have_posts() && PrismicMigrationCli::$forceMod ) {
-					$args['ID'] = $query->next_post()->ID;
+					$post_id = tribe_update_event( $query->next_post()->ID, $args );
+				} else {
+					$post_id = tribe_create_event( $args );
 				}
-				$post_id = tribe_create_event( $args );
 			} else {
 				$post_id = 0;
 			}
@@ -105,7 +112,7 @@ class EvenementTransformer extends DocTransformer {
 		];
 
 		if( PrismicMigrationCli::$forceMod && $query->have_posts() ) {
-			$args['ID'] = $query->next_post()->ID;
+			return tribe_update_organizer( $query->next_post()->ID, $args );
 		}
 
 		return tribe_create_organizer($args);
@@ -140,10 +147,12 @@ class EvenementTransformer extends DocTransformer {
 		}
 
 		if( PrismicMigrationCli::$forceMod && $query->have_posts() ) {
-			$args['ID'] = $query->next_post()->ID;
+			$id = tribe_update_venue( $query->next_post()->ID, $args );
+		} else {
+			$id = tribe_create_venue( $args );
 		}
 
-		$id = tribe_create_venue( $args );
+
 
 		if ( $id !== false ) {
 			if ( isset( $data['geocode']['latitude'] ) ) {

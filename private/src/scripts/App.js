@@ -38,7 +38,7 @@ import capitalizeHeadings from './modules/capitalize-headings';
 import { getUserLocationFromButton, getUserLocationFromForm } from './modules/localisation';
 import initLegsForm from './modules/legs-form';
 import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
-import { Calculator } from './modules/donation-calculator';
+import { calculator, hoverDonationMenu } from './modules/donation-calculator';
 import petitionShareFeedback from './modules/social-network-clicked';
 import petitionDonateFeedback from './modules/donate-clicked';
 import { toggleFullFormPetition, submitCodeOrigine } from './modules/petition-form';
@@ -83,7 +83,7 @@ const App = () => {
   getUserLocationFromForm();
   initLegsForm();
   enhanceJetpackFormPlaceholders();
-  Calculator();
+  calculator();
   petitionShareFeedback();
   petitionDonateFeedback();
   toggleFullFormPetition();
@@ -91,6 +91,7 @@ const App = () => {
   closeUrgentBanner();
   initFoundationForm();
   edhFilters();
+  hoverDonationMenu();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
