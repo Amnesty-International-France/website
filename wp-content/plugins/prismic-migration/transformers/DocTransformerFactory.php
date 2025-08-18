@@ -20,6 +20,7 @@ class DocTransformerFactory {
 			Type::ACTION_SOUTIEN => new ActionSoutienTransformer(),
 			Type::DOCUMENT => new RapportTransformer(),
 			Type::ACTION_MOBILISATION => new ActionMobilisationTransformer(),
+			Type::ACTION => new ActionTransformer(),
 			default => throw new \Exception("Not found transformer for type : $type->value")
 		};
 	}
