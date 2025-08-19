@@ -17,6 +17,7 @@ use PostTwitterMapper;
 use PromotionPageMapper;
 use SectionImageMapper;
 use SectionMapper;
+use SignatureEditoMapper;
 use SommaireMapper;
 use TrombiMapper;
 use utils\BrokenTypeException;
@@ -61,7 +62,7 @@ class MapperFactory {
 			'Call to action Calculette' => null,
 			'Call to action Twitter' => null,
 			'chiffre_clef' => new \ChiffreClefMapper( $slice ),
-			'Contenu HTML' => new \ContenuHTMLMapper( $slice, $slice['value'][0]['contenu'] ?? '' ),
+			'Contenu HTML', 'contenu_html' => new \ContenuHTMLMapper( $slice, $slice['value'][0]['contenu'] ?? '' ),
             'Contenu supplementaire' => new \ContenuSupplementaireMapper( $slice ),
 			'Contenu supplementaire spécial' => new \ContenuSupplementaireSpecialMapper( $slice ),
 			'cta_push' => new \CTAPushMapper( $slice ),
@@ -80,6 +81,7 @@ class MapperFactory {
 			'promotion_page' => new PromotionPageMapper( $slice ),
 			'section' => new SectionMapper( $slice, $it ),
 			'section_image' => new SectionImageMapper( $slice ),
+			'signature_edito' => new SignatureEditoMapper( $slice ),
 			'slideshow' => new \SlideshowMapper( $slice ),
 			'sommaire' => new SommaireMapper( $slice ),
 			'Temoignage Photo' => new \TemoignagePhoto( $slice ),

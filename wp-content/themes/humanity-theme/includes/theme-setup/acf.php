@@ -644,6 +644,52 @@ add_action( 'acf/include_fields', function() {
 		'description' => '',
 		'show_in_rest' => 0,
 	) );
+
+	acf_add_local_field_group( array(
+		'key' => 'group_68a44f82d59d0',
+		'title' => 'Import',
+		'fields' => array(
+			array(
+				'key' => 'field_68a44f83744ae',
+				'label' => 'status',
+				'name' => 'status',
+				'aria-label' => '',
+				'type' => 'text',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => 0,
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'default_value' => '',
+				'maxlength' => '',
+				'allow_in_bindings' => 0,
+				'placeholder' => '',
+				'prepend' => '',
+				'append' => '',
+			),
+		),
+		'location' => array(
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
+					'value' => 'press-release',
+				),
+			),
+		),
+		'menu_order' => 0,
+		'position' => 'normal',
+		'style' => 'default',
+		'label_placement' => 'top',
+		'instruction_placement' => 'label',
+		'hide_on_screen' => '',
+		'active' => true,
+		'description' => '',
+		'show_in_rest' => 0,
+	) );
 } );
 
 add_action('acf/save_post', function($post_id) {

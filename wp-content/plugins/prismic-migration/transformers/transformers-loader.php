@@ -16,3 +16,4 @@ require_once __DIR__ . '/PetitionTransformer.php';
 require_once __DIR__ . '/RapportTransformer.php';
 require_once __DIR__ . '/ActionMobilisationTransformer.php';
 require_once __DIR__ . '/ActionTransformer.php';
+require_once __DIR__ . '/CommuniquePresseTransformer.php';
