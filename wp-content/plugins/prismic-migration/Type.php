@@ -17,6 +17,7 @@ enum Type: string {
 	case ACTION = 'action';
 	case COMMUNIQUE_PRESSE = 'communiquePresse';
 	case PORTRAIT = 'portrait';
+	case EDH = 'edh';
 
 	public static function get_wp_post_type(Type $type): string|null {
 		return match($type) {
@@ -29,6 +30,7 @@ enum Type: string {
 			self::PETITION, self::ACTION_SOUTIEN => 'petition',
 			self::DOCUMENT => 'document',
 			self::COMMUNIQUE_PRESSE => 'press-release',
+			self::EDH => 'edh',
 			default => null,
 		};
 	}

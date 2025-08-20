@@ -18,3 +18,4 @@ require_once __DIR__ . '/ActionMobilisationTransformer.php';
 require_once __DIR__ . '/ActionTransformer.php';
 require_once __DIR__ . '/CommuniquePresseTransformer.php';
 require_once __DIR__ . '/PortraitTransformer.php';
+require_once __DIR__ . '/EdhTransformer.php';

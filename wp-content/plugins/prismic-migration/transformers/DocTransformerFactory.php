@@ -23,6 +23,7 @@ class DocTransformerFactory {
 			Type::ACTION => new ActionTransformer(),
 			Type::COMMUNIQUE_PRESSE => new CommuniquePresseTransformer(),
 			Type::PORTRAIT => new PortraitTransformer(),
+			Type::EDH => new EdhTransformer(),
 			default => throw new \Exception("Not found transformer for type : $type->value")
 		};
 	}
