@@ -13,6 +13,7 @@ if( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once __DIR__ . '/FileUploader.php';
 	require_once __DIR__ . '/PrismicFetcher.php';
 	require_once __DIR__ . '/TaxMapper.php';
+	require_once __DIR__ . '/utils/PageUtils.php';
 	require_once __DIR__ . '/utils/ImageDescCaptionUtils.php';
 	require_once __DIR__ . '/utils/LinksUtils.php';
 	require_once __DIR__ . '/transformers/transformers-loader.php';

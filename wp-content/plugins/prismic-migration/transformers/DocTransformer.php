@@ -11,6 +11,10 @@ use utils\ReturnType;
 
 abstract class DocTransformer {
 
+	public function existsQueryParams(): array {
+		return [];
+	}
+
 	public function parse( $prismicDoc ): array {
 		$wp_post = [];
 

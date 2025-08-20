@@ -108,17 +108,16 @@ class PrismicMigrationCli {
 			}
 
 			if( ! isset($doc['uid']) ) {
-				//WP_CLI::warning( 'Document without uid : ' . $doc['id'] );
-				continue;
-			}
-
-			$id = $this->post_exists_by_slug_and_type($doc['uid'], $docType);
-			if ( !self::$forceMod && $id !== false ) {
-				$progress->tick();
 				continue;
 			}
 
 			$transformer = DocTransformerFactory::getTransformer( $docType );
+
+			$id = $this->post_exists_by_slug_and_type($doc['uid'], $docType, $transformer->existsQueryParams());
+			if ( !self::$forceMod && $id !== false ) {
+				$progress->tick();
+				continue;
+			}
 
 			$wp_post = $transformer->parse( $doc );
 			$wp_post['post_content'] = wp_slash(serialize_blocks(array_merge(...$wp_post['post_content'])));
@@ -171,13 +170,13 @@ class PrismicMigrationCli {
 		WP_CLI::success( 'Migration successful: ' . $imported . ' documents imported.' );
 	}
 
-	function post_exists_by_slug_and_type(string $slug, Type $type): int|bool {
-		$query = new WP_Query([
+	function post_exists_by_slug_and_type(string $slug, Type $type, array $params = []): int|bool {
+		$query = new WP_Query(array_merge($params,[
 			'name' => sanitize_title($slug),
 			'post_type' => Type::get_wp_post_type($type),
 			'post_status' => 'any',
 			'fields' => 'ids',
-		]);
+		]));
 
 		if( ! empty( $query->posts ) ) {
 			return $query->posts[0];

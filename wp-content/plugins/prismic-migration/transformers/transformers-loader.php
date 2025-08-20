@@ -17,3 +17,4 @@ require_once __DIR__ . '/RapportTransformer.php';
 require_once __DIR__ . '/ActionMobilisationTransformer.php';
 require_once __DIR__ . '/ActionTransformer.php';
 require_once __DIR__ . '/CommuniquePresseTransformer.php';
+require_once __DIR__ . '/PortraitTransformer.php';
