@@ -12,7 +12,8 @@ function get_salesforce_data($url)
 
 	$response = wp_remote_get(getenv("AIF_SALESFORCE_URL") . $url, array(
 		'headers' => array(
-			'Authorization' => 'Bearer ' . $access_token
+			'Authorization' => 'Bearer ' . $access_token,
+			'timeout' => 30,
 		)
 	));
 
@@ -35,7 +36,7 @@ function post_salesforce_data($url, $params = [])
 	}
 	$response = wp_remote_post(getenv("AIF_SALESFORCE_URL") . $url, array(
 		'body'      => json_encode($params),
-		'timeout'   => 15,
+		'timeout'   => 30,
 		'headers'   => array(
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $access_token
@@ -63,7 +64,7 @@ function patch_salesforce_data($url, $params = [])
 	$response = wp_remote_request(getenv("AIF_SALESFORCE_URL") . $url, array(
 		'method'    => 'PATCH',
 		'body'      => json_encode($params),
-		'timeout'   => 15,
+		'timeout'   => 30,
 		'headers'   => array(
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $access_token

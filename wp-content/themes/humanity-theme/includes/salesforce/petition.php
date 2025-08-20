@@ -133,7 +133,8 @@ function poll_job_state( $job_id ) {
 		$response = wp_remote_get(getenv("AIF_SALESFORCE_URL") . "services/data/v57.0/jobs/ingest/$job_id", array(
 			'headers' => array(
 				'Authorization' => 'Bearer ' . $access_token
-			)
+			),
+			'timeout' => 30,
 		));
 
 		if ( ! is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200 ) {
@@ -179,7 +180,7 @@ function get_bulk_success_results( $job_id ) {
 	}
 
 	$url = getenv('AIF_SALESFORCE_URL') . "services/data/v57.0/jobs/ingest/$job_id/successfulResults";
-	$reponse = wp_remote_get( $url, ['headers' => ['Authorization' => 'Bearer ' . $access_token], 'timeout' => 45] );
+	$reponse = wp_remote_get( $url, ['headers' => ['Authorization' => 'Bearer ' . $access_token], 'timeout' => 30] );
 	if (!is_wp_error($reponse) && wp_remote_retrieve_response_code($reponse) == 200) {
 		$csv_parser = new CsvParser(wp_remote_retrieve_body($reponse));
 		return $csv_parser->getRows();
@@ -196,7 +197,7 @@ function get_bulk_failed_results( $job_id ) {
 	}
 
 	$url = getenv('AIF_SALESFORCE_URL') . "services/data/v57.0/jobs/ingest/$job_id/failedResults";
-	$reponse = wp_remote_get( $url, ['headers' => ['Authorization' => 'Bearer ' . $access_token], 'timeout' => 45] );
+	$reponse = wp_remote_get( $url, ['headers' => ['Authorization' => 'Bearer ' . $access_token], 'timeout' => 30] );
 	if (!is_wp_error($reponse) && wp_remote_retrieve_response_code($reponse) == 200) {
 		$csv_parser = new CsvParser(wp_remote_retrieve_body($reponse));
 		return $csv_parser->getRows();
@@ -213,7 +214,7 @@ function get_bulk_unprocessed_results( $job_id ) {
 	}
 
 	$url = getenv('AIF_SALESFORCE_URL') . "services/data/v57.0/jobs/ingest/$job_id/unprocessedrecords";
-	$reponse = wp_remote_get( $url, ['headers' => ['Authorization' => 'Bearer ' . $access_token], 'timeout' => 45] );
+	$reponse = wp_remote_get( $url, ['headers' => ['Authorization' => 'Bearer ' . $access_token], 'timeout' => 30] );
 	if (!is_wp_error($reponse) && wp_remote_retrieve_response_code($reponse) == 200) {
 		$csv_parser = new CsvParser(wp_remote_retrieve_body($reponse));
 		return $csv_parser->getRows();
