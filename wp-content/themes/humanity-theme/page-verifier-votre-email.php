@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Title: Check email Pattern
- * Description: Check email Pattern
- * Slug: amnesty/check-email
- * Inserter: no
- */
-
 $success_message = "";
 $disable_input = false;
 $error_message = "";
@@ -86,6 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
 
 ?>
 
+<?php get_header(); ?>
+
 <main class="aif-container--main">
     <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
         <h1 class="aif-mb1w">Mon espace Don</h1>
@@ -161,3 +156,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
         </section>
     </div>
 </main>
+
+<?php get_footer(); ?>

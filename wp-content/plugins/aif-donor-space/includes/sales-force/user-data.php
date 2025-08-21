@@ -14,7 +14,7 @@ function post_salesforce_data_donor_space($url, $params = [])
 	$response = wp_remote_post($aif_salesforce_base_url . $url, array(
         'method'    => 'POST',
         'body'      => json_encode($params),
-        'timeout'   => 15,
+        'timeout'   => 30,
         'headers'   => array(
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . $access_token
@@ -43,7 +43,7 @@ function patch_salesforce_data_donor_space($url, $params = [])
 	$response = wp_remote_request($aif_salesforce_base_url . $url, array(
         'method'    => 'PATCH',
         'body'      => json_encode($params),
-        'timeout'   => 15,
+        'timeout'   => 30,
         'headers'   => array(
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . $access_token
@@ -73,7 +73,8 @@ function get_salesforce_data_donor_space($url)
     $response = wp_remote_get($aif_salesforce_base_url . $url, array(
         'headers' => array(
             'Authorization' => 'Bearer ' . $access_token
-        )
+        ),
+		'timeout' => 30,
     ));
 
     if (is_wp_error($response)) {

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Title: Modifier mon mot de passe Pattern
- * Description: Modifier mon mot de passe
- * Slug: amnesty/reset-password
- * Inserter: no
- */
-
 if (!isset($_GET['user']) || !isset($_GET['token'])) {
     $error_title = "Une erreur est survenue";
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
@@ -51,6 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
     }
 }
 ?>
+
+<?php get_header(); ?>
 
 <main class="aif-container--main">
     <?php
@@ -113,7 +108,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
                     <div id="password-error-not-match" class="aif-text-red aif-hide">Les mots de passe ne correspondent pas.</div>
                     <button class="btn aif-mt1w aif-button--full" type="submit" id="submit-btn">Réinitialiser mon mot de passe</button>
                 </div>
-            </div>        
+            </div>
         </form>
     </section>
 </main>
+
+<?php get_footer(); ?>

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Title: Forgotten Password Pattern
- * Description: Page si l'utilisateur a oublié son MDP
- * Slug: amnesty/forgotten-password
- * Inserter: no
- */
-
 $disable_button = false;
 $display_form = true;
 $email = "";
@@ -41,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 ?>
+
+<?php get_header(); ?>
 
 <main class="aif-container--main">
     <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
@@ -81,3 +76,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif ?>
     </div>
 </main>
+
+<?php get_footer(); ?>

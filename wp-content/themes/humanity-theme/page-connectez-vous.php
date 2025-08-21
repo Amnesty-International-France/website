@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Title: Login My Space Pattern
- * Description: Login My Space
- * Slug: amnesty/login-user
- * Inserter: no
- */
-
 $email = "";
 
 $reset_email_url = "";
@@ -74,6 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 }
 ?>
 
+<?php get_header(); ?>
+
 <main class="aif-container--main">
     <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
         <h1 class="aif-mb1w">Mon espace</h1>
@@ -134,3 +129,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         </section>
     </div>
 </main>
+
+<?php get_footer(); ?>
