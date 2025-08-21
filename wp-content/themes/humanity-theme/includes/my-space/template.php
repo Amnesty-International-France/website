@@ -25,3 +25,26 @@ function assign_myspace_template_to_descendants( $post_id, $post, $update ) {
 }
 
 add_action( 'save_post', 'assign_myspace_template_to_descendants', 10, 3 );
+
+add_action('template_redirect', 'auth_my_space');
+
+function auth_my_space() {
+	$slug_parent_page = 'mon-espace';
+
+	if ( is_page() && ! is_preview() ) {
+		$current_page = get_queried_object();
+
+		$parent_page = get_page_by_path($slug_parent_page);
+
+		if ( $parent_page ) {
+			$id_parent_page = $parent_page->ID;
+
+			$ancestors = get_post_ancestors($current_page->ID);
+
+			if ( $current_page->ID === $id_parent_page || in_array($id_parent_page, $ancestors) ) {
+				check_user_page_access();
+			}
+		}
+	}
+}
+

@@ -7,8 +7,6 @@
  * Inserter: no
  */
 
-check_user_page_access();
-
 ?>
 
 <!-- wp:pattern {"slug":"amnesty/my-space-sidebar"} /-->

@@ -7,8 +7,6 @@
  * Inserter: no
  */
 
-check_user_page_access();
-
 $current_user = wp_get_current_user();
 $sf_user_ID = get_SF_user_ID($current_user->ID);
 
@@ -72,14 +70,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['subject']) && isset(
                 aria-labelledby="contact-subject-help-message"
                 value="<?= $subject ?>"
                 class="aif-input <?= $has_error ? 'aif-input-error' : '' ?>"
-                required id="subject" maxlength="255" 
+                required id="subject" maxlength="255"
             />
             <?php
             $url = get_permalink(get_page_by_path('mes-demandes'));
             $content = "Indiquez le sujet de votre demande. 255 caractères maximum.";
             aif_include_partial("info-message", [
             "id" => "contact-subject-help-message",
-            "content" => $content]); 
+            "content" => $content]);
             ?>
 
             <label for="message">Message (obligatoire)</label>
@@ -91,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['subject']) && isset(
             $content = "Décrivez en détail votre demande.";
             aif_include_partial("info-message", [
             "id" => "contact-message-help-message",
-            "content" => $content]); 
+            "content" => $content]);
             ?>
             <button class="btn aif-mt1w aif-button--full" type="submit">Enregistrer</button>
         </form>

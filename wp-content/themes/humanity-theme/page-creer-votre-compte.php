@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Title: Create Account Pattern
- * Description: Créer son compte sur Mon Espace
- * Slug: amnesty/create-account
- * Inserter: no
- */
-
 $error_message = "";
 $error_no_access_to_donor_space = false;
 
@@ -71,6 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
+<?php get_header(); ?>
+
 <main class="aif-container--main">
     <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
         <h1 class="aif-mb1w">Mon espace Don</h1>
@@ -113,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                     aif_include_partial("info-message", [
                     "id" => "email-help-message",
-                    "content" => "Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre adhésion ou de votre don."]); 
+                    "content" => "Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre adhésion ou de votre don."]);
                 ?>
                 </div>
                 <div class="aif-password-container">
@@ -136,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                     aif_include_partial("info-message", [
                     "id" => "passwordHelp",
-                    "content" => "Exemple : Mon@MotDePasse123"]); 
+                    "content" => "Exemple : Mon@MotDePasse123"]);
                     ?>
 
                     <div id="passphraseRequirements aif-text-small">
@@ -171,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <button class="btn  aif-mt1w aif-button--full" type="submit" id="submit-btn">Créer mon compte</button>
                     </div>
-                </div>       
+                </div>
             </form>
 
             <p class="aif-mt1w aif-text-small">
@@ -201,3 +196,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </section>
     </div>
 </main>
+
+<?php get_footer(); ?>
