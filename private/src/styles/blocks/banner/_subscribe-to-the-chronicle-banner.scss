@@ -1,0 +1,48 @@
+.subscribe-to-the-chronicle-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 1.3rem 2.1rem;
+  background-color: var(--wp--preset--color--black);
+  border: 1px solid var(--wp--preset--color--black);
+
+  @media (min-width: $container-lg) {
+    flex-direction: row;
+    padding: 2rem 2.2rem;
+  }
+
+  .column {
+    flex-direction: column;
+    width: 100%;
+
+    &:first-of-type {
+      margin-bottom: 1rem;
+      align-items: flex-start;
+
+      @media (min-width: $container-lg) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__title {
+    color: var(--wp--preset--color--primary);
+    padding: 0;
+  }
+
+  &__text {
+    margin-bottom: 0;
+    font-weight: bold;
+    color: var(--wp--preset--color--white);
+  }
+
+  .custom-button-block.right {
+    justify-content: flex-start;
+
+    @media (min-width: $container-lg) {
+      justify-content: flex-end;
+    }
+  }
+}

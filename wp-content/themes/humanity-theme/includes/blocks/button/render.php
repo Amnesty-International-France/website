@@ -18,7 +18,7 @@ function render_button_block(array $attributes): string {
     $externalUrl = $attributes['externalUrl'] ?? '';
     $linkType    = $attributes['linkType'] ?? 'internal';
     $alignment   = $attributes['alignment'] ?? 'left';
-    
+
     if ($linkType === 'external') {
         $href = $externalUrl;
     } elseif ($linkType === 'internal' && $postId) {
