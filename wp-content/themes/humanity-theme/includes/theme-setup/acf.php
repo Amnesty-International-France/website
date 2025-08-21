@@ -377,6 +377,13 @@ add_action( 'acf/include_fields', function() {
 				array(
 					'param' => 'post_type',
 					'operator' => '==',
+					'value' => 'chronique',
+				),
+			),
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
 					'value' => 'page',
 				),
 				array(
@@ -861,27 +868,6 @@ add_action( 'acf/include_fields', function() {
 		'key' => 'group_689d9ee82e987',
 		'title' => 'Hero large page "La chronique"',
 		'fields' => array(
-			array(
-				'key' => 'field_689d9eeeea0f6',
-				'label' => 'Sous-titre',
-				'name' => 'subtitle',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 'Le magazine des droits humains',
-				'maxlength' => '',
-				'allow_in_bindings' => 0,
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
 			array(
 				'key' => 'field_689d9fc4ea0f7',
 				'label' => 'Texte du bouton de lien',

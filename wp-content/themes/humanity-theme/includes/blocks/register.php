@@ -63,6 +63,8 @@ require_once __DIR__ . '/get-informed/render.php';
 require_once __DIR__ . '/hero/helpers.php';
 require_once __DIR__ . '/hero/register.php';
 require_once __DIR__ . '/hero/render.php';
+require_once __DIR__ . '/hero-large/register.php';
+require_once __DIR__ . '/hero-large/render.php';
 require_once __DIR__ . '/hero-homepage/register.php';
 require_once __DIR__ . '/hero-homepage/render.php';
 require_once __DIR__ . '/iframe-button/register.php';
