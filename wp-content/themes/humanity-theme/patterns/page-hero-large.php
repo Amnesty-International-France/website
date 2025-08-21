@@ -25,29 +25,20 @@ $btn_link = get_field( 'btn_link', $post->ID ) ?? '';
             <div class="container">
 				<h1 class="page-hero-title"><?php echo esc_html( $page_title ); ?></h1><br/>
 				<span class="page-hero-subtitle"><?php echo esc_html($sub_title); ?></span>
+				<?php if ( !empty( $btn_link ) && !empty( $btn_link_text ) ) :
+					$button_block = sprintf(
+						'<!-- wp:amnesty-core/button {"label":"%s","size":"large","icon":"arrow-right","linkType":"external","externalUrl":"%s"} /-->',
+						esc_html( $btn_link_text ),
+						esc_url( $btn_link )
+					);
 
-				<div class='custom-button-block'>
-					<a href="<?php echo esc_html($btn_link); ?>" target="_blank" class="custom-button">
-						<div class='content bg-yellow large'>
-							<div class="icon-container">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									stroke-width="1.5"
-									stroke="currentColor"
-								>
-									<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-								</svg>
-							</div>
-							<div class="button-label"><?php echo esc_html($btn_link_text); ?></div>
-						</div>
-					</a>
-				</div>
+					echo do_blocks( $button_block );
+				endif;
+				?>
             </div>
         </div>
     </section>
 <?php endif; ?>
-
 
 <?php
 if ( ! is_admin() ) {
