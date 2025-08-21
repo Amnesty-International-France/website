@@ -77,11 +77,13 @@
 @import 'blocks/agenda-homepage/main';
 @import 'blocks/article-card/main';
 @import 'blocks/articles-homepage/main';
+@import 'blocks/banner/main';
 @import 'blocks/button/main';
 @import 'blocks/call-to-action/main';
 @import 'blocks/card-image-text/main';
 @import 'blocks/carousel/main';
 @import 'blocks/chapo/main';
+@import 'blocks/chip/main';
 @import 'blocks/chip-category/main';
 @import 'blocks/collapsable/main';
 @import 'blocks/content-callout/main';
@@ -174,6 +176,7 @@
 @import 'utils/helpers/display';
 @import 'utils/helpers/layout';
 @import 'utils/helpers/grid-classes';
+@import 'utils/helpers/position';
 
 // Import
 @import 'import/main';
