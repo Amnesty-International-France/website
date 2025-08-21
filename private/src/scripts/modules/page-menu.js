@@ -1,4 +1,4 @@
-const pageMenu = () => {
+export const pageMenu = () => {
   const content = document.querySelector('[data-page-group="main"]');
   const menuContainer = document.getElementById('page-menu');
   const currentPageType = document.querySelector('[data-page-type]')?.dataset?.pageType;
@@ -29,4 +29,26 @@ const pageMenu = () => {
   menuContainer.appendChild(list);
 };
 
-export default pageMenu;
+export const stickyMenu = () => {
+  const heroBlock = document.querySelector('.page-hero-block');
+  const menuSticky = document.querySelector('#page-menu');
+
+  if (!heroBlock || !menuSticky) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          menuSticky.classList.add('fixed');
+        } else {
+          menuSticky.classList.remove('fixed');
+        }
+      });
+    },
+    { threshold: 0 },
+  );
+
+  observer.observe(heroBlock);
+};
+
+export default { pageMenu, stickyMenu };
