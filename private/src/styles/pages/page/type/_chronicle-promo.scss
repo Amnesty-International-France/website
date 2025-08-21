@@ -1,0 +1,27 @@
+.page-chronicle-promo {
+  position: relative;
+
+  &__video-container {
+    margin-top: 2.2rem;
+    padding: 53% 0 0 0;
+    width: 95%;
+  }
+
+  .page-container .custom-button-block {
+    margin-top: 1.4rem;
+    width: 80%;
+    justify-content: center;
+  }
+
+  @media (min-width: 768px) {
+    &__video-container {
+      margin-top: 3.4rem;
+      padding: 17.5% 0 0 0;
+      width: 31%;
+    }
+
+    .page-container .custom-button-block {
+      width: 31%;
+    }
+  }
+}
