@@ -32,7 +32,6 @@ import downloadBlock from './modules/download-block';
 import initCarousels from './modules/carousel';
 import tableOfContents from './modules/table-of-contents';
 import readMoreBlock from './modules/read-more';
-import pageMenu from './modules/page-menu';
 import initAZFilter from './modules/az-filter';
 import capitalizeHeadings from './modules/capitalize-headings';
 import { getUserLocationFromButton, getUserLocationFromForm } from './modules/localisation';
@@ -47,6 +46,7 @@ import initFoundationForm from './modules/Form/foundation-form';
 import edhFilters from './modules/search-filters-edh';
 import mySpaceMenu from './modules/my-space-menu';
 import mySpaceMobileMenu from './modules/my-space-mobile-menu';
+import { pageMenu, stickyMenu } from './modules/page-menu';
 
 const App = () => {
   browserDetector();
@@ -78,7 +78,6 @@ const App = () => {
   initCarousels();
   tableOfContents();
   readMoreBlock();
-  pageMenu();
   initAZFilter();
   capitalizeHeadings();
   getUserLocationFromButton();
@@ -96,6 +95,8 @@ const App = () => {
   hoverDonationMenu();
   mySpaceMenu();
   mySpaceMobileMenu();
+  pageMenu();
+  stickyMenu();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
