@@ -36,3 +36,29 @@ function create_petition( int $post_id ) {
 }
 
 add_action( 'acf/save_post', 'create_petition', 20 );
+
+function update_petition_end_date( $post_id ) {
+	$post = get_post( $post_id );
+
+	if( $post->post_type !== 'petition') {
+		return;
+	}
+
+	$new_value = get_field( 'date_de_fin', $post_id );
+
+	if ( empty($new_value) ) {
+		return;
+	}
+
+	$ext_id = get_field('uidsf', $post_id);
+
+	if( ! $ext_id ) {
+		return;
+	}
+
+	patch_salesforce_petition( $ext_id, [
+		'Date_de_cloture__c' => (new DateTime($new_value))->format('Y-m-d'),
+	]);
+}
+
+add_action('acf/save_post', 'update_petition_end_date', 20);
