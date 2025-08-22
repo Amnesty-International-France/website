@@ -1,0 +1,14 @@
+.single-chronicle {
+  .page-hero-block.page-hero-block--large .article-figure {
+    min-height: 345px;
+  }
+
+  &__content {
+    display: flex;
+    width: 54.33%;
+
+    &__aside, &summary {
+      flex-direction: column;
+    }
+  }
+}

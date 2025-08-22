@@ -29,8 +29,8 @@ if ( ! function_exists( 'render_hero_large_block' ) ) {
 
 		$title_prefix = $attributes['titlePrefix'] ?? '';
 		$page_title = get_the_title();
-		$btn_link_text = $attributes['btnLinkText'] ?? get_field('btn_link_text') ?? '';
-		$btn_link = $attributes['btnLink'] ?? get_field('btn_link') ?? '';
+		$btn_link_text = !empty($attributes['btnLinkText']) ? $attributes['btnLinkText'] : (get_field('btn_link_text') ?? '');
+		$btn_link = !empty($attributes['btnLink']) ? $attributes['btnLink'] : (get_field('btn_link') ?? '');
 		$button_html = '';
 
 		if (!empty($btn_link) && !empty($btn_link_text)) {
