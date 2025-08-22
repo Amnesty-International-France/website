@@ -9,12 +9,11 @@ function get_salesforce_data($url)
 		return false;
 	}
 
-
 	$response = wp_remote_get(getenv("AIF_SALESFORCE_URL") . $url, array(
 		'headers' => array(
 			'Authorization' => 'Bearer ' . $access_token,
-			'timeout' => 30,
-		)
+		),
+		'timeout' => 30,
 	));
 
 	if (is_wp_error($response)) {
