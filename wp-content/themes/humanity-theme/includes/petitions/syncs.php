@@ -102,6 +102,7 @@ class Sync_Command {
 function insert_users_records( $response ) {
 	if( isset( $response['records'] ) ) {
 		global $wpdb;
+		$table_name = $wpdb->prefix . 'aif_users';
 		foreach ( $response['records'] as $record ) {
 			$civility = $record['Salutation'] ?? '';
 			$first_name = $record['FirstName'] ?? '';
@@ -120,7 +121,24 @@ function insert_users_records( $response ) {
 				'phone' => $mobile_phone,
 			];
 			$format = ['%s', '%s', '%s', '%s', '%s', '%s', '%s'];
-			$wpdb->insert( $wpdb->prefix . 'aif_users', $data, $format );
+
+			$existing_user_id = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT id FROM $table_name WHERE email = %s",
+					$email
+				)
+			);
+
+			if ( $existing_user_id ) {
+				$where = ['email' => $email];
+				$where_format = ['%s'];
+				unset($data['email']);
+				unset($format[count($format) - 1]);
+
+				$wpdb->update( $table_name, $data, $where, $format, $where_format );
+			} else {
+				$wpdb->insert( $table_name, $data, $format );
+			}
 		}
 	}
 }
