@@ -15,7 +15,7 @@ fi
 
 # rysnc plugins if exists on repo
 if test -d ${APP_HOME}/wp-content/themes  ; then
-    rsync -a ${APP_HOME}/wp-content/themes/ ${APP_HOME}${CC_WEBROOT}/wp-content/themes/
+    rsync -a  --delete ${APP_HOME}/wp-content/themes/ ${APP_HOME}${CC_WEBROOT}/wp-content/themes/
 fi
 
 # install restic for FS backup
