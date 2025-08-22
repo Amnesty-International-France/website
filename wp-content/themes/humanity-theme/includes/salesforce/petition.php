@@ -14,6 +14,11 @@ function post_salesforce_petition( array $data ): string|false {
 	return false;
 }
 
+function patch_salesforce_petition( string $external_id, array $data ): bool {
+	$url = "services/data/v57.0/sobjects/Petition__c/Ext_ID_Petition__c/$external_id";
+	return patch_salesforce_data( $url, $data );
+}
+
 function get_salesforce_petition_counter( string $ext_id ) {
 	$url = "services/data/v57.0/query/?q=SELECT+Nb_signatures_total__c+FROM+Petition__c+WHERE+Ext_ID_Petition__c+=+'$ext_id'";
 	return get_salesforce_data( $url );
