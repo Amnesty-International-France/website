@@ -1,3 +1,6 @@
 [
-     "0 0 * * * $ROOT/infogerance/backup-wp.sh"
+     "0 0 * * * $ROOT/infogerance/backup-wp.sh",
+     "0 0 * * * wp sync compteurs",
+     "*/15 * * * * wp sync signatures",
+     "30 23 * * * wp sync signatures_failed"
 ]
