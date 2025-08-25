@@ -180,9 +180,16 @@ const selectedTab = (calculator) => {
 
 export const hoverDonationMenu = () => {
   const donateButton = document.querySelector('.donate-button-desktop');
+
+  if (!donateButton) {
+    return;
+  }
+
   const calculator = donateButton.querySelector('.nav-don-calculator');
 
-  if (!donateButton || !calculator) return;
+  if (!calculator) {
+    return;
+  }
 
   let isHover = false;
 
@@ -197,7 +204,6 @@ export const hoverDonationMenu = () => {
 
   calculator.addEventListener('mouseleave', () => {
     isHover = false;
-
     if (!isHover) {
       setTimeout(() => {
         calculator.style.visibility = 'hidden';
@@ -207,7 +213,6 @@ export const hoverDonationMenu = () => {
 
   donateButton.addEventListener('mouseleave', () => {
     isHover = false;
-
     if (!isHover) {
       setTimeout(() => {
         calculator.style.visibility = 'hidden';
@@ -215,7 +220,6 @@ export const hoverDonationMenu = () => {
     }
   });
 };
-
 export const calculator = () => {
   const calculators = document.querySelectorAll('.donation-calculator');
 
