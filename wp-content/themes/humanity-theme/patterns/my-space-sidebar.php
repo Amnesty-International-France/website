@@ -1,5 +1,3 @@
-
-
 <?php
 /**
  * Title: My Space Sidebar
