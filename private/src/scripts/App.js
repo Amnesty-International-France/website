@@ -45,6 +45,7 @@ import { toggleFullFormPetition, submitCodeOrigine } from './modules/petition-fo
 import { closeUrgentBanner } from './modules/urgent-banner';
 import initFoundationForm from './modules/Form/foundation-form';
 import edhFilters from './modules/search-filters-edh';
+import mySpaceMenu from './modules/my-space-menu';
 
 const App = () => {
   browserDetector();
@@ -92,6 +93,7 @@ const App = () => {
   initFoundationForm();
   edhFilters();
   hoverDonationMenu();
+  mySpaceMenu();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
