@@ -72,9 +72,29 @@ function my_project_training_filters($query) {
             $conditions_added = true;
         }
     }
-    
+
     if ($conditions_added) {
         $query->set('meta_query', $meta_query);
     }
 }
 add_action('pre_get_posts', 'my_project_training_filters');
+
+add_action('template_redirect', function () {
+
+	if (is_singular('training')) {
+		global $post;
+
+		$isPrivate = get_field('members_only', $post->ID);
+
+		if ($isPrivate) {
+			if (!is_user_logged_in()) {
+				wp_redirect(home_url('/mon-espace/'));
+				exit;
+			}
+
+			if (!current_user_can('administrator' || !current_user_can('subscriber'))) {
+				wp_die('⚠️ Vous n’avez pas les permissions nécessaires pour accéder à cette page.');
+			}
+		}
+	}
+});
