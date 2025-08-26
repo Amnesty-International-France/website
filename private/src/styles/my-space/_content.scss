@@ -1,6 +1,10 @@
 .aif-donor-space-content {
-  padding: 16px 24px 48px 0;
+  padding: 16px 24px 48px 24px;
   flex: 1;
+
+  @media (min-width: $container-md) {
+    padding: 16px 24px 48px 0;
+  }
 
   .aif-donor-space-content-header {
     display: flex;
