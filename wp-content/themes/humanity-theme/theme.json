@@ -75,6 +75,11 @@
           "name": "Error"
         },
         {
+          "slug": "pale-error",
+          "color": "#feeced",
+          "name": "Pale Error"
+        },
+        {
           "slug": "success",
           "color": "#21880d",
           "name": "Success"
