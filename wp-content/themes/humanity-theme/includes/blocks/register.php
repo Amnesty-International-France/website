@@ -113,6 +113,8 @@ require_once __DIR__ . '/training-card/register.php';
 require_once __DIR__ . '/training-card/render.php';
 require_once __DIR__ . '/tweet-action/register.php';
 require_once __DIR__ . '/tweet-action/render.php';
+require_once __DIR__ . '/urgent-register-form/render.php';
+require_once __DIR__ . '/urgent-register-form/register.php';
 require_once __DIR__ . '/video/register.php';
 require_once __DIR__ . '/video/render.php';
 
@@ -179,6 +181,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_tickcounter_embed_block();
 		register_training_card_block();
 		register_tweet_action_block();
+		register_urgent_register_form_block();
 		register_video_block();
 	}
 }
