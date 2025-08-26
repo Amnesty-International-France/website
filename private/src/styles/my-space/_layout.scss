@@ -1,6 +1,12 @@
 .aif-donor-space-layout {
   display: flex;
-  gap: 60px;
+  flex-direction: column;
+  gap: 15px;
   width: 100vw;
   min-height: 100vh;
+
+  @media (min-width: $container-md) {
+    flex-direction: row;
+    gap: 60px;
+  }
 }

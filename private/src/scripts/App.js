@@ -46,6 +46,7 @@ import { closeUrgentBanner } from './modules/urgent-banner';
 import initFoundationForm from './modules/Form/foundation-form';
 import edhFilters from './modules/search-filters-edh';
 import mySpaceMenu from './modules/my-space-menu';
+import mySpaceMobileMenu from './modules/my-space-mobile-menu';
 
 const App = () => {
   browserDetector();
@@ -94,6 +95,7 @@ const App = () => {
   edhFilters();
   hoverDonationMenu();
   mySpaceMenu();
+  mySpaceMobileMenu();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
