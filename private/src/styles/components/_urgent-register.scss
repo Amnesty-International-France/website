@@ -1,0 +1,185 @@
+.urgent-register,
+.urgent-register-header,
+.urgent-register-form,
+.urgent-register-form-cta
+{
+  display: flex;
+  flex-direction: column;
+}
+
+.urgent-register {
+  box-shadow: 0 0 20px 0 #00000026;
+  padding: 35px 16px 0;
+  position: relative;
+
+  &::after {
+    content: "S'inscrire";
+    position: absolute;
+    padding: 8px 12px;
+    background-color: var(--wp--preset--color--black);
+    color: var(--wp--preset--color--primary);
+    top: -.9em;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    white-space: nowrap;
+    font-family: var(--wp--preset--font-family--primary);
+    font-weight: bold;
+    line-height: 12px;
+    letter-spacing: 0;
+    text-align: center;
+    vertical-align: middle;
+    text-transform: uppercase;
+  }
+
+  .urgent-register-header {
+    font-family: var(--wp--preset--font-family--primary);
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0;
+    vertical-align: middle;
+  }
+
+  .urgent-register-form {
+    .form-mess {
+      padding: 10px;
+      width: 100%;
+      background-color: var(--wp--preset--color--pale-error);
+      color: var(--wp--preset--color--error);
+      margin: 10px 0;
+      font-size: 1rem;
+
+      &.error {
+        background-color: var(--wp--preset--color--pale-error);
+        color: var(--wp--preset--color--error);
+      }
+
+      &.success {
+        background-color: var(--wp--preset--color--pale-green);
+        color: var(--wp--preset--color--success);
+      }
+
+      &.hidden {
+        display: none;
+      }
+    }
+
+    input:not([type="radio"]) {
+      margin-bottom: 22px;
+      border: 1px solid var(--wp--preset--color--grey-lighter);
+      transition: border 0.3s ease, margin-bottom 0.3s ease;
+
+      &.success {
+        border: 2px solid var(--wp--preset--color--success);
+      }
+
+      &.error {
+        border: 2px solid var(--wp--preset--color--error);
+        margin-bottom: 10px;
+      }
+
+      &:last-child {
+        margin-bottom: 54px;
+      }
+
+      &::placeholder {
+        color: var(--wp--preset--color--grey-dark);
+        font-family: var(--wp--preset--font-family--primary);
+        font-weight: 300;
+        font-size: 18px;
+        line-height: 28px;
+        letter-spacing: 0;
+        vertical-align: middle;
+        text-transform: capitalize;
+        transition: color 0.3s ease;
+      }
+    }
+
+    .urgent-register-form-input {
+      .input-error {
+        width: 100%;
+        background-color: var(--wp--preset--color--pale-error);
+        color: var(--wp--preset--color--error);
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 1rem;
+
+        &.hidden {
+          display: none;
+        }
+      }
+
+      .additional-form {
+        .form-group.civility {
+          display: flex;
+          align-items: center;
+          flex-direction: row;
+          gap: 12px;
+          padding-bottom: 24px;
+
+          & > label {
+            color: var(--wp--preset--color--grey-dark);
+          }
+
+          & > .civilities {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            & > input[type="radio"] {
+              cursor: pointer;
+            }
+
+            & > label {
+              position: relative;
+              cursor: pointer;
+              display: inline-flex;
+              align-items: center;
+              font-size: 1.125rem;
+              text-transform: capitalize;
+            }
+          }
+        }
+
+          .form-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+
+        }
+
+        &.hidden {
+          display: none;
+        }
+      }
+    }
+
+    .urgent-register-form-cta {
+      .button {
+        display: flex;
+        padding: 14px 24px;
+        gap: 12px;
+        background-color: var(--wp--preset--color--primary);
+        width: fit-content;
+        margin: 0 auto 24px;
+        font-family: var(--wp--preset--font-family--secondary);
+        font-weight: bold;
+        font-size: 23px;
+        line-height: 26px;
+        letter-spacing: 0;
+        text-transform: uppercase;
+        cursor: pointer;
+        border: none;
+      }
+
+      > .legend > p {
+        font-family: var(--wp--preset--font-family--primary);
+        font-weight: lighter;
+        font-size: 12px;
+        line-height: 18px;
+        letter-spacing: 0;
+      }
+    }
+  }
+}
