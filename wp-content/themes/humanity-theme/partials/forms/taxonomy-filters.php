@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Search partial, taxonomy filters
  *
@@ -10,8 +11,8 @@ if ((!isset($taxonomies) || empty($taxonomies) ) && (!isset($types) || empty($ty
 }
 ?>
 <div class="taxonomyArchive-filters" aria-label="<?php esc_attr_e('Filter results by topic', 'amnesty'); ?>">
-    <?php if( isset($types) ) : ?>
-        <?php
+    <?php if( isset($types) ) : ?>    
+    <?php
         $options = [];
         foreach ($types as $type) {
             if ( 'tribe_events' === $type->name ) {
