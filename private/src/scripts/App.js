@@ -45,7 +45,7 @@ import { toggleFullFormPetition, submitCodeOrigine } from './modules/petition-fo
 import { closeUrgentBanner } from './modules/urgent-banner';
 import initFoundationForm from './modules/Form/foundation-form';
 import edhFilters from './modules/search-filters-edh';
-import { urgentRegister } from './modules/Form/urgent-register-form';
+import UrgentRegister from './modules/Form/urgent-register-form';
 
 const App = () => {
   browserDetector();
@@ -93,7 +93,7 @@ const App = () => {
   initFoundationForm();
   edhFilters();
   hoverDonationMenu();
-  urgentRegister();
+  UrgentRegister();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 

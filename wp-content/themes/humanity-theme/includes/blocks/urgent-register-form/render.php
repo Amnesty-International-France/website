@@ -14,9 +14,11 @@ if ( ! function_exists( 'render_urgent_register_form_block' ) ) {
 	 */
 	function render_urgent_register_form_block( $attributes, $content, $block ): string {
 		$input = $attributes['input'] ?? [];
+		$action_type = $attributes['action_type'] ?? '';
 
 		$args = [
 			'input' => $input,
+			'action_type' => $action_type,
 		];
 
 		ob_start();

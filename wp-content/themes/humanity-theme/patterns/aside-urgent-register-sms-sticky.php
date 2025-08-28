@@ -15,7 +15,7 @@ declare(strict_types=1);
 	<!-- wp:amnesty-core/urgent-register-form
 		{
 			"input": ["tel","email"],
-			"huma": false
+			"action_type": "sms"
 		}
 	/-->
 </aside>

@@ -1,5 +1,22 @@
-const isEmailValid = (value) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/* global UrgentRegisterData */
+
+const notRequiredHiddenFields = (status) => {
+  const additionFormHidden = document.querySelector('.additional-form');
+
+  if (!additionFormHidden) return;
+
+  const hiddenFields = additionFormHidden.querySelectorAll('input, select');
+
+  if (!hiddenFields.length) return;
+
+  hiddenFields.forEach((_field, index) => {
+    const currentField = hiddenFields[index];
+    currentField.required = status;
+  });
+};
+
+const isValidEmail = (value) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   return emailRegex.test(value);
 };
@@ -25,26 +42,31 @@ const throwGlobalFormMessage = (element, message, type = 'error') => {
   formMessageDiv.textContent = message;
 };
 
-const checkIfEmailExistInAmnesty = async (email) => {
+const checkIfEmailExist = async (email) => {
   try {
-    const urlForCheckEmail = 'https://www.amnesty.fr/api/inscriptions/lead/exists';
+    const urlForCheckEmail = '/wp-json/humanity/v1/check-email';
     const emailExisting = await fetch(urlForCheckEmail, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({ email }),
+      body: new URLSearchParams({
+        email,
+      }),
     });
-    const res = await emailExisting.json();
+    const res = await emailExisting;
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({ message: 'Erreur inconnue' }));
-      throw new Error(errorData.message || `Erreur HTTP: ${res.status}`);
+      return throwGlobalFormMessage(
+        '.form-mess',
+        errorData.message || `Erreur HTTP: ${res.status}`,
+      );
     }
 
-    return res.exists;
+    return res.json();
   } catch (e) {
-    throwGlobalFormMessage('.form-mess', e.message);
+    throwGlobalFormMessage('.form-mess', e.message, e.status);
     return false;
   }
 };
@@ -59,10 +81,9 @@ const showAdditionalForm = async (email) => {
   }
 
   try {
-    const emailExisting = await checkIfEmailExistInAmnesty(email);
-    if (emailExisting) {
-      additionalForm.classList.remove('hidden');
-    }
+    const emailExisting = await checkIfEmailExist(email);
+    additionalForm.classList.toggle('hidden', !(emailExisting && emailExisting.exists === false));
+    notRequiredHiddenFields(!emailExisting);
   } catch (error) {
     console.error("Erreur lors de la vérification de l'email :", error);
     throwGlobalFormMessage('.form-mess', error.message);
@@ -91,7 +112,7 @@ const throwInputOnError = (input) => {
     input.classList.remove('error');
   };
 
-  const validate = () => {
+  const validate = async () => {
     const value = input.value.trim();
 
     if (input.required && value === '') {
@@ -99,20 +120,20 @@ const throwInputOnError = (input) => {
       return false;
     }
 
-    if (input.type === 'email' && !isEmailValid(value)) {
-      showError('Merci de saisir une adresse email valide.');
+    if (input.type === 'tel' && input.required && !isPhoneValid(value)) {
+      showError('Merci de saisir un numéro de téléphone valide.');
       return false;
     }
 
-    if (input.type === 'tel' && !isPhoneValid(value)) {
-      showError('Merci de saisir un numéro de téléphone valide.');
+    if (input.type === 'email' && !isValidEmail(value)) {
+      showError('Merci de saisir une adresse email valide.');
       return false;
     }
 
     showSuccess();
 
-    if (input.type === 'email') {
-      showAdditionalForm(value);
+    if (input.type === 'email' && isValidEmail(value)) {
+      await showAdditionalForm(value);
     }
 
     return true;
@@ -122,16 +143,54 @@ const throwInputOnError = (input) => {
   input.addEventListener('input', validate);
 };
 
-export const urgentRegister = () => {
+const UrgentRegister = () => {
   const form = document.querySelector(`#urgent-register`);
 
   if (!form || !form?.elements) return;
 
-  [...form.elements].forEach((formElement) => {
+  const formFields = [...form.elements];
+
+  formFields.forEach((formElement) => {
     throwInputOnError(formElement);
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+
+    formFields.filter((field) => {
+      if ((field.required && field.value.trim() !== '') || field.name === 'type') {
+        formData.append(field.name, field.value);
+        return true;
+      }
+      return false;
+    });
+
+    try {
+      const headers = {};
+
+      Object.assign(
+        headers,
+        UrgentRegisterData.is_connected
+          ? { 'X-WP-Nonce': UrgentRegisterData.nonce }
+          : { 'X-Amnesty-UA-Nonce': UrgentRegisterData.nonce },
+      );
+
+      // eslint-disable-next-line no-undef
+      const response = await fetch(UrgentRegisterData.url, {
+        // UrgentRegisterData come from php function amnesty_ua_enqueue_scripts
+        method: 'POST',
+        body: formData,
+        headers,
+      });
+
+      const result = await response.json();
+      throwGlobalFormMessage('.form-mess', result.message, result.status);
+    } catch (e) {
+      throwGlobalFormMessage('.form-mess', e.message, e.status);
+    }
   });
 };
 
-export default {
-  urgentRegister,
-};
+export default UrgentRegister;
