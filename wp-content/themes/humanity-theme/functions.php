@@ -9,20 +9,20 @@
 /**
  * Theme root includes
  */
-#region root
+// region root
 require_once realpath( __DIR__ . '/includes/root/compatibility.php' );
 require_once realpath( __DIR__ . '/includes/root/caching.php' );
 require_once realpath( __DIR__ . '/includes/root/localisation.php' );
 require_once realpath( __DIR__ . '/includes/root/accessibility.php' );
 require_once realpath( __DIR__ . '/includes/root/permalinks.php' );
-#endregion helpers
+// endregion helpers
 
 /**
  * Theme helper includes
  */
-#region helpers
-require_once realpath( __DIR__ . '/includes/helpers/query-filters.php');
-require_once realpath( __DIR__ . '/includes/helpers/category-rewrite.php');
+// region helpers
+require_once realpath( __DIR__ . '/includes/helpers/query-filters.php' );
+require_once realpath( __DIR__ . '/includes/helpers/category-rewrite.php' );
 require_once realpath( __DIR__ . '/includes/helpers/class-classnames.php' );
 require_once realpath( __DIR__ . '/includes/helpers/class-get-image-data.php' );
 require_once realpath( __DIR__ . '/includes/helpers/site.php' );
@@ -42,40 +42,40 @@ require_once realpath( __DIR__ . '/includes/helpers/pagination.php' );
 require_once realpath( __DIR__ . '/includes/helpers/archive.php' );
 require_once realpath( __DIR__ . '/includes/helpers/list-alignment.php' );
 require_once realpath( __DIR__ . '/includes/helpers/reading-time.php' );
-#endregion helpers
+// endregion helpers
 
 /**
  * Theme Query Filters (Actions & Filters)
  */
-#region query-filters
+// region query-filters
 // Modifie le nombre d'articles affichés sur les archives
 function amnesty_set_posts_per_page_for_archive( $query ) {
-    if ( !is_admin() && $query->is_main_query() && is_archive() ) {
-        $query->set( 'posts_per_page', 18 );
-    }
+	if ( ! is_admin() && $query->is_main_query() && is_archive() ) {
+		$query->set( 'posts_per_page', 18 );
+	}
 }
 add_action( 'pre_get_posts', 'amnesty_set_posts_per_page_for_archive' );
-#endregion query-filters
+// endregion query-filters
 
 /**
  * Theme multisite includes
  */
-#region multisite
+// region multisite
 require_once realpath( __DIR__ . '/includes/multisite/class-core-site-list.php' );
 require_once realpath( __DIR__ . '/includes/multisite/helpers.php' );
-#endregion multisite
+// endregion multisite
 
 /**
  * Theme network includes
  */
-#region network
+// region network
 require_once realpath( __DIR__ . '/includes/admin/network/class-network-options.php' );
-#endregion network
+// endregion network
 
 /**
  * Theme admin includes
  */
-#region admin
+// region admin
 require_once realpath( __DIR__ . '/includes/admin/menu.php' );
 require_once realpath( __DIR__ . '/includes/admin/options-helpers.php' );
 require_once realpath( __DIR__ . '/includes/admin/cmb2-helpers.php' );
@@ -101,16 +101,16 @@ require_once realpath( __DIR__ . '/includes/admin/event-venue-auto-geocode.php' 
 require_once realpath( __DIR__ . '/includes/admin/event-national.php' );
 require_once realpath( __DIR__ . '/includes/admin/event-pagination-redirect.php' );
 require_once realpath( __DIR__ . '/includes/admin/local-structures-search.php' );
-#endregion admin
+// endregion admin
 
 /**
  * Theme setup includes
  */
-#region theme setup
+// region theme setup
 require_once realpath( __DIR__ . '/includes/theme-setup/acf.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/text-domain.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/theme-json.php' );
-require_once realpath( __DIR__ . '/includes/theme-setup/categories.php');
+require_once realpath( __DIR__ . '/includes/theme-setup/categories.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/cookie-control-fix.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/no-js.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/rewrite-rules.php' );
@@ -130,43 +130,43 @@ require_once realpath( __DIR__ . '/includes/theme-setup/analytics/google-analyti
 require_once realpath( __DIR__ . '/includes/theme-setup/analytics/hotjar.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/analytics/vwo.php' );
 require_once realpath( __DIR__ . '/includes/theme-setup/analytics/meta-tags.php' );
-#endregion theme setup
+// endregion theme setup
 
 /**
  * Theme KSES includes
  */
-#region kses
+// region kses
 require_once realpath( __DIR__ . '/includes/kses/checkbox-filter.php' );
 require_once realpath( __DIR__ . '/includes/kses/wp-kses-post.php' );
 require_once realpath( __DIR__ . '/includes/blocks/slider/kses.php' );
-#endregion kses
+// endregion kses
 
 /**
  * Theme includes
  */
-#region theme
+// region theme
 require_once realpath( __DIR__ . '/includes/post-filters.php' );
-#endregion theme
+// endregion theme
 
 /**
  * Theme block includes
  */
-#region blocks
+// region blocks
 require_once realpath( __DIR__ . '/includes/blocks/block-category.php' );
 require_once realpath( __DIR__ . '/includes/blocks/meta.php' );
 require_once realpath( __DIR__ . '/includes/blocks/register.php' );
 require_once realpath( __DIR__ . '/includes/blocks/remove-stale-metadata.php' );
 require_once realpath( __DIR__ . '/includes/blocks/render-header-on-single.php' );
-#endregion blocks
+// endregion blocks
 
-#region fse-blocks
+// region fse-blocks
 require_once realpath( __DIR__ . '/includes/full-site-editing/blocks/register.php' );
-#endregion fse-blocks
+// endregion fse-blocks
 
 /**
  * Theme core block modification includes
  */
-#region coreblocks
+// region coreblocks
 require_once realpath( __DIR__ . '/includes/core-blocks/image/filters.php' );
 require_once realpath( __DIR__ . '/includes/core-blocks/button/styles.php' );
 require_once realpath( __DIR__ . '/includes/core-blocks/post-content/render.php' );
@@ -174,99 +174,105 @@ require_once realpath( __DIR__ . '/includes/core-blocks/query/pagination/next.ph
 require_once realpath( __DIR__ . '/includes/core-blocks/query/pagination/numbers.php' );
 require_once realpath( __DIR__ . '/includes/core-blocks/query/pagination/previous.php' );
 require_once realpath( __DIR__ . '/includes/core-blocks/social-icons/styles.php' );
-#endregion coreblocks
+// endregion coreblocks
 
 /**
  * Theme block pattern includes
  */
-#region patterns
+// region patterns
 require_once realpath( __DIR__ . '/includes/block-patterns/pattern-category.php' );
 require_once realpath( __DIR__ . '/includes/block-patterns/exclude-page-content-pattern-for-page.php' );
-#endregion patterns
+// endregion patterns
 
 /**
  * Theme post type includes
  */
-#region post types
+// region post types
 require_once realpath( __DIR__ . '/includes/post-types/post-type-helpers.php' );
 require_once realpath( __DIR__ . '/includes/post-types/abstract-class-post-type.php' );
 require_once realpath( __DIR__ . '/includes/post-types/pop-in.php' );
 require_once realpath( __DIR__ . '/includes/post-types/sidebar.php' );
 require_once realpath( __DIR__ . '/includes/post-types/countries.php' );
 require_once realpath( __DIR__ . '/includes/post-types/landmarks.php' );
-require_once realpath( __DIR__ . '/includes/post-types/local-structures.php');
-require_once realpath( __DIR__ . '/includes/post-types/petitions.php');
-require_once realpath( __DIR__ . '/includes/post-types/press-release.php');
-require_once realpath( __DIR__ . '/includes/post-types/trainings.php');
-require_once realpath( __DIR__ . '/includes/post-types/document.php');
-require_once realpath( __DIR__ . '/includes/post-types/edh.php');
-require_once realpath( __DIR__ . '/includes/post-types/chronicle.php');
-#endregion post types
+require_once realpath( __DIR__ . '/includes/post-types/local-structures.php' );
+require_once realpath( __DIR__ . '/includes/post-types/petitions.php' );
+require_once realpath( __DIR__ . '/includes/post-types/press-release.php' );
+require_once realpath( __DIR__ . '/includes/post-types/trainings.php' );
+require_once realpath( __DIR__ . '/includes/post-types/document.php' );
+require_once realpath( __DIR__ . '/includes/post-types/edh.php' );
+require_once realpath( __DIR__ . '/includes/post-types/chronicle.php' );
+// endregion post types
 
 /**
  * Theme taxonomy includes
  */
-#region taxonomies
+// region taxonomies
 require_once realpath( __DIR__ . '/includes/taxonomies/taxonomy-filters.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/taxonomy-descriptions.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/abstract-class-taxonomy.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-content-types.php' );
-require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-landmark-categories.php');
-require_once realpath( __DIR__ . '/includes/theme-setup/landmark-categories.php');
+require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-landmark-categories.php' );
+require_once realpath( __DIR__ . '/includes/theme-setup/landmark-categories.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-locations.php' );
-require_once realpath( __DIR__ . '/includes/theme-setup/countries.php');
+require_once realpath( __DIR__ . '/includes/theme-setup/countries.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-keywords.php' );
-require_once realpath( __DIR__ . '/includes/theme-setup/keywords.php');
+require_once realpath( __DIR__ . '/includes/theme-setup/keywords.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-combats.php' );
-require_once realpath( __DIR__ . '/includes/theme-setup/combats.php');
-require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-document-categories.php');
-require_once realpath( __DIR__ . '/includes/theme-setup/document-categories.php');
+require_once realpath( __DIR__ . '/includes/theme-setup/combats.php' );
+require_once realpath( __DIR__ . '/includes/taxonomies/class-taxonomy-document-categories.php' );
+require_once realpath( __DIR__ . '/includes/theme-setup/document-categories.php' );
 require_once realpath( __DIR__ . '/includes/taxonomies/custom-fields/precedence.php' );
-require_once realpath( __DIR__ . '/includes/taxonomies/yoast_breadcrumb_taxonomies.php');
-#endregion taxonomies
+require_once realpath( __DIR__ . '/includes/taxonomies/yoast_breadcrumb_taxonomies.php' );
+// endregion taxonomies
 
 /**
  * Theme feature includes
  */
-#region features
+// region features
 require_once realpath( __DIR__ . '/includes/features/related-content/class-related-content.php' );
 require_once realpath( __DIR__ . '/includes/features/related-content/class-wp-rest-related-content-controller.php' );
-#endregion features
+// endregion features
 
 /**
  * Theme query filter includes
  */
-#region query filters
+// region query filters
 require_once realpath( __DIR__ . '/includes/query-filters/posts-where.php' );
 require_once realpath( __DIR__ . '/includes/query-filters/sort-order.php' );
 require_once realpath( __DIR__ . '/includes/query-filters/sticky-posts.php' );
 require_once realpath( __DIR__ . '/includes/query-filters/taxonomy-filters.php' );
 require_once realpath( __DIR__ . '/includes/query-filters/taxonomy-location-filters.php' );
-#endregion query filters
+// endregion query filters
 
 /**
  * Salesforce connector
  */
-require_once realpath( __DIR__ . '/includes/salesforce/authentification.php');
-require_once realpath( __DIR__ . '/includes/salesforce/data.php');
-require_once realpath( __DIR__ . '/includes/salesforce/petition.php');
-require_once realpath( __DIR__ . '/includes/salesforce/user.php');
+require_once realpath( __DIR__ . '/includes/salesforce/authentification.php' );
+require_once realpath( __DIR__ . '/includes/salesforce/data.php' );
+require_once realpath( __DIR__ . '/includes/salesforce/petition.php' );
+require_once realpath( __DIR__ . '/includes/salesforce/user.php' );
 
 /**
  * Petition module
  */
-require_once realpath( __DIR__ . '/includes/petitions/tables.php');
-require_once realpath( __DIR__ . '/includes/petitions/create-petition.php');
-require_once realpath( __DIR__ . '/includes/petitions/rest_endpoint.php');
+require_once realpath( __DIR__ . '/includes/petitions/tables.php' );
+require_once realpath( __DIR__ . '/includes/petitions/create-petition.php' );
+require_once realpath( __DIR__ . '/includes/petitions/rest_endpoint.php' );
 
-if( defined( 'WP_CLI' ) && WP_CLI ) {
-	require_once realpath( __DIR__ . '/includes/petitions/syncs.php');
+/**
+ * Urgent Action module
+ */
+require_once realpath( __DIR__ . '/includes/urgent-action/tables.php' );
+require_once realpath( __DIR__ . '/includes/urgent-action/rest-endpoint.php' );
+
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once realpath( __DIR__ . '/includes/petitions/syncs.php' );
 }
 
 /**
  * Theme search includes
  */
-#region search
+// region search
 require_once realpath( __DIR__ . '/includes/features/search/helpers.php' );
 require_once realpath( __DIR__ . '/includes/features/search/permalink.php' );
 require_once realpath( __DIR__ . '/includes/features/search/post-excerpt.php' );
@@ -274,67 +280,67 @@ require_once realpath( __DIR__ . '/includes/features/search/query-vars.php' );
 require_once realpath( __DIR__ . '/includes/features/search/class-search-page.php' );
 require_once realpath( __DIR__ . '/includes/features/search/class-search-filters.php' );
 require_once realpath( __DIR__ . '/includes/features/search/class-search-results.php' );
-#endregion search
+// endregion search
 
 /**
  * Theme REST API includes
  */
-#region rest api
+// region rest api
 require_once realpath( __DIR__ . '/includes/rest-api/class-category-list.php' );
 require_once realpath( __DIR__ . '/includes/rest-api/class-fetch-menus.php' );
 require_once realpath( __DIR__ . '/includes/rest-api/class-wordpress-seo.php' );
 require_once realpath( __DIR__ . '/includes/rest-api/post-list.php' );
 require_once realpath( __DIR__ . '/includes/rest-api/post-data.php' );
 require_once realpath( __DIR__ . '/includes/rest-api/users.php' );
-#endregion rest api
+// endregion rest api
 
 /**
  * Theme RSS Feed includes
  */
-#region rss
+// region rss
 require_once realpath( __DIR__ . '/includes/rss/filter-feed-by-term.php' );
-#endregion rss
+// endregion rss
 
 /**
  * Theme SEO includes
  */
-#region seo
+// region seo
 require_once realpath( __DIR__ . '/includes/seo/base.php' );
 require_once realpath( __DIR__ . '/includes/seo/canonical.php' );
 require_once realpath( __DIR__ . '/includes/seo/language.php' );
 require_once realpath( __DIR__ . '/includes/seo/opengraph.php' );
 require_once realpath( __DIR__ . '/includes/seo/primary-term.php' );
 require_once realpath( __DIR__ . '/includes/seo/schema-breadcrumbs.php' );
-#endregion seo
+// endregion seo
 
 /**
  * Theme User includes
  */
-#region users
+// region users
 require_once realpath( __DIR__ . '/includes/users/class-users-controller.php' );
 require_once realpath( __DIR__ . '/includes/users/contact-methods.php' );
 require_once realpath( __DIR__ . '/includes/users/meta.php' );
-#endregion users
+// endregion users
 
 /**
  * Theme Jetpack includes
  */
-#region jetpack
+// region jetpack
 require_once realpath( __DIR__ . '/includes/jetpack/go-back-message.php' );
-#endregion jetpack
+// endregion jetpack
 
 /**
  * Theme My Space includes
  */
-#region my-space
+// region my-space
 require_once realpath( __DIR__ . '/includes/my-space/breadcrumb.php' );
 require_once realpath( __DIR__ . '/includes/my-space/template.php' );
-#endregion my-space
+// endregion my-space
 
 /**
  * Theme WooCommerce includes
  */
-#region woocommerce
+// region woocommerce
 if ( class_exists( '\WooCommerce', false ) ) {
 	// disable WooCommerce block templates -- it breaks lots of things in hybrid
 	add_filter( 'woocommerce_has_block_template', '__return_false', 999 );
@@ -353,12 +359,12 @@ if ( class_exists( '\WooCommerce', false ) ) {
 	require_once realpath( __DIR__ . '/includes/woo/templates.php' );
 }
 
-#endregion woocommerce
+// endregion woocommerce
 
 /**
  * Theme MultilingualPress includes
  */
-#region multilingualpress
+// region multilingualpress
 require_once realpath( __DIR__ . '/includes/mlp/helpers.php' );
 require_once realpath( __DIR__ . '/includes/mlp/language-selector.php' );
 if ( is_multilingualpress_enabled() ) {
@@ -367,32 +373,43 @@ if ( is_multilingualpress_enabled() ) {
 	require_once realpath( __DIR__ . '/includes/mlp/rest-api.php' );
 	require_once realpath( __DIR__ . '/includes/mlp/scheduled-posts.php' );
 }
-#endregion multilingualpress
+// endregion multilingualpress
 
 /**
  * Plugin The Events Calendar
  *
  * Remove post_tag, event categories, unused box
  */
-add_action('init', function () {
-	unregister_taxonomy_for_object_type('post_tag', 'tribe_events');
-	unregister_taxonomy_for_object_type('tribe_events_cat', 'tribe_events');
-});
+add_action(
+	'init',
+	function () {
+		unregister_taxonomy_for_object_type( 'post_tag', 'tribe_events' );
+		unregister_taxonomy_for_object_type( 'tribe_events_cat', 'tribe_events' );
+	}
+);
 
-add_action('add_meta_boxes', function () {
-	remove_meta_box('tribe_events_event_options', 'tribe_events', 'side');
-	remove_meta_box('tec-events-qr-code', 'tribe_events', 'side');
-	remove_meta_box('tribe-events-status', 'tribe_events', 'side');
-}, 20);
+add_action(
+	'add_meta_boxes',
+	function () {
+		remove_meta_box( 'tribe_events_event_options', 'tribe_events', 'side' );
+		remove_meta_box( 'tec-events-qr-code', 'tribe_events', 'side' );
+		remove_meta_box( 'tribe-events-status', 'tribe_events', 'side' );
+	},
+	20
+);
 
 /*
  * Added Longitude and Latitude for Venue in API results /wp-json/tribe/events/v1/venues
  */
-add_filter('tribe_rest_venue_data', function ($data) {
-
-	$data['longitude'] = get_post_meta($data['id'], '_VenueLongitude', true);
-	$data['latitude'] = get_post_meta($data['id'], '_VenueLatitude', true);
-	return $data;
-}, 10, 2);
+add_filter(
+	'tribe_rest_venue_data',
+	function ( $data ) {
+		$data['longitude'] = get_post_meta( $data['id'], '_VenueLongitude', true );
+		$data['latitude']  = get_post_meta( $data['id'], '_VenueLatitude', true );
+		return $data;
+	},
+	10,
+	2
+);
 
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle

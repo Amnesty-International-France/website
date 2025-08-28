@@ -16,9 +16,13 @@ if ( ! function_exists( 'register_urgent_register_form_block' ) ) {
 			[
 				'render_callback' => 'render_urgent_register_form_block',
 				'attributes'      => [
-					'input' => [
+					'input'       => [
 						'type'    => 'array',
 						'default' => [],
+					],
+					'action_type' => [
+						'type'    => 'string',
+						'default' => '',
 					],
 				],
 			]

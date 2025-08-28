@@ -31,7 +31,6 @@ $page_title = get_the_title();
 	</section>
 <?php endif; ?>
 
-
 <?php
 if ( ! is_admin() ) {
 	add_filter( 'the_content', 'amnesty_remove_first_hero_from_content', 0 );

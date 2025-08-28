@@ -47,7 +47,7 @@ import edhFilters from './modules/search-filters-edh';
 import mySpaceMenu from './modules/my-space-menu';
 import mySpaceMobileMenu from './modules/my-space-mobile-menu';
 import { pageMenu, stickyMenu } from './modules/page-menu';
-import { urgentRegister } from './modules/Form/urgent-register-form';
+import { UrgentRegister } from './modules/Form/urgent-register-form';
 
 const App = () => {
   browserDetector();
@@ -96,9 +96,9 @@ const App = () => {
   hoverDonationMenu();
   mySpaceMenu();
   mySpaceMobileMenu();
+  UrgentRegister();
   pageMenu();
   stickyMenu();
-  urgentRegister();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
