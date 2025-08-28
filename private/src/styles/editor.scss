@@ -44,9 +44,10 @@
 @import 'components/form/input-editor';
 
 // My Space
-@import 'my-space/layout';
-@import 'my-space/sidebar-menu';
 @import 'my-space/content';
+@import 'my-space/layout';
+@import 'my-space/list';
+@import 'my-space/sidebar-menu';
 
 // Blocks
 @import 'blocks/action/main';
