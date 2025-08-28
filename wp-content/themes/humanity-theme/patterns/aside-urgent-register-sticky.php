@@ -15,7 +15,7 @@ declare(strict_types=1);
 	<!-- wp:amnesty-core/urgent-register-form
 		{
 			"input": ["email"],
-			"huma": false
+			"action_type": "email"
 		}
 	/-->
 </aside>
