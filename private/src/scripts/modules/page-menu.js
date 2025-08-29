@@ -32,8 +32,8 @@ export const pageMenu = () => {
 export const stickyMenu = () => {
   const heroBlock = document.querySelector('.page-hero-block');
   const menuSticky = document.querySelector('#page-menu');
-
-  if (!heroBlock || !menuSticky) return;
+  const mainMenu = document.querySelector("header[role='banner']");
+  if (!heroBlock || !menuSticky || !mainMenu) return;
 
   const observer = new IntersectionObserver(
     (entries) => {
@@ -41,7 +41,7 @@ export const stickyMenu = () => {
         if (!entry.isIntersecting) {
           menuSticky.classList.add('fixed');
         } else {
-          menuSticky.classList.remove('fixed');
+          menuSticky.classList.remove('fixed', 'under-main-menu');
         }
       });
     },
@@ -49,6 +49,32 @@ export const stickyMenu = () => {
   );
 
   observer.observe(heroBlock);
+
+  let lastScroll = 0;
+  let lastMainMenuClientRectTop = 0;
+  let scrollTimeout;
+
+  window.addEventListener('scroll', () => {
+    if (!mainMenu || !menuSticky) return;
+
+    const currentScrollTop = mainMenu.getBoundingClientRect().top;
+
+    if (window.scrollY > lastScroll) {
+      menuSticky.classList.remove('under-main-menu');
+    }
+
+    clearTimeout(scrollTimeout);
+
+    scrollTimeout = setTimeout(() => {
+      if (currentScrollTop <= 0 && currentScrollTop > lastMainMenuClientRectTop) {
+        menuSticky.classList.add('under-main-menu');
+      }
+
+      lastMainMenuClientRectTop = currentScrollTop;
+    }, 30);
+
+    lastScroll = window.scrollY;
+  });
 };
 
 export default { pageMenu, stickyMenu };
