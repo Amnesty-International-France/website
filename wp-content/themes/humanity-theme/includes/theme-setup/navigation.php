@@ -193,6 +193,7 @@ if ( ! function_exists( 'amnesty_register_menu' ) ) {
 				/* translators: [admin] */
 				'footer-legal'      => __( 'Footer Legal', 'amnesty' ),
 				'my-space'     => __( 'Mon Espace', 'amnesty' ),
+				'my-account'     => __( 'Mon Compte', 'amnesty' ),
 			]
 		);
 	}

@@ -1,12 +1,10 @@
 <?php
-
 /**
  * Title: My Space Sidebar
  * Description: My Space Sidebar
  * Slug: amnesty/my-space-sidebar
  * Inserter: no
  */
-
 ?>
 
 <div class="aif-donor-space-sidebar">
@@ -21,7 +19,11 @@
         }
         ?>
     </ul>
-    <div class="aif-donor-space-sidebar-footer">
-        <h2 class="aif-donor-space-sidebar-account">Mon Compte</h2>
-    </div>
+    <ul class="aif-donor-space-sidebar-footer">
+    <?php
+        if ( function_exists( 'amnesty_nav' ) ) {
+            amnesty_nav( 'my-account' );
+        }
+        ?>
+    </ul>
 </div>
