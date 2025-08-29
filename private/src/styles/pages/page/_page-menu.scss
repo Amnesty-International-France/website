@@ -75,6 +75,10 @@
     z-index: 1000;
     right: 0;
     left: 0;
+
+    &.under-main-menu {
+      top: 108px;
+    }
   }
 
 }
