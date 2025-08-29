@@ -1,6 +1,8 @@
 .page-menu {
   padding: 14px 0;
   background-color: var(--wp--preset--color--grey-light);
+  position: relative;
+  transition: all 0.2s;
 
   ul {
     max-width: $container-hg;
@@ -64,6 +66,18 @@
           background-color: #007d79;
         }
       }
+    }
+  }
+
+  &.fixed {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    right: 0;
+    left: 0;
+
+    &.under-main-menu {
+      top: 108px;
     }
   }
 
