@@ -7,7 +7,7 @@
  * Inserter: yes
  */
 
-$footer_menu_items = amnesty_get_nav_menu_items('footer-navigation');
+$footer_menu_items   = amnesty_get_nav_menu_items('footer-navigation');
 $footer_policy_items = amnesty_get_nav_menu_items('footer-legal');
 
 $social_links = [
@@ -67,9 +67,11 @@ $action_links = [
 
 ]
 
-
 ?>
 
+<button class="back-to-top hidden">
+	<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-simple-arrow.svg'); ?>
+</button>
 
 <div class="over-footer">
 	<div class="over-footer-container">
@@ -83,9 +85,9 @@ $action_links = [
 			<div class="social-network">
 				<?php foreach ($social_links as $child) : ?>
 					<a href="<?php echo $child['url']; ?>"
-					   target="_blank"
-					   rel="noopener noreferrer"
-					   title="<?php esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
+						target="_blank"
+						rel="noopener noreferrer"
+						title="<?php esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
 						<?php echo file_get_contents(get_template_directory() . $child['svg']); ?>
 					</a>
 				<?php endforeach; ?>
@@ -109,9 +111,9 @@ $action_links = [
 		<?php foreach ($footer_menu_items['top_level'] as $_id => $item) : ?>
 			<div class="main-footer-item">
 				<h4 class="title"><?php echo esc_html($item->title); ?></h4>
-				<?php if (isset($footer_menu_items['children'][$item->title])) : ?>
+				<?php if (isset($footer_menu_items['children'][ $item->title ])) : ?>
 					<ul class="list-children">
-						<?php foreach ($footer_menu_items['children'][$item->title] as $child) : ?>
+						<?php foreach ($footer_menu_items['children'][ $item->title ] as $child) : ?>
 							<li class="child"><a
 									href="<?php echo esc_url($child->url ?: get_permalink($item->db_id)); ?>"
 									data-type="<?php echo esc_attr($child->type); ?>"
