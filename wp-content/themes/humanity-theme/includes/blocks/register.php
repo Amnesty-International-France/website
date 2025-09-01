@@ -74,6 +74,8 @@ require_once __DIR__ . '/iframe/render.php';
 require_once __DIR__ . '/image/register.php';
 require_once __DIR__ . '/image/render.php';
 require_once __DIR__ . '/key-figure/register.php';
+require_once __DIR__ . '/latest-chronicle-promo/register.php';
+require_once __DIR__ . '/latest-chronicle-promo/render.php';
 require_once __DIR__ . '/link-icon/register.php';
 require_once __DIR__ . '/link-group/register.php';
 require_once __DIR__ . '/link-group/render.php';
