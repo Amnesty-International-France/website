@@ -48,6 +48,7 @@ import mySpaceMobileMenu from './modules/my-space-mobile-menu';
 import { pageMenu, stickyMenu } from './modules/page-menu';
 import { UrgentRegister } from './modules/Form/urgent-register-form';
 import sliderBlock from './modules/slider';
+import BackToTop from './modules/back-to-top';
 
 const App = () => {
   browserDetector();
@@ -99,6 +100,7 @@ const App = () => {
   pageMenu();
   stickyMenu();
   sliderBlock();
+  BackToTop();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
