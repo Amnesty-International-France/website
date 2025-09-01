@@ -1,5 +1,12 @@
 .page-chronicle-promo {
   position: relative;
+  margin-bottom: 3.7rem;
+
+  @media (min-width: $container-md) {
+    .chapo .text {
+      width: 38%;;
+    }
+  }
 
   &__video-container {
     margin-top: 2.2rem;
@@ -22,6 +29,53 @@
 
     .page-container .custom-button-block {
       width: 31%;
+    }
+  }
+
+  .promo-open-magazine {
+    display: none;
+  }
+
+  .cover-image {
+    justify-self: center;
+  }
+
+  @media (min-width: $container-md) {
+    .promo-open-magazine {
+      display: block;
+      position: absolute;
+      top: 15rem;
+      right: 10%;
+      z-index: 5;
+      width: 27.8rem;
+    }
+  }
+
+  .related-posts-block {
+    margin-bottom: .6rem;
+    padding: 1rem 0 1rem 0;
+
+    @media (min-width: $container-lg) {
+      padding: 30px 0 56px 0;
+    }
+
+    .content {
+      .title {
+        padding: .5rem .7rem !important;
+        margin-bottom: 2rem !important;
+
+        @media (min-width: $container-lg) {
+          padding: 10px 12px 8px 10px !important;
+        }
+      }
+
+      .list .article-date {
+        align-self: center;
+
+        @media (min-width: $container-lg) {
+          align-self: self-start;
+        }
+      }
     }
   }
 }
