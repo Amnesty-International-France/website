@@ -771,6 +771,7 @@
 
           .email-input, .message-input {
             border: 1px solid var(--wp--preset--color--grey-light);
+            text-transform: none;
 
             &::placeholder {
               font-family: var(--wp--preset--font-family--primary);
@@ -780,10 +781,6 @@
               line-height: 28px;
               text-transform: capitalize;
             }
-          }
-
-          .message-input {
-            text-transform: none;
           }
         }
 
