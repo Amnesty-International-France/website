@@ -47,6 +47,7 @@ import initFoundationForm from './modules/Form/foundation-form';
 import edhFilters from './modules/search-filters-edh';
 import mySpaceMenu from './modules/my-space-menu';
 import mySpaceMobileMenu from './modules/my-space-mobile-menu';
+import BackToTop from './modules/back-to-top';
 
 const App = () => {
   browserDetector();
@@ -96,6 +97,7 @@ const App = () => {
   hoverDonationMenu();
   mySpaceMenu();
   mySpaceMobileMenu();
+  BackToTop();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
