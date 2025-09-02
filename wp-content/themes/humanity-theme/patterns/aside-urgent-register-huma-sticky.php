@@ -15,7 +15,8 @@ declare(strict_types=1);
 	<!-- wp:amnesty-core/urgent-register-form
 		{
 			"input": ["tel","email"],
-			"action_type": "militant"
+			"action_type": "militant",
+			"text_header": "Recevez 1 à 2 emails par mois pour agir en faveur d\'une personne dont les droits sont menacés ou violés."
 		}
 	/-->
 </aside>
