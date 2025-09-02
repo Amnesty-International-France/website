@@ -162,6 +162,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_image_block();
 		register_infogram_embed_block();
 		register_key_figure_block();
+		register_latest_chronicle_promo_block();
 		register_link_icon_block();
 		register_link_group_block();
 		register_links_with_icons_block();

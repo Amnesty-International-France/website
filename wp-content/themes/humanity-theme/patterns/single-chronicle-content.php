@@ -9,8 +9,9 @@ declare(strict_types=1);
  * Inserter: no
  */
 
-$cover_image = get_field( 'cover_image' );
+$is_promo_context = $args['is_promo_context'] ?? false;
 $open_cover_image = get_field( 'cover_image_with_magazine_open' );
+$cover_image = get_field( 'cover_image' );
 $month = get_field( 'publication_month' );
 if ($month) {
 	$date_objet = DateTime::createFromFormat('!m', $month);
@@ -23,11 +24,15 @@ $summary_content = get_field('summary_content');
 ?>
 
 <?php
-if ( $open_cover_image ) : ?>
-<figure class="promo-open-magazine">
-	<img src="<?php echo esc_url( $open_cover_image['sizes']['medium_large'] ); ?>" alt="<?php echo esc_attr( $open_cover_image['alt'] ); ?>">
-</figure>
-<?php endif; ?>
+if ( $is_promo_context ) {
+    $open_cover_image = get_field( 'cover_image_with_magazine_open' );
+    if ( $open_cover_image ) : ?>
+        <figure class="promo-open-magazine">
+			<img src="<?php echo esc_url( $open_cover_image['sizes']['medium_large'] ); ?>" alt="<?php echo esc_attr( $open_cover_image['alt'] ); ?>">
+        </figure>
+    <?php endif;
+}
+?>
 
 <!-- wp:group {"tagName":"section","className":"single-chronicle-content container has-gutter","layout":{"type":"constrained"}} -->
 <section class="wp-block-group single-chronicle__content container has-gutter">
