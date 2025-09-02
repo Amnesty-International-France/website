@@ -26,7 +26,9 @@ if ( ! function_exists( 'render_latest_chronicle_promo' ) ) {
 			while ( $latest_chronicle_query->have_posts() ) {
 				$latest_chronicle_query->the_post();
 
-				get_template_part( 'patterns/single-chronicle-content' );
+				get_template_part( 'patterns/single-chronicle-content', null, [
+					'is_promo_context' => true
+				]);
 			}
 		} else {
 			echo '<p>Aucun numéro de chronique à afficher.</p>';
