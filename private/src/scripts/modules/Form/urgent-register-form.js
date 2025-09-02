@@ -1,6 +1,6 @@
 /* global UrgentRegisterData */
 
-const notRequiredHiddenFields = (status) => {
+const notRequiredHiddenFields = (status = true) => {
   const additionFormHidden = document.querySelector('.additional-form');
 
   if (!additionFormHidden) return;
@@ -83,7 +83,7 @@ const showAdditionalForm = async (email) => {
   try {
     const emailExisting = await checkIfEmailExist(email);
     additionalForm.classList.toggle('hidden', !(emailExisting && emailExisting.exists === false));
-    notRequiredHiddenFields(!emailExisting);
+    notRequiredHiddenFields(emailExisting && emailExisting.exists === false);
   } catch (error) {
     console.error("Erreur lors de la vérification de l'email :", error);
     throwGlobalFormMessage('.form-mess', error.message);
@@ -96,7 +96,9 @@ const throwInputOnError = (input) => {
       ? document.querySelector('.input-error-civility')
       : input.nextElementSibling;
 
-  if (!input || !errorContainer) return;
+  const submitButton = document.querySelector('button[type="submit"]');
+
+  if (!input || !errorContainer || !submitButton) return;
 
   const showError = (message) => {
     errorContainer.textContent = message;
@@ -117,6 +119,7 @@ const throwInputOnError = (input) => {
 
     if (input.required && value === '') {
       showError('Ce champ est requis.');
+      submitButton.disabled = true;
       return false;
     }
 
@@ -143,15 +146,29 @@ const throwInputOnError = (input) => {
   input.addEventListener('input', validate);
 };
 
-const UrgentRegister = () => {
+const disabledSubmit = (form) => {
+  if (!form) return true;
+
+  return [...form.elements].some((field) => field.required && !field.value.trim());
+};
+
+export const UrgentRegister = () => {
   const form = document.querySelector(`#urgent-register`);
 
   if (!form || !form?.elements) return;
+
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  if (!submitButton) return;
 
   const formFields = [...form.elements];
 
   formFields.forEach((formElement) => {
     throwInputOnError(formElement);
+  });
+
+  form.addEventListener('input', () => {
+    submitButton.disabled = disabledSubmit(form);
   });
 
   form.addEventListener('submit', async (event) => {
@@ -167,6 +184,8 @@ const UrgentRegister = () => {
       return false;
     });
 
+    submitButton.disabled = disabledSubmit(form);
+
     try {
       const headers = {};
 
@@ -177,7 +196,6 @@ const UrgentRegister = () => {
           : { 'X-Amnesty-UA-Nonce': UrgentRegisterData.nonce },
       );
 
-      // eslint-disable-next-line no-undef
       const response = await fetch(UrgentRegisterData.url, {
         // UrgentRegisterData come from php function amnesty_ua_enqueue_scripts
         method: 'POST',
@@ -193,4 +211,6 @@ const UrgentRegister = () => {
   });
 };
 
-export default UrgentRegister;
+export default {
+  UrgentRegister,
+};
