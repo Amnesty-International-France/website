@@ -40,9 +40,11 @@
 
       figure {
         margin-bottom: 1.1rem;
+        width: 273px;
+        height: 369px;
 
         img {
-          max-width: initial;
+          max-width: 100%;
           box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.3);
         }
       }
