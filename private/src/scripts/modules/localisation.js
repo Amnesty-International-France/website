@@ -272,13 +272,17 @@ const createResultList = (cities) => {
   });
 };
 
-function redirectToEventsListWithParams(lon, lat) {
-  const query = new URLSearchParams({
-    lon,
-    lat,
+function redirectToCurrentPageWithParams(params) {
+  const url = new URL(window.location.href);
+
+  Object.keys(params).forEach((key) => {
+    url.searchParams.set(key, params[key]);
   });
 
-  window.location.href = `/evenements?${query}`;
+  url.searchParams.delete('paged');
+  url.searchParams.delete('page');
+
+  window.location.href = url.toString();
 }
 
 export const getUserLocationFromButton = () => {
@@ -292,7 +296,10 @@ export const getUserLocationFromButton = () => {
 
         const success = async (position) => {
           try {
-            redirectToEventsListWithParams(position.coords.longitude, position.coords.latitude);
+            redirectToCurrentPageWithParams({
+              lon: position.coords.longitude,
+              lat: position.coords.latitude,
+            });
           } catch (err) {
             alert(`error get position: ${err.code}: ${err.message}`);
           }
@@ -320,7 +327,6 @@ export const getUserLocationFromForm = () => {
 
     if (form) {
       const input = document.getElementById('input-localisation');
-
       const blockResult = document.getElementsByClassName('event-filters-results')[0];
 
       blockResult.style.width = `${input.clientWidth}px`;
@@ -341,14 +347,14 @@ export const getUserLocationFromForm = () => {
         buttonLocationForm.addEventListener('click', async (e) => {
           e.preventDefault();
 
-          if (input.value) {
-            redirectToEventsListWithParams(
-              form.elements.location.attributes['data-longitude'].value,
-              form.elements.location.attributes['data-latitude'].value,
-            );
+          if (input.value && input.dataset.longitude && input.dataset.latitude) {
+            redirectToCurrentPageWithParams({
+              lon: input.dataset.longitude,
+              lat: input.dataset.latitude,
+            });
+          } else {
+            input.focus();
           }
-
-          input.focus();
         });
       }
     }
@@ -356,5 +362,8 @@ export const getUserLocationFromForm = () => {
 };
 
 document.addEventListener('click', (e) => {
-  closeList(e.target);
+  const searchContainer = document.querySelector('.event-filters-search');
+  if (!searchContainer.contains(e.target)) {
+    closeList();
+  }
 });
