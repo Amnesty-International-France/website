@@ -19,7 +19,6 @@ import fluidIframe from './modules/fluid-iframe';
 import tweetAction from './modules/tweet-action';
 import categorySlider from './modules/category-slider';
 import copyShare from './modules/copy-share';
-import sliderBlock from './modules/slider-block';
 import counters from './modules/counter';
 import termList from './modules/term-list';
 import countdownTimer from './modules/countdownTimer';
@@ -48,6 +47,7 @@ import mySpaceMenu from './modules/my-space-menu';
 import mySpaceMobileMenu from './modules/my-space-mobile-menu';
 import { pageMenu, stickyMenu } from './modules/page-menu';
 import { UrgentRegister } from './modules/Form/urgent-register-form';
+import sliderBlock from './modules/slider';
 
 const App = () => {
   browserDetector();
@@ -66,7 +66,6 @@ const App = () => {
   fluidIframe();
   tweetAction();
   categorySlider();
-  sliderBlock();
   copyShare();
   counters();
   termList();
@@ -99,6 +98,7 @@ const App = () => {
   UrgentRegister();
   pageMenu();
   stickyMenu();
+  sliderBlock();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 

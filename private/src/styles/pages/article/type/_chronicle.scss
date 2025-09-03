@@ -48,13 +48,13 @@
     .image-block,
     .read-also-block,
     p:not(
-        .wp-block-amnesty-core-chapo p,
-        .wp-block-amnesty-core-section.small p,
-        .wp-block-amnesty-core-section.large p,
-        .download-go-further-block p,
-        .call-to-action-block p,
-        .wp-block-amnesty-core-card-image-text p
-      ),
+      .wp-block-amnesty-core-chapo p,
+      .wp-block-amnesty-core-section.small p,
+      .wp-block-amnesty-core-section.large p,
+      .download-go-further-block p,
+      .call-to-action-block p,
+      .wp-block-amnesty-core-card-image-text p
+    ),
     .wp-block-columns,
     .wp-block-details,
     .wp-block-group,
@@ -67,6 +67,7 @@
     .wp-block-amnesty-core-image,
     .wp-block-amnesty-core-section.small,
     .card-image-text-block,
+    .slider-block,
     .read-more-block {
       max-width: $container-sm;
       margin-left: auto;

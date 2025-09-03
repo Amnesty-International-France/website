@@ -1,20 +1,94 @@
-.slide {
-  .editor-url-input__button {
-    position: relative;
-    margin-left: 16px;
+.slider-block-editor-preview {
+  padding: 1rem;
+
+  .category-link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    width: 100%;
+    padding: 20px 0 12px 0;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: var(--wp--preset--font-family--secondary);
+    line-height: 19px;
+
+    .icon-container {
+      width: 20px;
+      height: 20px;
+
+      .icon {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .link {
+      cursor: pointer;
+      text-decoration: none;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 19px;
+
+      &:hover {
+        color: var(--wp--preset--color--black);
+        background-color: transparent;
+        text-decoration: underline;
+      }
+    }
   }
 
-  .editor-url-input__button-modal {
-    position: absolute;
-    left: 0;
-    width: 340px;
+  // Grille scrollable pour les cartes
+  .editor-preview-grid {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+    margin: -0.5rem; // Pour compenser le padding et aligner visuellement
   }
-}
 
-.slide-callToAction  .block-editor-url-input__button .components-toolbar__control {
-  background-color: var(--wp--preset--color--grey-base);
-}
+  // Style de chaque carte de prévisualisation
+  .editor-preview-card {
+    flex-shrink: 0; // Empêche les cartes de se compresser
+    width: 200px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    overflow: hidden;
 
-.slide-callToAction .btn span {
-  color: var(--wp--preset--color--black);
+    img {
+      display: block;
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+    }
+
+    &-title {
+      font-size: 14px;
+      line-height: 1.4;
+      padding: 0.75rem;
+      margin: 0;
+      min-height: 60px;
+    }
+
+    &-placeholder {
+      width: 100%;
+      height: 110px;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+    }
+  }
+
+  .editor-preview-placeholder {
+    padding: 2rem;
+    text-align: center;
+    background-color: #f5f5f5;
+    color: #555;
+    border-radius: 4px;
+  }
 }
