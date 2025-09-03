@@ -7,13 +7,12 @@
  */
 
 $featured_image_url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
-
 $page_title = get_the_title();
-
+$hero_extra_class = ! has_post_thumbnail() ? 'no-featured-image' : '';
 ?>
 
 <?php if ( ! is_front_page() ) : ?>
-    <section class="page-hero-block">
+    <section class="page-hero-block <?php echo esc_attr( $hero_extra_class ); ?>">
         <!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
         <div class="yoast-breadcrumb-wrapper">
             <?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>

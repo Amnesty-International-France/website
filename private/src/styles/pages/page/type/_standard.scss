@@ -1,20 +1,50 @@
 .page-standard {
+  .page-hero-block.no-featured-image {
+    min-height: 250px;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
+
+    .yoast-breadcrumb-wrapper {
+      .yoast-breadcrumb {
+        span > span:not(.breadcrumb_last)::after {
+          background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23575756'/%3E%3C/svg%3E")
+            no-repeat center;
+        }
+
+        a {
+          color: var(--wp--preset--color--black);
+        }
+
+        & .breadcrumb_last {
+          color: var(--wp--preset--color--black);
+        }
+      }
+    }
+  }
+
   .page-content {
+    padding-top: 0;
+
+    &.no-featured-image.no-chapo {
+      .wp-block-heading {
+        margin-top: 20px;
+      }
+    }
+
     .download-go-further-block,
     .get-informed-block,
     .image-block,
     .read-also-block,
     p:not(
-        .wp-block-amnesty-core-chapo p,
-        .wp-block-amnesty-core-section.small p,
-        .wp-block-amnesty-core-section.large p,
-        .download-go-further-block p,
-        .call-to-action-block p,
-        .wp-block-amnesty-core-section-home p,
-        .wp-block-jetpack-contact-form-container p,
-        .interactive-map p,
-        .wp-block-amnesty-core-card-image-text p
-      ),
+      .wp-block-amnesty-core-chapo p,
+      .wp-block-amnesty-core-section.small p,
+      .wp-block-amnesty-core-section.large p,
+      .download-go-further-block p,
+      .call-to-action-block p,
+      .wp-block-amnesty-core-section-home p,
+      .wp-block-jetpack-contact-form-container p,
+      .interactive-map p,
+      .wp-block-amnesty-core-card-image-text p
+    ),
     .wp-block-columns,
     .wp-block-details,
     .wp-block-heading,
