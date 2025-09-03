@@ -1,25 +1,22 @@
-import DisplayComponent from './DisplayComponent.jsx';
-import deprecated from './deprecated.jsx';
-import attributes from './attributes';
+import EditComponent from './EditComponent.jsx';
 
 const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
 
-registerBlockType('amnesty-core/block-slider', {
-  // translators: [admin]
+registerBlockType('amnesty-core/slider', {
   title: __('Slider', 'amnesty'),
-  icon: 'welcome-widgets-menus',
+  description: __("Affiche un sliderd'articles ou d'un autre type de contenu.", 'amnesty'),
   category: 'amnesty-core',
-  keywords: [
-    // translators: [admin]
-    __('Slider', 'amnesty'),
-    // translators: [admin]
-    __('Carousel', 'amnesty'),
-    // translators: [admin]
-    __('Scroller', 'amnesty'),
-  ],
-  attributes,
-  deprecated,
-  edit: DisplayComponent,
+  attributes: {
+    postType: {
+      type: 'string',
+      default: '',
+    },
+    selectedPosts: {
+      type: 'array',
+      default: [],
+    },
+  },
+  edit: EditComponent,
   save: () => null,
 });

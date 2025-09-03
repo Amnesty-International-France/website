@@ -1,9 +1,12 @@
 .aif-donor-space-content {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
   padding: 16px 24px 48px 24px;
   flex: 1;
 
   @media (min-width: $container-md) {
-    padding: 16px 24px 48px 0;
+    padding: 16px 24px 48px 60px;
   }
 
   .aif-donor-space-content-header {
@@ -81,5 +84,9 @@
         text-transform: uppercase;
       }
     }
+  }
+
+  & > .slider-block {
+    margin: 0 !important;
   }
 }

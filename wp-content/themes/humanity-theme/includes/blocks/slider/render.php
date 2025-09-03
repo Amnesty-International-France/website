@@ -1,219 +1,131 @@
 <?php
+declare(strict_types=1);
 
-declare( strict_types = 1 );
+if (!function_exists('render_slider_block')) {
+    /**
+     * Render the Slider block
+     *
+     * @param array<string, mixed> $attributes Block attributes.
+     * @return string HTML output.
+     */
+    function render_slider_block(array $attributes): string
+    {
+        $post_type = $attributes['postType'] ?? '';
+        $selected_posts = $attributes['selectedPosts'] ?? [];
+    
+        if (empty($post_type) || empty($selected_posts) || count($selected_posts) < 4) {
+            return '';
+        }
 
-if ( ! function_exists( 'amnesty_render_slider_buttons' ) ) {
-	/**
-	 * Render buttons for a slider block
-	 *
-	 * @package Amnesty\Blocks
-	 *
-	 * @return void
-	 */
-	function amnesty_render_slider_buttons() {
-		?>
-		<button class="slides-arrow slides-arrow--next" aria-hidden="true"><?php /* translators: [front] ARIA https://wordpresstheme.amnesty.org/blocks/b006-timeline-slider/ */ esc_html_e( 'Next', 'amnesty' ); ?></button>
-		<button class="slides-arrow slides-arrow--previous" aria-hidden="true"><?php /* translators: [front] ARIA https://wordpresstheme.amnesty.org/blocks/b006-timeline-slider/ */ esc_html_e( 'Previous', 'amnesty' ); ?></button>
-		<?php
-	}
-}
+        if (!function_exists('get_dynamic_category_or_post_type_link')) {
+            function get_dynamic_category_or_post_type_link(string $slug): string {
+                if ($slug === 'landmark') {
+                    return esc_url(get_post_type_archive_link('landmark') ?: home_url('/reperes'));
+                } elseif ($slug === 'training') {
+                    return esc_url(get_post_type_archive_link('training') ?: home_url('/formations')); 
+                } elseif ($slug === 'edh') {
+                    return esc_url(get_post_type_archive_link('edh') ?: home_url('/edh'));
+                } elseif ($slug === 'petition') {
+                    return esc_url(get_post_type_archive_link('petition') ?: home_url('/petitions'));          
+                } else {
+                    $category = get_category_by_slug($slug);
+                    if ($category) {
+                        return esc_url(get_category_link($category->term_id));
+                    }
+                    return esc_url(home_url("/{$slug}"));
+                }
+            }
+        }
 
-if ( ! function_exists( 'amnesty_render_slider_tabs' ) ) {
-	/**
-	 * Render navigation tabs for a slider block
-	 *
-	 * @package Amnesty\Blocks
-	 *
-	 * @param array $slides the list of slides in the slider
-	 *
-	 * @return void
-	 */
-	function amnesty_render_slider_tabs( array $slides ) {
-		print '<div class="slider-navContainer" aria-hidden="true"><nav class="slider-nav">';
+        if (!function_exists('see_all_label')) {
+            function see_all_label(string $slug): string {
+                switch ($slug) {
+                    case 'actualites': return 'Voir toutes les actualités';
+                    case 'campagnes': return 'Voir toutes les campagnes';
+                    case 'chroniques': return 'Voir tous les articles la chronique';
+                    case 'dossiers': return 'Voir tous les dossiers';
+                    case 'landmark': return 'Voir tous les repères';
+                    case 'training': return 'Voir toutes les formations';
+                    case 'edh': return 'Voir toutes les ressources pédagogiques';
+                    case 'petition': return 'Voir toutes les pétitions';
+                    case 'document': return 'Voir touts les documents';
+                    default: return 'Voir tous les articles';
+                }
+            }
+        }
 
-		// if no topic then grab one
-		if ( empty( $slides[0]['topics'][0]->name ) && get_the_ID() ) {
-			$fallback_topic = amnesty_get_prominent_term( get_the_ID() );
-		}
+        $post_ids = wp_list_pluck($selected_posts, 'id');
+        $query_args = [
+            'post_type'      => 'any',
+            'post__in'       => $post_ids,
+            'posts_per_page' => count($post_ids),
+            'orderby'        => 'post__in',
+        ];
+        $slider_query = new WP_Query($query_args);
 
-		foreach ( $slides as $index => $slide ) {
-			if ( ! empty( $slide['topics'][0]->name ) ) {
-				printf( '<button class="slider-navButton" key="%1$s" data-slide-index="%2$s">%1$s</button>', esc_html( $slide['topics'][0]->name ), esc_html( $index ) );
-			} elseif ( ! empty( $slide['title'] ) && empty( $slide['topics'][0]->name ) ) {
-				printf( '<button class="slider-navButton" key="%1$s" data-slide-index="%2$s">%1$s</button>', esc_html( $slide['title'] ), esc_html( $index ) );
-			} elseif ( ! empty( $fallback_topic->name ) ) {
-				printf( '<button class="slider-navButton" key="%1$s" data-slide-index="%2$s">%1$s</button>', esc_html( $fallback_topic->name ), esc_html( $index ) );
-			}
-		}
-
-		print '</nav></div>';
-	}
-}
-
-if ( ! function_exists( 'amnesty_render_slider_item' ) ) {
-	/**
-	 * Render the current slider item.
-	 *
-	 * @package Amnesty\Blocks
-	 *
-	 * @param array   $data - slide data.
-	 * @param string  $slider_id - slide id.
-	 * @param boolean $has_content - if content is available.
-	 *
-	 * @return void
-	 *
-	 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
-	 */
-	function amnesty_render_slider_item( $data, $slider_id, $has_content ) {
-		// phpcs:enable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
-		$data = wp_parse_args(
-			$data,
-			[
-				'alignment'        => '',
-				'background'       => '',
-				'callToActionLink' => '',
-				'callToActionText' => '',
-				'content'          => '',
-				'heading'          => '',
-				'hideContent'      => '',
-				'id'               => '',
-				'imageId'          => 0,
-				'subheading'       => '',
-				'timelineContent'  => '',
-			] 
-		);
-
-		$id               = $data['id'];
-		$alignment        = $data['alignment'];
-		$background       = $data['background'];
-		$timeline_content = $data['timelineContent'];
-		$hide_content     = $data['hideContent'];
-		$title            = $data['heading'];
-		$subtitle         = $data['subheading'];
-		$cta_text         = $data['callToActionText'];
-		$cta_link         = $data['callToActionLink'];
-		$content          = $data['content'];
-		$show_cta_btn     = false;
-		$show_toggle      = false;
-		$has_inner        = false;
-		$image_id         = absint( $data['imageId'] );
-
-		if ( '' !== $cta_text && '' !== $cta_link ) {
-			$show_cta_btn = true;
-		}
-
-		if ( $show_cta_btn || '' !== $content ) {
-			$show_toggle = true;
-		}
-
-		if ( $show_cta_btn || $show_toggle ) {
-			$has_inner = true;
-		}
-
-		require realpath( __DIR__ . '/views/slide.php' );
-	}
-}
-
-if ( ! function_exists( 'amnesty_render_slider_styles' ) ) {
-	/**
-	 * Render the <style> tag for the slider
-	 *
-	 * @package Amnesty\Blocks
-	 *
-	 * @param array  $attributes the block attributes
-	 * @param string $slider_id  the block identifier
-	 *
-	 * @return void
-	 */
-	function amnesty_render_slider_styles( array $attributes, string $slider_id ): void {
-		$slides = $attributes['slides'] ?? [];
-
-		if ( 0 === count( $slides ) ) {
-			return;
-		}
-
-		echo '<style class="aiic-ignore">';
-
-		foreach ( $slides as $slide ) {
-			if ( ! isset( $slide['id'] ) ) {
-				continue;
-			}
-
-			$image_id    = $slide['imageId'] ?? '';
-			$small_image = wp_get_attachment_image_url( $image_id, 'hero-sm' );
-			$large_image = wp_get_attachment_image_url( $image_id, 'hero-lg' );
-
-			printf(
-				'#slider-%1$s #slide-%2$s{background-image:url("%3$s")}@media screen and (min-width:1444px){#slider-%1$s #slide-%2$s{background-image:url("%4$s")}}',
-				esc_attr( $slider_id ),
-				esc_attr( $slide['id'] ),
-				esc_url( $small_image ),
-				esc_url( $large_image )
-			);
-		}
-
-		echo '</style>';
-	}
-}
-
-if ( ! function_exists( 'amnesty_render_block_slider' ) ) {
-	/**
-	 * Render a slider block
-	 *
-	 * @package Amnesty\Blocks
-	 *
-	 * @param array $attributes the block attributes
-	 *
-	 * @return string
-	 */
-	function amnesty_render_block_slider( array $attributes = [] ) {
-		$attributes = wp_parse_args(
-			$attributes,
-			[
-				'hasArrows'            => true,
-				'hasContent'           => false,
-				'showTabs'             => true,
-				'sliderId'             => '',
-				'sliderTitle'          => '',
-				'slides'               => [],
-				'timelineCaptionStyle' => '',
-			] 
-		);
-
-		$slider_id     = $attributes['sliderId'];
-		$caption_style = $attributes['timelineCaptionStyle'];
-		$slider_title  = $attributes['sliderTitle'];
-		$slides        = $attributes['slides'];
-		$has_content   = $attributes['hasContent'];
-		$has_arrows    = $attributes['hasArrows'];
-		$show_tabs     = $attributes['showTabs'];
-
-		ob_start();
-		printf( '<div id="slider-%1$s" class="slider timeline-%2$s">', esc_html( $slider_id ), esc_html( $caption_style ) );
-
-		if ( $slider_title ) {
-			printf( '<div class="slider-title">%1$s</div>', esc_html( $slider_title ) );
-		}
-
-		print '<div class="slides-container">';
-		amnesty_render_slider_styles( $attributes, $slider_id );
-		print '<div class="slides">';
-		foreach ( $slides as $slide ) {
-			amnesty_render_slider_item( $slide, $slider_id, $has_content );
-		}
-		print '</div>';
-
-		if ( $has_arrows ) {
-			amnesty_render_slider_buttons();
-		}
-
-		if ( $show_tabs ) {
-			amnesty_render_slider_tabs( $slides );
-		}
-
-		print '</div>'; // /.slides-container
-		print '</div>';// /.slider
-
-		return ob_get_clean();
-	}
+        if (!$slider_query->have_posts()) {
+            return '';
+        }
+    
+        ob_start();
+        ?>
+        <div class="slider-block">
+            <?php if ($post_type !== 'document') : ?>
+                <div class="category-link">
+                    <div class="icon-container">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+                        </svg>
+                    </div>
+                    <a class="cat-link" href="<?= get_dynamic_category_or_post_type_link($post_type) ?>">
+                        <?= esc_html(see_all_label($post_type)) ?>
+                    </a>
+                </div>
+            <?php endif; ?>
+            <div class="slider-block-wrapper">
+                <div class="slider-container">
+                    <div class="slider-nav prev">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M11 6L21 16L11 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <?php while ($slider_query->have_posts()): $slider_query->the_post(); ?>
+                                <div class="swiper-slide">
+                                    <?php
+                                    $args = [
+                                        'direction'     => 'portrait',
+                                        'post_id'       => get_the_ID(),
+                                        'title'         => get_the_title(),
+                                        'permalink'     => get_permalink(),
+                                        'date'          => get_the_date(),
+                                        'thumbnail'     => get_the_post_thumbnail(get_the_ID(), 'medium', ['class' => 'article-image']),
+                                        'main_category' => amnesty_get_a_post_term(get_the_ID()),
+                                        'terms'         => wp_get_object_terms(get_the_ID(), get_object_taxonomies(get_post_type())),
+                                    ];
+        
+                                    $template_path = locate_template('partials/article-card.php');
+                                    if ($template_path) {
+                                        extract($args);
+                                        include $template_path;
+                                    }
+                                    ?>
+                                </div>
+                            <?php endwhile; ?>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                    <div class="slider-nav next">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M11 6L21 16L11 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+        wp_reset_postdata();
+        return ob_get_clean();
+    }
 }
