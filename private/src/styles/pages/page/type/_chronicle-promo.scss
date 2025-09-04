@@ -2,6 +2,10 @@
   position: relative;
   margin-bottom: 3.7rem;
 
+  .page-hero-block--large figcaption {
+    display: none;
+  }
+
   @media (min-width: $container-md) {
     .chapo .text {
       width: 38%;;
@@ -48,6 +52,16 @@
       right: 10%;
       z-index: 5;
       width: 27.8rem;
+      height: 20.9rem;
+
+      img {
+        max-width: 100%;
+        width: 100%;
+        height: 100%;
+        font-style: oblique;
+        vertical-align: middle;
+        object-fit: cover;
+      }
     }
   }
 
