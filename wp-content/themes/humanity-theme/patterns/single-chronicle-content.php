@@ -34,39 +34,33 @@ if ( $is_promo_context ) {
 }
 ?>
 
-<!-- wp:group {"tagName":"section","className":"single-chronicle-content container has-gutter","layout":{"type":"constrained"}} -->
+<!-- wp:group {"tagName":"section","className":"single-chronicle-content container has-gutter"} -->
 <section class="wp-block-group single-chronicle__content container has-gutter">
-	<!-- wp:columns {"className":"columns"} -->
-		<!-- wp:column {"width":"33.33%"} -->
-		<aside class="single-chronicle__content__aside u-sticky">
-			<?php if ( $cover_image ) : ?>
-			<figure class="cover-image">
-				<img src="<?php echo esc_url( $cover_image['sizes']['medium_large'] ); ?>"
-					 alt="<?php echo esc_attr( $cover_image['alt'] ); ?>"
-				/>
-			</figure>
-			<?php endif; ?>
-			<?php
-			echo do_blocks('
-			<!-- wp:amnesty-core/button {"label":"Abonnez-vous pour 3€/mois","size":"medium","icon":"arrow-right","linkType":"external","externalUrl":"https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=null","alignment":"center"} /-->
-			<!-- wp:amnesty-core/button {"label":"Voir les anciens numéros","size":"small","icon":"arrow-right","style":"bg-white outline-black","linkType":"internal","alignment":"center"} /-->
-			');
-			?>
-		</aside>
-		<!-- /wp:column -->
+	<aside class="single-chronicle__content__aside u-sticky">
+		<?php if ( $cover_image ) : ?>
+		<figure class="cover-image">
+			<img src="<?php echo esc_url( $cover_image['sizes']['medium_large'] ); ?>"
+				 alt="<?php echo esc_attr( $cover_image['alt'] ); ?>"
+			/>
+		</figure>
+		<?php endif; ?>
+		<?php
+		echo do_blocks('
+		<!-- wp:amnesty-core/button {"label":"Abonnez-vous pour 3€/mois","size":"medium","icon":"arrow-right","linkType":"external","externalUrl":"https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=null","alignment":"center"} /-->
+		<!-- wp:amnesty-core/button {"label":"Voir les anciens numéros","size":"small","icon":"arrow-right","style":"bg-white outline-black","linkType":"internal","alignment":"center"} /-->
+		');
+		?>
+	</aside>
 
-		<!-- wp:column {"width":"66.66%"} -->
-		<article class="single-chronicle__content__summary">
-			<span class="chip chip--bg-black"><?= $month ?? '' ?>&nbsp;<?= $year ?? '' ?></span>
-			<h2><?= $summary_title ?? '' ?></h2>
-			<div><?= $summary_content ?? '' ?></div>
-		</article>
-		<!-- /wp:column -->
-	<!-- /wp:columns -->
+	<article class="single-chronicle__content__summary">
+		<span class="chip chip--bg-black"><?= $month ?? '' ?>&nbsp;<?= $year ?? '' ?></span>
+		<h2><?= $summary_title ?? '' ?></h2>
+		<div><?= $summary_content ?? '' ?></div>
+	</article>
 </section>
 <!-- /wp:group -->
 
-<!-- wp:group {"tagName":"section","className":"container has-gutter","layout":{"type":"constrained"}} -->
+<!-- wp:group {"tagName":"section","className":"container has-gutter"} -->
 <section class="wp-block-group container has-gutter related-posts">
 	<?php
 	echo do_blocks('
@@ -76,7 +70,7 @@ if ( $is_promo_context ) {
 </section>
 <!-- /wp:group -->
 
-<!-- wp:group {"tagName":"section","className":"container has-gutter","layout":{"type":"constrained"}} -->
+<!-- wp:group {"tagName":"section","className":"container has-gutter"} -->
 <section class="wp-block-group container has-gutter">
 	<?php
 	echo do_blocks('
