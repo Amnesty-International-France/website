@@ -120,12 +120,26 @@ if (!$post_object instanceof WP_Post) {
 		</div>
 		<div class="article-terms <?php if (empty($post_terms)) echo 'is-empty'; ?>">
 			<?php foreach ($post_terms as $term): ?>
-					<?= render_chip_category_block([
-						'label' => esc_html($term->name),
-						'size' => 'small',
-						'style' => 'bg-gray',
-						'link' => '',
-					]) ?>
+				<?php
+				$term_link = get_term_link($term);
+
+				if (!is_wp_error($term_link)) {
+					$custom_routes = [
+						'combat'   => '/combats/',
+						'location' => '/pays/',
+					];
+
+					if (array_key_exists($term->taxonomy, $custom_routes)) {
+						$term_link = $custom_routes[$term->taxonomy] . $term->slug;
+					}
+				}
+				?>
+				<?= render_chip_category_block([
+					'label' => esc_html($term->name),
+					'size'  => 'small',
+					'style' => 'bg-gray',
+					'link'  => esc_url($term_link),
+				]) ?>
 			<?php endforeach; ?>
 		</div>
 	</div>
