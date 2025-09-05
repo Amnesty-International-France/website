@@ -1,0 +1,104 @@
+<?php
+$direction = $args['direction'] ?? 'portrait';
+
+$post_id = $args['post_id'] ?? ($args['post']->ID ?? null);
+$post_object = get_post($post_id);
+
+if (!$post_object instanceof WP_Post) {
+    $title       = $args['title'] ?? 'Titre par défaut';
+    $permalink   = $args['permalink'] ?? '#';
+    $date        = $args['date'] ?? date('Y-m-d');
+    $thumbnail   = $args['thumbnail'] ?? null;
+    $label       = $args['label'] ?? 'Pétition';
+    $chip_style  = 'bg-yellow';
+    $post_terms  = $args['terms'] ?? [];
+
+    $goal = $args['goal'] ?? 200000;
+    $current = $args['current'] ?? 0;
+    $end_date = $args['end_date'] ?? '30.06.2025';
+    $percentage = ($goal > 0) ? min(($current / $goal) * 100, 100) : 0;
+} else {
+    $permalink   = get_permalink($post_object);
+    $title       = get_the_title($post_object);
+    $date        = get_the_date('', $post_object);
+    $thumbnail   = get_the_post_thumbnail($post_id, 'medium', ['class' => 'petition-image']);
+
+    $label       = 'Pétition';
+    $chip_style  = 'bg-yellow';
+
+    $post_terms  = wp_get_post_terms($post_id, ['category', 'post_tag']);
+
+    $goal = get_field('objectif_signatures', $post_id) ?: 200000;
+    $current = amnesty_get_petition_signature_count($post_id) ?: 0;
+    $end_date_raw = get_field('date_de_fin', $post_id);
+    $end_date = !empty($end_date_raw) ? format_date_php($end_date_raw) : '30.06.2025';
+    $percentage = ($goal > 0) ? min(($current / $goal) * 100, 100) : 0;
+}
+?>
+
+<article class="petition-card card-<?php echo esc_attr($direction); ?>">
+    <?php if ($thumbnail): ?>
+        <a href="<?= esc_url($permalink); ?>" class="petition-thumbnail">
+            <?= $thumbnail; ?>
+        </a>
+    <?php else: ?>
+        <div class="petition-thumbnail"></div>
+    <?php endif; ?>
+
+    <?php if (!empty($label)): ?>
+        <?= render_chip_category_block([
+            'label' => esc_html($label),
+            'link' => '',
+            'size' => 'large',
+            'style' => esc_attr($chip_style),
+            'icon' => '',
+        ]); ?>
+    <?php endif; ?>
+
+    <div class="petition-content">
+        <div class="petition-title">
+            <a class="as-h5" href="<?= esc_url($permalink); ?>">
+                <?= esc_html($title); ?>
+            </a>
+        </div>
+
+        <div class="petition-infos">
+            <p class="end-date">
+                <?php echo esc_html(__("Jusqu'au", 'amnesty')); ?> <?php echo esc_html($end_date); ?>
+            </p>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: <?php echo esc_attr($percentage); ?>%;"></div>
+            </div>
+            <p class="supports">
+                <?php
+                    $soutien_mot = ($current > 1) ? 'soutiens.' : 'soutien.';
+echo esc_html(number_format_i18n($current) . ' ' . $soutien_mot);
+?>
+                <span class="help-us">
+                    <?php echo esc_html(__('Aidez-nous à atteindre', 'amnesty')); ?> <?php echo esc_html(number_format_i18n($goal)); ?>
+                </span>
+            </p>
+        </div>
+
+        <div class="petition-sign-button">
+            <div class='custom-button-block center'>
+                <a href="<?= esc_url($permalink); ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
+                    <div class='content bg-yellow small'>
+                        <div class="icon-container">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                        </div>
+                        <div class="button-label">Signer la pétition</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</article>
