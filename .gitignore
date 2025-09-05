@@ -60,6 +60,7 @@ license.txt
 /wp-content/jetpack-waf/
 
 .env
+.env.local
 .castor.stub.php
 .ddev
 clever.json

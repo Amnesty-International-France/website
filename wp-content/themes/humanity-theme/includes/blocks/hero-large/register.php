@@ -12,7 +12,11 @@ if ( ! function_exists( 'register_hero_large_block' ) ) {
 		register_block_type( 'amnesty-core/hero-large', [
 			'render_callback' => 'render_hero_large_block',
 			'attributes'      => [
-				'titlePrefix' => [
+				'titleFirstPart' => [
+					'type'    => 'string',
+					'default' => '',
+				],
+				'titleLastPart' => [
 					'type'    => 'string',
 					'default' => '',
 				],

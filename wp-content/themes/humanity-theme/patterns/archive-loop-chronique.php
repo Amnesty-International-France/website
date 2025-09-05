@@ -6,7 +6,6 @@
  * Inserter: yes
  */
 
-add_filter('get_the_terms', 'amnesty_limit_post_terms_results_for_archive');
 ?>
 
 <!-- wp:query {"query":{"postType":"chronique","perPage":24,"offset":0}} -->

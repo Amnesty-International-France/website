@@ -107,6 +107,7 @@
   }
 
   .wp-block-query-pagination {
+    margin-bottom: 5.8rem;
     border-top: none;
 
     .page-numbers {
@@ -134,5 +135,10 @@
         background-color: var(--wp--preset--color--primary);
       }
     }
+  }
+
+  &__subscribe {
+    padding: 6.7rem 0;
+    background-color: var(--wp--preset--color--white);
   }
 }
