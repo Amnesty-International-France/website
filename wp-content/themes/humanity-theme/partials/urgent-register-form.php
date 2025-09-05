@@ -2,13 +2,6 @@
 
 declare(strict_types=1);
 
-$form_with_phone_number = \in_array( 'phone', $input, true );
-
-$text_header = \sprintf(
-	'Recevez 1 à 2 %s par mois pour agir en faveur d\'une personne dont les droits sont menacés ou violés.',
-	$form_with_phone_number ? 'sms' : 'emails'
-);
-
 $countries = get_posts(
 	[
 		'post_type'      => 'fiche_pays',
@@ -26,7 +19,7 @@ $countries = get_posts(
 			<?php echo esc_attr( $text_header ); ?>
 		</p>
 	</div>
-	<div class="urgent-register-form" data-urgent-action-type="<?php echo $action_type; ?>">
+	<div class="urgent-register-form">
 		<form id="urgent-register" method="post" action="">
 			<div class="form-mess hidden"></div>
 			<div class="urgent-register-form-input">

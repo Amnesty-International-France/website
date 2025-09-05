@@ -1,4 +1,6 @@
-.page-urgent-register {
+.page-urgent-register,
+.page-register-activist
+{
   .page-hero-block {
     .page-hero-title-wrapper {
       .container-main {
@@ -18,7 +20,9 @@
     }
   }
 
-  .page-urgent-register-layout {
+  .page-urgent-register-layout,
+  .page-register-activist-layout
+  {
     display: flex;
     gap: 24px;
     max-width: $container-hg;
@@ -33,7 +37,9 @@
     }
   }
 
-  .page-urgent-register-main {
+  .page-urgent-register-main,
+  .page-register-activist-main
+  {
     padding: 0 24px;
 
     .page-content {
@@ -65,7 +71,9 @@
     }
   }
 
-  .page-urgent-register-aside {
+  .page-urgent-register-aside,
+  .page-register-activist-aside
+  {
     padding: 60px 24px;
 
     > .urgent-register {
@@ -73,6 +81,12 @@
       top: 150px;
       z-index: 10;
       background-color: var(--wp--preset--color--white);
+    }
+  }
+
+  .page-register-activist-aside {
+    > .urgent-register::after {
+      content: "Envie d'agire ?";
     }
   }
 }

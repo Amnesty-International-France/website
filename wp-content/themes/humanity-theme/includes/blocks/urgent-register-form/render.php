@@ -9,16 +9,18 @@ if ( ! function_exists( 'render_urgent_register_form_block' ) ) {
 	 *
 	 * @param array<string,mixed> $attributes the block attributes
 	 *
-	 * @return string
-	 * @package Amnesty\Blocks
-	 */
+	* @return string
+		* @package Amnesty\Blocks
+	*/
 	function render_urgent_register_form_block( $attributes, $content, $block ): string {
-		$input = $attributes['input'] ?? [];
+		$input       = $attributes['input'] ?? [];
 		$action_type = $attributes['action_type'] ?? '';
+		$text_header = $attributes['text_header'] ?? '';
 
 		$args = [
-			'input' => $input,
+			'input'       => $input,
 			'action_type' => $action_type,
+			'text_header' => $text_header
 		];
 
 		ob_start();

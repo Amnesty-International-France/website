@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Title: Page Hero Foundation
  * Description: Outputs the page's foundation hero, if any
@@ -9,10 +7,11 @@ declare(strict_types=1);
  * Inserter: no
  */
 
-$featured_image_url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+declare(strict_types=1);
 
-$page_title = get_the_title();
-$over_title = get_field( 'sur-titre', $post->ID ) ?? '';
+$featured_image_url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+$page_title         = get_the_title();
+$over_title         = get_field( 'sur-titre', $post->ID ) ?? '';
 
 ?>
 
@@ -20,7 +19,11 @@ $over_title = get_field( 'sur-titre', $post->ID ) ?? '';
 	<section class="page-hero-block">
 		<!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
 		<div class="yoast-breadcrumb-wrapper">
-			<?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>
+			<?php
+			if ( function_exists( 'yoast_breadcrumb' ) ) {
+				yoast_breadcrumb( '<nav class="yoast-breadcrumb">', '</nav>' );
+			}
+			?>
 		</div>
 		<div class="page-hero-title-wrapper">
 			<div class="container">

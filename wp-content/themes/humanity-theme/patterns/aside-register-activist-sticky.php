@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Title: Aside Urgent Register Sticky Pattern
+ * Title: Aside Register Activist Sticky Pattern
  * Description: Sticky aside block with form
- * Slug: amnesty/aside-urgent-register-sticky
+ * Slug: amnesty/aside-register-activist-sticky
  * Inserter: no
  */
 
@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 ?>
 
-<aside class="page-urgent-register-aside">
+<aside class="page-register-activist-aside">
 	<!-- wp:amnesty-core/urgent-register-form
 		{
 			"input": ["email"],
-			"action_type": "email",
+			"action_type": "militant",
 			"text_header": "Vous souhaitez être contacté pour participer à une action ou pour un événement organisé par Amnesty International ?"
 		}
 	/-->
