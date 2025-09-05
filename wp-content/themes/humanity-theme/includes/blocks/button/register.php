@@ -46,6 +46,10 @@ if (!function_exists('register_button_block')) {
 					'type' => 'string',
 					'default' => '',
 				],
+				'targetBlank' => [
+					'type' => 'boolean',
+					'default' => true,
+				],
 				'alignment' => [
 					'type' => 'string',
 					'default' => 'left',

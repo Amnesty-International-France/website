@@ -1,0 +1,138 @@
+.archive-chronicle {
+  background-color: var(--wp--preset--color--grey-black);
+
+  .page-hero-block.page-hero-block--large .page-figure {
+    min-height: 19rem;
+
+    @media (min-width: $container-lg) {
+      min-height: 21.6rem;
+    }
+
+    &::before {
+      display: none;
+    }
+
+    figcaption {
+      display: none;
+    }
+  }
+
+  @media (max-width: $container-md) {
+    .wp-block-post-template-is-layout-grid.wp-block-post-template-is-layout-grid.wp-block-post-template-is-layout-grid.wp-block-post-template-is-layout-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: $container-sm) {
+    .wp-block-post-template-is-layout-grid.wp-block-post-template-is-layout-grid.wp-block-post-template-is-layout-grid.wp-block-post-template-is-layout-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: $container-md) {
+    .wp-block-post-template-is-layout-grid.wp-block-post-template-is-layout-grid.wp-block-post-template-is-layout-grid.wp-block-post-template-is-layout-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .postlist {
+    margin-top: 1rem;
+    padding-bottom: 7rem;
+    color: var(--wp--preset--color--white);
+
+    @media (min-width: $container-hg) {
+      min-width: max-content;
+    }
+
+    ul {
+      gap: 22px;
+
+      @media (min-width: $container-hg) {
+        gap: 32px;
+      }
+    }
+
+    .chronique {
+      position: relative;
+      width: 250px;
+      height: 336px;
+      min-width: 250px;
+      min-height: 336px;
+
+      .chronicle__permalink {
+        &:hover::after {
+          position: absolute;
+          bottom: 10px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: block;
+          width: max-content;
+          padding: .2rem .5rem;
+          content: 'Voir le sommaire';
+          font-family: var(--wp--preset--font-family--secondary);
+          font-weight: bold;
+          text-transform: uppercase;
+          color: var(--wp--preset--color--black);
+          background-color: var(--wp--preset--color--primary);
+          transition: transform 0.3s ease-in-out;
+        }
+      }
+    }
+
+    @media (min-width: $container-sm) {
+      margin-top: 4rem;
+
+      .chronique {
+        width: 171px;
+        height: 230px;
+        min-width: 171px;
+        min-height: 230px;
+      }
+    }
+
+    @media (min-width: $container-hg) {
+      .chronique {
+        width: 250px;
+        height: 336px;
+        min-width: 250px;
+        min-height: 336px;
+      }
+    }
+
+    .chronicle__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .wp-block-query-pagination {
+    border-top: none;
+
+    .page-numbers {
+      display: flex;
+      text-decoration: none;
+      color: var(--wp--preset--color--white);
+
+      &:not(.current):hover {
+        background-color: transparent;
+        color: var(--wp--preset--color--primary);
+
+        &::after {
+          color: var(--wp--preset--color--primary);
+        }
+      }
+
+      &:not(.current, :last-child)::after {
+        content: '-';
+        position: relative;
+        left: .8rem;
+      }
+
+      .current {
+        color: var(--wp--preset--color--black);
+        background-color: var(--wp--preset--color--primary);
+      }
+    }
+  }
+}

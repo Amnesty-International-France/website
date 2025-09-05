@@ -18,6 +18,8 @@ require_once __DIR__ . '/agenda-homepage/register.php';
 require_once __DIR__ . '/agenda-homepage/render.php';
 require_once __DIR__ . '/agir-legacy/register.php';
 require_once __DIR__ . '/agir-legacy/render.php';
+require_once __DIR__ . '/chronicle-card/register.php';
+require_once __DIR__ . '/chronicle-card/render.php';
 require_once __DIR__ . '/article-card/register.php';
 require_once __DIR__ . '/article-card/render.php';
 require_once __DIR__ . '/articles-homepage/register.php';
@@ -138,6 +140,7 @@ if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
 		register_article_card_block();
 		register_articles_homepage_block();
 		register_banner_block();
+		register_chronicle_card_block();
 		register_button_block();
 		register_carousel_block();
 		register_card_image_text_block();
