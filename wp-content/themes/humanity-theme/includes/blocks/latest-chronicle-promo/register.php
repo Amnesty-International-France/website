@@ -18,5 +18,3 @@ if ( ! function_exists( 'register_latest_chronicle_promo_block' ) ) {
 		]);
 	}
 }
-
-add_action( 'init', 'register_latest_chronicle_promo_block' );
