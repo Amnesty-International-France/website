@@ -70,6 +70,11 @@
           "name": "Grey Darkest"
         },
         {
+          "slug": "grey-black",
+          "color": "#1C1C1C",
+          "name": "Grey Black"
+        },
+        {
           "slug": "error",
           "color": "#e60000",
           "name": "Error"

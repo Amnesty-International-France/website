@@ -1,6 +1,6 @@
 <?php
 
-function render_related_posts_block( $attributes, $content = '' ) {
+function render_related_posts_block( $attributes ) {
 	if ( ! is_singular() ) {
 		return '';
 	}

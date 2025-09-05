@@ -230,3 +230,13 @@ add_action('acf/include_fields', function () {
 		'show_in_rest' => 0,
 	));
 });
+
+function amnesty_add_chronicle_archives_rewrite_rule() {
+	add_rewrite_rule(
+		'^chronique/archives/?$',
+		'index.php?pagename=chronique/archives',
+		'top'
+	);
+}
+
+add_action( 'init', 'amnesty_add_chronicle_archives_rewrite_rule' );
