@@ -17,6 +17,8 @@ function render_button_block(array $attributes): string {
     $icon        = $attributes['icon'] ?? '';
     $externalUrl = $attributes['externalUrl'] ?? '';
     $linkType    = $attributes['linkType'] ?? 'internal';
+	$link		 = $attributes['link'] ?? '';
+	$target		 = $attributes['targetBlank'] ?? true;
     $alignment   = $attributes['alignment'] ?? 'left';
 
     if ($linkType === 'external') {
@@ -24,7 +26,10 @@ function render_button_block(array $attributes): string {
     } elseif ($linkType === 'internal' && $postId) {
         $post = get_post($postId);
         $href = $post ? get_permalink($post) : '#';
-    } else {
+    } elseif ($link) {
+		$href = $link;
+	}
+	else {
         $href = '#';
     }
 
@@ -57,7 +62,7 @@ function render_button_block(array $attributes): string {
     ob_start();
     ?>
     <div class="<?php echo esc_attr(implode(' ', $classes)); ?>">
-        <a href="<?php echo esc_url($href); ?>" class="custom-button" target="_blank" rel="noopener noreferrer">
+        <a href="<?php echo esc_url($href); ?>" class="custom-button"  <?php echo ($target === true) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
             <div class="<?php echo esc_attr(implode(' ', $contentClasses)); ?>">
                 <?php if ($icon) : ?>
                     <div class="icon-container">

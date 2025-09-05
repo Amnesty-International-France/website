@@ -230,3 +230,39 @@ add_action('acf/include_fields', function () {
 		'show_in_rest' => 0,
 	));
 });
+
+/**
+ * Fix breadcrumbs for a single chronicle
+ *
+ * @param array $links
+ *
+ * @return array
+ */
+function amnesty_add_chronicle_parent_to_breadcrumb( $links ) {
+	if ( is_singular( 'chronique' ) ) {
+		$chronicle_parent_page = get_page_by_path( 'chronique' );
+
+		if ( $chronicle_parent_page ) {
+			$breadcrumb_parent = array(
+				'url'  => get_permalink( $chronicle_parent_page->ID ),
+				'text' => get_the_title( $chronicle_parent_page->ID ),
+			);
+
+			array_splice( $links, 1, 0, array( $breadcrumb_parent ) );
+		}
+	}
+
+	return $links;
+}
+
+add_filter( 'wpseo_breadcrumb_links', 'amnesty_add_chronicle_parent_to_breadcrumb' );
+
+function amnesty_add_chronicle_archives_rewrite_rule() {
+	add_rewrite_rule(
+		'^chronique/archives/?$',
+		'index.php?pagename=chronique/archives',
+		'top'
+	);
+}
+
+add_action( 'init', 'amnesty_add_chronicle_archives_rewrite_rule' );

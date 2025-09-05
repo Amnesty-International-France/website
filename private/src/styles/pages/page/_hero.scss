@@ -147,12 +147,12 @@
           text-transform: initial;
           background-color: transparent;
 
-          &__prefix, &__title {
+          &__first-part, &__last-part {
             background-color: var(--wp--preset--color--black);
             color: var(--wp--preset--color--primary);
           }
 
-          &__prefix {
+          &__first-part {
             display: inline-block;
             padding: 0 .3rem;
             margin-bottom: .4rem;
@@ -167,9 +167,9 @@
             }
           }
 
-          &__title {
+          &__last-part {
             display: inline-block;
-            font-size: 24px;
+            font-size: 2rem;
             line-height: 33px;
             padding: 6px 8px;
             margin-bottom: 0;
@@ -177,7 +177,7 @@
             font-family: var(--wp--preset--font-family--secondary);
 
             @media (min-width: $container-lg) {
-              font-size: 1.875rem;
+              font-size: 2.575rem;
               line-height: 2.1rem;
               padding: .5rem;
             }
