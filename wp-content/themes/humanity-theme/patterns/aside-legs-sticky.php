@@ -28,14 +28,13 @@ $icon_phone_url = get_template_directory_uri() . '/assets/images/icon-phone.svg'
         </div>
         <p class="phone">01 53 38 66 24</p>
       </div>
-      <div class="button">
+      <a href="#legs-form" class="button">
         <div class="icon-container">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M16.172 11L10.808 5.63605L12.222 4.22205L20 12L12.222 19.778L10.808 18.364L16.172 13H4V11H16.172Z" fill="black"/>
           </svg>
         </div>
         <p class="label">Demander notre brochure</p>
-      </div>
-    </div>
+      </a>
   </div>
 </aside>

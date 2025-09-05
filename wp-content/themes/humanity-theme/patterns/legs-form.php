@@ -28,7 +28,7 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 
 ?>
 
-<div class="page-legs-form">
+<div class="page-legs-form" id="legs-form">
 	<div class="page-legs-form-wrapper">
 		<div class="form-container">
 			<div class="officers">
