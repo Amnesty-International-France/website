@@ -60,5 +60,5 @@ if (!function_exists('setup_keywords')) {
 		}
 	}
 
-	add_action('init', 'setup_keywords');
+	add_action('after_switch_theme', 'setup_keywords');
 }

@@ -17,5 +17,5 @@ if (!function_exists('setup_document_categories')) {
 		}
 	}
 
-	add_action('init', 'setup_document_categories');
+	add_action('after_switch_theme', 'setup_document_categories');
 }

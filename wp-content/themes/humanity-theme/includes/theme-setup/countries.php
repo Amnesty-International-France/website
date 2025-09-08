@@ -173,5 +173,5 @@ if (!function_exists('setup_countries')) {
 		}
 	}
 
-	add_action('init', 'setup_countries');
+	add_action('after_switch_theme', 'setup_countries');
 }
