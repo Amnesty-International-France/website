@@ -53,5 +53,5 @@ if( !function_exists( 'setup_combats' ) ) {
 		}
 	}
 
-	add_action( 'init', 'setup_combats' );
+	add_action( 'after_switch_theme', 'setup_combats' );
 }

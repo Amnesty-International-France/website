@@ -34,5 +34,5 @@ if( !function_exists( 'setup_categories' ) ) {
 		}
 	}
 
-	add_action( 'init', 'setup_categories' );
+	add_action( 'after_switch_theme', 'setup_categories' );
 }
