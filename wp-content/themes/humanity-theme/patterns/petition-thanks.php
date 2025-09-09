@@ -8,6 +8,9 @@
 
 $title = get_the_title();
 $permalink = get_permalink();
+$share_text_encoded = urlencode($title . ' ' . $permalink);
+$email_subject_encoded = rawurlencode($title);
+$email_body_encoded = rawurlencode("Je vous recommande cette pétition : \n\n" . $title . "\n" . $permalink);
 $featured_image_url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 $end_date = get_field('date_de_fin');
 $signatures_target = get_field('objectif_signatures');
@@ -63,9 +66,8 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
             <div class="share-content">
                 <p class="share-title">Activez votre réseau</p>
                 <div class="social-networks">
-                    <!-- Facebook -->
                     <a class="article-shareFacebook" target="_blank" rel="noreferrer noopener"
-                        href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $encoded_permalink; ?>"
+                        href="<?php echo esc_url('https://www.facebook.com/sharer/sharer.php?u=' . urlencode($permalink)); ?>"
                         title="<?php esc_attr_e( 'Partager sur Facebook', 'amnesty' ); ?>"
                         aria-label="<?php esc_attr_e( 'Partager sur Facebook', 'amnesty' ); ?>">
                         <div class="icon-container">
@@ -73,9 +75,8 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
                         </div>
                     </a>
 
-                    <!-- Bluesky -->
                     <a class="article-shareBluesky" target="_blank" rel="noreferrer noopener"
-                        href="https://bsky.app/intent/compose?text=<?php echo $encoded_title . '%20' . $encoded_permalink; ?>"
+                        href="<?php echo esc_url('https://bsky.app/intent/compose?text=' . $share_text_encoded); ?>"
                         title="<?php esc_attr_e( 'Partager sur Bluesky', 'amnesty' ); ?>"
                         aria-label="<?php esc_attr_e( 'Partager sur Bluesky', 'amnesty' ); ?>">
                         <div class="icon-container">
@@ -83,9 +84,8 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
                         </div>
                     </a>
 
-                    <!-- Mastodon -->
                     <a class="article-shareMastodon" target="_blank" rel="noreferrer noopener"
-                        href="https://mastodon.social/share?text=<?php echo $encoded_title . '%20' . $encoded_permalink; ?>"
+                        href="<?php echo esc_url('https://mastodon.social/share?text=' . $share_text_encoded); ?>"
                         title="<?php esc_attr_e( 'Partager sur Mastodon', 'amnesty' ); ?>"
                         aria-label="<?php esc_attr_e( 'Partager sur Mastodon', 'amnesty' ); ?>">
                         <div class="icon-container">
@@ -93,7 +93,6 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
                         </div>
                     </a>
 
-                    <!-- Copier le lien -->
                     <div class="article-shareCopy"
                         title="<?php esc_attr_e( 'Copier le lien', 'amnesty' ); ?>"
                         aria-label="<?php esc_attr_e( 'Copier le lien', 'amnesty' ); ?>"
@@ -103,9 +102,8 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
                         </div>
                     </div>
 
-                    <!-- Email -->
                     <a class="article-shareEmail" target="_blank" rel="noreferrer noopener"
-                        href="mailto:?subject=<?php echo rawurlencode( $title ); ?>&body=<?php echo rawurlencode( $title . "\n\n" . $permalink ); ?>"
+                        href="<?php echo esc_url('mailto:?subject=' . $email_subject_encoded . '&body=' . $email_body_encoded); ?>"
                         title="<?php esc_attr_e( 'Partager par email', 'amnesty' ); ?>"
                         aria-label="<?php esc_attr_e( 'Partager par email', 'amnesty' ); ?>">
                         <div class="icon-container">
