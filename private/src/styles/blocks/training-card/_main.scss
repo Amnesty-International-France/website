@@ -16,6 +16,10 @@
     }
   }
 
+  &.bg-yellow {
+    background-color: var(--wp--preset--color--primary);
+  }
+
   & > .chip-category {
     width: fit-content;
     position: absolute;
@@ -44,10 +48,19 @@
   }
 
   .training-card-content {
-    flex: 1;
-    padding: 12px;
+    padding: 12px 12px 0;
     display: flex;
+    flex: 1;
     flex-direction: column;
+    gap: 10px;
+
+    .training-date {
+      font-family: var(--wp--preset--font-family--secondary),serif;
+      font-size: .875rem;
+      line-height: 1.25rem;
+      color: var(--wp--preset--color--grey-dark);
+      margin: 0;
+    }
 
     .training-card-badge {
       display: flex;
@@ -70,6 +83,7 @@
 
     .training-card-title {
       margin: 0;
+      flex: 1
     }
 
     .training-card-title a {
@@ -90,6 +104,21 @@
       font-size: 16px;
       font-weight: bold;
       line-height: 24px;
+    }
+
+    .training-term {
+      padding: 8px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+
+      &:not(.is-empty) {
+        border-top: 1px solid var(--wp--preset--color--grey-light);
+      }
+
+      .training-card-badge-label {
+        text-transform: capitalize;
+      }
     }
   }
 }
