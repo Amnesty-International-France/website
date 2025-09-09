@@ -39,7 +39,6 @@ web.config
 /wp-content/upgrade/*
 /wp-content/uploads/*
 /wp-content/wp-cache-config.php
-/wp-content/db.php
 /wp-cron.php
 /wp-feed.php
 /wp-includes
