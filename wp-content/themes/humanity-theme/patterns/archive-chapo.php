@@ -1,7 +1,7 @@
 <?php
 /**
  * Title: Archive Chapo
- * Description: Outputs chapo block for post type landmark and country archive pages
+ * Description: Outputs chapo block for post type landmark, country and training archive pages
  * Slug: amnesty/archive-chapo
  * Inserter: no
  */
@@ -14,6 +14,10 @@ if (is_post_type_archive('fiche_pays')) {
 
 if (is_post_type_archive('landmark')) {
     $chapo_text = get_option('landmark_global_chapo', '');
+}
+
+if (is_post_type_archive('training')) {
+    $chapo_text = get_option('training_global_chapo', '');
 }
 
 ?>
