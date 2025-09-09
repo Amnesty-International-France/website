@@ -23,7 +23,7 @@ function amnesty_register_document_cpt(): void
 				'not_found_in_trash' => 'Aucun Document dans la corbeille',
 			),
 			'public' => false,
-			'has_archive' => false,
+			'has_archive' => true,
 			'rewrite' => array('slug' => 'documents'),
 			'supports' => array('title', 'thumbnail', 'custom-fields', 'excerpt'),
 			'menu_icon' => 'dashicons-admin-page',
@@ -111,6 +111,79 @@ add_action( 'acf/include_fields', function() {
                 'prepend' => '',
                 'append' => '',
             ),
+			array(
+				'key' => 'field_27dmxqoc8t',
+				'label' => 'Document privé',
+				'name' => 'document_private',
+				'type' => 'true_false',
+				'ui' => 1,
+				'required' => 0,
+				'conditional_logic' => 0,
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+			),
+			array(
+				'key' => 'field_49dhzhpoyv',
+				'label' => 'Vie démocratique',
+				'name' => 'vie_democratique',
+				'type' => 'select',
+				'choices' => [
+					'assemblee_generale' => 'Assemblée générale',
+					'conseil_administration'=> "Conseil d'administration",
+					'comite_des_candidatures' => 'Comité des candidatures',
+					'conseil_des_finances_et_des_risques_financiers' => 'Conseil des finances et des risques financiers',
+					'representant_des_jeunes' => 'Représentants des jeunes',
+					'conseil_national' => 'Conseil national'
+				],
+				'ui' => 1,
+				'required' => 0,
+				'allow_null' => 1,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_27dmxqoc8t',
+							'operator' => '==',
+							'value' => '1',
+						)
+					)
+				),
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+			),
+			array(
+				'key' => 'field_gdomgbgri6',
+				'label' => 'Vie militante',
+				'name' => 'vie_militante',
+				'type' => 'select',
+				'choices' => [
+					'vm1' => 'VM1',
+					'vm2' => 'VM2',
+					'vm3' => 'VM3',
+				],
+				'ui' => 1,
+				'required' => 0,
+				'allow_null' => 1,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_27dmxqoc8t',
+							'operator' => '==',
+							'value' => '1',
+						)
+					)
+				),
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+			),
 		),
 		'location' => array(
 			array(
@@ -132,3 +205,71 @@ add_action( 'acf/include_fields', function() {
 		'show_in_rest' => 1,
 	));
 });
+
+add_filter('manage_document_posts_columns', function($columns) {
+	$columns['document_private'] = 'Document privé';
+
+	return $columns;
+});
+
+add_action('manage_document_posts_custom_column', function($column, $post_id) {
+	if ($column === 'document_private') {
+		echo get_field('field_27dmxqoc8t', $post_id) ? 'Oui' : 'Non';
+	}
+}, 10, 2);
+
+add_action('restrict_manage_posts', function($post_type) {
+	if ($post_type !== 'document') {
+		return;
+	}
+
+	$selected = $_GET['document_private'] ?? '';
+
+	?>
+	<select name="document_private">
+		<option value="">Tous les documents</option>
+		<option value="1" <?php selected($selected, '1'); ?>>Privé</option>
+		<option value="0" <?php selected($selected, '0'); ?>>Publique</option>
+	</select>
+	<?php
+});
+
+add_action('pre_get_posts', function($query) {
+	global $pagenow;
+
+	if (
+		!is_admin() ||
+		$pagenow !== 'edit.php' ||
+		!$query->is_main_query() ||
+		$query->get('post_type') !== 'document'
+	) {
+		return;
+	}
+
+	$documentPrivateFilter = $_GET['document_private'] ?? '';
+	if ($documentPrivateFilter !== '') {
+		$query->set('meta_query', [
+			[
+				'key'   => 'document_private',
+				'value' => $documentPrivateFilter,
+			]
+		]);
+	}
+});
+
+add_action('pre_get_posts', function($query) {
+	if (!is_admin()
+		&& $query->is_main_query()
+		&& is_post_type_archive('document')
+	) {
+		$meta_query = [
+			[
+				'key'   => 'document_private',
+				'value' => '0',
+			],
+		];
+
+		$query->set('meta_query', $meta_query);
+	}
+});
+
