@@ -4,6 +4,7 @@
 .vscode
 .DS_Store
 .phpdoc
+.idea
 /vendor
 
 .htaccess

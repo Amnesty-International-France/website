@@ -6,14 +6,14 @@ namespace Amnesty;
 
 use WP_Term;
 
-new Taxonomy_Document_Categories();
+new Taxonomy_Document_Types();
 
 /**
- * Register the Document Category taxonomy
+ * Register the Document Type taxonomy
  *
  * @package Amnesty\Taxonomies
  */
-class Taxonomy_Document_Categories extends Taxonomy
+class Taxonomy_Document_Types extends Taxonomy
 {
 
 	/**
@@ -21,14 +21,14 @@ class Taxonomy_Document_Categories extends Taxonomy
 	 *
 	 * @var string
 	 */
-	protected $name = 'document_category';
+	protected $name = 'document_type';
 
 	/**
 	 * Taxonomy slug
 	 *
 	 * @var string
 	 */
-	protected $slug = 'document_category';
+	protected $slug = 'document_type';
 
 	/**
 	 * Object type(s) to register the taxonomy for
@@ -147,44 +147,44 @@ class Taxonomy_Document_Categories extends Taxonomy
 	public static function labels( bool $defaults = false ): object {
 		$default_labels = [
 			/* translators: [admin] */
-			'name'                  => _x( 'Catégories de Document', 'taxonomy general name', 'amnesty' ),
+			'name'                  => _x( 'Types de documents', 'taxonomy general name', 'amnesty' ),
 			/* translators: [admin] */
-			'singular_name'         => _x( 'Catégorie de Document', 'taxonomy singular name', 'amnesty' ),
+			'singular_name'         => _x( 'Type de document', 'taxonomy singular name', 'amnesty' ),
 			/* translators: [admin] */
-			'search_items'          => __( 'Rechercher des catégories', 'amnesty' ),
+			'search_items'          => __( 'Rechercher des types', 'amnesty' ),
 			/* translators: [admin] */
-			'all_items'             => __( 'Toutes les catégories', 'amnesty' ),
+			'all_items'             => __( 'Tous les types', 'amnesty' ),
 			/* translators: [admin] */
-			'parent_item'           => __( 'Catégorie parent', 'amnesty' ),
+			'parent_item'           => __( 'Type parent', 'amnesty' ),
 			/* translators: [admin] */
-			'parent_item_colon'     => __( 'Catégorie parent:', 'amnesty' ),
+			'parent_item_colon'     => __( 'Type parent:', 'amnesty' ),
 			/* translators: [admin] */
-			'edit_item'             => __( 'Modifier la catégorie', 'amnesty' ),
+			'edit_item'             => __( 'Modifier le type', 'amnesty' ),
 			/* translators: [admin] */
-			'view_item'             => __( 'Voir une Catégorie', 'amnesty' ),
+			'view_item'             => __( 'Voir un type', 'amnesty' ),
 			/* translators: [admin] */
-			'update_item'           => __( 'Mettre à jour la catégorie', 'amnesty' ),
+			'update_item'           => __( 'Mettre à jour le type', 'amnesty' ),
 			/* translators: [admin] */
-			'add_new_item'          => __( 'Ajouter une nouvelle catégorie', 'amnesty' ),
+			'add_new_item'          => __( 'Ajouter un nouveau type', 'amnesty' ),
 			/* translators: [admin] */
-			'new_item_name'         => __( 'Nom de la nouvelle catégorie', 'amnesty' ),
+			'new_item_name'         => __( 'Nom du nouveau type', 'amnesty' ),
 			/* translators: [admin] */
-			'add_or_remove_items'   => __( 'Ajouter ou enlever une Catégorie', 'amnesty' ),
+			'add_or_remove_items'   => __( 'Ajouter ou enlever un type', 'amnesty' ),
 			/* translators: [admin] */
-			'choose_from_most_used' => __( 'Choisir parmi les Catégories les plus fréquentes', 'amnesty' ),
+			'choose_from_most_used' => __( 'Choisir parmi les types les plus fréquentes', 'amnesty' ),
 			/* translators: [admin] */
-			'not_found'             => __( 'Aucune Catégorie trouvé.', 'amnesty' ),
+			'not_found'             => __( 'Aucun type trouvé.', 'amnesty' ),
 			/* translators: [admin] */
-			'no_terms'              => __( 'Aucune Catégorie', 'amnesty' ),
+			'no_terms'              => __( 'Aucun type', 'amnesty' ),
 			/* translators: [admin] */
-			'items_list_navigation' => __( 'Navigation dans la liste des Catégorie', 'amnesty' ),
+			'items_list_navigation' => __( 'Navigation dans la liste des types', 'amnesty' ),
 			/* translators: [admin] */
-			'items_list'            => __( 'Liste des Catégories', 'amnesty' ),
+			'items_list'            => __( 'Liste des types', 'amnesty' ),
 			/* translators: [admin] Tab heading when selecting from the most used terms. */
-			'most_used'             => _x( 'Most Used', 'Catégories', 'amnesty' ),
+			'most_used'             => _x( 'Most Used', 'Types', 'amnesty' ),
 			/* translators: [admin] */
-			'back_to_items'         => __( '&larr; Retour vers les Catégories', 'amnesty' ),
-			'menu_name' 			=> __( 'Catégories Document', 'amnesty' ),
+			'back_to_items'         => __( '&larr; Retour vers les types', 'amnesty' ),
+			'menu_name' 			=> __( 'Types Document', 'amnesty' ),
 		];
 
 		if ( $defaults ) {
@@ -193,14 +193,14 @@ class Taxonomy_Document_Categories extends Taxonomy
 
 		$options = get_option( 'amnesty_localisation_options_page' );
 
-		if ( ! isset( $options['document_category_labels'][0] ) ) {
+		if ( ! isset( $options['document_type_labels'][0] ) ) {
 			return (object) $default_labels;
 		}
 
 		$config_labels = [];
 
-		foreach ( $options['document_category_labels'][0] as $key => $value ) {
-			$key = str_replace( 'document_category_label_', '', $key );
+		foreach ( $options['document_type_labels'][0] as $key => $value ) {
+			$key = str_replace( 'document_type_label_', '', $key );
 
 			$config_labels[ $key ] = $value;
 		}
