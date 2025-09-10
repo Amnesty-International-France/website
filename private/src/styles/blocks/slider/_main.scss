@@ -55,12 +55,33 @@
 
           .article-card {
             width: 100%;
+            min-height: fit-content !important;
             height: 100%;
             margin-bottom: 0;
 
             &.card-portrait {
               min-height: 450px;
               max-width: none;
+            }
+
+            &.see-all-card {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+
+              .custom-button-block {
+                margin: 0;
+
+                .custom-button {
+                  .content {
+                    padding: 10px 20px;
+
+                    .button-label {
+                      text-transform: uppercase;
+                    }
+                  }
+                }
+              }
             }
           }
         }

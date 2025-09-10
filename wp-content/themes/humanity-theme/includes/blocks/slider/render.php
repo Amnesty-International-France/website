@@ -113,6 +113,32 @@ if (!function_exists('render_slider_block')) {
                                     ?>
                                 </div>
                             <?php endwhile; ?>
+
+                            <?php if ($post_type !== 'document') : ?>
+                                <div class="swiper-slide">
+                                    <div class="article-card see-all-card">
+                                        <div class='custom-button-block center'>
+                                            <a href="<?= get_dynamic_category_or_post_type_link($post_type) ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
+                                                <div class='content bg-yellow small'>
+                                                    <div class="icon-container">
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            strokeWidth="1.5"
+                                                            stroke="currentColor"
+                                                        >
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="button-label">Tout voir</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
                         </div>
                         <div class="swiper-pagination"></div>
                     </div>
