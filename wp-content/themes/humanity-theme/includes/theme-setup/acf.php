@@ -1072,6 +1072,72 @@ Une information fiable et 100% indépendante, qui donne des clés de compréhens
                 'show_in_rest'          => 0,
             ]
         );
+
+        acf_add_local_field_group(
+            [
+                'key'                   => 'group_68c1269a0e840',
+                'title'                 => 'Lien popin',
+                'fields'                => [
+                    [
+                        'key'               => 'field_68c1269ac17c3',
+                        'label'             => 'Liens vers l\'action de soutient',
+                        'name'              => 'link_action_popin',
+                        'aria-label'        => '',
+                        'type'              => 'url',
+                        'instructions'      => '',
+                        'required'          => 0,
+                        'conditional_logic' => 0,
+                        'wrapper'           => [
+                            'width' => '',
+                            'class' => '',
+                            'id'    => '',
+                        ],
+                        'default_value'     => '',
+                        'allow_in_bindings' => 0,
+                        'placeholder'       => '',
+                    ],
+                    [
+                        'key'               => 'field_68c126dfc17c4',
+                        'label'             => 'Texte du bouton',
+                        'name'              => 'button_text_popin',
+                        'aria-label'        => '',
+                        'type'              => 'text',
+                        'instructions'      => '',
+                        'required'          => 0,
+                        'conditional_logic' => 0,
+                        'wrapper'           => [
+                            'width' => '',
+                            'class' => '',
+                            'id'    => '',
+                        ],
+                        'default_value'     => '',
+                        'maxlength'         => '',
+                        'allow_in_bindings' => 0,
+                        'placeholder'       => '',
+                        'prepend'           => '',
+                        'append'            => '',
+                    ],
+                ],
+                'location'              => [
+                    [
+                        [
+                            'param'    => 'post_type',
+                            'operator' => '==',
+                            'value'    => 'pop-in',
+                        ],
+                    ],
+                ],
+                'menu_order'            => 0,
+                'position'              => 'normal',
+                'style'                 => 'default',
+                'label_placement'       => 'top',
+                'instruction_placement' => 'label',
+                'hide_on_screen'        => '',
+                'active'                => true,
+                'description'           => '',
+                'show_in_rest'          => 0,
+            ]
+        );
     }
 );
 

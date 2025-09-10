@@ -79,7 +79,7 @@ if (! function_exists('amnesty_create_popin_posttype')) {
             /* translators: [admin] */
             'description'         => __('A Pop-in is a call to action which renders at the very top of a page, pushing the entire page content down.', 'amnesty'),
             'labels'              => $labels,
-            'supports'            => [ 'title', 'editor', 'custom-fields' ],
+            'supports'            => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
             'hierarchical'        => false,
             'public'              => false,
             'show_ui'             => true,
@@ -93,7 +93,7 @@ if (! function_exists('amnesty_create_popin_posttype')) {
             'exclude_from_search' => true,
             'publicly_queryable'  => false,
             'capability_type'     => 'page',
-            'show_in_rest'        => true,
+            'show_in_rest'        => false,
             'rewrite'             => false,
             'codename'            => 'pop-in',
         ];
