@@ -83,6 +83,15 @@ function aif_create_pages_recursively($pages, $parent_id = 0, $parent_path = '')
 function aif_donor_space_create_pages()
 {
     $pages = [
+		'connectez-vous' => [
+			'title' => 'Connectez-vous',
+		],
+		'creer-votre-compte' => [
+			'title' => 'Créer votre compte',
+		],
+		'verifier-votre-email' => [
+			'title' => 'Vérifier votre email',
+		],
         'mon-espace' => [
             'title' => 'Mon Espace',
             'children' => [
@@ -113,7 +122,6 @@ function aif_donor_space_create_pages()
 
 function aif_ensure_critical_pages_exist() {
     if ( false === get_transient( 'aif_critical_pages_check_lock' ) ) {
-        
         aif_donor_space_create_pages();
         set_transient( 'aif_critical_pages_check_lock', 'true', 5 * MINUTE_IN_SECONDS );
     }
