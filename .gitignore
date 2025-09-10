@@ -5,6 +5,8 @@
 .DS_Store
 .phpdoc
 /vendor
+.idea
+
 
 .htaccess
 web.config
@@ -56,7 +58,7 @@ license.txt
 # Jetpack-Waf
 /wp-content/jetpack-waf/
 
-.env.*
+.env
 .castor.stub.php
 .ddev
 clever.json
