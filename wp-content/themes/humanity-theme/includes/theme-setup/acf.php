@@ -1098,7 +1098,7 @@ Chaque mois, des journalistes enquêtent sur des sujets liés aux droits humains
                 'fields'                => [
                     [
                         'key'               => 'field_68c1269ac17c3',
-                        'label'             => 'Liens vers l\'action de soutient',
+                        'label'             => 'Lien vers l\'action de soutien',
                         'name'              => 'link_action_popin',
                         'aria-label'        => '',
                         'type'              => 'url',
@@ -1116,7 +1116,7 @@ Chaque mois, des journalistes enquêtent sur des sujets liés aux droits humains
                     ],
                     [
                         'key'               => 'field_68c126dfc17c4',
-                        'label'             => 'Texte du bouton',
+                        'label'             => 'Label du bouton',
                         'name'              => 'button_text_popin',
                         'aria-label'        => '',
                         'type'              => 'text',

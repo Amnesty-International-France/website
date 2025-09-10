@@ -1,20 +1,39 @@
+const SELECTORS = {
+  banner: '.urgent-banner',
+  close: '.icon-cross',
+  cta: '.cta',
+};
+
+const getElements = () => {
+  const body = document.body;
+  const banner = body?.querySelector(SELECTORS.banner);
+  return {
+    body,
+    banner,
+    close: banner?.querySelector(SELECTORS.close),
+    cta: banner?.querySelector(SELECTORS.cta),
+  };
+};
+
+const closeModal = () => {
+  const { body, banner } = getElements();
+  if (!body || !banner) return;
+
+  sessionStorage.setItem('userIsDoneWithBandeau', 'true');
+  banner.classList.add('hidden');
+  body.classList.remove('no-scroll');
+};
+
 export const closeUrgentBanner = () => {
-  const urgentBanner = document.querySelector('.urgent-banner');
+  const { body, banner, close, cta } = getElements();
+  if (!body || !banner) return;
 
-  if (!urgentBanner) return;
+  const userIsDone = sessionStorage.getItem('userIsDoneWithBandeau') === 'true';
 
-  const closeCross = urgentBanner.querySelector('.icon-cross');
+  banner.classList.toggle('hidden', userIsDone);
+  body.classList.toggle('no-scroll', !userIsDone);
 
-  if (!closeCross) return;
-
-  const userIsDoneWithBandeau = sessionStorage.getItem('userIsDoneWithBandeau') === 'true';
-
-  urgentBanner.classList.toggle('hidden', userIsDoneWithBandeau);
-
-  closeCross.addEventListener('click', () => {
-    sessionStorage.setItem('userIsDoneWithBandeau', 'true');
-    urgentBanner.classList.add('hidden');
-  });
+  [close, cta].forEach((el) => el?.addEventListener('click', closeModal));
 };
 
 export default {
