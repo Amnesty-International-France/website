@@ -12,17 +12,17 @@ declare(strict_types=1);
 global $post;
 
 // prevent weird output in the site editor
-if ( ! get_the_ID() ) {
-	return;
+if (! get_the_ID()) {
+    return;
 }
 
-$lieu            = get_field( 'lieu', $post->ID );
-$city            = get_field( 'city', $post->ID );
-$is_members_only = get_field( 'members_only', $post->ID );
-$acf_date        = get_field( 'date', $post->ID );
-$category_key    = get_field( 'categories', $post->ID );
-$field_object    = get_field_object( 'categories', $post->ID );
-$lieu_list       = get_field_object( 'field_6883319051ddc' );
+$lieu            = get_field('lieu', $post->ID);
+$city            = get_field('city', $post->ID);
+$is_members_only = get_field('members_only', $post->ID);
+$acf_date        = get_field('date', $post->ID);
+$category_key    = get_field('categories', $post->ID);
+$field_object    = get_field_object('categories', $post->ID);
+$lieu_list       = get_field_object('field_6883319051ddc');
 
 ?>
 <!-- wp:group {"tagName":"div","className":"article-meta-wrapper"} -->
@@ -47,13 +47,13 @@ $lieu_list       = get_field_object( 'field_6883319051ddc' );
 								d="M1.3335 7.33329H14.6668V13.3333C14.6668 13.7015 14.3684 14 14.0002 14H2.00016C1.63197 14 1.3335 13.7015 1.3335 13.3333V7.33329ZM11.3335 1.99996H14.0002C14.3684 1.99996 14.6668 2.29844 14.6668 2.66663V5.99996H1.3335V2.66663C1.3335 2.29844 1.63197 1.99996 2.00016 1.99996H4.66683V0.666626H6.00016V1.99996H10.0002V0.666626H11.3335V1.99996Z"
 								fill="#575756"/>
 					</svg>
-					<?php if ( $acf_date ) : ?>
+					<?php if ($acf_date) : ?>
 						<p>Le <?php echo $acf_date; ?></p>
 					<?php endif; ?>
 				</div>
 			</div>
 			<div class="training-info">
-				<?php if ( $lieu ) : ?>
+				<?php if ($lieu) : ?>
 					<div class="training-info-icon">
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M12.2427 11.576L8 15.8187L3.75734 11.576C2.91823 10.7369 2.34679 9.66777 2.11529 8.50389C1.88378 7.34 2.0026 6.13361 2.45673 5.03726C2.91086 3.9409 3.6799 3.00384 4.66659 2.34455C5.65328 1.68527 6.81332 1.33337 8 1.33337C9.18669 1.33337 10.3467 1.68527 11.3334 2.34455C12.3201 3.00384 13.0891 3.9409 13.5433 5.03726C13.9974 6.13361 14.1162 7.34 13.8847 8.50389C13.6532 9.66777 13.0818 10.7369 12.2427 11.576ZM8 8.66665C8.35362 8.66665 8.69276 8.52618 8.94281 8.27613C9.19286 8.02608 9.33334 7.68694 9.33334 7.33332C9.33334 6.9797 9.19286 6.64056 8.94281 6.39051C8.69276 6.14046 8.35362 5.99999 8 5.99999C7.64638 5.99999 7.30724 6.14046 7.05719 6.39051C6.80715 6.64056 6.66667 6.9797 6.66667 7.33332C6.66667 7.68694 6.80715 8.02608 7.05719 8.27613C7.30724 8.52618 7.64638 8.66665 8 8.66665Z"
@@ -63,7 +63,7 @@ $lieu_list       = get_field_object( 'field_6883319051ddc' );
 					</div>
 				<?php endif; ?>
 
-				<?php if ( $city ) : ?>
+				<?php if ($city) : ?>
 					<div class="training-info-icon">
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M12.2427 11.576L8 15.8187L3.75734 11.576C2.91823 10.7369 2.34679 9.66777 2.11529 8.50389C1.88378 7.34 2.0026 6.13361 2.45673 5.03726C2.91086 3.9409 3.6799 3.00384 4.66659 2.34455C5.65328 1.68527 6.81332 1.33337 8 1.33337C9.18669 1.33337 10.3467 1.68527 11.3334 2.34455C12.3201 3.00384 13.0891 3.9409 13.5433 5.03726C13.9974 6.13361 14.1162 7.34 13.8847 8.50389C13.6532 9.66777 13.0818 10.7369 12.2427 11.576ZM8 8.66665C8.35362 8.66665 8.69276 8.52618 8.94281 8.27613C9.19286 8.02608 9.33334 7.68694 9.33334 7.33332C9.33334 6.9797 9.19286 6.64056 8.94281 6.39051C8.69276 6.14046 8.35362 5.99999 8 5.99999C7.64638 5.99999 7.30724 6.14046 7.05719 6.39051C6.80715 6.64056 6.66667 6.9797 6.66667 7.33332C6.66667 7.68694 6.80715 8.02608 7.05719 8.27613C7.30724 8.52618 7.64638 8.66665 8 8.66665Z"
@@ -73,7 +73,7 @@ $lieu_list       = get_field_object( 'field_6883319051ddc' );
 					</div>
 				<?php endif; ?>
 
-				<?php if ( $is_members_only ) : ?>
+				<?php if ($is_members_only) : ?>
 					<div class="training-info-icon">
 						<svg class="training-card-badge-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
 							<path d="M8.54102 12.2916C8.54114 12.0307 8.61129 11.7745 8.74413 11.5499C8.87698 11.3253 9.06765 11.1405 9.29628 11.0147C9.5249 10.8888 9.78309 10.8267 10.0439 10.8347C10.3047 10.8426 10.5587 10.9205 10.7792 11.06C10.9997 11.1995 11.1787 11.3957 11.2976 11.628C11.4165 11.8603 11.4708 12.1202 11.455 12.3807C11.4392 12.6412 11.3538 12.8926 11.2077 13.1088C11.0616 13.325 10.8601 13.4981 10.6243 13.6099V14.1666C10.6243 14.3324 10.5585 14.4913 10.4413 14.6085C10.3241 14.7258 10.1651 14.7916 9.99935 14.7916C9.83359 14.7916 9.67462 14.7258 9.55741 14.6085C9.4402 14.4913 9.37435 14.3324 9.37435 14.1666V13.6099C9.1249 13.4916 8.91416 13.3049 8.76664 13.0715C8.61912 12.8381 8.54088 12.5677 8.54102 12.2916Z" fill="#575756"/>
@@ -83,19 +83,19 @@ $lieu_list       = get_field_object( 'field_6883319051ddc' );
 					</div>
 				<?php endif; ?>
 			</div>
-			<?php if ( $category_key && isset( $field_object['choices'][ $category_key ] ) ) : ?>
+			<?php if ($category_key && isset($field_object['choices'][ $category_key ])) : ?>
 				<div class="training-category">
 					<?=
-					render_chip_category_block(
-						[
-							'label' => esc_html( $field_object['choices'][ $category_key ] ),
-							'link'  => '',
-							'size'  => 'large',
-							'style' => esc_attr( 'bg-yellow' ),
-							'icon'  => $icon ?? '',
-						]
-					);
-					?>
+                    render_chip_category_block(
+                        [
+                            'label' => esc_html($field_object['choices'][ $category_key ]),
+                            'link'  => '',
+                            'size'  => 'large',
+                            'style' => esc_attr('bg-yellow'),
+                            'icon'  => $icon ?? '',
+                        ]
+                    );
+			    ?>
 				</div>
 			<?php endif; ?>
 		</div>

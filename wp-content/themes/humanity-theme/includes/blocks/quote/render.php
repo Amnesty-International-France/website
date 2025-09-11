@@ -3,24 +3,25 @@
 declare(strict_types=1);
 
 if (!function_exists('render_quote_block')) {
-	/**
-	 * Render the Quote block
-	 *
-	 * @param array<string, mixed> $attributes Block attributes
-	 *
-	 * @return string
-	 */
-	function render_quote_block(array $attributes): string {
-		$quote_text = $attributes['quoteText'] ?? '';
-		$author     = $attributes['author'] ?? '';
-		$show_image = $attributes['showImage'] ?? false;
-		$bg_color   = $attributes['bgColor'] ?? 'black';
-		$size       = $attributes['size'] ?? 'medium';
+    /**
+     * Render the Quote block
+     *
+     * @param array<string, mixed> $attributes Block attributes
+     *
+     * @return string
+     */
+    function render_quote_block(array $attributes): string
+    {
+        $quote_text = $attributes['quoteText'] ?? '';
+        $author     = $attributes['author'] ?? '';
+        $show_image = $attributes['showImage'] ?? false;
+        $bg_color   = $attributes['bgColor'] ?? 'black';
+        $size       = $attributes['size'] ?? 'medium';
         $image_id = $attributes['imageId'] ?? null;
         $image_url = $image_id ? wp_get_attachment_image_url((int) $image_id, 'large') : '';
 
-		ob_start();
-		?>
+        ob_start();
+        ?>
 		<div class="wp-block-amnesty-core-quote-block quote-block">
             <?php if ($show_image && $image_url): ?>
                 <div class="quote-image">
@@ -41,6 +42,6 @@ if (!function_exists('render_quote_block')) {
 		</div>
 		<?php
 
-		return ob_get_clean();
-	}
+        return ob_get_clean();
+    }
 }

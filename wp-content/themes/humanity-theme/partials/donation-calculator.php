@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 global $post;
 
-$campaign_url = get_field( 'link-donation', $post->ID ) ?? '';
+$campaign_url = get_field('link-donation', $post->ID) ?? '';
 
 $size        = $args['size'] ?? '';
 $with_header = $args['with_header'] ?? false;
@@ -14,61 +14,63 @@ $href        = $args['href'] ?? '';
 $rate        = $args['rate'] ?? 66;
 
 $amount_monthly_donation = [
-	8  => [
-		'id'      => 'radio-don-8',
-		'checked' => false,
-	],
-	10 => [
-		'id'      => 'radio-don-10',
-		'checked' => false,
-	],
-	15 => [
-		'id'      => 'radio-don-15',
-		'checked' => true,
-	],
+    8  => [
+        'id'      => 'radio-don-8',
+        'checked' => false,
+    ],
+    10 => [
+        'id'      => 'radio-don-10',
+        'checked' => false,
+    ],
+    15 => [
+        'id'      => 'radio-don-15',
+        'checked' => true,
+    ],
 ];
 
 $amount_punctual_donation = [
-	80  => [
-		'id'      => 'radio-don-80',
-		'checked' => false,
-	],
-	100 => [
-		'id'      => 'radio-don-100',
-		'checked' => false,
-	],
-	250 => [
-		'id'      => 'radio-don-250',
-		'checked' => true,
-	],
+    80  => [
+        'id'      => 'radio-don-80',
+        'checked' => false,
+    ],
+    100 => [
+        'id'      => 'radio-don-100',
+        'checked' => false,
+    ],
+    250 => [
+        'id'      => 'radio-don-250',
+        'checked' => true,
+    ],
 ];
 
-if ( 'medium' === $size ) {
-	$with_header = false;
-	$with_legend = false;
+if ('medium' === $size) {
+    $with_header = false;
+    $with_legend = false;
 }
 
 $svg_path = get_template_directory() . "/assets/images/icon-don-{$rate}.svg";
 
-if ( empty( $href ) && !empty( $campaign_url ) ) {
-	$href = $campaign_url;
+if (empty($href) && !empty($campaign_url)) {
+    $href = $campaign_url;
 }
 
 ?>
 
-<div class="donation-calculator <?php if ( $size ) { echo esc_attr( $size );}?> " data-rate="<?php echo esc_attr( $rate ); ?>">
-	<?php if ( $with_header ) : ?>
+<div class="donation-calculator <?php if ($size) {
+    echo esc_attr($size);
+}?> " data-rate="<?php echo esc_attr($rate); ?>">
+	<?php if ($with_header) : ?>
 		<div id="donation-header" class="donation-header">
-			<?php echo file_get_contents( $svg_path ); ?>
+			<?php echo file_get_contents($svg_path); ?>
 			<div class="donation-title">
 				<h4 class="subtitle">
 					Je calcule le montant de mon don
-					<span>après déduction fiscale de <?php echo esc_attr( $rate ); ?>%</span>
+					<span>après déduction fiscale de <?php echo esc_attr($rate); ?>%</span>
 				</h4>
 			</div>
 		</div>
 	<?php endif ?>
-	<?php if ( $with_tabs ) : ?>
+	<?php if ($with_tabs) : ?>
 		<div class="donation-tabs">
 			<div id="punctual" class="punctual hidden">
 				Don Ponctuel
@@ -79,58 +81,58 @@ if ( empty( $href ) && !empty( $campaign_url ) ) {
 		</div>
 	<?php endif ?>
 	<div id="donation-body" class="donation-body">
-		<?php if ( $with_tabs ) : ?>
+		<?php if ($with_tabs) : ?>
 			<div id="punctual" class="amount-punctual hidden">
-				<?php foreach ( $amount_punctual_donation as $key => $value ) : ?>
+				<?php foreach ($amount_punctual_donation as $key => $value) : ?>
 					<div class="don-radio
 						<?php
-						if ( $value['checked'] ) :
-							?>
+                        if ($value['checked']) :
+                            ?>
 							active
 							<?php
-						endif;
-						?>
+                        endif;
+				    ?>
 						">
-						<label for="<?php echo esc_attr( $value['id'] ); ?>">
-							<?php echo esc_attr( $key ); ?>€
+						<label for="<?php echo esc_attr($value['id']); ?>">
+							<?php echo esc_attr($key); ?>€
 						</label>
 						<input type="radio"
-								id="<?php echo esc_attr( $value['id'] ); ?>"
+								id="<?php echo esc_attr($value['id']); ?>"
 							<?php
-							if ( $value['checked'] ) :
-								?>
+				        if ($value['checked']) :
+				            ?>
 								checked
 								<?php
-							endif;
-							?>
-								value="<?php echo esc_attr( $key ); ?>">
+				        endif;
+				    ?>
+								value="<?php echo esc_attr($key); ?>">
 					</div>
 				<?php endforeach; ?>
 			</div>
 			<div id="monthly" class="amount-monthly active">
-				<?php foreach ( $amount_monthly_donation as $key => $value ) : ?>
+				<?php foreach ($amount_monthly_donation as $key => $value) : ?>
 					<div class="don-radio
 						<?php
-						if ( $value['checked'] ) :
-							?>
+                        if ($value['checked']) :
+                            ?>
 							active
 							<?php
-						endif;
-						?>
+                        endif;
+				    ?>
 						">
-						<label for="<?php echo esc_attr( $value['id'] ); ?>">
-							<?php echo esc_attr( $key ); ?>€
+						<label for="<?php echo esc_attr($value['id']); ?>">
+							<?php echo esc_attr($key); ?>€
 						</label>
 						<input type="radio"
-								id="<?php echo esc_attr( $value['id'] ); ?>"
+								id="<?php echo esc_attr($value['id']); ?>"
 							<?php
-							if ( $value['checked'] ) :
-								?>
+				        if ($value['checked']) :
+				            ?>
 								checked
 								<?php
-							endif;
-							?>
-								value="<?php echo esc_attr( $key ); ?>">
+				        endif;
+				    ?>
+								value="<?php echo esc_attr($key); ?>">
 					</div>
 				<?php endforeach; ?>
 			</div>
@@ -169,19 +171,19 @@ if ( empty( $href ) && !empty( $campaign_url ) ) {
 		<?php endif ?>
 	</div>
 	<div class="donation-calculator-footer">
-		<?php if ( $with_tabs ) : ?>
+		<?php if ($with_tabs) : ?>
 			<p class="explanation">Grâce à la réduction d'impôts de 66%, votre don ne vous coûtera que</p>
 			<h4 id="donation-simulated" class="price-simulated"></h4>
 		<?php endif ?>
-		<a href="<?php echo esc_url( $href ); ?>"
+		<a href="<?php echo esc_url($href); ?>"
 			target="_self"
 			class="donation-link">
-			<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-arrow.svg' ); ?>
+			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-arrow.svg'); ?>
 			Faire un don
 		</a>
-		<?php if ( $with_legend ) : ?>
+		<?php if ($with_legend) : ?>
 			<p class="legend">
-				<?php if ( 75 === $rate ) : ?>
+				<?php if (75 === $rate) : ?>
 				75% du montant de votre don à la Fondation Amnesty International France est déductible de votre IFI, dans la limite de 50 000 €.
 				<?php else : ?>
 					Vous avez jusqu’au 31 décembre de l'année en cours pour bénéficier d’une réduction d’impôt égale à 66% du montant de votre don.

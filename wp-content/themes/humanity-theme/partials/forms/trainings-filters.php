@@ -26,13 +26,17 @@ $periods_query = $wpdb->get_col("SELECT DISTINCT DATE_FORMAT(meta_value, '%Y-%m'
 $period_options = ['' => 'Toutes les périodes'];
 if (!empty($periods_query)) {
     foreach ($periods_query as $period) {
-        if (empty($period)) continue;
+        if (empty($period)) {
+            continue;
+        }
         try {
             $date_obj = new DateTime($period . '-01');
             $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMMM yyyy');
             $label = ucfirst($formatter->format($date_obj));
             $period_options[$period] = $label;
-        } catch (Exception $e) { continue; }
+        } catch (Exception $e) {
+            continue;
+        }
     }
 }
 ?>
@@ -40,8 +44,8 @@ if (!empty($periods_query)) {
 <div class="taxonomyArchive-filters">
     <?php
     amnesty_render_custom_select(['label' => 'Catégorie', 'name' => 'qcategories', 'active' => $active_category, 'options' => $category_options, 'multiple' => true]);
-    amnesty_render_custom_select(['label' => 'Lieu', 'name' => 'qlieu', 'active' => $active_location, 'options' => $location_options, 'multiple' => true]);
-    amnesty_render_custom_select(['label' => 'Date', 'name' => 'qperiod', 'active' => $active_period, 'options' => $period_options, 'multiple' => true]);
-    ?>
+amnesty_render_custom_select(['label' => 'Lieu', 'name' => 'qlieu', 'active' => $active_location, 'options' => $location_options, 'multiple' => true]);
+amnesty_render_custom_select(['label' => 'Date', 'name' => 'qperiod', 'active' => $active_period, 'options' => $period_options, 'multiple' => true]);
+?>
 </div>
 <button id="training-filters-submit" class="filter-button" type="submit">Filtrer</button>

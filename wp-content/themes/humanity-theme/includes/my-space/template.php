@@ -10,7 +10,6 @@ function include_default_template_for_my_space( $template ) {
 	$parent_page = get_page_by_path('mon-espace');
 
 	if ( $parent_page && in_array( $parent_page->ID, get_post_ancestors( $post ) ) ) {
-
 		$specific_template_php = locate_template("page-{$post->post_name}.php");
 		$specific_template_html = locate_template("templates/page-{$post->post_name}.html");
 
@@ -34,23 +33,23 @@ add_action('template_include', 'include_default_template_for_my_space');
 
 add_action('template_redirect', 'auth_my_space');
 
-function auth_my_space() {
-	$slug_parent_page = 'mon-espace';
+function auth_my_space()
+{
+    $slug_parent_page = 'mon-espace';
 
-	if ( is_page() && ! is_preview() ) {
-		$current_page = get_queried_object();
+    if (is_page() && ! is_preview()) {
+        $current_page = get_queried_object();
 
-		$parent_page = get_page_by_path($slug_parent_page);
+        $parent_page = get_page_by_path($slug_parent_page);
 
-		if ( $parent_page ) {
-			$id_parent_page = $parent_page->ID;
+        if ($parent_page) {
+            $id_parent_page = $parent_page->ID;
 
-			$ancestors = get_post_ancestors($current_page->ID);
+            $ancestors = get_post_ancestors($current_page->ID);
 
-			if ( $current_page->ID === $id_parent_page || in_array($id_parent_page, $ancestors) ) {
-				check_user_page_access();
-			}
-		}
-	}
+            if ($current_page->ID === $id_parent_page || in_array($id_parent_page, $ancestors)) {
+                check_user_page_access();
+            }
+        }
+    }
 }
-

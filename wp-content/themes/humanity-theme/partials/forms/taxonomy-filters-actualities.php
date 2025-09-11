@@ -6,7 +6,7 @@
  * @package Amnesty\Partials
  */
 
-if ((!isset($taxonomies) || empty($taxonomies) ) && (!isset($types) || empty($types))) {
+if ((!isset($taxonomies) || empty($taxonomies)) && (!isset($types) || empty($types))) {
     return;
 }
 

@@ -7,20 +7,20 @@
  * Inserter: no
  */
 
-$type = get_field( 'type' )['value'];
-if( $type === 'action-soutien' ) {
-    $enable_user_message = get_field( 'autoriser_message_utilisateur' );
-    $phone_required = get_field( 'phone_required' );
-    $form_contenu = get_field( 'form_contenu' );
-    $button_text = get_field( 'button_text' );
-    $comment_max_length = (int)get_field( 'comment_max_length' );
-    $terms = get_field( 'terms' );
+$type = get_field('type')['value'];
+if ($type === 'action-soutien') {
+    $enable_user_message = get_field('autoriser_message_utilisateur');
+    $phone_required = get_field('phone_required');
+    $form_contenu = get_field('form_contenu');
+    $button_text = get_field('button_text');
+    $comment_max_length = (int)get_field('comment_max_length');
+    $terms = get_field('terms');
 } else {
     $punchline = get_field('punchline');
     $recipient = get_field('destinataire');
 }
 
-$current_date = date( 'Y-m-d' );
+$current_date = date('Y-m-d');
 $end_date = get_field('date_de_fin');
 $post_id = get_the_ID();
 
@@ -31,25 +31,25 @@ $post_id = get_the_ID();
   <div class="sticky-card">
     <div class="sticky-card-content">
       <div class="sticky-card-title">SIGNEZ LA PÉTITION</div>
-      <p class="recipient"><?php echo esc_html( $recipient ); ?><?php echo esc_html( $form_contenu ) ?></p>
-        <?php if ( $type === 'petition' ) : ?>
+      <p class="recipient"><?php echo esc_html($recipient); ?><?php echo esc_html($form_contenu) ?></p>
+        <?php if ($type === 'petition') : ?>
       <div class="punchline-wrapper">
-        <p class="punchline"><?php echo esc_html( $punchline ); ?></p>
+        <p class="punchline"><?php echo esc_html($punchline); ?></p>
         <div class="border"></div>
       </div>
         <?php endif; ?>
-		<?php if ( isset($end_date) && (strtotime($end_date) >= strtotime($current_date)) ) : ?>
+		<?php if (isset($end_date) && (strtotime($end_date) >= strtotime($current_date))) : ?>
 
       <form class="signature-petition-form" method="post" action="">
-          <?php if ( $type === 'action-soutien' && $enable_user_message ) : ?>
+          <?php if ($type === 'action-soutien' && $enable_user_message) : ?>
           <div class="message-section">
               <textarea class="message-input" type="text" name="user_message" placeholder="Votre message* (<?= $comment_max_length ?> caractères max)" required maxlength="<?= $comment_max_length ?>"></textarea>
           </div>
           <?php endif; ?>
         <div class="email-section">
           <input class="email-input" type="email" name="user_email" placeholder="Email*" required>
-          <input type="hidden" name="petition_id" value="<?php echo esc_attr( $post_id ); ?>">
-          <?php wp_nonce_field( 'amnesty_sign_petition', 'amnesty_petition_nonce' ); ?>
+          <input type="hidden" name="petition_id" value="<?php echo esc_attr($post_id); ?>">
+          <?php wp_nonce_field('amnesty_sign_petition', 'amnesty_petition_nonce'); ?>
         </div>
 
         <div class="full-form">
@@ -67,8 +67,8 @@ $post_id = get_the_ID();
 
           <div class="firstname-section">
             <input class="firstname-input" type="text" name="user_firstname" placeholder="Prénom*">
-            <input type="hidden" name="petition_id" value="<?php echo esc_attr( $post_id ); ?>">
-            <?php wp_nonce_field( 'amnesty_sign_petition', 'amnesty_petition_nonce' ); ?>
+            <input type="hidden" name="petition_id" value="<?php echo esc_attr($post_id); ?>">
+            <?php wp_nonce_field('amnesty_sign_petition', 'amnesty_petition_nonce'); ?>
           </div>
 
           <div class="lastname-section">
@@ -91,10 +91,10 @@ $post_id = get_the_ID();
                   'order' => 'ASC'
                 ]);
 
-                foreach ($countries as $country) :
-                  $country_name = get_the_title($country->ID);
-                  ?>
-                <option value="<?php echo esc_attr($country_name); ?>" <?php if(esc_attr($country_name) === 'France') :?> selected="selected"<?php endif;?>>
+		    foreach ($countries as $country) :
+		        $country_name = get_the_title($country->ID);
+		        ?>
+                <option value="<?php echo esc_attr($country_name); ?>" <?php if (esc_attr($country_name) === 'France') :?> selected="selected"<?php endif;?>>
                   <?php echo esc_html(ucwords(strtolower($country_name))); ?>
                 </option>
                 <?php endforeach; ?>
@@ -122,12 +122,12 @@ $post_id = get_the_ID();
                               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                           </svg>
                       </div>
-                      <div class="button-label"><?php if ( isset($button_text) && ! empty($button_text) ) : ?><?php echo esc_html($button_text) ?><?php else : ?>Signer<?php endif;?></div>
+                      <div class="button-label"><?php if (isset($button_text) && ! empty($button_text)) : ?><?php echo esc_html($button_text) ?><?php else : ?>Signer<?php endif;?></div>
                   </div>
               </button>
           </div>
           <div class="legals">
-              <?php if ( isset($terms) && ! empty($terms) ) : ?>
+              <?php if (isset($terms) && ! empty($terms)) : ?>
                   <?php the_field('terms'); ?>
               <?php else : ?>
                   <p>Les données personnelles collectées sur ce formulaire sont traitées par l’association Amnesty International France (AIF), responsable du traitement. Ces données vont nous permettre de vous envoyer nos propositions d’engagement, qu’elles soient militantes ou financières. Notre politique de confidentialité détaille la manière dont Amnesty International France, en sa qualité de responsable de traitement, traite et protège vos données personnelles collectées conformément aux dispositions de la Loi du 6 janvier 1978 relative à l’informatique, aux fichiers et aux libertés dite Loi « Informatique et Libertés », et au Règlement européen du 25 mai 2018 sur la protection des données (« RGPD »). Pour toute demande, vous pouvez contacter le service membres et donateurs d’AIF à l’adresse mentionnée ci-dessus, par email <span class="by-email"><a href="mailto:smd@amnesty.fr">smd@amnesty.fr</a></span> ou par téléphone 01 53 38 65 80. Vous pouvez également introduire une réclamation auprès de la CNIL. Pour plus d’information sur le traitement de vos données personnelles, veuillez consulter <span class="privacy-policy"><a href="/politique-de-confidentialité">notre politique de confidentialité</a></span></p>

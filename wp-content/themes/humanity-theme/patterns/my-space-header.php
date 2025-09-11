@@ -11,7 +11,9 @@
 
 <div class="aif-donor-space-content-header">
     <div class="yoast-breadcrumb-wrapper">
-        <?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>
+        <?php if (function_exists('yoast_breadcrumb')) {
+            yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
+        } ?>
     </div>
     <div class='custom-button-block right'>
         <a href="/" target="_blank" rel="noopener noreferrer" class="custom-button">

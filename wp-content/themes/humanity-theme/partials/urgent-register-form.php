@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 $countries = get_posts(
-	[
-		'post_type'      => 'fiche_pays',
-		'posts_per_page' => -1,
-		'orderby'        => 'title',
-		'order'          => 'ASC',
-	]
+    [
+        'post_type'      => 'fiche_pays',
+        'posts_per_page' => -1,
+        'orderby'        => 'title',
+        'order'          => 'ASC',
+    ]
 );
 
 ?>
@@ -16,7 +16,7 @@ $countries = get_posts(
 <div class="urgent-register">
 	<div class="urgent-register-header">
 		<p>
-			<?php echo esc_attr( $text_header ); ?>
+			<?php echo esc_attr($text_header); ?>
 		</p>
 	</div>
 	<div class="urgent-register-form">
@@ -24,15 +24,15 @@ $countries = get_posts(
 			<div class="form-mess hidden"></div>
 			<div class="urgent-register-form-input">
 				<?php
-				foreach ( $input as $item ) :
-					$item_esc    = esc_attr( $item );
-					$placeholder = 'tel' === $item ? 'Téléphone mobile' : $item
-					?>
+                foreach ($input as $item) :
+                    $item_esc    = esc_attr($item);
+                    $placeholder = 'tel' === $item ? 'Téléphone mobile' : $item
+                    ?>
 					<label for="<?php echo $item_esc; ?>"></label>
 					<input class="input"
 							name="<?php echo $item_esc; ?>"
 							type="<?php echo $item_esc; ?>"
-							placeholder="<?php echo esc_attr( ucfirst( $placeholder ) ); ?>"
+							placeholder="<?php echo esc_attr(ucfirst($placeholder)); ?>"
 					required/>
 					<div class="input-error hidden"></div>
 				<?php endforeach; ?>
@@ -80,48 +80,48 @@ $countries = get_posts(
 						</div>
 						<div class="form-group country-selection">
 							<select class="country-input " name="country">
-								<option value=""><?php _e( 'Pays*', 'textdomain' ); ?></option>
+								<option value=""><?php _e('Pays*', 'textdomain'); ?></option>
 								<?php
-								foreach ( $countries as $country ) :
-									$country_name = get_the_title( $country->ID );
-									?>
-									<option value="<?php echo esc_attr( $country_name ); ?>"
+                                foreach ($countries as $country) :
+                                    $country_name = get_the_title($country->ID);
+                                    ?>
+									<option value="<?php echo esc_attr($country_name); ?>"
 										<?php
-										if ( esc_attr( $country_name ) === 'France' ) :
-											?>
+                                        if (esc_attr($country_name) === 'France') :
+                                            ?>
 											selected="selected"
 											<?php
-										endif;
-										?>
+                                        endif;
+                                    ?>
 									>
-										<?php echo esc_html( ucwords( strtolower( $country_name ) ) ); ?>
+										<?php echo esc_html(ucwords(strtolower($country_name))); ?>
 									</option>
 								<?php endforeach; ?>
 							</select>
 						</div>
 					</div>
-					<?php if ( ! in_array( 'tel', $input, true ) ) : ?>
+					<?php if (! in_array('tel', $input, true)) : ?>
 						<div class="form-group">
 							<label for="tel"></label>
 							<input
 								id="tel"
 								name="tel"
 								type="tel"
-								placeholder="<?php esc_attr_e( 'Téléphone mobile', 'text-domain' ); ?>"
+								placeholder="<?php esc_attr_e('Téléphone mobile', 'text-domain'); ?>"
 							>
 							<div class="input-error hidden"></div>
 						</div>
 					<?php endif; ?>
 				</div>
 				<div class="form-group">
-					<input type="hidden" name="type" value="<?php echo esc_attr( $action_type ); ?>">
+					<input type="hidden" name="type" value="<?php echo esc_attr($action_type); ?>">
 				</div>
 			</div>
 			<div class="urgent-register-form-cta">
 				<button type="submit" name="sign_urgent_action">
 					<?php
-					echo file_get_contents( get_template_directory() . '/assets/images/icon-arrow.svg' );
-					?>
+                    echo file_get_contents(get_template_directory() . '/assets/images/icon-arrow.svg');
+?>
 					S'inscrire
 				</button>
 			</div>

@@ -10,7 +10,8 @@ if (!function_exists('register_chip_category_block')) {
      *
      * @return void
      */
-    function register_chip_category_block(): void {
+    function register_chip_category_block(): void
+    {
         register_block_type(
             'amnesty-core/chip-category',
             [

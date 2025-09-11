@@ -255,7 +255,7 @@ if ($user_longitude && $user_latitude) {
                         </section>
                     <?php
                     endif;
-                    ?>
+?>
 
                 <?php else : ?>
                     <p class="no-events">Désolé, il n'y a aucun résultat pour cette recherche.</p>

@@ -64,6 +64,7 @@ When working with SCSS or JavaScript, we have several commands you can run from 
 
 ### Before Committing
 Prior to committing any code, please ensure that both `yarn lint` and `composer lint` report no errors. This will save time in the long run.  
+Make sure to run `./vendor/bin/php-cs-fixer fix ./wp-content/themes/humanity-theme` before committing
 
 #### Commit Messages
 We follow the commit message standards outlined in detail in [this excellent post](https://cbea.ms/git-commit/) by CBEAMS.  

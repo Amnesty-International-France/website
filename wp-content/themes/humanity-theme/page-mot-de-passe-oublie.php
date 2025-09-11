@@ -51,14 +51,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "content" => $error_message]);
         }
 
-        if (isset($success_message)) {
-            aif_include_partial("alert", [
-            "state" => "success",
-            "title" => $success_title,
-            "content" => $success_message,
-                ]);
-        }
-        ?>
+if (isset($success_message)) {
+    aif_include_partial("alert", [
+    "state" => "success",
+    "title" => $success_title,
+    "content" => $success_message,
+        ]);
+}
+?>
 
         <?php if ($display_form) : ?>
 

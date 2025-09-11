@@ -32,28 +32,28 @@ function aif_format_date($date)
 				<div class="aif-my-demand-container__title-container">
 					<p class="aif-my-demand-container__title-container__date"><?= aif_format_date($demand->Date_de_la_demande__c) ?></p>
 					<?php
-					$status = "";
+                    $status = "";
 
-					switch ($demand->Statut_Espace_Don__c) {
-						case "En cours de traitement":
-							$status = "warning";
-							break;
-						case "Rejeté":
-							$status = "error";
-							break;
-						case "Traité":
-							$status = "success";
-							break;
-						default:
-							$status = "warning";
-							break;
-					}
+			    switch ($demand->Statut_Espace_Don__c) {
+			        case "En cours de traitement":
+			            $status = "warning";
+			            break;
+			        case "Rejeté":
+			            $status = "error";
+			            break;
+			        case "Traité":
+			            $status = "success";
+			            break;
+			        default:
+			            $status = "warning";
+			            break;
+			    }
 
-					aif_include_partial("label", [
-					"content" => $demand->Statut_Espace_Don__c,
-					"variant" => $status
-					]);
-					?>
+			    aif_include_partial("label", [
+			    "content" => $demand->Statut_Espace_Don__c,
+			    "variant" => $status
+			    ]);
+			    ?>
 
 				</div>
 
@@ -68,13 +68,13 @@ function aif_format_date($date)
 
 					<?php  if ($demand->Statut_Espace_Don__c == "Fermé - Echoué") : ?>
 						<?php
-						$url = add_query_arg([
-							"subject" =>  "Ma demande n'a pas pu aboutir",
-						], get_permalink(get_page_by_path('nous-contacter')));
+			        $url = add_query_arg([
+			            "subject" =>  "Ma demande n'a pas pu aboutir",
+			        ], get_permalink(get_page_by_path('nous-contacter')));
 
-							aif_include_partial("info-message", [
-							"content" => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
-						?>
+					    aif_include_partial("info-message", [
+					    "content" => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
+					    ?>
 					<?php endif ?>
 				</div>
 			</div>

@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 if (!function_exists('render_action_block')) {
-    function format_date_php(?string $yyyymmdd): string {
+    function format_date_php(?string $yyyymmdd): string
+    {
         if (empty($yyyymmdd) || strlen($yyyymmdd) !== 8) {
             return $yyyymmdd ?? '';
         }
@@ -19,7 +20,8 @@ if (!function_exists('render_action_block')) {
      * @param array<string, mixed> $attributes Block attributes.
      * @return string HTML output.
      */
-    function render_action_block(array $attributes): string {
+    function render_action_block(array $attributes): string
+    {
         $type = $attributes['type'] ?? 'petition';
         $sur_title = $attributes['surTitle'] ?? '';
 
@@ -48,10 +50,10 @@ if (!function_exists('render_action_block')) {
             $button_link = get_permalink($petition_post);
 
             $goal = get_field('objectif_signatures', $petition_id) ?: 200000;
-            $current = amnesty_get_petition_signature_count( $petition_id ) ?: 0;
+            $current = amnesty_get_petition_signature_count($petition_id) ?: 0;
             $end_date_raw = get_field('date_de_fin', $petition_id);
             $end_date = !empty($end_date_raw) ? format_date_php($end_date_raw) : '30.06.2025';
-            
+
             $percentage = ($goal > 0) ? (($current / $goal) * 100) : 0;
             $percentage = min($percentage, 100);
 
@@ -62,7 +64,7 @@ if (!function_exists('render_action_block')) {
             $button_text = $attributes['buttonText'] ?? __('En savoir plus', 'amnesty');
             $button_link = $attributes['buttonLink'] ?? '#';
             $button_position = $attributes['buttonPosition'] ?? 'left';
-            
+
             if (!empty($attributes['backgroundColor'])) {
                 $wrapper_classes[] = $attributes['backgroundColor'] ?? 'primary';
             }
@@ -100,8 +102,8 @@ if (!function_exists('render_action_block')) {
                             <p class="supports">
                                 <?php
                                     $soutien_mot = ($current > 1) ? 'soutiens.' : 'soutien.';
-                                    echo esc_html(number_format_i18n($current) . ' ' . $soutien_mot);
-                                ?>
+                    echo esc_html(number_format_i18n($current) . ' ' . $soutien_mot);
+                    ?>
                                 <span class="help-us">
                                     <?php echo esc_html(__('Aidez-nous à atteindre', 'amnesty')); ?> <?php echo esc_html(number_format_i18n($goal)); ?>
                                 </span>

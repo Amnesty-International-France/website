@@ -7,20 +7,20 @@
  * Inserter: no
  */
 
-$should_switch_blog = ! empty( $post->blog_id ) && absint( $post->blog_id ) !== absint( get_current_blog_id() );
+$should_switch_blog = ! empty($post->blog_id) && absint($post->blog_id) !== absint(get_current_blog_id());
 
-if ( $should_switch_blog ) {
-	switch_to_blog( $post->blog_id );
+if ($should_switch_blog) {
+    switch_to_blog($post->blog_id);
 }
 
-$show_publish_date = amnesty_validate_boolish( get_post_meta( get_the_ID(), 'show_published_date', true ) );
+$show_publish_date = amnesty_validate_boolish(get_post_meta(get_the_ID(), 'show_published_date', true));
 
-if ( $should_switch_blog ) {
-	restore_current_blog();
+if ($should_switch_blog) {
+    restore_current_blog();
 }
 
-if ( ! $show_publish_date ) {
-	return;
+if (! $show_publish_date) {
+    return;
 }
 
 ?>
@@ -28,10 +28,10 @@ if ( ! $show_publish_date ) {
 <div class="wp-block-group article-metaDataRow">
 <?php
 
-do_action( 'amnesty_before_published_date' );
+do_action('amnesty_before_published_date');
 
-if ( $should_switch_blog ) {
-	switch_to_blog( $post->blog_id );
+if ($should_switch_blog) {
+    switch_to_blog($post->blog_id);
 }
 
 ?>
@@ -40,11 +40,11 @@ if ( $should_switch_blog ) {
 
 <?php
 
-if ( $should_switch_blog ) {
-	restore_current_blog();
+if ($should_switch_blog) {
+    restore_current_blog();
 }
 
-do_action( 'amnesty_after_published_date' );
+do_action('amnesty_after_published_date');
 
 ?>
 </div>

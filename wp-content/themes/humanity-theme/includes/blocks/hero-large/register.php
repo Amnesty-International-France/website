@@ -33,4 +33,4 @@ if ( ! function_exists( 'register_hero_large_block' ) ) {
 	}
 }
 
-add_action( 'init', 'register_hero_large_block' );
+add_action('init', 'register_hero_large_block');

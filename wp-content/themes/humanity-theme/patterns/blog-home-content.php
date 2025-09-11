@@ -7,8 +7,8 @@
  * Inserter: no
  */
 
-if ( ! is_home() || ! get_option( 'page_for_posts' ) ) {
-	return;
+if (! is_home() || ! get_option('page_for_posts')) {
+    return;
 }
 
-echo wp_kses( get_post_field( 'post_content', get_option( 'page_for_posts' ) ), 'slider' );
+echo wp_kses(get_post_field('post_content', get_option('page_for_posts')), 'slider');

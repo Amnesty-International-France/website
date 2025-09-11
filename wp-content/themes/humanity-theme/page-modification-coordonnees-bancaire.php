@@ -61,22 +61,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
 			<?php endif ?>
 
 			<?php
-			if (!empty($error_message)) {
-				$title = "Une erreur est survenue";
-				aif_include_partial("alert", [
-					"title" => $title,
-					"state" => "error",
-				"content" => $error_message]);
-			}
+            if (!empty($error_message)) {
+                $title = "Une erreur est survenue";
+                aif_include_partial("alert", [
+                    "title" => $title,
+                    "state" => "error",
+                "content" => $error_message]);
+            }
 
-			if (!empty($success_message)) {
-				$title = "Une erreur est survenue";
-				aif_include_partial("alert", [
-					"title" => $success_message_title,
-				"content" => $success_message,
-			"state" => "success"]);
-			}
-			?>
+if (!empty($success_message)) {
+    $title = "Une erreur est survenue";
+    aif_include_partial("alert", [
+        "title" => $success_message_title,
+    "content" => $success_message,
+            "state" => "success"]);
+}
+?>
 
 			<form method="post" action="">
 				<?php wp_nonce_field('iban_form', 'iban_nonce'); ?>
@@ -88,12 +88,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
 				/>
 
 				<?php
-				$url = get_permalink(get_page_by_path('mes-demandes'));
-				$content = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
-				aif_include_partial("info-message", [
-						"id" => "iban-help-message",
-						"content" => $content]);
-				?>
+    $url = get_permalink(get_page_by_path('mes-demandes'));
+$content = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
+aif_include_partial("info-message", [
+        "id" => "iban-help-message",
+        "content" => $content]);
+?>
 
 				<button class="btn aif-mt1w aif-button--full" type="submit">Enregistrer</button>
 				<button class="btn btn--dark aif-mt1w aif-button--full" type="reset">Annuler</button>

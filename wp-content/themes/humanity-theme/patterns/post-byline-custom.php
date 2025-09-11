@@ -7,23 +7,23 @@
  * Inserter: no
  */
 
-$enabled = get_post_meta( get_the_ID(), '_display_author_info', true );
+$enabled = get_post_meta(get_the_ID(), '_display_author_info', true);
 
-if ( ! $enabled ) {
-	return;
+if (! $enabled) {
+    return;
 }
 
-$use_author = get_post_meta( get_the_ID(), 'byline_is_author', true );
+$use_author = get_post_meta(get_the_ID(), 'byline_is_author', true);
 
-if ( $use_author ) {
-	return;
+if ($use_author) {
+    return;
 }
 
-$byline_entity  = get_post_meta( get_the_ID(), 'byline_entity', true );
-$byline_context = get_post_meta( get_the_ID(), 'byline_context', true );
+$byline_entity  = get_post_meta(get_the_ID(), 'byline_entity', true);
+$byline_context = get_post_meta(get_the_ID(), 'byline_context', true);
 
-if ( ! $byline_entity && ! $byline_context ) {
-	return;
+if (! $byline_entity && ! $byline_context) {
+    return;
 }
 
 ?>
@@ -33,16 +33,16 @@ if ( ! $byline_entity && ! $byline_context ) {
 	<div class="wp-block-group authorInfoContainer">
 	<?php
 
-	if ( $byline_entity ) {
-		/* translators: [front] */
-		echo wp_kses_post( sprintf( '<span>%s %s</span>', _x( 'By', 'author attribution (as in "written by")', 'amnesty' ), $byline_entity ) );
-	}
+    if ($byline_entity) {
+        /* translators: [front] */
+        echo wp_kses_post(sprintf('<span>%s %s</span>', _x('By', 'author attribution (as in "written by")', 'amnesty'), $byline_entity));
+    }
 
-	if ( $byline_context ) {
-		echo wp_kses_post( sprintf( ',&nbsp;<span>%s</span>', $byline_context ) );
-	}
+if ($byline_context) {
+    echo wp_kses_post(sprintf(',&nbsp;<span>%s</span>', $byline_context));
+}
 
-	?>
+?>
 	</div>
 	<!-- /wp:group -->
 </div>

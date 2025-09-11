@@ -10,25 +10,25 @@ declare(strict_types=1);
  */
 
 $is_promo_context = $args['is_promo_context'] ?? false;
-$open_cover_image = get_field( 'cover_image_with_magazine_open' );
-$cover_image = get_field( 'cover_image' );
-$month = get_field( 'publication_month' );
+$open_cover_image = get_field('cover_image_with_magazine_open');
+$cover_image = get_field('cover_image');
+$month = get_field('publication_month');
 if ($month) {
-	$date_objet = DateTime::createFromFormat('!m', $month);
-	$month = date_i18n('F', $date_objet->getTimestamp());
+    $date_objet = DateTime::createFromFormat('!m', $month);
+    $month = date_i18n('F', $date_objet->getTimestamp());
 }
-$year = get_field( 'publication_year' );
+$year = get_field('publication_year');
 $summary_title = get_field('summary_title');
 $summary_content = get_field('summary_content');
 
 ?>
 
 <?php
-if ( $is_promo_context ) {
-    $open_cover_image = get_field( 'cover_image_with_magazine_open' );
-    if ( $open_cover_image ) : ?>
+if ($is_promo_context) {
+    $open_cover_image = get_field('cover_image_with_magazine_open');
+    if ($open_cover_image) : ?>
         <figure class="promo-open-magazine">
-			<img src="<?php echo esc_url( $open_cover_image['sizes']['medium_large'] ); ?>" alt="<?php echo esc_attr( $open_cover_image['alt'] ); ?>">
+			<img src="<?php echo esc_url($open_cover_image['sizes']['medium_large']); ?>" alt="<?php echo esc_attr($open_cover_image['alt']); ?>">
         </figure>
     <?php endif;
 }
@@ -63,19 +63,19 @@ if ( $is_promo_context ) {
 <!-- wp:group {"tagName":"section","className":"container has-gutter"} -->
 <section class="wp-block-group container has-gutter related-posts">
 	<?php
-	echo do_blocks('
+    echo do_blocks('
 	<!-- wp:amnesty-core/related-posts {"title":"ET AUSSI", "nb_posts": 2, "display": "chronique"} /-->
 	');
-	?>
+?>
 </section>
 <!-- /wp:group -->
 
 <!-- wp:group {"tagName":"section","className":"container has-gutter"} -->
 <section class="wp-block-group container has-gutter">
 	<?php
-	echo do_blocks('
+echo do_blocks('
 	<!-- wp:pattern {"slug":"amnesty/subscribe-to-the-chronicle-banner"} /-->
 	');
-	?>
+?>
 </section>
 <!-- /wp:group -->
