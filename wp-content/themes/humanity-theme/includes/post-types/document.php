@@ -218,21 +218,24 @@ add_action('manage_document_posts_custom_column', function ($column, $post_id) {
     }
 }, 10, 2);
 
-add_action('restrict_manage_posts', function ($post_type) {
-    if ($post_type !== 'document') {
-        return;
-    }
+add_action(
+    'restrict_manage_posts',
+    function ($post_type) {
+        if ($post_type !== 'document') {
+            return;
+        }
 
-    $selected = $_GET['document_private'] ?? '';
+        $selected = $_GET['document_private'] ?? '';
 
-    ?>
+        ?>
 	<select name="document_private">
 		<option value="">Tous les documents</option>
 		<option value="1" <?php selected($selected, '1'); ?>>Privé</option>
 		<option value="0" <?php selected($selected, '0'); ?>>Publique</option>
 	</select>
-	<?php
-});
+		<?php
+    }
+);
 
 add_action('pre_get_posts', function ($query) {
     global $pagenow;

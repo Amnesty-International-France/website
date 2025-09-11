@@ -1,11 +1,3 @@
-<?php
-
-global $post;
-
-$content_type = get_field('type_de_contenu', $post->ID) ?? '';
-
-?>
-
 <article class="edh-card">
 	<a href="<?php echo esc_url($permalink); ?>" class="edh-card-thumbnail">
 		<?php if ($thumbnail) : ?>
@@ -25,7 +17,7 @@ $content_type = get_field('type_de_contenu', $post->ID) ?? '';
             'icon'  => $icon ?? '',
         ]
     );
-?>
+	?>
 
 	<div class="edh-card-content">
 		<h3 class="edh-card-title">
