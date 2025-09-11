@@ -32,7 +32,7 @@ function include_default_template_for_my_space( $template ) {
 
 add_action('template_include', 'include_default_template_for_my_space');
 
-//add_action('template_redirect', 'auth_my_space');
+add_action('template_redirect', 'auth_my_space');
 
 function auth_my_space() {
 	$slug_parent_page = 'mon-espace';
