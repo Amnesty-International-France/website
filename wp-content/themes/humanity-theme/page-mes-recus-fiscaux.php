@@ -14,10 +14,12 @@ if (count($tax_reciept) > 0) {
 
 ?>
 
+<?php get_header(); ?>
+
 <div class="aif-donor-space-layout">
-	<!-- wp:pattern {"slug":"amnesty/my-space-sidebar"} /-->
+	<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-sidebar"] ] ); ?>
 	<main class="aif-donor-space-content">
-		<!-- wp:pattern {"slug":"amnesty/my-space-header"} /-->
+		<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-header"] ] ); ?>
 		<div class="aif-container--form">
 			<header class=" wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
 				<h1 class="article-title wp-block-post-title">Mes reçus fiscaux</h1>
