@@ -85,10 +85,10 @@ $post_id = get_the_ID();
                 <option value=""><?php _e('Pays*', 'textdomain'); ?></option>
                 <?php
                 $countries = get_posts([
-                  'post_type' => 'fiche_pays',
-                  'posts_per_page' => -1,
-                  'orderby' => 'title',
-                  'order' => 'ASC',
+                    'post_type' => 'fiche_pays',
+                    'posts_per_page' => -1,
+                    'orderby' => 'title',
+                    'order' => 'ASC',
                 ]);
 
 		    foreach ($countries as $country) :

@@ -15,8 +15,8 @@ if (! function_exists('amnesty_remove_generator')) {
         $types = apply_filters(
             'amnesty_remove_generator_from',
             [
-            // phpcs:ignore
-            'html', 'xhtml', 'atom', 'rss2', 'rdf', 'comment',
+                // phpcs:ignore
+                'html', 'xhtml', 'atom', 'rss2', 'rdf', 'comment',
             ]
         );
 

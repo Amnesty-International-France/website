@@ -221,11 +221,11 @@ if (!function_exists('render_articles_homepage_block')) {
                     <div class="article-main-desktop">
                         <?php if (!empty($entity_slug)): ?>
                             <?= render_chip_category_block([
-                                    'label' => esc_html($entity_label),
-                                    'size'  => 'small',
-                                    'link'  => get_dynamic_category_or_post_type_link($entity_slug),
-                                    'style' => esc_attr($chip_style),
-                                ]) ?>
+                                'label' => esc_html($entity_label),
+                                'size'  => 'small',
+                                'link'  => get_dynamic_category_or_post_type_link($entity_slug),
+                                'style' => esc_attr($chip_style),
+                            ]) ?>
                         <?php endif; ?>
                         <?php if ($image): ?>
                             <div class="article-image-container">
@@ -270,10 +270,10 @@ if (!function_exists('render_articles_homepage_block')) {
                             <div class="wrapper">
                                 <?php if (!empty($entity_slug)): ?>
                                     <?= render_chip_category_block([
-                                            'label' => esc_html($entity_label),
-                                            'size'  => 'small',
-                                            'style' => esc_attr($chip_style),
-                                        ]) ?>
+                                        'label' => esc_html($entity_label),
+                                        'size'  => 'small',
+                                        'style' => esc_attr($chip_style),
+                                    ]) ?>
                                 <?php endif; ?>
                                 <div class="article-main-mobile-image-wrapper">
                                     <?php if ($image): ?>
@@ -335,10 +335,10 @@ if (!function_exists('render_articles_homepage_block')) {
                                 <div class="wrapper">
                                     <?php if (!empty($entity_slug)): ?>
                                         <?= render_chip_category_block([
-                                                'label' => esc_html($entity_label),
-                                                'size'  => 'small',
-                                                'style' => esc_attr($chip_style),
-                                            ]) ?>
+                                            'label' => esc_html($entity_label),
+                                            'size'  => 'small',
+                                            'style' => esc_attr($chip_style),
+                                        ]) ?>
                                     <?php endif; ?>
                                     <div class="article-side-image-wrapper">
                                         <?php if ($image): ?>

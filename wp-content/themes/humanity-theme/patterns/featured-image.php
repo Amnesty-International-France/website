@@ -21,13 +21,13 @@ if (get_post_meta(get_the_ID(), '_hide_featured_image', true)) {
 
 $image_id = get_post_thumbnail_id(get_the_ID());
 
-if ( ! $image_id ) {
-    if ( 'press-release' === get_post_type() ) {
+if (! $image_id) {
+    if ('press-release' === get_post_type()) {
         $default_image_url = get_template_directory_uri() . '/assets/images/default-press-release.png';
         ?>
         <div class="wp-block-group">
             <figure class="wp-block-image container--full-width article-figure is-stretched">
-                <img src="<?php echo esc_url( $default_image_url ); ?>" alt="" />
+                <img src="<?php echo esc_url($default_image_url); ?>" alt="" />
             </figure>
             </div>
         <?php

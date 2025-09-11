@@ -1,32 +1,33 @@
 <?php
 
-function include_default_template_for_my_space( $template ) {
-	global $post;
+function include_default_template_for_my_space($template)
+{
+    global $post;
 
-	if ( ! is_page() || !$post ) {
-		return $template;
-	}
+    if (! is_page() || !$post) {
+        return $template;
+    }
 
-	$parent_page = get_page_by_path('mon-espace');
+    $parent_page = get_page_by_path('mon-espace');
 
-	if ( $parent_page && in_array( $parent_page->ID, get_post_ancestors( $post ) ) ) {
-		$specific_template_php = locate_template("page-{$post->post_name}.php");
-		$specific_template_html = locate_template("templates/page-{$post->post_name}.html");
+    if ($parent_page && in_array($parent_page->ID, get_post_ancestors($post))) {
+        $specific_template_php = locate_template("page-{$post->post_name}.php");
+        $specific_template_html = locate_template("templates/page-{$post->post_name}.html");
 
-		if ($specific_template_php) {
-			return $specific_template_php;
-		} elseif ($specific_template_html) {
-			set_query_var('html_template_file', $specific_template_html);
-			return locate_template('template-html-wrapper.php');
-		}
+        if ($specific_template_php) {
+            return $specific_template_php;
+        } elseif ($specific_template_html) {
+            set_query_var('html_template_file', $specific_template_html);
+            return locate_template('template-html-wrapper.php');
+        }
 
-		$default_template = locate_template("templates/page-my-space-default.html");
-		if ($default_template) {
-			set_query_var('html_template_file', $default_template);
-			return locate_template('template-html-wrapper.php');
-		}
-	}
-	return $template;
+        $default_template = locate_template('templates/page-my-space-default.html');
+        if ($default_template) {
+            set_query_var('html_template_file', $default_template);
+            return locate_template('template-html-wrapper.php');
+        }
+    }
+    return $template;
 }
 add_action('template_include', 'include_default_template_for_my_space');
 

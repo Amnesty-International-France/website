@@ -15,7 +15,7 @@ $action_succeed = false;
 $disable_button = false;
 
 $requiredFields = [
-'Salutation', 'LastName', 'Code_Postal__c', 'FirstName', 'Email', 'Adresse_Ligne_4__c', 'Ville__c', 'Pays__c', 'MobilePhone',
+    'Salutation', 'LastName', 'Code_Postal__c', 'FirstName', 'Email', 'Adresse_Ligne_4__c', 'Ville__c', 'Pays__c', 'MobilePhone',
 ];
 
 $countries = [
@@ -108,7 +108,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
                 aif_include_partial('alert', [
                     'state' => 'success',
                     'title' => "Votre demande de changement d'informations a bien été prise en compte",
-                'content' => "Les changements seront effectifs d'ici quelques minutes"]);
+                    'content' => "Les changements seront effectifs d'ici quelques minutes"]);
 
             }
 ?>
@@ -129,10 +129,10 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 
     $url = add_query_arg([
         'subject' =>  'Modifier mon e-mail',
-        ], get_permalink(get_page_by_path('nous-contacter')));
+    ], get_permalink(get_page_by_path('nous-contacter')));
 aif_include_partial('info-message', [
-'id' => 'email-help-message',
-'content' => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>."]); ?>
+    'id' => 'email-help-message',
+    'content' => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>."]); ?>
 
 				<fieldset class="aif-flex aif-fieldset">
 					<legend class="aif-fieldset__legend">Civilité (obligatoire)<legend>

@@ -90,7 +90,7 @@ if (!empty($error_message)) {
     aif_include_partial('alert', [
         'state' => 'error',
         'title' => $title,
-    'content' => $error_message]);
+        'content' => $error_message]);
 
 }
 
@@ -102,9 +102,9 @@ if (!empty($error_no_access_to_donor_space)) {
                                             membres et donateurs</a> si vous pensez que c’est une erreur.';
 
     aif_include_partial('alert', [
-    'state' => 'error',
-    'title' => $title,
-    'content' => $content]);
+        'state' => 'error',
+        'title' => $title,
+        'content' => $content]);
 
 }
 ?>
@@ -124,8 +124,8 @@ if (!empty($error_no_access_to_donor_space)) {
 
 
                     aif_include_partial('info-message', [
-                    'id' => 'email-help-message',
-                    'content' => 'Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre adhésion ou de votre don.']); ?>
+                        'id' => 'email-help-message',
+                        'content' => 'Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre adhésion ou de votre don.']); ?>
 
                 </div>
 
@@ -148,8 +148,8 @@ if (!empty($error_no_access_to_donor_space)) {
 
                     <?php
 aif_include_partial('info-message', [
-'id' => 'passwordHelp',
-'content' => 'Exemple : Mon@MotDePasse123']); ?>
+    'id' => 'passwordHelp',
+    'content' => 'Exemple : Mon@MotDePasse123']); ?>
 
 
 

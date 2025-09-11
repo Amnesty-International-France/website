@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
                     aif_include_partial('alert', [
                         'title' => $title,
                         'state' => 'error',
-                    'content' => $error_message])
+                        'content' => $error_message])
 
                     ?>
 
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
                 aif_include_partial('alert', [
                     'state' => 'error',
                     'title' => $title,
-                'content' => $send_code_error_message]);
+                    'content' => $send_code_error_message]);
 
             }?>
 
@@ -162,10 +162,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
                  aif_include_partial(
                      'alert',
                      [
-                     'title' => 'Information',
-                     'content' => $send_code_success_message,
-                      'success' => true,
-                      ]
+                         'title' => 'Information',
+                         'content' => $send_code_success_message,
+                         'success' => true,
+                     ]
                  );
              }?>
 
