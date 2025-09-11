@@ -1,34 +1,40 @@
 <?php
 
-function assign_myspace_template_to_descendants( $post_id, $post, $update ) {
-    if ( wp_is_post_revision( $post_id ) || $post->post_type !== 'page' ) {
-        return;
-    }
+function include_default_template_for_my_space( $template ) {
+	global $post;
 
-    $parent_page_object = get_page_by_path( 'mon-espace' );
+	if ( ! is_page() || !$post ) {
+		return $template;
+	}
 
-    if ( ! $parent_page_object ) {
-        return;
-    }
+	$parent_page = get_page_by_path('mon-espace');
 
-    $ancestors = get_post_ancestors( $post_id );
+	if ( $parent_page && in_array( $parent_page->ID, get_post_ancestors( $post ) ) ) {
 
-    if ( ! empty($ancestors) && in_array( $parent_page_object->ID, $ancestors ) ) {
-        $template_file = 'page-my-space-default';
-        $current_template = get_page_template_slug( $post_id );
+		$specific_template_php = locate_template("page-{$post->post_name}.php");
+		$specific_template_html = locate_template("templates/page-{$post->post_name}.html");
 
-        /*if ( empty( $current_template ) || 'default' === $current_template ) {
-            update_post_meta( $post_id, '_wp_page_template', $template_file );
-        }*/
-		if( $current_template === $template_file ) {
-			delete_post_meta( $post_id, '_wp_page_template' );
+		if ($specific_template_php) {
+			return $specific_template_php;
+		} elseif ($specific_template_html) {
+			set_query_var('html_template_file', $specific_template_html);
+			set_query_var('with_header', true);
+			return locate_template('template-html-wrapper.php');
 		}
-    }
+
+		$default_template = locate_template("templates/page-my-space-default.html");
+		if ($default_template) {
+			set_query_var('html_template_file', $default_template);
+			set_query_var('with_header', true);
+			return locate_template('template-html-wrapper.php');
+		}
+	}
+	return $template;
 }
 
-add_action( 'save_post', 'assign_myspace_template_to_descendants', 10, 3 );
+add_action('template_include', 'include_default_template_for_my_space');
 
-add_action('template_redirect', 'auth_my_space');
+//add_action('template_redirect', 'auth_my_space');
 
 function auth_my_space() {
 	$slug_parent_page = 'mon-espace';
