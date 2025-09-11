@@ -249,3 +249,5 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 		<?php endif ?>
 	</main>
 </div>
+
+<?php get_footer(); ?>

@@ -101,3 +101,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
 		</section>
 	</main>
 </div>
+
+<?php get_footer(); ?>

@@ -103,3 +103,5 @@ if (count($tax_reciept) > 0) {
 		</div>
 	</main>
 </div>
+
+<?php get_footer(); ?>

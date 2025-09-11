@@ -89,3 +89,6 @@ function aif_format_date($date)
 		</section>
 	</main>
 </div>
+
+<?php get_footer(); ?>
+
