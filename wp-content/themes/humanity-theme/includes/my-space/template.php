@@ -17,9 +17,12 @@ function assign_myspace_template_to_descendants( $post_id, $post, $update ) {
         $template_file = 'page-my-space-default';
         $current_template = get_page_template_slug( $post_id );
 
-        if ( empty( $current_template ) || 'default' === $current_template ) {
+        /*if ( empty( $current_template ) || 'default' === $current_template ) {
             update_post_meta( $post_id, '_wp_page_template', $template_file );
-        }
+        }*/
+		if( $current_template === $template_file ) {
+			delete_post_meta( $post_id, '_wp_page_template' );
+		}
     }
 }
 

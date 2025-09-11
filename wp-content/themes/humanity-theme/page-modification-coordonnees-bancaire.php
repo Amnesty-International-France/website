@@ -44,9 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
 
 ?>
 
+<?php get_header(); ?>
+
 <div class="aif-donor-space-layout">
-	<!-- wp:pattern {"slug":"amnesty/my-space-sidebar"} /-->
+	<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-sidebar"] ] ); ?>
 	<main class="aif-donor-space-content">
+		<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-header"] ] ); ?>
 		<section class="aif-container--form">
 			<header>
 				<h1>Mes informations</h1>
