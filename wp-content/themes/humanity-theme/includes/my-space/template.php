@@ -18,14 +18,12 @@ function include_default_template_for_my_space( $template ) {
 			return $specific_template_php;
 		} elseif ($specific_template_html) {
 			set_query_var('html_template_file', $specific_template_html);
-			set_query_var('with_header', true);
 			return locate_template('template-html-wrapper.php');
 		}
 
 		$default_template = locate_template("templates/page-my-space-default.html");
 		if ($default_template) {
 			set_query_var('html_template_file', $default_template);
-			set_query_var('with_header', true);
 			return locate_template('template-html-wrapper.php');
 		}
 	}

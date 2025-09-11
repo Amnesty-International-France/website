@@ -69,3 +69,5 @@ $user_status =  aif_get_user_status($sf_member);
 		</div>
 	</main>
 </div>
+
+<?php get_footer(); ?>

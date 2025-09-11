@@ -1,8 +1,6 @@
 <?php
 
-if( get_query_var('with_header') ) {
-	get_header();
-}
+get_header();
 
 the_post();
 
@@ -14,6 +12,4 @@ if ($html_file && file_exists($html_file)) {
 	the_content();
 }
 
-if( get_query_var('with_footer') ) {
-	get_footer();
-}
+get_footer();
