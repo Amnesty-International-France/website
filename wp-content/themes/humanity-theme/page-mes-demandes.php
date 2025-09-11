@@ -1,7 +1,4 @@
 <?php
-/*
- * Template name : mes-demandes-template
- */
 
 $current_user = wp_get_current_user();
 $sf_user_ID = get_SF_user_ID($current_user->ID);
