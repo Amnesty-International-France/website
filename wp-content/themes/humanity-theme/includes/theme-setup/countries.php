@@ -160,7 +160,7 @@ if (!function_exists('setup_countries')) {
             'Viêt-Nam' => ['slug' => 'viet-nam'],
             'Yémen' => ['slug' => 'yemen'],
             'Zambie' => ['slug' => 'zambie'],
-            'Zimbabwe' => ['slug' => 'zimbabwe']
+            'Zimbabwe' => ['slug' => 'zimbabwe'],
         ];
 
         foreach ($countries_default as $nom => $details) {
@@ -168,7 +168,7 @@ if (!function_exists('setup_countries')) {
                 wp_insert_term(
                     $nom,
                     'location',
-                    array('slug' => $details['slug'])
+                    ['slug' => $details['slug']]
                 );
             }
         }

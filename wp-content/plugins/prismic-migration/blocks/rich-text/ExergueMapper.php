@@ -2,32 +2,37 @@
 
 use blocks\BlockMapper;
 
-class ExergueMapper extends BlockMapper {
+class ExergueMapper extends BlockMapper
+{
+    private string $text;
 
-	private string $text;
+    public function __construct($prismicBlock, $text)
+    {
+        parent::__construct($prismicBlock);
+        $this->text = $text;
+    }
 
-	public function __construct($prismicBlock, $text) {
-		parent::__construct($prismicBlock);
-		$this->text = $text;
-	}
-
-	protected function getBlockName(): string {
+    protected function getBlockName(): string
+    {
         return 'amnesty-core/blockquote';
     }
 
-    protected function getAttributes(): array {
+    protected function getAttributes(): array
+    {
         return [
-			'quoteText' => $this->text,
-			'author' => '',
-			'bgColor' => 'gray'
-		];
+            'quoteText' => $this->text,
+            'author' => '',
+            'bgColor' => 'gray',
+        ];
     }
 
-    protected function getInnerBlocks(): array {
+    protected function getInnerBlocks(): array
+    {
         return [];
     }
 
-    protected function getInnerContent(): array {
+    protected function getInnerContent(): array
+    {
         return [];
     }
 }

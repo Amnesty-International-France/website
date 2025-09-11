@@ -135,12 +135,12 @@ $code_origine = get_field('code_origine');
             </div>
         </div>
         <?php
-        $random_petition = new WP_Query(array(
+        $random_petition = new WP_Query([
             'post_type'      => 'petition',
             'posts_per_page' => 1,
             'orderby'        => 'rand',
-            'post__not_in'   => array( get_the_ID() ),
-        ));
+            'post__not_in'   => [ get_the_ID() ],
+        ]);
 
 if ($random_petition->have_posts()) :
     while ($random_petition->have_posts()) : $random_petition->the_post();

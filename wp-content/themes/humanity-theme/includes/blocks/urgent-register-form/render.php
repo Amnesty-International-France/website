@@ -21,7 +21,7 @@ if (! function_exists('render_urgent_register_form_block')) {
         $args = [
             'input'       => $input,
             'action_type' => $action_type,
-            'text_header' => $text_header
+            'text_header' => $text_header,
         ];
 
         ob_start();

@@ -28,7 +28,6 @@ function include_default_template_for_my_space( $template ) {
 	}
 	return $template;
 }
-
 add_action('template_include', 'include_default_template_for_my_space');
 
 add_action('template_redirect', 'auth_my_space');

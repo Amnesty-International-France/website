@@ -6,34 +6,33 @@ use Type;
 
 class ActionMobilisationTransformer extends DocTransformer
 {
+    public function existsQueryParams(): array
+    {
+        $parent_page = get_or_create_page('page', 'actions-mobilisation', 'Actions de Mobilisation');
+        if (! $parent_page) {
+            return [];
+        }
 
-	public function existsQueryParams(): array {
-		$parent_page = get_or_create_page('page', 'actions-mobilisation', 'Actions de Mobilisation');
-		if( ! $parent_page ) {
-			return [];
-		}
+        if (is_int($parent_page)) {
+            return ['post_parent' => $parent_page];
+        } else {
+            return ['post_parent' => $parent_page->ID];
+        }
+    }
 
-		if( is_int( $parent_page ) ) {
-			return ['post_parent' => $parent_page];
-		} else {
-			return ['post_parent' => $parent_page->ID];
-		}
-	}
+    public function parse($prismicDoc): array
+    {
+        $wp_post = (new PageFroideTransformer())->parse($prismicDoc);
 
-	public function parse($prismicDoc): array
-	{
-		$wp_post = (new PageFroideTransformer())->parse( $prismicDoc );
+        $wp_post['post_type'] = \Type::get_wp_post_type(Type::ACTION_MOBILISATION);
 
-		$wp_post['post_type'] = \Type::get_wp_post_type(Type::ACTION_MOBILISATION);
+        $parent_page = get_or_create_page('page', 'actions-mobilisation', 'Actions de Mobilisation');
+        if (is_int($parent_page)) {
+            $wp_post['post_parent'] = $parent_page;
+        } elseif (is_object($parent_page)) {
+            $wp_post['post_parent'] = $parent_page->ID;
+        }
 
-		$parent_page = get_or_create_page('page', 'actions-mobilisation', 'Actions de Mobilisation');
-		if( is_int( $parent_page) ) {
-			$wp_post['post_parent'] = $parent_page;
-		}
-		else if( is_object( $parent_page) ) {
-			$wp_post['post_parent'] = $parent_page->ID;
-		}
-
-		return $wp_post;
-	}
+        return $wp_post;
+    }
 }

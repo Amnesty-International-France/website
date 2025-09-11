@@ -16,7 +16,7 @@ $ibanBlocks = [];
 $actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
 
 if ($actifMandate) {
-    $day_of_payment = date("d", strtotime($actifMandate->Date_paiement_Avenir__c));
+    $day_of_payment = date('d', strtotime($actifMandate->Date_paiement_Avenir__c));
     $ibanBlocks = str_split($actifMandate->Tech_Iban__c, 4);
     $formattedIban = implode(' ', $ibanBlocks);
     $last4IBANDigit = substr($actifMandate->Tech_Iban__c, -4);
@@ -33,12 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
     $newIban = str_replace(' ', '', $ibandirty);
 
     if (create_duplicate_update_IBAN_request($sf_user_ID, $newIban)) {
-        $success_message_title = "Votre demande de modification a bien été prise en compte";
+        $success_message_title = 'Votre demande de modification a bien été prise en compte';
 
         $url = get_permalink(get_page_by_path('mes-demandes'));
         $success_message = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
     } else {
-        $error_message = "Un problème technique est survenu. Merci de réessayer plus tard";
+        $error_message = 'Un problème technique est survenu. Merci de réessayer plus tard';
     }
 }
 
@@ -47,9 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
 <?php get_header(); ?>
 
 <div class="aif-donor-space-layout">
-	<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-sidebar"] ] ); ?>
+	<?php echo render_block(['blockName' => 'core/pattern', 'attrs' => ['slug' => 'amnesty/my-space-sidebar'] ]); ?>
 	<main class="aif-donor-space-content">
-		<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-header"] ] ); ?>
+		<?php echo render_block(['blockName' => 'core/pattern', 'attrs' => ['slug' => 'amnesty/my-space-header'] ]); ?>
 		<section class="aif-container--form">
 			<header>
 				<h1>Mes informations</h1>
@@ -62,19 +62,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
 
 			<?php
             if (!empty($error_message)) {
-                $title = "Une erreur est survenue";
-                aif_include_partial("alert", [
-                    "title" => $title,
-                    "state" => "error",
-                "content" => $error_message]);
+                $title = 'Une erreur est survenue';
+                aif_include_partial('alert', [
+                    'title' => $title,
+                    'state' => 'error',
+                'content' => $error_message]);
             }
 
 if (!empty($success_message)) {
-    $title = "Une erreur est survenue";
-    aif_include_partial("alert", [
-        "title" => $success_message_title,
-    "content" => $success_message,
-            "state" => "success"]);
+    $title = 'Une erreur est survenue';
+    aif_include_partial('alert', [
+        'title' => $success_message_title,
+    'content' => $success_message,
+            'state' => 'success']);
 }
 ?>
 
@@ -90,9 +90,9 @@ if (!empty($success_message)) {
 				<?php
     $url = get_permalink(get_page_by_path('mes-demandes'));
 $content = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
-aif_include_partial("info-message", [
-        "id" => "iban-help-message",
-        "content" => $content]);
+aif_include_partial('info-message', [
+        'id' => 'iban-help-message',
+        'content' => $content]);
 ?>
 
 				<button class="btn aif-mt1w aif-button--full" type="submit">Enregistrer</button>

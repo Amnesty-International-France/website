@@ -54,33 +54,33 @@ $current_slug = basename(rtrim($request_path, '/'));
 
 			<aside class="aif-donor-space-sidebar">
 				<?php
-				$menu_path = AIF_DONOR_SPACE_PATH . 'templates/partials/menu-my-space.php';
-				if (file_exists($menu_path)) {
-					include $menu_path;
-				}
-				?>
+                $menu_path = AIF_DONOR_SPACE_PATH . 'templates/partials/menu-my-space.php';
+if (file_exists($menu_path)) {
+    include $menu_path;
+}
+?>
 			</aside>
 
 			<section class="aif-donor-space-content">
 				<?php
-				$templates_dir = AIF_DONOR_SPACE_PATH . 'templates/';
-				$content_map = [
-					'mon-espace' => $templates_dir . 'welcome.php',
-					'mes-dons' => $templates_dir . 'home.php',
-					'mes-recus-fiscaux' => $templates_dir . 'taxt-receipt.php',
-					'modification-coordonnees-bancaire' => $templates_dir . 'update-iban.php',
-					'mes-informations-personnelles' => $templates_dir . 'my-personal-informations.php',
-					'mes-demandes' => $templates_dir . 'my-demand.php',
-					'nous-contacter' => $templates_dir . 'contact.php',
-				];
+$templates_dir = AIF_DONOR_SPACE_PATH . 'templates/';
+$content_map = [
+    'mon-espace' => $templates_dir . 'welcome.php',
+    'mes-dons' => $templates_dir . 'home.php',
+    'mes-recus-fiscaux' => $templates_dir . 'taxt-receipt.php',
+    'modification-coordonnees-bancaire' => $templates_dir . 'update-iban.php',
+    'mes-informations-personnelles' => $templates_dir . 'my-personal-informations.php',
+    'mes-demandes' => $templates_dir . 'my-demand.php',
+    'nous-contacter' => $templates_dir . 'contact.php',
+];
 
 
-				if (array_key_exists($current_slug, $content_map) && file_exists($content_map[$current_slug])) {
-					include $content_map[$current_slug];
-				} else {
-					echo "<h1>Contenu non trouvé</h1>";
-				}
-				?>
+if (array_key_exists($current_slug, $content_map) && file_exists($content_map[$current_slug])) {
+    include $content_map[$current_slug];
+} else {
+    echo '<h1>Contenu non trouvé</h1>';
+}
+?>
 			</section>
 
 		</div>

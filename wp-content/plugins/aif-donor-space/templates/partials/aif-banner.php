@@ -4,7 +4,7 @@
     </div>
     <div class="aif-banner__container">
         
-    <?php if($member->hasMandatActif): ?>
+    <?php if ($member->hasMandatActif): ?>
         <h2 class="aif-banner__container__title">  <?= $firstName ?>, renforcez votre soutien ! </h2>
         <p class="aif-banner__container__content">Merci de nous soutenir ! Envie d’aller plus loin dans votre engagement ? </p>
         <ul class="aif-banner__container__links">
@@ -14,7 +14,7 @@
         </ul>
     </div>
 
-    <?php elseif($member->isMembre): ?>
+    <?php elseif ($member->isMembre): ?>
         <div>
             <h2 class="aif-banner__container__title">  <?= $firstName ?>, renforcez votre soutien !</h2>
             <p class="aif-banner__container__content">Merci de nous soutenir ! Envie d’aller plus loin dans votre engagement ?</p>

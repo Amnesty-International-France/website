@@ -15,55 +15,55 @@ $action_succeed = false;
 $disable_button = false;
 
 $requiredFields = [
-"Salutation", "LastName", "Code_Postal__c", "FirstName", "Email", "Adresse_Ligne_4__c", "Ville__c", "Pays__c", "MobilePhone"
+'Salutation', 'LastName', 'Code_Postal__c', 'FirstName', 'Email', 'Adresse_Ligne_4__c', 'Ville__c', 'Pays__c', 'MobilePhone',
 ];
 
 $countries = [
-    "Afghanistan", "Afrique du Sud", "Albanie", "Algérie", "Allemagne",
-    "Andorre", "Angola", "Antigua-et-Barbuda", "Arabie saoudite", "Argentine",
-    "Arménie", "Australie", "Autriche", "Azerbaïdjan", "Bahamas", "Bahreïn",
-    "Bangladesh", "Barbade", "Belgique", "Belize", "Bénin", "Bhoutan",
-    "Biélorussie", "Birmanie", "Bolivie", "Bosnie-Herzégovine", "Botswana",
-    "Brésil", "Brunei", "Bulgarie", "Burkina Faso", "Burundi", "Cambodge",
-    "Cameroun", "Canada", "Cap-Vert", "Centrafrique", "Chili", "Chine",
-    "Chypre", "Colombie", "Comores", "Congo-Brazzaville", "Congo-Kinshasa",
-    "Corée du Nord", "Corée du Sud", "Costa Rica", "Côte d'Ivoire", "Croatie",
-    "Cuba", "Danemark", "Djibouti", "Dominique", "Égypte", "Émirats arabes unis",
-    "Équateur", "Érythrée", "Espagne", "Estonie", "Eswatini", "États-Unis",
-    "Éthiopie", "Fidji", "Finlande", "France", "Gabon", "Gambie", "Géorgie",
-    "Ghana", "Grèce", "Grenade", "Guatemala", "Guinée", "Guinée-Bissau",
-    "Guinée équatoriale", "Guyana", "Haïti", "Honduras", "Hongrie", "Inde",
-    "Indonésie", "Irak", "Iran", "Irlande", "Islande", "Israël", "Italie",
-    "Jamaïque", "Japon", "Jordanie", "Kazakhstan", "Kenya", "Kirghizistan",
-    "Kiribati", "Koweït", "Laos", "Lesotho", "Lettonie", "Liban", "Libéria",
-    "Libye", "Liechtenstein", "Lituanie", "Luxembourg", "Macédoine du Nord",
-    "Madagascar", "Malaisie", "Malawi", "Maldives", "Mali", "Malte", "Maroc",
-    "Marshall", "Maurice", "Mauritanie", "Mexique", "Micronésie", "Moldavie",
-    "Monaco", "Mongolie", "Monténégro", "Mozambique", "Namibie", "Nauru",
-    "Népal", "Nicaragua", "Niger", "Nigéria", "Niue", "Norvège", "Nouvelle-Zélande",
-    "Oman", "Ouganda", "Ouzbékistan", "Pakistan", "Palaos", "Palestine",
-    "Panama", "Papouasie-Nouvelle-Guinée", "Paraguay", "Pays-Bas", "Pérou",
-    "Philippines", "Pologne", "Portugal", "Qatar", "Roumanie", "Royaume-Uni",
-    "Russie", "Rwanda", "Saint-Christophe-et-Niévès", "Sainte-Lucie",
-    "Saint-Marin", "Saint-Vincent-et-les-Grenadines", "Salomon", "Salvador",
-    "Samoa", "Sao Tomé-et-Principe", "Sénégal", "Serbie", "Seychelles",
-    "Sierra Leone", "Singapour", "Slovaquie", "Slovénie", "Somalie", "Soudan",
-    "Soudan du Sud", "Sri Lanka", "Suède", "Suisse", "Suriname", "Syrie",
-    "Tadjikistan", "Tanzanie", "Tchad", "Tchéquie", "Thaïlande", "Timor oriental",
-    "Togo", "Tonga", "Trinité-et-Tobago", "Tunisie", "Turkménistan", "Turquie",
-    "Tuvalu", "Ukraine", "Uruguay", "Vanuatu", "Vatican", "Venezuela",
-    "Viêt Nam", "Yémen", "Zambie", "Zimbabwe"
+    'Afghanistan', 'Afrique du Sud', 'Albanie', 'Algérie', 'Allemagne',
+    'Andorre', 'Angola', 'Antigua-et-Barbuda', 'Arabie saoudite', 'Argentine',
+    'Arménie', 'Australie', 'Autriche', 'Azerbaïdjan', 'Bahamas', 'Bahreïn',
+    'Bangladesh', 'Barbade', 'Belgique', 'Belize', 'Bénin', 'Bhoutan',
+    'Biélorussie', 'Birmanie', 'Bolivie', 'Bosnie-Herzégovine', 'Botswana',
+    'Brésil', 'Brunei', 'Bulgarie', 'Burkina Faso', 'Burundi', 'Cambodge',
+    'Cameroun', 'Canada', 'Cap-Vert', 'Centrafrique', 'Chili', 'Chine',
+    'Chypre', 'Colombie', 'Comores', 'Congo-Brazzaville', 'Congo-Kinshasa',
+    'Corée du Nord', 'Corée du Sud', 'Costa Rica', "Côte d'Ivoire", 'Croatie',
+    'Cuba', 'Danemark', 'Djibouti', 'Dominique', 'Égypte', 'Émirats arabes unis',
+    'Équateur', 'Érythrée', 'Espagne', 'Estonie', 'Eswatini', 'États-Unis',
+    'Éthiopie', 'Fidji', 'Finlande', 'France', 'Gabon', 'Gambie', 'Géorgie',
+    'Ghana', 'Grèce', 'Grenade', 'Guatemala', 'Guinée', 'Guinée-Bissau',
+    'Guinée équatoriale', 'Guyana', 'Haïti', 'Honduras', 'Hongrie', 'Inde',
+    'Indonésie', 'Irak', 'Iran', 'Irlande', 'Islande', 'Israël', 'Italie',
+    'Jamaïque', 'Japon', 'Jordanie', 'Kazakhstan', 'Kenya', 'Kirghizistan',
+    'Kiribati', 'Koweït', 'Laos', 'Lesotho', 'Lettonie', 'Liban', 'Libéria',
+    'Libye', 'Liechtenstein', 'Lituanie', 'Luxembourg', 'Macédoine du Nord',
+    'Madagascar', 'Malaisie', 'Malawi', 'Maldives', 'Mali', 'Malte', 'Maroc',
+    'Marshall', 'Maurice', 'Mauritanie', 'Mexique', 'Micronésie', 'Moldavie',
+    'Monaco', 'Mongolie', 'Monténégro', 'Mozambique', 'Namibie', 'Nauru',
+    'Népal', 'Nicaragua', 'Niger', 'Nigéria', 'Niue', 'Norvège', 'Nouvelle-Zélande',
+    'Oman', 'Ouganda', 'Ouzbékistan', 'Pakistan', 'Palaos', 'Palestine',
+    'Panama', 'Papouasie-Nouvelle-Guinée', 'Paraguay', 'Pays-Bas', 'Pérou',
+    'Philippines', 'Pologne', 'Portugal', 'Qatar', 'Roumanie', 'Royaume-Uni',
+    'Russie', 'Rwanda', 'Saint-Christophe-et-Niévès', 'Sainte-Lucie',
+    'Saint-Marin', 'Saint-Vincent-et-les-Grenadines', 'Salomon', 'Salvador',
+    'Samoa', 'Sao Tomé-et-Principe', 'Sénégal', 'Serbie', 'Seychelles',
+    'Sierra Leone', 'Singapour', 'Slovaquie', 'Slovénie', 'Somalie', 'Soudan',
+    'Soudan du Sud', 'Sri Lanka', 'Suède', 'Suisse', 'Suriname', 'Syrie',
+    'Tadjikistan', 'Tanzanie', 'Tchad', 'Tchéquie', 'Thaïlande', 'Timor oriental',
+    'Togo', 'Tonga', 'Trinité-et-Tobago', 'Tunisie', 'Turkménistan', 'Turquie',
+    'Tuvalu', 'Ukraine', 'Uruguay', 'Vanuatu', 'Vatican', 'Venezuela',
+    'Viêt Nam', 'Yémen', 'Zambie', 'Zimbabwe',
 ];
 
 
 $actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
-$next_payement = "";
+$next_payement = '';
 
 if ($sf_member->hasMandatActif) {
-    $day_of_payment = date("d", strtotime($actifMandate->Date_paiement_Avenir__c));
+    $day_of_payment = date('d', strtotime($actifMandate->Date_paiement_Avenir__c));
     $ibanBlocks = str_split($actifMandate->Tech_Iban__c, 4);
     $last4IBANDigit = substr($actifMandate->Tech_Iban__c, -4);
-    $next_payement = date_format(date_create($actifMandate->Date_paiement_Avenir__c), "d/m/Y");
+    $next_payement = date_format(date_create($actifMandate->Date_paiement_Avenir__c), 'd/m/Y');
 }
 
 $user_status = aif_get_user_status($sf_member);
@@ -82,7 +82,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
     $disable_button = true;
 
     $partial_data = [
-        "Identifiant_contact__c" => $sf_user->Identifiant_contact__c
+        'Identifiant_contact__c' => $sf_user->Identifiant_contact__c,
     ];
 
     $data  = array_merge($_POST, $partial_data);
@@ -96,19 +96,19 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 <?php get_header(); ?>
 
 <div class="aif-donor-space-layout">
-	<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-sidebar"] ] ); ?>
+	<?php echo render_block(['blockName' => 'core/pattern', 'attrs' => ['slug' => 'amnesty/my-space-sidebar'] ]); ?>
 	<main class="aif-donor-space-content">
-		<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-header"] ] ); ?>
+		<?php echo render_block(['blockName' => 'core/pattern', 'attrs' => ['slug' => 'amnesty/my-space-header'] ]); ?>
 		<section class="aif-container--form">
 			<header>
 				<h1>Mes informations</h1>
 			</header>
 			<?php
             if ($action_succeed === true) {
-                aif_include_partial("alert", [
-                    "state" => "success",
-                    "title" => "Votre demande de changement d'informations a bien été prise en compte",
-                "content" => "Les changements seront effectifs d'ici quelques minutes"]);
+                aif_include_partial('alert', [
+                    'state' => 'success',
+                    'title' => "Votre demande de changement d'informations a bien été prise en compte",
+                'content' => "Les changements seront effectifs d'ici quelques minutes"]);
 
             }
 ?>
@@ -128,30 +128,30 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 				<?php
 
     $url = add_query_arg([
-        "subject" =>  "Modifier mon e-mail",
+        'subject' =>  'Modifier mon e-mail',
         ], get_permalink(get_page_by_path('nous-contacter')));
-aif_include_partial("info-message", [
-"id" => "email-help-message",
-"content" => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>."]); ?>
+aif_include_partial('info-message', [
+'id' => 'email-help-message',
+'content' => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>."]); ?>
 
 				<fieldset class="aif-flex aif-fieldset">
 					<legend class="aif-fieldset__legend">Civilité (obligatoire)<legend>
 					<div class="aif-radio-button-container">
 						<div class="aif-radio-button-container__button">
 							<input
-								<?= $sf_user->Salutation == 'M' ? "checked" : '' ?>
+								<?= $sf_user->Salutation == 'M' ? 'checked' : '' ?>
 							type="radio" id="M" name="Salutation" value="M" />
 							<label for="M">Monsieur</label>
 						</div>
 						<div class="aif-radio-button-container__button">
 							<input type="radio" id="Mme"
-								<?= $sf_user->Salutation == 'MME' ? "checked" : '' ?>
+								<?= $sf_user->Salutation == 'MME' ? 'checked' : '' ?>
 							name="Salutation" value="MME" />
 							<label for="Mme">Madame</label>
 						</div>
 						<div class="aif-radio-button-container__button">
 							<input type="radio" id="Autre"
-								<?= $sf_user->Salutation == '' ? "checked" : '' ?>
+								<?= $sf_user->Salutation == '' ? 'checked' : '' ?>
 							name="Salutation" value=" " />
 							<label for="Autre">Autre</label>
 						</div>
@@ -190,7 +190,7 @@ aif_include_partial("info-message", [
 					<label for="select">Pays</label>
 					<button type="button" role="combobox" id="select" id="dropdown-button"
 						class="checkboxGroup-button i aif-dropdown__container_button">
-						<?=isset($sf_user->Pays__c) ? $sf_user->Pays__c : "Sélectionner votre Pays" ?>
+						<?=isset($sf_user->Pays__c) ? $sf_user->Pays__c : 'Sélectionner votre Pays' ?>
 					</button>
 
 					<ul role="listbox" id="dropdown-list" class="checkboxGroup-list aif-dropdown__container_option-list">
@@ -220,9 +220,9 @@ aif_include_partial("info-message", [
 
 				<?php
                 if (empty($sf_user->MobilePhone)) {
-                    aif_include_partial("info-message", [
-                        "id" => "email-help-message",
-                        "content" => "Nous vous conseillons de renseigner un numéro de téléphone afin de pouvoir vous contacter plus facilement."]);
+                    aif_include_partial('info-message', [
+                        'id' => 'email-help-message',
+                        'content' => 'Nous vous conseillons de renseigner un numéro de téléphone afin de pouvoir vous contacter plus facilement.']);
                 }
 ?>
 
@@ -240,7 +240,7 @@ aif_include_partial("info-message", [
 		<section class="aif-container--form">
 			<h2>Mes informations bancaires</h2>
 			<p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} € le {$day_of_payment} de chaque mois." ?> </p>
-			<?php aif_include_partial("alert", ["content" => "Prélèvement automatique sur l'IBAN se terminant par {$last4IBANDigit}"]); ?>
+			<?php aif_include_partial('alert', ['content' => "Prélèvement automatique sur l'IBAN se terminant par {$last4IBANDigit}"]); ?>
 
 			<p>
 				<a href="/mon-espace/mes-dons/modification-coordonnees-bancaire" class="btn btn--white  aif-button--full">Modifier l'IBAN</a>

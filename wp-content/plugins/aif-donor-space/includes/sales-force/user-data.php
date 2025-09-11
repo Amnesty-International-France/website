@@ -10,16 +10,16 @@ function post_salesforce_data_donor_space($url, $params = [])
         exit;
     }
 
-	$aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
-	$response = wp_remote_post($aif_salesforce_base_url . $url, array(
+    $aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
+    $response = wp_remote_post($aif_salesforce_base_url . $url, [
         'method'    => 'POST',
         'body'      => json_encode($params),
         'timeout'   => 30,
-        'headers'   => array(
+        'headers'   => [
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $access_token
-        ),
-    ));
+            'Authorization' => 'Bearer ' . $access_token,
+        ],
+    ]);
 
     if (is_wp_error($response)) {
         echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
@@ -39,16 +39,16 @@ function patch_salesforce_data_donor_space($url, $params = [])
         exit;
     }
 
-	$aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
-	$response = wp_remote_request($aif_salesforce_base_url . $url, array(
+    $aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
+    $response = wp_remote_request($aif_salesforce_base_url . $url, [
         'method'    => 'PATCH',
         'body'      => json_encode($params),
         'timeout'   => 30,
-        'headers'   => array(
+        'headers'   => [
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $access_token
-        ),
-    ));
+            'Authorization' => 'Bearer ' . $access_token,
+        ],
+    ]);
 
     if (is_wp_error($response)) {
         echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
@@ -69,13 +69,13 @@ function get_salesforce_data_donor_space($url)
         exit;
     }
 
-	$aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
-    $response = wp_remote_get($aif_salesforce_base_url . $url, array(
-        'headers' => array(
-            'Authorization' => 'Bearer ' . $access_token
-        ),
-		'timeout' => 30,
-    ));
+    $aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
+    $response = wp_remote_get($aif_salesforce_base_url . $url, [
+        'headers' => [
+            'Authorization' => 'Bearer ' . $access_token,
+        ],
+        'timeout' => 30,
+    ]);
 
     if (is_wp_error($response)) {
         echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
@@ -153,11 +153,11 @@ function aif_get_user_status($sf_user)
 {
 
     if ($sf_user->isMembre == true) {
-        return "membre";
+        return 'membre';
     }
 
     if ($sf_user->isDonateur == true) {
-        return "donateur";
+        return 'donateur';
     }
 }
 

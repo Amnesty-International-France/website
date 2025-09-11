@@ -41,7 +41,7 @@ if (!function_exists('register_section_block')) {
                         'type' => 'string',
                         'default' => 'black',
                     ],
-                ]
+                ],
             ]
         );
     }

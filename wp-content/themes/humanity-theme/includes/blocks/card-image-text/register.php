@@ -54,7 +54,7 @@ if (!function_exists('register_card_image_text_block')) {
                 'selectedPostCategorySlug' => [
                     'type' => 'string',
                     'default' => '',
-                ]
+                ],
             ],
         ]);
     }

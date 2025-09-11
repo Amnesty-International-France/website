@@ -37,19 +37,19 @@ if ($is_promo_context) {
 <!-- wp:group {"tagName":"section","className":"single-chronicle-content container has-gutter"} -->
 <section class="wp-block-group single-chronicle__content container has-gutter">
 	<aside class="single-chronicle__content__aside u-sticky">
-		<?php if ( $cover_image ) : ?>
+		<?php if ($cover_image) : ?>
 			<figure class="cover-image">
-				<img src="<?php echo esc_url( $cover_image['sizes']['medium_large'] ); ?>"
-					 alt="<?php echo esc_attr( $cover_image['alt'] ); ?>"
+				<img src="<?php echo esc_url($cover_image['sizes']['medium_large']); ?>"
+					 alt="<?php echo esc_attr($cover_image['alt']); ?>"
 				/>
 			</figure>
 		<?php endif; ?>
 		<?php
-		echo do_blocks('
+        echo do_blocks('
 			<!-- wp:amnesty-core/button {"label":"Abonnez-vous pour 3€/mois","size":"medium","icon":"arrow-right","linkType":"external","externalUrl":"https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=null","alignment":"center"} /-->
 			<!-- wp:amnesty-core/button {"label":"Voir les anciens numéros","size":"small","icon":"arrow-right","style":"bg-white outline-black","linkType":"internal","alignment":"center","link":"/chronique/archives/","targetBlank":false} /-->
 			');
-		?>
+?>
 	</aside>
 
 	<article class="single-chronicle__content__summary">

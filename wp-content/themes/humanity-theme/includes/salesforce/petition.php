@@ -68,7 +68,7 @@ function sync_signatures_to_salesforce($signatures)
 
 function create_bulk_job_signatures()
 {
-    $url = "services/data/v57.0/jobs/ingest";
+    $url = 'services/data/v57.0/jobs/ingest';
     return post_salesforce_data($url, [
         'object' => 'Signature_de_petition__c',
         'operation' => 'insert',
@@ -102,15 +102,15 @@ function upload_bulk_data($url_upload, $data)
         return false;
     }
 
-    $response = wp_remote_request(getenv('AIF_SALESFORCE_URL') . $url_upload, array(
+    $response = wp_remote_request(getenv('AIF_SALESFORCE_URL') . $url_upload, [
         'method'    => 'PUT',
         'body'      => $data,
         'timeout'   => 60,
-        'headers'   => array(
+        'headers'   => [
             'Content-Type' => 'text/csv',
-            'Authorization' => 'Bearer ' . $access_token
-        ),
-    ));
+            'Authorization' => 'Bearer ' . $access_token,
+        ],
+    ]);
 
     if (is_wp_error($response) || wp_remote_retrieve_response_code($response) >= 300) {
         echo 'Erreur de requête Salesforce : ' . $response->get_error_message() . PHP_EOL;
@@ -146,12 +146,12 @@ function poll_job_state($job_id)
             return;
         }
 
-        $response = wp_remote_get(getenv("AIF_SALESFORCE_URL") . "services/data/v57.0/jobs/ingest/$job_id", array(
-            'headers' => array(
-                'Authorization' => 'Bearer ' . $access_token
-            ),
+        $response = wp_remote_get(getenv('AIF_SALESFORCE_URL') . "services/data/v57.0/jobs/ingest/$job_id", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $access_token,
+            ],
             'timeout' => 30,
-        ));
+        ]);
 
         if (! is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
             $job_data = json_decode(wp_remote_retrieve_body($response), true);
@@ -247,16 +247,16 @@ class CsvParser
     private $rows = [];
     public function __construct($csv_string)
     {
-        $lines = str_getcsv($csv_string, "\n", escape: "");
+        $lines = str_getcsv($csv_string, "\n", escape: '');
         if (count($lines) < 2) {
             return;
         }
-        $header = str_getcsv(array_shift($lines), escape: "");
+        $header = str_getcsv(array_shift($lines), escape: '');
         foreach ($lines as $line) {
             if (empty(trim($line))) {
                 continue;
             }
-            $row_data = str_getcsv($line, escape: "");
+            $row_data = str_getcsv($line, escape: '');
             if (count($header) == count($row_data)) {
                 $this->rows[] = array_combine($header, $row_data);
             }

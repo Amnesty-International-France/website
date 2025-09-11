@@ -12,23 +12,23 @@ function send_reset_password_email($to_email, $authentification_url)
     $url = getenv('AIF_MAILGUN_URL') . '/'. getenv('AIF_MAILGUN_DOMAIN') . '/messages';
 
     $variables = [
-        "url" => $authentification_url
+        'url' => $authentification_url,
     ];
 
-    $response = wp_remote_post($url, array(
+    $response = wp_remote_post($url, [
         'method' => 'POST',
-        'body' => array(
+        'body' => [
             'from' => 'noreply@' .  getenv('AIF_MAILGUN_DOMAIN'),
             'to' => $to_email,
             'subject' => 'Amnesty France- réinitialiser votre mot de passe',
             't:variables' => json_encode($variables),
-            'template' => 'espace-don réinitialisation du mot de passe'
+            'template' => 'espace-don réinitialisation du mot de passe',
 
-        ),
-        'headers' => array(
-            'Authorization' => 'Basic ' . base64_encode('api:' . $api_key)
-        )
-    ));
+        ],
+        'headers' => [
+            'Authorization' => 'Basic ' . base64_encode('api:' . $api_key),
+        ],
+    ]);
 
     if (is_wp_error($response)) {
         return false;

@@ -88,7 +88,7 @@ $post_id = get_the_ID();
                   'post_type' => 'fiche_pays',
                   'posts_per_page' => -1,
                   'orderby' => 'title',
-                  'order' => 'ASC'
+                  'order' => 'ASC',
                 ]);
 
 		    foreach ($countries as $country) :

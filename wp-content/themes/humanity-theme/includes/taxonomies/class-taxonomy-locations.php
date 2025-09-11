@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Amnesty;
 
-use WP_Term;
-
 new Taxonomy_Locations();
 
 /**

@@ -4,7 +4,7 @@ get_header();
 
 
 if (!isset($_GET['user']) || !isset($_GET['token'])) {
-    $error_title = "Une erreur est survenue";
+    $error_title = 'Une erreur est survenue';
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 
 }
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
     $email = $_GET['user'];
     $token = $_GET['token'];
     $password = $_POST['password'];
-    $user = get_user_by("email", $email);
+    $user = get_user_by('email', $email);
 
 
 
@@ -26,14 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
 
                 $userdata = [
                     'ID'        => $user->ID,
-                    'user_pass' => $password
+                    'user_pass' => $password,
                 ];
                 wp_update_user($userdata);
 
 
 
                 $url = add_query_arg([
-                    "user" => $user->user_email,
+                    'user' => $user->user_email,
                 ], get_permalink(get_page_by_path('connectez-vous')));
 
 
@@ -41,19 +41,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
                 exit;
 
             } else {
-                $error_title = "Une erreur est survenue.";
-                $error_message = "Les mots de passe ne correspondent pas";
+                $error_title = 'Une erreur est survenue.';
+                $error_message = 'Les mots de passe ne correspondent pas';
 
             }
         } else {
 
-            $error_title = "Une erreur est survenue";
+            $error_title = 'Une erreur est survenue';
             $error_message = 'Les informations fournies sont erronnées';
 
         }
     } else {
 
-        $error_title = "Votre utilisateur nous est inconnu";
+        $error_title = 'Votre utilisateur nous est inconnu';
         $error_message = 'Devenez donateur en <a>réalisant un don </a> ou <a
                           class="aif-link--primary" href="mailto:smd@amnesty.fr">contacter le Service membres et donateurs</a> si vous pensez que c’est une erreur.';
 
@@ -69,11 +69,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
     <?php
 
         if (isset($error_message)) {
-            $error_title = "Une erreur est survenue.";
-            aif_include_partial("alert", [
-            "title" => $error_title,
-            "state" => "error",
-            "content" => $error_message]);
+            $error_title = 'Une erreur est survenue.';
+            aif_include_partial('alert', [
+            'title' => $error_title,
+            'state' => 'error',
+            'content' => $error_message]);
 
         }
 
@@ -104,9 +104,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
                 </div>
 
                 <?php
-         aif_include_partial("info-message", [
-            "id" => "passwordHelp",
-            "content" => "Exemple : Mon@MotDePasse123"]); ?>
+         aif_include_partial('info-message', [
+            'id' => 'passwordHelp',
+            'content' => 'Exemple : Mon@MotDePasse123']); ?>
 
 
                 <div id="password-error-too-weak" class="aif-text-red aif-hide">

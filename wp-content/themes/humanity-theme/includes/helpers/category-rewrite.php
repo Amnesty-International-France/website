@@ -2,8 +2,8 @@
 
 function amnesty_custom_category_rewrite_rules($wp_rewrite)
 {
-    $categories = get_categories(array('hide_empty' => false));
-    $new_rules = array();
+    $categories = get_categories(['hide_empty' => false]);
+    $new_rules = [];
 
     foreach ($categories as $category) {
         $slug = $category->slug;

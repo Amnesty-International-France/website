@@ -19,8 +19,8 @@ if (!function_exists('register_slider_block')) {
                     'type'    => 'array',
                     'default' => [],
                     'items'   => [
-                        'type' => 'object'
-                    ]
+                        'type' => 'object',
+                    ],
                 ],
             ],
         ]);

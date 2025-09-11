@@ -123,7 +123,7 @@ if (!$post_object instanceof WP_Post) {
 		} ?>">
 			<?php foreach ($post_terms as $term): ?>
 				<?php
-                $term_link = get_term_link($term);
+		        $term_link = get_term_link($term);
 
 			    if (!is_wp_error($term_link)) {
 			        $custom_routes = [

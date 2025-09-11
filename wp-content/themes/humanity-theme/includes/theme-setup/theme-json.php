@@ -8,7 +8,7 @@ if (!function_exists('merge_theme_json')) {
      */
     function merge_theme_json($theme_json)
     {
-        $humanity_theme_json = json_decode(file_get_contents(get_stylesheet_directory() . "/theme.json"), true);
+        $humanity_theme_json = json_decode(file_get_contents(get_stylesheet_directory() . '/theme.json'), true);
         $theme_json->update_with($humanity_theme_json);
         return $theme_json;
     }

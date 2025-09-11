@@ -27,6 +27,7 @@
     "UpdatePoMo": "Updates PO, MO, and JSON translation files"
   },
   "require": {
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "php-cs-fixer/diff": "^2.0"
   }
 }

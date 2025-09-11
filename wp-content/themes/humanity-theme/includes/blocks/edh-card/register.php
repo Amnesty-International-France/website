@@ -45,7 +45,7 @@ if (!function_exists('register_edh_card_block')) {
                     'activity_duration' => [
                         'type' => 'string',
                         'default' => '',
-                    ]
+                    ],
                 ],
             ]
         );

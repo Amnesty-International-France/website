@@ -2,7 +2,7 @@
 /* Template Name: Check email */
 get_header();
 
-$success_message = "";
+$success_message = '';
 
 
 

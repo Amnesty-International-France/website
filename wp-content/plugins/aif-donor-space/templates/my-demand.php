@@ -8,11 +8,11 @@ $sf_user_ID = get_SF_user_ID($current_user->ID);
 
 
 $demands =  get_salesforce_user_demands($sf_user_ID);
-$sortedDemands = sortByDateProp($demands, "Date_de_la_demande__c");
+$sortedDemands = sortByDateProp($demands, 'Date_de_la_demande__c');
 
 function aif_format_date($date)
 {
-    $formatted_date = date_format(date_create($date), "d/m/Y");
+    $formatted_date = date_format(date_create($date), 'd/m/Y');
     return "Le {$formatted_date}" ;
 
 }
@@ -52,27 +52,27 @@ function aif_format_date($date)
 
                 <?php
 
-                $status = "";
+                $status = '';
 
             switch ($demand->Statut_Espace_Don__c) {
-                case "En cours de traitement":
-                    $status = "warning";
+                case 'En cours de traitement':
+                    $status = 'warning';
                     break;
-                case "Rejeté":
-                    $status = "error";
+                case 'Rejeté':
+                    $status = 'error';
                     break;
-                case "Traité":
-                    $status = "success";
+                case 'Traité':
+                    $status = 'success';
                     break;
                 default:
-                    $status = "warning";
+                    $status = 'warning';
                     break;
 
             }
 
-            aif_include_partial("label", [
-            "content" => $demand->Statut_Espace_Don__c,
-            "variant" => $status
+            aif_include_partial('label', [
+            'content' => $demand->Statut_Espace_Don__c,
+            'variant' => $status,
             ]);
             ?>
 
@@ -89,17 +89,17 @@ function aif_format_date($date)
                     <?php endif ?>
                 </p>
 
-                <?php  if ($demand->Statut_Espace_Don__c == "Fermé - Echoué") : ?>
+                <?php  if ($demand->Statut_Espace_Don__c == 'Fermé - Echoué') : ?>
 
                 <?php
 
 
 $url = add_query_arg([
-    "subject" =>  "Ma demande n'a pas pu aboutir",
+    'subject' =>  "Ma demande n'a pas pu aboutir",
 ], get_permalink(get_page_by_path('nous-contacter')));
 
-                    aif_include_partial("info-message", [
-                    "content" => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
+                    aif_include_partial('info-message', [
+                    'content' => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
                     ?>
 
 
@@ -127,5 +127,5 @@ $url = add_query_arg([
 
 
 <?php
-		// get_footer();
+        // get_footer();
 ?>

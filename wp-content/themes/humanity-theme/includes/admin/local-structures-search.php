@@ -24,12 +24,12 @@ function amnesty_register_map_settings()
     register_setting(
         'general',
         'amnesty_Maps_api_key',
-        array(
+        [
             'type'              => 'string',
             'sanitize_callback' => 'sanitize_text_field',
             'show_in_rest'      => false,
             'default'           => '',
-        )
+        ]
     );
 }
 
@@ -49,65 +49,65 @@ add_action('rest_api_init', 'amnesty_register_local_structures_rest_route');
 
 function amnesty_register_local_structures_rest_route()
 {
-    register_rest_route('amnesty/v1', '/local-structures-search', array(
+    register_rest_route('amnesty/v1', '/local-structures-search', [
         'methods'             => 'GET',
         'callback'            => 'amnesty_get_local_structures_by_bounds',
         'permission_callback' => '__return_true',
-        'args'                => array(
-            'south' => array(
+        'args'                => [
+            'south' => [
                 'required'          => true,
                 'validate_callback' => function ($param) {
                     return is_numeric($param);
                 },
-            ),
-            'west'  => array(
+            ],
+            'west'  => [
                 'required'          => true,
                 'validate_callback' => function ($param) {
                     return is_numeric($param);
                 },
-            ),
-            'north' => array(
+            ],
+            'north' => [
                 'required'          => true,
                 'validate_callback' => function ($param) {
                     return is_numeric($param);
                 },
-            ),
-            'east'  => array(
+            ],
+            'east'  => [
                 'required'          => true,
                 'validate_callback' => function ($param) {
                     return is_numeric($param);
                 },
-            ),
-            'center_lat' => array(
+            ],
+            'center_lat' => [
                 'required'          => false,
                 'validate_callback' => function ($param) {
                     return is_numeric($param);
                 },
-            ),
-            'center_lng' => array(
+            ],
+            'center_lng' => [
                 'required'          => false,
                 'validate_callback' => function ($param) {
                     return is_numeric($param);
                 },
-            ),
-            'radius'     => array(
+            ],
+            'radius'     => [
                 'required'          => false,
                 'validate_callback' => function ($param) {
                     return is_numeric($param) && $param > 0;
                 },
                 'sanitize_callback' => 'absint',
                 'default'           => 25,
-            ),
-            'is_department_search' => array(
+            ],
+            'is_department_search' => [
                 'required'          => false,
                 'validate_callback' => function ($param) {
                     return in_array($param, ['true', 'false'], true);
                 },
                 'sanitize_callback' => 'sanitize_text_field',
                 'default'           => 'false',
-            ),
-        ),
-    ));
+            ],
+        ],
+    ]);
 }
 
 /**
@@ -128,26 +128,26 @@ function amnesty_get_local_structures_by_bounds($request)
     $radius     = (int) $request['radius'];
     $is_department_search = ('true' === $request['is_department_search']);
 
-    $args = array(
+    $args = [
         'post_type'      => 'local-structures',
         'posts_per_page' => -1,
         'fields'         => 'ids',
-        'meta_query'     => array(
+        'meta_query'     => [
             'relation' => 'AND',
-            array(
+            [
                 'key'     => 'latitude',
-                'value'   => array( $south, $north ),
+                'value'   => [ $south, $north ],
                 'type'    => 'DECIMAL(10,6)',
                 'compare' => 'BETWEEN',
-            ),
-            array(
+            ],
+            [
                 'key'     => 'longitude',
-                'value'   => array( $west, $east ),
+                'value'   => [ $west, $east ],
                 'type'    => 'DECIMAL(10,6)',
                 'compare' => 'BETWEEN',
-            ),
-        ),
-    );
+            ],
+        ],
+    ];
 
     if (! $is_department_search && $center_lat !== null && $center_lng !== null && $radius > 0) {
         $lat_degree_km = 111.0;
@@ -244,37 +244,37 @@ function amnesty_register_geocode_proxy_rest_route()
 
     if (empty($google_api_key)) {
         error_log('Erreur: La clé API Google Maps est manquante dans les réglages WordPress. Veuillez la configurer dans Réglages > Général.');
-        register_rest_route('amnesty/v1', '/geocode-proxy', array(
+        register_rest_route('amnesty/v1', '/geocode-proxy', [
             'methods'             => 'GET',
             'callback'            => function () {
-                return new WP_REST_Response(array( 'status' => 'ERROR', 'error_message' => 'Google Maps API Key is missing in WordPress settings.' ), 500);
+                return new WP_REST_Response([ 'status' => 'ERROR', 'error_message' => 'Google Maps API Key is missing in WordPress settings.' ], 500);
             },
             'permission_callback' => '__return_true',
-            'args'                => array(
-                'address' => array(
+            'args'                => [
+                'address' => [
                     'required'          => true,
                     'validate_callback' => function ($param) {
                         return is_string($param) && ! empty($param);
                     },
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
         return;
     }
 
-    register_rest_route('amnesty/v1', '/geocode-proxy', array(
+    register_rest_route('amnesty/v1', '/geocode-proxy', [
         'methods'             => 'GET',
         'callback'            => 'amnesty_geocode_proxy_callback',
         'permission_callback' => '__return_true',
-        'args'                => array(
-            'address' => array(
+        'args'                => [
+            'address' => [
                 'required'          => true,
                 'validate_callback' => function ($param) {
                     return is_string($param) && ! empty($param);
                 },
-            ),
-        ),
-    ));
+            ],
+        ],
+    ]);
 }
 
 function amnesty_geocode_proxy_callback($request)
@@ -282,23 +282,23 @@ function amnesty_geocode_proxy_callback($request)
     $google_api_key = get_option('amnesty_Maps_api_key'); // Récupère la clé ici aussi
 
     if (empty($google_api_key)) {
-        return new WP_REST_Response(array( 'status' => 'ERROR', 'error_message' => 'Google Maps API Key is missing.' ), 500);
+        return new WP_REST_Response([ 'status' => 'ERROR', 'error_message' => 'Google Maps API Key is missing.' ], 500);
     }
 
     $address = sanitize_text_field($request['address']);
     $google_geocode_url = add_query_arg(
-        array(
+        [
             'address' => urlencode($address),
             'key'     => $google_api_key,
             'components' => 'country:FR',
-        ),
+        ],
         'https://maps.googleapis.com/maps/api/geocode/json'
     );
 
     $response = wp_remote_get($google_geocode_url);
 
     if (is_wp_error($response)) {
-        return new WP_REST_Response(array( 'error' => 'Failed to fetch geocoding data.' ), 500);
+        return new WP_REST_Response([ 'error' => 'Failed to fetch geocoding data.' ], 500);
     }
 
     $body = wp_remote_retrieve_body($response);

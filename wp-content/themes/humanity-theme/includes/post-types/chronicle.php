@@ -1,8 +1,8 @@
 <?php
 
 add_action('init', function () {
-    register_post_type('chronique', array(
-        'labels' => array(
+    register_post_type('chronique', [
+        'labels' => [
             'name' => 'Chroniques',
             'singular_name' => 'Chronique',
             'menu_name' => 'Chroniques',
@@ -32,26 +32,26 @@ add_action('init', function () {
             'item_updated' => 'Chronique mis à jour.',
             'item_link' => 'Lien Chronique',
             'item_link_description' => 'Un lien vers une chronique.',
-        ),
+        ],
         'public' => true,
         'show_in_rest' => true,
         'menu_icon' => 'dashicons-admin-page',
         'menu_position' => 21,
-        'supports' => array(
+        'supports' => [
             0 => 'title',
             1 => 'editor',
             2 => 'thumbnail',
             3 => 'custom-fields',
-        ),
+        ],
         'delete_with_user' => false,
         'show_ui' => true,
         'show_in_menu' => true,
         'has_archive' => false,
-        'rewrite' => array(
+        'rewrite' => [
             'slug' => 'chronique',
             'with_front' => false,
-        ),
-    ));
+        ],
+    ]);
 });
 
 add_action('acf/include_fields', function () {
@@ -59,11 +59,11 @@ add_action('acf/include_fields', function () {
         return;
     }
 
-    acf_add_local_field_group(array(
+    acf_add_local_field_group([
         'key' => 'group_68a440dd84b6a',
         'title' => 'Sommaire d\'une Chronique',
-        'fields' => array(
-            array(
+        'fields' => [
+            [
                 'key' => 'field_68a440e3940bf',
                 'label' => 'Titre sommaire',
                 'name' => 'summary_title',
@@ -72,26 +72,26 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'default_value' => '',
                 'maxlength' => '',
                 'allow_in_bindings' => 0,
                 'placeholder' => '',
                 'prepend' => '',
                 'append' => '',
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_68a440dd_mois_select',
                 'label' => 'Mois de publication',
                 'name' => 'publication_month',
                 'type' => 'select',
                 'instructions' => 'Sélectionnez le mois de publication.',
                 'required' => 1,
-                'choices' => array(
+                'choices' => [
                     '01' => 'Janvier',
                     '02' => 'Février',
                     '03' => 'Mars',
@@ -104,16 +104,16 @@ add_action('acf/include_fields', function () {
                     '10' => 'Octobre',
                     '11' => 'Novembre',
                     '12' => 'Décembre',
-                ),
+                ],
                 'allow_null' => 0,
                 'multiple' => 0,
                 'ui' => 0,
                 'return_format' => 'value',
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '50',
-                ),
-            ),
-            array(
+                ],
+            ],
+            [
                 'key' => 'field_68a440dd_annee_select',
                 'label' => 'Année de publication',
                 'name' => 'publication_year',
@@ -121,7 +121,7 @@ add_action('acf/include_fields', function () {
                 'instructions' => 'Sélectionnez l\'année de publication.',
                 'required' => 1,
                 'choices' => (function () {
-                    $years = array();
+                    $years = [];
                     $current_year = date('Y');
                     for ($i = $current_year + 1; $i >= $current_year - 25; $i--) {
                         $years[$i] = $i;
@@ -132,11 +132,11 @@ add_action('acf/include_fields', function () {
                 'multiple' => 0,
                 'ui' => 0,
                 'return_format' => 'value',
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '50',
-                ),
-            ),
-            array(
+                ],
+            ],
+            [
                 'key' => 'field_68a44209940c1',
                 'label' => 'Image de couverture',
                 'name' => 'cover_image',
@@ -145,11 +145,11 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'return_format' => 'array',
                 'library' => 'all',
                 'min_width' => '',
@@ -161,8 +161,8 @@ add_action('acf/include_fields', function () {
                 'mime_types' => '',
                 'allow_in_bindings' => 0,
                 'preview_size' => 'medium',
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_68a442b0940c2',
                 'label' => 'Image de la couverture avec le magazine ouvert',
                 'name' => 'cover_image_with_magazine_open',
@@ -171,11 +171,11 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'return_format' => 'array',
                 'library' => 'all',
                 'min_width' => '',
@@ -187,8 +187,8 @@ add_action('acf/include_fields', function () {
                 'mime_types' => '',
                 'allow_in_bindings' => 0,
                 'preview_size' => 'medium',
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_68a442ff940c3',
                 'label' => 'Contenu du sommaire',
                 'name' => 'summary_content',
@@ -197,28 +197,28 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'default_value' => '',
                 'allow_in_bindings' => 0,
                 'tabs' => 'all',
                 'toolbar' => 'full',
                 'media_upload' => 1,
                 'delay' => 0,
-            ),
-        ),
-        'location' => array(
-            array(
-                array(
+            ],
+        ],
+        'location' => [
+            [
+                [
                     'param' => 'post_type',
                     'operator' => '==',
                     'value' => 'chronique',
-                ),
-            ),
-        ),
+                ],
+            ],
+        ],
         'menu_order' => 0,
         'position' => 'acf_after_title',
         'style' => 'default',
@@ -228,7 +228,7 @@ add_action('acf/include_fields', function () {
         'active' => true,
         'description' => '',
         'show_in_rest' => 0,
-    ));
+    ]);
 });
 
 /**
@@ -238,31 +238,33 @@ add_action('acf/include_fields', function () {
  *
  * @return array
  */
-function amnesty_add_chronicle_parent_to_breadcrumb( $links ) {
-	if ( is_singular( 'chronique' ) ) {
-		$chronicle_parent_page = get_page_by_path( 'chronique' );
+function amnesty_add_chronicle_parent_to_breadcrumb($links)
+{
+    if (is_singular('chronique')) {
+        $chronicle_parent_page = get_page_by_path('chronique');
 
-		if ( $chronicle_parent_page ) {
-			$breadcrumb_parent = array(
-				'url'  => get_permalink( $chronicle_parent_page->ID ),
-				'text' => get_the_title( $chronicle_parent_page->ID ),
-			);
+        if ($chronicle_parent_page) {
+            $breadcrumb_parent = [
+                'url'  => get_permalink($chronicle_parent_page->ID),
+                'text' => get_the_title($chronicle_parent_page->ID),
+            ];
 
-			array_splice( $links, 1, 0, array( $breadcrumb_parent ) );
-		}
-	}
+            array_splice($links, 1, 0, [ $breadcrumb_parent ]);
+        }
+    }
 
-	return $links;
+    return $links;
 }
 
-add_filter( 'wpseo_breadcrumb_links', 'amnesty_add_chronicle_parent_to_breadcrumb' );
+add_filter('wpseo_breadcrumb_links', 'amnesty_add_chronicle_parent_to_breadcrumb');
 
-function amnesty_add_chronicle_archives_rewrite_rule() {
-	add_rewrite_rule(
-		'^chronique/archives/?$',
-		'index.php?pagename=chronique/archives',
-		'top'
-	);
+function amnesty_add_chronicle_archives_rewrite_rule()
+{
+    add_rewrite_rule(
+        '^chronique/archives/?$',
+        'index.php?pagename=chronique/archives',
+        'top'
+    );
 }
 
-add_action( 'init', 'amnesty_add_chronicle_archives_rewrite_rule' );
+add_action('init', 'amnesty_add_chronicle_archives_rewrite_rule');

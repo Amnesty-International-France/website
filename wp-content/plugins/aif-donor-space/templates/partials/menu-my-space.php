@@ -1,6 +1,6 @@
 <?php
 if (!isset($sf_member)) {
-    echo "<!-- Données utilisateur non disponibles -->";
+    echo '<!-- Données utilisateur non disponibles -->';
     return;
 }
 
