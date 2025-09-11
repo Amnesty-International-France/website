@@ -7,10 +7,10 @@
  * Inserter: no
  */
 
-$enabled = get_post_meta( get_the_ID(), '_display_author_info', true );
+$enabled = get_post_meta(get_the_ID(), '_display_author_info', true);
 
-if ( ! $enabled ) {
-	return;
+if (! $enabled) {
+    return;
 }
 
 ?>

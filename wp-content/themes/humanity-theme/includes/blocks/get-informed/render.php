@@ -9,7 +9,8 @@ declare(strict_types=1);
  *
  * @return string
  */
-function render_get_informed_block(array $attributes): string {
+function render_get_informed_block(array $attributes): string
+{
     $links = $attributes['links'] ?? [];
 
     $icons = [

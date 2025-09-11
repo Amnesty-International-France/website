@@ -9,7 +9,8 @@ if (!function_exists('render_call_to_action_block')) {
      * @param array<string, mixed> $attributes Block attributes
      * @return string HTML output
      */
-    function render_call_to_action_block(array $attributes): string {
+    function render_call_to_action_block(array $attributes): string
+    {
         $title        = $attributes['title'] ?? '';
         $subTitle     = $attributes['subTitle'] ?? '';
         $buttonLabel  = $attributes['buttonLabel'] ?? __('En savoir plus', 'amnesty');

@@ -33,14 +33,14 @@ $user_longitude = isset($_GET['lon']) ? sanitize_text_field($_GET['lon']) : null
 $user_latitude = isset($_GET['lat']) ? sanitize_text_field($_GET['lat']) : null;
 
 if ($user_longitude && $user_latitude) {
-	$posts_per_page = (int)tribe_get_option('postsPerPage');
+    $posts_per_page = (int)tribe_get_option('postsPerPage');
 
-	$current_page = max(1, get_query_var('paged'));
-	$offset = ($current_page - 1) * $posts_per_page;
+    $current_page = max(1, get_query_var('paged'));
+    $offset = ($current_page - 1) * $posts_per_page;
 
-	$events = $wpdb->get_results(
-		$wpdb->prepare(
-			"
+    $events = $wpdb->get_results(
+        $wpdb->prepare(
+            "
     SELECT
 		*,
     ST_Distance_Sphere(
@@ -86,19 +86,19 @@ if ($user_longitude && $user_latitude) {
 		) ASC
 	LIMIT %d OFFSET %d
 ",
-			$user_longitude,
-			$user_latitude,
-			tribe_get_option('postsPerPage'),
-			$offset
-		)
-	);
+            $user_longitude,
+            $user_latitude,
+            tribe_get_option('postsPerPage'),
+            $offset
+        )
+    );
 }
 
 ?>
 <div class="events wp-site-blocks">
 	<?php
-	echo do_blocks(WP_Block_Patterns_Registry::get_instance()->get_registered('amnesty/archive-hero')['content']);
-	?>
+    echo do_blocks(WP_Block_Patterns_Registry::get_instance()->get_registered('amnesty/archive-hero')['content']);
+?>
 	<div class="event-filters">
 		<div class="event-filters-container">
 			<a class="filter-button" href="<?php echo esc_url(tribe_get_events_link()); ?>">
@@ -130,14 +130,14 @@ if ($user_longitude && $user_latitude) {
 			<section class="events-list-container grid-three-columns">
 				<?php foreach ($events as $event) : ?>
 					<?php
-					echo render_block(
-						[
-							'blockName' => 'amnesty-core/event-card',
-							'attrs' => ['postId' => $event->ID],
-							'innerBlocks' => [],
-						]
-					);
-					?>
+                echo render_block(
+                    [
+                        'blockName' => 'amnesty-core/event-card',
+                        'attrs' => ['postId' => $event->ID],
+                        'innerBlocks' => [],
+                    ]
+                );
+				    ?>
 				<?php endforeach; ?>
 			</section>
 			<?php $this->template('list/nav'); ?>

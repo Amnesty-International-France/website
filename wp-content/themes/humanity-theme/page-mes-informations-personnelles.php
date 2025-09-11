@@ -102,14 +102,14 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 				<h1>Mes informations</h1>
 			</header>
 			<?php
-			if ($action_succeed === true) {
-				aif_include_partial("alert", [
-					"state" => "success",
-					"title" => "Votre demande de changement d'informations a bien été prise en compte",
-				"content" => "Les changements seront effectifs d'ici quelques minutes"]);
+            if ($action_succeed === true) {
+                aif_include_partial("alert", [
+                    "state" => "success",
+                    "title" => "Votre demande de changement d'informations a bien été prise en compte",
+                "content" => "Les changements seront effectifs d'ici quelques minutes"]);
 
-			}
-			?>
+            }
+?>
 			<h2>Mes informations personnelles</h2>
 			<?php if ($sf_member->hasMandatActif) : ?>
 				<p><?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} €. Votre prochain prélèvement sera effectué le {$next_payement}." ?></p>
@@ -125,12 +125,12 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 				/>
 				<?php
 
-				$url = add_query_arg([
-					"subject" =>  "Modifier mon e-mail",
-					], get_permalink(get_page_by_path('nous-contacter')));
-					aif_include_partial("info-message", [
-					"id" => "email-help-message",
-					"content" => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>."]); ?>
+    $url = add_query_arg([
+        "subject" =>  "Modifier mon e-mail",
+        ], get_permalink(get_page_by_path('nous-contacter')));
+aif_include_partial("info-message", [
+"id" => "email-help-message",
+"content" => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>."]); ?>
 
 				<fieldset class="aif-flex aif-fieldset">
 					<legend class="aif-fieldset__legend">Civilité (obligatoire)<legend>
@@ -217,12 +217,12 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 				/>
 
 				<?php
-				if (empty($sf_user->MobilePhone)) {
-					aif_include_partial("info-message", [
-						"id" => "email-help-message",
-						"content" => "Nous vous conseillons de renseigner un numéro de téléphone afin de pouvoir vous contacter plus facilement."]);
-				}
-				?>
+                if (empty($sf_user->MobilePhone)) {
+                    aif_include_partial("info-message", [
+                        "id" => "email-help-message",
+                        "content" => "Nous vous conseillons de renseigner un numéro de téléphone afin de pouvoir vous contacter plus facilement."]);
+                }
+?>
 
 				<label for="HomePhone">N° de téléphone domicile</label>
 				<input placeholder="01 00 00 00 00" name="HomePhone" class="aif-input" id="HomePhone" type="text"

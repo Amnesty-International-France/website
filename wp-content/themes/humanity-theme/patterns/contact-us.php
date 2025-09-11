@@ -55,13 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['subject']) && isset(
 
         }
 
-        if (!empty($success_message)) {
-            aif_include_partial("alert", [
-                "title" => $success_message_title,
-            "content" => $success_message,
+if (!empty($success_message)) {
+    aif_include_partial("alert", [
+        "title" => $success_message_title,
+    "content" => $success_message,
         "state" => "success"]);
-        }
-        ?>
+}
+?>
 
         <form method="post" action="">
             <?php wp_nonce_field('contact_form', 'contact_nonce'); ?>
@@ -73,24 +73,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['subject']) && isset(
                 required id="subject" maxlength="255"
             />
             <?php
-            $url = get_permalink(get_page_by_path('mes-demandes'));
-            $content = "Indiquez le sujet de votre demande. 255 caractères maximum.";
-            aif_include_partial("info-message", [
-            "id" => "contact-subject-help-message",
-            "content" => $content]);
-            ?>
+    $url = get_permalink(get_page_by_path('mes-demandes'));
+$content = "Indiquez le sujet de votre demande. 255 caractères maximum.";
+aif_include_partial("info-message", [
+"id" => "contact-subject-help-message",
+"content" => $content]);
+?>
 
             <label for="message">Message (obligatoire)</label>
             <textarea name="message" aria-labelledby="contact-message-help-message"
                 class="aif-input <?= $has_error ? 'aif-input-error' : '' ?>"
                 required id="message"></textarea>
             <?php
-            $url = get_permalink(get_page_by_path('mes-demandes'));
-            $content = "Décrivez en détail votre demande.";
-            aif_include_partial("info-message", [
-            "id" => "contact-message-help-message",
-            "content" => $content]);
-            ?>
+$url = get_permalink(get_page_by_path('mes-demandes'));
+$content = "Décrivez en détail votre demande.";
+aif_include_partial("info-message", [
+"id" => "contact-message-help-message",
+"content" => $content]);
+?>
             <button class="btn aif-mt1w aif-button--full" type="submit">Enregistrer</button>
         </form>
     </section>

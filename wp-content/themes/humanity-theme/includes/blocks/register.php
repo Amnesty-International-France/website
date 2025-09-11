@@ -1,11 +1,11 @@
 <?php
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
-add_filter( 'big_bite_block_tabbed_content_show_tab_id_settings', '__return_true' );
+add_filter('big_bite_block_tabbed_content_show_tab_id_settings', '__return_true');
 
-if ( ! function_exists( 'register_block_type' ) ) {
-	return;
+if (! function_exists('register_block_type')) {
+    return;
 }
 
 require_once __DIR__ . '/_deprecated/header/class-header-block-renderer.php';
@@ -122,73 +122,74 @@ require_once __DIR__ . '/urgent-register-form/register.php';
 require_once __DIR__ . '/video/register.php';
 require_once __DIR__ . '/video/render.php';
 
-if ( ! function_exists( 'amnesty_register_php_rendered_blocks' ) ) {
-	/**
-	 * Register the blocks that require php to be rendered.
-	 *
-	 * @package Amnesty\Blocks
-	 *
-	 * @return void
-	 */
-	function amnesty_register_php_rendered_blocks() {
-		register_action_block();
-		register_actions_homepage_block();
-		register_agenda_homepage_block();
-		register_agir_legacy_block();
-		register_article_card_block();
-		register_articles_homepage_block();
-		register_banner_block();
-		register_button_block();
-		register_carousel_block();
-		register_card_image_text_block();
-		register_chapo_block();
-		register_chip_category_block();
-		register_collapsable_block();
-		register_countdown_block();
-		register_call_to_action_block();
-		register_custom_card_block();
-		register_donation_calculator_block();
-		register_download_block();
-		register_download_go_further_block();
-		register_edh_card_block();
-		register_event_card_block();
-		register_flourish_embed_block();
-		register_get_informed_block();
-		register_header_block();
-		register_hero_block();
-		register_hero_homepage_block();
-		register_iframe_block();
-		register_iframe_button_block();
-		register_image_block();
-		register_infogram_embed_block();
-		register_key_figure_block();
-		register_latest_chronicle_promo_block();
-		register_link_icon_block();
-		register_link_group_block();
-		register_links_with_icons_block();
-		register_list_block();
-		register_menu_block();
-		register_mission_homepage_block();
-		register_petition_list_block();
-		register_quote_block();
-		register_raw_code_block();
-		register_read_also_block();
-		register_read_more_block();
-		register_regions_block();
-		register_related_content_block();
-		register_related_posts_block();
-		register_section_block();
-		register_section_home_block();
-		register_slider_block();
-		register_stat_counter_block();
-		register_sutori_embed_block();
-		register_term_list_block();
-		register_tickcounter_embed_block();
-		register_training_card_block();
-		register_tweet_action_block();
-		register_urgent_register_form_block();
-		register_video_block();
-	}
+if (! function_exists('amnesty_register_php_rendered_blocks')) {
+    /**
+     * Register the blocks that require php to be rendered.
+     *
+     * @package Amnesty\Blocks
+     *
+     * @return void
+     */
+    function amnesty_register_php_rendered_blocks()
+    {
+        register_action_block();
+        register_actions_homepage_block();
+        register_agenda_homepage_block();
+        register_agir_legacy_block();
+        register_article_card_block();
+        register_articles_homepage_block();
+        register_banner_block();
+        register_button_block();
+        register_carousel_block();
+        register_card_image_text_block();
+        register_chapo_block();
+        register_chip_category_block();
+        register_collapsable_block();
+        register_countdown_block();
+        register_call_to_action_block();
+        register_custom_card_block();
+        register_donation_calculator_block();
+        register_download_block();
+        register_download_go_further_block();
+        register_edh_card_block();
+        register_event_card_block();
+        register_flourish_embed_block();
+        register_get_informed_block();
+        register_header_block();
+        register_hero_block();
+        register_hero_homepage_block();
+        register_iframe_block();
+        register_iframe_button_block();
+        register_image_block();
+        register_infogram_embed_block();
+        register_key_figure_block();
+        register_latest_chronicle_promo_block();
+        register_link_icon_block();
+        register_link_group_block();
+        register_links_with_icons_block();
+        register_list_block();
+        register_menu_block();
+        register_mission_homepage_block();
+        register_petition_list_block();
+        register_quote_block();
+        register_raw_code_block();
+        register_read_also_block();
+        register_read_more_block();
+        register_regions_block();
+        register_related_content_block();
+        register_related_posts_block();
+        register_section_block();
+        register_section_home_block();
+        register_slider_block();
+        register_stat_counter_block();
+        register_sutori_embed_block();
+        register_term_list_block();
+        register_tickcounter_embed_block();
+        register_training_card_block();
+        register_tweet_action_block();
+        register_urgent_register_form_block();
+        register_video_block();
+    }
 }
 
-add_action( 'init', 'amnesty_register_php_rendered_blocks' );
+add_action('init', 'amnesty_register_php_rendered_blocks');

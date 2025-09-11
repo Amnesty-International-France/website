@@ -1,49 +1,50 @@
 <?php
 
-function assign_myspace_template_to_descendants( $post_id, $post, $update ) {
-    if ( wp_is_post_revision( $post_id ) || $post->post_type !== 'page' ) {
+function assign_myspace_template_to_descendants($post_id, $post, $update)
+{
+    if (wp_is_post_revision($post_id) || $post->post_type !== 'page') {
         return;
     }
 
-    $parent_page_object = get_page_by_path( 'mon-espace' );
+    $parent_page_object = get_page_by_path('mon-espace');
 
-    if ( ! $parent_page_object ) {
+    if (! $parent_page_object) {
         return;
     }
 
-    $ancestors = get_post_ancestors( $post_id );
+    $ancestors = get_post_ancestors($post_id);
 
-    if ( ! empty($ancestors) && in_array( $parent_page_object->ID, $ancestors ) ) {
+    if (! empty($ancestors) && in_array($parent_page_object->ID, $ancestors)) {
         $template_file = 'page-my-space-default';
-        $current_template = get_page_template_slug( $post_id );
+        $current_template = get_page_template_slug($post_id);
 
-        if ( empty( $current_template ) || 'default' === $current_template ) {
-            update_post_meta( $post_id, '_wp_page_template', $template_file );
+        if (empty($current_template) || 'default' === $current_template) {
+            update_post_meta($post_id, '_wp_page_template', $template_file);
         }
     }
 }
 
-add_action( 'save_post', 'assign_myspace_template_to_descendants', 10, 3 );
+add_action('save_post', 'assign_myspace_template_to_descendants', 10, 3);
 
 add_action('template_redirect', 'auth_my_space');
 
-function auth_my_space() {
-	$slug_parent_page = 'mon-espace';
+function auth_my_space()
+{
+    $slug_parent_page = 'mon-espace';
 
-	if ( is_page() && ! is_preview() ) {
-		$current_page = get_queried_object();
+    if (is_page() && ! is_preview()) {
+        $current_page = get_queried_object();
 
-		$parent_page = get_page_by_path($slug_parent_page);
+        $parent_page = get_page_by_path($slug_parent_page);
 
-		if ( $parent_page ) {
-			$id_parent_page = $parent_page->ID;
+        if ($parent_page) {
+            $id_parent_page = $parent_page->ID;
 
-			$ancestors = get_post_ancestors($current_page->ID);
+            $ancestors = get_post_ancestors($current_page->ID);
 
-			if ( $current_page->ID === $id_parent_page || in_array($id_parent_page, $ancestors) ) {
-				check_user_page_access();
-			}
-		}
-	}
+            if ($current_page->ID === $id_parent_page || in_array($id_parent_page, $ancestors)) {
+                check_user_page_access();
+            }
+        }
+    }
 }
-

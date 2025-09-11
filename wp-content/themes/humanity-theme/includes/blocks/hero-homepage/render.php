@@ -3,32 +3,33 @@
 declare(strict_types=1);
 
 if (!function_exists('render_hero_homepage_block')) {
-	/**
-	 * Render the Hero Homepage block
-	 *
-	 * @param array<string, mixed> $attributes
-	 *
-	 * @return string
-	 */
-	function render_hero_homepage_block(array $attributes): string {
-		$items = $attributes['items'] ?? [];
+    /**
+     * Render the Hero Homepage block
+     *
+     * @param array<string, mixed> $attributes
+     *
+     * @return string
+     */
+    function render_hero_homepage_block(array $attributes): string
+    {
+        $items = $attributes['items'] ?? [];
 
-		if (empty($items) || !is_array($items)) {
-			return '';
-		}
+        if (empty($items) || !is_array($items)) {
+            return '';
+        }
 
-		$item = $items[array_rand($items)];
+        $item = $items[array_rand($items)];
 
-		$media_id     = (int) ($item['mediaId'] ?? 0);
-		$image_url    = $media_id ? wp_get_attachment_image_url($media_id, 'large') : '';
-		$image_alt    = $media_id ? get_post_meta($media_id, '_wp_attachment_image_alt', true) : '';
+        $media_id     = (int) ($item['mediaId'] ?? 0);
+        $image_url    = $media_id ? wp_get_attachment_image_url($media_id, 'large') : '';
+        $image_alt    = $media_id ? get_post_meta($media_id, '_wp_attachment_image_alt', true) : '';
 
-		$subtitle     = esc_html($item['subtitle'] ?? '');
-		$button_label = esc_html($item['buttonLabel'] ?? '');
-		$button_url   = esc_url($item['buttonUrl'] ?? '');
+        $subtitle     = esc_html($item['subtitle'] ?? '');
+        $button_label = esc_html($item['buttonLabel'] ?? '');
+        $button_url   = esc_url($item['buttonUrl'] ?? '');
 
-		ob_start();
-		?>
+        ob_start();
+        ?>
 
 		<div class="hero-homepage">
 			<div class="item">
@@ -69,6 +70,6 @@ if (!function_exists('render_hero_homepage_block')) {
 		</div>
 
 		<?php
-		return ob_get_clean();
-	}
+        return ob_get_clean();
+    }
 }

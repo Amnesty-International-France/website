@@ -6,11 +6,11 @@
 ?>
 
 <div class="aif-mobile-header">
-    <?php 
+    <?php
     if (function_exists('amnesty_logo')) {
-        amnesty_logo(); 
+        amnesty_logo();
     }
-    ?>
+?>
     <button id="burger-toggle" class="burger-toggle" aria-label="Ouvrir le menu">
         <span></span>
         <span></span>
@@ -28,17 +28,17 @@
     </div>
     <ul class="aif-donor-space-sidebar-menu">
         <?php
-        if ( function_exists( 'amnesty_nav' ) ) {
-            amnesty_nav( 'my-space' );
-        }
-        ?>
+    if (function_exists('amnesty_nav')) {
+        amnesty_nav('my-space');
+    }
+?>
     </ul>
     <ul class="aif-donor-space-sidebar-footer">
     <?php
-        if ( function_exists( 'amnesty_nav' ) ) {
-            amnesty_nav( 'my-account' );
-        }
-        ?>
+if (function_exists('amnesty_nav')) {
+    amnesty_nav('my-account');
+}
+?>
     </ul>
 </div>
 

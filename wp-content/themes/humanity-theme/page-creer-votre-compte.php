@@ -84,18 +84,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "content" => $error_message]);
         }
 
-        if (!empty($error_no_access_to_donor_space)) {
-            $title = "L’adresse email renseignée ne trouve pas de correspondance dans notre système.";
-            $content = 'Devenez donateur en <a href="#" class="aif-link--secondary">réalisant un don </a> ou <a
+if (!empty($error_no_access_to_donor_space)) {
+    $title = "L’adresse email renseignée ne trouve pas de correspondance dans notre système.";
+    $content = 'Devenez donateur en <a href="#" class="aif-link--secondary">réalisant un don </a> ou <a
                                                     class="aif-link--secondary" href="mailto:smd@amnesty.fr">contactez le Service
                                                     membres et donateurs</a> si vous pensez que c’est une erreur.';
 
-            aif_include_partial("alert", [
-            "state" => "error",
-            "title" => $title,
-            "content" => $content]);
-        }
-        ?>
+    aif_include_partial("alert", [
+    "state" => "error",
+    "title" => $title,
+    "content" => $content]);
+}
+?>
 
         <section>
             <h3 class="aif-sr-only">S'inscrire</h3>
@@ -106,10 +106,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="email" class="aif-input" id="email" name="email" aria-describedby="email-help-message"
                         placeholder="adresse@mail.fr" autocomplete="email" aria-required="true" required>
                     <?php
-                    aif_include_partial("info-message", [
-                    "id" => "email-help-message",
-                    "content" => "Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre adhésion ou de votre don."]);
-                ?>
+            aif_include_partial("info-message", [
+            "id" => "email-help-message",
+            "content" => "Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre adhésion ou de votre don."]);
+?>
                 </div>
                 <div class="aif-password-container">
                     <label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
@@ -129,10 +129,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <?php
-                    aif_include_partial("info-message", [
-                    "id" => "passwordHelp",
-                    "content" => "Exemple : Mon@MotDePasse123"]);
-                    ?>
+    aif_include_partial("info-message", [
+    "id" => "passwordHelp",
+    "content" => "Exemple : Mon@MotDePasse123"]);
+?>
 
                     <div id="passphraseRequirements aif-text-small">
                         <p class=" aif-m0 aif-text-small">Votre mot de passe : </p>

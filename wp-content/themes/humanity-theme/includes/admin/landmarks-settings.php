@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-add_action('admin_enqueue_scripts', function($hook) {
+add_action('admin_enqueue_scripts', function ($hook) {
     if ($hook !== 'landmark_page_landmark_settings') {
         return;
     }
@@ -11,7 +11,8 @@ add_action('admin_enqueue_scripts', function($hook) {
 
 add_action('admin_menu', 'amnesty_add_settings_page');
 
-function amnesty_add_settings_page() {
+function amnesty_add_settings_page()
+{
     add_submenu_page(
         'edit.php?post_type=landmark',
         'Réglages Repères',
@@ -22,7 +23,8 @@ function amnesty_add_settings_page() {
     );
 }
 
-function amnesty_settings_page_callback() {
+function amnesty_settings_page_callback()
+{
     if (
         isset($_POST['amnesty_settings_nonce']) &&
         wp_verify_nonce($_POST['amnesty_settings_nonce'], 'save_landmark_settings')
@@ -87,14 +89,17 @@ function amnesty_settings_page_callback() {
     }
 
     echo '<h2>Texte du chapo</h2>';
-    echo '<textarea name="landmark_global_chapo" rows="5" style="width:100%">' . esc_textarea( stripslashes($chapo) ) . '</textarea>';
+    echo '<textarea name="landmark_global_chapo" rows="5" style="width:100%">' . esc_textarea(stripslashes($chapo)) . '</textarea>';
 
     echo '<p><input type="submit" class="button-primary" value="Enregistrer les réglages"></p>';
     echo '</form></div>';
 }
 
-function amnesty_process_settings_form() {
-    if (!current_user_can('manage_options')) return;
+function amnesty_process_settings_form()
+{
+    if (!current_user_can('manage_options')) {
+        return;
+    }
 
     if (isset($_POST['featured_order']) && is_array($_POST['featured_order'])) {
         $featured_order = array_map('intval', $_POST['featured_order']);
@@ -163,7 +168,8 @@ add_action('admin_footer', function () {
     <?php
 });
 
-function amnesty_get_featured_landmarks() {
+function amnesty_get_featured_landmarks()
+{
     return new WP_Query([
         'post_type'      => 'landmark',
         'posts_per_page' => 3,
@@ -180,7 +186,8 @@ function amnesty_get_featured_landmarks() {
 }
 
 // Exclude featured landmarks from the main query on the archive page
-function amnesty_exclude_featured_landmarks($query) {
+function amnesty_exclude_featured_landmarks($query)
+{
     if (!is_admin() && $query->is_main_query() && is_post_type_archive('landmark')) {
         $featured_query = amnesty_get_featured_landmarks();
         $featured_ids = [];

@@ -14,18 +14,18 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 <header class="page-header is-<?php echo esc_attr($header_style); ?>" role="banner"
 		aria-label="
 		<?php
-		/* translators: [front] ARIA */
-		esc_attr_e('Page Header', 'amnesty');
-		?>
+        /* translators: [front] ARIA */
+        esc_attr_e('Page Header', 'amnesty');
+?>
 		">
 	<div class="container--full-width">
 		<div class="page-headerItems top-header">
 
 			<nav class="page-nav page-nav--top-main" aria-label="
 			<?php
-			/* translators: [front] ARIA */
-			esc_attr_e('Primary navigation top', 'amnesty');
-			?>
+    /* translators: [front] ARIA */
+    esc_attr_e('Primary navigation top', 'amnesty');
+?>
 			">
 				<ul>
 					<li>
@@ -40,7 +40,7 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 					<?php amnesty_nav('main-menu-top'); ?>
 					<li>
 						<a href="/mon-espace" class="menu-item menu-user" aria-current="page">
-							<?php echo file_get_contents( get_template_directory() . '/assets/images/icon-lock.svg' ); ?>
+							<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-lock.svg'); ?>
 							<span>Mon espace</span>
 						</a>
 					</li>
@@ -61,9 +61,9 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 			</div>
 			<nav class="page-nav page-nav--main" aria-label="
 			<?php
-			/* translators: [front] ARIA */
-			esc_attr_e('Primary navigation', 'amnesty');
-			?>
+/* translators: [front] ARIA */
+esc_attr_e('Primary navigation', 'amnesty');
+?>
 			">
 				<ul><?php amnesty_nav('main-menu', new Desktop_Nav_Walker()); ?></ul>
 				<button
@@ -75,9 +75,9 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 					aria-controls="mobile-menu"
 					aria-label="
 					<?php
-					/* translators: [front] */
-					esc_attr_e('Open navigation', 'amnesty');
-					?>
+        /* translators: [front] */
+        esc_attr_e('Open navigation', 'amnesty');
+?>
 					"
 				><span class="icon icon-burger"></span><span class="icon icon-close"></span></button>
 				<?php get_template_part('partials/navigation/mobile'); ?>
@@ -102,10 +102,10 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 
 				<div class="nav-don-calculator">
 					<?php
-					echo do_blocks(
-						'<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012" } /-->'
-					);
-					?>
+echo do_blocks(
+    '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012" } /-->'
+);
+?>
 				</div>
 			</div>
 		</div>

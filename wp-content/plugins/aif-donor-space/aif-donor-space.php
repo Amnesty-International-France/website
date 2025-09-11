@@ -98,6 +98,12 @@ function aif_donor_space_create_pages()
                 'actualites' => ['title' => 'Actualités'],
                 'agir-et-se-mobiliser' => ['title' => 'Agir et se mobiliser'],
                 'vie-democratique' => ['title' => 'Vie démocratique'],
+				'boite-a-outils' => [
+					'title' => 'Boîte à outils',
+					'children' => [
+						'ressources-militants' => ['title' => 'Ressources militants'],
+					]
+				],
                 'mes-dons' => [
                     'title' => 'Mes dons',
                     'children' => [

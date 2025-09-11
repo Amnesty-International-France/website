@@ -11,27 +11,27 @@ $permalink = get_permalink();
 $share_text_encoded = urlencode($title . ' ' . $permalink);
 $email_subject_encoded = rawurlencode($title);
 $email_body_encoded = rawurlencode("Je vous recommande cette pétition : \n\n" . $title . "\n" . $permalink);
-$featured_image_url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+$featured_image_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
 $end_date = get_field('date_de_fin');
 $signatures_target = get_field('objectif_signatures');
 
 $post_id = get_the_ID();
-$current_signatures = amnesty_get_petition_signature_count( $post_id );
+$current_signatures = amnesty_get_petition_signature_count($post_id);
 
-if ( ! empty( $end_date ) ) {
-    $date_object = DateTime::createFromFormat( 'Y-m-d', $end_date );
-    if ( $date_object ) {
-        $formatted_end_date = $date_object->format( 'd.m.Y' );
+if (! empty($end_date)) {
+    $date_object = DateTime::createFromFormat('Y-m-d', $end_date);
+    if ($date_object) {
+        $formatted_end_date = $date_object->format('d.m.Y');
     } else {
-        $formatted_end_date = esc_html( $end_date );
+        $formatted_end_date = esc_html($end_date);
     }
 } else {
     $formatted_end_date = 'Date non spécifiée';
 }
 
 $progress_percentage = 0;
-if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
-    $progress_percentage = min( 100, ( $current_signatures / $signatures_target ) * 100 );
+if (! empty($signatures_target) && $signatures_target > 0) {
+    $progress_percentage = min(100, ($current_signatures / $signatures_target) * 100);
 }
 
 ?>
@@ -55,7 +55,7 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
 					Vous avez signé la pétition :
 					<?php endif; ?>
 				</p>
-                <a href="<?php echo esc_url( $permalink ); ?>" class="petition-title"><?php echo esc_html( $title ); ?></a>.
+                <a href="<?php echo esc_url($permalink); ?>" class="petition-title"><?php echo esc_html($title); ?></a>.
                 <p class="thanks-for-action">Merci pour votre action.</p>
             </div>
         </div>
@@ -68,46 +68,46 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
                 <div class="social-networks">
                     <a class="article-shareFacebook" target="_blank" rel="noreferrer noopener"
                         href="<?php echo esc_url('https://www.facebook.com/sharer/sharer.php?u=' . urlencode($permalink)); ?>"
-                        title="<?php esc_attr_e( 'Partager sur Facebook', 'amnesty' ); ?>"
-                        aria-label="<?php esc_attr_e( 'Partager sur Facebook', 'amnesty' ); ?>">
+                        title="<?php esc_attr_e('Partager sur Facebook', 'amnesty'); ?>"
+                        aria-label="<?php esc_attr_e('Partager sur Facebook', 'amnesty'); ?>">
                         <div class="icon-container">
-                            <?php echo file_get_contents( get_template_directory() . '/assets/images/icon-facebook.svg' ); ?>
+                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-facebook.svg'); ?>
                         </div>
                     </a>
 
                     <a class="article-shareBluesky" target="_blank" rel="noreferrer noopener"
                         href="<?php echo esc_url('https://bsky.app/intent/compose?text=' . $share_text_encoded); ?>"
-                        title="<?php esc_attr_e( 'Partager sur Bluesky', 'amnesty' ); ?>"
-                        aria-label="<?php esc_attr_e( 'Partager sur Bluesky', 'amnesty' ); ?>">
+                        title="<?php esc_attr_e('Partager sur Bluesky', 'amnesty'); ?>"
+                        aria-label="<?php esc_attr_e('Partager sur Bluesky', 'amnesty'); ?>">
                         <div class="icon-container">
-                            <?php echo file_get_contents( get_template_directory() . '/assets/images/icon-bluesky.svg' ); ?>
+                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-bluesky.svg'); ?>
                         </div>
                     </a>
 
                     <a class="article-shareMastodon" target="_blank" rel="noreferrer noopener"
                         href="<?php echo esc_url('https://mastodon.social/share?text=' . $share_text_encoded); ?>"
-                        title="<?php esc_attr_e( 'Partager sur Mastodon', 'amnesty' ); ?>"
-                        aria-label="<?php esc_attr_e( 'Partager sur Mastodon', 'amnesty' ); ?>">
+                        title="<?php esc_attr_e('Partager sur Mastodon', 'amnesty'); ?>"
+                        aria-label="<?php esc_attr_e('Partager sur Mastodon', 'amnesty'); ?>">
                         <div class="icon-container">
-                            <?php echo file_get_contents( get_template_directory() . '/assets/images/icon-mastodon.svg' ); ?>
+                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-mastodon.svg'); ?>
                         </div>
                     </a>
 
                     <div class="article-shareCopy"
-                        title="<?php esc_attr_e( 'Copier le lien', 'amnesty' ); ?>"
-                        aria-label="<?php esc_attr_e( 'Copier le lien', 'amnesty' ); ?>"
-                        data-url="<?php echo esc_url( $permalink ); ?>">
+                        title="<?php esc_attr_e('Copier le lien', 'amnesty'); ?>"
+                        aria-label="<?php esc_attr_e('Copier le lien', 'amnesty'); ?>"
+                        data-url="<?php echo esc_url($permalink); ?>">
                         <div class="icon-container">
-                            <?php echo file_get_contents( get_template_directory() . '/assets/images/icon-copy.svg' ); ?>
+                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-copy.svg'); ?>
                         </div>
                     </div>
 
                     <a class="article-shareEmail" target="_blank" rel="noreferrer noopener"
                         href="<?php echo esc_url('mailto:?subject=' . $email_subject_encoded . '&body=' . $email_body_encoded); ?>"
-                        title="<?php esc_attr_e( 'Partager par email', 'amnesty' ); ?>"
-                        aria-label="<?php esc_attr_e( 'Partager par email', 'amnesty' ); ?>">
+                        title="<?php esc_attr_e('Partager par email', 'amnesty'); ?>"
+                        aria-label="<?php esc_attr_e('Partager par email', 'amnesty'); ?>">
                         <div class="icon-container">
-                            <?php echo file_get_contents( get_template_directory() . '/assets/images/icon-mail.svg' ); ?>
+                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-mail.svg'); ?>
                         </div>
                     </a>
                 </div>
@@ -122,9 +122,9 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
                 <p class="need-you">Nous avons besoin de vous pour continuer à lutter en toute indépendance et impartialité</p>
                 <?php
                 $donate_label = get_option('petition_donate_button_label', 'FAIRE UN DON');
-				$uidsf = get_field('uidsf');
-				$code_origine = get_field('code_origine');
-                ?>
+$uidsf = get_field('uidsf');
+$code_origine = get_field('code_origine');
+?>
                 <div class="custom-button-block left">
                     <a class="custom-button" href="https://soutenir.amnesty.fr/b?lang=fr_FR&cid=<?= $uidsf?>&reserved_originecode=<?= $code_origine ?>" target="_blank" rel="noreferrer noopener">
                         <div class="content outline-black medium">
@@ -135,67 +135,67 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
             </div>
         </div>
         <?php
-        $random_petition = new WP_Query( array(
+        $random_petition = new WP_Query(array(
             'post_type'      => 'petition',
             'posts_per_page' => 1,
             'orderby'        => 'rand',
             'post__not_in'   => array( get_the_ID() ),
-        ) );
+        ));
 
-        if ( $random_petition->have_posts() ) :
-            while ( $random_petition->have_posts() ) : $random_petition->the_post();
-                $random_title = get_the_title();
-                $random_link = get_permalink();
+if ($random_petition->have_posts()) :
+    while ($random_petition->have_posts()) : $random_petition->the_post();
+        $random_title = get_the_title();
+        $random_link = get_permalink();
 
-                $featured_image_url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
-                $end_date = get_field('date_de_fin');
-                $signatures_target = get_field('objectif_signatures');
+        $featured_image_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
+        $end_date = get_field('date_de_fin');
+        $signatures_target = get_field('objectif_signatures');
 
-                $post_id = get_the_ID();
-                $current_signatures = amnesty_get_petition_signature_count( $post_id );
+        $post_id = get_the_ID();
+        $current_signatures = amnesty_get_petition_signature_count($post_id);
 
-                if ( ! empty( $end_date ) ) {
-                    $date_object = DateTime::createFromFormat( 'Y-m-d', $end_date );
-                    if ( $date_object ) {
-                        $formatted_end_date = $date_object->format( 'd.m.Y' );
-                    } else {
-                        $formatted_end_date = esc_html( $end_date );
-                    }
-                } else {
-                    $formatted_end_date = 'Date non spécifiée';
-                }
+        if (! empty($end_date)) {
+            $date_object = DateTime::createFromFormat('Y-m-d', $end_date);
+            if ($date_object) {
+                $formatted_end_date = $date_object->format('d.m.Y');
+            } else {
+                $formatted_end_date = esc_html($end_date);
+            }
+        } else {
+            $formatted_end_date = 'Date non spécifiée';
+        }
 
-                $progress_percentage = 0;
-                if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
-                    $progress_percentage = min( 100, ( $current_signatures / $signatures_target ) * 100 );
-                }
-                ?>
+        $progress_percentage = 0;
+        if (! empty($signatures_target) && $signatures_target > 0) {
+            $progress_percentage = min(100, ($current_signatures / $signatures_target) * 100);
+        }
+        ?>
                 <p class="other-petition">Vous avez encore 5 minutes ? Soutenez aussi :</p>
                 <div class="random-petition">
-                    <?php if ( $featured_image_url ) : ?>
+                    <?php if ($featured_image_url) : ?>
                         <div class="random-petition-image-container">
-                            <img class="random-petition-image" src="<?php echo esc_url( $featured_image_url ); ?>" alt="<?php echo esc_attr( $random_title ); ?>">
+                            <img class="random-petition-image" src="<?php echo esc_url($featured_image_url); ?>" alt="<?php echo esc_attr($random_title); ?>">
                         </div>
                     <?php endif; ?>
                     <div class="random-petition-meta">
-                        <p class="random-petition-title"><?php echo esc_html( $random_title ); ?></p>
-                        <p class="random-petition-end-date">Jusqu'au <?php echo esc_html( $formatted_end_date ); ?></p>
+                        <p class="random-petition-title"><?php echo esc_html($random_title); ?></p>
+                        <p class="random-petition-end-date">Jusqu'au <?php echo esc_html($formatted_end_date); ?></p>
                         <div class="progress-bar-container">
-                            <div class="progress-bar" style="width: <?php echo esc_attr( $progress_percentage ); ?>%;"></div>
+                            <div class="progress-bar" style="width: <?php echo esc_attr($progress_percentage); ?>%;"></div>
                         </div>
                         <p class="supports">
-                            <span class="current-signatures"><?php echo esc_html( $current_signatures ); ?></span>
+                            <span class="current-signatures"><?php echo esc_html($current_signatures); ?></span>
                             <?php
-                            if ( $current_signatures <= 1 ) {
-                                echo 'soutien';
-                            } else {
-                                echo 'soutiens';
-                            }
-                            ?>.
-                            <span class="help-us">Aidez-nous à atteindre <?php echo esc_html( $signatures_target ); ?></span>
+                    if ($current_signatures <= 1) {
+                        echo 'soutien';
+                    } else {
+                        echo 'soutiens';
+                    }
+        ?>.
+                            <span class="help-us">Aidez-nous à atteindre <?php echo esc_html($signatures_target); ?></span>
                         </p>
                         <div class="custom-button-block center">
-                            <a class="custom-button" href="<?php echo esc_url( $random_link ); ?>">
+                            <a class="custom-button" href="<?php echo esc_url($random_link); ?>">
                                 <div class='content bg-yellow medium'>
                                     <div class="icon-container">
                                         <svg
@@ -215,10 +215,10 @@ if ( ! empty( $signatures_target ) && $signatures_target > 0 ) {
                     </div>
                 </div>
                 <?php
-            endwhile;
-            wp_reset_postdata();
-        endif;
-        ?>
+    endwhile;
+wp_reset_postdata();
+endif;
+?>
 
         <div class="all-petitions-link">
             <a href="/petitions" >Voir les autres pétitions</a>

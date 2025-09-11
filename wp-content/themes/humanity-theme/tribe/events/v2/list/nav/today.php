@@ -17,12 +17,12 @@
 ?>
 <li class="tribe-events-c-nav__list-item tribe-events-c-nav__list-item--today">
 	<a
-		href="<?php echo esc_url( $today_url ); ?>"
+		href="<?php echo esc_url($today_url); ?>"
 		class="tribe-events-c-nav__today tribe-common-b2"
 		data-js="tribe-events-view-link"
-		aria-label="<?php echo esc_attr( $today_title ); ?>"
-		title="<?php echo esc_attr( $today_title ); ?>"
+		aria-label="<?php echo esc_attr($today_title); ?>"
+		title="<?php echo esc_attr($today_title); ?>"
 	>
-		<?php echo esc_html( $today_label ); ?>
+		<?php echo esc_html($today_label); ?>
 	</a>
 </li>

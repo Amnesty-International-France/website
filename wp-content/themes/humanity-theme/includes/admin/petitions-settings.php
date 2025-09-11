@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 add_action('admin_menu', 'petition_add_settings_page');
 
-function petition_add_settings_page() {
+function petition_add_settings_page()
+{
     add_submenu_page(
         'edit.php?post_type=petition',
         'Réglages Petition',
@@ -15,7 +16,8 @@ function petition_add_settings_page() {
     );
 }
 
-function petition_settings_page_callback() {
+function petition_settings_page_callback()
+{
     if (
         isset($_POST['petition_settings_nonce']) &&
         wp_verify_nonce($_POST['petition_settings_nonce'], 'save_petition_settings')
@@ -36,7 +38,8 @@ function petition_settings_page_callback() {
     echo '</form></div>';
 }
 
-function petition_process_settings_form() {
+function petition_process_settings_form()
+{
     if (!current_user_can('manage_options')) {
         return;
     }
@@ -46,17 +49,19 @@ function petition_process_settings_form() {
     }
 }
 
-function amnesty_add_petition_thanks_rewrite_rule() {
+function amnesty_add_petition_thanks_rewrite_rule()
+{
     add_rewrite_rule(
         '^petitions/([^/]+)/merci/?$',
         'index.php?petition=$matches[1]&thanks=1',
         'top'
     );
 }
-add_action( 'init', 'amnesty_add_petition_thanks_rewrite_rule' );
+add_action('init', 'amnesty_add_petition_thanks_rewrite_rule');
 
-function amnesty_add_query_vars( $vars ) {
+function amnesty_add_query_vars($vars)
+{
     $vars[] = 'thanks';
     return $vars;
 }
-add_filter( 'query_vars', 'amnesty_add_query_vars' );
+add_filter('query_vars', 'amnesty_add_query_vars');

@@ -8,12 +8,12 @@
     </a>
 
 	<?= render_chip_category_block([
-		'label' => esc_html(str_replace('-', ' ', $lieu)),
-		'link' => esc_url($link),
-		'size' => 'large',
-		'style' => 'bg-yellow',
-		'icon' => $icon ?? '',
-	]); ?>
+        'label' => esc_html(str_replace('-', ' ', $lieu)),
+        'link' => esc_url($link),
+        'size' => 'large',
+        'style' => 'bg-yellow',
+        'icon' => $icon ?? '',
+    ]); ?>
 
     <div class="training-card-content">
 		<?php if ($is_members_only): ?>
@@ -32,11 +32,11 @@
         </h3>
 		<span class="training-card-date-location">
 			<?php
-			if (!empty($city)) {
-				echo esc_html($city) . ' - ';
-			}
-			echo esc_html($formatted_date);
-			?>
+            if (!empty($city)) {
+                echo esc_html($city) . ' - ';
+            }
+    echo esc_html($formatted_date);
+    ?>
 		</span>
     </div>
 </article>

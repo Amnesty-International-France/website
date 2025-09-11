@@ -9,7 +9,8 @@
 declare(strict_types=1);
 
 if (!function_exists('render_agenda_homepage_block')) {
-    function render_agenda_homepage_block(array $attributes): string {
+    function render_agenda_homepage_block(array $attributes): string
+    {
         $selection_mode     = $attributes['selectionMode'] ?? 'latest';
         $selected_event_ids = $attributes['selectedEventIds'] ?? [];
         $chronicle_image_url = $attributes['chronicleImageUrl'] ?? '';

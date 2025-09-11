@@ -6,8 +6,8 @@
  * Inserter: no
  */
 
-$callout_title = get_field( 'callout_title', get_the_ID() ) ?? '';
-$callout_text = get_field( 'callout_text', get_the_ID() ) ?? '';
+$callout_title = get_field('callout_title', get_the_ID()) ?? '';
+$callout_text = get_field('callout_text', get_the_ID()) ?? '';
 
 ?>
 

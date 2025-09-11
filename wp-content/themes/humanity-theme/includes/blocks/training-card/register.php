@@ -30,7 +30,7 @@ if (!function_exists('register_training_card_block')) {
                         'type' => 'string',
                         'default' => '',
                     ],
-					'city' => [
+                    'city' => [
                         'type' => 'string',
                         'default' => '',
                     ],

@@ -1,39 +1,40 @@
 <?php
 
-function amnesty_register_local_structures_cpt() {
-	$labels = [
-		'name' => 'Structures locales',
-		'singular_name' => 'Structure locale',
-		'add_new' => 'Ajouter une Structure locale',
-		'add_new_item' => 'Ajouter une nouvelle Structure locale',
-		'edit_item' => 'Modifier une Structure locale',
-		'new_item' => 'Nouvelle Structure locale',
-		'view_item' => 'Voir la Structure locale',
-		'search_items' => 'Rechercher une Structure locale',
-		'not_found' => 'Aucune Structure locale trouvée',
-		'not_found_in_trash' => 'Aucune Structure locale dans la corbeille'
-	];
-	$args = [
-		'labels' => $labels,
-		'public' => true,
-		'has_archive' => true,
-		'rewrite' => array('slug' => 'structures-locales'),
-		'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
-		'menu_icon' => 'dashicons-admin-page',
-		'show_in_rest' => true,
-	];
+function amnesty_register_local_structures_cpt()
+{
+    $labels = [
+        'name' => 'Structures locales',
+        'singular_name' => 'Structure locale',
+        'add_new' => 'Ajouter une Structure locale',
+        'add_new_item' => 'Ajouter une nouvelle Structure locale',
+        'edit_item' => 'Modifier une Structure locale',
+        'new_item' => 'Nouvelle Structure locale',
+        'view_item' => 'Voir la Structure locale',
+        'search_items' => 'Rechercher une Structure locale',
+        'not_found' => 'Aucune Structure locale trouvée',
+        'not_found_in_trash' => 'Aucune Structure locale dans la corbeille'
+    ];
+    $args = [
+        'labels' => $labels,
+        'public' => true,
+        'has_archive' => true,
+        'rewrite' => array('slug' => 'structures-locales'),
+        'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
+        'menu_icon' => 'dashicons-admin-page',
+        'show_in_rest' => true,
+    ];
 
-	register_post_type( 'local-structures', $args);
+    register_post_type('local-structures', $args);
 }
 
-add_action( 'init', 'amnesty_register_local_structures_cpt' );
+add_action('init', 'amnesty_register_local_structures_cpt');
 
-add_action( 'acf/include_fields', function() {
-    if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+add_action('acf/include_fields', function () {
+    if (! function_exists('acf_add_local_field_group')) {
         return;
     }
 
-    acf_add_local_field_group( array(
+    acf_add_local_field_group(array(
         'key' => 'group_684aca1661799',
         'title' => 'Détails Structure locale',
         'fields' => array(
@@ -185,5 +186,5 @@ add_action( 'acf/include_fields', function() {
         'active' => true,
         'description' => '',
         'show_in_rest' => 1,
-    ) );
-} );
+    ));
+});

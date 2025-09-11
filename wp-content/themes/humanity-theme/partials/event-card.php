@@ -7,48 +7,48 @@ $post_id = $args['post_id'] ?? ($args['post']->ID ?? ($post->ID ?? null));
 $post_object = tribe_events_get_event($post_id);
 
 if (!$post_object instanceof WP_Post) {
-	$title = $args['title'] ?? 'Titre par défaut';
-	$permalink = $args['permalink'] ?? '#';
-	$date = $args['date'] ?? date('d-m-Y');
-	$thumbnail = $args['thumbnail'] ?? null;
-	$main_category = $args['main_category'] ?? null;
-	$post_terms = $args['terms'] ?? [];
+    $title = $args['title'] ?? 'Titre par défaut';
+    $permalink = $args['permalink'] ?? '#';
+    $date = $args['date'] ?? date('d-m-Y');
+    $thumbnail = $args['thumbnail'] ?? null;
+    $main_category = $args['main_category'] ?? null;
+    $post_terms = $args['terms'] ?? [];
 
-	$label = $args['label'] ?? ($main_category->name ?? null);
-	$link = $args['label_link'] ?? '';
-	$chip_style = $args['chip_style'] ?? match ($main_category->slug ?? null) {
-		'actualites' => 'bg-yellow',
-		'evenement' => 'bg-yellow',
-		'dossiers' => 'bg-black',
-		default => 'bg-yellow',
-	};
+    $label = $args['label'] ?? ($main_category->name ?? null);
+    $link = $args['label_link'] ?? '';
+    $chip_style = $args['chip_style'] ?? match ($main_category->slug ?? null) {
+        'actualites' => 'bg-yellow',
+        'evenement' => 'bg-yellow',
+        'dossiers' => 'bg-black',
+        default => 'bg-yellow',
+    };
 } else {
-	$permalink = get_permalink($post_object);
-	$title = get_the_title($post_object);
-	$date = get_the_date('', $post_object);
-	$thumbnail = get_the_post_thumbnail($post_id, 'medium', ['class' => 'article-image']);
+    $permalink = get_permalink($post_object);
+    $title = get_the_title($post_object);
+    $date = get_the_date('', $post_object);
+    $thumbnail = get_the_post_thumbnail($post_id, 'medium', ['class' => 'article-image']);
 
-	$main_category = amnesty_get_a_post_term($post_id);
+    $main_category = amnesty_get_a_post_term($post_id);
 
-	if (!($main_category instanceof WP_Term)) {
-		$main_category = null;
-	}
+    if (!($main_category instanceof WP_Term)) {
+        $main_category = null;
+    }
 
-	$post_terms = amnesty_get_post_terms($post_id);
-	$post_terms = array_filter($post_terms, static fn($term) => !in_array($term->taxonomy, ['keyword', 'landmark_category']));
+    $post_terms = amnesty_get_post_terms($post_id);
+    $post_terms = array_filter($post_terms, static fn ($term) => !in_array($term->taxonomy, ['keyword', 'landmark_category']));
 
-	$post_type = get_post_type($post_object);
-	$is_national_event = get_field('_EventNational', $post_id);
+    $post_type = get_post_type($post_object);
+    $is_national_event = get_field('_EventNational', $post_id);
 
-	$chip_style = $is_national_event ? 'bg-black' : 'bg-yellow';
+    $chip_style = $is_national_event ? 'bg-black' : 'bg-yellow';
 
-	$post_type_object = get_post_type_object($post_type);
+    $post_type_object = get_post_type_object($post_type);
 
-	if ($post_type_object->name === 'tribe_events') {
-		$label = 'Évènement';
-	}
+    if ($post_type_object->name === 'tribe_events') {
+        $label = 'Évènement';
+    }
 
-	$link = get_post_type_archive_link($post_type);
+    $link = get_post_type_archive_link($post_type);
 }
 
 ?>
@@ -63,16 +63,16 @@ if (!$post_object instanceof WP_Post) {
 
 	<?php if (!empty($label)) : ?>
 		<?=
-		render_chip_category_block(
-			[
-				'label' => esc_html($label),
-				'link' => esc_url($link),
-				'size' => 'large',
-				'style' => esc_attr($chip_style),
-				'icon' => $icon ?? '',
-			]
-		);
-		?>
+        render_chip_category_block(
+            [
+                'label' => esc_html($label),
+                'link' => esc_url($link),
+                'size' => 'large',
+                'style' => esc_attr($chip_style),
+                'icon' => $icon ?? '',
+            ]
+        );
+	    ?>
 	<?php endif; ?>
 	<div class="event-content">
 		<?php if (tribe_get_start_date($post_id, false, 'd M Y') !== tribe_get_end_date($post_id, false, 'd M Y')) : ?>
@@ -90,10 +90,10 @@ if (!$post_object instanceof WP_Post) {
 		<div
 			class="event-terms
 			<?php
-			if (empty(tribe_get_city($post_id)) && empty(tribe_get_start_time($post_id)) && ! $is_national_event) {
-				echo 'is-empty';
-			}
-			?>
+	        if (empty(tribe_get_city($post_id)) && empty(tribe_get_start_time($post_id)) && ! $is_national_event) {
+	            echo 'is-empty';
+	        }
+?>
 			">
 			<div class="event-info">
 				<?php if (!empty(tribe_get_city($post_id)) && ! $is_national_event) : ?>
@@ -106,7 +106,7 @@ if (!$post_object instanceof WP_Post) {
 						<p><?php echo $is_national_event ? 'Partout En France' : tribe_get_city($post_id); ?></p>
 					</div>
 				<?php endif; ?>
-				<?php if ( $is_national_event ) : ?>
+				<?php if ($is_national_event) : ?>
 					<div class="event-info-icon">
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path

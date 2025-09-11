@@ -11,7 +11,8 @@ declare(strict_types=1);
  * @return string
  */
 
-function render_read_more_block($attributes, $content) {
+function render_read_more_block($attributes, $content)
+{
     $read_more_label = $attributes['label'] ?? 'Lire la suite';
 
     ob_start();

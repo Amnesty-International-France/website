@@ -15,13 +15,13 @@
  */
 
 /* translators: %s: Event (plural or singular). */
-$label = get_previous_posts_link( '<span class="icon"></span><span>' . __( 'Previous', 'amnesty' ) . '</span>' );
+$label = get_previous_posts_link('<span class="icon"></span><span>' . __('Previous', 'amnesty') . '</span>');
 
 /* translators: %s: Event (plural or singular). */
-$events_mobile_friendly_label = get_previous_posts_link( '<span class="icon"></span><span>' . __( 'Previous', 'amnesty' ) . '</span>' );
+$events_mobile_friendly_label = get_previous_posts_link('<span class="icon"></span><span>' . __('Previous', 'amnesty') . '</span>');
 ?>
 <a
-	href="<?php echo esc_url( preg_replace( '#/liste(/|$)#', '/', $link ) ); ?>"
+	href="<?php echo esc_url(preg_replace('#/liste(/|$)#', '/', $link)); ?>"
 	rel="prev"
 	class="wp-block-query-pagination-previous"
 >

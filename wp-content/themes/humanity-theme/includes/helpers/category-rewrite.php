@@ -1,6 +1,7 @@
 <?php
 
-function amnesty_custom_category_rewrite_rules($wp_rewrite) {
+function amnesty_custom_category_rewrite_rules($wp_rewrite)
+{
     $categories = get_categories(array('hide_empty' => false));
     $new_rules = array();
 
@@ -17,7 +18,8 @@ function amnesty_custom_category_rewrite_rules($wp_rewrite) {
 add_filter('generate_rewrite_rules', 'amnesty_custom_category_rewrite_rules');
 
 
-function amnesty_redirect_old_category_urls() {
+function amnesty_redirect_old_category_urls()
+{
     if (is_category() && strpos($_SERVER['REQUEST_URI'], '/category/') !== false) {
         wp_redirect(get_term_link(get_queried_object()), 301);
         exit;

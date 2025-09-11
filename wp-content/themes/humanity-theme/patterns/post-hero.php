@@ -7,23 +7,23 @@
  * Inserter: no
  */
 
-if ( ! amnesty_post_has_hero() ) {
-	// deprecated
-	if ( amnesty_post_has_header() ) {
-		echo '<!-- wp:pattern {"slug":"amnesty/post-header"} /-->';
-	}
+if (! amnesty_post_has_hero()) {
+    // deprecated
+    if (amnesty_post_has_header()) {
+        echo '<!-- wp:pattern {"slug":"amnesty/post-header"} /-->';
+    }
 
-	return;
+    return;
 }
 
 $hero_data = amnesty_get_hero_data();
 
-if ( ! array_filter( $hero_data ) ) {
-	return;
+if (! array_filter($hero_data)) {
+    return;
 }
 
-echo wp_kses_post( render_hero_block( $hero_data['attrs'], $hero_data['content'], $hero_data['name'] ) );
+echo wp_kses_post(render_hero_block($hero_data['attrs'], $hero_data['content'], $hero_data['name']));
 
-if ( ! is_admin() ) {
-	add_filter( 'the_content', 'amnesty_remove_first_hero_from_content', 0 );
+if (! is_admin()) {
+    add_filter('the_content', 'amnesty_remove_first_hero_from_content', 0);
 }

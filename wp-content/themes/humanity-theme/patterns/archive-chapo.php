@@ -24,6 +24,6 @@ if (is_post_type_archive('training')) {
 
 <?php if (!empty($chapo_text)) : ?>
     <div class="chapo">
-        <p class="text"><?php echo wp_kses_post(nl2br( stripslashes($chapo_text))); ?></p>
+        <p class="text"><?php echo wp_kses_post(nl2br(stripslashes($chapo_text))); ?></p>
     </div>
 <?php endif; ?>

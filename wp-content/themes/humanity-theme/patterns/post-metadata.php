@@ -8,8 +8,8 @@
  */
 
 // prevent weird output in the site editor
-if ( ! get_the_ID() ) {
-	return;
+if (! get_the_ID()) {
+    return;
 }
 
 ?>

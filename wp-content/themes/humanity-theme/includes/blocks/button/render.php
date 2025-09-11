@@ -9,7 +9,8 @@ declare(strict_types=1);
  *
  * @return string
  */
-function render_button_block(array $attributes): string {
+function render_button_block(array $attributes): string
+{
     $postId      = $attributes['postId'] ?? 0;
     $label       = $attributes['label'] ?? 'Bouton';
     $size        = $attributes['size'] ?? 'medium';

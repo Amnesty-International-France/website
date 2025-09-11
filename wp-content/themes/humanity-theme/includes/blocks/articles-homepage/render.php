@@ -10,7 +10,8 @@ if (!function_exists('render_articles_homepage_block')) {
      *
      * @return string
      */
-    function render_articles_homepage_block(array $attributes): string {
+    function render_articles_homepage_block(array $attributes): string
+    {
         $items = $attributes['items'] ?? [];
         $class_name = esc_attr($attributes['className'] ?? '');
 
@@ -25,7 +26,8 @@ if (!function_exists('render_articles_homepage_block')) {
          * @return string The URL.
          */
         if (!function_exists('get_dynamic_category_or_post_type_link')) {
-            function get_dynamic_category_or_post_type_link(string $slug): string {
+            function get_dynamic_category_or_post_type_link(string $slug): string
+            {
                 if ($slug === 'landmark') {
                     return esc_url(get_post_type_archive_link('landmark') ?: home_url('/reperes'));
                 } else {
@@ -45,7 +47,8 @@ if (!function_exists('render_articles_homepage_block')) {
          * @return string Formatted date.
          */
         if (!function_exists('format_post_date')) {
-            function format_post_date($post): string {
+            function format_post_date($post): string
+            {
                 return get_the_date('j F Y', $post);
             }
         }
@@ -57,7 +60,8 @@ if (!function_exists('render_articles_homepage_block')) {
          * @return array<array<string, string>> Array of custom terms (id, name, slug, taxonomy).
          */
         if (!function_exists('get_post_custom_terms')) {
-            function get_post_custom_terms(int $post_id): array {
+            function get_post_custom_terms(int $post_id): array
+            {
                 $custom_terms_data = [];
                 $post_type = get_post_type($post_id);
                 $taxonomies = get_object_taxonomies($post_type, 'objects');
@@ -137,7 +141,7 @@ if (!function_exists('render_articles_homepage_block')) {
             if (empty($entity_slug) && $category_slug_from_attributes) {
                 $entity_slug = $category_slug_from_attributes;
                 if ($entity_slug === 'landmark') {
-                     $entity_label = 'Repère';
+                    $entity_label = 'Repère';
                 } else {
                     $fallback_cat = get_category_by_slug($entity_slug);
                     $entity_label = $fallback_cat ? (get_field('category_singular_name', $fallback_cat) ?: $fallback_cat->name) : ucwords(str_replace('-', ' ', $entity_slug));
@@ -173,7 +177,8 @@ if (!function_exists('render_articles_homepage_block')) {
              * @param string $slug The category or post type slug.
              * @return string
              */
-            function see_all_label(string $slug): string {
+            function see_all_label(string $slug): string
+            {
                 switch ($slug) {
                     case 'actualites':
                         return 'Voir toutes les actualités';
@@ -211,16 +216,16 @@ if (!function_exists('render_articles_homepage_block')) {
                         $entity_label = $posts[0]['entity_label'];
                         $post_date = $posts[0]['post_date'];
                         $custom_terms = $posts[0]['custom_terms'];
-                    ?>
+                        ?>
 
                     <div class="article-main-desktop">
                         <?php if (!empty($entity_slug)): ?>
                             <?= render_chip_category_block([
-                                'label' => esc_html($entity_label),
-                                'size'  => 'small',
-                                'link'  => get_dynamic_category_or_post_type_link($entity_slug),
-                                'style' => esc_attr($chip_style),
-                            ]) ?>
+                                    'label' => esc_html($entity_label),
+                                    'size'  => 'small',
+                                    'link'  => get_dynamic_category_or_post_type_link($entity_slug),
+                                    'style' => esc_attr($chip_style),
+                                ]) ?>
                         <?php endif; ?>
                         <?php if ($image): ?>
                             <div class="article-image-container">
@@ -265,10 +270,10 @@ if (!function_exists('render_articles_homepage_block')) {
                             <div class="wrapper">
                                 <?php if (!empty($entity_slug)): ?>
                                     <?= render_chip_category_block([
-                                        'label' => esc_html($entity_label),
-                                        'size'  => 'small',
-                                        'style' => esc_attr($chip_style),
-                                    ]) ?>
+                                            'label' => esc_html($entity_label),
+                                            'size'  => 'small',
+                                            'style' => esc_attr($chip_style),
+                                        ]) ?>
                                 <?php endif; ?>
                                 <div class="article-main-mobile-image-wrapper">
                                     <?php if ($image): ?>
@@ -324,16 +329,16 @@ if (!function_exists('render_articles_homepage_block')) {
                             $entity_label = $post_data['entity_label'];
                             $post_date = $post_data['post_date'];
                             $custom_terms = $post_data['custom_terms'];
-                        ?>
+                            ?>
                         <div class="article-side">
                             <a href="<?php echo esc_url(url: $url); ?>" target="_blank" rel="noopener noreferrer">
                                 <div class="wrapper">
                                     <?php if (!empty($entity_slug)): ?>
                                         <?= render_chip_category_block([
-                                            'label' => esc_html($entity_label),
-                                            'size'  => 'small',
-                                            'style' => esc_attr($chip_style),
-                                        ]) ?>
+                                                'label' => esc_html($entity_label),
+                                                'size'  => 'small',
+                                                'style' => esc_attr($chip_style),
+                                            ]) ?>
                                     <?php endif; ?>
                                     <div class="article-side-image-wrapper">
                                         <?php if ($image): ?>

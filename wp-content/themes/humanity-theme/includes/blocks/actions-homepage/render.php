@@ -10,7 +10,8 @@ if (!function_exists('render_actions_homepage_block')) {
      *
      * @return string
      */
-    function render_actions_homepage_block(array $attributes): string {
+    function render_actions_homepage_block(array $attributes): string
+    {
         $title = $attributes['title'] ?? '';
         $chapo = $attributes['chapo'] ?? '';
         $items = $attributes['items'] ?? [];
@@ -35,7 +36,7 @@ if (!function_exists('render_actions_homepage_block')) {
                             $buttonLabel     = $item['buttonLabel'] ?? '';
                             $buttonLink      = $item['buttonLink'] ?? '#';
                             $imageUrl        = $item['imageUrl'] ?? '';
-                        ?>
+                            ?>
                             <div class="item">
                                 <div class="image-wrapper">
                                     <?php if (!empty($imageUrl)) : ?>
