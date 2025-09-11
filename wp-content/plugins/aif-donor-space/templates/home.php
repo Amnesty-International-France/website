@@ -24,7 +24,7 @@ $picture_url = plugin_dir_url(__DIR__). 'assets/pictures/foo.png'
         aif_include_partial('label', [
             'content' => "Votre statut : {$user_status} (n° {$sf_user->Identifiant_contact__c}) ",
             'variant' => 'warning',
-            ]);
+        ]);
 ?>
 
         </header>
@@ -40,10 +40,10 @@ $picture_url = plugin_dir_url(__DIR__). 'assets/pictures/foo.png'
 
                     <?php
         aif_include_partial('nav-card', [
-        'iconName' => 'my-info',
-        'url' => get_permalink(get_page_by_path('mes-informations-personnelles')),
-        'title' => 'Mes informations',
-        'content' => 'Affichez ou modifiez vos informations personnelles.']); ?>
+            'iconName' => 'my-info',
+            'url' => get_permalink(get_page_by_path('mes-informations-personnelles')),
+            'title' => 'Mes informations',
+            'content' => 'Affichez ou modifiez vos informations personnelles.']); ?>
 
                 </li>
 
@@ -51,10 +51,10 @@ $picture_url = plugin_dir_url(__DIR__). 'assets/pictures/foo.png'
 
                     <?php
        aif_include_partial('nav-card', [
-       'iconName' => 'paper',
-       'url' => get_permalink(get_page_by_path('mes-recus-fiscaux')),
-       'title' => 'Mes reçus fiscaux',
-       'content' => 'Retrouvez dans cet espace tous vos reçus fiscaux.']); ?>
+           'iconName' => 'paper',
+           'url' => get_permalink(get_page_by_path('mes-recus-fiscaux')),
+           'title' => 'Mes reçus fiscaux',
+           'content' => 'Retrouvez dans cet espace tous vos reçus fiscaux.']); ?>
 
                 </li>
 
@@ -63,12 +63,12 @@ $picture_url = plugin_dir_url(__DIR__). 'assets/pictures/foo.png'
 
                     <?php
        aif_include_partial('nav-card', [
-       'iconName' => 'plane',
-       'url' => get_permalink(get_page_by_path('mes-demandes')),
-       'title' => 'Mes demandes',
-       'content' => 'Affichez l’état de vos demandes passées ou en cours.',
+           'iconName' => 'plane',
+           'url' => get_permalink(get_page_by_path('mes-demandes')),
+           'title' => 'Mes demandes',
+           'content' => 'Affichez l’état de vos demandes passées ou en cours.',
 
-    ]);
+       ]);
 
 
 ?>
@@ -79,11 +79,11 @@ $picture_url = plugin_dir_url(__DIR__). 'assets/pictures/foo.png'
 
         <?php
        aif_include_partial('aif-banner', [
-       'pictureURL' => $picture_url,
-       'firstName' => $current_user->first_name,
-       'member' => $sf_member,
+           'pictureURL' => $picture_url,
+           'firstName' => $current_user->first_name,
+           'member' => $sf_member,
 
-    ]);
+       ]);
 
 
 ?>

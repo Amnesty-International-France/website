@@ -71,9 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
         if (isset($error_message)) {
             $error_title = 'Une erreur est survenue.';
             aif_include_partial('alert', [
-            'title' => $error_title,
-            'state' => 'error',
-            'content' => $error_message]);
+                'title' => $error_title,
+                'state' => 'error',
+                'content' => $error_message]);
 
         }
 
@@ -105,8 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
 
                 <?php
          aif_include_partial('info-message', [
-            'id' => 'passwordHelp',
-            'content' => 'Exemple : Mon@MotDePasse123']); ?>
+             'id' => 'passwordHelp',
+             'content' => 'Exemple : Mon@MotDePasse123']); ?>
 
 
                 <div id="password-error-too-weak" class="aif-text-red aif-hide">

@@ -17,4 +17,4 @@ jobs:
       - name: Run PHP-CS-Fixer (PHP 8.2)
         uses: docker://oskarstark/php-cs-fixer-ga:3.25.0
         with:
-          args: --diff --dry-run
+          args: --config=.php-cs-fixer.php --diff --dry-run

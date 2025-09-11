@@ -22,7 +22,7 @@ $user_status =  aif_get_user_status($sf_member);
                 aif_include_partial('label', [
                     'content' => "Votre statut : {$user_status} (n° {$sf_user->Identifiant_contact__c}) ",
                     'variant' => 'warning',
-                    ]);
+                ]);
 ?>
 			</header>
 			<p>Bienvenue dans votre espace don qui permet la gestion administrative des informations liées à vos dons etadhésion.</p>
@@ -32,29 +32,29 @@ $user_status =  aif_get_user_status($sf_member);
 					<li class="secondary-nav-container__list__item">
 						<?php
         aif_include_partial('nav-card', [
-        'iconName' => 'my-info',
-        'url' => '/mon-espace/mes-dons/mes-informations-personnelles',
-        'title' => 'Mes informations',
-        'content' => 'Affichez ou modifiez vos informations personnelles.']);
+            'iconName' => 'my-info',
+            'url' => '/mon-espace/mes-dons/mes-informations-personnelles',
+            'title' => 'Mes informations',
+            'content' => 'Affichez ou modifiez vos informations personnelles.']);
 ?>
 					</li>
 
 					<li class="secondary-nav-container__list__item">
 						<?php
 aif_include_partial('nav-card', [
-'iconName' => 'paper',
-'url' => '/mon-espace/mes-dons/mes-recus-fiscaux',
-'title' => 'Mes reçus fiscaux',
-'content' => 'Retrouvez dans cet espace tous vos reçus fiscaux.']);
+    'iconName' => 'paper',
+    'url' => '/mon-espace/mes-dons/mes-recus-fiscaux',
+    'title' => 'Mes reçus fiscaux',
+    'content' => 'Retrouvez dans cet espace tous vos reçus fiscaux.']);
 ?>
 					</li>
 					<li class="secondary-nav-container__list__item">
 						<?php
 aif_include_partial('nav-card', [
-'iconName' => 'plane',
-'url' => '/mon-espace/mes-dons/mes-demandes',
-'title' => 'Mes demandes',
-'content' => 'Affichez l’état de vos demandes passées ou en cours.',
+    'iconName' => 'plane',
+    'url' => '/mon-espace/mes-dons/mes-demandes',
+    'title' => 'Mes demandes',
+    'content' => 'Affichez l’état de vos demandes passées ou en cours.',
 ]);
 ?>
 					</li>
@@ -62,8 +62,8 @@ aif_include_partial('nav-card', [
 			</nav>
 			<?php
             aif_include_partial('aif-banner', [
-            'firstName' => $current_user->first_name,
-            'member' => $sf_member,
+                'firstName' => $current_user->first_name,
+                'member' => $sf_member,
             ]);
 ?>
 		</div>

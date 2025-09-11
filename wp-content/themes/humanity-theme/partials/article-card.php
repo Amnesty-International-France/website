@@ -100,13 +100,13 @@ if (!$post_object instanceof WP_Post) {
 
 	<?php if (!empty($label) && get_post_type($post_object) !== 'page'): ?>
 		<?= render_chip_category_block([
-            'label' => esc_html($label),
-            'link' => esc_url($link),
-            'size' => 'large',
-            'style' => esc_attr($chip_style),
-            'isLandmark' => ('landmark' === get_post_type($post_object)),
-            'icon' => $icon ?? '',
-        ]); ?>
+		    'label' => esc_html($label),
+		    'link' => esc_url($link),
+		    'size' => 'large',
+		    'style' => esc_attr($chip_style),
+		    'isLandmark' => ('landmark' === get_post_type($post_object)),
+		    'icon' => $icon ?? '',
+		]); ?>
 	<?php endif; ?>
 
 	<div class="article-content">
@@ -137,11 +137,11 @@ if (!$post_object instanceof WP_Post) {
 			    }
 			    ?>
 				<?= render_chip_category_block([
-			        'label' => esc_html($term->name),
-			        'size'  => 'small',
-			        'style' => 'bg-gray',
-			        'link'  => esc_url($term_link),
-			    ]) ?>
+				    'label' => esc_html($term->name),
+				    'size'  => 'small',
+				    'style' => 'bg-gray',
+				    'link'  => esc_url($term_link),
+				]) ?>
 			<?php endforeach; ?>
 		</div>
 	</div>

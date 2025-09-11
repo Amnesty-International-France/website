@@ -97,13 +97,13 @@ if (!function_exists('render_card_image_text_block')) {
         <div <?php echo get_block_wrapper_attributes(['class' => implode(' ', $wrapper_classes)]); ?>>
             <?php if (!empty($category)) : ?>
 				<?= render_chip_category_block([
-                    'label' => esc_html($category),
-                    'link' => esc_url($link ?? '#'),
-                    'size' => 'large',
-                    'style' => 'card-image-text-category',
-                    'isLandmark' => ($postId && ! $custom && 'landmark' === get_post_type($postId)),
-                    'icon' => $icon ?? '',
-                ]) ?>
+				    'label' => esc_html($category),
+				    'link' => esc_url($link ?? '#'),
+				    'size' => 'large',
+				    'style' => 'card-image-text-category',
+				    'isLandmark' => ($postId && ! $custom && 'landmark' === get_post_type($postId)),
+				    'icon' => $icon ?? '',
+				]) ?>
             <?php endif; ?>
             <div class="card-content-wrapper">
                 <a href="<?php echo esc_url($permalink); ?>" class="card-image-text-block-link"<?php echo $link_extra_attrs; ?>>

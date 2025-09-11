@@ -57,19 +57,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (isset($error_message)) {
             aif_include_partial('alert', [
-            'state' => 'error',
-            'title' => $error_title,
-            'content' => $error_message]);
+                'state' => 'error',
+                'title' => $error_title,
+                'content' => $error_message]);
 
         }
 
 if (isset($success_message)) {
 
     aif_include_partial('alert', [
-    'state' => 'success',
-    'title' => $success_title,
-    'content' => $success_message,
-        ]);
+        'state' => 'success',
+        'title' => $success_title,
+        'content' => $success_message,
+    ]);
 
 }
 

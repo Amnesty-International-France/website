@@ -35,13 +35,13 @@ if (count($tax_reciept) > 0) {
 
             <?php
               $url = add_query_arg([
-                'subject' =>  'Mes dons et adhésions',
-            ], get_permalink(get_page_by_path('nous-contacter')));
+                  'subject' =>  'Mes dons et adhésions',
+              ], get_permalink(get_page_by_path('nous-contacter')));
 
 aif_include_partial('alert', [
-'content' => "Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant l'année de vos dons.",
-'additional_content' => "Pour toutes questions ou modifications sur vos dons et/ou adhésion <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>",
-           ]);
+    'content' => "Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant l'année de vos dons.",
+    'additional_content' => "Pour toutes questions ou modifications sur vos dons et/ou adhésion <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>",
+]);
 
 ?>
 
@@ -67,9 +67,9 @@ aif_include_partial('alert', [
                     $url = get_permalink(get_page_by_path('mes-demandes'));
                     aif_include_partial('alert', [
                         'title' => 'Votre demande à bien été prise en compte',
-                    'content' => "L'envoi de votre reçu fiscal n'est pas immédiat. Vous le receverez d'ici quelques minutes dans votre boîte email.",
-          'additional_content' => "Vous pouvez voir le suivi du traitement de vos demandes sur la page  <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>",
-         'state' => 'success']);
+                        'content' => "L'envoi de votre reçu fiscal n'est pas immédiat. Vous le receverez d'ici quelques minutes dans votre boîte email.",
+                        'additional_content' => "Vous pouvez voir le suivi du traitement de vos demandes sur la page  <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>",
+                        'state' => 'success']);
 
                     ?>
                     </div>

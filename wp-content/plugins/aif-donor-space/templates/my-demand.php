@@ -71,8 +71,8 @@ function aif_format_date($date)
             }
 
             aif_include_partial('label', [
-            'content' => $demand->Statut_Espace_Don__c,
-            'variant' => $status,
+                'content' => $demand->Statut_Espace_Don__c,
+                'variant' => $status,
             ]);
             ?>
 
@@ -99,7 +99,7 @@ $url = add_query_arg([
 ], get_permalink(get_page_by_path('nous-contacter')));
 
                     aif_include_partial('info-message', [
-                    'content' => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
+                        'content' => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
                     ?>
 
 

@@ -18,6 +18,8 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'array_indentation' => true,
+        'indentation_type' => true,
         'no_unused_imports' => true,
         'single_quote' => true,
         'trailing_comma_in_multiline' => true,

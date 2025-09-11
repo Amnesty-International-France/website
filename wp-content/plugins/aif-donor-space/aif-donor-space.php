@@ -184,7 +184,7 @@ function aif_donor_space_enqueue_assets()
         [],
         '1.0.0',
         [
-           'in_footer' => false,
+            'in_footer' => false,
         ]
     );
 

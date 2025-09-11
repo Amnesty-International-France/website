@@ -34,8 +34,8 @@ if (count($tax_reciept) > 0) {
                 ], get_permalink(get_page_by_path('nous-contacter')));
 
 aif_include_partial('alert', [
-'content' => "Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant l'année de vos dons.",
-'additional_content' => "Pour toutes questions ou modifications sur vos dons et/ou adhésion <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>",
+    'content' => "Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant l'année de vos dons.",
+    'additional_content' => "Pour toutes questions ou modifications sur vos dons et/ou adhésion <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>",
 ]);
 ?>
 
