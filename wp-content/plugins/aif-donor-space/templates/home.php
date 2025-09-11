@@ -9,7 +9,7 @@ $current_user = wp_get_current_user();
 $sf_member = get_salesforce_member_data($current_user->user_email);
 $sf_user = get_salesforce_user_data($sf_member->Id);
 $user_status =  aif_get_user_status($sf_member);
-$picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
+$picture_url = plugin_dir_url(__DIR__). 'assets/pictures/foo.png'
 
 ?>
 
@@ -21,9 +21,9 @@ $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
                 <?= $current_user->first_name ?>,
             </h1>
             <?php
-        aif_include_partial("label", [
-            "content" => "Votre statut : {$user_status} (n° {$sf_user->Identifiant_contact__c}) ",
-            "variant" => "warning"
+        aif_include_partial('label', [
+            'content' => "Votre statut : {$user_status} (n° {$sf_user->Identifiant_contact__c}) ",
+            'variant' => 'warning',
             ]);
 ?>
 
@@ -39,22 +39,22 @@ $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
                 <li class="secondary-nav-container__list__item">
 
                     <?php
-        aif_include_partial("nav-card", [
-        "iconName" => "my-info",
-        "url" => get_permalink(get_page_by_path('mes-informations-personnelles')),
-        "title" => "Mes informations",
-        "content" => "Affichez ou modifiez vos informations personnelles."]); ?>
+        aif_include_partial('nav-card', [
+        'iconName' => 'my-info',
+        'url' => get_permalink(get_page_by_path('mes-informations-personnelles')),
+        'title' => 'Mes informations',
+        'content' => 'Affichez ou modifiez vos informations personnelles.']); ?>
 
                 </li>
 
                 <li class="secondary-nav-container__list__item">
 
                     <?php
-       aif_include_partial("nav-card", [
-       "iconName" => "paper",
-       "url" => get_permalink(get_page_by_path('mes-recus-fiscaux')),
-       "title" => "Mes reçus fiscaux",
-       "content" => "Retrouvez dans cet espace tous vos reçus fiscaux."]); ?>
+       aif_include_partial('nav-card', [
+       'iconName' => 'paper',
+       'url' => get_permalink(get_page_by_path('mes-recus-fiscaux')),
+       'title' => 'Mes reçus fiscaux',
+       'content' => 'Retrouvez dans cet espace tous vos reçus fiscaux.']); ?>
 
                 </li>
 
@@ -62,11 +62,11 @@ $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
                 <li class="secondary-nav-container__list__item">
 
                     <?php
-       aif_include_partial("nav-card", [
-       "iconName" => "plane",
-       "url" => get_permalink(get_page_by_path('mes-demandes')),
-       "title" => "Mes demandes",
-       "content" => "Affichez l’état de vos demandes passées ou en cours.",
+       aif_include_partial('nav-card', [
+       'iconName' => 'plane',
+       'url' => get_permalink(get_page_by_path('mes-demandes')),
+       'title' => 'Mes demandes',
+       'content' => 'Affichez l’état de vos demandes passées ou en cours.',
 
     ]);
 
@@ -78,10 +78,10 @@ $picture_url = plugin_dir_url(__DIR__). "assets/pictures/foo.png"
         </nav>
 
         <?php
-       aif_include_partial("aif-banner", [
-       "pictureURL" => $picture_url,
-       "firstName" => $current_user->first_name,
-       "member" => $sf_member,
+       aif_include_partial('aif-banner', [
+       'pictureURL' => $picture_url,
+       'firstName' => $current_user->first_name,
+       'member' => $sf_member,
 
     ]);
 

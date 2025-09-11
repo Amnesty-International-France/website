@@ -12,13 +12,13 @@ function amnesty_register_local_structures_cpt()
         'view_item' => 'Voir la Structure locale',
         'search_items' => 'Rechercher une Structure locale',
         'not_found' => 'Aucune Structure locale trouvée',
-        'not_found_in_trash' => 'Aucune Structure locale dans la corbeille'
+        'not_found_in_trash' => 'Aucune Structure locale dans la corbeille',
     ];
     $args = [
         'labels' => $labels,
         'public' => true,
         'has_archive' => true,
-        'rewrite' => array('slug' => 'structures-locales'),
+        'rewrite' => ['slug' => 'structures-locales'],
         'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
         'menu_icon' => 'dashicons-admin-page',
         'show_in_rest' => true,
@@ -34,11 +34,11 @@ add_action('acf/include_fields', function () {
         return;
     }
 
-    acf_add_local_field_group(array(
+    acf_add_local_field_group([
         'key' => 'group_684aca1661799',
         'title' => 'Détails Structure locale',
-        'fields' => array(
-            array(
+        'fields' => [
+            [
                 'key' => 'field_684aca163aa91',
                 'label' => 'Latitude',
                 'name' => 'latitude',
@@ -47,11 +47,11 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'default_value' => '',
                 'min' => '',
                 'max' => '',
@@ -60,8 +60,8 @@ add_action('acf/include_fields', function () {
                 'step' => '',
                 'prepend' => '',
                 'append' => '',
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_684aca6a3aa92',
                 'label' => 'Longitude',
                 'name' => 'longitude',
@@ -70,11 +70,11 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'default_value' => '',
                 'min' => '',
                 'max' => '',
@@ -83,8 +83,8 @@ add_action('acf/include_fields', function () {
                 'step' => '',
                 'prepend' => '',
                 'append' => '',
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_684aca733aa93',
                 'label' => 'Adresse',
                 'name' => 'adresse',
@@ -93,19 +93,19 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'default_value' => '',
                 'maxlength' => '',
                 'allow_in_bindings' => 0,
                 'placeholder' => '',
                 'prepend' => '',
                 'append' => '',
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_684aca883aa94',
                 'label' => 'Ville',
                 'name' => 'ville',
@@ -114,19 +114,19 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'default_value' => '',
                 'maxlength' => '',
                 'allow_in_bindings' => 0,
                 'placeholder' => '',
                 'prepend' => '',
                 'append' => '',
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_684acabd3aa95',
                 'label' => 'Téléphone',
                 'name' => 'telephone',
@@ -135,19 +135,19 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'default_value' => '',
                 'maxlength' => '',
                 'allow_in_bindings' => 0,
                 'placeholder' => '',
                 'prepend' => '',
                 'append' => '',
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_684acadd3aa96',
                 'label' => 'Email',
                 'name' => 'email',
@@ -156,27 +156,27 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'default_value' => '',
                 'allow_in_bindings' => 0,
                 'placeholder' => '',
                 'prepend' => '',
                 'append' => '',
-            ),
-        ),
-        'location' => array(
-            array(
-                array(
+            ],
+        ],
+        'location' => [
+            [
+                [
                     'param' => 'post_type',
                     'operator' => '==',
                     'value' => 'local-structures',
-                ),
-            ),
-        ),
+                ],
+            ],
+        ],
         'menu_order' => 0,
         'position' => 'acf_after_title',
         'style' => 'default',
@@ -186,5 +186,5 @@ add_action('acf/include_fields', function () {
         'active' => true,
         'description' => '',
         'show_in_rest' => 1,
-    ));
+    ]);
 });

@@ -16,7 +16,7 @@ $post_type_class = get_post_type() ?: '';
 <section class="wp-block-group article <?php echo esc_attr($category_class); ?> <?php echo esc_attr($post_type_class); ?>">
   <!-- wp:group {"tagName":"header","className":"article-header"} -->
   <header class="wp-block-group article-header">
-    <?php if ($category_class === "dossiers" || $category_class === "campagnes") : ?>
+    <?php if ($category_class === 'dossiers' || $category_class === 'campagnes') : ?>
       <div class="files-wrapper">
         <div class="files-wrapper-left">
           <div class="yoast-breadcrumb-wrapper">
@@ -46,7 +46,7 @@ $post_type_class = get_post_type() ?: '';
   </header>
   <!-- /wp:group -->
 
-  <?php if ($category_class === "dossiers") : ?>
+  <?php if ($category_class === 'dossiers') : ?>
 	<?php
         $display_toc = get_field('display_toc');
       ?>

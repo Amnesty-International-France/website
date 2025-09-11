@@ -26,20 +26,20 @@ $current_slug = basename(rtrim($request_path, '/'));
 
 		<section class="aif-donor-space-content">
 			<?php
-			$templates_dir = AIF_DONOR_SPACE_PATH . '/templates/';
-			$content_map = [
-				'mes-dons' => $templates_dir . 'home.php',
-				'mes-recus-fiscaux' => $templates_dir . 'taxt-receipt.php',
-				'modification-coordonnees-bancaire' => $templates_dir . 'update-iban.php',
-				'mes-informations-personnelles' => $templates_dir . 'my-personal-informations.php',
-				'mes-demandes' => $templates_dir . 'my-demand.php',
-				'nous-contacter' => $templates_dir . 'contact.php',
-			];
+            $templates_dir = AIF_DONOR_SPACE_PATH . '/templates/';
+$content_map = [
+    'mes-dons' => $templates_dir . 'home.php',
+    'mes-recus-fiscaux' => $templates_dir . 'taxt-receipt.php',
+    'modification-coordonnees-bancaire' => $templates_dir . 'update-iban.php',
+    'mes-informations-personnelles' => $templates_dir . 'my-personal-informations.php',
+    'mes-demandes' => $templates_dir . 'my-demand.php',
+    'nous-contacter' => $templates_dir . 'contact.php',
+];
 
-			if (array_key_exists($current_slug, $content_map) && file_exists($content_map[$current_slug])) {
-				include $content_map[$current_slug];
-			}
-			?>
+if (array_key_exists($current_slug, $content_map) && file_exists($content_map[$current_slug])) {
+    include $content_map[$current_slug];
+}
+?>
 		</section>
 
 	</div>

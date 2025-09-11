@@ -7,12 +7,12 @@
  * Inserter: no
  */
 
-$args = array(
+$args = [
     'post_type' => 'fiche_pays',
     'posts_per_page' => -1,
     'orderby' => 'title',
-    'order' => 'ASC'
-);
+    'order' => 'ASC',
+];
 $all_countries = new WP_Query($args);
 
 $doc_id = get_option('countries_global_document_id');
@@ -32,7 +32,7 @@ if ($all_countries->have_posts()) {
 
         $countries_by_letter[$first_letter][] = [
             'title' => $title,
-            'link'  => get_permalink()
+            'link'  => get_permalink(),
         ];
     }
     wp_reset_postdata();

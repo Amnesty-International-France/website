@@ -113,11 +113,11 @@ if (empty($href) && !empty($campaign_url)) {
 				<?php foreach ($amount_monthly_donation as $key => $value) : ?>
 					<div class="don-radio
 						<?php
-                        if ($value['checked']) :
-                            ?>
+				        if ($value['checked']) :
+				            ?>
 							active
 							<?php
-                        endif;
+				        endif;
 				    ?>
 						">
 						<label for="<?php echo esc_attr($value['id']); ?>">

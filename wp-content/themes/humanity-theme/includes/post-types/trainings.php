@@ -7,8 +7,8 @@ function amnesty_register_trainings_cpt(): void
 {
     register_post_type(
         'training',
-        array(
-            'labels'              => array(
+        [
+            'labels'              => [
                 'name'               => 'Formations',
                 'singular_name'      => 'Formation',
                 'add_new'            => 'Ajouter une Formation',
@@ -19,11 +19,11 @@ function amnesty_register_trainings_cpt(): void
                 'search_items'       => 'Rechercher une Formation',
                 'not_found'          => 'Aucune Formation trouvée',
                 'not_found_in_trash' => 'Aucune Formation dans la corbeille',
-            ),
+            ],
             'public'              => true,
             'has_archive'         => true,
-            'rewrite'             => array( 'slug' => 'formations' ),
-            'supports'            => array( 'title', 'editor', 'thumbnail', 'custom-fields' ),
+            'rewrite'             => [ 'slug' => 'formations' ],
+            'supports'            => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
             'menu_icon'           => 'dashicons-admin-page',
             'show_in_rest'        => true,
             'publicly_queryable'  => true,
@@ -31,7 +31,7 @@ function amnesty_register_trainings_cpt(): void
             'show_ui'             => true,
             'show_in_menu'        => true,
             'menu_position'       => 20,
-        )
+        ]
     );
 }
 

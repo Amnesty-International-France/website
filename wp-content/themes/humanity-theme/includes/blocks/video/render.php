@@ -50,7 +50,7 @@ if (!function_exists('render_video_block')) {
             return '<p>' . esc_html__('Lien vidéo invalide', 'amnesty') . '</p>';
         }
 
-        $embed_url = "https://www.youtube.com/embed/" . esc_attr($video_id);
+        $embed_url = 'https://www.youtube.com/embed/' . esc_attr($video_id);
 
         ob_start();
         ?>

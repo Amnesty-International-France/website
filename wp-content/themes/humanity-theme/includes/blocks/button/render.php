@@ -18,8 +18,8 @@ function render_button_block(array $attributes): string
     $icon        = $attributes['icon'] ?? '';
     $externalUrl = $attributes['externalUrl'] ?? '';
     $linkType    = $attributes['linkType'] ?? 'internal';
-	$link		 = $attributes['link'] ?? '';
-	$target		 = $attributes['targetBlank'] ?? true;
+    $link		 = $attributes['link'] ?? '';
+    $target		 = $attributes['targetBlank'] ?? true;
     $alignment   = $attributes['alignment'] ?? 'left';
 
     if ($linkType === 'external') {
@@ -28,9 +28,8 @@ function render_button_block(array $attributes): string
         $post = get_post($postId);
         $href = $post ? get_permalink($post) : '#';
     } elseif ($link) {
-		$href = $link;
-	}
-	else {
+        $href = $link;
+    } else {
         $href = '#';
     }
 

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-$args = array(
+$args = [
     'post_type'      => 'pop-in',
     'posts_per_page' => 1,
     'orderby'        => 'date',
     'order'          => 'DESC',
-);
+];
 
 $last_post = new WP_Query($args);
 

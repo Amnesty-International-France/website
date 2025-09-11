@@ -151,18 +151,18 @@ function insert_users_records($response)
 
 function get_petition_id_from_uidsf($uidsf)
 {
-    $args = array(
+    $args = [
         'post_type' => 'petition',
         'posts_per_page' => 1,
         'fields' => 'ids',
-        'meta_query' => array(
-            array(
+        'meta_query' => [
+            [
                 'key' => 'uidsf',
                 'value' => $uidsf,
                 'compare' => '=',
-            ),
-        ),
-    );
+            ],
+        ],
+    ];
 
     $posts_found = get_posts($args);
 

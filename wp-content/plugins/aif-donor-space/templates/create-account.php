@@ -3,7 +3,7 @@
 /* Template Name: Create account */
 get_header();
 
-$error_message = "";
+$error_message = '';
 $error_no_access_to_donor_space = false;
 
 
@@ -18,12 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_password = sanitize_text_field($_POST['confirm-password']);
 
     if (empty($email) || empty($password)) {
-        $error_message = "Veuillez renseigner le mot de passe et votre email";
+        $error_message = 'Veuillez renseigner le mot de passe et votre email';
     } elseif (!is_email($email)) {
         $error_message = "L'email renseigné est invalide";
 
     } elseif ($password !== $confirm_password) {
-        $error_message  = "Les mots de passe ne correspondent pas";
+        $error_message  = 'Les mots de passe ne correspondent pas';
     } else {
 
         $sf_member = get_salesforce_member_data($email);
@@ -32,14 +32,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $user = get_salesforce_user_data($sf_member->Id);
 
-            $userdata = array(
+            $userdata = [
                 'user_login'    => $email,
                 'user_email'    => $email,
                 'user_pass'     => $password,
                 'first_name'    => $user->FirstName,
                 'last_name'     => $user->LastName,
                 'nickname'      => $user->FirstName . ' ' . $user->LastName,
-                'role'          => 'subscriber');
+                'role'          => 'subscriber'];
 
             $user_id = wp_insert_user($userdata);
 
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 store_2fa_code($user_id, $code);
 
                 $verification_url = add_query_arg([
-                    "user" => $email,
+                    'user' => $email,
                 ], get_permalink(get_page_by_path('verifier-votre-email')));
 
                 if (send_2fa_code($email, $code)) {
@@ -86,25 +86,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php
 
 if (!empty($error_message)) {
-    $title = "Une erreur est survenue";
-    aif_include_partial("alert", [
-        "state" => "error",
-        "title" => $title,
-    "content" => $error_message]);
+    $title = 'Une erreur est survenue';
+    aif_include_partial('alert', [
+        'state' => 'error',
+        'title' => $title,
+    'content' => $error_message]);
 
 }
 
 if (!empty($error_no_access_to_donor_space)) {
 
-    $title = "L’adresse email renseignée ne trouve pas de correspondance dans notre système.";
+    $title = 'L’adresse email renseignée ne trouve pas de correspondance dans notre système.';
     $content = 'Devenez donateur en <a href="#" class="aif-link--secondary">réalisant un don </a> ou <a
                                             class="aif-link--secondary" href="mailto:smd@amnesty.fr">contactez le Service
                                             membres et donateurs</a> si vous pensez que c’est une erreur.';
 
-    aif_include_partial("alert", [
-    "state" => "error",
-    "title" => $title,
-    "content" => $content]);
+    aif_include_partial('alert', [
+    'state' => 'error',
+    'title' => $title,
+    'content' => $content]);
 
 }
 ?>
@@ -123,9 +123,9 @@ if (!empty($error_no_access_to_donor_space)) {
                     <?php
 
 
-                    aif_include_partial("info-message", [
-                    "id" => "email-help-message",
-                    "content" => "Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre adhésion ou de votre don."]); ?>
+                    aif_include_partial('info-message', [
+                    'id' => 'email-help-message',
+                    'content' => 'Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre adhésion ou de votre don.']); ?>
 
                 </div>
 
@@ -147,9 +147,9 @@ if (!empty($error_no_access_to_donor_space)) {
                     </div>
 
                     <?php
-aif_include_partial("info-message", [
-"id" => "passwordHelp",
-"content" => "Exemple : Mon@MotDePasse123"]); ?>
+aif_include_partial('info-message', [
+'id' => 'passwordHelp',
+'content' => 'Exemple : Mon@MotDePasse123']); ?>
 
 
 

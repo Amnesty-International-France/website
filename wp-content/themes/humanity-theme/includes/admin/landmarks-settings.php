@@ -179,8 +179,8 @@ function amnesty_get_featured_landmarks()
         'meta_query'     => [
             [
                 'key'     => '_featured_order',
-                'compare' => 'EXISTS'
-            ]
+                'compare' => 'EXISTS',
+            ],
         ],
     ]);
 }

@@ -17,8 +17,8 @@ if (!empty($attributes['geoJsonUrl'])) {
 }
 
 // TODO: move this code outside plugin
-$custom_local_structures_api_endpoint = rest_url( 'amnesty/v1/local-structures-search' );
-$geocode_proxy_api_endpoint = rest_url( 'amnesty/v1/geocode-proxy' );
+$custom_local_structures_api_endpoint = rest_url('amnesty/v1/local-structures-search');
+$geocode_proxy_api_endpoint = rest_url('amnesty/v1/geocode-proxy');
 
 ?>
 
@@ -72,7 +72,9 @@ $geocode_proxy_api_endpoint = rest_url( 'amnesty/v1/geocode-proxy' );
                                         data-zoom="<?php echo esc_attr($view['zoom']); ?>"
                                 >
                                     <div class="interactive-map__selector-svg-wrapper">
-                                        <?php if(isset($view['svg'])) { echo $view['svg']; } ?>
+                                        <?php if (isset($view['svg'])) {
+                                            echo $view['svg'];
+                                        } ?>
                                     </div>
                                 </div>
                             </div>

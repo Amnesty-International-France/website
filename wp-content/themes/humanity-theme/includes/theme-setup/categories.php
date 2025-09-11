@@ -6,19 +6,19 @@ if (!function_exists('setup_categories')) {
         $categories_defaut = [
             'Actualités' => [
                 'singular_name' => 'Actualité',
-                'slug' => 'actualites'
+                'slug' => 'actualites',
             ],
             'Dossiers' => [
                 'singular_name' => 'Dossier',
-                'slug' => 'dossiers'
+                'slug' => 'dossiers',
             ],
             'Campagnes' => [
                 'singular_name' => 'Campagne',
-                'slug' => 'campagnes'
+                'slug' => 'campagnes',
             ],
             'Articles La Chronique' => [
                 'singular_name' => 'Article La Chronique',
-                'slug' => 'chroniques'
+                'slug' => 'chroniques',
             ],
         ];
 

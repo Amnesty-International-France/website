@@ -6,46 +6,46 @@ if (!function_exists('setup_keywords')) {
     {
         $keywords_default = [
             'Rapport annuel' => [
-                'slug' => 'rapport-annuel'
+                'slug' => 'rapport-annuel',
             ],
             'Conflit israélo-palestinien' => [
-                'slug' => 'conflit-israelo-palestinien'
+                'slug' => 'conflit-israelo-palestinien',
             ],
             'Conflit ukrainien' => [
-                'slug' => 'conflit-ukrainien'
+                'slug' => 'conflit-ukrainien',
             ],
             'Changez leur histoire' => [
-                'slug' => 'changez-leur-histoire'
+                'slug' => 'changez-leur-histoire',
             ],
             'Manifestez-vous' => [
-                'slug' => 'manifestez-vous'
+                'slug' => 'manifestez-vous',
             ],
             'Femmes afghanes' => [
-                'slug' => 'femmes-afghanes'
+                'slug' => 'femmes-afghanes',
             ],
             'Apartheid' => [
-                'slug' => 'apartheid'
+                'slug' => 'apartheid',
             ],
             'Transgenre' => [
-                'slug' => 'transgenre'
+                'slug' => 'transgenre',
             ],
             'Délit de solidarité' => [
-                'slug' => 'delit-de-solidarite'
+                'slug' => 'delit-de-solidarite',
             ],
             'Elections' => [
-                'slug' => 'elections'
+                'slug' => 'elections',
             ],
             'Education aux droits humains' => [
-                'slug' => 'education-aux-droits-humains'
+                'slug' => 'education-aux-droits-humains',
             ],
             'Formation' => [
-                'slug' => 'formation'
+                'slug' => 'formation',
             ],
             'Agir' => [
-                'slug' => 'agir'
+                'slug' => 'agir',
             ],
             'Militantisme' => [
-                'slug' => 'militantisme'
+                'slug' => 'militantisme',
             ],
         ];
 
@@ -54,7 +54,7 @@ if (!function_exists('setup_keywords')) {
                 wp_insert_term(
                     $nom,
                     'keyword',
-                    array('slug' => $details['slug'])
+                    ['slug' => $details['slug']]
                 );
             }
         }

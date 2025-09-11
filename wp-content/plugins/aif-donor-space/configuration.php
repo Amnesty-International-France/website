@@ -16,7 +16,7 @@ add_action('wp_enqueue_scripts', 'humanity_theme_parent_theme_enqueue_styles');
 
 function humanity_theme_parent_theme_enqueue_scripts()
 {
-	// Le fichier check-password.js n'est pas dans ce thème mais dans le plugin aif-donor-space
+    // Le fichier check-password.js n'est pas dans ce thème mais dans le plugin aif-donor-space
     // wp_enqueue_script('check-password-js', get_stylesheet_directory_uri().'/js/check-password.js');
 }
 
@@ -38,13 +38,13 @@ function aif_donor_space_check_requirements()
         return;
     }
 
-	$AIF_SALESFORCE_URL = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
-	$AIF_SALESFORCE_CLIENT_ID = defined('AIF_SALESFORCE_CLIENT_ID') ? AIF_SALESFORCE_CLIENT_ID : getenv('AIF_SALESFORCE_CLIENT_ID');
-	$AIF_SALESFORCE_SECRET = defined('AIF_SALESFORCE_SECRET') ? AIF_SALESFORCE_SECRET : getenv('AIF_SALESFORCE_SECRET');
+    $AIF_SALESFORCE_URL = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
+    $AIF_SALESFORCE_CLIENT_ID = defined('AIF_SALESFORCE_CLIENT_ID') ? AIF_SALESFORCE_CLIENT_ID : getenv('AIF_SALESFORCE_CLIENT_ID');
+    $AIF_SALESFORCE_SECRET = defined('AIF_SALESFORCE_SECRET') ? AIF_SALESFORCE_SECRET : getenv('AIF_SALESFORCE_SECRET');
 
-	$AIF_MAILGUN_TOKEN = defined('AIF_MAILGUN_TOKEN') ? AIF_MAILGUN_TOKEN : getenv('AIF_MAILGUN_TOKEN');
-	$AIF_MAILGUN_URL = defined('AIF_MAILGUN_URL') ? AIF_MAILGUN_URL : getenv('AIF_MAILGUN_URL');
-	$AIF_MAILGUN_DOMAIN = defined('AIF_MAILGUN_DOMAIN') ? AIF_MAILGUN_DOMAIN : getenv('AIF_MAILGUN_DOMAIN');
+    $AIF_MAILGUN_TOKEN = defined('AIF_MAILGUN_TOKEN') ? AIF_MAILGUN_TOKEN : getenv('AIF_MAILGUN_TOKEN');
+    $AIF_MAILGUN_URL = defined('AIF_MAILGUN_URL') ? AIF_MAILGUN_URL : getenv('AIF_MAILGUN_URL');
+    $AIF_MAILGUN_DOMAIN = defined('AIF_MAILGUN_DOMAIN') ? AIF_MAILGUN_DOMAIN : getenv('AIF_MAILGUN_DOMAIN');
 
 
     if (empty($AIF_SALESFORCE_URL) || empty($AIF_SALESFORCE_CLIENT_ID) || empty($AIF_SALESFORCE_SECRET) || empty($AIF_MAILGUN_DOMAIN) || empty($AIF_MAILGUN_TOKEN) || empty($AIF_MAILGUN_URL)) {

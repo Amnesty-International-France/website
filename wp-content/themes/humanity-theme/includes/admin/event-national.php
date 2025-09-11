@@ -10,11 +10,11 @@ add_action(
         }
 
         acf_add_local_field_group(
-            array(
+            [
                 'key'                   => 'group_685bfd654d813',
                 'title'                 => 'Partout En France',
-                'fields'                => array(
-                    array(
+                'fields'                => [
+                    [
                         'key'               => 'field_685bfd654bfce',
                         'label'             => 'Rendre l\'évènement national',
                         'name'              => '_EventNational',
@@ -23,28 +23,28 @@ add_action(
                         'instructions'      => '',
                         'required'          => 0,
                         'conditional_logic' => 0,
-                        'wrapper'           => array(
+                        'wrapper'           => [
                             'width' => '',
                             'class' => '',
                             'id'    => '',
-                        ),
+                        ],
                         'message'           => '',
                         'default_value'     => 0,
                         'allow_in_bindings' => 0,
                         'ui_on_text'        => '',
                         'ui_off_text'       => '',
                         'ui'                => 1,
-                    ),
-                ),
-                'location'              => array(
-                    array(
-                        array(
+                    ],
+                ],
+                'location'              => [
+                    [
+                        [
                             'param'    => 'post_type',
                             'operator' => '==',
                             'value'    => 'tribe_events',
-                        ),
-                    ),
-                ),
+                        ],
+                    ],
+                ],
                 'menu_order'            => -100,
                 'position'              => 'side',
                 'style'                 => 'default',
@@ -54,7 +54,7 @@ add_action(
                 'active'                => true,
                 'description'           => '',
                 'show_in_rest'          => 1,
-            )
+            ]
         );
     }
 );

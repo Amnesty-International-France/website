@@ -10,7 +10,7 @@ $sf_user_ID = get_SF_user_ID($current_user->ID);
 
 $SF_User = get_salesforce_user_data($sf_user_ID);
 
-$subject = "";
+$subject = '';
 
 
 if (isset($_GET['subject'])) {
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['subject']) && isset(
 
     if (create_contact_request($sf_user_ID, $message, $subject, $SF_User->Tech_Lien_Mandat_Actif__c)) {
 
-        $success_message_title = "Votre demande de contact à bien été prise en compte";
+        $success_message_title = 'Votre demande de contact à bien été prise en compte';
         $url = get_permalink(get_page_by_path('mes-demandes'));
         $success_message = "Vous pouvez voir le suivi du traitement de vos demandes sur la page  <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
     } else {
@@ -55,19 +55,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['subject']) && isset(
         <?php
 
 if (!empty($error_message)) {
-    $title = "Une erreur est survenue";
-    aif_include_partial("alert", [
-        "title" => $title,
-        "state" => "error",
-    "content" => $error_message]);
+    $title = 'Une erreur est survenue';
+    aif_include_partial('alert', [
+        'title' => $title,
+        'state' => 'error',
+    'content' => $error_message]);
 
 }
 
 if (!empty($success_message)) {
-    aif_include_partial("alert", [
-        "title" => $success_message_title,
-    "content" => $success_message,
-"state" => "success"]);
+    aif_include_partial('alert', [
+        'title' => $success_message_title,
+    'content' => $success_message,
+'state' => 'success']);
 
 }
 ?>
@@ -82,10 +82,10 @@ if (!empty($success_message)) {
                 required id="subject" maxlength="255" />
             <?php
                 $url = get_permalink(get_page_by_path('mes-demandes'));
-$content = "Indiquez le sujet de votre demande. 255 caractères maximum.";
-aif_include_partial("info-message", [
- "id" => "contact-subject-help-message",
- "content" => $content]); ?>
+$content = 'Indiquez le sujet de votre demande. 255 caractères maximum.';
+aif_include_partial('info-message', [
+ 'id' => 'contact-subject-help-message',
+ 'content' => $content]); ?>
 
             <label for="message">Message (obligatoire)</label>
             <textarea name="message" aria-labelledby="contact-message-help-message"
@@ -93,10 +93,10 @@ aif_include_partial("info-message", [
                 required id="message"></textarea>
             <?php
                 $url = get_permalink(get_page_by_path('mes-demandes'));
-$content = "Décrivez en détail votre demande.";
-aif_include_partial("info-message", [
- "id" => "contact-message-help-message",
- "content" => $content]); ?>
+$content = 'Décrivez en détail votre demande.';
+aif_include_partial('info-message', [
+ 'id' => 'contact-message-help-message',
+ 'content' => $content]); ?>
 
 
 

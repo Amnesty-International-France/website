@@ -1,9 +1,10 @@
 <?php
 
-function render_related_posts_block( $attributes ) {
-	if ( ! is_singular() ) {
-		return '';
-	}
+function render_related_posts_block($attributes)
+{
+    if (! is_singular()) {
+        return '';
+    }
 
     $nb_posts = (int) $attributes['nb_posts'];
 

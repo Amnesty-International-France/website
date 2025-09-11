@@ -282,14 +282,14 @@ if (! function_exists('amnesty_get_attachment_image_src')) {
  */
 function get_editorial_category_singular_label($value)
 {
-    $singular_labels = array(
+    $singular_labels = [
         'enquetes' => 'Enquête',
         'entretiens' => 'Entretien',
         'portraits' => 'Portrait',
         'rapports' => 'Rapport',
         'temoignages' => 'Témoignage',
         'tribunes' => 'Tribune',
-    );
+    ];
 
     return isset($singular_labels[$value]) ? $singular_labels[$value] : null;
 }

@@ -3,14 +3,14 @@
 /* Template Name: Espace Donateur - 2FA Check */
 get_header();
 
-$success_message = "";
+$success_message = '';
 $disable_input = false;
-$error_message = "";
-$send_code_error_message = "";
-$email = "";
+$error_message = '';
+$send_code_error_message = '';
+$email = '';
 
 if (!isset($_GET['user'])) {
-    $error_title = "Une erreur est survenue";
+    $error_title = 'Une erreur est survenue';
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 } else {
     $email = $_GET['user'];
@@ -34,29 +34,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
             reset_login_attempts($user->ID);
 
             $verification_url = add_query_arg([
-                "user" => $email,
+                'user' => $email,
             ], get_permalink(get_page_by_path('connectez-vous')));
             wp_redirect($verification_url);
             exit;
         } else {
 
             if (limit_login_attempts($user->ID)) {
-                $error_message = "Le code fourni est incorrect. Veuillez réessayer";
+                $error_message = 'Le code fourni est incorrect. Veuillez réessayer';
             } else {
-                $error_message = "Une erreur est survenue. Veuillez réessayer plus tard.";
+                $error_message = 'Une erreur est survenue. Veuillez réessayer plus tard.';
 
             }
         }
 
     } else {
-        $error_message = "Utilisateur inconnu ou code invalide";
+        $error_message = 'Utilisateur inconnu ou code invalide';
 
     }
 }
 
 
-$send_code_error_message = "";
-$send_code_success_message = "";
+$send_code_error_message = '';
+$send_code_success_message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce'])) {
 
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
             store_2fa_code($stored_user->ID, $code);
 
             $verification_url = add_query_arg([
-                "user" => $email
+                'user' => $email,
             ], get_permalink(get_page_by_path('verifier-votre-email')));
 
 
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
         }
 
     } else {
-        $send_code_error_message = "Utilisateur inconnu";
+        $send_code_error_message = 'Utilisateur inconnu';
 
     }
 
@@ -128,11 +128,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
 
                 <?php if (!empty($error_message)) : ?>
                 <?php
-            $title = "Une erreur est survenue";
-                    aif_include_partial("alert", [
-                        "title" => $title,
-                        "state" => "error",
-                    "content" => $error_message])
+            $title = 'Une erreur est survenue';
+                    aif_include_partial('alert', [
+                        'title' => $title,
+                        'state' => 'error',
+                    'content' => $error_message])
 
                     ?>
 
@@ -149,22 +149,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
             <h2> Code non reçu ou invalide ? </h2>
 
             <?php if (!empty($send_code_error_message)) {
-                $title = "Une erreur est survenue";
-                aif_include_partial("alert", [
-                    "state" => "error",
-                    "title" => $title,
-                "content" => $send_code_error_message]);
+                $title = 'Une erreur est survenue';
+                aif_include_partial('alert', [
+                    'state' => 'error',
+                    'title' => $title,
+                'content' => $send_code_error_message]);
 
             }?>
 
             <?php
              if (!empty($send_code_success_message)) {
                  aif_include_partial(
-                     "alert",
+                     'alert',
                      [
-                     "title" => "Information",
-                     "content" => $send_code_success_message,
-                      "success" => true
+                     'title' => 'Information',
+                     'content' => $send_code_success_message,
+                      'success' => true,
                       ]
                  );
              }?>

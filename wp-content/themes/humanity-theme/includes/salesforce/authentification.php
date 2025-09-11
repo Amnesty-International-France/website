@@ -21,22 +21,22 @@ function refresh_salesforce_token()
 {
     $client_id = getenv('AIF_SALESFORCE_CLIENT_ID');
     $client_secret = getenv('AIF_SALESFORCE_SECRET');
-    $url = getenv("AIF_SALESFORCE_URL") . 'services/oauth2/token';
+    $url = getenv('AIF_SALESFORCE_URL') . 'services/oauth2/token';
 
-    $params = array(
+    $params = [
         'grant_type'    => 'client_credentials',
         'client_id'     => $client_id,
         'client_secret' => $client_secret,
-    );
+    ];
 
-    $response = wp_remote_post($url, array(
+    $response = wp_remote_post($url, [
         'method'    => 'POST',
         'body'      => $params,
         'timeout'   => 15,
-        'headers'   => array(
-            'Content-Type' => 'application/x-www-form-urlencoded'
-        ),
-    ));
+        'headers'   => [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+        ],
+    ]);
 
     if (is_wp_error($response)) {
         return new WP_Error('request_failed', 'La requête a échoué', $response->get_error_message());

@@ -19,21 +19,21 @@ if (!function_exists('register_related_posts_block')) {
                 'attributes'      => [
                     'title' => [
                         'type' => 'string',
-                        'default' => 'À lire aussi'
+                        'default' => 'À lire aussi',
                     ],
                     'nb_posts' => [
                         'type' => 'number',
-                        'default' => 3
+                        'default' => 3,
                     ],
                     'display' => [
                         'type' => 'string',
-                        'default' => ''
+                        'default' => '',
                     ],
                     'postIds' => [
                         'type'    => 'array',
                         'items'   => [ 'type' => 'number' ],
-                        'default' => []
-                    ]
+                        'default' => [],
+                    ],
                 ],
             ]
         );

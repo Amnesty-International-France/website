@@ -10,8 +10,8 @@ function amnesty_register_edh_cpt()
 {
     register_post_type(
         'edh',
-        array(
-            'labels' => array(
+        [
+            'labels' => [
                 'name' => 'EDH',
                 'singular_name' => 'EDH',
                 'add_new' => 'Ajouter un EDH',
@@ -22,11 +22,11 @@ function amnesty_register_edh_cpt()
                 'search_items' => 'Rechercher un EDH',
                 'not_found' => 'Aucun EDH trouvé',
                 'not_found_in_trash' => 'Aucun EDH dans la corbeille',
-            ),
+            ],
             'public' => true,
             'has_archive' => true,
-            'rewrite' => array('slug' => 'edh'),
-            'supports' => array('title', 'editor', 'thumbnail', 'custom-fields'),
+            'rewrite' => ['slug' => 'edh'],
+            'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
             'menu_icon' => 'dashicons-admin-page',
             'show_in_rest' => true,
             'publicly_queryable' => true,
@@ -34,7 +34,7 @@ function amnesty_register_edh_cpt()
             'show_ui' => true,
             'show_in_menu' => true,
             'menu_position' => 20,
-        )
+        ]
     );
 }
 
@@ -87,11 +87,11 @@ add_action('acf/include_fields', function () {
         return;
     }
 
-    acf_add_local_field_group(array(
+    acf_add_local_field_group([
         'key' => 'group_6892103a7d1b5',
         'title' => 'Catégories',
-        'fields' => array(
-            array(
+        'fields' => [
+            [
                 'key' => 'field_6892103b14459',
                 'label' => 'Type de contenu',
                 'name' => 'type_de_contenu',
@@ -100,18 +100,18 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
-                'choices' => array(
+                ],
+                'choices' => [
                     'Quiz' => 'Quiz',
                     'Livret pédagogique' => 'Livret pédagogique',
                     'Séquence pédagogique' => 'Séquence pédagogique',
                     'Activité pédagogique' => 'Activité pédagogique',
                     'Fiche de lecture' => 'Fiche de lecture',
-                ),
+                ],
                 'default_value' => '',
                 'return_format' => 'value',
                 'multiple' => 0,
@@ -122,8 +122,8 @@ add_action('acf/include_fields', function () {
                 'placeholder' => '',
                 'create_options' => 0,
                 'save_options' => 0,
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_689210a11445a',
                 'label' => 'Thème',
                 'name' => 'theme',
@@ -132,12 +132,12 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
-                'choices' => array(
+                ],
+                'choices' => [
                     'Droits et textes fondamentaux' => 'Droits et textes fondamentaux',
                     'Liberté d\'expression et droit de manifester' => 'Liberté d\'expression et droit de manifester',
                     'Lutte contre les discriminations' => 'Lutte contre les discriminations',
@@ -148,7 +148,7 @@ add_action('acf/include_fields', function () {
                     'Droits des personnes réfugiées et migrantes' => 'Droits des personnes réfugiées et migrantes',
                     'Droits des personnes LGBTI+' => 'Droits des personnes LGBTI+',
                     'Climat et droits humains' => 'Climat et droits humains',
-                ),
+                ],
                 'default_value' => '',
                 'return_format' => 'value',
                 'multiple' => 0,
@@ -159,8 +159,8 @@ add_action('acf/include_fields', function () {
                 'placeholder' => '',
                 'create_options' => 0,
                 'save_options' => 0,
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_689210be1445b',
                 'label' => 'Besoins',
                 'name' => 'requirements',
@@ -169,17 +169,17 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
-                'choices' => array(
+                ],
+                'choices' => [
                     'Se familiariser' => 'Se familiariser',
                     'Approfondir' => 'Approfondir',
                     'À voir, à lire' => 'À voir, à lire',
                     'Aller plus loin' => 'Aller plus loin',
-                ),
+                ],
                 'default_value' => '',
                 'return_format' => 'value',
                 'multiple' => 0,
@@ -190,8 +190,8 @@ add_action('acf/include_fields', function () {
                 'placeholder' => '',
                 'create_options' => 0,
                 'save_options' => 0,
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_689210f30c5c4',
                 'label' => 'Durée de l\'activité',
                 'name' => 'activity_duration',
@@ -200,15 +200,15 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
-                'choices' => array(
+                ],
+                'choices' => [
                     'moins d\'une heure' => 'moins d\'une heure',
                     'plus d\'une heure' => 'plus d\'une heure',
-                ),
+                ],
                 'default_value' => '',
                 'return_format' => 'value',
                 'multiple' => 0,
@@ -219,17 +219,17 @@ add_action('acf/include_fields', function () {
                 'placeholder' => '',
                 'create_options' => 0,
                 'save_options' => 0,
-            ),
-        ),
-        'location' => array(
-            array(
-                array(
+            ],
+        ],
+        'location' => [
+            [
+                [
                     'param' => 'post_type',
                     'operator' => '==',
                     'value' => 'edh',
-                ),
-            ),
-        ),
+                ],
+            ],
+        ],
         'menu_order' => 0,
         'position' => 'side',
         'style' => 'default',
@@ -239,5 +239,5 @@ add_action('acf/include_fields', function () {
         'active' => true,
         'description' => '',
         'show_in_rest' => 0,
-    ));
+    ]);
 });

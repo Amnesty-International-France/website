@@ -28,7 +28,7 @@ if (! function_exists('render_latest_chronicle_promo')) {
                 $latest_chronicle_query->the_post();
 
                 get_template_part('patterns/single-chronicle-content', null, [
-                    'is_promo_context' => true
+                    'is_promo_context' => true,
                 ]);
             }
         } else {

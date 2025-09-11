@@ -3,23 +3,23 @@
 /* Template Name: Espace Donateur - Login */
 get_header();
 
-$email = "";
+$email = '';
 
-$reset_email_url = "";
+$reset_email_url = '';
 
 if (!isset($_GET['user'])) {
-    $error_title = "Une erreur est survenue";
+    $error_title = 'Une erreur est survenue';
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 
 } else {
-    $user = get_user_by("email", $_GET['user']);
+    $user = get_user_by('email', $_GET['user']);
     if ($user) {
         $email = $user->user_email;
     }
 
 }
 
-$error_message = "";
+$error_message = '';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
@@ -37,11 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     if ($stored_user) {
         if (get_email_is_verified(user_id: $stored_user->ID)) {
 
-            $creds = array(
+            $creds = [
                 'user_login'    => $email,
                 'user_password' => $password,
-                'remember'      => true
-            );
+                'remember'      => true,
+            ];
 
             $sf_member = get_salesforce_member_data($email);
 
@@ -57,17 +57,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 exit;
             } else {
 
-                $title = "Une erreur est survenue";
-                $error_message = "Mauvais email ou mot de passe";
+                $title = 'Une erreur est survenue';
+                $error_message = 'Mauvais email ou mot de passe';
             }
 
 
         } else {
             $verification_url = add_query_arg([
-                "user" => $email,
+                'user' => $email,
             ], get_permalink(get_page_by_path('verifier-votre-email')));
 
-            $title = "Votre email ne semble pas encore vérifié";
+            $title = 'Votre email ne semble pas encore vérifié';
             $error_message = "Pour le faire veuillez vous rendre sur la page <a class='aif-link--primary' href='{$verification_url}'> Vérifier mon email</a>.";
         }
     } else {
@@ -115,10 +115,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
                     <?php
         if (!empty($error_message)) {
-            aif_include_partial("alert", [
-                "state" => "error",
-                "title" => $title,
-            "content" => $error_message]);
+            aif_include_partial('alert', [
+                'state' => 'error',
+                'title' => $title,
+            'content' => $error_message]);
 
         };
 

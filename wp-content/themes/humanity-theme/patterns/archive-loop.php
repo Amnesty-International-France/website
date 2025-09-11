@@ -21,15 +21,15 @@ if (is_post_type_archive('landmark')) {
         while ($featured_query->have_posts()) {
             $featured_query->the_post();
 
-            $block = array(
+            $block = [
                 'blockName' => 'amnesty-core/article-card',
-                'attrs' => array(
-                    'direction' => 'portrait'
-                ),
-                'innerBlocks' => array(),
+                'attrs' => [
+                    'direction' => 'portrait',
+                ],
+                'innerBlocks' => [],
                 'innerHTML' => '',
-                'innerContent' => array()
-            );
+                'innerContent' => [],
+            ];
 
             echo render_block($block);
         }

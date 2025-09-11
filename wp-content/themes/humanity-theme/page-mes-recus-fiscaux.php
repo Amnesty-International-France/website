@@ -8,8 +8,8 @@ $sorted = [];
 $groupped = [];
 
 if (count($tax_reciept) > 0) {
-    $sorted = sortByDateProp($tax_reciept, "Debut__c");
-    $groupped = groupByYear($sorted, "Debut__c");
+    $sorted = sortByDateProp($tax_reciept, 'Debut__c');
+    $groupped = groupByYear($sorted, 'Debut__c');
 }
 
 ?>
@@ -17,9 +17,9 @@ if (count($tax_reciept) > 0) {
 <?php get_header(); ?>
 
 <div class="aif-donor-space-layout">
-	<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-sidebar"] ] ); ?>
+	<?php echo render_block(['blockName' => 'core/pattern', 'attrs' => ['slug' => 'amnesty/my-space-sidebar'] ]); ?>
 	<main class="aif-donor-space-content">
-		<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-header"] ] ); ?>
+		<?php echo render_block(['blockName' => 'core/pattern', 'attrs' => ['slug' => 'amnesty/my-space-header'] ]); ?>
 		<div class="aif-container--form">
 			<header class=" wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
 				<h1 class="article-title wp-block-post-title">Mes reçus fiscaux</h1>
@@ -30,12 +30,12 @@ if (count($tax_reciept) > 0) {
 
 				<?php
                 $url = add_query_arg([
-                    "subject" =>  "Mes dons et adhésions",
+                    'subject' =>  'Mes dons et adhésions',
                 ], get_permalink(get_page_by_path('nous-contacter')));
 
-aif_include_partial("alert", [
-"content" => "Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant l'année de vos dons.",
-"additional_content" => "Pour toutes questions ou modifications sur vos dons et/ou adhésion <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>",
+aif_include_partial('alert', [
+'content' => "Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant l'année de vos dons.",
+'additional_content' => "Pour toutes questions ou modifications sur vos dons et/ou adhésion <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>",
 ]);
 ?>
 
@@ -55,18 +55,18 @@ aif_include_partial("alert", [
 							<div id="aif-success-message-<?=$name?>" class="aif-hide">
 								<?php
                 $url = get_permalink(get_page_by_path('mes-demandes'));
-					    aif_include_partial("alert", [
-					        "title" => "Votre demande à bien été prise en compte",
-					        "content" => "L'envoi de votre reçu fiscal n'est pas immédiat. Vous le receverez d'ici quelques minutes dans votre boîte email.",
-					        "additional_content" => "Vous pouvez voir le suivi du traitement de vos demandes sur la page  <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>",
-					        "state" => "success"
+					    aif_include_partial('alert', [
+					        'title' => 'Votre demande à bien été prise en compte',
+					        'content' => "L'envoi de votre reçu fiscal n'est pas immédiat. Vous le receverez d'ici quelques minutes dans votre boîte email.",
+					        'additional_content' => "Vous pouvez voir le suivi du traitement de vos demandes sur la page  <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>",
+					        'state' => 'success',
 					    ]);
 					    ?>
 							</div>
 							<p class="aif-m0 aif-p0">Du
-								<?= date("d/m/Y", strtotime($record->Debut__c)); ?>
+								<?= date('d/m/Y', strtotime($record->Debut__c)); ?>
 								au
-								<?= date("d/m/Y", strtotime($record->Fin__c)); ?>
+								<?= date('d/m/Y', strtotime($record->Fin__c)); ?>
 								-
 								<span class="aif-text-bold"><?= $record->Montant_recu__c ?> €</span>
 							</p>
@@ -89,15 +89,15 @@ aif_include_partial("alert", [
 				<?php endif; ?>
 
 				<?php
-                $content = "Les dons de plus de 5 ans et inférieurs à 7 € ne sont pas affichés dans cet espace";
+                $content = 'Les dons de plus de 5 ans et inférieurs à 7 € ne sont pas affichés dans cet espace';
 
-aif_include_partial("alert", ["content" => $content, ]);
+aif_include_partial('alert', ['content' => $content, ]);
 $url = add_query_arg([
-    "subject" =>  "Mes reçus fiscaux",
+    'subject' =>  'Mes reçus fiscaux',
 ], get_permalink(get_page_by_path('nous-contacter')));
 $content2 = "Le montant de votre abonnement au magazine la Chronique n’est pas déductible des impôts. Pour toutes autres demandes concernant vos reçus fiscaux, <a class='aif-link--secondary' title='contacter le service SMD d'Amnesty France' href='{$url}'>contactez-nous </a>";
 
-aif_include_partial("alert", ["content" => $content2, ]);
+aif_include_partial('alert', ['content' => $content2, ]);
 ?>
 			</section>
 		</div>

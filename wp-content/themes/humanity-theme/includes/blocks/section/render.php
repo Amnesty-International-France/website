@@ -33,5 +33,5 @@ function render_section_block($attributes, $content)
 		</div>
 	</div>
 	<?php
-    return ob_get_clean();
+	return ob_get_clean();
 }

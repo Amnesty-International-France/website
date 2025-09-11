@@ -24,8 +24,8 @@ function amnesty_register_press_release_cpt()
             ],
             'public'       => true,
             'has_archive'  => true,
-            'rewrite'      => array( 'slug' => 'communiques' ),
-            'supports'     => array( 'title', 'editor', 'thumbnail', 'custom-fields' ),
+            'rewrite'      => [ 'slug' => 'communiques' ],
+            'supports'     => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
             'menu_icon'    => 'dashicons-admin-page',
             'show_in_rest' => true,
         ]

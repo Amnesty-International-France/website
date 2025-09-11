@@ -14,37 +14,37 @@ $social_links = [
     [
         'name' => 'Facebook',
         'url' => 'https://www.facebook.com/amnestyfr',
-        'svg' => '/assets/images/icon-facebook.svg'
+        'svg' => '/assets/images/icon-facebook.svg',
     ],
     [
         'name' => 'Bluesky',
         'url' => 'https://bsky.app/profile/amnestyfrance.bsky.social',
-        'svg' => '/assets/images/icon-bluesky.svg'
+        'svg' => '/assets/images/icon-bluesky.svg',
     ],
     [
         'name' => 'Mastodon',
         'url' => 'https://mastodon.social/@amnestyfrance',
-        'svg' => '/assets/images/icon-mastodon.svg'
+        'svg' => '/assets/images/icon-mastodon.svg',
     ],
     [
         'name' => 'YouTube',
         'url' => 'https://www.youtube.com/user/AmnestyFrance',
-        'svg' => '/assets/images/icon-youtube.svg'
+        'svg' => '/assets/images/icon-youtube.svg',
     ],
     [
         'name' => 'Instagram',
         'url' => 'https://www.instagram.com/amnestyfrance/',
-        'svg' => '/assets/images/icon-instagram.svg'
+        'svg' => '/assets/images/icon-instagram.svg',
     ],
     [
         'name' => 'LinkedIn',
         'url' => 'https://www.linkedin.com/company/amnesty-international-france',
-        'svg' => '/assets/images/icon-linkedin.svg'
+        'svg' => '/assets/images/icon-linkedin.svg',
     ],
     [
         'name' => 'TikTok',
         'url' => 'https://www.tiktok.com/@amnestyfrance',
-        'svg' => '/assets/images/icon-tiktok.svg'
+        'svg' => '/assets/images/icon-tiktok.svg',
     ],
 ];
 
@@ -52,17 +52,17 @@ $action_links = [
     [
         'name' => 'J’AGIS',
         'url' => '#',
-        'svg' => '/assets/images/icon-agir.svg'
+        'svg' => '/assets/images/icon-agir.svg',
     ],
     [
         'name' => 'JE DONNE',
         'url' => '#',
-        'svg' => '/assets/images/icon-health.svg'
+        'svg' => '/assets/images/icon-health.svg',
     ],
     [
         'name' => 'JE M’ENGAGE',
         'url' => '#',
-        'svg' => '/assets/images/icon-megaphone.svg'
+        'svg' => '/assets/images/icon-megaphone.svg',
     ],
 
 ]

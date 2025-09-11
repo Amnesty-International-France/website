@@ -33,13 +33,13 @@ function create_duplicate_taxt_receipt_request($Contact_ID, $taxt_receipt_refere
 
     $params = [
 
-        "RecordTypeId" => "012060000011IdCAAU",
-        "Type_de_demande_AIF__c" => "Envoi duplicata",
-        "Origin" => "Espace Don",
-        "ContactId" => $Contact_ID,
-        "Date_de_la_demande__c" => date("Y-m-d"),
-        "Code_Marketing_Prestataire__c" => "WB_ESPDON",
-        "Identifiant__c" => $taxt_receipt_reference
+        'RecordTypeId' => '012060000011IdCAAU',
+        'Type_de_demande_AIF__c' => 'Envoi duplicata',
+        'Origin' => 'Espace Don',
+        'ContactId' => $Contact_ID,
+        'Date_de_la_demande__c' => date('Y-m-d'),
+        'Code_Marketing_Prestataire__c' => 'WB_ESPDON',
+        'Identifiant__c' => $taxt_receipt_reference,
     ];
     return  post_salesforce_data_donor_space($url, $params);
 }

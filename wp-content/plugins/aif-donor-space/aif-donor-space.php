@@ -13,7 +13,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define("AIF_DONOR_SPACE_PATH", plugin_dir_path(__FILE__));
+define('AIF_DONOR_SPACE_PATH', plugin_dir_path(__FILE__));
 define('AIF_DONOR_SPACE_VERSION', '1.0.0');
 define('AIF_DONOR_SPACE_URL', plugin_dir_url(__FILE__));
 
@@ -83,15 +83,15 @@ function aif_create_pages_recursively($pages, $parent_id = 0, $parent_path = '')
 function aif_donor_space_create_pages()
 {
     $pages = [
-		'connectez-vous' => [
-			'title' => 'Connectez-vous',
-		],
-		'creer-votre-compte' => [
-			'title' => 'Créer votre compte',
-		],
-		'verifier-votre-email' => [
-			'title' => 'Vérifier votre email',
-		],
+        'connectez-vous' => [
+            'title' => 'Connectez-vous',
+        ],
+        'creer-votre-compte' => [
+            'title' => 'Créer votre compte',
+        ],
+        'verifier-votre-email' => [
+            'title' => 'Vérifier votre email',
+        ],
         'mon-espace' => [
             'title' => 'Mon Espace',
             'children' => [
@@ -105,25 +105,26 @@ function aif_donor_space_create_pages()
                         'mes-recus-fiscaux' => ['title' => 'Mes Reçus Fiscaux'],
                         'mes-demandes' => ['title' => 'Mes Demandes'],
                         'nous-contacter' => ['title' => 'Nous Contacter'],
-                    ]
+                    ],
                 ],
                 'mon-compte' => [
                     'title' => 'Mon compte',
                     'children' => [
                         'se-deconnecter' => ['title' => 'Se déconnecter'],
-                    ]
+                    ],
                 ],
-            ]
+            ],
         ],
     ];
 
     aif_create_pages_recursively($pages);
 }
 
-function aif_ensure_critical_pages_exist() {
-    if ( false === get_transient( 'aif_critical_pages_check_lock' ) ) {
+function aif_ensure_critical_pages_exist()
+{
+    if (false === get_transient('aif_critical_pages_check_lock')) {
         aif_donor_space_create_pages();
-        set_transient( 'aif_critical_pages_check_lock', 'true', 5 * MINUTE_IN_SECONDS );
+        set_transient('aif_critical_pages_check_lock', 'true', 5 * MINUTE_IN_SECONDS);
     }
 }
 
@@ -134,13 +135,13 @@ add_action('after_switch_theme', 'aif_donor_space_create_pages');
 /**
  *  Assets
  */
-function  aif_donor_space_enqueue_assets()
+function aif_donor_space_enqueue_assets()
 {
 
     wp_enqueue_style(
         'aif-donor-space-style',
         AIF_DONOR_SPACE_URL . 'assets/css/style.css',
-        array(),
+        [],
         '1.0'
     );
 
@@ -182,15 +183,15 @@ function  aif_donor_space_enqueue_assets()
         plugins_url('/assets/js/create-duplicate-tax-receipt-demand.js', __FILE__),
         [],
         '1.0.0',
-        array(
+        [
            'in_footer' => false,
-        )
+        ]
     );
 
-    wp_localize_script('aif-create-duplicate-tax-receipt', 'aifDonorSpace', array(
+    wp_localize_script('aif-create-duplicate-tax-receipt', 'aifDonorSpace', [
         'nonce' => wp_create_nonce('wp_rest'),
         'root' => esc_url_raw(rest_url()),
-    ));
+    ]);
 
 }
 add_action('wp_enqueue_scripts', 'aif_donor_space_enqueue_assets');

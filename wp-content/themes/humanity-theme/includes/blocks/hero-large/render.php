@@ -28,11 +28,11 @@ if (! function_exists('render_hero_large_block')) {
             }
         }
 
-		$title_first_part = !empty($attributes['titleFirstPart']) ? $attributes['titleFirstPart'] : '';
-		$title_last_part = !empty($attributes['titleLastPart']) ? $attributes['titleLastPart'] : get_the_title();
-		$btn_link_text = !empty($attributes['btnLinkText']) ? $attributes['btnLinkText'] : (get_field('btn_link_text') ?? '');
-		$btn_link = !empty($attributes['btnLink']) ? $attributes['btnLink'] : (get_field('btn_link') ?? '');
-		$button_html = '';
+        $title_first_part = !empty($attributes['titleFirstPart']) ? $attributes['titleFirstPart'] : '';
+        $title_last_part = !empty($attributes['titleLastPart']) ? $attributes['titleLastPart'] : get_the_title();
+        $btn_link_text = !empty($attributes['btnLinkText']) ? $attributes['btnLinkText'] : (get_field('btn_link_text') ?? '');
+        $btn_link = !empty($attributes['btnLink']) ? $attributes['btnLink'] : (get_field('btn_link') ?? '');
+        $button_html = '';
 
         if (!empty($btn_link) && !empty($btn_link_text)) {
             $button_block = sprintf(
@@ -59,14 +59,14 @@ if (! function_exists('render_hero_large_block')) {
 				<div class="container">
 					<h1 class="page-hero-title">
 						<?php
-						if ( ! empty( $title_first_part ) ) {
-							echo '<span class="page-hero-title__first-part">' . esc_html( $title_first_part ) . '</span><br/>';
-						}
+				        if (! empty($title_first_part)) {
+				            echo '<span class="page-hero-title__first-part">' . esc_html($title_first_part) . '</span><br/>';
+				        }
 
-						if ( ! empty( $title_last_part ) ) {
-							echo ' <span class="page-hero-title__last-part">' . esc_html( $title_last_part ) . '</span>';
-						}
-						?>
+        if (! empty($title_last_part)) {
+            echo ' <span class="page-hero-title__last-part">' . esc_html($title_last_part) . '</span>';
+        }
+        ?>
 					</h1>
 					<?php echo $button_html; ?>
 				</div>

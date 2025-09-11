@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Amnesty;
 
-use stdClass;
 use Walker_Nav_Menu;
 
 /**

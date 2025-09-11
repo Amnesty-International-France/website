@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Amnesty;
 
 use ReflectionMethod;
-use WP_Post;
 use WP_Query;
 use WP_Tax_Query;
 

@@ -9,8 +9,8 @@ function amnesty_register_document_cpt(): void
 {
     register_post_type(
         'document',
-        array(
-            'labels' => array(
+        [
+            'labels' => [
                 'name' => 'Documents',
                 'singular_name' => 'Document',
                 'add_new' => 'Ajouter un Document',
@@ -21,11 +21,11 @@ function amnesty_register_document_cpt(): void
                 'search_items' => 'Rechercher un Document',
                 'not_found' => 'Aucun Document trouvé',
                 'not_found_in_trash' => 'Aucun Document dans la corbeille',
-            ),
+            ],
             'public' => false,
             'has_archive' => true,
-            'rewrite' => array('slug' => 'documents'),
-            'supports' => array('title', 'thumbnail', 'custom-fields', 'excerpt'),
+            'rewrite' => ['slug' => 'documents'],
+            'supports' => ['title', 'thumbnail', 'custom-fields', 'excerpt'],
             'menu_icon' => 'dashicons-admin-page',
             'show_in_rest' => true,
             'publicly_queryable' => true,
@@ -33,7 +33,7 @@ function amnesty_register_document_cpt(): void
             'show_ui' => true,
             'show_in_menu' => true,
             'menu_position' => 20,
-        )
+        ]
     );
 }
 
@@ -44,11 +44,11 @@ add_action('acf/include_fields', function () {
         return;
     }
 
-    acf_add_local_field_group(array(
+    acf_add_local_field_group([
         'key' => 'group_688c7477a4701',
         'title' => 'Document',
-        'fields' => array(
-            array(
+        'fields' => [
+            [
                 'key' => 'field_688c7478cfe59',
                 'label' => 'Upload du document',
                 'name' => 'upload_du_document',
@@ -57,19 +57,19 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'return_format' => 'array',
                 'library' => 'all',
                 'min_size' => '',
                 'max_size' => '',
                 'mime_types' => '',
                 'allow_in_bindings' => 0,
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_689a05696c83f',
                 'label' => 'Type libre',
                 'name' => 'type_libre',
@@ -78,19 +78,19 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'default_value' => '',
                 'maxlength' => '',
                 'allow_in_bindings' => 0,
                 'placeholder' => '',
                 'prepend' => '',
                 'append' => '',
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_689a05696c84f',
                 'label' => 'AI Index',
                 'name' => 'ai_index',
@@ -99,19 +99,19 @@ add_action('acf/include_fields', function () {
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
+                ],
                 'default_value' => '',
                 'maxlength' => '',
                 'allow_in_bindings' => 0,
                 'placeholder' => '',
                 'prepend' => '',
                 'append' => '',
-            ),
-            array(
+            ],
+            [
                 'key' => 'field_27dmxqoc8t',
                 'label' => 'Document privé',
                 'name' => 'document_private',
@@ -119,13 +119,13 @@ add_action('acf/include_fields', function () {
                 'ui' => 1,
                 'required' => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
-            ),
-            array(
+                ],
+            ],
+            [
                 'key' => 'field_49dhzhpoyv',
                 'label' => 'Vie démocratique',
                 'name' => 'vie_democratique',
@@ -136,27 +136,27 @@ add_action('acf/include_fields', function () {
                     'comite_des_candidatures' => 'Comité des candidatures',
                     'conseil_des_finances_et_des_risques_financiers' => 'Conseil des finances et des risques financiers',
                     'representant_des_jeunes' => 'Représentants des jeunes',
-                    'conseil_national' => 'Conseil national'
+                    'conseil_national' => 'Conseil national',
                 ],
                 'ui' => 1,
                 'required' => 0,
                 'allow_null' => 1,
-                'conditional_logic' => array(
-                    array(
-                        array(
+                'conditional_logic' => [
+                    [
+                        [
                             'field' => 'field_27dmxqoc8t',
                             'operator' => '==',
                             'value' => '1',
-                        )
-                    )
-                ),
-                'wrapper' => array(
+                        ],
+                    ],
+                ],
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
-            ),
-            array(
+                ],
+            ],
+            [
                 'key' => 'field_gdomgbgri6',
                 'label' => 'Vie militante',
                 'name' => 'vie_militante',
@@ -169,31 +169,31 @@ add_action('acf/include_fields', function () {
                 'ui' => 1,
                 'required' => 0,
                 'allow_null' => 1,
-                'conditional_logic' => array(
-                    array(
-                        array(
+                'conditional_logic' => [
+                    [
+                        [
                             'field' => 'field_27dmxqoc8t',
                             'operator' => '==',
                             'value' => '1',
-                        )
-                    )
-                ),
-                'wrapper' => array(
+                        ],
+                    ],
+                ],
+                'wrapper' => [
                     'width' => '',
                     'class' => '',
                     'id' => '',
-                ),
-            ),
-        ),
-        'location' => array(
-            array(
-                array(
+                ],
+            ],
+        ],
+        'location' => [
+            [
+                [
                     'param' => 'post_type',
                     'operator' => '==',
                     'value' => 'document',
-                ),
-            ),
-        ),
+                ],
+            ],
+        ],
         'menu_order' => 0,
         'position' => 'normal',
         'style' => 'default',
@@ -203,7 +203,7 @@ add_action('acf/include_fields', function () {
         'active' => true,
         'description' => '',
         'show_in_rest' => 1,
-    ));
+    ]);
 });
 
 add_filter('manage_document_posts_columns', function ($columns) {
@@ -252,7 +252,7 @@ add_action('pre_get_posts', function ($query) {
             [
                 'key'   => 'document_private',
                 'value' => $documentPrivateFilter,
-            ]
+            ],
         ]);
     }
 });

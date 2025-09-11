@@ -3,11 +3,11 @@
 $current_user = wp_get_current_user();
 $sf_user_ID = get_SF_user_ID($current_user->ID);
 $demands =  get_salesforce_user_demands($sf_user_ID);
-$sortedDemands = sortByDateProp($demands, "Date_de_la_demande__c");
+$sortedDemands = sortByDateProp($demands, 'Date_de_la_demande__c');
 
 function aif_format_date($date)
 {
-    $formatted_date = date_format(date_create($date), "d/m/Y");
+    $formatted_date = date_format(date_create($date), 'd/m/Y');
     return "Le {$formatted_date}" ;
 }
 
@@ -16,9 +16,9 @@ function aif_format_date($date)
 <?php get_header(); ?>
 
 <div class="aif-donor-space-layout">
-	<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-sidebar"] ] ); ?>
+	<?php echo render_block(['blockName' => 'core/pattern', 'attrs' => ['slug' => 'amnesty/my-space-sidebar'] ]); ?>
 	<main class="aif-donor-space-content">
-		<?php echo render_block( ['blockName' => 'core/pattern', 'attrs' => ['slug' => "amnesty/my-space-header"] ] ); ?>
+		<?php echo render_block(['blockName' => 'core/pattern', 'attrs' => ['slug' => 'amnesty/my-space-header'] ]); ?>
 		<section class="aif-container--form">
 			<header>
 				<h1>Mes demandes</h1>
@@ -32,26 +32,26 @@ function aif_format_date($date)
 				<div class="aif-my-demand-container__title-container">
 					<p class="aif-my-demand-container__title-container__date"><?= aif_format_date($demand->Date_de_la_demande__c) ?></p>
 					<?php
-                    $status = "";
+                    $status = '';
 
 			    switch ($demand->Statut_Espace_Don__c) {
-			        case "En cours de traitement":
-			            $status = "warning";
+			        case 'En cours de traitement':
+			            $status = 'warning';
 			            break;
-			        case "Rejeté":
-			            $status = "error";
+			        case 'Rejeté':
+			            $status = 'error';
 			            break;
-			        case "Traité":
-			            $status = "success";
+			        case 'Traité':
+			            $status = 'success';
 			            break;
 			        default:
-			            $status = "warning";
+			            $status = 'warning';
 			            break;
 			    }
 
-			    aif_include_partial("label", [
-			    "content" => $demand->Statut_Espace_Don__c,
-			    "variant" => $status
+			    aif_include_partial('label', [
+			    'content' => $demand->Statut_Espace_Don__c,
+			    'variant' => $status,
 			    ]);
 			    ?>
 
@@ -66,14 +66,14 @@ function aif_format_date($date)
 						<?php endif ?>
 					</p>
 
-					<?php  if ($demand->Statut_Espace_Don__c == "Fermé - Echoué") : ?>
+					<?php  if ($demand->Statut_Espace_Don__c == 'Fermé - Echoué') : ?>
 						<?php
 			        $url = add_query_arg([
-			            "subject" =>  "Ma demande n'a pas pu aboutir",
+			            'subject' =>  "Ma demande n'a pas pu aboutir",
 			        ], get_permalink(get_page_by_path('nous-contacter')));
 
-					    aif_include_partial("info-message", [
-					    "content" => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
+					    aif_include_partial('info-message', [
+					    'content' => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
 					    ?>
 					<?php endif ?>
 				</div>
