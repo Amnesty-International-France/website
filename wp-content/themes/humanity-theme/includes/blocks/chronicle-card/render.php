@@ -12,7 +12,6 @@ if (!function_exists('render_chronicle_card_block')) {
 		}
 
 		$post_id = $post_to_render->ID;
-
 		$permalink = get_permalink($post_to_render);
 		$cover_image = get_field('cover_image', $post_id);
 		$cover = null;
