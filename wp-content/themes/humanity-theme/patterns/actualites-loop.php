@@ -26,7 +26,7 @@ if (isset($_GET['qlocation'])) {
     $tax_query[] = [
         'taxonomy' => 'location',
         'field'    => 'term_id',
-        'terms'    => array_map('intval', (array) $_GET['qlocation']),
+        'terms'    => array_map('intval', explode(',', $_GET['qlocation'])),
     ];
 }
 
@@ -34,7 +34,7 @@ if (isset($_GET['qcombat'])) {
     $tax_query[] = [
         'taxonomy' => 'combat',
         'field'    => 'term_id',
-        'terms'    => array_map('intval', (array) $_GET['qcombat']),
+        'terms'    => array_map('intval', explode(',', $_GET['qcombat'])),
     ];
 }
 
