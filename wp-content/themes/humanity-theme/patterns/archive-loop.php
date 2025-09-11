@@ -66,9 +66,9 @@ if (is_post_type_archive('landmark')) {
 
     <?php if (get_post_type() !== 'fiche_pays') : ?>
         <!-- wp:query-pagination {"align":"center","className":"section section--small","paginationArrow":"none","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-            <!-- wp:query-pagination-previous {"label":"<?php echo esc_html( __( 'Previous', 'amnesty' ) ); ?>"} /-->
+            <!-- wp:query-pagination-previous {"label":"<?php echo esc_html(__('Previous', 'amnesty')); ?>"} /-->
             <!-- wp:query-pagination-numbers {"midSize":1,"className":"page-numbers"} /-->
-            <!-- wp:query-pagination-next {"label":"<?php echo esc_html( __( 'Next', 'amnesty' ) ); ?>"} /-->
+            <!-- wp:query-pagination-next {"label":"<?php echo esc_html(__('Next', 'amnesty')); ?>"} /-->
         <!-- /wp:query-pagination -->
     <?php endif; ?>
 </div>

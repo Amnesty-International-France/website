@@ -6,7 +6,7 @@
  * Inserter: no
  */
 
-$chapo_text = get_field( 'chapo_text', get_the_ID() ) ?? '';
+$chapo_text = get_field('chapo_text', get_the_ID()) ?? '';
 
 ?>
 

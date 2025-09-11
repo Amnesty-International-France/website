@@ -7,14 +7,14 @@
  * Inserter: no
  */
 
-$location_slug = get_option( 'amnesty_location_slug' ) ?: 'location';
+$location_slug = get_option('amnesty_location_slug') ?: 'location';
 
 ?>
 
 <!-- wp:group {"tagName":"div","className":"more-from-author"} -->
 <div class="wp-block-group more-from-author">
 	<!-- wp:heading {"level":3} -->
-	<h3 class="wp-block-heading"><?php esc_html_e( 'More from this author', 'amnesty' ); ?></h3>
+	<h3 class="wp-block-heading"><?php esc_html_e('More from this author', 'amnesty'); ?></h3>
 	<!-- /wp:heading -->
 	<!-- wp:query {"inherit":true} -->
 	<div class="wp-block-query">
@@ -27,7 +27,7 @@ $location_slug = get_option( 'amnesty_location_slug' ) ?: 'location';
 				<!-- wp:group {"tagName":"div","className":"post-terms","layout":{"type":"flex","flexWrap":"nowrap"}} -->
 				<div class="wp-block-group post-terms">
 					<!-- wp:post-terms {"term":"category","className":"post-category"} /-->
-					<!-- wp:post-terms {"term":"<?php echo esc_attr( $location_slug ); ?>","className":"post-location"} /-->
+					<!-- wp:post-terms {"term":"<?php echo esc_attr($location_slug); ?>","className":"post-location"} /-->
 					<!-- wp:post-terms {"term":"topic","className":"post-topic"} /-->
 				</div>
 				<!-- /wp:group -->
@@ -42,9 +42,9 @@ $location_slug = get_option( 'amnesty_location_slug' ) ?: 'location';
 		<!-- /wp:group -->
 
 		<!-- wp:query-pagination {"align":"center","className":"section section--small","paginationArrow":"none","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-			<!-- wp:query-pagination-previous {"label":"<?php echo esc_html( __( 'Previous', 'amnesty' ) ); ?>"} /-->
+			<!-- wp:query-pagination-previous {"label":"<?php echo esc_html(__('Previous', 'amnesty')); ?>"} /-->
 			<!-- wp:query-pagination-numbers {"midSize":1,"className":"page-numbers"} /-->
-			<!-- wp:query-pagination-next {"label":"<?php echo esc_html( __( 'Next', 'amnesty' ) ); ?>"} /-->
+			<!-- wp:query-pagination-next {"label":"<?php echo esc_html(__('Next', 'amnesty')); ?>"} /-->
 		<!-- /wp:query-pagination -->
 	</div>
 	<!-- /wp:query -->

@@ -25,13 +25,13 @@ $default_chip_style = match ($main_category->slug ?? '') {
 };
 
 foreach ($post_terms as $post_term) :
-	if( ( $post_term->taxonomy === 'combat' && (int)$post_term->parent !== 0 ) || in_array($post_term->taxonomy, ['keyword', 'landmark_category']) ) {
-		continue;
-	}
+    if (($post_term->taxonomy === 'combat' && (int)$post_term->parent !== 0) || in_array($post_term->taxonomy, ['keyword', 'landmark_category'])) {
+        continue;
+    }
     if ($main_category) {
-		if( $post_term->slug === $main_category->slug ) {
-			continue;
-		}
+        if ($post_term->slug === $main_category->slug) {
+            continue;
+        }
         $chip_style = $default_chip_style;
     } else {
         if ($post_type === 'landmark' || $post_type === 'petition') {

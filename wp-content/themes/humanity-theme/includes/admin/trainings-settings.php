@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 add_action('admin_menu', 'amnesty_training_add_settings_page');
 
-function amnesty_training_add_settings_page() {
+function amnesty_training_add_settings_page()
+{
     add_submenu_page(
         'edit.php?post_type=training',
         'Réglages Formations',
@@ -15,7 +16,8 @@ function amnesty_training_add_settings_page() {
     );
 }
 
-function amnesty_training_settings_page_callback() {
+function amnesty_training_settings_page_callback()
+{
     if (
         isset($_POST['amnesty_training_settings_nonce']) &&
         wp_verify_nonce($_POST['amnesty_training_settings_nonce'], 'save_training_settings')
@@ -32,7 +34,7 @@ function amnesty_training_settings_page_callback() {
         <form method="post">
             <?php
             wp_nonce_field('save_training_settings', 'amnesty_training_settings_nonce');
-            ?>
+    ?>
 
             <h2>Texte du chapo</h2>
             <p>Ce texte s'affichera en haut de la page d'archive des formations.</p>
@@ -44,7 +46,8 @@ function amnesty_training_settings_page_callback() {
     <?php
 }
 
-function amnesty_training_process_settings_form() {
+function amnesty_training_process_settings_form()
+{
     if (!current_user_can('manage_options')) {
         return;
     }

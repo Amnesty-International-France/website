@@ -18,7 +18,7 @@ declare(strict_types=1);
 	<header class="wp-block-group training-header">
 		<div class="yoast-breadcrumb-wrapper">
 			<?php if (function_exists('yoast_breadcrumb')) {
-				yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
+			    yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
 			} ?>
 		</div>
 		<!-- wp:group {"className":"files"} -->

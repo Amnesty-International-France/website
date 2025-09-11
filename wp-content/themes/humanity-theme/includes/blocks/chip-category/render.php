@@ -12,7 +12,8 @@ if (!function_exists('render_chip_category_block')) {
      * @return string
      * @package Amnesty\Blocks
      */
-    function render_chip_category_block(array $attributes): string {
+    function render_chip_category_block(array $attributes): string
+    {
         $attributes = wp_parse_args(
             $attributes,
             [

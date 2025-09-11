@@ -99,11 +99,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
                 <?php if (!empty($error_message)) : ?>
                 <?php
                 $title = "Une erreur est survenue";
-                        aif_include_partial("alert", [
-                            "title" => $title,
-                            "state" => "error",
-                        "content" => $error_message])
-                ?>
+                    aif_include_partial("alert", [
+                        "title" => $title,
+                        "state" => "error",
+                    "content" => $error_message])
+                    ?>
                 <?php endif; ?>
                 <button class="btn aif-mt1w aif-button--full" type="submit">Valider la création de mon compte</button>
             </form>

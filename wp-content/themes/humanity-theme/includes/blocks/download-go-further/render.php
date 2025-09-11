@@ -10,12 +10,14 @@ if (!function_exists('render_download_go_further_block')) {
      *
      * @return string HTML output
      */
-    function render_download_go_further_block(array $attributes): string {
+    function render_download_go_further_block(array $attributes): string
+    {
         $title   = $attributes['title'] ?? '';
         $fileIds = $attributes['fileIds'] ?? [];
 
         if (!function_exists('get_human_readable_file_type')) {
-            function get_human_readable_file_type($mimeType) {
+            function get_human_readable_file_type($mimeType)
+            {
                 switch ($mimeType) {
                     case 'image/jpeg':
                     case 'image/pjpeg':
@@ -98,11 +100,11 @@ if (!function_exists('render_download_go_further_block')) {
                     <?php foreach ($fileIds as $fileId): ?>
                         <?php
                             $url      = wp_get_attachment_url($fileId);
-                            $title    = get_the_title($fileId);
-                            $meta     = wp_get_attachment_metadata($fileId);
-                            $size     = isset($meta['filesize']) ? round($meta['filesize'] / 1024, 2) . ' kb' : '—';
-                            $mimeType = get_post_mime_type($fileId);
-                            $type     = get_human_readable_file_type($mimeType);
+                        $title    = get_the_title($fileId);
+                        $meta     = wp_get_attachment_metadata($fileId);
+                        $size     = isset($meta['filesize']) ? round($meta['filesize'] / 1024, 2) . ' kb' : '—';
+                        $mimeType = get_post_mime_type($fileId);
+                        $type     = get_human_readable_file_type($mimeType);
                         ?>
                         <?php if ($url && $title): ?>
                             <li class="item">

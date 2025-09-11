@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                         "content" => $error_message]);
 
                     };
-                    ?>
+?>
                     <div class="aif-flex aif-justify-end">
                         <div>
                         <a class="aif-link--primary aif-mt1w aif-block"

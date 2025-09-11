@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
             "state" => "error",
             "content" => $error_message]);
         }
-    ?>
+?>
 
     <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
         <h1 class="aif-mb1w">Mon espace Don</h1>
@@ -76,10 +76,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
                     </button>
                 </div>
                 <?php
-                aif_include_partial("info-message", [
-                    "id" => "passwordHelp",
-                    "content" => "Exemple : Mon@MotDePasse123"]);
-                ?>
+            aif_include_partial("info-message", [
+                "id" => "passwordHelp",
+                "content" => "Exemple : Mon@MotDePasse123"]);
+?>
 
                 <div id="password-error-too-weak" class="aif-text-red aif-hide">Le mot de passe est trop faible</div>
 

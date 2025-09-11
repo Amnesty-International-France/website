@@ -13,6 +13,6 @@
 	</header>
 
 	<article class="article-content is-narrow" aria-labelledby="article-title">
-	<?php echo do_blocks( $content ); // phpcs:ignore ?>
+	<?php echo do_blocks($content); // phpcs:ignore?>
 	</article>
 </section>

@@ -12,21 +12,22 @@ if (!function_exists('render_slider_block')) {
     {
         $post_type = $attributes['postType'] ?? '';
         $selected_posts = $attributes['selectedPosts'] ?? [];
-    
+
         if (empty($post_type) || empty($selected_posts) || count($selected_posts) < 4) {
             return '';
         }
 
         if (!function_exists('get_dynamic_category_or_post_type_link')) {
-            function get_dynamic_category_or_post_type_link(string $slug): string {
+            function get_dynamic_category_or_post_type_link(string $slug): string
+            {
                 if ($slug === 'landmark') {
                     return esc_url(get_post_type_archive_link('landmark') ?: home_url('/reperes'));
                 } elseif ($slug === 'training') {
-                    return esc_url(get_post_type_archive_link('training') ?: home_url('/formations')); 
+                    return esc_url(get_post_type_archive_link('training') ?: home_url('/formations'));
                 } elseif ($slug === 'edh') {
                     return esc_url(get_post_type_archive_link('edh') ?: home_url('/edh'));
                 } elseif ($slug === 'petition') {
-                    return esc_url(get_post_type_archive_link('petition') ?: home_url('/petitions'));          
+                    return esc_url(get_post_type_archive_link('petition') ?: home_url('/petitions'));
                 } else {
                     $category = get_category_by_slug($slug);
                     if ($category) {
@@ -38,7 +39,8 @@ if (!function_exists('render_slider_block')) {
         }
 
         if (!function_exists('see_all_label')) {
-            function see_all_label(string $slug): string {
+            function see_all_label(string $slug): string
+            {
                 switch ($slug) {
                     case 'actualites': return 'Voir toutes les actualités';
                     case 'campagnes': return 'Voir toutes les campagnes';
@@ -66,7 +68,7 @@ if (!function_exists('render_slider_block')) {
         if (!$slider_query->have_posts()) {
             return '';
         }
-    
+
         ob_start();
         ?>
         <div class="slider-block">
@@ -104,13 +106,13 @@ if (!function_exists('render_slider_block')) {
                                         'main_category' => amnesty_get_a_post_term(get_the_ID()),
                                         'terms'         => wp_get_object_terms(get_the_ID(), get_object_taxonomies(get_post_type())),
                                     ];
-        
-                                    $template_path = locate_template('partials/article-card.php');
-                                    if ($template_path) {
-                                        extract($args);
-                                        include $template_path;
-                                    }
-                                    ?>
+
+                                $template_path = locate_template('partials/article-card.php');
+                                if ($template_path) {
+                                    extract($args);
+                                    include $template_path;
+                                }
+                                ?>
                                 </div>
                             <?php endwhile; ?>
 

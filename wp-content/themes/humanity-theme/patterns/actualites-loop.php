@@ -58,8 +58,8 @@ $query = new WP_Query($args);
               'innerHTML'    => '',
               'innerContent' => [],
           ];
-          echo render_block($block);
-          ?>
+            echo render_block($block);
+            ?>
         <?php endwhile; ?>
       <?php else : ?>
         <div class="wp-block-query-no-results">
@@ -71,22 +71,22 @@ $query = new WP_Query($args);
 
   <?php
   $big = 999999999;
-  $pagination = paginate_links([
-      'base'      => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
-      'format'    => '?paged=%#%',
-      'current'   => max(1, get_query_var('paged')),
-      'total'     => $query->max_num_pages,
-      'prev_text' => esc_html__('Previous', 'amnesty'),
-      'next_text' => esc_html__('Next', 'amnesty'),
-      'type'      => 'list',
-  ]);
+$pagination = paginate_links([
+    'base'      => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+    'format'    => '?paged=%#%',
+    'current'   => max(1, get_query_var('paged')),
+    'total'     => $query->max_num_pages,
+    'prev_text' => esc_html__('Previous', 'amnesty'),
+    'next_text' => esc_html__('Next', 'amnesty'),
+    'type'      => 'list',
+]);
 
-  if ($pagination) {
-      echo '<div class="wp-block-query-pagination section section--small page-numbers">';
-      echo $pagination;
-      echo '</div>';
-  }
+if ($pagination) {
+    echo '<div class="wp-block-query-pagination section section--small page-numbers">';
+    echo $pagination;
+    echo '</div>';
+}
 
-  wp_reset_postdata();
-  ?>
+wp_reset_postdata();
+?>
 </div>

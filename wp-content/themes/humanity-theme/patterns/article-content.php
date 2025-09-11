@@ -16,11 +16,13 @@ $post_type_class = get_post_type() ?: '';
 <section class="wp-block-group article <?php echo esc_attr($category_class); ?> <?php echo esc_attr($post_type_class); ?>">
   <!-- wp:group {"tagName":"header","className":"article-header"} -->
   <header class="wp-block-group article-header">
-    <?php if ( $category_class === "dossiers" || $category_class === "campagnes" ) : ?>
+    <?php if ($category_class === "dossiers" || $category_class === "campagnes") : ?>
       <div class="files-wrapper">
         <div class="files-wrapper-left">
           <div class="yoast-breadcrumb-wrapper">
-            <?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>
+            <?php if (function_exists('yoast_breadcrumb')) {
+                yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
+            } ?>
           </div>
           <!-- wp:group {"className":"files"} -->
             <!-- wp:pattern {"slug":"amnesty/post-metadata"} /-->
@@ -33,7 +35,9 @@ $post_type_class = get_post_type() ?: '';
     <?php else : ?>
       <?php if (get_post_type() !== 'fiche_pays') : ?>
         <div class="yoast-breadcrumb-wrapper">
-          <?php if ( function_exists('yoast_breadcrumb') ) yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>'); ?>
+          <?php if (function_exists('yoast_breadcrumb')) {
+              yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
+          } ?>
         </div>
         <!-- wp:pattern {"slug":"amnesty/post-metadata"} /-->
       <?php endif; ?>
@@ -42,12 +46,12 @@ $post_type_class = get_post_type() ?: '';
   </header>
   <!-- /wp:group -->
 
-  <?php if ( $category_class === "dossiers" ) : ?>
+  <?php if ($category_class === "dossiers") : ?>
 	<?php
-		$display_toc = get_field( 'display_toc' );
-	?>
+        $display_toc = get_field('display_toc');
+      ?>
 
-	<?php if ( $display_toc ) : ?>
+	<?php if ($display_toc) : ?>
 		<div id="toc-container" class="toc-container">
 		<div id="toc-button" class="toc-button">
 			<div class="icon-container">
@@ -75,7 +79,7 @@ $post_type_class = get_post_type() ?: '';
   </article>
   <!-- /wp:group -->
 
-  <?php if ( in_array($category_class, ['actualites', 'chroniques']) && get_the_ID()) : ?>
+  <?php if (in_array($category_class, ['actualites', 'chroniques']) && get_the_ID()) : ?>
     <!-- wp:group {"tagName":"footer","className":"article-footer"} -->
     <footer class="wp-block-group article-footer">
       <!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
@@ -83,12 +87,12 @@ $post_type_class = get_post_type() ?: '';
     <!-- /wp:group -->
   <?php endif; ?>
 
-	<?php if ( $category_class === 'chroniques') : ?>
+	<?php if ($category_class === 'chroniques') : ?>
 		<div class="container--large mx-auto">
 			<!-- wp:amnesty-core/call-to-action {"title":"Découvrez La Chronique sans plus tarder : recevez un numéro \"découverte\" gratuit","subTitle":"Remplissez ce formulaire en indiquant votre adresse postale et recevez gratuitement votre premier numéro dans votre boîte aux lettres !","buttonLabel":"","buttonLink":"#"} /-->
 		</div>
 		<!-- wp:amnesty-core/related-posts {"title":"ET AUSSI", "nb_posts": 4, "display": "chronique"} /-->
-	<?php elseif ( in_array($category_class, ['actualites', 'dossiers'] ) || $post_type_class === 'landmark' ) : ?>
+	<?php elseif (in_array($category_class, ['actualites', 'dossiers']) || $post_type_class === 'landmark') : ?>
 		<!-- wp:amnesty-core/related-posts {"title":"Voir aussi"} /-->
 	<?php endif; ?>
 

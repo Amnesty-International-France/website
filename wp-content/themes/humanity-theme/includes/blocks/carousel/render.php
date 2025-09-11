@@ -9,17 +9,18 @@ if (!function_exists('render_carousel_block')) {
      * @param array<string, mixed> $attributes Block attributes
      * @return string HTML output
      */
-    function render_carousel_block(array $attributes): string {
+    function render_carousel_block(array $attributes): string
+    {
         $image_ids = $attributes['mediaIds'] ?? [];
 
         if (empty($image_ids) || count($image_ids) < 5) {
             if (is_admin()) {
                 return '<p>' . esc_html__('Veuillez sélectionner au moins 5 images pour le carrousel.', 'amnesty') . '</p>';
             } else {
-                return ''; 
+                return '';
             }
         }
-    
+
         ob_start();
         ?>
         <div class="carousel-block">
@@ -42,5 +43,5 @@ if (!function_exists('render_carousel_block')) {
         <?php
         return ob_get_clean();
     }
-    
+
 }

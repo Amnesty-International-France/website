@@ -6,7 +6,8 @@ if (!function_exists('register_actions_homepage_block')) {
     /**
      * Register the Actions Homepage block
      */
-    function register_actions_homepage_block(): void {
+    function register_actions_homepage_block(): void
+    {
         register_block_type(
             'amnesty-core/actions-homepage',
             [

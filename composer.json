@@ -4,7 +4,8 @@
   "license": "none",
   "minimum-stability": "stable",
   "require-dev": {
-    "bigbite/phpcs-config": "v2.0.0"
+    "bigbite/phpcs-config": "v2.0.0",
+    "friendsofphp/php-cs-fixer": "^3.87"
   },
   "config": {
     "allow-plugins": {

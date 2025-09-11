@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-add_action('admin_enqueue_scripts', function($hook) {
+add_action('admin_enqueue_scripts', function ($hook) {
     if ($hook !== 'fiche_pays_page_countries_settings') {
         return;
     }
@@ -11,7 +11,8 @@ add_action('admin_enqueue_scripts', function($hook) {
 
 add_action('admin_menu', 'amnesty_add_countries_settings_page');
 
-function amnesty_add_countries_settings_page() {
+function amnesty_add_countries_settings_page()
+{
     add_submenu_page(
         'edit.php?post_type=fiche_pays',
         'Réglages Pays',
@@ -22,7 +23,8 @@ function amnesty_add_countries_settings_page() {
     );
 }
 
-function amnesty_countries_settings_page_callback() {
+function amnesty_countries_settings_page_callback()
+{
     if (
         isset($_POST['amnesty_settings_nonce']) &&
         wp_verify_nonce($_POST['amnesty_settings_nonce'], 'save_countries_settings')
@@ -52,7 +54,7 @@ function amnesty_countries_settings_page_callback() {
     echo '<button type="button" class="button" id="upload-countries-report-document">Choisir un document</button>';
 
     echo '<h2>Texte du chapo</h2>';
-    echo '<textarea name="countries_global_chapo" rows="5" style="width:100%">' . esc_textarea( stripslashes($chapo) ) . '</textarea>';
+    echo '<textarea name="countries_global_chapo" rows="5" style="width:100%">' . esc_textarea(stripslashes($chapo)) . '</textarea>';
 
     echo '<p><input type="submit" class="button-primary" value="Enregistrer les réglages"></p>';
     echo '</form></div>';
@@ -96,8 +98,11 @@ add_action('admin_footer', function () {
     <?php
 });
 
-function amnesty_process_countries_settings_form() {
-    if (!current_user_can('manage_options')) return;
+function amnesty_process_countries_settings_form()
+{
+    if (!current_user_can('manage_options')) {
+        return;
+    }
 
     if (!empty($_POST['countries_global_document_id'])) {
         update_option('countries_global_document_id', intval($_POST['countries_global_document_id']));

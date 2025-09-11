@@ -11,7 +11,7 @@
  */
 
 if (!defined('ABSPATH')) {
-	die('-1');
+    die('-1');
 }
 
 
@@ -74,7 +74,7 @@ $event = tribe_get_event($event_id);
 
 $main_category = amnesty_get_a_post_term($event_id);
 if (!($main_category instanceof WP_Term)) {
-	$main_category = null;
+    $main_category = null;
 }
 
 $post_type = get_post_type($event);
@@ -83,7 +83,7 @@ $chip_style = 'bg-yellow';
 $post_type_object = get_post_type_object($post_type);
 
 if ($post_type_object->name === 'tribe_events') {
-	$main_category = 'Évènement';
+    $main_category = 'Évènement';
 }
 
 ?>
@@ -91,23 +91,23 @@ if ($post_type_object->name === 'tribe_events') {
 <div class="event">
 	<div class="yoast-breadcrumb-wrapper">
 		<?php
-		if (function_exists('yoast_breadcrumb')) {
-			yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
-		}
-		?>
+        if (function_exists('yoast_breadcrumb')) {
+            yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
+        }
+?>
 	</div>
 	<div class="current-event">
 		<?php if ($main_category) : ?>
 			<?=
-			render_chip_category_block(
-				[
-					'label' => $main_category,
-					'link' => '',
-					'size' => 'large fit-content',
-					'style' => 'bg-black',
-				]
-			);
-			?>
+    render_chip_category_block(
+        [
+            'label' => $main_category,
+            'link' => '',
+            'size' => 'large fit-content',
+            'style' => 'bg-black',
+        ]
+    );
+		    ?>
 		<?php endif; ?>
 
 		<?php echo $title; ?>
@@ -171,7 +171,9 @@ if ($post_type_object->name === 'tribe_events') {
 
 				<?php echo tribe_get_the_content() ?>
 			</div>
-			<?php if (get_post_type() == Tribe__Events__Main::POSTTYPE && tribe_get_option('showComments', false)) comments_template() ?>
+			<?php if (get_post_type() == Tribe__Events__Main::POSTTYPE && tribe_get_option('showComments', false)) {
+			    comments_template();
+			} ?>
 		<?php endwhile; ?>
 		<div class="event-near">
 			<h3>Près de chez vous</h3>

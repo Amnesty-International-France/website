@@ -7,10 +7,10 @@
  * Inserter: no
  */
 
-$location_slug = get_option( 'amnesty_location_slug' ) ?: 'location';
+$location_slug = get_option('amnesty_location_slug') ?: 'location';
 
 // add filter to limit the post terms results for search
-add_filter( 'get_the_terms', 'amnesty_limit_post_terms_results_for_search' );
+add_filter('get_the_terms', 'amnesty_limit_post_terms_results_for_search');
 
 ?>
 <!-- wp:query {"inherit":true} -->
@@ -25,7 +25,7 @@ add_filter( 'get_the_terms', 'amnesty_limit_post_terms_results_for_search' );
 			<!-- wp:group {"tagName":"div","className":"post-terms","layout":{"type":"flex","flexWrap":"nowrap"}} -->
 			<div class="wp-block-group post-terms">
 				<!-- wp:post-terms {"term":"category","className":"post-category"} /-->
-				<!-- wp:post-terms {"term":"<?php echo esc_attr( $location_slug ); ?>","className":"post-location"} /-->
+				<!-- wp:post-terms {"term":"<?php echo esc_attr($location_slug); ?>","className":"post-location"} /-->
 				<!-- wp:post-terms {"term":"topic","className":"post-topic"} /-->
 			</div>
 			<!-- /wp:group -->
@@ -40,9 +40,9 @@ add_filter( 'get_the_terms', 'amnesty_limit_post_terms_results_for_search' );
 	<!-- /wp:group -->
 
 	<!-- wp:query-pagination {"align":"center","className":"section section--small","paginationArrow":"none","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-		<!-- wp:query-pagination-previous {"label":"<?php echo esc_html( __( 'Previous', 'amnesty' ) ); ?>"} /-->
+		<!-- wp:query-pagination-previous {"label":"<?php echo esc_html(__('Previous', 'amnesty')); ?>"} /-->
 		<!-- wp:query-pagination-numbers {"midSize":1,"className":"page-numbers"} /-->
-		<!-- wp:query-pagination-next {"label":"<?php echo esc_html( __( 'Next', 'amnesty' ) ); ?>"} /-->
+		<!-- wp:query-pagination-next {"label":"<?php echo esc_html(__('Next', 'amnesty')); ?>"} /-->
 	<!-- /wp:query-pagination -->
 </div>
 <!-- /wp:query -->
