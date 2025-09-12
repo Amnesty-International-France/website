@@ -1,0 +1,22 @@
+%type-styles {
+
+  /**
+   * Headings.
+   */
+
+  p {
+    overflow-wrap: break-word;
+  }
+
+  p.has-drop-cap:not(:focus)::first-letter {
+    margin-bottom: 30px;
+  }
+
+  small {
+    font-size: var(--wp--preset--font-size--small);
+  }
+
+  .has-normal-font-size {
+    font-size: var(--wp--preset--font-size--regular);
+  }
+}

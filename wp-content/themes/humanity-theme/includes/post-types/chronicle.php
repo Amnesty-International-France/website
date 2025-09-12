@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 add_action('init', function () {
     register_post_type('chronique', [
         'labels' => [
@@ -40,8 +42,7 @@ add_action('init', function () {
         'supports' => [
             0 => 'title',
             1 => 'editor',
-            2 => 'thumbnail',
-            3 => 'custom-fields',
+            2 => 'custom-fields',
         ],
         'delete_with_user' => false,
         'show_ui' => true,
@@ -189,11 +190,11 @@ add_action('acf/include_fields', function () {
                 'preview_size' => 'medium',
             ],
             [
-                'key' => 'field_68a442ff940c3',
-                'label' => 'Contenu du sommaire',
-                'name' => 'summary_content',
+                'key' => 'field_68a44323940c4',
+                'label' => 'Articles liés (Chronique)',
+                'name' => '_related_posts_selected',
                 'aria-label' => '',
-                'type' => 'wysiwyg',
+                'type' => 'relationship',
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
@@ -202,12 +203,24 @@ add_action('acf/include_fields', function () {
                     'class' => '',
                     'id' => '',
                 ],
-                'default_value' => '',
+                'post_type' => [
+                    0 => 'post',
+                ],
+                'post_status' => 'publish',
+                'taxonomy' => [
+                    0 => 'category:chroniques',
+                ],
+                'filters' => [
+                    0 => 'search',
+                    1 => 'post_type',
+                ],
+                'return_format' => 'object',
+                'min' => '',
+                'max' => '',
                 'allow_in_bindings' => 0,
-                'tabs' => 'all',
-                'toolbar' => 'full',
-                'media_upload' => 1,
-                'delay' => 0,
+                'elements' => '',
+                'bidirectional' => 0,
+                'bidirectional_target' => [],
             ],
         ],
         'location' => [
@@ -255,16 +268,4 @@ function amnesty_add_chronicle_parent_to_breadcrumb($links)
 
     return $links;
 }
-
 add_filter('wpseo_breadcrumb_links', 'amnesty_add_chronicle_parent_to_breadcrumb');
-
-function amnesty_add_chronicle_archives_rewrite_rule()
-{
-    add_rewrite_rule(
-        '^chronique/archives/?$',
-        'index.php?pagename=chronique/archives',
-        'top'
-    );
-}
-
-add_action('init', 'amnesty_add_chronicle_archives_rewrite_rule');

@@ -5,11 +5,22 @@
     display: none;
   }
 
-  .page-hero-block.page-hero-block--large .article-figure {
-    min-height: 19rem;
+  .page-hero-block.page-hero-block--large {
+    .article-figure {
+      min-height: 19rem;
 
-    @media (min-width: $container-lg) {
-      min-height: 21.6rem;
+      @media (min-width: $container-lg) {
+        min-height: 21.6rem;
+      }
+    }
+
+    .page-hero-title-wrapper .container {
+      .page-hero-title {
+        &__first-part {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-weight: bold;
+        }
+      }
     }
   }
 
@@ -21,8 +32,8 @@
       display: flex;
       align-items: flex-start;
       gap: 4.3rem;
-      margin: 5rem 0 8rem 0;
-      width: 54%;
+      margin: 5rem 0 6.7rem 0;
+      width: 890px;
     }
 
     &__aside, &__summary {
@@ -48,7 +59,7 @@
         height: 369px;
 
         @media (min-width: $container-lg) {
-          margin-bottom: 1.7rem;
+          margin-bottom: 1.4rem;
         }
 
         img {
@@ -62,7 +73,7 @@
 
       .custom-button-block {
         &:first-of-type {
-          margin-bottom: 1.4rem;
+          margin-bottom: 1.2rem;
 
           .custom-button .content.medium {
             padding: .5rem 1.8rem;
@@ -87,40 +98,38 @@
 
       h2 {
         margin-bottom: 2rem;
+        font-size: 2.1rem;
       }
 
-      p:has(> strong:only-child) {
-        margin-top: 0;
-        margin-bottom: 0;
+      .rubric-heading {
+        margin-bottom: 1.1rem;
+
+        ~ p {
+          margin-bottom: .7rem;
+        }
       }
 
-      p:has(> strong:only-child) + p:has(> strong:only-child)::after {
-        content: '';
-        display: block;
-        margin-top: 1rem;
-        margin-bottom: .7rem;
-        width: 3.3rem;
-        height: .3rem;
-        background-color: var(--wp--preset--color--primary);
+      p:has(+ .rubric-heading),
+      p:last-child {
+        margin-bottom: 2.5rem;
       }
     }
   }
 
   .related-posts-block {
-    margin-bottom: .6rem;
-    padding: 1rem 0 1rem 0;
+    margin: 1rem 0 1rem 0;
 
     @media (min-width: $container-lg) {
-      padding: 30px 0 56px 0;
+      margin: 0 0 .8rem 0;
     }
 
     .content {
       .title {
         padding: .5rem .7rem !important;
-        margin-bottom: 2rem !important;
+        margin-bottom: 2.5rem !important;
 
         @media (min-width: $container-lg) {
-          padding: 10px 12px 8px 10px !important;
+          padding: 3px 10px 2px 10px !important;
         }
       }
 

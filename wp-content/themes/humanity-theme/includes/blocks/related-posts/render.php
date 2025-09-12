@@ -29,25 +29,37 @@ function render_related_posts_block($attributes)
             'posts_per_page' => $nb_posts,
         ]);
     } else {
-        $term = amnesty_get_a_post_term($post_id);
-        if ($term) {
-            $tax_query = [
+        $args = [
+            'posts_per_page' => $nb_posts,
+            'post__not_in'   => [ $post_id ],
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+        ];
+
+        if (! empty($attributes['fallback_category_slug'])) {
+            $args['post_type'] = 'post';
+            $args['tax_query'] = [
                 [
                     'taxonomy' => 'category',
                     'field'    => 'slug',
-                    'terms'    => $term->slug,
+                    'terms'    => $attributes['fallback_category_slug'],
                 ],
             ];
+        } else {
+            $args['post_type'] = get_post_type($post_id);
+            $term = amnesty_get_a_post_term($post_id);
+            if ($term) {
+                $args['tax_query'] = [
+                    [
+                        'taxonomy' => $term->taxonomy,
+                        'field'    => 'slug',
+                        'terms'    => $term->slug,
+                    ],
+                ];
+            }
         }
 
-        $query = new WP_Query([
-            'post_type'      => get_post_type($post_id),
-            'posts_per_page' => $nb_posts,
-            'post__not_in'   => [ $post_id ],
-            'tax_query'      => $tax_query ?? [],
-            'orderby'        => 'date',
-            'order'          => 'DESC',
-        ]);
+        $query = new WP_Query($args);
     }
 
     if (! $query->have_posts()) {

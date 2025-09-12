@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (! function_exists('register_hero_large_block')) {
     /**
      * Register the Hero large block
@@ -28,6 +30,10 @@ if (! function_exists('register_hero_large_block')) {
                 'btnLink' => [
                     'type'    => 'string',
                     'default' => '',
+                ],
+                'imagePostId' => [
+                    'type'    => 'number',
+                    'default' => null,
                 ],
             ],
         ]);

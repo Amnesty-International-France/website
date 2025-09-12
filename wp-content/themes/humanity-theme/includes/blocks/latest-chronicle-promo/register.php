@@ -15,7 +15,6 @@ if (! function_exists('register_latest_chronicle_promo_block')) {
     {
         register_block_type('amnesty/latest-chronicle-promo', [
             'render_callback' => 'render_latest_chronicle_promo',
-            'attributes'      => [],
         ]);
     }
 }

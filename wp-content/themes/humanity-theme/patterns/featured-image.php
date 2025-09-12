@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Title: Featured Image
  * Description: Featured image output with caption, copyright, etc.
@@ -9,17 +11,19 @@
 
 use Amnesty\Get_Image_Data;
 
+$post_id_to_use = !empty($args['image_post_id']) ? $args['image_post_id'] : get_the_ID();
+
 global $post_ID;
 
 if (amnesty_post_has_hero() || amnesty_post_has_header()) {
     return;
 }
 
-if (get_post_meta(get_the_ID(), '_hide_featured_image', true)) {
+if (get_post_meta($post_id_to_use, '_hide_featured_image', true)) {
     return;
 }
 
-$image_id = get_post_thumbnail_id(get_the_ID());
+$image_id = get_post_thumbnail_id($post_id_to_use);
 
 if (! $image_id) {
     if ('press-release' === get_post_type()) {
