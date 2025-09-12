@@ -1,0 +1,32 @@
+.rubric-heading {
+  &__kicker {
+    margin: 0 0 .1rem 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  &__heading {
+    position: relative;
+    margin: 0 !important;
+    padding-bottom: .7rem;
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+
+    @media (min-width: $container-sm) {
+      font-size: 1.3rem;
+      line-height: 1.2rem;
+    }
+
+    &::after {
+      content: '';
+      display: block;
+      width: 3.3rem;
+      height: 4px;
+      background-color: var(--wp--preset--color--primary);
+      position: absolute;
+      left: -3px;
+      top: 2.4rem;
+    }
+  }
+}

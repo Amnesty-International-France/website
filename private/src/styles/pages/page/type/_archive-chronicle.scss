@@ -1,19 +1,30 @@
 .archive-chronicle {
   background-color: var(--wp--preset--color--grey-black);
 
-  .page-hero-block.page-hero-block--large .page-figure {
-    min-height: 19rem;
+  .page-hero-block.page-hero-block--large {
+    .page-figure {
+      min-height: 19rem;
 
-    @media (min-width: $container-lg) {
-      min-height: 21.6rem;
+      @media (min-width: $container-lg) {
+        min-height: 21.6rem;
+      }
+
+      &::before {
+        display: none;
+      }
+
+      figcaption {
+        display: none;
+      }
     }
 
-    &::before {
-      display: none;
-    }
-
-    figcaption {
-      display: none;
+    .page-hero-title-wrapper .container {
+      .page-hero-title {
+        &__first-part {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-weight: bold;
+        }
+      }
     }
   }
 
@@ -40,24 +51,16 @@
     padding-bottom: 7rem;
     color: var(--wp--preset--color--white);
 
-    @media (min-width: $container-hg) {
-      min-width: max-content;
-    }
-
     ul {
       gap: 22px;
-
-      @media (min-width: $container-hg) {
-        gap: 32px;
-      }
     }
 
     .chronique {
       position: relative;
-      width: 250px;
-      height: 336px;
-      min-width: 250px;
-      min-height: 336px;
+      width: 171px;
+      height: 230px;
+      min-width: 171px;
+      min-height: 230px;
 
       .chronicle__permalink {
         &:hover::after {
@@ -76,26 +79,6 @@
           background-color: var(--wp--preset--color--primary);
           transition: transform 0.3s ease-in-out;
         }
-      }
-    }
-
-    @media (min-width: $container-sm) {
-      margin-top: 4rem;
-
-      .chronique {
-        width: 171px;
-        height: 230px;
-        min-width: 171px;
-        min-height: 230px;
-      }
-    }
-
-    @media (min-width: $container-hg) {
-      .chronique {
-        width: 250px;
-        height: 336px;
-        min-width: 250px;
-        min-height: 336px;
       }
     }
 
@@ -138,7 +121,7 @@
   }
 
   &__subscribe {
-    padding: 6.7rem 0;
+    padding: 4.7rem 0;
     background-color: var(--wp--preset--color--white);
   }
 }

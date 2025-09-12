@@ -1,9 +1,9 @@
 .chip {
   display: inline-block;
-  padding: 0.25em 0.6em;
+  padding: 0 0.5rem;
   font-family: var(--wp--preset--font-family--secondary);
   font-weight: bold;
-  line-height: 1;
+  line-height: 1.6;
   text-transform: uppercase;
 
   &--bg-black {

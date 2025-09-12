@@ -19,17 +19,21 @@ if ($month) {
 }
 $year = get_field('publication_year');
 $summary_title = get_field('summary_title');
-$summary_content = get_field('summary_content');
 
 ?>
 
 <?php
+
 if ($is_promo_context) {
     $open_cover_image = get_field('cover_image_with_magazine_open');
     if ($open_cover_image) : ?>
-        <figure class="promo-open-magazine">
-			<img src="<?php echo esc_url($open_cover_image['sizes']['medium_large']); ?>" alt="<?php echo esc_attr($open_cover_image['alt']); ?>">
-        </figure>
+	<div class="chronicle-promo-container">
+		<div class="chronicle-promo__open-magazine">
+			<figure class="open-magazine">
+				<img src="<?php echo esc_url($open_cover_image['sizes']['medium_large']); ?>" alt="<?php echo esc_attr($open_cover_image['alt']); ?>">
+			</figure>
+		</div>
+	</div>
     <?php endif;
 }
 ?>
@@ -55,7 +59,7 @@ if ($is_promo_context) {
 	<article class="single-chronicle__content__summary">
 		<span class="chip chip--bg-black"><?= $month ?? '' ?>&nbsp;<?= $year ?? '' ?></span>
 		<h2><?= $summary_title ?? '' ?></h2>
-		<div><?= $summary_content ?? '' ?></div>
+		<div><?php the_content(); ?></div>
 	</article>
 </section>
 <!-- /wp:group -->
@@ -64,7 +68,7 @@ if ($is_promo_context) {
 <section class="wp-block-group container has-gutter related-posts">
 	<?php
     echo do_blocks('
-	<!-- wp:amnesty-core/related-posts {"title":"ET AUSSI", "nb_posts": 2, "display": "chronique"} /-->
+	<!-- wp:amnesty-core/related-posts {"title":"ET AUSSI", "nb_posts": 2, "display": "chronique", "fallback_category_slug": "chroniques"} /-->
 	');
 ?>
 </section>

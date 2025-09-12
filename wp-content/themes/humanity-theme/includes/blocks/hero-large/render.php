@@ -48,7 +48,10 @@ if (! function_exists('render_hero_large_block')) {
 
 		<section class="page-hero-block page-hero-block--large">
 			<?php
-            get_template_part('patterns/featured-image');
+            $image_source_id = !empty($attributes['imagePostId']) ? $attributes['imagePostId'] : get_the_ID();
+        get_template_part('patterns/featured-image', null, [
+            'image_post_id' => $image_source_id,
+        ]);
         ?>
 			<div class="yoast-breadcrumb-wrapper">
 				<?php if (function_exists('yoast_breadcrumb')) {

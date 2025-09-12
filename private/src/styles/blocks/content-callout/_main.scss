@@ -1,28 +1,38 @@
 .content-callout {
-  margin-top: 2.2rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 1rem;
-  border-top: .4rem solid var(--wp--preset--color--black);
-  border-bottom: .4rem solid var(--wp--preset--color--black);
+  width: 95%;
+  padding: 1.1rem .9rem 1.7rem .9rem;
+  border-top: .45rem solid var(--wp--preset--color--black);
+  border-bottom: .45rem solid var(--wp--preset--color--black);
   text-align: center;
 
+  .container {
+    width: 94%;
+    margin: 0 auto;
+  }
+
   &__title {
+    margin-top: 0;
+    margin-bottom: 1.9rem;
     font-size: 1.5rem;
+    line-height: 1.75rem;
   }
 
   &__text {
+    margin-bottom: 0;
     font-weight: bold;
     font-size: 1rem;
-    margin-bottom: 0;
+    line-height: 24px;
   }
 
-  @media (min-width: 768px) {
-    margin-top: 3.5rem;
-    width: 31%;
+  @media (min-width: $container-sm) {
+    width: 34.5rem;
+
+    .container {
+      width: 28.5rem;
+    }
 
     &__title {
-      font-size: 1.85rem;
+      font-size: 1.6rem;
     }
   }
 }

@@ -60,9 +60,11 @@
 @import 'blocks/card-image-text/main';
 @import 'blocks/carousel/main';
 @import 'blocks/chapo/main';
+@import 'blocks/chip/main';
 @import 'blocks/chip-category/main';
 @import 'blocks/collapsable/main';
 @import 'blocks/collapsable/editor';
+@import 'blocks/content-callout/main';
 @import 'blocks/core-blocks/details';
 @import 'blocks/core-blocks/gallery-editor';
 @import 'blocks/core-blocks/group';
@@ -107,6 +109,7 @@
 @import 'blocks/read-more/main';
 @import 'blocks/regions/main';
 @import 'blocks/regions/editor';
+@import 'blocks/rubric-heading/main';
 @import 'blocks/section/main';
 @import 'blocks/section/editor';
 @import 'blocks/section-home/main';
@@ -130,6 +133,20 @@
 
 // Import
 @import 'import/main';
+
+/**
+ * Editor Template Hotfixes (Temporary)
+ *
+ * @file This file contains targeted style overrides for the Gutenberg editor.
+ * @purpose To temporarily fix style discrepancies between the editor and the front-end
+ * (e.g., applying reset styles) for specific page templates without
+ * undertaking a full refactor of the theme's SCSS architecture.
+ * @note This file is a stopgap measure and should be removed once the front-end and
+ * editor styles are unified with a shared base.
+ */
+
+// This file contains the actual override rules
+@import 'gutenberg-hotfixes-content';
 
 :root {
   --ms-base: 16;

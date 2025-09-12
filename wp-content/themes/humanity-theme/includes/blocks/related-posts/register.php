@@ -34,6 +34,10 @@ if (!function_exists('register_related_posts_block')) {
                         'items'   => [ 'type' => 'number' ],
                         'default' => [],
                     ],
+                    'fallback_category_slug' => [
+                        'type' => 'string',
+                        'default' => '',
+                    ],
                 ],
             ]
         );

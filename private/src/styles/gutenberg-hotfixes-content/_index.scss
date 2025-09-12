@@ -1,0 +1,50 @@
+/**
+ * This file contains specific styles for certain page templates
+ * within the Gutenberg editor who does not have certain styles that must be shared between him and the front,
+ * so as not to affect other pages.
+ *
+ * This is a temporary fix file.
+ *
+ * All the imported files here must be removed once this file will be removed.
+ */
+
+// Missing Base imports
+@import 'extends/reset.temp-file';
+@import 'extends/shared.temp-file';
+@import 'extends/base.temp-file';
+@import 'extends/type.temp-file';
+@import 'extends/headings.temp-file';
+
+.post-type-chronique {
+  .editor-styles-wrapper {
+    @extend %reset-styles;
+    @extend %shared-styles;
+    @extend %base-styles;
+    @extend %type-styles;
+    @extend %headings-styles;
+
+    .rubric-heading {
+      margin-bottom: 1.1rem;
+
+      &__kicker {
+        margin: 0 0 0.1rem 0;
+      }
+
+      &__heading {
+        padding-bottom: .7rem;
+      }
+
+      ~ p {
+        margin-bottom: .7rem;
+      }
+    }
+
+    p:has(+ .rubric-heading),
+    p:last-child {
+      margin-bottom: 2.5rem;
+    }
+  }
+}
+
+// You can add more styles here for other models in the future...
+// .editor-for-contact-page { ... }

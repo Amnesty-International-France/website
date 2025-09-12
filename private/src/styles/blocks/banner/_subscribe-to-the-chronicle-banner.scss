@@ -10,7 +10,7 @@
 
   @media (min-width: $container-lg) {
     flex-direction: row;
-    padding: 2rem 2.2rem;
+    padding: 2.2rem 2.2rem 2.6rem;
   }
 
   .column {
@@ -28,6 +28,7 @@
   }
 
   &__title {
+    line-height: 35px;
     color: var(--wp--preset--color--primary);
     padding: 0;
   }
