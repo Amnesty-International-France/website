@@ -1,19 +1,30 @@
 .archive-chronicle {
   background-color: var(--wp--preset--color--grey-black);
 
-  .page-hero-block.page-hero-block--large .page-figure {
-    min-height: 19rem;
+  .page-hero-block.page-hero-block--large {
+    .page-figure {
+      min-height: 19rem;
 
-    @media (min-width: $container-lg) {
-      min-height: 21.6rem;
+      @media (min-width: $container-lg) {
+        min-height: 21.6rem;
+      }
+
+      &::before {
+        display: none;
+      }
+
+      figcaption {
+        display: none;
+      }
     }
 
-    &::before {
-      display: none;
-    }
-
-    figcaption {
-      display: none;
+    .page-hero-title-wrapper .container {
+      .page-hero-title {
+        &__first-part {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-weight: bold;
+        }
+      }
     }
   }
 

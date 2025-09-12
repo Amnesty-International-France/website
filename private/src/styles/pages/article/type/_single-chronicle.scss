@@ -5,11 +5,22 @@
     display: none;
   }
 
-  .page-hero-block.page-hero-block--large .article-figure {
-    min-height: 19rem;
+  .page-hero-block.page-hero-block--large {
+    .article-figure {
+      min-height: 19rem;
 
-    @media (min-width: $container-lg) {
-      min-height: 21.6rem;
+      @media (min-width: $container-lg) {
+        min-height: 21.6rem;
+      }
+    }
+
+    .page-hero-title-wrapper .container {
+      .page-hero-title {
+        &__first-part {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-weight: bold;
+        }
+      }
     }
   }
 
@@ -85,23 +96,16 @@
         margin-bottom: .5rem;
       }
 
+      .rubric-heading {
+        margin-bottom: 1rem;
+      }
+
       h2 {
         margin-bottom: 2rem;
       }
 
-      p:has(> strong:only-child) {
-        margin-top: 0;
-        margin-bottom: 0;
-      }
-
-      p:has(> strong:only-child) + p:has(> strong:only-child)::after {
-        content: '';
-        display: block;
-        margin-top: 1rem;
-        margin-bottom: .7rem;
-        width: 3.3rem;
-        height: .3rem;
-        background-color: var(--wp--preset--color--primary);
+      > div p {
+        margin: 0 0 .6rem 0;
       }
     }
   }
