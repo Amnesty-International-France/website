@@ -8,6 +8,8 @@ require_once realpath(__DIR__) . '/archive-filters-actualities/register.php';
 require_once realpath(__DIR__) . '/archive-filters-actualities/render.php';
 require_once realpath(__DIR__) . '/archive-filters-trainings/register.php';
 require_once realpath(__DIR__) . '/archive-filters-trainings/render.php';
+require_once realpath(__DIR__) . '/archive-filters-trainings-my-space/register.php';
+require_once realpath(__DIR__) . '/archive-filters-trainings-my-space/render.php';
 require_once realpath(__DIR__) . '/archive-filters-edh/register.php';
 require_once realpath(__DIR__) . '/archive-filters-edh/render.php';
 require_once realpath(__DIR__) . '/archive-header/register.php';
@@ -36,6 +38,7 @@ if (! function_exists('amnesty_register_full_site_editing_blocks')) {
         register_archive_filters_block();
         register_archive_filters_actualities_block();
         register_archive_filters_trainings_block();
+        register_archive_filters_trainings_my_space_block();
         register_archive_filters_edh_block();
         register_archive_header_block();
         register_pop_in_block();
