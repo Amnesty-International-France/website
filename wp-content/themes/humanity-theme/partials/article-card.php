@@ -3,7 +3,7 @@ $direction = $args['direction'] ?? 'portrait';
 
 global $post;
 
-$post_id = $args['post_id'] ?? ($args['post']->ID ?? ($post->ID ?? null));
+$post_id     = $args['post_id'] ?? ($args['post']->ID ?? ($post->ID ?? null));
 $post_object = get_post($post_id);
 
 if (!$post_object instanceof WP_Post) {
@@ -90,11 +90,11 @@ if (!$post_object instanceof WP_Post) {
 ?>
 
 <article class="article-card card-<?php echo esc_attr($direction); ?>">
-	<?php if ($thumbnail): ?>
+	<?php if ($thumbnail) : ?>
 		<a href="<?= esc_url($permalink); ?>" class="article-thumbnail">
 			<?= $thumbnail; ?>
 		</a>
-	<?php else: ?>
+	<?php else : ?>
 		<div class="article-thumbnail"></div>
 	<?php endif; ?>
 
@@ -111,6 +111,13 @@ if (!$post_object instanceof WP_Post) {
 
 	<div class="article-content">
 		<time class="article-date" datetime="<?= esc_attr(date('c', strtotime($date))); ?>">
+			<?php
+            if ('petition' === $post_type) :
+                ?>
+					Jusqu'au
+				<?php
+            endif;
+?>
 			<?= esc_html($date); ?>
 		</time>
 		<div class="article-title">
