@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/WordPress/gutenberg/trunk/schemas/json/block.json",
+  "apiVersion": 2,
+  "name": "amnesty-core/archive-filters-trainings-my-space",
+  "title": "Archive Filters",
+  "description": "For presenting filters on archive trainings page for my space",
+  "textdomain": "amnesty",
+  "category": "amnesty-core",
+  "icon": "editor-table",
+  "keywords": ["Archives", "Filters"],
+  "supports": {
+    "inserter": false
+  }
+}
