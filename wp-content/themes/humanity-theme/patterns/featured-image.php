@@ -19,11 +19,11 @@ if (amnesty_post_has_hero() || amnesty_post_has_header()) {
     return;
 }
 
-if ( get_post_meta( $post_id_to_use, '_hide_featured_image', true ) ) {
-	return;
+if (get_post_meta($post_id_to_use, '_hide_featured_image', true)) {
+    return;
 }
 
-$image_id = get_post_thumbnail_id( $post_id_to_use );
+$image_id = get_post_thumbnail_id($post_id_to_use);
 
 if (! $image_id) {
     if ('press-release' === get_post_type()) {

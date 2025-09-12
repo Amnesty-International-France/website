@@ -9,8 +9,8 @@ declare(strict_types=1);
  */
 
 if (!function_exists('register_rubric_heading_block')) {
-	function register_rubric_heading_block(): void
-	{
-		register_block_type('amnesty/rubric-heading');
-	}
+    function register_rubric_heading_block(): void
+    {
+        register_block_type('amnesty/rubric-heading');
+    }
 }

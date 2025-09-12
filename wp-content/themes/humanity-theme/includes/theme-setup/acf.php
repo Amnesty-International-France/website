@@ -954,120 +954,121 @@ add_action(
             ]
         );
 
-	acf_add_local_field_group( array(
-		'key' => 'group_689dadd09f8fa',
-		'title' => 'Chapo',
-		'fields' => array(
-			array(
-				'key' => 'field_689dadd67591e',
-				'label' => 'Texte du chapo',
-				'name' => 'chapo_text',
-				'aria-label' => '',
-				'type' => 'textarea',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 'La Chronique, c’est LE magazine des droits humains.
+        acf_add_local_field_group([
+            'key' => 'group_689dadd09f8fa',
+            'title' => 'Chapo',
+            'fields' => [
+                [
+                    'key' => 'field_689dadd67591e',
+                    'label' => 'Texte du chapo',
+                    'name' => 'chapo_text',
+                    'aria-label' => '',
+                    'type' => 'textarea',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => [
+                        'width' => '',
+                        'class' => '',
+                        'id' => '',
+                    ],
+                    'default_value' => 'La Chronique, c’est LE magazine des droits humains.
 Chaque mois, des journalistes enquêtent sur des sujets liés aux droits humains.',
-                        'maxlength'         => '',
-                        'allow_in_bindings' => 0,
-                        'rows'              => '',
-                        'placeholder'       => '',
-                        'new_lines'         => '',
-			),
-		),
-		'location'              => [
-			[
-				[
-					'param'    => 'page_template',
-					'operator' => '==',
-					'value'    => 'page-the-chronicle-promo',
-				],
-			],
-		],
-		'menu_order'            => 1,
-		'position'              => 'normal',
-		'style'                 => 'default',
-		'label_placement'       => 'top',
-		'instruction_placement' => 'label',
-		'hide_on_screen'        => '',
-		'active'                => true,
-		'description'           => '',
-		'show_in_rest'          => 0,
-	));
+                    'maxlength'         => '',
+                    'allow_in_bindings' => 0,
+                    'rows'              => '',
+                    'placeholder'       => '',
+                    'new_lines'         => '',
+                ],
+            ],
+            'location'              => [
+                [
+                    [
+                        'param'    => 'page_template',
+                        'operator' => '==',
+                        'value'    => 'page-the-chronicle-promo',
+                    ],
+                ],
+            ],
+            'menu_order'            => 1,
+            'position'              => 'normal',
+            'style'                 => 'default',
+            'label_placement'       => 'top',
+            'instruction_placement' => 'label',
+            'hide_on_screen'        => '',
+            'active'                => true,
+            'description'           => '',
+            'show_in_rest'          => 0,
+        ]);
 
-	acf_add_local_field_group( array(
-		'key' => 'group_689dbd6d52167',
-		'title' => 'Mise en exergue',
-		'fields' => array(
-			array(
-				'key' => 'field_689dbd72671d7',
-				'label' => 'Titre mise en exergue',
-				'name' => 'promo_callout_title',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 'Lorem ipsum dolor sit amet',
-				'maxlength' => '',
-				'allow_in_bindings' => 0,
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
-				'key' => 'field_689dbdd2671d8',
-				'label' => 'Contenu mise en exergue',
-				'name' => 'promo_callout_text',
-				'aria-label' => '',
-				'type' => 'textarea',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 'Consectetur adipiscing elit. Curabitur nec neque erat. Vestibulum molestie sem augue, ac congue nulla faucibus id. Sed placerat scelerisque tristique.',
-				'maxlength' => '',
-				'allow_in_bindings' => 0,
-				'rows' => '',
-				'placeholder' => '',
-				'new_lines' => '',
-			),
-		),
-		'location' => array(
-			array(
-				array(
-					'param' => 'page_template',
-					'operator' => '==',
-					'value' => 'page-the-chronicle-promo',
-				),
-			),
-		),
-		'menu_order' => 2,
-		'position' => 'normal',
-		'style' => 'default',
-		'label_placement' => 'top',
-		'instruction_placement' => 'label',
-		'hide_on_screen' => '',
-		'active' => true,
-		'description' => '',
-		'show_in_rest' => 0,
-	) );
-} );
+        acf_add_local_field_group([
+            'key' => 'group_689dbd6d52167',
+            'title' => 'Mise en exergue',
+            'fields' => [
+                [
+                    'key' => 'field_689dbd72671d7',
+                    'label' => 'Titre mise en exergue',
+                    'name' => 'promo_callout_title',
+                    'aria-label' => '',
+                    'type' => 'text',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => [
+                        'width' => '',
+                        'class' => '',
+                        'id' => '',
+                    ],
+                    'default_value' => 'Lorem ipsum dolor sit amet',
+                    'maxlength' => '',
+                    'allow_in_bindings' => 0,
+                    'placeholder' => '',
+                    'prepend' => '',
+                    'append' => '',
+                ],
+                [
+                    'key' => 'field_689dbdd2671d8',
+                    'label' => 'Contenu mise en exergue',
+                    'name' => 'promo_callout_text',
+                    'aria-label' => '',
+                    'type' => 'textarea',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => [
+                        'width' => '',
+                        'class' => '',
+                        'id' => '',
+                    ],
+                    'default_value' => 'Consectetur adipiscing elit. Curabitur nec neque erat. Vestibulum molestie sem augue, ac congue nulla faucibus id. Sed placerat scelerisque tristique.',
+                    'maxlength' => '',
+                    'allow_in_bindings' => 0,
+                    'rows' => '',
+                    'placeholder' => '',
+                    'new_lines' => '',
+                ],
+            ],
+            'location' => [
+                [
+                    [
+                        'param' => 'page_template',
+                        'operator' => '==',
+                        'value' => 'page-the-chronicle-promo',
+                    ],
+                ],
+            ],
+            'menu_order' => 2,
+            'position' => 'normal',
+            'style' => 'default',
+            'label_placement' => 'top',
+            'instruction_placement' => 'label',
+            'hide_on_screen' => '',
+            'active' => true,
+            'description' => '',
+            'show_in_rest' => 0,
+        ]);
+    }
+);
 
 add_action(
     'acf/save_post',

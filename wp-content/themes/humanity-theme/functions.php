@@ -21,29 +21,29 @@ require_once realpath(__DIR__ . '/includes/root/permalinks.php');
  * Theme helper includes
  */
 // region helpers
-require_once realpath( __DIR__ . '/includes/helpers/query-filters.php' );
-require_once realpath( __DIR__ . '/includes/helpers/category-rewrite.php' );
-require_once realpath( __DIR__ . '/includes/helpers/class-classnames.php' );
-require_once realpath( __DIR__ . '/includes/helpers/class-get-image-data.php' );
-require_once realpath( __DIR__ . '/includes/helpers/site.php' );
-require_once realpath( __DIR__ . '/includes/helpers/string-manipulation.php' );
-require_once realpath( __DIR__ . '/includes/helpers/variable-types.php' );
-require_once realpath( __DIR__ . '/includes/helpers/array-manipulation.php' );
-require_once realpath( __DIR__ . '/includes/helpers/actions-and-filters.php' );
-require_once realpath( __DIR__ . '/includes/helpers/taxonomies.php' );
-require_once realpath( __DIR__ . '/includes/helpers/blocks.php' );
-require_once realpath( __DIR__ . '/includes/helpers/header.php' );
-require_once realpath( __DIR__ . '/includes/helpers/frontend.php' );
-require_once realpath( __DIR__ . '/includes/helpers/localisation.php' );
-require_once realpath( __DIR__ . '/includes/helpers/post-single.php' );
-require_once realpath( __DIR__ . '/includes/helpers/metadata.php' );
-require_once realpath( __DIR__ . '/includes/helpers/media.php' );
-require_once realpath( __DIR__ . '/includes/helpers/pagination.php' );
-require_once realpath( __DIR__ . '/includes/helpers/archive.php' );
-require_once realpath( __DIR__ . '/includes/helpers/archive-chronicle-helpers.php' );
-require_once realpath( __DIR__ . '/includes/helpers/list-alignment.php' );
-require_once realpath( __DIR__ . '/includes/helpers/reading-time.php' );
-require_once realpath( __DIR__ . '/includes/helpers/page-the-chronicle-promo-helpers.php' );
+require_once realpath(__DIR__ . '/includes/helpers/query-filters.php');
+require_once realpath(__DIR__ . '/includes/helpers/category-rewrite.php');
+require_once realpath(__DIR__ . '/includes/helpers/class-classnames.php');
+require_once realpath(__DIR__ . '/includes/helpers/class-get-image-data.php');
+require_once realpath(__DIR__ . '/includes/helpers/site.php');
+require_once realpath(__DIR__ . '/includes/helpers/string-manipulation.php');
+require_once realpath(__DIR__ . '/includes/helpers/variable-types.php');
+require_once realpath(__DIR__ . '/includes/helpers/array-manipulation.php');
+require_once realpath(__DIR__ . '/includes/helpers/actions-and-filters.php');
+require_once realpath(__DIR__ . '/includes/helpers/taxonomies.php');
+require_once realpath(__DIR__ . '/includes/helpers/blocks.php');
+require_once realpath(__DIR__ . '/includes/helpers/header.php');
+require_once realpath(__DIR__ . '/includes/helpers/frontend.php');
+require_once realpath(__DIR__ . '/includes/helpers/localisation.php');
+require_once realpath(__DIR__ . '/includes/helpers/post-single.php');
+require_once realpath(__DIR__ . '/includes/helpers/metadata.php');
+require_once realpath(__DIR__ . '/includes/helpers/media.php');
+require_once realpath(__DIR__ . '/includes/helpers/pagination.php');
+require_once realpath(__DIR__ . '/includes/helpers/archive.php');
+require_once realpath(__DIR__ . '/includes/helpers/archive-chronicle-helpers.php');
+require_once realpath(__DIR__ . '/includes/helpers/list-alignment.php');
+require_once realpath(__DIR__ . '/includes/helpers/reading-time.php');
+require_once realpath(__DIR__ . '/includes/helpers/page-the-chronicle-promo-helpers.php');
 // endregion helpers
 
 /**

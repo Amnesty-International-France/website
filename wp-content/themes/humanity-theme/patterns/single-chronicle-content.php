@@ -24,13 +24,13 @@ $summary_title = get_field('summary_title');
 
 <?php
 
-if ( $is_promo_context ) {
-    $open_cover_image = get_field( 'cover_image_with_magazine_open' );
-    if ( $open_cover_image ) : ?>
+if ($is_promo_context) {
+    $open_cover_image = get_field('cover_image_with_magazine_open');
+    if ($open_cover_image) : ?>
 	<div class="chronicle-promo-container">
 		<div class="chronicle-promo__open-magazine">
 			<figure class="open-magazine">
-				<img src="<?php echo esc_url( $open_cover_image['sizes']['medium_large'] ); ?>" alt="<?php echo esc_attr( $open_cover_image['alt'] ); ?>">
+				<img src="<?php echo esc_url($open_cover_image['sizes']['medium_large']); ?>" alt="<?php echo esc_attr($open_cover_image['alt']); ?>">
 			</figure>
 		</div>
 	</div>
