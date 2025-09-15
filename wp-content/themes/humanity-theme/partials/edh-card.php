@@ -11,7 +11,7 @@
     render_chip_category_block(
         [
             'label' => esc_html(str_replace('-', ' ', $content_type)),
-            'link'  => esc_url($link),
+            'link'  => esc_url($permalink),
             'size'  => 'large',
             'style' => 'bg-yellow',
             'icon'  => $icon ?? '',
