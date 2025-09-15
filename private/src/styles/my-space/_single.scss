@@ -1,0 +1,9 @@
+.single.single-training:has(.single-training-my-space) {
+  .page-header {
+    display: none;
+  }
+
+  .single-training-my-space {
+    padding-top: 24px;
+  }
+}

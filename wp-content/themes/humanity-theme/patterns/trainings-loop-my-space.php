@@ -68,19 +68,25 @@ $query = new WP_Query($args);
       <?php if ($query->have_posts()) : ?>
         <?php while ($query->have_posts()) : $query->the_post(); ?>
           <?php
-          $block = [
-              'blockName'    => 'amnesty-core/training-card',
-              'attrs'        => ['direction' => 'portrait'],
-              'innerBlocks'  => [],
-              'innerHTML'    => '',
-              'innerContent' => [],
-          ];
-            echo render_block($block);
+            $permalink = home_url('/mon-espace/boite-a-outils/se-former/' . get_post_field('post_name', get_the_ID()) . '/');
+
+            $title            = get_the_title();
+            $thumbnail        = get_the_post_thumbnail(get_the_ID(), 'large');
+            $lieu             = get_post_meta(get_the_ID(), 'lieu', true);
+            $city             = get_post_meta(get_the_ID(), 'city', true);
+            $is_members_only  = get_post_meta(get_the_ID(), 'members_only', true);
+            $link             = '#';
+            $icon             = '';
+
+            $date_value = get_post_meta(get_the_ID(), 'date', true);
+            $formatted_date = !empty($date_value) ? date_i18n(get_option('date_format'), strtotime($date_value)) : '';
+
+            include(locate_template('partials/training-card.php'));
             ?>
         <?php endwhile; ?>
       <?php else : ?>
         <div class="wp-block-query-no-results">
-          <p>Aucun article trouvé.</p>
+          <p>Aucune formation trouvée.</p>
         </div>
       <?php endif; ?>
     </div>

@@ -107,10 +107,42 @@ add_action(
                     exit;
                 }
 
-                if (! current_user_can('administrator' || ! current_user_can('subscriber'))) {
+                $user = wp_get_current_user();
+
+                if (! in_array('administrator', (array) $user->roles) && ! in_array('subscriber', (array) $user->roles)) {
                     wp_die('⚠️ Vous n’avez pas les permissions nécessaires pour accéder à cette page.');
                 }
             }
         }
     }
 );
+
+/**
+ * Ajoute les règles de réécriture et le "flag" pour les formations "Mon Espace"
+ */
+function aif_myspace_training_rewrite_rules()
+{
+    add_filter('query_vars', function ($vars) {
+        $vars[] = 'is_my_space_training';
+        return $vars;
+    });
+
+    add_rewrite_rule(
+        '^mon-espace/boite-a-outils/se-former/([^/]+)/?$',
+        'index.php?post_type=training&name=$matches[1]&is_my_space_training=1',
+        'top'
+    );
+}
+add_action('init', 'aif_myspace_training_rewrite_rules');
+
+function aif_myspace_training_template_include($template)
+{
+    if (get_query_var('is_my_space_training') && is_singular('training')) {
+        $new_template = get_stylesheet_directory() . '/patterns/single-training-my-space.php';
+        if ('' !== $new_template) {
+            return $new_template;
+        }
+    }
+    return $template;
+}
+add_filter('template_include', 'aif_myspace_training_template_include', 99);
