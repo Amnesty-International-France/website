@@ -221,7 +221,13 @@ require_once realpath(__DIR__ . '/includes/theme-setup/keywords.php');
 require_once realpath(__DIR__ . '/includes/taxonomies/class-taxonomy-combats.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/combats.php');
 require_once realpath(__DIR__ . '/includes/taxonomies/class-taxonomy-document-types.php');
+require_once realpath(__DIR__ . '/includes/taxonomies/class-taxonomy-document-democratic-types.php');
+require_once realpath(__DIR__ . '/includes/taxonomies/class-taxonomy-document-instance-types.php');
+require_once realpath(__DIR__ . '/includes/taxonomies/class-taxonomy-document-militant-types.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/document-types.php');
+require_once realpath(__DIR__ . '/includes/theme-setup/document-democratic-types.php');
+require_once realpath(__DIR__ . '/includes/theme-setup/document-instance-types.php');
+require_once realpath(__DIR__ . '/includes/theme-setup/document-militant-types.php');
 require_once realpath(__DIR__ . '/includes/taxonomies/custom-fields/precedence.php');
 require_once realpath(__DIR__ . '/includes/taxonomies/yoast_breadcrumb_taxonomies.php');
 // endregion taxonomies
@@ -252,6 +258,11 @@ require_once realpath(__DIR__ . '/includes/salesforce/authentification.php');
 require_once realpath(__DIR__ . '/includes/salesforce/data.php');
 require_once realpath(__DIR__ . '/includes/salesforce/petition.php');
 require_once realpath(__DIR__ . '/includes/salesforce/user.php');
+
+/**
+ * Document module
+ */
+require_once realpath(__DIR__ . '/includes/document/rest_endpoint.php');
 
 /**
  * Petition module

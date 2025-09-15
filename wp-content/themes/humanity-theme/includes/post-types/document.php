@@ -125,65 +125,6 @@ add_action('acf/include_fields', function () {
                     'id' => '',
                 ],
             ],
-            [
-                'key' => 'field_49dhzhpoyv',
-                'label' => 'Vie démocratique',
-                'name' => 'vie_democratique',
-                'type' => 'select',
-                'choices' => [
-                    'assemblee_generale' => 'Assemblée générale',
-                    'conseil_administration' => "Conseil d'administration",
-                    'comite_des_candidatures' => 'Comité des candidatures',
-                    'conseil_des_finances_et_des_risques_financiers' => 'Conseil des finances et des risques financiers',
-                    'representant_des_jeunes' => 'Représentants des jeunes',
-                    'conseil_national' => 'Conseil national',
-                ],
-                'ui' => 1,
-                'required' => 0,
-                'allow_null' => 1,
-                'conditional_logic' => [
-                    [
-                        [
-                            'field' => 'field_27dmxqoc8t',
-                            'operator' => '==',
-                            'value' => '1',
-                        ],
-                    ],
-                ],
-                'wrapper' => [
-                    'width' => '',
-                    'class' => '',
-                    'id' => '',
-                ],
-            ],
-            [
-                'key' => 'field_gdomgbgri6',
-                'label' => 'Vie militante',
-                'name' => 'vie_militante',
-                'type' => 'select',
-                'choices' => [
-                    'vm1' => 'VM1',
-                    'vm2' => 'VM2',
-                    'vm3' => 'VM3',
-                ],
-                'ui' => 1,
-                'required' => 0,
-                'allow_null' => 1,
-                'conditional_logic' => [
-                    [
-                        [
-                            'field' => 'field_27dmxqoc8t',
-                            'operator' => '==',
-                            'value' => '1',
-                        ],
-                    ],
-                ],
-                'wrapper' => [
-                    'width' => '',
-                    'class' => '',
-                    'id' => '',
-                ],
-            ],
         ],
         'location' => [
             [
@@ -272,3 +213,13 @@ add_action('pre_get_posts', function ($query) {
         $query->set('meta_query', $meta_query);
     }
 });
+
+add_filter('posts_search', function ($search, $wp_query) {
+    global $wpdb;
+
+    if (!empty($wp_query->query_vars['s']) && $wp_query->get('post_type') === 'document') {
+        $search = $wpdb->prepare(" AND {$wpdb->posts}.post_title LIKE %s", '%' . $wpdb->esc_like($wp_query->query_vars['s']) . '%');
+    }
+
+    return $search;
+}, 10, 2);
