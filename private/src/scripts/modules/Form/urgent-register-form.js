@@ -152,7 +152,7 @@ const disabledSubmit = (form) => {
   return [...form.elements].some((field) => field.required && !field.value.trim());
 };
 
-export const UrgentRegister = () => {
+const urgentRegister = () => {
   const form = document.querySelector(`#urgent-register`);
 
   if (!form || !form?.elements) return;
@@ -211,6 +211,4 @@ export const UrgentRegister = () => {
   });
 };
 
-export default {
-  UrgentRegister,
-};
+export default urgentRegister;
