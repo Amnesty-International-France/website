@@ -226,12 +226,17 @@
           justify-content: left;
         }
 
+        a:hover {
+          background-color: transparent;
+        }
+
         .icon-with-text {
           width: 100px;
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 8px;
+          text-decoration: none;
 
           .container-icon {
             margin: 0 auto;
@@ -255,6 +260,12 @@
 
             &.black {
               color: var(--wp--preset--color--white);
+            }
+          }
+
+          &[href]:hover {
+            .icon-description {
+              text-decoration: underline;
             }
           }
         }

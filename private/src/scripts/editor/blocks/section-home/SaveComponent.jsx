@@ -53,21 +53,37 @@ const SaveComponent = (props) => {
           {text && <p className="text">{text}</p>}
           {icons.length > 0 && (
             <div className="icons">
-              {icons.map((iconItem, index) => (
-                <div key={index} className="icon-with-text">
-                  {iconItem.icon && (
-                    <div className="container-icon">
-                      <Icon
-                        name={iconItem.icon}
-                        colorClass={bgColor === 'black' ? 'primary' : 'black'}
-                      />
-                    </div>
-                  )}
-                  {iconItem.text && (
-                    <p className={classnames('icon-description', bgColor)}>{iconItem.text}</p>
-                  )}
-                </div>
-              ))}
+              {icons.map((iconItem, index) => {
+                const iconContent = (
+                  <>
+                    {iconItem.icon && (
+                      <div className="container-icon">
+                        <Icon
+                          name={iconItem.icon}
+                          colorClass={bgColor === 'black' ? 'primary' : 'black'}
+                        />
+                      </div>
+                    )}
+                    {iconItem.text && (
+                      <p className={classnames('icon-description', bgColor)}>{iconItem.text}</p>
+                    )}
+                  </>
+                );
+
+                if (iconItem.link) {
+                  return (
+                    <a key={index} href={iconItem.link} className="icon-with-text">
+                      {iconContent}
+                    </a>
+                  );
+                }
+
+                return (
+                  <div key={index} className="icon-with-text">
+                    {iconContent}
+                  </div>
+                );
+              })}
             </div>
           )}
           {displayButton && (

@@ -4,9 +4,91 @@ import CustomButton from '../button/Button.jsx';
 
 const { useEffect, useState } = wp.element;
 const { useBlockProps, InspectorControls, MediaUpload } = wp.blockEditor;
-const { PanelBody, SelectControl, TextControl, Button, TextareaControl, ToggleControl } =
+const { PanelBody, SelectControl, TextControl, Button, TextareaControl, ToggleControl, Spinner } =
   wp.components;
 const { __ } = wp.i18n;
+const apiFetch = wp.apiFetch;
+
+const PageSearchControl = ({ selectedPageUrl, selectedPageTitle, onChange }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!searchTerm) {
+      setResults([]);
+      return;
+    }
+
+    setLoading(true);
+    const path = `/wp/v2/pages?search=${encodeURIComponent(searchTerm)}&per_page=10`;
+
+    apiFetch({ path })
+      .then((pages) => {
+        setResults(pages);
+        setLoading(false);
+      })
+      .catch(() => {
+        setResults([]);
+        setLoading(false);
+      });
+  }, [searchTerm]);
+
+  return (
+    <div>
+      <TextControl
+        label={__('Rechercher une page', 'amnesty')}
+        value={searchTerm}
+        onChange={setSearchTerm}
+        placeholder={__('Tapez pour chercher', 'amnesty')}
+      />
+
+      {loading && <Spinner />}
+
+      {!loading && results.length > 0 && (
+        <ul
+          style={{
+            border: '1px solid #ccc',
+            padding: 5,
+            maxHeight: 150,
+            overflowY: 'auto',
+            margin: 0,
+            listStyle: 'none',
+          }}
+        >
+          {results.map((page) => (
+            <li
+              key={page.id}
+              style={{
+                cursor: 'pointer',
+                padding: '8px 10px',
+                borderBottom: '1px solid #eee',
+              }}
+              onClick={() => {
+                onChange(page.link, page.title.rendered);
+                setSearchTerm('');
+                setResults([]);
+              }}
+              dangerouslySetInnerHTML={{ __html: page.title.rendered }}
+            />
+          ))}
+        </ul>
+      )}
+
+      {selectedPageUrl && (
+        <div style={{ marginTop: '10px' }}>
+          <p style={{ margin: 0 }}>
+            {__('Page sélectionnée :', 'amnesty')}{' '}
+            <strong dangerouslySetInnerHTML={{ __html: selectedPageTitle }} />
+          </p>
+          <Button isLink isDestructive onClick={() => onChange('', '')}>
+            {__('Retirer', 'amnesty')}
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const EditComponent = (props) => {
   const { attributes, setAttributes } = props;
@@ -48,11 +130,18 @@ const EditComponent = (props) => {
 
   const addIcon = () => {
     setAttributes({
-      icons: [...icons, { icon: '', text: '' }],
+      icons: [...icons, { icon: '', text: '', link: '', linkTitle: '' }],
     });
   };
 
-  const updateIcon = (index, key, value) => {
+  const updateIconLink = (index, link, newTitle) => {
+    const newIcons = [...icons];
+    newIcons[index].link = link;
+    newIcons[index].linkTitle = newTitle;
+    setAttributes({ icons: newIcons });
+  };
+
+  const updateIconField = (index, key, value) => {
     const newIcons = [...icons];
     newIcons[index][key] = value;
     setAttributes({ icons: newIcons });
@@ -188,14 +277,21 @@ const EditComponent = (props) => {
                 label={`Icône ${index + 1}`}
                 value={iconItem.icon}
                 options={[{ label: __('Choisir une icône', 'amnesty'), value: '' }, ...iconOptions]}
-                onChange={(value) => updateIcon(index, 'icon', value)}
+                onChange={(value) => updateIconField(index, 'icon', value)}
               />
               {iconItem.icon && (
-                <TextControl
-                  label={`Texte sous l'icône ${index + 1}`}
-                  value={iconItem.text}
-                  onChange={(value) => updateIcon(index, 'text', value)}
-                />
+                <>
+                  <TextControl
+                    label={`Texte sous l'icône ${index + 1}`}
+                    value={iconItem.text}
+                    onChange={(value) => updateIconField(index, 'text', value)}
+                  />
+                  <PageSearchControl
+                    selectedPageUrl={iconItem.link}
+                    selectedPageTitle={iconItem.linkTitle}
+                    onChange={(link, newTitle) => updateIconLink(index, link, newTitle)}
+                  />
+                </>
               )}
               <Button isDestructive onClick={() => removeIcon(index)}>
                 {__('Supprimer cette icône', 'amnesty')}
@@ -275,9 +371,20 @@ const EditComponent = (props) => {
             <h2 className="title">{title}</h2>
             {text && <p className="text">{text}</p>}
             <div className="icons">
-              {icons.map((iconItem, index) => (
-                <div key={index}>{renderIconBlock(iconItem)}</div>
-              ))}
+              {icons.map((iconItem, index) => {
+                const iconBlock = renderIconBlock(iconItem);
+                if (!iconBlock) {
+                  return null;
+                }
+                if (iconItem.link) {
+                  return (
+                    <a key={index} href={iconItem.link}>
+                      {iconBlock}
+                    </a>
+                  );
+                }
+                return <div key={index}>{iconBlock}</div>;
+              })}
             </div>
             {displayButton && (
               <CustomButton
