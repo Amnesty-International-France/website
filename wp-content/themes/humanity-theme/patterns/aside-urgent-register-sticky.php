@@ -15,7 +15,7 @@ declare(strict_types=1);
 	<!-- wp:amnesty-core/urgent-register-form
 		{
 			"input": ["email"],
-			"action_type": "email",
+			"action_type": "Email",
 			"text_header": "Vous souhaitez être contacté pour participer à une action ou pour un événement organisé par Amnesty International ?"
 		}
 	/-->

@@ -48,7 +48,7 @@ function post_urgent_action(WP_REST_Request $request)
 
     $type = sanitize_text_field($request->get_param('type'));
 
-    if (! \in_array($type, [ 'email', 'sms', 'militant' ], true)) {
+    if (! \in_array($type, [ 'Email', 'Sms', 'Militant' ], true)) {
         return new WP_Error('invalid_type', 'Type not valid.', [ 'status' => 400 ]);
     }
 
