@@ -14,4 +14,9 @@
   &.hidden {
     visibility: hidden;
   }
+
+  @media (max-width: $container-md) {
+    bottom: 10px;
+    right: 10px;
+  }
 }
