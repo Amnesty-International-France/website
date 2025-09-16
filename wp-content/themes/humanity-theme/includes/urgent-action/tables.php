@@ -74,3 +74,32 @@ function insert_urgent_action($action_type, $user_id, $date, $is_sent)
 
     return $insert !== false;
 }
+
+
+function get_unsynced_actions()
+{
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'aif_urgent_action';
+
+    $sql = $wpdb->prepare(
+        "SELECT * FROM $table_name WHERE is_sent = %d",
+        [0]
+    );
+
+    return $wpdb->get_results($sql, ARRAY_A);
+}
+
+function update_ua_syncs_with_sf(string $ua_id)
+{
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'aif_urgent_action';
+
+    $sql = $wpdb->prepare(
+        "UPDATE $table_name SET is_sent = %d WHERE id = %s",
+        [1, $ua_id]
+    );
+
+    $wpdb->query($sql);
+}

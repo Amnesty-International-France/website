@@ -1,12 +1,42 @@
 <?php
 
+const URL = 'services/data/v57.0/';
+const QUERY = 'query/?q=SELECT+Salutation,FirstName,LastName,Email,Code_Postal__c,Pays__c,MobilePhone+FROM+Contact';
+
 function get_salesforce_users()
 {
-    $url = 'services/data/v57.0/query/?q=SELECT+Salutation,FirstName,LastName,Email,Code_Postal__c,Pays__c,MobilePhone+FROM+Contact';
+    $url = URL.QUERY;
     return get_salesforce_data($url);
 }
 
 function get_salesforce_users_query($query)
 {
     return get_salesforce_data($query);
+}
+
+function get_salesforce_user_with_email(string $email)
+{
+    $url = URL.QUERY."+WHERE+Email=$email";
+    return get_salesforce_data($url);
+}
+
+function post_salesforce_users(array $data)
+{
+    $post_url = URL . 'sobjects/Contact/';
+
+    return post_salesforce_data($post_url, $data);
+}
+
+function post_salesforce_activist(array $data)
+{
+    $post_url = URL . 'sobjects/Militant__c/';
+
+    return post_salesforce_data($post_url, $data);
+}
+
+function update_salesforce_users(string $user_id, array $data)
+{
+    $post_url = URL . "sobjects/Contact/Ext_ID_Contact/$user_id";
+
+    return patch_salesforce_data($post_url, $data);
 }
