@@ -113,13 +113,12 @@ add_action(
         );
     }
 );
-
 function amnesty_ua_enqueue_scripts()
 {
     $handle = 'urgent-register-form-js';
     $src    = site_url('/private/src/scripts/modules/Form/urgent-register-form.js');
 
-    wp_enqueue_script($handle, $src);
+    wp_enqueue_script($handle, $src, [], null, true); // true = dans footer
 
     $nonce_action = is_user_logged_in() ? 'wp_rest' : 'amnesty_sign_urgent_action';
 
@@ -134,3 +133,10 @@ function amnesty_ua_enqueue_scripts()
     );
 }
 add_action('wp_enqueue_scripts', 'amnesty_ua_enqueue_scripts');
+
+add_filter('script_loader_tag', function ($tag, $handle, $src) {
+    if ($handle === 'urgent-register-form-js') {
+        return '<script type="module" src="' . esc_url($src) . '"></script>';
+    }
+    return $tag;
+}, 10, 3);
