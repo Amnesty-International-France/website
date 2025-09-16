@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import CustomButton from '../button/Button.jsx';
 import Icon from '../../components/Icon.jsx';
+import IconPickerControl from '../../../admin/components/IconPickerControl.jsx';
 
 const { useEffect, useState } = wp.element;
 const { __ } = wp.i18n;
@@ -186,16 +187,6 @@ const EditComponent = (props) => {
     displayButton,
   } = attributes;
 
-  const reqSvgs = require.context('../../icons', false, /\.svg$/);
-
-  const iconOptions = reqSvgs.keys().map((filePath) => {
-    const fileName = filePath.replace('./', '').replace('.svg', '');
-    return {
-      label: fileName,
-      value: fileName,
-    };
-  });
-
   const categories = useSelect(
     (select) => select('core').getEntityRecords('taxonomy', 'category', { per_page: 100 }),
     [],
@@ -232,11 +223,10 @@ const EditComponent = (props) => {
             value={description}
             onChange={(value) => setAttributes({ description: value })}
           />
-          <SelectControl
+          <IconPickerControl
             label={__('Icône', 'amnesty')}
             value={icon}
-            options={iconOptions}
-            onChange={(value) => setAttributes({ icon: value })}
+            onChange={(newIcon) => setAttributes({ icon: newIcon })}
           />
           <ToggleControl
             label={__('Afficher le bouton', 'amnesty')}
