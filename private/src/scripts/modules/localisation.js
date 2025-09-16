@@ -363,6 +363,9 @@ export const getUserLocationFromForm = () => {
 
 document.addEventListener('click', (e) => {
   const searchContainer = document.querySelector('.event-filters-search');
+
+  if (!searchContainer) return;
+
   if (!searchContainer.contains(e.target)) {
     closeList();
   }
