@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Search partial, taxonomy filters for militants resources in my space
+ * Partial, taxonomy filters for militants resources in my space
  *
  * @package Amnesty\Partials
  */
@@ -9,7 +9,6 @@
 if ((!isset($taxonomies) || empty($taxonomies)) && (!isset($types) || empty($types))) {
     return;
 }
-
 ?>
 <div class="taxonomyArchive-filters" aria-label="<?php esc_attr_e('Filter results by topic', 'amnesty'); ?>">
     <?php foreach ($taxonomies as $tax_item) : ?>

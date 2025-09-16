@@ -13,14 +13,15 @@ $taxonomies = array_filter(
     static fn ($t) => in_array($t->name, ['document_militant_type'], true)
 );
 $form_url = home_url(add_query_arg([], $wp->request));
-
-if (empty($taxonomies)) {
-    return;
-}
 ?>
 
-<section class="postlist-categoriesContainer" data-slider>
+<section class="document-list-filters">
 	<form id="filter-form" class="news-filters" action="<?php echo esc_url($form_url); ?>">
 		<?php require locate_template('partials/forms/taxonomy-filters-militants-resources.php'); ?>
 	</form>
+	<section class="document-list-search">
+		<form method="GET" action="<?php echo esc_url($form_url); ?>">
+			<?php require locate_template('partials/forms/militants-resources-searchbar.php'); ?>
+		</form>
+	</section>
 </section>

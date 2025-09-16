@@ -126,9 +126,103 @@
 }
 
 .aif-militants-resources {
-  .wp-block-query-pagination {
-    padding: 0 !important;
-    margin: 0 !important;
+  .document-list-filters {
+    padding: 24px;
+    background-color: var(--wp--preset--color--grey-light) !important;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin-bottom: 32px;
+
+    .taxonomyArchive-filters {
+      width: auto !important;
+      align-items: normal !important;
+    }
+  }
+
+  .document-list-search {
+    display: flex;
+    justify-content: flex-end;
+
+    form {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+
+      input[type="text"] {
+        width: 200px;
+      }
+
+      button[type="submit"] {
+        background: #000;
+        padding: 12px;
+        border: none;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .document-card {
+    padding: 16px 24px;
+    background: #fff;
+    margin: 16px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    --webkit-box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .document-card-left {
+    display: flex;
+    flex-direction: column;
+
+    p {
+      margin-bottom: 12px !important;
+    }
+  }
+
+  .category {
+    width: fit-content;
+  }
+
+  .document-size {
+    font-family: var(--wp--preset--font-family--secondary), sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--wp--preset--color--grey-dark);
+  }
+
+  .document-card-right {
+    padding-right: 16px;
+  }
+
+  .search-text {
+    position: relative;
+    font-family: var(--wp--preset--font-family--secondary), sans-serif;
+
+    .search-input {
+      height: 60px;
+    }
+
+    .search-results {
+      position: absolute;
+      top: 60px;
+      width: 100%;
+
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+          background: #fff;
+          border: 1px solid #000;
+          padding: 8px 12px;
+        }
+      }
+    }
   }
 }
 
