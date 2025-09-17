@@ -58,6 +58,14 @@ registerBlockType('amnesty-core/section-home', {
             type: 'string',
             default: '',
           },
+          link: {
+            type: 'string',
+            default: '',
+          },
+          linkTitle: {
+            type: 'string',
+            default: '',
+          },
         },
       },
     },
@@ -76,6 +84,14 @@ registerBlockType('amnesty-core/section-home', {
     buttonPosition: {
       type: 'string',
       default: 'center',
+    },
+    buttonContentType: {
+      type: 'string',
+      default: '',
+    },
+    buttonLinkTitle: {
+      type: 'string',
+      default: '',
     },
   },
   edit: EditComponent,
