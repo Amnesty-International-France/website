@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import Icon from '../../components/Icon.jsx';
 import CustomButton from '../button/Button.jsx';
+import IconPickerControl from '../../../admin/components/IconPickerControl.jsx';
 
 const { useEffect, useState } = wp.element;
 const { useBlockProps, InspectorControls, MediaUpload } = wp.blockEditor;
@@ -251,12 +252,6 @@ const EditComponent = (props) => {
     });
   };
 
-  const reqSvgs = require.context('../../icons', false, /\.svg$/);
-  const iconOptions = reqSvgs.keys().map((filePath) => {
-    const fileName = filePath.replace('./', '').replace('.svg', '');
-    return { label: fileName, value: fileName };
-  });
-
   const addIcon = () => {
     setAttributes({ icons: [...icons, { icon: '', text: '', link: '', linkTitle: '' }] });
   };
@@ -353,10 +348,9 @@ const EditComponent = (props) => {
               key={index}
               style={{ border: '1px solid #eee', padding: '10px', marginBottom: '10px' }}
             >
-              <SelectControl
+              <IconPickerControl
                 label={`Icône ${index + 1}`}
                 value={iconItem.icon}
-                options={[{ label: __('Choisir une icône', 'amnesty'), value: '' }, ...iconOptions]}
                 onChange={(value) => updateIconField(index, 'icon', value)}
               />
               {iconItem.icon && (
