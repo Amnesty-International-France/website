@@ -8,6 +8,7 @@ const { PanelBody, SelectControl, TextControl, Button, TextareaControl, ToggleCo
   wp.components;
 const { __ } = wp.i18n;
 const apiFetch = wp.apiFetch;
+const { useSelect } = wp.data;
 
 const PageSearchControl = ({ selectedPageUrl, selectedPageTitle, onChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,9 +43,7 @@ const PageSearchControl = ({ selectedPageUrl, selectedPageTitle, onChange }) => 
         onChange={setSearchTerm}
         placeholder={__('Tapez pour chercher', 'amnesty')}
       />
-
       {loading && <Spinner />}
-
       {!loading && results.length > 0 && (
         <ul
           style={{
@@ -74,7 +73,6 @@ const PageSearchControl = ({ selectedPageUrl, selectedPageTitle, onChange }) => 
           ))}
         </ul>
       )}
-
       {selectedPageUrl && (
         <div style={{ marginTop: '10px' }}>
           <p style={{ margin: 0 }}>
@@ -85,6 +83,109 @@ const PageSearchControl = ({ selectedPageUrl, selectedPageTitle, onChange }) => 
             {__('Retirer', 'amnesty')}
           </Button>
         </div>
+      )}
+    </div>
+  );
+};
+
+const ContentSearchControl = ({ contentType, onChange }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const categories = useSelect(
+    (select) => select('core').getEntityRecords('taxonomy', 'category', { per_page: 100 }),
+    [],
+  );
+
+  useEffect(() => {
+    if (!searchTerm || searchTerm.length < 2 || !contentType) {
+      setResults([]);
+      return;
+    }
+    setLoading(true);
+    let path = '';
+
+    const fetchContent = (apiPath) => {
+      apiFetch({ path: apiPath })
+        .then((items) => {
+          setResults(items);
+          setLoading(false);
+        })
+        .catch(() => {
+          setResults([]);
+          setLoading(false);
+        });
+    };
+
+    switch (contentType) {
+      case 'page':
+        path = `/wp/v2/pages?search=${encodeURIComponent(searchTerm)}&per_page=10`;
+        break;
+      case 'landmark':
+      case 'training':
+      case 'edh':
+      case 'petition':
+      case 'document':
+        path = `/wp/v2/${contentType}?search=${encodeURIComponent(searchTerm)}&per_page=10`;
+        break;
+      default: {
+        const categoryObj = categories?.find((cat) => cat.slug === contentType);
+        if (categoryObj) {
+          path = `/wp/v2/posts?search=${encodeURIComponent(
+            searchTerm,
+          )}&category=${categoryObj.id}&per_page=10`;
+        }
+        break;
+      }
+    }
+
+    if (path) {
+      fetchContent(path);
+    } else {
+      setResults([]);
+      setLoading(false);
+    }
+  }, [searchTerm, contentType, categories]);
+
+  return (
+    <div style={{ marginTop: '10px' }}>
+      <TextControl
+        label={__('Rechercher un contenu', 'amnesty')}
+        value={searchTerm}
+        onChange={setSearchTerm}
+        placeholder={__('Tapez au moins 2 caractères', 'amnesty')}
+      />
+      {loading && <Spinner />}
+      {!loading && results.length > 0 && (
+        <ul
+          style={{
+            border: '1px solid #ccc',
+            padding: 5,
+            maxHeight: 150,
+            overflowY: 'auto',
+            margin: 0,
+            listStyle: 'none',
+          }}
+        >
+          {results.map((item) => (
+            <li
+              key={item.id}
+              style={{
+                cursor: 'pointer',
+                padding: '8px 10px',
+                borderBottom: '1px solid #eee',
+              }}
+              onClick={() => {
+                onChange(item.link, item.title.rendered);
+                setSearchTerm('');
+                setResults([]);
+              }}
+            >
+              <strong dangerouslySetInnerHTML={{ __html: item.title.rendered }} />
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
@@ -107,7 +208,39 @@ const EditComponent = (props) => {
     buttonLabel,
     buttonLink,
     buttonPosition,
+    buttonContentType,
+    buttonLinkTitle,
   } = attributes;
+
+  const contentTypes = useSelect((select) => {
+    const postCategories = select('core').getEntityRecords('taxonomy', 'category', {
+      per_page: 100,
+    });
+    const hardcodedCpts = [
+      { name: 'Pages', slug: 'page' },
+      { name: 'Repères', slug: 'landmark' },
+      { name: 'Formations', slug: 'training' },
+      { name: 'Ressources pédagogiques', slug: 'edh' },
+      { name: 'Pétitions', slug: 'petition' },
+      { name: 'Documents', slug: 'document' },
+    ];
+
+    if (!postCategories) {
+      return [{ label: __('Chargement', 'amnesty'), value: '' }];
+    }
+
+    const categoryOptions = postCategories
+      .filter((cat) => cat.name !== 'Non classé')
+      .map((cat) => ({ label: cat.name, value: cat.slug }));
+
+    const cptOptions = hardcodedCpts.map((cpt) => ({ label: cpt.name, value: cpt.slug }));
+
+    return [
+      { label: __('Sélectionnez un type de contenu', 'amnesty'), value: '' },
+      ...cptOptions,
+      ...categoryOptions,
+    ];
+  }, []);
 
   const onSelectImage = (media) => {
     setAttributes({
@@ -119,43 +252,32 @@ const EditComponent = (props) => {
   };
 
   const reqSvgs = require.context('../../icons', false, /\.svg$/);
-
   const iconOptions = reqSvgs.keys().map((filePath) => {
     const fileName = filePath.replace('./', '').replace('.svg', '');
-    return {
-      label: fileName,
-      value: fileName,
-    };
+    return { label: fileName, value: fileName };
   });
 
   const addIcon = () => {
-    setAttributes({
-      icons: [...icons, { icon: '', text: '', link: '', linkTitle: '' }],
-    });
+    setAttributes({ icons: [...icons, { icon: '', text: '', link: '', linkTitle: '' }] });
   };
-
   const updateIconLink = (index, link, newTitle) => {
     const newIcons = [...icons];
     newIcons[index].link = link;
     newIcons[index].linkTitle = newTitle;
     setAttributes({ icons: newIcons });
   };
-
   const updateIconField = (index, key, value) => {
     const newIcons = [...icons];
     newIcons[index][key] = value;
     setAttributes({ icons: newIcons });
   };
-
   const removeIcon = (index) => {
     const newIcons = icons.filter((_, i) => i !== index);
     setAttributes({ icons: newIcons });
   };
 
   const renderIconBlock = (iconItem) => {
-    if (!iconItem.icon) {
-      return null;
-    }
+    if (!iconItem.icon) return null;
     return (
       <div className="icon-with-text">
         <div className="container-icon">
@@ -167,48 +289,6 @@ const EditComponent = (props) => {
       </div>
     );
   };
-
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/wp-json/wp/v2/posts')
-      .then((response) => response.json())
-      .then((data) => {
-        setPosts(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Erreur de récupération des posts', error);
-        setLoading(false);
-      });
-  }, []);
-
-  const handlePostSelect = (selectedLink) => {
-    setAttributes({
-      buttonLink: selectedLink,
-    });
-  };
-
-  const selectedPost = posts.find((post) => post.link === buttonLink);
-
-  const postOptions = [
-    { label: __('Choisir un post', 'amnesty'), value: '' },
-    ...(selectedPost
-      ? [
-          {
-            label: selectedPost.title.rendered,
-            value: selectedPost.link,
-          },
-        ]
-      : []),
-    ...posts
-      .filter((post) => post.link !== buttonLink)
-      .map((post) => ({
-        label: post.title.rendered,
-        value: post.link,
-      })),
-  ];
 
   return (
     <>
@@ -250,7 +330,7 @@ const EditComponent = (props) => {
                   <Button onClick={open} isSecondary>
                     {mediaId
                       ? __('Changer la photo', 'amnesty')
-                      : __('Ajouter une photo', 'amnesty')}
+                      : __('Ajouter une photo', 'amnesty')}{' '}
                   </Button>
                 )}
               />
@@ -294,13 +374,13 @@ const EditComponent = (props) => {
                 </>
               )}
               <Button isDestructive onClick={() => removeIcon(index)}>
-                {__('Supprimer cette icône', 'amnesty')}
+                {__('Supprimer cette icône', 'amnesty')}{' '}
               </Button>
             </div>
           ))}
           {icons.length < 4 && (
             <Button isPrimary onClick={addIcon}>
-              {__('Ajouter une icône', 'amnesty')}
+              {__('Ajouter une icône', 'amnesty')}{' '}
             </Button>
           )}
         </PanelBody>
@@ -318,15 +398,40 @@ const EditComponent = (props) => {
                 value={buttonLabel}
                 onChange={(value) => setAttributes({ buttonLabel: value })}
               />
-              {loading ? (
-                <p>{__('Chargement des posts', 'amnesty')}</p>
-              ) : (
-                <SelectControl
-                  label={__('Lien du bouton', 'amnesty')}
-                  value={buttonLink || ''}
-                  options={postOptions}
-                  onChange={handlePostSelect}
+              <SelectControl
+                label={__('Type de contenu pour le lien', 'amnesty')}
+                value={buttonContentType}
+                options={contentTypes}
+                onChange={(value) => {
+                  setAttributes({
+                    buttonContentType: value,
+                    buttonLink: '',
+                    buttonLinkTitle: '',
+                  });
+                }}
+              />
+              {buttonContentType && (
+                <ContentSearchControl
+                  contentType={buttonContentType}
+                  onChange={(link, newTitle) => {
+                    setAttributes({ buttonLink: link, buttonLinkTitle: newTitle });
+                  }}
                 />
+              )}
+              {buttonLink && buttonLinkTitle && (
+                <div style={{ marginTop: '10px', borderTop: '1px solid #eee', paddingTop: '10px' }}>
+                  <p style={{ margin: 0 }}>
+                    {__('Lien sélectionné :', 'amnesty')}{' '}
+                    <strong dangerouslySetInnerHTML={{ __html: buttonLinkTitle }} />
+                  </p>
+                  <Button
+                    isLink
+                    isDestructive
+                    onClick={() => setAttributes({ buttonLink: '', buttonLinkTitle: '' })}
+                  >
+                    {__('Retirer', 'amnesty')}
+                  </Button>
+                </div>
               )}
               <SelectControl
                 label={__('Position du bouton', 'amnesty')}
@@ -361,7 +466,7 @@ const EditComponent = (props) => {
                 />
                 {(mediaCaption || mediaDescription) && (
                   <p className="section-media-caption-description">
-                    {`${mediaCaption} /`} {mediaDescription}
+                    {`${mediaCaption} /`} {mediaDescription}{' '}
                   </p>
                 )}
               </div>
@@ -373,16 +478,13 @@ const EditComponent = (props) => {
             <div className="icons">
               {icons.map((iconItem, index) => {
                 const iconBlock = renderIconBlock(iconItem);
-                if (!iconBlock) {
-                  return null;
-                }
-                if (iconItem.link) {
+                if (!iconBlock) return null;
+                if (iconItem.link)
                   return (
                     <a key={index} href={iconItem.link}>
                       {iconBlock}
                     </a>
                   );
-                }
                 return <div key={index}>{iconBlock}</div>;
               })}
             </div>
