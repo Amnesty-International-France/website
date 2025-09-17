@@ -688,7 +688,7 @@ function target_link_card_edh($block_content, $block)
 
 add_filter('render_block', 'target_link_card_edh', 10, 2);
 
-function disabled_support_edh_field($hook)
+/*function disabled_support_edh_field($hook)
 {
     global $post_type;
 
@@ -715,4 +715,4 @@ function disabled_support_edh_field($hook)
     );
 }
 
-add_action('admin_enqueue_scripts', 'disabled_support_edh_field');
+add_action('admin_enqueue_scripts', 'disabled_support_edh_field');*/
