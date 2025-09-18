@@ -26,7 +26,7 @@ class Search_Filters
         add_filter('wpseo_title', [ $this, 'title_tag' ]);
         add_filter('amnesty_search_results_title', [ $this, 'results_title' ], 10, 3);
         add_filter('amnesty_archive_filter_query_var_value', [ $this, 'change_month_labels' ], 10, 2);
-		add_filter( 'posts_search', [ $this, 'search_by_title_only'], 500, 2 );
+        add_filter('posts_search', [ $this, 'search_by_title_only'], 500, 2);
     }
 
     /**
@@ -309,31 +309,34 @@ class Search_Filters
         );
     }
 
-	public function search_by_title_only( $search, $wp_query ) {
-		global $wpdb;
+    public function search_by_title_only($search, $wp_query)
+    {
+        global $wpdb;
 
-		if ( empty( $search ) )
-			return $search;
+        if (empty($search)) {
+            return $search;
+        }
 
-		$q = $wp_query->query_vars;
-		$n = ! empty( $q['exact'] ) ? '' : '%';
+        $q = $wp_query->query_vars;
+        $n = ! empty($q['exact']) ? '' : '%';
 
-		$search =
-		$searchand = '';
+        $search =
+        $searchand = '';
 
-		foreach ( (array) $q['search_terms'] as $term ) {
-			$term = esc_sql( $wpdb->esc_like( $term ) );
-			$search .= "{$searchand}($wpdb->posts.post_title LIKE '{$n}{$term}{$n}')";
-			$searchand = ' AND ';
-		}
+        foreach ((array) $q['search_terms'] as $term) {
+            $term = esc_sql($wpdb->esc_like($term));
+            $search .= "{$searchand}($wpdb->posts.post_title LIKE '{$n}{$term}{$n}')";
+            $searchand = ' AND ';
+        }
 
-		if ( ! empty( $search ) ) {
-			$search = " AND ({$search}) ";
-			if ( ! is_user_logged_in() )
-				$search .= " AND ($wpdb->posts.post_password = '') ";
-		}
+        if (! empty($search)) {
+            $search = " AND ({$search}) ";
+            if (! is_user_logged_in()) {
+                $search .= " AND ($wpdb->posts.post_password = '') ";
+            }
+        }
 
-		return $search;
-	}
+        return $search;
+    }
 
 }
