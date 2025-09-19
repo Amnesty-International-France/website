@@ -21,7 +21,6 @@ import categorySlider from './modules/category-slider';
 import copyShare from './modules/copy-share';
 import counters from './modules/counter';
 import termList from './modules/term-list';
-import countdownTimer from './modules/countdownTimer';
 import tabbedNav from './modules/tabbed-nav';
 import browserDetector from './modules/browser-detector';
 import iframeButton from './modules/iframe-button';
@@ -70,7 +69,6 @@ const App = () => {
   copyShare();
   counters();
   termList();
-  countdownTimer();
   tabbedNav();
   loadVideos();
   iframeButton();

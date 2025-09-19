@@ -9,7 +9,6 @@ const { __ } = wp.i18n;
 const ALLOWED_BLOCKS = applyFilters('amnesty.blocks.collapsable.allowedBlocks', [
   'amnesty-core/block-download',
   'amnesty-core/block-section',
-  'amnesty-core/countdown-timer',
   'amnesty-core/counter',
   'amnesty-core/custom-card',
   'amnesty-core/embed-flourish',
