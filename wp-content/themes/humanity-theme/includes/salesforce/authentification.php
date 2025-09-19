@@ -16,7 +16,6 @@ function get_salesforce_access_token()
     return refresh_salesforce_token();
 }
 
-
 function refresh_salesforce_token()
 {
     $client_id = getenv('AIF_SALESFORCE_CLIENT_ID');

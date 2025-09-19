@@ -73,6 +73,26 @@ function get_local_user($email)
     return $user;
 }
 
+function get_local_user_by_id($id)
+{
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'aif_users';
+
+    $sql = $wpdb->prepare(
+        'SELECT * FROM %i WHERE id = %d',
+        $table_name,
+        $id
+    );
+
+    $user = $wpdb->get_row($sql);
+
+    if (is_null($user)) {
+        return false;
+    }
+
+    return $user;
+}
+
 function insert_user($civility, $firstname, $lastname, $email, $country, $postal_code, $phone): int|false
 {
     global $wpdb;
