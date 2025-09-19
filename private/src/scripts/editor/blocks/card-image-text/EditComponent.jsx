@@ -485,7 +485,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
       <div {...blockProps} className={classnames('card-image-text-block', direction)}>
         <p className="card-image-text-category">{category}</p>
         <div className="card-content-wrapper">
-          <a {...linkProps}>
+          <div {...linkProps}>
             <div className="card-image-text-thumbnail-wrapper">
               {selectedMedia && (
                 <img className="card-image-text-thumbnail" src={selectedMedia.source_url} alt="" />
@@ -518,7 +518,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                 </div>
               </div>
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </>
