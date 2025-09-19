@@ -16,7 +16,10 @@ function get_salesforce_users_query($query)
 
 function get_salesforce_user_with_email(string $email)
 {
-    $url = URL.QUERY."+WHERE+Email=$email";
+	$good_format_email_for_query = "'" . addslashes($email) . "'";
+	$encoded = urlencode($good_format_email_for_query);
+
+    $url = URL.QUERY."+WHERE+Email=$encoded";
     return get_salesforce_data($url);
 }
 
