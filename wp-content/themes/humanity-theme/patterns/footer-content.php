@@ -78,10 +78,12 @@ $action_links = [
 		<div class="over-footer-social">
 			<h2 class="title">Rester informé·e</h2>
 			<span class="subtitle">Abonnez-vous à notre newsletter hebdo.</span>
-			<a href="#" class="register">
-				<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
-				JE M’INSCRIS
-			</a>
+			<div class="nl-container">
+				<input type="text" name="newsletter" id="newsletter" placeholder="Abonnez-vous à notre newsletter hebdo.">
+				<a href="<?php echo esc_url( site_url('/newsletter') ); ?>" class="register-nl">
+					<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
+				</a>
+			</div>
 			<div class="social-network">
 				<?php foreach ($social_links as $child) : ?>
 					<a href="<?php echo $child['url']; ?>"
