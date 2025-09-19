@@ -38,7 +38,7 @@ class Sync_Register_Command
             $user_from_sf = get_salesforce_user_with_email($user->email);
             $user_exist_on_sf = $user_from_sf['totalSize'] > 0;
 
-			if (false ===$user_exist_on_sf) {
+            if (false === $user_exist_on_sf) {
                 switch ($item['type']) {
                     case 'Sms':
                         $optins['Origine__c'] = getenv('AIF_SALESFORCE_CODES_AUWEBAPP');
@@ -71,16 +71,16 @@ class Sync_Register_Command
             }
 
             if ($user_exist_on_sf) {
-                $sfUser = $user_from_sf[0];
+                $sfUser = $user_from_sf['records'][0];
 
                 $data_user_sf = [
-                    'ID'    => $sfUser->id,
+                    'ID'    => $sfUser['Id'],
                     'Email' => $user->email,
                     ...$optins,
                     ...$codeModifications,
                 ];
 
-                update_salesforce_users($sfUser->id, $data_user_sf);
+                update_salesforce_users($sfUser['Id'], $data_user_sf);
                 WP_CLI::success('[ REGISTER UA SYNC ] - User updated on Salesforce');
             }
 
