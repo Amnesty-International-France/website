@@ -1,7 +1,7 @@
 <?php
 
 const URL = 'services/data/v57.0/';
-const QUERY = 'query/?q=SELECT+Salutation,FirstName,LastName,Email,Code_Postal__c,Pays__c,MobilePhone+FROM+Contact';
+const QUERY = 'query/?q=SELECT+Id,Salutation,FirstName,LastName,Email,Code_Postal__c,Pays__c,MobilePhone+FROM+Contact';
 
 function get_salesforce_users()
 {
@@ -16,8 +16,8 @@ function get_salesforce_users_query($query)
 
 function get_salesforce_user_with_email(string $email)
 {
-	$good_format_email_for_query = "'" . addslashes($email) . "'";
-	$encoded = urlencode($good_format_email_for_query);
+    $good_format_email_for_query = "'" . addslashes($email) . "'";
+    $encoded = urlencode($good_format_email_for_query);
 
     $url = URL.QUERY."+WHERE+Email=$encoded";
     return get_salesforce_data($url);
