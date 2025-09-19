@@ -65,68 +65,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     }
 
 }
+
+$image_url = get_template_directory_uri() . '/assets/images/login-background.png';
 ?>
 
 <?php get_header(); ?>
 
-<main class="aif-container--main">
-    <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-        <h1 class="aif-mb1w">Mon espace</h1>
-    </header>
-    <div class="aif-container--form">
-        <h2> Je me connecte </h2>
-        <section>
-            <h3 class="aif-sr-only"> Formulaire de connexion </h3>
+<main class="aif-login-page">
+    <div class="login-form-container">
+        <div class="login-form-header">
+            <span class="login-form-title">Mon espace</span>
+            <div class="login-form-logo">
+                <?php
+                if (function_exists('amnesty_logo')) {
+                    amnesty_logo();
+                }
+?>
+            </div>
+        </div>
+        <div class="login-form">
+            <h3 class="login-title">Connexion</h3>
             <form class="aif-form-container" role="form" method="POST" action="">
-            <?php wp_nonce_field('login_form', 'login_nonce'); ?>
-                <label for="email">Votre adresse email (obligatoire)</label>
-                <input placeholder="adresse@mail.fr"
-                    value="<?= $email ? $email : '' ?>"
-                    class="aif-input" type="email" name="email" id="email" autocomplete="email" required="true">
+                <?php wp_nonce_field('login_form', 'login_nonce'); ?>
+                <label for="email" class="sr-only">Votre adresse email (obligatoire)</label>
+                <input placeholder="Email"
+                    value="<?= $email ? $email : '' ?>" class="aif-input" type="email" name="email" id="email" autocomplete="email" required="true">
                 <div class="aif-password-container">
-                    <label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
+                    <label class="aif-password-container__label sr-only" for="password">Votre mot de passe (obligatoire)</label>
                     <div class="aif-password-container__input-wrapper">
                         <input placeholder="Mot de passe" class="aif-password-container__input aif-input"
                             name="password" aria-describedby="passwordHelp passphraseRequirements" type="password"
                             id="password" autocomplete="new-password" required aria-required="true"
                             oninput="checkPassphraseStrength()">
-                        <button class="aif-password-container__button" type="button" id="toggle-password"
-                            data-target="password" aria-label="Afficher ou masquer le mot de passe">
-                            Afficher
-                        </button>
-                    </div>
+                    </div>  
                     <?php
-                    if (!empty($error_message)) {
-                        aif_include_partial('alert', [
-                            'state' => 'error',
-                            'title' => $title,
-                            'content' => $error_message]);
+    if (!empty($error_message)) {
+        aif_include_partial('alert', [
+            'state' => 'error',
+            'title' => $title,
+            'content' => $error_message]);
 
-                    };
+    };
 ?>
-                    <div class="aif-flex aif-justify-end">
-                        <div>
-                        <a class="aif-link--primary aif-mt1w aif-block"
-                                href="<?= get_permalink(get_page_by_path('mot-de-passe-oublie')) ?>">
-                                Mot de passe oublié ? </a>
-                        <a class="aif-link--primary aif-mt05w aif-block"
-                                href="<?= get_permalink(get_page_by_path('foire-aux-questions')) ?>">
-                                Un problème de connexion ? </a>
-                        </div>
+                </div>
+                <div class="aif-flex aif-justify-end">
+                    <div>
+                        <a class="aif-link--primary aif-block"
+                            href="<?= get_permalink(get_page_by_path('mot-de-passe-oublie')) ?>">
+                            Mot de passe oublié ? 
+                        </a>
+                        <a class="aif-link--primary aif-block"
+                            href="<?= get_permalink(get_page_by_path('foire-aux-questions')) ?>">
+                            Un problème de connexion ?
+                        </a>
                     </div>
-                    <button class="btn aif-mt1w aif-button--full" type="submit">Se connecter</button>
+                </div>
+                <div class="custom-button-block center">
+                    <button type="submit" class="custom-button">
+                        <div class='content bg-yellow medium'>
+                            <div class="icon-container">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                </svg>
+                            </div>
+                            <div class="button-label">Se connecter</div>
+                        </div>
+                    </button>
+                </div>
             </form>
-        </section>
-
-        <section class="aif-mt1w aif-mb1w">
-            <h3>Première connexion ?</h3>
-            <p> La création de votre espace n’est pas automatique lorsque vous faites un don.Si vous n’avez
-                jamais
-                créé votre espace, merci de cliquer sur “Créer votre compte”. </p>
-            <a href="<?=  get_permalink(get_page_by_path('creer-votre-compte')) ?>"
-                class="btn aif-button--full btn--white">Créer
-                votre compte</a>
-        </section>
+            <div class="no-account-section">
+                <span class="first-connection">Première connexion ?</span>
+                <p class="description">La création de votre espace n’est pas automatique lorsque vous faites un don. Si vous n’avez jamais créé votre espace, merci de cliquer sur “Créer votre compte”.</p>
+                <a href="<?=  get_permalink(get_page_by_path('creer-votre-compte')) ?>"class="aif-link--primary create-account aif-block">Créer votre compte</a>
+            </div>
+        </div>
+        <div class="login-form-decorative-image"></div>
     </div>
 </main>
 
