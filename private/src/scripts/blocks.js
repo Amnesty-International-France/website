@@ -26,7 +26,6 @@ import './editor/blocks/carousel/index.jsx';
 import './editor/blocks/chapo/index.jsx';
 import './editor/blocks/content-callout/index.jsx';
 import './editor/blocks/core-mods';
-import './editor/blocks/countdown-timer/index.jsx';
 import './editor/blocks/download/index.jsx';
 import './editor/blocks/embed-flourish/index.jsx';
 import './editor/blocks/embed-infogram/index.jsx';
