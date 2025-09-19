@@ -196,6 +196,7 @@ require_once realpath(__DIR__ . '/includes/block-patterns/exclude-page-content-p
 // region post types
 require_once realpath(__DIR__ . '/includes/post-types/post-type-helpers.php');
 require_once realpath(__DIR__ . '/includes/post-types/abstract-class-post-type.php');
+require_once realpath(__DIR__ . '/includes/post-types/actualities.php');
 require_once realpath(__DIR__ . '/includes/post-types/pop-in.php');
 require_once realpath(__DIR__ . '/includes/post-types/sidebar.php');
 require_once realpath(__DIR__ . '/includes/post-types/countries.php');

@@ -6,6 +6,8 @@
  * Inserter: no
  */
 
+$GLOBALS['is_my_space_actualites_loop'] = true;
+
 $cat = get_category_by_slug('actualites');
 $cat_id = $cat ? $cat->term_id : 0;
 
@@ -88,5 +90,7 @@ if ($pagination) {
 }
 
 wp_reset_postdata();
+
+unset($GLOBALS['is_my_space_actualites_loop']);
 ?>
 </div>
