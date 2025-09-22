@@ -49,7 +49,7 @@ add_action('init', function () {
         'show_in_menu' => true,
         'has_archive' => false,
         'rewrite' => [
-            'slug' => 'chronique',
+            'slug' => 'chronique/archives',
             'with_front' => false,
         ],
     ]);
