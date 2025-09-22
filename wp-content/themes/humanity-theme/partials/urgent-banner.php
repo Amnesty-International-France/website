@@ -65,8 +65,10 @@ if ($last_post->have_posts()) :
         ?>
 						</div>
 						<div class="body">
-							<h1 class="title"> <?php echo esc_html(get_the_title($last_post->post->ID)); ?></h1>
-							<p class="content"><?php echo wp_kses_post(get_the_content(null, false, $last_post->post->ID)); ?></p>
+                            <div class="content-wrapper">
+                                <h1 class="title"> <?php echo esc_html(get_the_title($last_post->post->ID)); ?></h1>
+                                <p class="content"><?php the_field('popin_content'); ?></p>
+                            </div>
 							<a class="cta"
 								href="<?php echo esc_url($link_action_popin); ?>"
 								target="_blank"
@@ -75,6 +77,7 @@ if ($last_post->have_posts()) :
 								<?php echo esc_html($button_text); ?>
 							</a>
 						</div>
+                        
 					</div>
 				</div>
 			</div>

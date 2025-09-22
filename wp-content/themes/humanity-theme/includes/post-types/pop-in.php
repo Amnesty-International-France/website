@@ -79,7 +79,7 @@ if (! function_exists('amnesty_create_popin_posttype')) {
             /* translators: [admin] */
             'description'         => __('A Pop-in is a call to action which renders at the very top of a page, pushing the entire page content down.', 'amnesty'),
             'labels'              => $labels,
-            'supports'            => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
+            'supports'            => [ 'title', 'thumbnail', 'custom-fields' ],
             'hierarchical'        => false,
             'public'              => false,
             'show_ui'             => true,
@@ -116,3 +116,55 @@ if (! function_exists('amnesty_create_popin_posttype')) {
 }
 
 add_action('init', 'amnesty_create_popin_posttype', 0);
+
+add_action('acf/include_fields', function () {
+    if (! function_exists('acf_add_local_field_group')) {
+        return;
+    }
+
+    acf_add_local_field_group([
+        'key' => 'group_68d14b0b41eba',
+        'title' => 'Contenu Pop-in',
+        'fields' => [
+            [
+                'key' => 'field_68d14b0b0baa2',
+                'label' => 'Contenu Pop-in',
+                'name' => 'popin_content',
+                'aria-label' => '',
+                'type' => 'text',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => [
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ],
+                'default_value' => '',
+                'maxlength' => '',
+                'allow_in_bindings' => 0,
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+            ],
+        ],
+        'location' => [
+            [
+                [
+                    'param' => 'post_type',
+                    'operator' => '==',
+                    'value' => 'pop-in',
+                ],
+            ],
+        ],
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+        'show_in_rest' => 0,
+    ]);
+});
