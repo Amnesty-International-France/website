@@ -139,6 +139,7 @@
   &.page-hero-block--large {
     .page-hero-title-wrapper {
       top: 22%;
+      z-index: 10;
 
       .container {
         .page-hero-title {
