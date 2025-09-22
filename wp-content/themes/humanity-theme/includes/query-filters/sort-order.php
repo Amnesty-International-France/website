@@ -73,7 +73,7 @@ if (! function_exists('amnesty_sort_posts_in_main_query')) {
      */
     function amnesty_sort_posts_in_main_query($query)
     {
-        if (is_admin() || ! $query->is_main_query()) {
+        if (! $query->is_main_query()) {
             return;
         }
 
@@ -95,5 +95,6 @@ if (! function_exists('amnesty_sort_posts_in_main_query')) {
         $query->set('orderby', $orderby);
     }
 }
-
-add_action('pre_get_posts', 'amnesty_sort_posts_in_main_query');
+if (!is_admin()) {
+    add_action('pre_get_posts', 'amnesty_sort_posts_in_main_query');
+}

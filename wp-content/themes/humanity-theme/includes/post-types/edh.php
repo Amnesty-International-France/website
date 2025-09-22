@@ -122,7 +122,7 @@ add_filter('use_block_editor_for_post_type', 'use_block_editor', 10, 2);
 
 function edh_filters($query)
 {
-    if (is_admin() || ! $query->is_main_query() || ! is_post_type_archive('edh')) {
+    if (! $query->is_main_query() || ! is_post_type_archive('edh')) {
         return;
     }
 
@@ -173,8 +173,9 @@ function edh_filters($query)
         $query->set('meta_query', $meta_query);
     }
 }
-
-add_action('pre_get_posts', 'edh_filters');
+if (!is_admin()) {
+    add_action('pre_get_posts', 'edh_filters');
+}
 
 function support_edh_default_value($value, $post_id, $field)
 {
@@ -653,7 +654,7 @@ add_filter(
 
 function pre_get_edh_posts($query)
 {
-    if (! is_admin() || ! $query->is_main_query()) {
+    if (! $query->is_main_query()) {
         return;
     }
 
@@ -662,8 +663,9 @@ function pre_get_edh_posts($query)
         $query->set('orderby', 'meta_value');
     }
 }
-
-add_action('pre_get_posts', 'pre_get_edh_posts');
+if (is_admin()) {
+    add_action('pre_get_posts', 'pre_get_edh_posts');
+}
 
 function target_link_card_edh($block_content, $block)
 {

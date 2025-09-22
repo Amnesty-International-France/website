@@ -42,7 +42,7 @@ add_action('init', 'amnesty_register_trainings_cpt');
  */
 function my_project_training_filters($query)
 {
-    if (is_admin() || ! $query->is_main_query() || ! is_post_type_archive('training')) {
+    if (! $query->is_main_query() || ! is_post_type_archive('training')) {
         return;
     }
 
@@ -91,7 +91,9 @@ function my_project_training_filters($query)
         $query->set('meta_query', $meta_query);
     }
 }
-add_action('pre_get_posts', 'my_project_training_filters');
+if (!is_admin()) {
+    add_action('pre_get_posts', 'my_project_training_filters');
+}
 
 add_action(
     'template_redirect',
