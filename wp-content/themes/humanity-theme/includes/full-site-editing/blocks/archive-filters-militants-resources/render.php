@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 if (! function_exists('render_archive_filters_militants_resources_block')) {
     /**
-     * Render the archive filters actualities block
+     * Render the archive filters militants resources block
      *
      * @return string
      */
