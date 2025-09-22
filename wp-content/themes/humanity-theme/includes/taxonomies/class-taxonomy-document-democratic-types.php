@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 
 use Amnesty\Taxonomy;
-use WP_Term;
 
 new Taxonomy_Document_Democratic_Types();
 
