@@ -19,6 +19,18 @@ if (!function_exists('register_button_block')) {
                     'type' => 'number',
                     'default' => 0,
                 ],
+                'postType' => [
+                    'type' => 'string',
+                    'default' => '',
+                ],
+                'internalUrl' => [
+                    'type' => 'string',
+                    'default' => '',
+                ],
+                'internalUrlTitle' => [
+                    'type' => 'string',
+                    'default' => '',
+                ],
                 'label' => [
                     'type' => 'string',
                     'default' => 'Bouton',
@@ -49,7 +61,7 @@ if (!function_exists('register_button_block')) {
                 ],
                 'targetBlank' => [
                     'type' => 'boolean',
-                    'default' => true,
+                    'default' => false,
                 ],
                 'alignment' => [
                     'type' => 'string',

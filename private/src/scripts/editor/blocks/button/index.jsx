@@ -12,6 +12,18 @@ registerBlockType('amnesty-core/button', {
       type: 'number',
       default: 0,
     },
+    postType: {
+      type: 'string',
+      default: '',
+    },
+    internalUrl: {
+      type: 'string',
+      default: '',
+    },
+    internalUrlTitle: {
+      type: 'string',
+      default: '',
+    },
     label: {
       type: 'string',
       default: 'Bouton',
@@ -39,6 +51,10 @@ registerBlockType('amnesty-core/button', {
     externalUrl: {
       type: 'string',
       default: '',
+    },
+    targetBlank: {
+      type: 'boolean',
+      default: false,
     },
   },
   edit: EditComponent,

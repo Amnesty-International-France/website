@@ -11,26 +11,29 @@ declare(strict_types=1);
  */
 function render_button_block(array $attributes): string
 {
-    $postId      = $attributes['postId'] ?? 0;
     $label       = $attributes['label'] ?? 'Bouton';
     $size        = $attributes['size'] ?? 'medium';
     $style       = $attributes['style'] ?? 'bg-yellow';
     $icon        = $attributes['icon'] ?? '';
-    $externalUrl = $attributes['externalUrl'] ?? '';
-    $linkType    = $attributes['linkType'] ?? 'internal';
-    $link		 = $attributes['link'] ?? '';
-    $target		 = $attributes['targetBlank'] ?? true;
     $alignment   = $attributes['alignment'] ?? 'left';
+    $linkType    = $attributes['linkType'] ?? 'internal';
+    $externalUrl = $attributes['externalUrl'] ?? '';
+    $internalUrl = $attributes['internalUrl'] ?? '';
+    $postId      = $attributes['postId'] ?? 0;
+    $target      = $attributes['targetBlank'] ?? false;
 
-    if ($linkType === 'external') {
+    $href = '#';
+    if ($linkType === 'external' && !empty($externalUrl)) {
         $href = $externalUrl;
-    } elseif ($linkType === 'internal' && $postId) {
-        $post = get_post($postId);
-        $href = $post ? get_permalink($post) : '#';
-    } elseif ($link) {
-        $href = $link;
-    } else {
-        $href = '#';
+    } elseif ($linkType === 'internal') {
+        if (!empty($internalUrl)) {
+            $href = $internalUrl;
+        } elseif ($postId > 0) {
+            $permalink = get_permalink($postId);
+            if ($permalink) {
+                $href = $permalink;
+            }
+        }
     }
 
     $iconHtml = '';
