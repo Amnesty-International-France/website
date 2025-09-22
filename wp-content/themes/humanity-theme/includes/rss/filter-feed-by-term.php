@@ -38,7 +38,7 @@ if (! function_exists('amnesty_add_taxonomy_filters_to_rss')) {
      */
     function amnesty_add_taxonomy_filters_to_rss(WP_Query $query): void
     {
-        if (is_admin() || ! $query->is_main_query() || ! $query->is_feed()) {
+        if (! $query->is_main_query() || ! $query->is_feed()) {
             return;
         }
 
@@ -71,4 +71,6 @@ if (! function_exists('amnesty_add_taxonomy_filters_to_rss')) {
     }
 }
 
-add_action('pre_get_posts', 'amnesty_add_taxonomy_filters_to_rss');
+if (!is_admin()) {
+    add_action('pre_get_posts', 'amnesty_add_taxonomy_filters_to_rss');
+}

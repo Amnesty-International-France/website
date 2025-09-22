@@ -50,7 +50,9 @@ if (! function_exists('amnesty_prevent_sticky_posts_counting')) {
     }
 }
 
-add_action('pre_get_posts', 'amnesty_prevent_sticky_posts_counting');
+if (!is_admin()) {
+    add_action('pre_get_posts', 'amnesty_prevent_sticky_posts_counting');
+}
 
 if (! function_exists('amnesty_prepend_sticky_posts')) {
     /**

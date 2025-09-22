@@ -2,7 +2,7 @@
 
 function amnesty_filter_cpt_by_multiple_taxonomies(WP_Query $query)
 {
-    if (is_admin() || ! $query->is_main_query()) {
+    if (! $query->is_main_query()) {
         return;
     }
 
@@ -41,4 +41,6 @@ function amnesty_filter_cpt_by_multiple_taxonomies(WP_Query $query)
     }
 }
 
-add_action('pre_get_posts', 'amnesty_filter_cpt_by_multiple_taxonomies');
+if (! is_admin()) {
+    add_action('pre_get_posts', 'amnesty_filter_cpt_by_multiple_taxonomies');
+}

@@ -53,11 +53,13 @@ require_once realpath(__DIR__ . '/includes/helpers/page-the-chronicle-promo-help
 // Modifie le nombre d'articles affichés sur les archives
 function amnesty_set_posts_per_page_for_archive($query)
 {
-    if (! is_admin() && $query->is_main_query() && is_archive()) {
+    if ($query->is_main_query() && is_archive()) {
         $query->set('posts_per_page', 18);
     }
 }
-add_action('pre_get_posts', 'amnesty_set_posts_per_page_for_archive');
+if (! is_admin()) {
+    add_action('pre_get_posts', 'amnesty_set_posts_per_page_for_archive');
+}
 // endregion query-filters
 
 /**

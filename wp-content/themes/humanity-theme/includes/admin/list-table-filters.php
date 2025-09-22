@@ -97,7 +97,7 @@ if (! function_exists('amnesty_list_table_search')) {
      */
     function amnesty_list_table_search(WP_Query $query): void
     {
-        if (! is_admin() || ! $query->is_main_query()) {
+        if (! $query->is_main_query()) {
             return;
         }
 
@@ -120,4 +120,6 @@ if (! function_exists('amnesty_list_table_search')) {
     }
 }
 
-add_action('pre_get_posts', 'amnesty_list_table_search');
+if (is_admin()) {
+    add_action('pre_get_posts', 'amnesty_list_table_search');
+}

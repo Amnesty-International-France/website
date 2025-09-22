@@ -25,7 +25,7 @@ if (! function_exists('amnesty_limit_location_taxonomy_archive_posts_per_page'))
     function amnesty_limit_location_taxonomy_archive_posts_per_page(WP_Query $query): void
     {
         // only target main query on front end
-        if (is_admin() || ! $query->is_main_query()) {
+        if (! $query->is_main_query()) {
             return;
         }
 
@@ -71,4 +71,6 @@ if (! function_exists('amnesty_limit_location_taxonomy_archive_posts_per_page'))
     }
 }
 
-add_action('pre_get_posts', 'amnesty_limit_location_taxonomy_archive_posts_per_page');
+if (!is_admin()) {
+    add_action('pre_get_posts', 'amnesty_limit_location_taxonomy_archive_posts_per_page');
+}

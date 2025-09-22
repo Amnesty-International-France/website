@@ -188,7 +188,7 @@ function amnesty_get_featured_landmarks()
 // Exclude featured landmarks from the main query on the archive page
 function amnesty_exclude_featured_landmarks($query)
 {
-    if (!is_admin() && $query->is_main_query() && is_post_type_archive('landmark')) {
+    if ($query->is_main_query() && is_post_type_archive('landmark')) {
         $featured_query = amnesty_get_featured_landmarks();
         $featured_ids = [];
 
@@ -205,4 +205,6 @@ function amnesty_exclude_featured_landmarks($query)
         }
     }
 }
-add_action('pre_get_posts', 'amnesty_exclude_featured_landmarks');
+if (!is_admin()) {
+    add_action('pre_get_posts', 'amnesty_exclude_featured_landmarks');
+}

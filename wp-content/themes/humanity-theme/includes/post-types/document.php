@@ -178,44 +178,44 @@ add_action(
     }
 );
 
-add_action('pre_get_posts', function ($query) {
-    global $pagenow;
+if (is_admin()) {
+    add_action('pre_get_posts', function ($query) {
+        global $pagenow;
 
-    if (
-        !is_admin() ||
-        $pagenow !== 'edit.php' ||
-        !$query->is_main_query() ||
-        $query->get('post_type') !== 'document'
-    ) {
-        return;
-    }
+        if (
+            $pagenow !== 'edit.php' ||
+            !$query->is_main_query() ||
+            $query->get('post_type') !== 'document'
+        ) {
+            return;
+        }
 
-    $documentPrivateFilter = $_GET['document_private'] ?? '';
-    if ($documentPrivateFilter !== '') {
-        $query->set('meta_query', [
-            [
-                'key'   => 'document_private',
-                'value' => $documentPrivateFilter,
-            ],
-        ]);
-    }
-});
+        $documentPrivateFilter = $_GET['document_private'] ?? '';
+        if ($documentPrivateFilter !== '') {
+            $query->set('meta_query', [
+                [
+                    'key'   => 'document_private',
+                    'value' => $documentPrivateFilter,
+                ],
+            ]);
+        }
+    });
+}
 
-add_action('pre_get_posts', function ($query) {
-    if (!is_admin()
-        && $query->is_main_query()
-        && is_post_type_archive('document')
-    ) {
-        $meta_query = [
-            [
-                'key'   => 'document_private',
-                'value' => '0',
-            ],
-        ];
+if (!is_admin()) {
+    add_action('pre_get_posts', function ($query) {
+        if ($query->is_main_query() && is_post_type_archive('document')) {
+            $meta_query = [
+                [
+                    'key' => 'document_private',
+                    'value' => '0',
+                ],
+            ];
 
-        $query->set('meta_query', $meta_query);
-    }
-});
+            $query->set('meta_query', $meta_query);
+        }
+    });
+}
 
 add_filter('posts_search', function ($search, $wp_query) {
     global $wpdb;
