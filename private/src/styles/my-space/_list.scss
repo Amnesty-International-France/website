@@ -126,7 +126,7 @@
   }
 }
 
-.aif-militants-resources {
+.aif-militants-resources, .aif-democratic-life-resources {
   .document-list-filters {
     padding: 24px;
     background-color: var(--wp--preset--color--grey-light) !important;
@@ -178,6 +178,16 @@
   .document-card-left {
     display: flex;
     flex-direction: column;
+
+    .document-chips {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+
+      .chip-category {
+        cursor: text !important;
+      }
+    }
 
     p {
       margin-bottom: 12px !important;

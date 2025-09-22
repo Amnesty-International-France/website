@@ -3,16 +3,30 @@ global $post;
 
 // should never be null
 $militantTaxonomy = get_the_terms($post, 'document_militant_type')[0] ?? null;
+$democraticTaxonomy = get_the_terms($post, 'document_democratic_type')[0] ?? null;
+$instanceTaxonomy = get_the_terms($post, 'document_instance_type')[0] ?? null;
 $uploadedDoc = get_field('upload_du_document');
 ?>
 
 <div class="document-card">
 	<div class="document-card-left">
-		<?php if ($militantTaxonomy) : ?>
-			<p class="category chip-category bg-yellow large">
-				<?= $militantTaxonomy->name ?>
-			</p>
-		<?php endif; ?>
+		<div class="document-chips">
+			<?php if ($militantTaxonomy) : ?>
+				<p class="category chip-category bg-yellow large">
+					<?= $militantTaxonomy->name ?>
+				</p>
+			<?php endif; ?>
+			<?php if ($democraticTaxonomy) : ?>
+				<p class="category chip-category bg-yellow large">
+					<?= $democraticTaxonomy->name ?>
+				</p>
+			<?php endif; ?>
+			<?php if ($instanceTaxonomy) : ?>
+				<p class="category chip-category bg-yellow large">
+					<?= $instanceTaxonomy->name ?>
+				</p>
+			<?php endif; ?>
+		</div>
 		<p class="as-h5"><?= esc_html($post->post_title); ?></p>
 		<p class="document-size">(<?= strtoupper($uploadedDoc['subtype']) ?> - <?= round($uploadedDoc['filesize'] / 1000) ?> Ko)</p>
 	</div>
