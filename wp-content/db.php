@@ -1,1 +1,0 @@
-/home/frederic/Sites/website/wp-content/plugins/query-monitor/wp-content/db.php
