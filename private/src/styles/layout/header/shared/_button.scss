@@ -103,9 +103,8 @@
 
 .donate-button-mobile {
   display: flex;
-  background-color: var(--wp--preset--color--orange);
-  color: var(--wp--preset--color--black);
-  font-size: 14px;
+  background-color: var(--wp--preset--color--pink);
+  font-size: 12px;
   font-weight: bold;
   text-decoration: none;
   transition: 0.1s ease-in-out;
@@ -118,16 +117,17 @@
   }
 
   &:hover {
-    background-color: var(--wp--preset--color--primary-dark);
+    background-color: var(--wp--preset--color--light-pink);
   }
 
   .link {
+    color: var(--wp--preset--color--white);
     height: 100%;
     width: 100%;
-    padding: 0 14px;
+    padding: 0 12px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 
     &:hover {
       background-color: transparent;
