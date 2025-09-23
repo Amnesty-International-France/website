@@ -92,6 +92,9 @@ function aif_donor_space_create_pages()
         'verifier-votre-email' => [
             'title' => 'Vérifier votre email',
         ],
+        'mot-de-passe-oublie' => [
+            'title' => 'Mot de passe oublié',
+        ],
         'mon-espace' => [
             'title' => 'Mon Espace',
             'children' => [
