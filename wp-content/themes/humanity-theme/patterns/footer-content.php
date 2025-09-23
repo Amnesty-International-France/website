@@ -80,9 +80,10 @@ $action_links = [
 			<span class="subtitle">Abonnez-vous à notre newsletter hebdo.</span>
 			<div class="nl-container">
 				<input type="text" name="newsletter" id="newsletter" placeholder="Abonnez-vous à notre newsletter hebdo.">
-				<a href="<?php echo esc_url( site_url('/newsletter') ); ?>" class="register-nl">
+				<a href="<?php echo esc_url(site_url('/newsletter')); ?>" class="register-nl">
 					<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
 				</a>
+				<div class="nl-error hidden"></div>
 			</div>
 			<div class="social-network">
 				<?php foreach ($social_links as $child) : ?>
