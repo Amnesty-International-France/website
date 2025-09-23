@@ -251,7 +251,7 @@ add_action('acf/include_fields', function () {
  *
  * @return array
  */
-function amnesty_add_chronicle_parent_to_breadcrumb($links)
+function amnesty_add_chronicle_parent_to_breadcrumb($links): array
 {
     if (is_singular('chronique')) {
         $chronicle_parent_page = get_page_by_path('chronique');
@@ -269,3 +269,43 @@ function amnesty_add_chronicle_parent_to_breadcrumb($links)
     return $links;
 }
 add_filter('wpseo_breadcrumb_links', 'amnesty_add_chronicle_parent_to_breadcrumb');
+
+function amnesty_custom_chronicle_permalink($post_link, $post)
+{
+    if ('chronique' !== $post->post_type || !function_exists('amnesty_get_chronicle_structure_info')) {
+        return $post_link;
+    }
+
+    $chronicle_info = amnesty_get_chronicle_structure_info();
+    $archive_url = !empty($chronicle_info) ? $chronicle_info['archives_url'] : false;
+
+    if ($archive_url) {
+        $base = trailingslashit($archive_url);
+        $post_link = $base . $post->post_name . '/';
+    }
+
+    return $post_link;
+}
+
+add_filter('post_type_link', 'amnesty_custom_chronicle_permalink', 10, 2);
+
+/**
+ * Fix the query on the "Chronicle" page so that it correctly finds the latest column.
+ */
+function amnesty_fix_chronicle_promo_page_query($query): void
+{
+    if (!function_exists('amnesty_get_chronicle_structure_info') || !$query->is_main_query()) {
+        return;
+    }
+
+    $chronicle_info = amnesty_get_chronicle_structure_info();
+    $promo_page_id = $chronicle_info ? $chronicle_info['promo_page_id'] : null;
+
+    if ($promo_page_id && (int) $query->get('page_id') === $promo_page_id) {
+        $query->set('post_type', 'page');
+    }
+}
+
+if (!is_admin()) {
+    add_action('pre_get_posts', 'amnesty_fix_chronicle_promo_page_query');
+}

@@ -18,7 +18,7 @@
 
 		<!-- wp:query-no-results -->
 		<div class="wp-block-query-no-results">
-			<p>Il n'y a pas encore de magazine La Chronique de paru.</p>
+			<p class="center">Il n'y a pas encore de magazine La Chronique de paru.</p>
 		</div>
 		<!-- /wp:query-no-results -->
 	</div>

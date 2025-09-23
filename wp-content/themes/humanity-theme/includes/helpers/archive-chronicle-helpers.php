@@ -6,21 +6,38 @@
 
 declare(strict_types=1);
 
-if (! function_exists('amnesty_add_chronicle_archives_rewrite_rule')) {
+if (! function_exists('amnesty_custom_chronicle_rewrite_rules')) {
     /**
-     * Adds a custom rewrite rule for the chronicle archives page.
-     * This is necessary to resolve the conflict between the CPT slug and the child page URL.
+     * Adds dynamic rewrite rules for chronicles,
+     * so that WordPress understands the custom URL structure.
      */
-    function amnesty_add_chronicle_archives_rewrite_rule()
+    function amnesty_custom_chronicle_rewrite_rules(): void
     {
+        if (!function_exists('amnesty_get_chronicle_structure_info')) {
+            return;
+        }
+
+        $chronicle_info = amnesty_get_chronicle_structure_info();
+        if (!$chronicle_info || empty($chronicle_info['archives_url'])) {
+            return;
+        }
+
+        $archive_path = trim(wp_parse_url($chronicle_info['archives_url'], PHP_URL_PATH), '/');
+
         add_rewrite_rule(
-            '^chronique/archives/?$',
-            'index.php?pagename=chronique/archives',
+            '^' . $archive_path . '/([^/]+)/?$',
+            'index.php?post_type=chronique&chronique=$matches[1]',
+            'top'
+        );
+
+        add_rewrite_rule(
+            '^' . $archive_path . '/?$',
+            'index.php?pagename=' . $archive_path,
             'top'
         );
     }
 }
-add_action('init', 'amnesty_add_chronicle_archives_rewrite_rule');
+add_action('init', 'amnesty_custom_chronicle_rewrite_rules');
 
 if (! function_exists('amnesty_remove_featured_image_for_templates')) {
     function amnesty_remove_featured_image_for_templates()
