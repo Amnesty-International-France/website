@@ -188,7 +188,8 @@ class Taxonomy_Document_Democratic_Types extends Taxonomy
             'most_used'             => _x('Most Used', 'Types', 'amnesty'),
             /* translators: [admin] */
             'back_to_items'         => __('&larr; Retour vers les types démocratique', 'amnesty'),
-            'menu_name' 			=> __('Types Document Démocratique', 'amnesty'),
+            'menu_name' 			=> __('Types démocratique', 'amnesty'),
+            'my_space_filter_label' => __('Catégories', 'amnesty'),
         ];
 
         if ($defaults) {

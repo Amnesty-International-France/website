@@ -14,7 +14,7 @@ if ((!isset($taxonomies) || empty($taxonomies)) && (!isset($types) || empty($typ
     <?php foreach ($taxonomies as $tax_item) : ?>
         <?php
         amnesty_render_custom_select([
-            'label'    => $tax_item->label,
+            'label'    => $tax_item->labels->my_space_filter_label,
             'name'     => "q{$tax_item->name}",
             'active'   => query_var_to_array("q{$tax_item->name}"),
             'options'  => amnesty_taxonomy_to_option_list($tax_item),

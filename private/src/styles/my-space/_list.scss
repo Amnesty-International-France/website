@@ -126,6 +126,10 @@
   }
 }
 
+body:has(.aif-militants-resources) .page-header, body:has(.aif-democratic-life-resources) .page-header {
+  display: none;
+}
+
 .aif-militants-resources, .aif-democratic-life-resources {
   .document-list-filters {
     padding: 24px;
@@ -135,9 +139,23 @@
     flex-direction: row;
     margin-bottom: 32px;
 
+    @media screen and (max-width: 1128px) {
+      flex-direction: column !important;
+      align-items: start !important;
+      gap: 20px !important;
+    }
+
     .taxonomyArchive-filters {
       width: auto !important;
       align-items: normal !important;
+
+      .checkboxGroup {
+        width: 400px !important;
+
+        @media screen and (max-width: 1128px) {
+          width: 100% !important;
+        }
+      }
     }
   }
 

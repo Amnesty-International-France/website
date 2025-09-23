@@ -188,7 +188,8 @@ class Taxonomy_Document_Instance_Types extends Taxonomy
             'most_used'             => _x('Most Used', 'Types', 'amnesty'),
             /* translators: [admin] */
             'back_to_items'         => __('&larr; Retour vers les types instance', 'amnesty'),
-            'menu_name' 			=> __('Types Document instance', 'amnesty'),
+            'menu_name' 			=> __('Types instance', 'amnesty'),
+            'my_space_filter_label' => __('Instances', 'amnesty'),
         ];
 
         if ($defaults) {
