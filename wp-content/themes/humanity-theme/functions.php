@@ -40,6 +40,7 @@ require_once realpath(__DIR__ . '/includes/helpers/metadata.php');
 require_once realpath(__DIR__ . '/includes/helpers/media.php');
 require_once realpath(__DIR__ . '/includes/helpers/pagination.php');
 require_once realpath(__DIR__ . '/includes/helpers/archive.php');
+require_once realpath(__DIR__ . '/includes/helpers/chronicle-helper.php');
 require_once realpath(__DIR__ . '/includes/helpers/archive-chronicle-helpers.php');
 require_once realpath(__DIR__ . '/includes/helpers/list-alignment.php');
 require_once realpath(__DIR__ . '/includes/helpers/reading-time.php');
