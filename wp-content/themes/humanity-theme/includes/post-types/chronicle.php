@@ -309,3 +309,50 @@ function amnesty_fix_chronicle_promo_page_query($query): void
 if (!is_admin()) {
     add_action('pre_get_posts', 'amnesty_fix_chronicle_promo_page_query');
 }
+
+function amnesty_custom_chronique_breadcrumbs($links)
+{
+    if (!is_singular('chronique')) {
+        return $links;
+    }
+
+    if (!function_exists('amnesty_get_chronicle_structure_info')) {
+        return $links;
+    }
+
+    $info = amnesty_get_chronicle_structure_info();
+    if (!$info) {
+        return $links;
+    }
+
+    $promo_page_id = $info['promo_page_id'];
+    $archives_url = $info['archives_url'];
+
+    $new_breadcrumb_trail = [];
+
+    $ancestors = get_post_ancestors($promo_page_id);
+    if (!empty($ancestors)) {
+        $ancestors = array_reverse($ancestors);
+        foreach ($ancestors as $ancestor_id) {
+            $new_breadcrumb_trail[] = [
+                'url' => get_permalink($ancestor_id),
+                'text' => get_the_title($ancestor_id),
+            ];
+        }
+    }
+
+    $new_breadcrumb_trail[] = [
+        'url' => get_permalink($promo_page_id),
+        'text' => 'Magazine la chronique',
+    ];
+
+    $new_breadcrumb_trail[] = [
+        'url' => $archives_url,
+        'text' => 'Archives',
+    ];
+
+    array_splice($links, 1, 0, $new_breadcrumb_trail);
+
+    return $links;
+}
+add_filter('wpseo_breadcrumb_links', 'amnesty_custom_chronique_breadcrumbs');

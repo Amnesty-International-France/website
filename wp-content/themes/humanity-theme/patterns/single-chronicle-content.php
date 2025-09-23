@@ -10,6 +10,15 @@ declare(strict_types=1);
  */
 
 $is_promo_context = $args['is_promo_context'] ?? false;
+$archive_url = '#';
+
+if ($is_promo_context) {
+    $archive_url = $args['archive_button_url'] ?? '#';
+} elseif (function_exists('amnesty_get_chronicle_structure_info')) {
+    $chronicle_info = amnesty_get_chronicle_structure_info();
+    $archive_url = !empty($chronicle_info) ? $chronicle_info['archives_url'] : '#';
+}
+
 $open_cover_image = get_field('cover_image_with_magazine_open');
 $cover_image = get_field('cover_image');
 $month = get_field('publication_month');
@@ -49,13 +58,23 @@ if ($is_promo_context) {
 		</figure>
 		<?php endif; ?>
 		<?php
-        $chronicle_info = amnesty_get_chronicle_structure_info();
-$archive_url = !empty($chronicle_info) ? $chronicle_info['archives_url'] : '#';
+        echo do_blocks('<!-- wp:amnesty-core/button {"label":"Abonnez-vous pour 3€/mois","size":"medium","icon":"arrow-right","linkType":"external","externalUrl":"https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=null","alignment":"center"} /-->');
 
-$blocks_markup = '<!-- wp:amnesty-core/button {"label":"Abonnez-vous pour 3€/mois","size":"medium","icon":"arrow-right","linkType":"external","externalUrl":"https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=null","alignment":"center"} /-->';
-$blocks_markup .= '<!-- wp:amnesty-core/button {"label":"Voir les anciens numéros","size":"small","icon":"arrow-right","style":"bg-white outline-black","linkType":"internal","alignment":"center","link":"' . esc_url($archive_url) . '","targetBlank":false} /-->';
+$archive_button_attrs = [
+    'label'       => 'Voir les anciens numéros',
+    'size'        => 'small',
+    'icon'        => 'arrow-right',
+    'style'       => 'bg-white outline-black',
+    'linkType'    => 'internal',
+    'alignment'   => 'center',
+    'internalUrl' => $archive_url,
+    'targetBlank' => false,
+];
 
-echo do_blocks($blocks_markup);
+echo render_block([
+    'blockName' => 'amnesty-core/button',
+    'attrs'     => $archive_button_attrs,
+]);
 ?>
 	</aside>
 
