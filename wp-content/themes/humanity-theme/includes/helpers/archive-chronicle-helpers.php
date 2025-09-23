@@ -40,7 +40,7 @@ if (! function_exists('amnesty_custom_chronicle_rewrite_rules')) {
 add_action('init', 'amnesty_custom_chronicle_rewrite_rules');
 
 if (! function_exists('amnesty_remove_featured_image_for_templates')) {
-    function amnesty_remove_featured_image_for_templates()
+    function amnesty_remove_featured_image_for_templates(): void
     {
         $screen = get_current_screen();
         if ($screen === null || ! isset($screen->id) || 'page' !== $screen->id || ! is_admin()) {
@@ -84,3 +84,37 @@ if (!function_exists('amnesty_disable_editor_on_chronicle_archive_page')) {
     }
 }
 add_action('load-post.php', 'amnesty_disable_editor_on_chronicle_archive_page');
+
+/**
+ * Modifies the main query for the CPT archive page 'chronicle'
+ * to apply custom sorting by ACF date, then by publication date.
+ */
+function amnesty_sort_chronicle_archive_block_query(array $query, WP_Block $block): array
+{
+    if (!function_exists('amnesty_get_chronicle_structure_info')) {
+        return $query;
+    }
+
+    if (!function_exists('amnesty_get_latest_chronicle_args')) {
+        return $query;
+    }
+
+    $info = amnesty_get_chronicle_structure_info();
+    if (!$info || empty($info['archives_url'])) {
+        return $query;
+    }
+
+    $archives_page_id = url_to_postid($info['archives_url']);
+
+    if (empty($query['post_type']) || 'chronique' !== $query['post_type'] || !is_page($archives_page_id)) {
+        return $query;
+    }
+
+    $last_args = amnesty_get_latest_chronicle_args();
+
+    $query['meta_query'] = $last_args['meta_query'];
+    $query['orderby'] = $last_args['orderby'];
+
+    return $query;
+}
+add_filter('query_loop_block_query_vars', 'amnesty_sort_chronicle_archive_block_query', 10, 2);

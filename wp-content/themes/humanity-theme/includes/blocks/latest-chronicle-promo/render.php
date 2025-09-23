@@ -34,13 +34,17 @@ if (! function_exists('render_latest_chronicle_promo')) {
             }
         }
 
-        $args = [
+        if (!function_exists('amnesty_get_latest_chronicle_args')) {
+            return '<p>Erreur : La fonction de requête des chroniques est manquante.</p>';
+        }
+
+        $shared_args = amnesty_get_latest_chronicle_args();
+
+        $args = array_merge($shared_args, [
             'post_type'      => 'chronique',
             'posts_per_page' => 1,
-            'orderby'        => 'date',
-            'order'          => 'DESC',
             'post_status'    => 'publish',
-        ];
+        ]);
 
         $latest_chronicle_query = new WP_Query($args);
 
