@@ -3,7 +3,14 @@ import Button from './Button.jsx';
 const { __ } = wp.i18n;
 const { useEffect, useState } = wp.element;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
-const { PanelBody, SelectControl, TextControl, Spinner, ToggleControl } = wp.components;
+const {
+  PanelBody,
+  SelectControl,
+  TextControl,
+  Spinner,
+  ToggleControl,
+  Button: WpButton,
+} = wp.components;
 const { useSelect } = wp.data;
 const apiFetch = wp.apiFetch;
 
@@ -55,9 +62,7 @@ const EditComponent = (props) => {
   useEffect(() => {
     if (postId && !internalUrl) {
       apiFetch({ path: `/wp/v2/posts/${postId}?_fields=link,title,type` })
-        .catch(() => {
-          return apiFetch({ path: `/wp/v2/pages/${postId}?_fields=link,title,type` });
-        })
+        .catch(() => apiFetch({ path: `/wp/v2/pages/${postId}?_fields=link,title,type` }))
         .then((post) => {
           if (post) {
             setAttributes({
@@ -184,9 +189,9 @@ const EditComponent = (props) => {
                     {__('Lien sélectionné :', 'amnesty')}{' '}
                     <strong dangerouslySetInnerHTML={{ __html: internalUrlTitle }} />
                   </p>
-                  <wp.components.Button isLink isDestructive onClick={handleRemoveLink}>
+                  <WpButton isLink isDestructive onClick={handleRemoveLink}>
                     {__('Retirer le lien', 'amnesty')}
-                  </wp.components.Button>
+                  </WpButton>
                 </div>
               )}
             </>
