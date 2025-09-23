@@ -85,7 +85,7 @@ class Sync_Register_Command
             }
 
             if ('Militant' === $item['type']) {
-                $sfUser = $user_exist_on_sf ? $user_from_sf[0] : $user;
+                $sfUser = $user_exist_on_sf ? $user_from_sf['records'][0] : $user;
 
                 $data_activist_sf = [
                     'Email__c'              => $user->email,
