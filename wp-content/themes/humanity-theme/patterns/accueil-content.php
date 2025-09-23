@@ -11,7 +11,9 @@
 
 <!-- wp:pattern {"slug":"amnesty/my-space-sidebar"} /-->
 <main class="aif-donor-space-content">
-    <div class="aif-welcome">
-        <h2>Bienvenue sur votre espace</h2>
+    <!-- wp:pattern {"slug":"amnesty/my-space-header"} /-->
+    <div class="aif-homepage">
+        <h2 class="aif-homepage-title">Bienvenue sur votre espace</h2>
+        <h3 class="aif-homepage-subtitle">sur l’espace des membres d’Amnesty International France</h3>
     </div>
 </main>

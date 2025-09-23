@@ -1,0 +1,18 @@
+.aif-homepage {
+  &-title {
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 45px;
+    font-weight: bold;
+    line-height: 51px;
+    margin-bottom: 0;
+  }
+
+  &-subtitle {
+    color: var(--wp--preset--color--grey-dark);
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+    margin-bottom: 0;
+  }
+}
