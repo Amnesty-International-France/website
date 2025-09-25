@@ -1,7 +1,8 @@
 const newsletterFormElement = () => {
   const footer = document.querySelector('footer');
   const overfooter = footer?.querySelector('.over-footer');
-  const inputFooterNL = overfooter?.querySelector('.nl-container > input');
+  const formLead = overfooter?.querySelector('form[name="newsletter-lead-form"]');
+  const inputFooterNL = formLead?.querySelector('input[name="newsletter-lead"]');
   const ctaFooterNL = overfooter?.querySelector('.register-nl');
   const formNewsletterPage = document.querySelector('.newsletter-form');
 
@@ -70,6 +71,21 @@ export const redirectWithEmail = () => {
   });
 };
 
+export const emptyInputNewsletterLead = () => {
+  const { inputFooterNL, ctaFooterNL } = newsletterFormElement();
+
+  if (!inputFooterNL || !ctaFooterNL) return;
+
+  const updateButtonState = () => {
+    const hasValue = inputFooterNL.value.trim().length > 0;
+    ctaFooterNL.disabled = !(hasValue && isValidEmail(inputFooterNL.value.trim()));
+  };
+
+  updateButtonState();
+
+  inputFooterNL.addEventListener('input', updateButtonState);
+};
+
 export const selectThemeNl = () => {
   const { formNewsletterPage } = newsletterFormElement();
 
@@ -94,4 +110,4 @@ export const selectThemeNl = () => {
   });
 };
 
-export default { redirectWithEmail, selectThemeNl };
+export default { selectThemeNl, emptyInputNewsletterLead };

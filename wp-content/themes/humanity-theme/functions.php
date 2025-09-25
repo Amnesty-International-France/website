@@ -264,6 +264,7 @@ require_once realpath(__DIR__ . '/includes/salesforce/authentification.php');
 require_once realpath(__DIR__ . '/includes/salesforce/data.php');
 require_once realpath(__DIR__ . '/includes/salesforce/petition.php');
 require_once realpath(__DIR__ . '/includes/salesforce/user.php');
+require_once realpath(__DIR__ . '/includes/salesforce/newsletter.php');
 
 /**
  * Document module

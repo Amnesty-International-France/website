@@ -18,8 +18,8 @@ function get_salesforce_access_token()
 
 function refresh_salesforce_token()
 {
-    $client_id = getenv('AIF_SALESFORCE_CLIENT_ID');
-    $client_secret = getenv('AIF_SALESFORCE_SECRET');
+    $client_id =  getenv('AIF_SALESFORCE_CLIENT_ID');
+    $client_secret =  getenv('AIF_SALESFORCE_SECRET');
     $url = getenv('AIF_SALESFORCE_URL') . 'services/oauth2/token';
 
     $params = [

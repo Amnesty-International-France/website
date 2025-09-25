@@ -40,10 +40,10 @@ function post_salesforce_data($url, $params = [])
     $response = wp_remote_post(
         getenv('AIF_SALESFORCE_URL') . $url,
         [
-            'body'    => json_encode($params),
+            'body' => json_encode($params),
             'timeout' => 30,
             'headers' => [
-                'Content-Type'  => 'application/json',
+                'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $access_token,
             ],
         ]
@@ -71,11 +71,41 @@ function patch_salesforce_data($url, $params = [])
     $response = wp_remote_request(
         getenv('AIF_SALESFORCE_URL') . $url,
         [
-            'method'  => 'PATCH',
-            'body'    => json_encode($params),
+            'method' => 'PATCH',
+            'body' => json_encode($params),
             'timeout' => 30,
             'headers' => [
-                'Content-Type'  => 'application/json',
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $access_token,
+            ],
+        ]
+    );
+
+    if (is_wp_error($response)) {
+        echo 'Erreur de requête Salesforce : ' . $response->get_error_message() . PHP_EOL;
+        return false;
+    } else {
+        $data = wp_remote_retrieve_body($response);
+        return json_decode($data);
+    }
+}
+
+function delete_salesforce_data($url, $params = [])
+{
+    $access_token = get_salesforce_access_token();
+
+    if (is_wp_error($access_token)) {
+        echo 'Erreur : ' . $access_token->get_error_message() . PHP_EOL;
+        return false;
+    }
+
+    $response = wp_remote_request(
+        getenv('AIF_SALESFORCE_URL') . $url,
+        [
+            'method' => 'DELETE',
+            'timeout' => 30,
+            'headers' => [
+                'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $access_token,
             ],
         ]
