@@ -1,7 +1,5 @@
 const init = () => {
-  Array.from(
-    document.querySelectorAll('.wp-block-embed.is-type-video:not(.responsive-iframe)'),
-  ).forEach((embed) => {
+  Array.from(document.querySelectorAll('.wp-block-embed.is-type-video')).forEach((embed) => {
     if (embed.parentElement.classList.contains('wp-embed-responsive')) {
       return;
     }
