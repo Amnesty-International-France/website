@@ -26,7 +26,6 @@ import browserDetector from './modules/browser-detector';
 import iframeButton from './modules/iframe-button';
 import collapsableBlock from './modules/collapsable-block';
 import addFlickityToTabs from './modules/tabbed-content-flickity';
-import downloadBlock from './modules/download-block';
 import initCarousels from './modules/carousel';
 import tableOfContents from './modules/table-of-contents';
 import readMoreBlock from './modules/read-more';
@@ -57,7 +56,6 @@ const App = () => {
   mobileMenu();
   Overlays();
   subcatDrops();
-  downloadBlock();
   checkboxGroup();
   latestFilters();
   searchFilters();
