@@ -48,8 +48,6 @@ require_once __DIR__ . '/download-go-further/register.php';
 require_once __DIR__ . '/download-go-further/render.php';
 require_once __DIR__ . '/edh-card/register.php';
 require_once __DIR__ . '/edh-card/render.php';
-require_once __DIR__ . '/embed-flourish/register.php';
-require_once __DIR__ . '/embed-flourish/render.php';
 require_once __DIR__ . '/embed-infogram/register.php';
 require_once __DIR__ . '/embed-infogram/render.php';
 require_once __DIR__ . '/embed-sutori/register.php';
