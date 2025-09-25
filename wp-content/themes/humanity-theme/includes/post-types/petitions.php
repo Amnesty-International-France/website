@@ -28,6 +28,10 @@ function amnesty_register_petitions_cpt()
 }
 add_action('init', 'amnesty_register_petitions_cpt');
 
+function amnesty_signature_count_permission_check( $allowed, $meta_key, $post_id, $user_id, $cap, $caps ) {
+	return user_can( $user_id, 'edit_post', $post_id );
+}
+
 function amnesty_register_petition_signature_count_meta()
 {
     register_post_meta('petition', '_amnesty_signature_count', [
@@ -36,6 +40,7 @@ function amnesty_register_petition_signature_count_meta()
         'type'          => 'integer',
         'default'       => 0,
         'sanitize_callback' => 'absint',
+		'auth_callback'     => 'amnesty_signature_count_permission_check',
     ]);
 }
 add_action('init', 'amnesty_register_petition_signature_count_meta');
