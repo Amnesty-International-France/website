@@ -1,0 +1,173 @@
+.discover-chronicle-form-container {
+  max-width: $container-md;
+  margin: 0 auto;
+
+  .discover-chronicle-form {
+    .form-mess {
+      padding: 10px;
+      width: 100%;
+      background-color: var(--wp--preset--color--pale-error);
+      color: var(--wp--preset--color--error);
+      margin: 10px 0;
+      font-size: 1rem;
+
+      &.error {
+        background-color: var(--wp--preset--color--pale-error);
+        color: var(--wp--preset--color--error);
+      }
+
+      &.success {
+        background-color: var(--wp--preset--color--success-light);
+        color: var(--wp--preset--color--success);
+        border: 1px solid var(--wp--preset--color--success);
+      }
+
+      &.hidden {
+        display: none;
+      }
+    }
+
+    input:not([type="radio"]) {
+      margin-bottom: 22px;
+      border: 1px solid var(--wp--preset--color--grey-lighter);
+      transition: border 0.3s ease, margin-bottom 0.3s ease;
+
+      &.success {
+        border: 2px solid var(--wp--preset--color--success);
+      }
+
+      &.error {
+        border: 2px solid var(--wp--preset--color--error);
+        margin-bottom: 10px;
+      }
+
+      &:last-child {
+        margin-bottom: 54px;
+      }
+
+      &::placeholder {
+        color: var(--wp--preset--color--grey-dark);
+        font-family: var(--wp--preset--font-family--primary);
+        font-weight: 300;
+        font-size: 18px;
+        line-height: 28px;
+        letter-spacing: 0;
+        vertical-align: middle;
+        text-transform: capitalize;
+        transition: color 0.3s ease;
+      }
+    }
+
+    .form-group.civility {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      gap: 12px;
+      padding-bottom: 24px;
+
+      & > label {
+        color: var(--wp--preset--color--grey-dark);
+      }
+
+      & > .civilities {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        & > input[type="radio"] {
+          cursor: pointer;
+        }
+
+        & > label {
+          position: relative;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          font-size: 1.125rem;
+          text-transform: capitalize;
+        }
+      }
+    }
+
+    .input-error {
+      width: 100%;
+      background-color: var(--wp--preset--color--pale-error);
+      color: var(--wp--preset--color--error);
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1rem;
+
+      &.hidden {
+        display: none;
+      }
+    }
+
+    .form-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin: 3.125rem 0;
+
+      .form-group {
+        width: 50%;
+      }
+
+      &.theme-discover-chronicle {
+        flex-direction: column;
+
+        .form-group {
+          width: 100%;
+          display: flex;
+          gap: 1rem;
+
+          input[type="checkbox"].hidden {
+            display: none;
+          }
+
+          .checkbox {
+            width: 30px;
+            height: 30px;
+            background-color: var(--wp--preset--color--black);
+            padding: 8px;
+            cursor: pointer;
+
+            &.checked {
+              background-color: var(--wp--preset--color--primary); /* toujours noir autour */
+              box-shadow: inset 0 0 0 5px var(--wp--preset--color--black); /* jaune à l’intérieur */
+            }
+          }
+        }
+      }
+    }
+
+    .discover-chronicle-form-cta {
+      display: flex;
+      padding: 14px 24px;
+      gap: 12px;
+      background-color: var(--wp--preset--color--primary);
+      width: fit-content;
+      margin: 0 auto 24px;
+      font-family: var(--wp--preset--font-family--secondary);
+      font-weight: bold;
+      font-size: 23px;
+      line-height: 26px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+
+      > svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+
+  .discover-chronicle-legend > p {
+    font-family: var(--wp--preset--font-family--primary);
+    font-weight: lighter;
+    font-size: .625rem;
+    line-height: 18px;
+    letter-spacing: 0;
+  }
+}
