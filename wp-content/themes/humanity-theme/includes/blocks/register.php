@@ -59,10 +59,6 @@ require_once __DIR__ . '/hero-large/register.php';
 require_once __DIR__ . '/hero-large/render.php';
 require_once __DIR__ . '/hero-homepage/register.php';
 require_once __DIR__ . '/hero-homepage/render.php';
-require_once __DIR__ . '/iframe-button/register.php';
-require_once __DIR__ . '/iframe-button/render.php';
-require_once __DIR__ . '/iframe/register.php';
-require_once __DIR__ . '/iframe/render.php';
 require_once __DIR__ . '/image/register.php';
 require_once __DIR__ . '/image/render.php';
 require_once __DIR__ . '/key-figure/register.php';
@@ -152,8 +148,6 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_header_block();
         register_hero_block();
         register_hero_homepage_block();
-        register_iframe_block();
-        register_iframe_button_block();
         register_image_block();
         register_key_figure_block();
         register_latest_chronicle_promo_block();
@@ -178,7 +172,6 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_slider_block();
         register_stat_counter_block();
         register_term_list_block();
-        register_tickcounter_embed_block();
         register_training_card_block();
         register_tweet_action_block();
         register_urgent_register_form_block();
