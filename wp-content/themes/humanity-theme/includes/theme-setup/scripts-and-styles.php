@@ -109,8 +109,6 @@ if (! function_exists('amnesty_scripts')) {
 
         $theme = wp_get_theme();
 
-        wp_register_script('flourish-embed', 'https://public.flourish.studio/resources/embed.js', [], $theme->get('Version'), true);
-        wp_register_script('tickcounter-sdk', 'https://www.tickcounter.com/static/js/loader.js', [], $theme->get('Version'), true);
         wp_enqueue_script('infogram-embed', amnesty_asset_uri('scripts') . '/infogram-loader.js', [], $theme->get('Version'), false);
 
         wp_enqueue_script('amnesty-theme', amnesty_asset_uri('scripts') . '/bundle.js', [ 'lodash', 'wp-i18n' ], $theme->get('Version'), true);
