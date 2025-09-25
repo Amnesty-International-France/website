@@ -44,8 +44,6 @@ require_once __DIR__ . '/custom-card/register.php';
 require_once __DIR__ . '/custom-card/render.php';
 require_once __DIR__ . '/donation-calculator/register.php';
 require_once __DIR__ . '/donation-calculator/render.php';
-require_once __DIR__ . '/download/register.php';
-require_once __DIR__ . '/download/render.php';
 require_once __DIR__ . '/download-go-further/register.php';
 require_once __DIR__ . '/download-go-further/render.php';
 require_once __DIR__ . '/edh-card/register.php';
@@ -155,7 +153,6 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_content_callout_block();
         register_custom_card_block();
         register_donation_calculator_block();
-        register_download_block();
         register_download_go_further_block();
         register_edh_card_block();
         register_event_card_block();
