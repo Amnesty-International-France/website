@@ -152,7 +152,7 @@ class LinksUtils
             'name' => $uid,
             'post_type' => \Type::get_wp_post_type($article_type),
             'posts_per_page' => 1,
-			'post_status' => ['publish', 'private'],
+            'post_status' => ['publish', 'private'],
         ];
         $query = new WP_Query($args);
 

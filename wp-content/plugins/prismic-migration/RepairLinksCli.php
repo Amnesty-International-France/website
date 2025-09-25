@@ -20,7 +20,7 @@ class RepairLinksCli
             'post_type' => 'any',
             'posts_per_page' => -1,
             'fields' => 'ids',
-			'post_status' => ['publish', 'private'],
+            'post_status' => ['publish', 'private'],
         ];
         $post_ids = get_posts($args);
         if ($post_ids) {
