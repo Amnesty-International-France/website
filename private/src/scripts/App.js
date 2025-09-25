@@ -23,7 +23,6 @@ import counters from './modules/counter';
 import termList from './modules/term-list';
 import tabbedNav from './modules/tabbed-nav';
 import browserDetector from './modules/browser-detector';
-import iframeButton from './modules/iframe-button';
 import collapsableBlock from './modules/collapsable-block';
 import addFlickityToTabs from './modules/tabbed-content-flickity';
 import initCarousels from './modules/carousel';
@@ -69,7 +68,6 @@ const App = () => {
   termList();
   tabbedNav();
   loadVideos();
-  iframeButton();
   collapsableBlock();
   addFlickityToTabs();
   initCarousels();

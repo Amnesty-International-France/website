@@ -31,7 +31,6 @@ import './editor/blocks/get-informed/index.jsx';
 import './editor/blocks/hero/index.jsx';
 import './editor/blocks/hero/replaceHeaders';
 import './editor/blocks/hero-homepage/index.jsx';
-import './editor/blocks/iframe-button/index.jsx';
 import './editor/blocks/image/index.jsx';
 import './editor/blocks/key-facts/index.jsx';
 import './editor/blocks/key-figure/index.jsx';
