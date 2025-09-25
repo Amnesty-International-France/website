@@ -26,7 +26,6 @@ import './editor/blocks/carousel/index.jsx';
 import './editor/blocks/chapo/index.jsx';
 import './editor/blocks/content-callout/index.jsx';
 import './editor/blocks/core-mods';
-import './editor/blocks/embed-sutori/index.jsx';
 import './editor/blocks/embed-tickcounter/index.jsx';
 import './editor/blocks/download-go-further/index.jsx';
 import './editor/blocks/get-informed/index.jsx';

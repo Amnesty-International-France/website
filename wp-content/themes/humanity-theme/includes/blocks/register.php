@@ -48,8 +48,6 @@ require_once __DIR__ . '/download-go-further/register.php';
 require_once __DIR__ . '/download-go-further/render.php';
 require_once __DIR__ . '/edh-card/register.php';
 require_once __DIR__ . '/edh-card/render.php';
-require_once __DIR__ . '/embed-sutori/register.php';
-require_once __DIR__ . '/embed-sutori/render.php';
 require_once __DIR__ . '/embed-tickcounter/register.php';
 require_once __DIR__ . '/embed-tickcounter/render.php';
 require_once __DIR__ . '/event-card/register.php';
@@ -182,7 +180,6 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_section_home_block();
         register_slider_block();
         register_stat_counter_block();
-        register_sutori_embed_block();
         register_term_list_block();
         register_tickcounter_embed_block();
         register_training_card_block();
