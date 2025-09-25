@@ -492,7 +492,7 @@ add_action(
 
         acf_add_local_field_group(
             [
-                'key'                   => 'group_6883319088d12',
+                'key'                   => 'group_68d545e9ec5f0',
                 'title'                 => 'Formation',
                 'fields'                => [
                     [
@@ -526,30 +526,11 @@ add_action(
                         'save_options'      => 0,
                     ],
                     [
-                        'key'               => 'field_688355a1b2c3d',
-                        'label'             => 'Ville',
-                        'name'              => 'city',
-                        'aria-label'        => '',
-                        'type'              => 'text',
-                        'required'          => 0,
-                        'wrapper'           => [
-                            'width' => '',
-                            'class' => '',
-                            'id'    => '',
-                        ],
-                        'default_value'     => '',
-                        'maxlength'         => '',
-                        'placeholder'       => '',
-                        'prepend'           => '',
-                        'append'            => '',
-                        'allow_in_bindings' => 0,
-                    ],
-                    [
-                        'key'               => 'field_688334da51ddd',
+                        'key'               => 'field_68d545ea50fac',
                         'label'             => 'Date de la formation',
                         'name'              => 'date',
                         'aria-label'        => '',
-                        'type'              => 'date_time_picker',
+                        'type'              => 'date_picker',
                         'instructions'      => '',
                         'required'          => 0,
                         'conditional_logic' => 0,
@@ -558,8 +539,8 @@ add_action(
                             'class' => '',
                             'id'    => '',
                         ],
-                        'display_format'    => 'd/m/Y g:i a',
-                        'return_format'     => 'd/m/Y g:i a',
+                        'display_format'    => 'd/m/Y',
+                        'return_format'     => 'd/m/Y',
                         'first_day'         => 1,
                         'allow_in_bindings' => 0,
                     ],
