@@ -38,7 +38,6 @@ import './editor/blocks/menu/index.jsx';
 import './editor/blocks/mission-homepage/index.jsx';
 import './editor/blocks/petition-list/index.jsx';
 import './editor/blocks/post-list/index.jsx';
-import './editor/blocks/post-meta/index.jsx';
 import './editor/blocks/quote/index.jsx';
 import './editor/blocks/raw-code/index.jsx';
 import './editor/blocks/read-also/index.jsx';
