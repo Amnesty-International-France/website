@@ -10,11 +10,21 @@
 ?>
 
 <div class="aif-donor-space-content-header">
-    <div class="yoast-breadcrumb-wrapper">
-        <?php if (function_exists('yoast_breadcrumb')) {
-            yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
-        } ?>
-    </div>
+    <?php if (!is_page('mon-espace')) :?>
+        <div class="yoast-breadcrumb-wrapper">
+            <?php
+            if (function_exists('yoast_breadcrumb')) {
+                yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
+            }
+        ?>
+        </div>
+    <?php else :?>
+        <div class="aif-homepage-title-wrapper">
+            <h2 class="aif-homepage-title">Bienvenue sur votre espace</h2>
+            <h3 class="aif-homepage-subtitle">sur l’espace des membres d’Amnesty International France</h3>
+        </div>
+    <?php endif;?>
+
     <div class='custom-button-block right'>
         <a href="/" target="_blank" rel="noopener noreferrer" class="custom-button">
             <div class='content bg-yellow medium'>

@@ -62,7 +62,18 @@ if (! function_exists('amnesty_string_to_paragraphs')) {
 
 add_filter('allowed_block_types_all', function ($allowed_blocks, $editor_context) {
 
+    $special_blocks = [
+        'amnesty-core/actions-homepage',
+        'amnesty-core/agenda-homepage',
+        'amnesty-core/articles-homepage',
+        'amnesty-core/hero-homepage',
+        'amnesty-core/mission-homepage',
+    ];
+
     $homepage_id = (int) get_option('page_on_front');
+
+    $mon_espace_page = get_page_by_path('mon-espace');
+    $mon_espace_id = $mon_espace_page ? (int) $mon_espace_page->ID : 0;
 
     $current_post_id = 0;
     if (isset($editor_context->post) && isset($editor_context->post->ID)) {
@@ -73,25 +84,16 @@ add_filter('allowed_block_types_all', function ($allowed_blocks, $editor_context
         return $allowed_blocks;
     }
 
-    if ($current_post_id === $homepage_id) {
+    if ($current_post_id === $homepage_id || ($mon_espace_id !== 0 && $current_post_id === $mon_espace_id)) {
+
         if ($allowed_blocks === true) {
             return true;
         }
         if (is_array($allowed_blocks)) {
-            if (!in_array('amnesty-core/actions-homepage', $allowed_blocks, true)) {
-                $allowed_blocks[] = 'amnesty-core/actions-homepage';
-            }
-            if (!in_array('amnesty-core/agenda-homepage', $allowed_blocks, true)) {
-                $allowed_blocks[] = 'amnesty-core/agenda-homepage';
-            }
-            if (!in_array('amnesty-core/articles-homepage', $allowed_blocks, true)) {
-                $allowed_blocks[] = 'amnesty-core/articles-homepage';
-            }
-            if (!in_array('amnesty-core/hero-homepage', $allowed_blocks, true)) {
-                $allowed_blocks[] = 'amnesty-core/hero-homepage';
-            }
-            if (!in_array('amnesty-core/mission-homepage', $allowed_blocks, true)) {
-                $allowed_blocks[] = 'amnesty-core/mission-homepage';
+            foreach ($special_blocks as $block) {
+                if (!in_array($block, $allowed_blocks, true)) {
+                    $allowed_blocks[] = $block;
+                }
             }
         }
         return $allowed_blocks;
@@ -103,12 +105,8 @@ add_filter('allowed_block_types_all', function ($allowed_blocks, $editor_context
     }
 
     if (is_array($allowed_blocks)) {
-        $allowed_blocks = array_filter($allowed_blocks, function ($block_name) {
-            return $block_name !== 'amnesty-core/actions-homepage' &&
-                   $block_name !== 'amnesty-core/agenda-homepage' &&
-                   $block_name !== 'amnesty-core/articles-homepage' &&
-                   $block_name !== 'amnesty-core/hero-homepage' &&
-                   $block_name !== 'amnesty-core/mission-homepage';
+        $allowed_blocks = array_filter($allowed_blocks, function ($block_name) use ($special_blocks) {
+            return !in_array($block_name, $special_blocks, true);
         });
         $allowed_blocks = array_values($allowed_blocks);
     }
