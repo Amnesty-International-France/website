@@ -79,7 +79,6 @@ require_once __DIR__ . '/post-list/register.php';
 require_once __DIR__ . '/post-list/render.php';
 require_once __DIR__ . '/quote/register.php';
 require_once __DIR__ . '/quote/render.php';
-require_once __DIR__ . '/raw-code/register.php';
 require_once __DIR__ . '/read-also/register.php';
 require_once __DIR__ . '/read-also/render.php';
 require_once __DIR__ . '/read-more/register.php';
@@ -155,7 +154,6 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_petition_card_block();
         register_petition_list_block();
         register_quote_block();
-        register_raw_code_block();
         register_read_also_block();
         register_read_more_block();
         register_regions_block();
