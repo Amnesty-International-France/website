@@ -496,6 +496,27 @@ add_action(
                 'title'                 => 'Formation',
                 'fields'                => [
                     [
+                        'key'               => 'field_6883319051ddd',
+                        'label'             => 'Description',
+                        'name'              => 'description',
+                        'aria-label'        => '',
+                        'type'              => 'text',
+                        'instructions'      => '',
+                        'required'          => 0,
+                        'conditional_logic' => 0,
+                        'wrapper'           => [
+                            'width' => '',
+                            'class' => '',
+                            'id'    => '',
+                        ],
+                        'default_value'     => '',
+                        'maxlength'         => '',
+                        'allow_in_bindings' => 0,
+                        'placeholder'       => '',
+                        'prepend'           => '',
+                        'append'            => '',
+                    ],
+                    [
                         'key'               => 'field_6883319051ddc',
                         'label'             => 'Lieu de formation',
                         'name'              => 'lieu',
