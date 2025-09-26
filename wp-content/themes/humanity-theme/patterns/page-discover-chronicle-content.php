@@ -12,56 +12,66 @@ $hero_extra_class = !has_post_thumbnail() ? 'no-featured-image' : '';
 $no_chapo = !has_block('amnesty-core/chapo') ? 'no-chapo' : '';
 
 $countries = get_posts(
-	[
-		'post_type' => 'fiche_pays',
-		'posts_per_page' => -1,
-		'orderby' => 'title',
-		'order' => 'ASC',
-	]
+    [
+        'post_type' => 'fiche_pays',
+        'posts_per_page' => -1,
+        'orderby' => 'title',
+        'order' => 'ASC',
+    ]
 );
 
-if (!isset($_POST['sign_discover_chronicle'])) {
-	return;
-}
-
-if (!isset($_POST['discover_chronicle_nonce']) ||
-	!wp_verify_nonce($_POST['discover_chronicle_nonce'], 'discover_chronicle_action')) {
-	wp_die('Sécurité : formulaire invalide.');
-}
-
-$themes = isset($_POST['theme']) ? array_map('sanitize_text_field', (array) $_POST['theme']) : [];
-$discover_chronicle = sanitize_email($_POST['discover-chronicle'] ?? '');
-$civility = sanitize_text_field($_POST['civility'] ?? '');
-$lastname = sanitize_text_field($_POST['lastname'] ?? '');
-$firstname = sanitize_text_field($_POST['firstname'] ?? '');
-$street_address = sanitize_text_field($_POST['street-address'] ?? '');
-$address_complement = sanitize_text_field($_POST['address_complement'] ?? '');
-$address_complement_bis = sanitize_text_field($_POST['address_complement_bis'] ?? '');
-$zipcode = sanitize_text_field($_POST['zipcode'] ?? '');
-$city = sanitize_text_field($_POST['city'] ?? '');
-$country = sanitize_text_field($_POST['country'] ?? '');
-$email = sanitize_email($_POST['email'] ?? '');
-$phone = sanitize_text_field($_POST['phone'] ?? '');
-$additional_address = sanitize_text_field($_POST['additional-address'] ?? '');
-$type = sanitize_text_field($_POST['type'] ?? '');
-
-$form_data = [
-	'themes' => $themes,
-	'discover_chronicle' => $discover_chronicle,
-	'civility' => $civility,
-	'lastname' => $lastname,
-	'firstname' => $firstname,
-	'street_address' => $street_address,
-	'address_complement' => $address_complement,
-	'address_complement_bis' => $address_complement_bis,
-	'zipcode' => $zipcode,
-	'city' => $city,
-	'country' => $country,
-	'email' => $email,
-	'phone' => $phone,
-	'additional_address' => $additional_address,
-	'type' => $type,
+$civilite_map = [
+    'M.'   => 'Monsieur',
+    'Mme'  => 'Madame',
+    'Autre' => 'Autre',
 ];
+
+if (isset($_POST['sign_discover_chronicle'])) {
+    if (!isset($_POST['discover_chronicle_nonce']) ||
+        !wp_verify_nonce($_POST['discover_chronicle_nonce'], 'discover_chronicle_action')) {
+        wp_die('Sécurité : formulaire invalide.');
+    }
+
+    $themes = isset($_POST['theme']) ? array_map('sanitize_text_field', (array)$_POST['theme']) : [];
+    $discover_chronicle = sanitize_email($_POST['discover-chronicle'] ?? '');
+    $civility = sanitize_text_field($civility_map[$_POST['civility']] ?? '');
+    $lastname = sanitize_text_field($_POST['lastname'] ?? '');
+    $firstname = sanitize_text_field($_POST['firstname'] ?? '');
+    $street_address = sanitize_text_field($_POST['street-address'] ?? '');
+    $address_complement = sanitize_text_field($_POST['address_complement'] ?? '');
+    $address_complement_bis = sanitize_text_field($_POST['address_complement_bis'] ?? '');
+    $zipcode = sanitize_text_field($_POST['zipcode'] ?? '');
+    $city = sanitize_text_field($_POST['city'] ?? '');
+    $country = sanitize_text_field($_POST['country'] ?? '');
+    $email = sanitize_email($_POST['email'] ?? '');
+    $phone = sanitize_text_field($_POST['phone'] ?? '');
+
+    $form_data = [
+        'Civilite__c' => $civility,
+        'Nom__c' => $lastname,
+        'Prenom__c' => $firstname,
+        'Libelle_de_voie__c' => $street_address,
+        'Complement_adresse__c' => $address_complement,
+        'Lieu_dit__c' => $address_complement_bis,
+        'Code_postal__c' => $zipcode,
+        'Ville__c' => $city,
+        'Pays_Text__c' => $country,
+        'Email__c' => $email,
+        'Telephone__c' => $phone,
+        'Origin' => 'Web',
+        'Type_de_demande_AIF__c' => 'Offre Chronique',
+        'RecordTypeId' => AIF_SALESFORCE_RECORD_TYPE_ID,
+        'Code_Marketing_Prestataire__c' => 'WB_CHRONIQUE',
+    ];
+
+    $find_case_on_sf = get_salesforce_case($email);
+    $existing_case = $find_case_on_sf['totalSize'] > 0;
+
+    if (false === $existing_case) {
+        post_salesforce_case($form_data);
+    }
+
+}
 
 ?>
 
@@ -73,25 +83,6 @@ $form_data = [
 		<div class="discover-chronicle-form-container">
 			<form id="discover-chronicle-form" class="discover-chronicle-form" action="" method="post">
 				<div class="form-mess hidden"></div>
-				<div class="form-row theme-discover-chronicle">
-					<h3>Choisir les thèmes qui vous intéressent</h3>
-					<?php foreach ($options_theme_discover-chronicle as $key => $value) : ?>
-						<div class="form-group" data-theme="<?php echo $key; ?>">
-							<input type="checkbox" class="hidden" value="<?php echo $key; ?>" name="theme">
-							<div class="checkbox <?php echo $key; ?> <?php if ($key === 'hebdo') :?>checked <?php endif;?>"
-								 <?php if ($key === 'hebdo') :?>checked <?php endif;?>
-							></div>
-							<label><?php echo $value; ?></label>
-						</div>
-					<?php endforeach; ?>
-				</div>
-				<input type="text"
-					   name="discover-chronicle"
-					   id="discover-chronicle"
-					   placeholder="Email"
-					   required
-					   value="<?php echo $email_provided; ?>"
-				>
 				<div class="form-group civility">
 					<label class="civility-label">Civilité :</label>
 					<div class="civilities">
@@ -140,7 +131,7 @@ $form_data = [
 				<div class="form-row">
 					<div class="form-group">
 						<label for="address_complement_bis"></label>
-						<input type="text" id="address_complement_bis" name="address_complement_bis"
+						<input type="e" id="address_complement_bis" name="address_complement_bis"
 							   placeholder="Lieu dit">
 						<div class="input-error hidden"></div>
 					</div>
@@ -168,17 +159,17 @@ $form_data = [
 						<select class="country-input " name="country">
 							<option value=""><?php _e('Pays*', 'textdomain'); ?></option>
 							<?php
-							foreach ($countries as $country) :
-								$country_name = get_the_title($country->ID);
-								?>
+                            foreach ($countries as $country) :
+                                $country_name = get_the_title($country->ID);
+                                ?>
 								<option value="<?php echo esc_attr($country_name); ?>"
 									<?php
-									if (esc_attr($country_name) === 'France') :
-										?>
+                                    if (esc_attr($country_name) === 'France') :
+                                        ?>
 										selected="selected"
 									<?php
-									endif;
-									?>
+                                    endif;
+                                ?>
 								>
 									<?php echo esc_html(ucwords(strtolower($country_name))); ?>
 								</option>
@@ -190,7 +181,7 @@ $form_data = [
 					<div class="form-group">
 						<label for="email"></label>
 						<input type="email" id="email" name="email"
-							   placeholder="Adresse" required>
+							   placeholder="Email" required>
 						<div class="input-error hidden"></div>
 					</div>
 					<div class="form-group">
@@ -199,12 +190,6 @@ $form_data = [
 							   placeholder="Téléphone">
 						<div class="input-error hidden"></div>
 					</div>
-				</div>
-				<div class="form-group">
-					<label for="additional-address"></label>
-					<input type="text" id="additional-address" name="additional-address"
-						   placeholder="Complément d'adresse">
-					<div class="input-error hidden"></div>
 				</div>
 				<div class="form-group">
 					<input type="hidden" name="type" value="">
