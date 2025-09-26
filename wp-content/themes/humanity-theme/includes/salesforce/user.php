@@ -39,7 +39,7 @@ function post_salesforce_activist(array $data)
 
 function update_salesforce_users(string $user_id, array $data)
 {
-    $post_url = URL . "sobjects/Contact/Ext_ID_Contact/$user_id";
+    $post_url = URL . "sobjects/Contact/$user_id";
 
     return patch_salesforce_data($post_url, $data);
 }
