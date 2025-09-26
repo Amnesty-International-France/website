@@ -1,17 +1,15 @@
 <?php
 
-function rest_search_document_militant(WP_REST_Request $request)
+function search_resources_by_taxonomy(WP_REST_Request $request, string $taxonomy)
 {
-    global $wpdb;
-
     $term = $request->get_param('term');
 
     $args = [
         'post_type' => 'document',
-        'posts_per_page' => 10,
+        'posts_per_page' => 5,
         'tax_query' => [
             [
-                'taxonomy' => 'document_militant_type',
+                'taxonomy' => $taxonomy,
                 'operator' => 'EXISTS',
             ],
         ],
@@ -24,46 +22,23 @@ function rest_search_document_militant(WP_REST_Request $request)
         while ($query->have_posts()) {
             $query->the_post();
             $results[] = [
-                'title' => get_the_title(),
+                'title' => str_replace('&#8211;', '-', get_the_title()),
                 'link' => get_permalink(),
             ];
         }
     }
 
-    return rest_ensure_response($results);
+    return $results;
+}
+
+function rest_search_document_militant(WP_REST_Request $request)
+{
+    return rest_ensure_response(search_resources_by_taxonomy($request, 'document_militant_type'));
 }
 
 function rest_search_document_democratic(WP_REST_Request $request)
 {
-    global $wpdb;
-
-    $term = $request->get_param('term');
-
-    $args = [
-        'post_type' => 'document',
-        'posts_per_page' => 10,
-        'tax_query' => [
-            [
-                'taxonomy' => 'document_democratic_type',
-                'operator' => 'EXISTS',
-            ],
-        ],
-        's' => $term,
-    ];
-
-    $query = new WP_Query($args);
-    $results = [];
-    if ($query->have_posts()) {
-        while ($query->have_posts()) {
-            $query->the_post();
-            $results[] = [
-                'title' => get_the_title(),
-                'link' => get_permalink(),
-            ];
-        }
-    }
-
-    return rest_ensure_response($results);
+    return rest_ensure_response(search_resources_by_taxonomy($request, 'document_democratic_type'));
 }
 
 add_action('rest_api_init', function () {

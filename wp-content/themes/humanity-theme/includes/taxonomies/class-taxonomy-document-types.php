@@ -189,7 +189,7 @@ class Taxonomy_Document_Types extends Taxonomy
             'most_used'             => _x('Most Used', 'Types', 'amnesty'),
             /* translators: [admin] */
             'back_to_items'         => __('&larr; Retour vers les types', 'amnesty'),
-            'menu_name' 			=> __('Types Document', 'amnesty'),
+            'menu_name' 			=> __('Types document', 'amnesty'),
         ];
 
         if ($defaults) {

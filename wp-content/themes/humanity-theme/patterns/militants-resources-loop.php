@@ -19,8 +19,8 @@ $meta_query = [
     ],
 ];
 
-$search = sanitize_text_field($_GET['q']) ?? null;
-$posts_per_page = $search ? -1 : 2;
+$search = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : null;
+$posts_per_page = $search ? -1 : 30;
 
 $args = [
     'post_type' => 'document',
@@ -36,13 +36,13 @@ $tax_query = [
     ],
 ];
 
-$type_filter = $_GET['qdocument_militant_type'] ?? null;
+$type_filter = isset($_GET['qdocument_militant_type']) ? $_GET['qdocument_militant_type'] : null;
 if ($type_filter) {
     $tax_query[] = [
         [
             'taxonomy' => 'document_militant_type',
-            'field'    => 'term_id',
-            'terms'    => array_map('intval', explode(',', $type_filter)),
+            'field' => 'term_id',
+            'terms' => array_map('intval', explode(',', $type_filter)),
         ],
     ];
 }

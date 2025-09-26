@@ -188,7 +188,8 @@ class Taxonomy_Document_Militant_Types extends Taxonomy
             'most_used'             => _x('Most Used', 'Types', 'amnesty'),
             /* translators: [admin] */
             'back_to_items'         => __('&larr; Retour vers les types militant', 'amnesty'),
-            'menu_name' 			=> __('Types Document militant', 'amnesty'),
+            'menu_name' 			=> __('Types militant', 'amnesty'),
+            'my_space_filter_label' => __('Catégories', 'amnesty'),
         ];
 
         if ($defaults) {
