@@ -6,6 +6,8 @@ $place = get_field('lieu', $post_object);
 
 $city = get_field('city', $post_object);
 
+$description = get_field('description', $post_object);
+
 $is_empty = empty($place) && empty($city) && ! $is_members_only;
 
 ?>
@@ -42,6 +44,9 @@ if ($is_members_only) {
 				<?php echo esc_html($title); ?>
 			</a>
 		</h3>
+		<div class="training-description">
+			<p><?php echo esc_html($description)?></p>
+		</div>
 		<div class="training-term
 				<?php
             if ($is_empty) {
