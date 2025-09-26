@@ -44,16 +44,6 @@
   background-color: var(--wp--preset--color--black);
 }
 
-.post-meta {
-  display: block;
-  padding: 8px 8px 0;
-  font-family: var(--wp--preset--font-family--secondary);
-  font-weight: bold;
-  font-size: 14px;
-  color: var(--wp--preset--color--grey-dark);
-  background-color: var(--wp--preset--color--white);
-}
-
 .post-title {
   padding: 0 8px;
   margin-bottom: 0;
@@ -113,15 +103,6 @@
 .postImage--small .post-title {
   margin-top: 12px;
   padding: 0;
-}
-
-.postImage--none .post-meta,
-.postImage--small .post-meta {
-  padding: 0;
-}
-
-.postImage--none .post-meta {
-  margin-top: 12px;
 }
 
 .postImage--none .post-content {
