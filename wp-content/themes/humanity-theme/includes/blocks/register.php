@@ -83,8 +83,6 @@ require_once __DIR__ . '/read-also/register.php';
 require_once __DIR__ . '/read-also/render.php';
 require_once __DIR__ . '/read-more/register.php';
 require_once __DIR__ . '/read-more/render.php';
-require_once __DIR__ . '/regions/register.php';
-require_once __DIR__ . '/regions/render.php';
 require_once __DIR__ . '/related-content/register.php';
 require_once __DIR__ . '/related-content/render.php';
 require_once __DIR__ . '/related-posts/register.php';
@@ -156,7 +154,6 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_quote_block();
         register_read_also_block();
         register_read_more_block();
-        register_regions_block();
         register_related_content_block();
         register_related_posts_block();
         register_rubric_heading_block();
