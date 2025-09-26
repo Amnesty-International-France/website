@@ -10,7 +10,10 @@ global $wp;
 $post_type   = get_query_var('post_type') ?: 'post';
 $taxonomies  = amnesty_get_object_taxonomies($post_type, 'objects');
 
-$allowed = ['keyword', 'combat', 'location'];
+$allowed = ['combat', 'location'];
+if (is_home()) {
+    $allowed[] = 'category';
+}
 $taxonomies = array_filter(
     $taxonomies,
     static fn ($t) => in_array($t->name, $allowed, true)
