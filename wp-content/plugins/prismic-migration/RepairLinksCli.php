@@ -20,6 +20,7 @@ class RepairLinksCli
             'post_type' => 'any',
             'posts_per_page' => -1,
             'fields' => 'ids',
+            'post_status' => ['publish', 'private'],
         ];
         $post_ids = get_posts($args);
         if ($post_ids) {
@@ -27,7 +28,6 @@ class RepairLinksCli
             $total = 0;
             foreach ($post_ids as $post_id) {
                 $post = get_post($post_id);
-
                 $related = get_post_meta($post_id, '_related_posts_selected', true);
                 if (!empty($related) && is_array($related)) {
                     foreach ($related as $key => $related_article) {
