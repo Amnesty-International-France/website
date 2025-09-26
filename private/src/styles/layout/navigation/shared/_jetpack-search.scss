@@ -83,6 +83,10 @@
 
 button[aria-label='Fermer les résultats de recherche'].jetpack-instant-search__overlay-close {
   background-color: var(--wp--preset--color--black) !important;
+
+  &:hover {
+    background-color: var(--wp--preset--color--grey-black) !important;
+  }
 }
 
 button.jetpack-instant-search__overlay-close svg.gridicon {
