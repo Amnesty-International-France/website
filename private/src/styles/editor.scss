@@ -134,3 +134,7 @@ html {
 *::before {
   box-sizing: inherit;
 }
+
+.block-editor-block-patterns-list__item .block-editor-block-preview__container {
+  display: none !important;
+}
