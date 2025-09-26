@@ -30,4 +30,4 @@ jobs:
           SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
           SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
       - name: Deploy
-        run: ssh staging 'bash ~/github/livraison-preprod.sh'
+        run: ssh staging 'cd github && bash livraison-preprod.sh'
