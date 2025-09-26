@@ -81,7 +81,7 @@
   border-bottom: 1px solid var(--wp--preset--color--grey-light) !important;
 }
 
-button.jetpack-instant-search__overlay-close {
+button[aria-label='Fermer les résultats de recherche'].jetpack-instant-search__overlay-close {
   background-color: var(--wp--preset--color--black) !important;
 }
 
@@ -94,10 +94,11 @@ button.jetpack-instant-search__overlay-close svg.gridicon {
 }
 
 .jetpack-instant-search__scroll-button {
-  padding: 12px 8px !important;
+  padding: 8px 12px !important;
   text-transform: uppercase !important;
   border: 1px solid var(--wp--preset--color--black) !important;
   font-family: var(--wp--preset--font-family--secondary) !important;
+  cursor: pointer !important;
 }
 
 .jetpack-instant-search__search-results
