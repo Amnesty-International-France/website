@@ -1,6 +1,7 @@
 <?php
 
 use blocks\BlockMapper;
+use utils\BrokenTypeException;
 use utils\LinksUtils;
 
 class LiensCartesMapper extends BlockMapper
@@ -23,11 +24,15 @@ class LiensCartesMapper extends BlockMapper
                 $id = FileUploader::uploadMedia($item['img']['url'], legende: $item['img']['copyright'] ?? '', alt: $item['img']['alt'] ?? '');
             }
 
-            if (isset($item['lien']['key'])) {
-                $url = LinksUtils::processLink($item['lien']);
-            } elseif (isset(['media']['key'])) {
-                $url = LinksUtils::processLink($item['media']);
-            } else {
+            try {
+                if (isset($item['lien']['key'])) {
+                    $url = LinksUtils::processLink($item['lien']);
+                } elseif (isset(['media']['key'])) {
+                    $url = LinksUtils::processLink($item['media']);
+                } else {
+                    $url = '';
+                }
+            } catch (BrokenTypeException $e) {
                 $url = '';
             }
 
@@ -60,6 +65,7 @@ class LiensCartesMapper extends BlockMapper
         if (!empty($currentCards)) {
             $this->saveColumns($currentCards);
         }
+        //print_r($this->blocks);
     }
 
     private function saveColumns($cards): void
