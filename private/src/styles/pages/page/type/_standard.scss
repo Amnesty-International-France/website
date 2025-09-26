@@ -24,9 +24,13 @@
   .page-content {
     padding-top: 0;
 
-    &.no-featured-image.no-chapo {
-      .wp-block-heading {
-        margin-top: 20px;
+    &.no-chapo {
+      > :first-child {
+        margin-top: 24px;
+
+        .wp-block-heading {
+          margin-top: 0;
+        }
       }
     }
 
