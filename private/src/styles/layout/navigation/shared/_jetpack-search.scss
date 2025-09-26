@@ -3,8 +3,13 @@
 }
 
 .jetpack-instant-search__search-results-controls {
-  padding: 12px 12px 12px 56px !important;
   border-bottom: 1px solid var(--wp--preset--color--grey-light) !important;
+  padding: 8px 24px 8px 44px !important;
+  display: flex !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  background: var(--wp--preset--color--white) !important;
 }
 
 .jetpack-instant-search__search-form-controls
@@ -22,13 +27,14 @@
 }
 
 .jetpack-instant-search__search-results-secondary {
-  background-color: var(--wp--preset--color--grey-light) !important;
+  background-color: var(--wp--preset--color--grey-lighter) !important;
 }
 
 .jetpack-instant-search__search-result-title .jetpack-instant-search__search-result-title-link {
   font-size: 22px !important;
   font-family: var(--wp--preset--font-family--secondary) !important;
   color: var(--wp--preset--color--black) !important;
+  margin-bottom: 12px !important;
 
   &:hover {
     width: fit-content !important;
