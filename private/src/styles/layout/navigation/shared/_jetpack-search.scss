@@ -52,17 +52,6 @@
   }
 }
 
-.jetpack-instant-search__search-result-title .jetpack-instant-search__search-result-title-link {
-  width: fit-content !important;
-
-  &:hover {
-    width: fit-content !important;
-    text-decoration: underline !important;
-    background-color: transparent !important;
-    color: var(--wp--preset--color--black) !important;
-  }
-}
-
 .jetpack-instant-search__box input[type='search'].jetpack-instant-search__box-input {
   border: none !important;
   box-shadow: none !important;
