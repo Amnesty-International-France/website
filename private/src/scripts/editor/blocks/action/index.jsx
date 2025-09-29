@@ -60,6 +60,29 @@ registerBlockType('amnesty-core/action', {
       default: '',
     },
   },
+  example: {
+    attributes: {
+      type: 'petition',
+      petitionId: 123,
+      surTitle: 'ACTION URGENTE (Aperçu)',
+      overrideTitle: '',
+      overrideImageUrl: '',
+      petitionData: {
+        title: {
+          rendered: 'Aperçu : Défendons la liberté d’expression',
+        },
+        featured_media_src_url: 'https://placehold.co/600x400/ffdb00/000000/png?text=Pétition',
+        link: '#',
+        acf: {
+          objectif_signatures: 50000,
+          date_de_fin: '2025-12-31',
+        },
+        meta: {
+          _amnesty_signature_count: 23456,
+        },
+      },
+    },
+  },
   edit: EditComponent,
   save: () => null,
 });
