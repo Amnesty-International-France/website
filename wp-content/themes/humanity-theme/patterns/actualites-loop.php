@@ -8,41 +8,31 @@
 
 $GLOBALS['is_my_space_actualites_loop'] = true;
 
-$cat = get_category_by_slug('actualites');
-$cat_id = $cat ? $cat->term_id : 0;
-
 $paged = get_query_var('paged') ? get_query_var('paged') : 1;
 
+$slug = get_post_field('post_name', get_post());
+
+$meta_query = [];
+if ('actualites-democratiques' === $slug) {
+    $meta_query[] = [
+        'key' => 'category',
+        'value' => 'vie-democratique',
+    ];
+} elseif ('actualites-militantes' === $slug) {
+    $meta_query[] = [
+        'key' => 'category',
+        'value' => 'vie-militante',
+    ];
+}
+
 $args = [
-    'post_type' => 'post',
+    'post_type' => 'actualities-my-space',
     'posts_per_page' => 18,
     'orderby' => 'date',
     'order' => 'DESC',
-    'category__in' => [$cat_id],
     'paged' => $paged,
+    'meta_query' => $meta_query,
 ];
-
-$tax_query = [];
-
-if (isset($_GET['qlocation'])) {
-    $tax_query[] = [
-        'taxonomy' => 'location',
-        'field'    => 'term_id',
-        'terms'    => array_map('intval', explode(',', $_GET['qlocation'])),
-    ];
-}
-
-if (isset($_GET['qcombat'])) {
-    $tax_query[] = [
-        'taxonomy' => 'combat',
-        'field'    => 'term_id',
-        'terms'    => array_map('intval', explode(',', $_GET['qcombat'])),
-    ];
-}
-
-if (!empty($tax_query)) {
-    $args['tax_query'] = $tax_query;
-}
 
 $query = new WP_Query($args);
 ?>

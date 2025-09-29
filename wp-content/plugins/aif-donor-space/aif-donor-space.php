@@ -99,10 +99,16 @@ function aif_donor_space_create_pages()
             'title' => 'Mon Espace',
             'children' => [
                 'actualites' => ['title' => 'Actualités'],
-                'agir-et-se-mobiliser' => ['title' => 'Agir et se mobiliser'],
+                'agir-et-se-mobiliser' => [
+                    'title' => 'Agir et se mobiliser',
+                    'children' => [
+                        'actualites-militantes' => ['title' => 'Actualités militantes'], // ! used in actualites-loop.php
+                    ],
+                ],
                 'vie-democratique' => [
                     'title' => 'Vie démocratique',
                     'children' => [
+                        'actualites-democratiques' => ['title' => 'Actualités démocratiques'], // ! used in actualites-loop.php
                         'ressources-vie-democratique' => ['title' => 'Ressources vie démocratique'],
                     ],
                 ],

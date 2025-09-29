@@ -11,6 +11,11 @@ const getCategoryLink = (slug) => {
   if (slug === 'landmark') {
     return '/reperes';
   }
+
+  if (slug === 'actualities-my-space') {
+    return '/mon-espace/actualites';
+  }
+
   return `/${slug}`;
 };
 
@@ -31,10 +36,9 @@ const PostSearchControl = ({ selectedPostId, selectedPostTitle, categorySlug, on
     }
 
     setLoading(true);
-
-    if (categorySlug === 'landmark') {
+    if (categorySlug === 'landmark' || categorySlug === 'actualities-my-space') {
       apiFetch({
-        path: `/wp/v2/landmark?search=${encodeURIComponent(searchTerm)}&per_page=10&_embed`,
+        path: `/wp/v2/${categorySlug}?search=${encodeURIComponent(searchTerm)}&per_page=10&_embed`,
       })
         .then((posts) => {
           setResults(posts);
@@ -189,7 +193,10 @@ const PostSearchControl = ({ selectedPostId, selectedPostTitle, categorySlug, on
 
 const EditComponent = ({ attributes, setAttributes }) => {
   const { items = [] } = attributes;
-
+  const isMySpace = useSelect(
+    (select) => select('core/editor').getEditedPostAttribute('slug') === 'mon-espace',
+    [],
+  );
   const blockProps = useBlockProps();
 
   const categories = useSelect(
@@ -197,20 +204,23 @@ const EditComponent = ({ attributes, setAttributes }) => {
     [],
   );
 
-  const categoryOptions = categories
-    ? [
-        ...categories
-          .filter((cat) => cat.name !== 'Non classé')
-          .map((cat) => ({ label: cat.name, value: cat.slug })),
-        { label: 'Repères', value: 'landmark' },
-      ]
-    : [];
-
   const updateItem = (index, key, value) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [key]: value };
     setAttributes({ items: newItems });
   };
+
+  let categoryOptions = [];
+  if (isMySpace) {
+    categoryOptions = [{ label: 'Actu mon espace', value: 'actualities-my-space' }];
+  } else if (categories) {
+    categoryOptions = [
+      ...categories
+        .filter((cat) => cat.name !== 'Non classé')
+        .map((cat) => ({ label: cat.name, value: cat.slug })),
+      { label: 'Repères', value: 'landmark' },
+    ];
+  }
 
   if (!categories) {
     return (
@@ -224,6 +234,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
   const seeAll = (categorySlug) => {
     switch (categorySlug) {
       case 'actualites':
+      case 'actualities-my-space':
         return 'Voir toutes les actualités';
       case 'campagnes':
         return 'Voir toutes les campagnes';
@@ -247,64 +258,68 @@ const EditComponent = ({ attributes, setAttributes }) => {
   return (
     <>
       <InspectorControls>
-        {items.map((item, index) => (
-          <PanelBody
-            key={index}
-            title={`${__('Bloc', 'amnesty')} ${index + 1}`}
-            initialOpen={index === 0}
-          >
-            <SelectControl
-              label={__('Type de contenu (catégorie)', 'amnesty')}
-              value={item.category}
-              options={categoryOptions}
-              onChange={(value) => {
-                const newItems = [...items];
-                newItems[index] = {
-                  ...newItems[index],
-                  category: value,
-                  selectedPostId: null,
-                  selectedPostTitle: null,
-                  selectedPostSlug: null,
-                  _embedded: null,
-                  selectedPostDate: null,
-                  selectedPostCustomTerms: [],
-                };
-                setAttributes({ items: newItems });
-              }}
-            />
-
-            {item.category ? (
-              <PostSearchControl
-                selectedPostId={item.selectedPostId}
-                selectedPostTitle={item.selectedPostTitle}
-                categorySlug={item.category}
-                onChange={(postId, postTitle, postSlug, embedded, postDate, customTerms) => {
+        {items.map((item, index) => {
+          const itemCategory =
+            isMySpace && !item.selectedPostId ? 'actualities-my-space' : item.category;
+          return (
+            <PanelBody
+              key={index}
+              title={`${__('Bloc', 'amnesty')} ${index + 1}`}
+              initialOpen={index === 0}
+            >
+              <SelectControl
+                label={__('Type de contenu (catégorie)', 'amnesty')}
+                value={itemCategory}
+                options={categoryOptions}
+                onChange={(value) => {
                   const newItems = [...items];
                   newItems[index] = {
                     ...newItems[index],
-                    selectedPostId: postId,
-                    selectedPostTitle: postTitle,
-                    selectedPostSlug: postSlug,
-                    _embedded: embedded || null,
-                    selectedPostDate: postDate,
-                    selectedPostCustomTerms: customTerms || [],
+                    category: value,
+                    selectedPostId: null,
+                    selectedPostTitle: null,
+                    selectedPostSlug: null,
+                    _embedded: null,
+                    selectedPostDate: null,
+                    selectedPostCustomTerms: [],
                   };
                   setAttributes({ items: newItems });
                 }}
               />
-            ) : (
-              <p>{__('Sélectionnez une catégorie pour chercher des contenus.', 'amnesty')}</p>
-            )}
 
-            {index === 0 && (
-              <TextControl
-                label={__('Surtitre (facultatif)', 'amnesty')}
-                value={item.subtitle || ''}
-                onChange={(value) => updateItem(index, 'subtitle', value)}
-              />
-            )}
-          </PanelBody>
-        ))}
+              {itemCategory ? (
+                <PostSearchControl
+                  selectedPostId={item.selectedPostId}
+                  selectedPostTitle={item.selectedPostTitle}
+                  categorySlug={itemCategory}
+                  onChange={(postId, postTitle, postSlug, embedded, postDate, customTerms) => {
+                    const newItems = [...items];
+                    newItems[index] = {
+                      ...newItems[index],
+                      selectedPostId: postId,
+                      selectedPostTitle: postTitle,
+                      selectedPostSlug: postSlug,
+                      _embedded: embedded || null,
+                      selectedPostDate: postDate,
+                      selectedPostCustomTerms: customTerms || [],
+                    };
+                    setAttributes({ items: newItems });
+                  }}
+                />
+              ) : (
+                <p>{__('Sélectionnez une catégorie pour chercher des contenus.', 'amnesty')}</p>
+              )}
+
+              {index === 0 && (
+                <TextControl
+                  label={__('Surtitre (facultatif)', 'amnesty')}
+                  value={item.subtitle || ''}
+                  onChange={(value) => updateItem(index, 'subtitle', value)}
+                />
+              )}
+            </PanelBody>
+          );
+        })}
       </InspectorControls>
 
       <section {...blockProps} className="articles-homepage">

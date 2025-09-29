@@ -30,6 +30,8 @@ if (!function_exists('render_articles_homepage_block')) {
             {
                 if ($slug === 'landmark') {
                     return esc_url(get_post_type_archive_link('landmark') ?: home_url('/reperes'));
+                } elseif ($slug === 'actualities-my-space') {
+                    return esc_url(home_url('/mon-espace/actualites'));
                 } else {
                     $category = get_category_by_slug($slug);
                     if ($category) {
@@ -125,7 +127,6 @@ if (!function_exists('render_articles_homepage_block')) {
             $current_post_type = get_post_type($post);
             $entity_slug = '';
             $entity_label = '';
-            $chip_style = 'outline-black';
 
             if ($current_post_type === 'post') {
                 $main_category = amnesty_get_a_post_term($post->ID);
@@ -181,6 +182,7 @@ if (!function_exists('render_articles_homepage_block')) {
             {
                 switch ($slug) {
                     case 'actualites':
+                    case 'actualities-my-space':
                         return 'Voir toutes les actualités';
                     case 'campagnes':
                         return 'Voir toutes les campagnes';
@@ -216,6 +218,11 @@ if (!function_exists('render_articles_homepage_block')) {
                         $entity_label = $posts[0]['entity_label'];
                         $post_date = $posts[0]['post_date'];
                         $custom_terms = $posts[0]['custom_terms'];
+
+                        if ($post->post_type === 'actualities-my-space') {
+                            $entity_label = get_field('category', $posts[0]);
+                            $entity_slug = 'actualities-my-space';
+                        }
                         ?>
 
                     <div class="article-main-desktop">
@@ -329,6 +336,11 @@ if (!function_exists('render_articles_homepage_block')) {
                             $entity_label = $post_data['entity_label'];
                             $post_date = $post_data['post_date'];
                             $custom_terms = $post_data['custom_terms'];
+
+                            if ($post->post_type === 'actualities-my-space') {
+                                $entity_label = get_field('category', $post);
+                                $entity_slug = 'actualities-my-space';
+                            }
                             ?>
                         <div class="article-side">
                             <a href="<?php echo esc_url(url: $url); ?>" target="_blank" rel="noopener noreferrer">
