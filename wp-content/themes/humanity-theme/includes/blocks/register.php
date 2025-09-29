@@ -8,8 +8,6 @@ if (! function_exists('register_block_type')) {
     return;
 }
 
-require_once __DIR__ . '/_deprecated/header/class-header-block-renderer.php';
-require_once __DIR__ . '/_deprecated/header/register.php';
 require_once __DIR__ . '/action/register.php';
 require_once __DIR__ . '/action/render.php';
 require_once __DIR__ . '/actions-homepage/register.php';
@@ -118,7 +116,6 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_agir_legacy_block();
         register_article_card_block();
         register_articles_homepage_block();
-        register_banner_block();
         register_chronicle_card_block();
         register_button_block();
         register_call_to_action_block();
@@ -134,7 +131,6 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_edh_card_block();
         register_event_card_block();
         register_get_informed_block();
-        register_header_block();
         register_hero_block();
         register_hero_homepage_block();
         register_image_block();
