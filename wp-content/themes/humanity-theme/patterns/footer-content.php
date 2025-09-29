@@ -51,17 +51,17 @@ $social_links = [
 $action_links = [
     [
         'name' => 'J’AGIS',
-        'url' => '#',
+        'url' => '/agir-avec-nous/comment-agir/',
         'svg' => '/assets/images/icon-agir.svg',
     ],
     [
         'name' => 'JE DONNE',
-        'url' => '#',
+        'url' => '/nous-soutenir/don/',
         'svg' => '/assets/images/icon-health.svg',
     ],
     [
         'name' => 'JE M’ENGAGE',
-        'url' => '#',
+        'url' => '/agir-avec-nous/agir-pres-de-chez-soi/',
         'svg' => '/assets/images/icon-megaphone.svg',
     ],
 
