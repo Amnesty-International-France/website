@@ -41,7 +41,6 @@ import './editor/blocks/post-list/index.jsx';
 import './editor/blocks/quote/index.jsx';
 import './editor/blocks/read-also/index.jsx';
 import './editor/blocks/read-more/index.jsx';
-import './editor/blocks/related-content/index.jsx';
 import './editor/blocks/rubric-heading/index.jsx';
 import './editor/blocks/section/index.jsx';
 import './editor/blocks/section-home/index.jsx';
