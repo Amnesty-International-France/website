@@ -60,8 +60,6 @@ require_once __DIR__ . '/key-figure/register.php';
 require_once __DIR__ . '/latest-chronicle-promo/register.php';
 require_once __DIR__ . '/latest-chronicle-promo/render.php';
 require_once __DIR__ . '/link-icon/register.php';
-require_once __DIR__ . '/links-with-icons/register.php';
-require_once __DIR__ . '/links-with-icons/render.php';
 require_once __DIR__ . '/menu/register.php';
 require_once __DIR__ . '/menu/render.php';
 require_once __DIR__ . '/mission-homepage/register.php';
@@ -133,7 +131,6 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_key_figure_block();
         register_latest_chronicle_promo_block();
         register_link_icon_block();
-        register_links_with_icons_block();
         register_list_block();
         register_menu_block();
         register_mission_homepage_block();
