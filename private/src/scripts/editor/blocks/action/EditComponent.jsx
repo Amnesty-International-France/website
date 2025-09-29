@@ -317,7 +317,7 @@ const EditComponent = (props) => {
                 <p style={{ marginTop: 0, marginBottom: '4px' }}>
                   {__('Pétition sélectionnée :', 'amnesty')}
                 </p>
-                <strong dangerouslySetInnerHTML={{ __html: petitionData.title.rendered }} />
+                <strong dangerouslySetInnerHTML={{ __html: petitionData?.title?.rendered }} />
                 <Button
                   isLink
                   isDestructive
