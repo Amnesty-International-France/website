@@ -19,7 +19,6 @@ import fluidIframe from './modules/fluid-iframe';
 import tweetAction from './modules/tweet-action';
 import categorySlider from './modules/category-slider';
 import copyShare from './modules/copy-share';
-import counters from './modules/counter';
 import termList from './modules/term-list';
 import tabbedNav from './modules/tabbed-nav';
 import browserDetector from './modules/browser-detector';
@@ -64,7 +63,6 @@ const App = () => {
   tweetAction();
   categorySlider();
   copyShare();
-  counters();
   termList();
   tabbedNav();
   loadVideos();

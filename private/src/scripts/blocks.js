@@ -45,7 +45,6 @@ import './editor/blocks/rubric-heading/index.jsx';
 import './editor/blocks/section/index.jsx';
 import './editor/blocks/section-home/index.jsx';
 import './editor/blocks/slider/index.jsx';
-import './editor/blocks/stat-counter/index.jsx';
 import './editor/blocks/term-list/index.jsx';
 import './editor/blocks/tweet/index.jsx';
 import './editor/blocks/video/index.jsx';
