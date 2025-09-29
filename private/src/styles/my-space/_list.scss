@@ -5,6 +5,14 @@
   display: flex;
   flex-direction: column;
 
+  &-title {
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 45px;
+    font-weight: bold;
+    line-height: 51px;
+    margin-bottom: 0;
+  }
+
   .postlist {
     max-width: none !important;
     margin: 0 !important;
@@ -53,12 +61,20 @@
 
 .aif-agenda {
   max-width: $container-hg;
-  margin-top: 24px;
+
+  &-title {
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 45px;
+    font-weight: bold;
+    line-height: 51px;
+    margin-bottom: 0;
+  }
 
   .events {
     .event-filters {
       width: 100% !important;
       padding: 22px 24px !important;
+      margin-top: 24px !important;
 
       .event-filters-container {
         display: flex !important;
@@ -126,11 +142,21 @@
   }
 }
 
-body:has(.aif-militants-resources) .page-header, body:has(.aif-democratic-life-resources) .page-header {
+body:has(.aif-militants-resources) .page-header,
+body:has(.aif-democratic-life-resources) .page-header {
   display: none;
 }
 
-.aif-militants-resources, .aif-democratic-life-resources {
+.aif-militants-resources,
+.aif-democratic-life-resources {
+  &-title {
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 45px;
+    font-weight: bold;
+    line-height: 51px;
+    margin-bottom: 0;
+  }
+
   .document-list-filters {
     padding: 24px;
     background-color: var(--wp--preset--color--grey-light) !important;
@@ -261,6 +287,14 @@ body:has(.aif-militants-resources) .page-header, body:has(.aif-democratic-life-r
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  &-title {
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 45px;
+    font-weight: bold;
+    line-height: 51px;
+    margin-bottom: 0;
+  }
 
   .postlist {
     max-width: none !important;

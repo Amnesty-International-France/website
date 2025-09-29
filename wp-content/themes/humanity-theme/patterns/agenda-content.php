@@ -136,6 +136,7 @@ if ($user_longitude && $user_latitude) {
 <main class="aif-donor-space-content">
     <!-- wp:pattern {"slug":"amnesty/my-space-header"} /-->
     <div class="aif-agenda">
+        <h2 class="aif-agenda-title"><?php the_title(); ?></h2>
         <div class="events wp-site-blocks">
             <div class="event-filters">
                 <div class="event-filters-container">

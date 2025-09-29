@@ -11,6 +11,7 @@
 <main class="aif-donor-space-content">
     <!-- wp:pattern {"slug":"amnesty/my-space-header"} /-->
     <div class="aif-trainings">
+        <h2 class="aif-trainings-title"><?php the_title(); ?></h2>
         <!-- wp:amnesty-core/archive-filters-trainings-my-space /-->
         <!-- wp:pattern {"slug":"amnesty/trainings-loop-my-space"} /-->
     </div>
