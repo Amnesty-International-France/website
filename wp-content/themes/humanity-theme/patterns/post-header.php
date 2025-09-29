@@ -7,8 +7,6 @@
  * Inserter: no
  */
 
-use function Amnesty\Blocks\amnesty_render_header_block;
-
 if (! amnesty_post_has_header()) {
     return;
 }
@@ -20,7 +18,6 @@ if (! array_filter($hero_data)) {
 }
 
 add_filter('wp_kses_allowed_html', 'amnesty_wp_kses_post_allow_style_tag', 10, 2);
-echo wp_kses_post(amnesty_render_header_block($hero_data['attrs'], $hero_data['content']));
 remove_filter('wp_kses_allowed_html', 'amnesty_wp_kses_post_allow_style_tag', 10, 2);
 
 if (! is_admin()) {
