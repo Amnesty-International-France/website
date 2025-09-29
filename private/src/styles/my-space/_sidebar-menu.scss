@@ -206,6 +206,56 @@ body.menu-open {
   &-menu {
     flex: 1;
     padding: 24px 30px;
+
+    > .menu-item {
+      > a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--wp--preset--color--white);
+        transition: color 0.2s;
+
+        &:hover {
+          color: var(--wp--preset--color--primary);
+        }
+
+        &::before {
+          content: '';
+          display: inline-block;
+          width: 22px;
+          height: 22px;
+          flex-shrink: 0;
+          background-color: currentColor;
+          mask-repeat: no-repeat;
+          mask-position: center;
+          mask-size: contain;
+        }
+      }
+
+      &.menu-icon-welcome > a::before {
+        mask-image: url('/wp-content/themes/humanity-theme/assets/images/menu-icon-welcome.svg');
+      }
+
+      &.menu-icon-news > a::before {
+        mask-image: url('/wp-content/themes/humanity-theme/assets/images/menu-icon-news.svg');
+      }
+
+      &.menu-icon-tools > a::before {
+        mask-image: url('/wp-content/themes/humanity-theme/assets/images/menu-icon-tools.svg');
+      }
+
+      &.menu-icon-mobilize > a::before {
+        mask-image: url('/wp-content/themes/humanity-theme/assets/images/menu-icon-mobilize.svg');
+      }
+
+      &.menu-icon-democratic > a::before {
+        mask-image: url('/wp-content/themes/humanity-theme/assets/images/menu-icon-democratic.svg');
+      }
+
+      &.menu-icon-donations > a::before {
+        mask-image: url('/wp-content/themes/humanity-theme/assets/images/menu-icon-donations.svg');
+      }
+    }
   }
 
   &-footer {
@@ -214,6 +264,36 @@ body.menu-open {
 
     ul {
       padding: 0;
+    }
+
+    > .menu-item {
+      > a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--wp--preset--color--white);
+        transition: color 0.2s;
+
+        &:hover {
+          color: var(--wp--preset--color--primary);
+        }
+
+        &::before {
+          content: '';
+          display: inline-block;
+          width: 22px;
+          height: 22px;
+          flex-shrink: 0;
+          background-color: currentColor;
+          mask-repeat: no-repeat;
+          mask-position: center;
+          mask-size: contain;
+        }
+      }
+
+      &.menu-icon-account > a::before {
+        mask-image: url('/wp-content/themes/humanity-theme/assets/images/menu-icon-account.svg');
+      }
     }
   }
 }
