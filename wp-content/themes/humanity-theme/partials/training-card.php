@@ -36,7 +36,9 @@ if ($is_members_only) {
 ?>
 
 	<div class="training-card-content">
-		<p class="training-date">Le <?php echo esc_html($formatted_date); ?></p>
+		<?php if ($formatted_date): ?>
+			<p class="training-date">Le <?php echo esc_html($formatted_date); ?></p>
+		<?php endif; ?>
 		<h3 class="training-card-title">
 			<a href="<?php echo esc_url($permalink); ?>">
 				<?php echo esc_html($title); ?>

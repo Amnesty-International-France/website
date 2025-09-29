@@ -26,10 +26,12 @@ if (!function_exists('render_training_card_block')) {
         $acf_date = get_field('date', $post_id);
         $category_value = get_field('categories', $post_id);
 
-        $formatted_date = 'Date non définie';
+        $formatted_date = null;
         if ($acf_date) {
             $date_object = DateTime::createFromFormat('d/m/Y g:i a', $acf_date);
-            $formatted_date = $date_object ? $date_object->format('d/m/Y') : 'Date invalide';
+            if ($date_object) {
+                $formatted_date = $date_object->format('d/m/Y');
+            }
         }
 
         $category_label = '';
