@@ -86,6 +86,10 @@ if (!$post_object instanceof WP_Post) {
                 $label = $post_type_object->labels->singular_name;
                 $link = get_post_type_archive_link($post_type);
             }
+        } elseif ('actualities-my-space' === $post_type) {
+            $post_type_object = get_post_type_object($post_type);
+            $label = get_field('category', $post_id);
+            $link = get_post_type_archive_link($post_type);
         } else {
             $post_type_object = get_post_type_object($post_type);
             $label = $post_type_object->labels->singular_name;

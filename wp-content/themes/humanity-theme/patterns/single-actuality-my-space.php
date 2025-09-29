@@ -1,11 +1,11 @@
 <?php
 /**
- * Template pour afficher une formation single dans le contexte "Mon Espace"
+ * Title: Single actuality my space
+ * Description: Render a my space actuality
+ * Slug: amnesty/single-actuality-my-space
+ * Inserter: no
  */
-
 ?>
-
-<?php get_header(); ?>
 
 <div class="aif-donor-space-layout">
     <?php echo render_block(['blockName' => 'core/pattern', 'attrs' => ['slug' => 'amnesty/my-space-sidebar'] ]); ?>
