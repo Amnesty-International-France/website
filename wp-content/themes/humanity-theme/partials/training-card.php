@@ -27,7 +27,7 @@ if ($is_members_only) {
     render_chip_category_block(
         [
             'label' => esc_html(str_replace('-', ' ', $lieu)),
-            'link'  => esc_url($link),
+            'link'  => esc_url($permalink),
             'size'  => 'large',
             'style' => $is_members_only ? 'bg-black' : 'bg-yellow',
             'icon'  => $icon ?? '',
