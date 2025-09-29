@@ -58,4 +58,3 @@ import './editor/fse-blocks/sidebar/index.jsx';
 // To remove in v2.0.0
 import './editor/blocks-deprecated/collapsable/index.jsx';
 import './editor/blocks-deprecated/header/index.jsx';
-import './editor/blocks-deprecated/links-with-icons/index.jsx';
