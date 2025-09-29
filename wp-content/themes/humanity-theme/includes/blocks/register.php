@@ -103,7 +103,7 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
      *
      * @return void
      */
-    function amnesty_register_php_rendered_blocks()
+    function amnesty_register_php_rendered_blocks(): void
     {
         register_action_block();
         register_actions_homepage_block();
