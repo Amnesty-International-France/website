@@ -8,7 +8,6 @@ const { __ } = wp.i18n;
 
 const ALLOWED_BLOCKS = applyFilters('amnesty.blocks.collapsable.allowedBlocks', [
   'amnesty-core/block-section',
-  'amnesty-core/custom-card',
   'amnesty-core/quote',
   'amnesty-core/tweet-block',
   'core/buttons',
