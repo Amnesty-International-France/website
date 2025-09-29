@@ -239,14 +239,6 @@ require_once realpath(__DIR__ . '/includes/taxonomies/yoast_breadcrumb_taxonomie
 // endregion taxonomies
 
 /**
- * Theme feature includes
- */
-// region features
-require_once realpath(__DIR__ . '/includes/features/related-content/class-related-content.php');
-require_once realpath(__DIR__ . '/includes/features/related-content/class-wp-rest-related-content-controller.php');
-// endregion features
-
-/**
  * Theme query filter includes
  */
 // region query filters
