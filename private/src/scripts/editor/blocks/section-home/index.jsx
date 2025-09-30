@@ -8,6 +8,7 @@ registerBlockType('amnesty-core/section-home', {
   title: 'Home de rubrique',
   description: __('Section home de rubrique', 'amnesty'),
   category: 'amnesty-core',
+  icon: 'layout',
   attributes: {
     title: {
       type: 'string',
@@ -92,6 +93,42 @@ registerBlockType('amnesty-core/section-home', {
     buttonLinkTitle: {
       type: 'string',
       default: '',
+    },
+  },
+  example: {
+    attributes: {
+      title: 'Nos combats, votre pouvoir',
+      text: 'Chaque jour, nous luttons pour un monde où les droits humains sont respectés par tous. Découvrez les thématiques au cœur de nos actions.',
+      bgColor: 'grey',
+      showImage: true,
+      mediaUrl: 'https://placehold.co/600x800/222/FFF/png?text=Image+Section',
+      mediaPosition: 'left',
+      mediaCaption: 'Crédit photo',
+      mediaDescription: 'Description photo',
+      icons: [
+        {
+          icon: 'activism-death-penalty',
+          text: 'Peine de mort',
+          link: '#',
+          linkTitle: 'Peine de mort',
+        },
+        {
+          icon: 'activism-freedom-of-expression',
+          text: "Liberté d'expression",
+          link: '#',
+          linkTitle: "Liberté d'expression",
+        },
+        {
+          icon: 'activism-armed-conflict',
+          text: 'Conflits armés',
+          link: '#',
+          linkTitle: 'Conflits armés',
+        },
+      ],
+      displayButton: true,
+      buttonLabel: 'Toutes nos thématiques',
+      buttonLink: '#',
+      buttonPosition: 'left',
     },
   },
   edit: EditComponent,
