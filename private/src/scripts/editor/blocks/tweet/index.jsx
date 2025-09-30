@@ -131,6 +131,14 @@ registerBlockType('amnesty-core/tweet-block', {
       },
     },
   ],
+  example: {
+    attributes: {
+      title: 'Tweetez pour la justice',
+      content:
+        "Je demande la libération immédiate de tous les prisonniers d'opinion. La liberté d'expression n'est pas un crime ! #DroitsHumains @Amnesty",
+      alignment: 'center',
+    },
+  },
 
   edit: DisplayComponent,
 
