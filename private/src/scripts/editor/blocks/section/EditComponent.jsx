@@ -81,8 +81,8 @@ const EditComponent = (props) => {
                 'core/heading',
                 'core/list',
                 'core/paragraph',
-                'core/button',
                 'core/columns',
+                'amnesty-core/button',
                 'amnesty-core/key-figure',
               ]}
             />
