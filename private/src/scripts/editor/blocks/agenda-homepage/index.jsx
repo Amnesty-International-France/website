@@ -6,6 +6,7 @@ registerBlockType('amnesty-core/agenda-homepage', {
   title: 'Agenda Homepage',
   description: "Section pour l'affichage d'évènements sur la page d'accueil",
   category: 'amnesty-core',
+  icon: 'calendar-alt',
   attributes: {
     selectionMode: {
       type: 'string',
@@ -29,6 +30,12 @@ registerBlockType('amnesty-core/agenda-homepage', {
     },
     chronicleImageId: {
       type: 'number',
+    },
+  },
+  example: {
+    attributes: {
+      selectionMode: 'latest',
+      chronicleImageUrl: 'https://placehold.co/600x400/555/FFF/png?text=La+Chronique',
     },
   },
   edit: EditComponent,
