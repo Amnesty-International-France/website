@@ -5,9 +5,8 @@ const { useSelect } = wp.data;
 const { useState } = wp.element;
 
 const EditComponent = ({ attributes, setAttributes }) => {
-  const { mediaIds } = attributes;
+  const { mediaIds = [] } = attributes;
   const [errorMessage, setErrorMessage] = useState(null);
-
   const selectedMedia = useSelect(
     (select) =>
       mediaIds.length > 0 ? mediaIds.map((id) => select('core').getMedia(id)).filter(Boolean) : [],
