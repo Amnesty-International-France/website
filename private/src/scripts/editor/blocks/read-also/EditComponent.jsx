@@ -1,50 +1,138 @@
 const { __ } = wp.i18n;
 const { useEffect, useState } = wp.element;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
-const { PanelBody, SelectControl, TextControl } = wp.components;
+const {
+  PanelBody,
+  SelectControl,
+  TextControl,
+  Spinner,
+  ToggleControl,
+  Button: WpButton,
+} = wp.components;
+const { useSelect } = wp.data;
+const apiFetch = wp.apiFetch;
 
 const EditComponent = ({ attributes, setAttributes }) => {
-  const { postId, linkType = 'internal', externalUrl = '', externalLabel = '' } = attributes;
+  const {
+    linkType = 'internal',
+    externalUrl = '',
+    externalLabel = '',
+    postType = '',
+    internalUrl = '',
+    internalUrlTitle = '',
+    postId = 0,
+    targetBlank = false,
+  } = attributes;
 
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
-  useEffect(() => {
-    fetch('/wp-json/wp/v2/posts?per_page=100')
-      .then((response) => response.json())
-      .then((data) => {
-        setPosts(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Erreur de récupération des posts', error);
-        setLoading(false);
-      });
+  const allowedPostTypes = [
+    'post',
+    'page',
+    'fiche_pays',
+    'landmark',
+    'local-structures',
+    'petition',
+    'press-release',
+    'training',
+    'document',
+    'edh',
+    'chronique',
+    'tribe_events',
+  ];
+
+  const availablePostTypes = useSelect((select) => {
+    const types = select('core').getPostTypes({ per_page: -1 });
+    return types ? types.filter((type) => allowedPostTypes.includes(type.slug)) : [];
   }, []);
 
-  const handlePostSelect = (selectedId) => {
-    if (!selectedId) {
-      setAttributes({ postId: null });
+  const postTypeOptions = availablePostTypes.map((type) => ({
+    label: type.name,
+    value: type.slug,
+  }));
+
+  useEffect(() => {
+    if (postId && !internalUrl) {
+      apiFetch({ path: `/wp/v2/posts/${postId}?_fields=link,title,type` })
+        .catch(() => apiFetch({ path: `/wp/v2/pages/${postId}?_fields=link,title,type` }))
+        .catch(() => Promise.reject())
+        .then((post) => {
+          if (post) {
+            setAttributes({
+              internalUrl: post.link,
+              internalUrlTitle: post.title.rendered,
+              postType: post.type,
+            });
+          }
+        })
+        .catch(() => {
+          console.warn(
+            `"Lire aussi" block: Impossible de trouver le contenu pour le postId: ${postId}`,
+          );
+        });
+    }
+  }, [postId, internalUrl, setAttributes]);
+
+  useEffect(() => {
+    if (!searchTerm || searchTerm.length < 2 || !postType) {
+      setSearchResults([]);
       return;
     }
+    const selectedTypeObject = availablePostTypes.find((type) => type.slug === postType);
+    if (!selectedTypeObject) return;
 
-    const selectedPostId = parseInt(selectedId, 10);
-    setAttributes({ postId: selectedPostId });
+    const path = `/wp/v2/${selectedTypeObject.rest_base}?search=${encodeURIComponent(
+      searchTerm,
+    )}&per_page=10&_fields=id,title,link`;
+
+    setIsSearching(true);
+    apiFetch({ path })
+      .then((items) => {
+        setSearchResults(items);
+        setIsSearching(false);
+      })
+      .catch(() => {
+        setSearchResults([]);
+        setIsSearching(false);
+      });
+  }, [searchTerm, postType, availablePostTypes]);
+
+  const handleSelectPostType = (value) => {
+    setAttributes({ postType: value, internalUrl: '', internalUrlTitle: '', postId: 0 });
+    setSearchTerm('');
+    setSearchResults([]);
   };
 
-  const selectedPost = posts.find((post) => post.id === postId);
+  const handleSelectSearchResult = (item) => {
+    setAttributes({
+      internalUrl: item.link,
+      internalUrlTitle: item.title.rendered,
+      postId: item.id,
+    });
+    setSearchTerm('');
+    setSearchResults([]);
+  };
+
+  const handleRemoveLink = () => {
+    setAttributes({ internalUrl: '', internalUrlTitle: '', postId: 0 });
+  };
 
   let linkContent;
+  const linkProps = {
+    ...(targetBlank && { target: '_blank', rel: 'noopener noreferrer' }),
+  };
 
-  if (linkType === 'internal' && postId && selectedPost) {
+  if (linkType === 'internal' && internalUrl) {
     linkContent = (
-      <a href={selectedPost.link} target="_blank" rel="noopener noreferrer">
-        {selectedPost.title.rendered}
+      <a href={internalUrl} {...linkProps} onClick={(e) => e.preventDefault()}>
+        <span dangerouslySetInnerHTML={{ __html: internalUrlTitle }} />
       </a>
     );
   } else if (linkType === 'external' && externalUrl) {
     linkContent = (
-      <a href={externalUrl} target="_blank" rel="noopener noreferrer">
+      <a href={externalUrl} {...linkProps} onClick={(e) => e.preventDefault()}>
         {externalLabel || externalUrl}
       </a>
     );
@@ -53,7 +141,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
       <span>
         {linkType === 'external'
           ? __('Aucun lien externe fourni.', 'amnesty')
-          : __('Aucun article sélectionné.', 'amnesty')}
+          : __('Aucun contenu interne sélectionné.', 'amnesty')}
       </span>
     );
   }
@@ -66,43 +154,98 @@ const EditComponent = ({ attributes, setAttributes }) => {
             label={__('Type de lien', 'amnesty')}
             value={linkType}
             options={[
-              { label: __('Interne', 'amnesty'), value: 'internal' },
-              { label: __('Externe', 'amnesty'), value: 'external' },
+              { label: __('Interne (contenu du site)', 'amnesty'), value: 'internal' },
+              { label: __('Externe (URL)', 'amnesty'), value: 'external' },
             ]}
             onChange={(value) => setAttributes({ linkType: value })}
           />
 
-          {linkType === 'internal' &&
-            (loading ? (
-              <p>{__('Chargement des posts…', 'amnesty')}</p>
-            ) : (
+          {linkType === 'internal' && (
+            <>
               <SelectControl
-                label={__('Sélectionner un post', 'amnesty')}
-                value={postId ? postId.toString() : ''}
+                label={__('Type de contenu', 'amnesty')}
+                value={postType}
                 options={[
-                  { label: __('Choisir un post', 'amnesty'), value: '' },
-                  ...posts.map((post) => ({
-                    label: post.title.rendered,
-                    value: post.id.toString(),
-                  })),
+                  { label: __('Choisir un type', 'amnesty'), value: '' },
+                  ...postTypeOptions,
                 ]}
-                onChange={handlePostSelect}
+                onChange={handleSelectPostType}
               />
-            ))}
+              {postType && !internalUrl && (
+                <div style={{ marginTop: '10px' }}>
+                  <TextControl
+                    label={__('Rechercher un contenu', 'amnesty')}
+                    value={searchTerm}
+                    onChange={setSearchTerm}
+                    placeholder={__('Tapez au moins 2 caractères', 'amnesty')}
+                  />
+                  {isSearching && <Spinner />}
+                  {!isSearching && searchResults.length > 0 && (
+                    <ul
+                      style={{
+                        border: '1px solid #ccc',
+                        padding: 5,
+                        maxHeight: 150,
+                        overflowY: 'auto',
+                        margin: 0,
+                        listStyle: 'none',
+                      }}
+                    >
+                      {searchResults.map((item) => (
+                        <li
+                          key={item.id}
+                          style={{
+                            cursor: 'pointer',
+                            padding: '8px 10px',
+                            borderBottom: '1px solid #eee',
+                          }}
+                          onClick={() => handleSelectSearchResult(item)}
+                        >
+                          <span dangerouslySetInnerHTML={{ __html: item.title.rendered }} />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+              {internalUrl && (
+                <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #ccc' }}>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    {__('Lien sélectionné :', 'amnesty')}{' '}
+                    <strong dangerouslySetInnerHTML={{ __html: internalUrlTitle }} />
+                  </p>
+                  <WpButton isLink isDestructive onClick={handleRemoveLink}>
+                    {__('Retirer le lien', 'amnesty')}
+                  </WpButton>
+                </div>
+              )}
+            </>
+          )}
 
           {linkType === 'external' && (
             <>
               <TextControl
                 label={__('URL externe', 'amnesty')}
                 value={externalUrl}
+                placeholder="https://exemple.com"
                 onChange={(value) => setAttributes({ externalUrl: value })}
               />
               <TextControl
-                label={__('Label du lien', 'amnesty')}
+                label={__('Label du lien (optionnel)', 'amnesty')}
                 value={externalLabel}
+                placeholder={__('Texte à afficher', 'amnesty')}
                 onChange={(value) => setAttributes({ externalLabel: value })}
+                help={__("Si laissé vide, l'URL complète sera affichée.", 'amnesty')}
               />
             </>
+          )}
+
+          {(internalUrl || externalUrl) && (
+            <ToggleControl
+              label={__('Ouvrir dans un nouvel onglet', 'amnesty')}
+              checked={!!targetBlank}
+              onChange={(value) => setAttributes({ targetBlank: value })}
+            />
           )}
         </PanelBody>
       </InspectorControls>
