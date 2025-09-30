@@ -12,7 +12,7 @@
     <h1 class="wp-block-heading page-404-content-title">Page introuvable</h1>
     <h3 class="wp-block-heading page-404-content-subtitle">Il semble que la page que vous tentez d'afficher n'existe pas.</h3>
     <div class='custom-button-block center'>
-        <a href="<?php home_url() ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
+        <a href="<?php echo home_url('/'); ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
             <div class='content bg-yellow medium'>
                 <div class="button-label">Retourner à l'accueil</div>
             </div>
