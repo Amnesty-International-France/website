@@ -15,12 +15,15 @@
     color: var(--wp--preset--color--black);
     margin: 0 !important;
 
+    a {
+      padding-left: 12px;
+    }
+
     a,
     span {
       font-family: var(--wp--preset--font-family--secondary);
       font-size: 16px;
       font-weight: bold;
-      padding-left: 12px;
       color: var(--wp--preset--color--grey-dark);
       text-decoration: none !important;
       transition: color 0.1s ease;
