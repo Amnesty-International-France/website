@@ -8,6 +8,7 @@ registerBlockType('amnesty-core/key-figure', {
   title: __('Chiffre Clé', 'amnesty'),
   description: 'Block Chiffre Clé',
   category: 'amnesty-core',
+  icon: 'analytics',
   attributes: {
     title: {
       type: 'string',
@@ -16,6 +17,12 @@ registerBlockType('amnesty-core/key-figure', {
     text: {
       type: 'string',
       default: 'Texte',
+    },
+  },
+  example: {
+    attributes: {
+      title: '84 millions',
+      text: "C'est le nombre de personnes déracinées de force dans le monde à la fin de 2021.",
     },
   },
   edit: EditComponent,
