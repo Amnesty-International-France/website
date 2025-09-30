@@ -26,8 +26,13 @@ registerBlockType('amnesty-core/block-menu', {
       default: 'standard-menu',
     },
   },
-
+  example: {
+    attributes: {
+      type: 'standard-menu',
+      menuId: 1,
+      color: '',
+    },
+  },
   edit: DisplayComponent,
-
   save: () => null,
 });
