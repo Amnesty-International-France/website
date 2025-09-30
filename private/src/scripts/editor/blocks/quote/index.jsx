@@ -7,6 +7,7 @@ registerBlockType('amnesty-core/blockquote', {
   title: __('Citation', 'amnesty'),
   description: 'Block citation',
   category: 'amnesty-core',
+  icon: 'format-quote',
   attributes: {
     quoteText: {
       type: 'string',
@@ -31,6 +32,17 @@ registerBlockType('amnesty-core/blockquote', {
     size: {
       type: 'string',
       default: 'medium',
+    },
+  },
+  example: {
+    attributes: {
+      quoteText:
+        "Le silence face à l'injustice fait de nous des complices. Notre mission est de faire entendre la voix de ceux qu'on tente de faire taire.",
+      author: 'Amnesty International',
+      showImage: true,
+      imageId: 1022,
+      bgColor: 'black',
+      size: 'medium',
     },
   },
   edit: EditComponent,
