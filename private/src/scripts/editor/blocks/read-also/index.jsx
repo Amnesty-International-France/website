@@ -7,6 +7,7 @@ registerBlockType('amnesty-core/read-also', {
   title: __('Lire aussi', 'amnesty'),
   description: __('Block lire aussi', 'amnesty'),
   category: 'amnesty-core',
+  icon: 'book-alt',
   attributes: {
     linkType: {
       type: 'string',
@@ -38,6 +39,14 @@ registerBlockType('amnesty-core/read-also', {
     targetBlank: {
       type: 'boolean',
       default: false,
+    },
+  },
+  example: {
+    attributes: {
+      linkType: 'external',
+      externalUrl: '#',
+      externalLabel: 'Notre rapport complet sur la situation des droits humains en 2025',
+      targetBlank: true,
     },
   },
   edit: EditComponent,
