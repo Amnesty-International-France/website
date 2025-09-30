@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie';
+
 const SELECTORS = {
   banner: '.urgent-banner',
   close: '.icon-cross',
@@ -19,7 +21,7 @@ const closeModal = () => {
   const { body, banner } = getElements();
   if (!body || !banner) return;
 
-  sessionStorage.setItem('userIsDoneWithBandeau', 'true');
+  Cookies.set('user_is_done_with_bandeau', true, { expires: 7 });
   banner.classList.add('hidden');
   body.classList.remove('no-scroll');
 };
@@ -28,8 +30,7 @@ export const closeUrgentBanner = () => {
   const { body, banner, close, cta } = getElements();
   if (!body || !banner) return;
 
-  const userIsDone = sessionStorage.getItem('userIsDoneWithBandeau') === 'true';
-
+  const userIsDone = Cookies.get('user_is_done_with_bandeau');
   banner.classList.toggle('hidden', userIsDone);
   body.classList.toggle('no-scroll', !userIsDone);
 
