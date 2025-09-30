@@ -6,6 +6,7 @@ registerBlockType('amnesty-core/card-image-text', {
   title: 'Carte image / texte',
   description: 'Block carte avec image + texte',
   category: 'amnesty-core',
+  icon: 'id-alt',
   attributes: {
     custom: {
       type: 'boolean',
@@ -46,6 +47,18 @@ registerBlockType('amnesty-core/card-image-text', {
     selectedPostCategorySlug: {
       type: 'string',
       default: '',
+    },
+  },
+  example: {
+    attributes: {
+      custom: false,
+      direction: 'vertical',
+      title: "Le Droit à l'Information : Un Pilier de la Démocratie",
+      subtitle: "Notre dernier rapport d'enquête",
+      category: 'Actualités',
+      permalink: '#',
+      text: "<p>Découvrez notre analyse approfondie sur les défis que rencontrent les journalistes et les défenseurs des droits humains pour accéder à l'information et la diffuser librement.</p>",
+      thumbnail: '4',
     },
   },
   edit: EditComponent,
