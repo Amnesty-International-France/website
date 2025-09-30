@@ -5,9 +5,8 @@ const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
 
 registerBlockType('amnesty/rubric-heading', {
-  apiVersion: 2,
   title: __('Titre de Rubrique', 'amnesty'),
-  category: 'amnesty-blocks',
+  category: 'amnesty-core',
   icon: 'heading',
   description: __(
     'Un titre de rubrique pour le sommaire, avec une catégorie, un titre principal et un soulignement.',
@@ -25,6 +24,12 @@ registerBlockType('amnesty/rubric-heading', {
       source: 'html',
       selector: '.rubric-heading__heading',
       default: 'Titre de la rubrique',
+    },
+  },
+  example: {
+    attributes: {
+      kicker: 'Enquête exclusive',
+      heading: 'Les nouvelles frontières de la surveillance numérique',
     },
   },
   edit: EditComponent,
