@@ -8,20 +8,36 @@ registerBlockType('amnesty-core/read-also', {
   description: __('Block lire aussi', 'amnesty'),
   category: 'amnesty-core',
   attributes: {
-    postId: {
-      type: 'number',
-    },
     linkType: {
       type: 'string',
       default: 'internal',
+    },
+    externalUrl: {
+      type: 'string',
+      default: '',
     },
     externalLabel: {
       type: 'string',
       default: '',
     },
-    externalUrl: {
+    postId: {
+      type: 'number',
+    },
+    postType: {
       type: 'string',
       default: '',
+    },
+    internalUrl: {
+      type: 'string',
+      default: '',
+    },
+    internalUrlTitle: {
+      type: 'string',
+      default: '',
+    },
+    targetBlank: {
+      type: 'boolean',
+      default: false,
     },
   },
   edit: EditComponent,

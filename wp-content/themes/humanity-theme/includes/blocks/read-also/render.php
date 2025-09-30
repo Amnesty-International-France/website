@@ -11,38 +11,40 @@ if (!function_exists('render_read_also_block')) {
      */
     function render_read_also_block(array $attributes): string
     {
-        $link_type = $attributes['linkType'] ?? 'internal';
-        $html      = '<div class="read-also-block"><p>' . esc_html__('À lire aussi', 'amnesty') . ' : ';
+        $link_type      = $attributes['linkType'] ?? 'internal';
+        $internal_url   = $attributes['internalUrl'] ?? '';
+        $internal_title = $attributes['internalUrlTitle'] ?? '';
+        $external_url   = $attributes['externalUrl'] ?? '';
+        $external_label = $attributes['externalLabel'] ?? '';
+        $target_blank   = $attributes['targetBlank'] ?? false;
 
-        if ($link_type === 'external') {
-            $url   = esc_url($attributes['externalUrl'] ?? '');
-            $label = esc_html($attributes['externalLabel'] ?? $url);
+        $url   = '';
+        $label = '';
 
-            if ($url) {
-                $html .= '<a href="' . $url . '" target="_blank" rel="noopener noreferrer">' . $label . '</a>';
-            } else {
-                $html .= '<span>' . esc_html__('Aucun lien externe fourni.', 'amnesty') . '</span>';
-            }
-        } else {
-            if (empty($attributes['postId'])) {
-                $html .= '<span>' . esc_html__('Aucun article sélectionné.', 'amnesty') . '</span>';
-            } else {
-                $post_id = (int) $attributes['postId'];
-                $post    = get_post($post_id);
-
-                if (!$post) {
-                    $html .= esc_html__('Article introuvable.', 'amnesty') ;
-                } else {
-                    $title     = get_the_title($post_id);
-                    $permalink = get_permalink($post_id);
-
-                    $html .= '<a href="' . esc_url($permalink) . '" target="_blank" rel="noopener noreferrer">'
-                        . esc_html($title) . '</a>';
-                }
-            }
+        if ($link_type === 'internal' && !empty($internal_url)) {
+            $url   = esc_url($internal_url);
+            $label = wp_kses_post($internal_title);
+        } elseif ($link_type === 'external' && !empty($external_url)) {
+            $url   = esc_url($external_url);
+            $label = esc_html($external_label ?: $external_url);
         }
 
-        $html .= '</p></div>';
-        return $html;
+        if (empty($url)) {
+            $link_html = '<span>' . esc_html__('Aucun contenu sélectionné.', 'amnesty') . '</span>';
+        } else {
+            $target_attr = $target_blank ? ' target="_blank" rel="noopener noreferrer"' : '';
+            $link_html = sprintf(
+                '<a href="%s"%s>%s</a>',
+                $url,
+                $target_attr,
+                $label
+            );
+        }
+
+        return sprintf(
+            '<div class="read-also-block"><p>%s : %s</p></div>',
+            esc_html__('À lire aussi', 'amnesty'),
+            $link_html
+        );
     }
 }
