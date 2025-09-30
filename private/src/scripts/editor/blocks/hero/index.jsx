@@ -58,6 +58,18 @@ registerBlockType('amnesty-core/hero', {
       default: 'image',
     },
   },
+  example: {
+    attributes: {
+      background: 'dark',
+      type: 'image',
+      title: 'Défendre les droits humains, partout.',
+      content:
+        "De nos enquêtes sur le terrain à nos campagnes mondiales, découvrez l'impact de nos actions.",
+      ctaText: 'Rejoindre le mouvement',
+      ctaLink: '#',
+      imageID: 1220,
+    },
+  },
   usesContext: ['postId', 'postType'],
 
   edit: DisplayComponent,
