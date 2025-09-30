@@ -7,6 +7,7 @@ registerBlockType('amnesty-core/call-to-action', {
   title: __('Call to Action', 'amnesty'),
   description: 'Block CTA',
   category: 'amnesty-core',
+  icon: 'star-filled',
   attributes: {
     direction: {
       type: 'string',
@@ -27,6 +28,15 @@ registerBlockType('amnesty-core/call-to-action', {
     buttonLink: {
       type: 'string',
       default: '#',
+    },
+  },
+  example: {
+    attributes: {
+      direction: 'horizontal',
+      title: 'Prêt·e à faire la différence ?',
+      subTitle: 'Chaque action, même la plus petite, contribue à un monde plus juste.',
+      buttonLabel: 'Découvrir nos actions',
+      buttonLink: '#',
     },
   },
   edit: EditComponent,
