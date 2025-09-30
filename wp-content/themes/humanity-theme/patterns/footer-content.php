@@ -66,7 +66,6 @@ $action_links = [
     ],
 ];
 
-
 if (isset($_POST['sign_lead'])) {
     if (!isset($_POST['newsletter_lead_form_nonce']) ||
         !wp_verify_nonce($_POST['newsletter_lead_form_nonce'], 'newsletter_lead_form_action')) {
@@ -75,25 +74,6 @@ if (isset($_POST['sign_lead'])) {
 
     $email = sanitize_email($_POST['newsletter-lead'] ?? '');
 
-    $request = new WP_REST_Request('POST', '/humanity/v1/check-email', [
-        'headers' => [
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        ],
-        'body' => [
-            'email' => $email,
-        ],
-    ]);
-
-    $server = rest_get_server();
-    $response = $server->dispatch($request);
-
-    if (is_wp_error($response)) {
-        error_log('REST dispatch error: ' . $response->get_error_message());
-        wp_die('REST dispatch error: ' . $response->get_error_message());
-    }
-
-    $data = $response->get_data();
-    $email_exist_on_local_dB = $data['exists'];
     $get_current_sf_lead = get_salesforce_nl_lead($email);
     $get_user_sf = get_salesforce_user_with_email($email);
     $contact_exist_on_salesforce = $get_user_sf['totalSize'] > 0;
@@ -102,7 +82,7 @@ if (isset($_POST['sign_lead'])) {
     $new_lead = [
         'Email' => $email,
         'LastName' => '_aucun_',
-        'Code_Origine__c' => AIF_SALESFORCE_CODE_ORIGINE__C__WEB,
+        'Code_Origine__c' => getenv('AIF_SALESFORCE_CODE_ORIGINE__C__WEB'),
         'Optin_Actionaute_Newsletter_mensuelle__c' => true,
     ];
 
@@ -119,7 +99,6 @@ if (isset($_POST['sign_lead'])) {
     }
 
     if ($contact_exist_on_salesforce) {
-
         $data = [
             ...$get_user_sf['records'][0],
             'Optin_Actionaute_Newsletter_mensuelle__c' => true,
@@ -155,7 +134,7 @@ if (isset($_POST['sign_lead'])) {
 			<h2 class="title">Rester informé·e</h2>
 			<span class="subtitle">Abonnez-vous à notre newsletter hebdo.</span>
 			<div class="nl-container">
-				<form action="" method="post" name="newsletter-lead-form">
+				<form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form">
 					<input type="text" name="newsletter-lead" placeholder="Abonnez-vous à notre newsletter hebdo.">
 					<?php
                     wp_nonce_field('newsletter_lead_form_action', 'newsletter_lead_form_nonce'); ?>

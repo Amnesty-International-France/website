@@ -84,6 +84,28 @@ To start WordPress, run : `wp server`
 
 ## Configuration
 
+## Environment Variables
+
+This project needs some environment variables to communicate with Salesforce   
+You can create a `.env` file and define these variables :
+
+```
+AIF_SALESFORCE_URL=
+AIF_SALESFORCE_CLIENT_ID=
+AIF_SALESFORCE_SECRET=
+AIF_SALESFORCE_ORIGINE__C=
+AIF_SALESFORCE_CODE_ORIGINE__C__WEB=
+AIF_SALESFORCE_RECORD_TYPE_ID=
+```
+
+Then, you can add this code in your `wp-config.php` to be able to retrieve them using `getenv` in the application
+```php
+require_once __DIR__ . '/vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
+$dotenv->load();
+```
+
 ### Theme Options
 
 Go in `Options du thème` tab, you can set the logo of the website.

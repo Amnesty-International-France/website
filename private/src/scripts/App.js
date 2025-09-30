@@ -49,7 +49,7 @@ import { pageMenu, stickyMenu } from './modules/page-menu';
 import sliderBlock from './modules/slider';
 import BackToTop from './modules/back-to-top';
 import urgentRegister from './modules/Form/urgent-register-form';
-import { redirectWithEmail, selectThemeNl, emptyInputNewsletterLead } from './modules/newsletter';
+import { selectThemeNl, emptyInputNewsletterLead } from './modules/newsletter';
 
 const App = () => {
   browserDetector();
@@ -103,9 +103,7 @@ const App = () => {
   BackToTop();
   urgentRegister();
   selectThemeNl();
-  redirectWithEmail();
   emptyInputNewsletterLead();
-
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 

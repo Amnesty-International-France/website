@@ -25,52 +25,6 @@ export const isValidEmail = (value) => {
   return false;
 };
 
-export const checkIfEmailExist = async (email) => {
-  try {
-    const emailValid = isValidEmail(email);
-
-    if (!emailValid) return false;
-
-    const urlForCheckEmail = '/wp-json/humanity/v1/check-email';
-    const emailExisting = await fetch(urlForCheckEmail, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        email,
-      }),
-    });
-    const res = await emailExisting;
-
-    return res.json();
-  } catch (e) {
-    return console.error("Erreur lors de la vérification d'email :", e);
-  }
-};
-
-export const redirectWithEmail = () => {
-  const { inputFooterNL, ctaFooterNL } = newsletterFormElement();
-
-  if (!inputFooterNL || !ctaFooterNL) return;
-
-  inputFooterNL.addEventListener('input', async (event) => {
-    const email = event.currentTarget?.value.trim();
-
-    if (!isValidEmail(email)) return;
-
-    try {
-      const emailExist = (await checkIfEmailExist(email))?.exists;
-      const currentHref = new URL(ctaFooterNL.getAttribute('href'), window.location.origin);
-
-      currentHref.searchParams.set('email', email);
-      ctaFooterNL.setAttribute('href', currentHref.toString());
-    } catch (e) {
-      console.error("Erreur lors de la vérification d'email :", e);
-    }
-  });
-};
-
 export const emptyInputNewsletterLead = () => {
   const { inputFooterNL, ctaFooterNL } = newsletterFormElement();
 

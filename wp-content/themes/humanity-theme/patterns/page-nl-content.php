@@ -8,21 +8,6 @@
 
 declare(strict_types=1);
 
-$hero_extra_class = !has_post_thumbnail() ? 'no-featured-image' : '';
-$no_chapo = !has_block('amnesty-core/chapo') ? 'no-chapo' : '';
-$countries = get_posts(
-    [
-        'post_type' => 'fiche_pays',
-        'posts_per_page' => -1,
-        'orderby' => 'title',
-        'order' => 'ASC',
-    ]
-);
-
-$email_provided = $_GET['email'] ?? '';
-$inscription_nl_status = $_GET['inscription__nl'] ?? '';
-$inscription_nl_success = $inscription_nl_status === 'success';
-
 $options_theme_newsletter = [
     'hebdo' => 'L\'Hebdo (newsletter hebdomadaire)',
     'refugees' => 'Réfugiés et migrants',
@@ -33,6 +18,21 @@ $options_theme_newsletter = [
     'impunity' => 'Impunité des États et des entreprises',
 ];
 
+$email_provided = $_GET['email'] ?? '';
+if (empty($email_provided)) {
+    wp_redirect(home_url('/').'#newsletter-lead-form');
+}
+$inscription_nl_status = $_GET['inscription__nl'] ?? '';
+$inscription_nl_success = $inscription_nl_status === 'success';
+
+$get_salesforce_user = get_salesforce_user_with_email($email_provided);
+$user = $get_salesforce_user['totalSize'] >= 1 ? $get_salesforce_user['records'][0] : null;
+$firstname = $user['FirstName'] ?? null;
+$lastname = $user['LastName'] ?? null;
+$phone = $user['MobilePhone'] ?? null;
+$salutation = $user['Salutation'] ?? null;
+$postal_code = $user['Code_Postal__c'] ?? null;
+
 if (isset($_POST['sign_newsletter'])) {
     if (!isset($_POST['newsletter_form_nonce']) ||
         !wp_verify_nonce($_POST['newsletter_form_nonce'], 'newsletter_form_action')) {
@@ -40,14 +40,14 @@ if (isset($_POST['sign_newsletter'])) {
     }
 
     $themes = array_map('sanitize_text_field', $_POST['theme'] ?? []);
-    $email = sanitize_email($_POST['newsletter'] ?? '');
-    $civility = sanitize_text_field($_POST['civility'] ?? '');
-    $lastname = sanitize_text_field($_POST['lastname'] ?? '');
-    $firstname = sanitize_text_field($_POST['firstname'] ?? '');
-    $phone = sanitize_text_field($_POST['phone'] ?? '');
+    $email = $user ? $email_provided : sanitize_email($_POST['newsletter'] ?? '');
+    $civility = $salutation ?? sanitize_text_field($_POST['civility'] ?? '');
+    $lastname = $lastname ?? sanitize_text_field($_POST['lastname'] ?? '');
+    $firstname = $firstname ?? sanitize_text_field($_POST['firstname'] ?? '');
+    $phone = $phone ?? sanitize_text_field($_POST['phone'] ?? '');
     $address = sanitize_text_field($_POST['address'] ?? '');
     $address2 = sanitize_text_field($_POST['additional-address'] ?? '');
-    $zipcode = sanitize_text_field($_POST['zipcode'] ?? '');
+    $zipcode = $postal_code ?? sanitize_text_field($_POST['zipcode'] ?? '');
     $city = sanitize_text_field($_POST['city'] ?? '');
 
     $data_to_sf = [
@@ -55,7 +55,7 @@ if (isset($_POST['sign_newsletter'])) {
         'FirstName' => $firstname,
         'LastName' => $lastname,
         'Email' => $email,
-        'Phone' => $phone,
+        'MobilePhone' => $phone,
         'Ville__c' => $city,
         'Code_Postal__c' => $zipcode,
         'Adresse_Ligne_4__c' => $address,
@@ -68,14 +68,13 @@ if (isset($_POST['sign_newsletter'])) {
         'Optin_Discriminations__c' => \in_array('discrimination', $themes, true),
         'Optin_Impunites_des_etats__c' => \in_array('impunity', $themes, true),
     ];
-    $get_salesforce_user = get_salesforce_user_with_email($email);
     $is_salesforce_user = $get_salesforce_user['totalSize'] > 0;
 
     if (!$is_salesforce_user) {
         $data = [
             ...$data_to_sf,
             'Statut_espace_connecte__c' => 'Non inscrit amnesty.fr',
-            'Origine__c' => AIF_SALESFORCE_ORIGINE__C,
+            'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
         ];
 
         register_salesforce_newsletter($data);
@@ -99,18 +98,14 @@ if (isset($_POST['sign_newsletter'])) {
         'inscription__nl' => 'success',
     ], home_url('/newsletter')));
     exit;
-
 }
-
 ?>
 
 <!-- wp:group {"tagName":"page","className":"page"} -->
 <article class="wp-block-group page <?php
 print esc_attr($class_name ?? ''); ?>">
 	<!-- wp:group {"tagName":"section","className":"page-content"} -->
-	<section class="wp-block-group page-content <?php
-    echo esc_attr($hero_extra_class); ?> <?php
-    print esc_attr($no_chapo ?? ''); ?>">
+	<section class="wp-block-group page-content no-featured-image no-chapo">
 		<!-- wp:post-content /-->
 		<div class="newsletter-form-container">
 			<?php
@@ -147,35 +142,47 @@ print esc_attr($class_name ?? ''); ?>">
 					<?php
                     endforeach; ?>
 				</div>
-				<input type="text"
-					   name="newsletter"
-					   id="newsletter"
-					   placeholder="Email"
-					   required
-					   value="<?php
-                       echo esc_attr($email_provided); ?>"
-				>
-				<div class="form-group civility">
-					<label class="civility-label">Civilité :</label>
-					<div class="civilities">
-						<label for="civility_m">M.</label>
-						<input type="radio" id="civility_m" name="civility" value="M." checked>
-						<label for="civility_mme">Mme</label>
-						<input type="radio" id="civility_mme" name="civility" value="Mme">
-						<label for="civility_other">Autre</label>
-						<input type="radio" id="civility_other" name="civility" value="Autre">
+				<?php if (isset($user)) : ?>
+					<p>Nous avons detecté un compte connu à l'adresse <?= $email_provided ?>, vos informations seront automatiquement reprises pour votre inscription à notre newsletter.</p>
+				<?php else: ?>
+					<input type="text"
+						   name="newsletter"
+						   id="newsletter"
+						   placeholder="Email"
+						   required
+						   value="<?= esc_attr($email_provided); ?>"
+					>
+				<?php endif; ?>
+				<?php if (!$salutation): ?>
+					<div class="form-group civility">
+						<label class="civility-label">Civilité :</label>
+						<div class="civilities">
+							<label for="civility_m">M.</label>
+								<input type="radio" id="civility_m" name="civility" value="M." checked>
+							<label for="civility_mme">Mme</label>
+							<input type="radio" id="civility_mme" name="civility" value="Mme">
+							<label for="civility_other">Autre</label>
+							<input type="radio" id="civility_other" name="civility" value="Autre">
+						</div>
+						<div class="input-error-civility hidden"></div>
 					</div>
-					<div class="input-error-civility hidden"></div>
-				</div>
+				<?php endif; ?>
+				<?php if (!$lastname): ?>
 				<div class="form-group">
-					<input type="text" id="lastname" name="lastname" placeholder="Nom" required>
+					<input type="text" id="lastname" name="lastname" placeholder="Nom" value="<?= $lastname ?>" required>
 				</div>
+				<?php endif; ?>
+				<?php if (!$firstname): ?>
 				<div class="form-group">
-					<input type="text" id="firstname" name="firstname" placeholder="Prénom" required>
+					<input type="text" id="firstname" name="firstname" placeholder="Prénom" value="<?= $firstname ?>" required>
 				</div>
+				<?php endif; ?>
+				<?php if (!$phone): ?>
 				<div class="form-group">
-					<input type="tel" id="phone" name="phone" placeholder="Téléphone">
+					<input type="tel" id="phone" name="phone" placeholder="Téléphone" value="<?= $phone ?>">
 				</div>
+				<?php endif; ?>
+				<?php if (!$postal_code): ?>
 				<div class="form-group">
 					<input type="text" id="address" name="address" placeholder="Adresse">
 				</div>
@@ -191,6 +198,7 @@ print esc_attr($class_name ?? ''); ?>">
 						<input type="text" id="city" name="city" placeholder="Ville">
 					</div>
 				</div>
+				<?php endif; ?>
 				<button class="newsletter-form-cta" type="submit" name="sign_newsletter">
 					<?php
                     echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
