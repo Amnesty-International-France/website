@@ -8,9 +8,71 @@ const { useSelect } = wp.data;
 const { useState, useEffect } = wp.element;
 const apiFetch = wp.apiFetch;
 
-const EditComponent = ({ attributes, setAttributes }) => {
+const displayComponentPreview = (blockProps, attributes) => {
+  const mockEvents = [];
+
+  return (
+    <section {...blockProps} className="agenda-chronicle-homepage">
+      <div className="agenda-homepage">
+        <h2 className="agenda-homepage-title">Agenda</h2>
+        <div className="agenda-homepage-events">
+          {mockEvents.map((event) => (
+            <EventCard key={event?.id} event={event} />
+          ))}
+        </div>
+        <CustomButton label="Voir les événements" link="#" />
+      </div>
+      <div className="chronicle-homepage">
+        <h2 className="chronicle-homepage-title">A découvrir</h2>
+        <div className="chronicle-card">
+          <div className="chronicle-card-image-container">
+            <img
+              src={
+                attributes.chronicleImageUrl ||
+                'https://placehold.co/600x400/555/FFF/png?text=La+Chronique'
+              }
+              className="chronicle-card-image"
+              alt=""
+            />
+          </div>
+          <div className="chronicle-homepage">
+            <h2 className="chronicle-homepage-title">A découvrir</h2>
+            <div className="chronicle-card">
+              <div className="chronicle-card-image-container">
+                <img
+                  src={
+                    attributes.chronicleImageUrl ||
+                    'https://placehold.co/600x400/555/FFF/png?text=La+Chronique'
+                  }
+                  className="chronicle-card-image"
+                  alt=""
+                />
+              </div>
+              <div className="chronicle-card-content">
+                <h3 className="chronicle-card-title">La chronique</h3>
+                <p className="chronicle-card-chapo">Le magazine des droits humains</p>
+                <CustomButton
+                  label="Abonnez-vous pour 3€/mois"
+                  size="medium"
+                  icon="arrow-right"
+                  link="#" // On met un lien factice pour l'aperçu
+                  alignment="center"
+                  style="bg-yellow"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const EditComponent = ({ attributes, setAttributes, isPreview }) => {
   const { selectionMode, selectedEventIds = [], chronicleImageUrl, chronicleImageId } = attributes;
   const blockProps = useBlockProps();
+
+  if (isPreview) displayComponentPreview(blockProps, attributes);
 
   const [autoEvents, setAutoEvents] = useState([]);
   const [isLoadingAuto, setIsLoadingAuto] = useState(true);
