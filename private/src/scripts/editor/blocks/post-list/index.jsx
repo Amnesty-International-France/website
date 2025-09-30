@@ -73,6 +73,16 @@ registerBlockType('amnesty-core/block-list', {
     multiple: true,
   },
   attributes: blockAttributes,
+  example: {
+    attributes: {
+      style: 'grid',
+      type: 'author',
+      amount: 2,
+      displayAuthor: true,
+      displayPostDate: true,
+      authors: '[{"label":"Agnes Callamard","value":"4"}]',
+    },
+  },
 
   deprecated: [
     {
