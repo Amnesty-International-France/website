@@ -7,6 +7,7 @@ registerBlockType('amnesty-core/button', {
   title: __('Bouton', 'amnesty'),
   description: 'Block Bouton',
   category: 'amnesty-core',
+  icon: 'button',
   attributes: {
     postId: {
       type: 'number',
@@ -55,6 +56,17 @@ registerBlockType('amnesty-core/button', {
     targetBlank: {
       type: 'boolean',
       default: false,
+    },
+  },
+  example: {
+    attributes: {
+      label: 'En savoir plus',
+      size: 'medium',
+      style: 'bg-yellow',
+      icon: 'arrow-right',
+      alignment: 'left',
+      linkType: 'external',
+      externalUrl: '#',
     },
   },
   edit: EditComponent,
