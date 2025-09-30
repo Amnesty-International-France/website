@@ -8,6 +8,7 @@ registerBlockType('amnesty-core/link-icon', {
   title: __('Lien avec icon', 'amnesty'),
   description: 'Block lien avec icon',
   category: 'amnesty-core',
+  icon: 'admin-links',
   attributes: {
     title: {
       type: 'string',
@@ -36,6 +37,17 @@ registerBlockType('amnesty-core/link-icon', {
     displayButton: {
       type: 'boolean',
       default: true,
+    },
+  },
+  example: {
+    attributes: {
+      title: 'Nos Thématiques',
+      titleSize: 'medium',
+      description: 'Explorez les grands enjeux sur lesquels nous nous mobilisons au quotidien.',
+      icon: 'activism-abortions',
+      bgColor: 'black',
+      buttonLink: '#',
+      displayButton: true,
     },
   },
   edit: EditComponent,
