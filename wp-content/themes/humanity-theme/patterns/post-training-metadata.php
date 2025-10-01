@@ -17,9 +17,9 @@ if (! get_the_ID()) {
 }
 
 $lieu            = get_field('lieu', $post->ID);
-$city            = get_field('city', $post->ID);
 $is_members_only = get_field('members_only', $post->ID);
 $acf_date        = get_field('date', $post->ID);
+$acf_date_fin    = get_field('date_fin', $post->ID);
 $category_key    = get_field('categories', $post->ID);
 $field_object    = get_field_object('categories', $post->ID);
 $lieu_list       = get_field_object('field_6883319051ddc');
@@ -47,7 +47,9 @@ $lieu_list       = get_field_object('field_6883319051ddc');
 								d="M1.3335 7.33329H14.6668V13.3333C14.6668 13.7015 14.3684 14 14.0002 14H2.00016C1.63197 14 1.3335 13.7015 1.3335 13.3333V7.33329ZM11.3335 1.99996H14.0002C14.3684 1.99996 14.6668 2.29844 14.6668 2.66663V5.99996H1.3335V2.66663C1.3335 2.29844 1.63197 1.99996 2.00016 1.99996H4.66683V0.666626H6.00016V1.99996H10.0002V0.666626H11.3335V1.99996Z"
 								fill="#575756"/>
 					</svg>
-					<?php if ($acf_date) : ?>
+					<?php if ($acf_date && $acf_date_fin) : ?>
+						<p>Le <?php echo $acf_date; ?> et <?php echo $acf_date_fin; ?></p>
+					<?php elseif ($acf_date) : ?>
 						<p>Le <?php echo $acf_date; ?></p>
 					<?php endif; ?>
 				</div>
@@ -60,16 +62,6 @@ $lieu_list       = get_field_object('field_6883319051ddc');
 									fill="#575756"/>
 						</svg>
 						<p><?php echo $lieu_list['choices'][ $lieu ]; ?></p>
-					</div>
-				<?php endif; ?>
-
-				<?php if ($city) : ?>
-					<div class="training-info-icon">
-						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M12.2427 11.576L8 15.8187L3.75734 11.576C2.91823 10.7369 2.34679 9.66777 2.11529 8.50389C1.88378 7.34 2.0026 6.13361 2.45673 5.03726C2.91086 3.9409 3.6799 3.00384 4.66659 2.34455C5.65328 1.68527 6.81332 1.33337 8 1.33337C9.18669 1.33337 10.3467 1.68527 11.3334 2.34455C12.3201 3.00384 13.0891 3.9409 13.5433 5.03726C13.9974 6.13361 14.1162 7.34 13.8847 8.50389C13.6532 9.66777 13.0818 10.7369 12.2427 11.576ZM8 8.66665C8.35362 8.66665 8.69276 8.52618 8.94281 8.27613C9.19286 8.02608 9.33334 7.68694 9.33334 7.33332C9.33334 6.9797 9.19286 6.64056 8.94281 6.39051C8.69276 6.14046 8.35362 5.99999 8 5.99999C7.64638 5.99999 7.30724 6.14046 7.05719 6.39051C6.80715 6.64056 6.66667 6.9797 6.66667 7.33332C6.66667 7.68694 6.80715 8.02608 7.05719 8.27613C7.30724 8.52618 7.64638 8.66665 8 8.66665Z"
-									fill="#575756"/>
-						</svg>
-						<p><?php echo $lieu; ?></p>
 					</div>
 				<?php endif; ?>
 
