@@ -23,16 +23,7 @@ if (!function_exists('render_training_card_block')) {
         $lieu = get_field('lieu', $post_id);
         $city = get_field('city', $post_id);
         $is_members_only = get_field('members_only', $post_id);
-        $acf_date = get_field('date', $post_id);
         $category_value = get_field('categories', $post_id);
-
-        $formatted_date = null;
-        if ($acf_date) {
-            $date_object = DateTime::createFromFormat('d/m/Y g:i a', $acf_date);
-            if ($date_object) {
-                $formatted_date = $date_object->format('d/m/Y');
-            }
-        }
 
         $category_label = '';
         if ($category_value) {
@@ -49,7 +40,6 @@ if (!function_exists('render_training_card_block')) {
             'lieu'             => $lieu,
             'city'             => $city,
             'is_members_only'  => $is_members_only,
-            'formatted_date'   => $formatted_date,
             'category_label'   => $category_label,
         ];
 
