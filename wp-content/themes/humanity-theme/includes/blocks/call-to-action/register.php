@@ -31,9 +31,28 @@ if (!function_exists('register_call_to_action_block')) {
                     'type' => 'string',
                     'default' => 'Button Label',
                 ],
-                'buttonLink' => [
+                'linkType' => [
+                    'type' => 'string',
+                    'default' => 'external',
+                ],
+                'internalUrl' => [
+                    'type' => 'string',
+                    'default' => '',
+                ],
+                'externalUrl' => [
                     'type' => 'string',
                     'default' => '#',
+                ],
+                'postId' => [
+                    'type' => 'number',
+                ],
+                'internalUrlTitle' => [
+                    'type' => 'string',
+                    'default' => '',
+                ],
+                'targetBlank' => [
+                    'type' => 'boolean',
+                    'default' => false,
                 ],
             ],
         ]);
