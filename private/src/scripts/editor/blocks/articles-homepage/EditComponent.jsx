@@ -1,11 +1,9 @@
 import ChipCategory from '../../components/ChipCategory.jsx';
+import PostSearchControl from '../../components/PostSearchControl.jsx';
 
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
-const { PanelBody, SelectControl, TextControl, Spinner } = wp.components;
-const { useSelect } = wp.data;
-const { useState, useEffect } = wp.element;
-const apiFetch = wp.apiFetch;
+const { PanelBody, TextControl } = wp.components;
 
 const getCategoryLink = (slug) => {
   if (slug === 'landmark') {
@@ -19,190 +17,43 @@ const getCategoryLink = (slug) => {
   return `/${slug}`;
 };
 
-const PostSearchControl = ({ selectedPostId, selectedPostTitle, categorySlug, onChange }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const categories = useSelect(
-    (select) => select('core').getEntityRecords('taxonomy', 'category', { per_page: 100 }),
-    [],
-  );
-
-  useEffect(() => {
-    if (!searchTerm || !categorySlug) {
-      setResults([]);
-      return;
+const extractAllCustomTerms = (embeddedData) => {
+  if (!embeddedData || !Array.isArray(embeddedData['wp:term'])) {
+    return [];
+  }
+  let allCustomTerms = [];
+  embeddedData['wp:term'].forEach((termGroup) => {
+    if (Array.isArray(termGroup)) {
+      const customTermsInGroup = termGroup.filter(
+        (term) => term.taxonomy !== 'category' && term.taxonomy !== 'post_tag',
+      );
+      allCustomTerms = allCustomTerms.concat(
+        customTermsInGroup.map(({ id, name, slug, taxonomy }) => ({ id, name, slug, taxonomy })),
+      );
     }
-
-    setLoading(true);
-    if (categorySlug === 'landmark' || categorySlug === 'actualities-my-space') {
-      apiFetch({
-        path: `/wp/v2/${categorySlug}?search=${encodeURIComponent(searchTerm)}&per_page=10&_embed`,
-      })
-        .then((posts) => {
-          setResults(posts);
-          setLoading(false);
-        })
-        .catch(() => {
-          setResults([]);
-          setLoading(false);
-        });
-    } else {
-      const categoryObj = categories?.find((cat) => cat.slug === categorySlug);
-      if (!categoryObj) {
-        setResults([]);
-        setLoading(false);
-        return;
-      }
-
-      apiFetch({
-        path: `/wp/v2/posts?search=${encodeURIComponent(searchTerm)}&category=${categoryObj.id}&per_page=10&_embed`,
-      })
-        .then((posts) => {
-          setResults(posts);
-          setLoading(false);
-        })
-        .catch(() => {
-          setResults([]);
-          setLoading(false);
-        });
-    }
-  }, [searchTerm, categorySlug, categories]);
-
-  const extractAllCustomTerms = (embeddedData) => {
-    if (!embeddedData || !Array.isArray(embeddedData['wp:term'])) {
-      return [];
-    }
-
-    let allCustomTerms = [];
-    embeddedData['wp:term'].forEach((termGroup) => {
-      if (Array.isArray(termGroup)) {
-        const customTermsInGroup = termGroup.filter(
-          (term) => term.taxonomy !== 'category' && term.taxonomy !== 'post_tag',
-        );
-        allCustomTerms = allCustomTerms.concat(
-          customTermsInGroup.map(({ id, name, slug, taxonomy }) => ({ id, name, slug, taxonomy })),
-        );
-      }
-    });
-    return allCustomTerms;
-  };
-
-  return (
-    <div>
-      <TextControl
-        label={__('Sélectionner un contenu spécifique (facultatif)', 'amnesty')}
-        value={searchTerm}
-        onChange={setSearchTerm}
-        placeholder={__('Tapez pour chercher un article&hellip;', 'amnesty')}
-      />
-
-      {loading && <Spinner />}
-
-      {!loading && results.length > 0 && (
-        <ul
-          style={{
-            border: '1px solid #ccc',
-            padding: 5,
-            maxHeight: 150,
-            overflowY: 'auto',
-            margin: 0,
-            listStyle: 'none',
-          }}
-        >
-          {results.map((post) => {
-            const featuredImageUrl = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
-            const allExtractedTerms = extractAllCustomTerms(post._embedded);
-
-            return (
-              <li
-                key={post.id}
-                style={{
-                  cursor: 'pointer',
-                  padding: '8px 10px',
-                  backgroundColor: post.id === selectedPostId ? '#e0f2f7' : 'transparent',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  borderBottom: '1px solid #eee',
-                  transition: 'background-color 0.2s ease-in-out',
-                }}
-                onClick={() => {
-                  onChange(
-                    post.id,
-                    post.title.rendered,
-                    post.slug,
-                    post._embedded,
-                    post.date,
-                    allExtractedTerms,
-                  );
-                  setSearchTerm('');
-                  setResults([]);
-                }}
-              >
-                {featuredImageUrl && (
-                  <img
-                    src={featuredImageUrl}
-                    alt={post.title.rendered}
-                    style={{
-                      width: 50,
-                      height: 50,
-                      objectFit: 'cover',
-                      borderRadius: 4,
-                      flexShrink: 0,
-                    }}
-                  />
-                )}
-                <div style={{ flexGrow: 1 }}>
-                  <strong dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-                  <div style={{ fontSize: '0.85em', color: '#666', marginTop: '4px' }}>
-                    {allExtractedTerms.length > 0 && (
-                      <span style={{ marginRight: '8px' }}>
-                        {allExtractedTerms.map((term) => term.name).join(', ')}
-                      </span>
-                    )}
-                    {post._embedded?.['wp:term']?.[0]?.[0]?.name &&
-                      post._embedded['wp:term'][0][0].taxonomy === 'category' && (
-                        <span
-                          style={{
-                            marginLeft: allExtractedTerms.length > 0 ? '0' : '0',
-                            marginRight: '8px',
-                          }}
-                        >
-                          {allExtractedTerms.length > 0 ? '| ' : ''}
-                          {post._embedded['wp:term'][0][0].name}
-                        </span>
-                      )}
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-
-      {selectedPostTitle && (
-        <p>
-          {__('Article sélectionné :', 'amnesty')} <strong>{selectedPostTitle}</strong>
-        </p>
-      )}
-    </div>
-  );
+  });
+  return allCustomTerms;
 };
 
 const EditComponent = ({ attributes, setAttributes }) => {
   const { items = [] } = attributes;
-  const isMySpace = useSelect(
-    (select) => select('core/editor').getEditedPostAttribute('slug') === 'mon-espace',
-    [],
-  );
   const blockProps = useBlockProps();
 
-  const categories = useSelect(
-    (select) => select('core').getEntityRecords('taxonomy', 'category', { per_page: 100 }),
-    [],
-  );
+  const allowedTypesForThisBlock = [
+    'post',
+    'pages',
+    'fiche_pays',
+    'landmark',
+    'local-structures',
+    'petition',
+    'press-release',
+    'training',
+    'document',
+    'edh',
+    'chronique',
+    'tribe_events',
+    'actualities-my-space',
+  ];
 
   const updateItem = (index, key, value) => {
     const newItems = [...items];
@@ -210,26 +61,36 @@ const EditComponent = ({ attributes, setAttributes }) => {
     setAttributes({ items: newItems });
   };
 
-  let categoryOptions = [];
-  if (isMySpace) {
-    categoryOptions = [{ label: 'Actu mon espace', value: 'actualities-my-space' }];
-  } else if (categories) {
-    categoryOptions = [
-      ...categories
-        .filter((cat) => cat.name !== 'Non classé')
-        .map((cat) => ({ label: cat.name, value: cat.slug })),
-      { label: 'Repères', value: 'landmark' },
-    ];
-  }
+  const handlePostSelection = (index, post) => {
+    const newItems = [...items];
+    if (post) {
+      const allExtractedTerms = extractAllCustomTerms(post._embedded);
+      const primaryCategory = post._embedded?.['wp:term']?.[0]?.find(
+        (term) => term.taxonomy === 'category',
+      );
 
-  if (!categories) {
-    return (
-      <div {...blockProps}>
-        <Spinner />
-        <p>{__('Chargement des catégories…', 'amnesty')}</p>
-      </div>
-    );
-  }
+      newItems[index] = {
+        ...newItems[index],
+        selectedPostId: post.id,
+        selectedPostTitle: post.title.rendered,
+        selectedPostSlug: post.slug,
+        _embedded: post._embedded || null,
+        selectedPostDate: post.date,
+        selectedPostCustomTerms: allExtractedTerms || [],
+        category:
+          post.type === 'landmark'
+            ? 'landmark'
+            : post.type === 'actualities-my-space'
+              ? 'actualities-my-space'
+              : primaryCategory?.slug || '',
+      };
+    } else {
+      newItems[index] = {
+        subtitle: newItems[index].subtitle,
+      };
+    }
+    setAttributes({ items: newItems });
+  };
 
   const seeAll = (categorySlug) => {
     switch (categorySlug) {
@@ -258,68 +119,32 @@ const EditComponent = ({ attributes, setAttributes }) => {
   return (
     <>
       <InspectorControls>
-        {items.map((item, index) => {
-          const itemCategory =
-            isMySpace && !item.selectedPostId ? 'actualities-my-space' : item.category;
-          return (
-            <PanelBody
-              key={index}
-              title={`${__('Bloc', 'amnesty')} ${index + 1}`}
-              initialOpen={index === 0}
-            >
-              <SelectControl
-                label={__('Type de contenu (catégorie)', 'amnesty')}
-                value={itemCategory}
-                options={categoryOptions}
-                onChange={(value) => {
-                  const newItems = [...items];
-                  newItems[index] = {
-                    ...newItems[index],
-                    category: value,
-                    selectedPostId: null,
-                    selectedPostTitle: null,
-                    selectedPostSlug: null,
-                    _embedded: null,
-                    selectedPostDate: null,
-                    selectedPostCustomTerms: [],
-                  };
-                  setAttributes({ items: newItems });
-                }}
+        {items.map((item, index) => (
+          <PanelBody
+            key={index}
+            title={`${__('Bloc', 'amnesty')} ${index + 1}`}
+            initialOpen={index === 0}
+          >
+            <PostSearchControl
+              allowedTypes={allowedTypesForThisBlock}
+              onPostSelect={(post) => handlePostSelection(index, post)}
+            />
+            {item.selectedPostTitle && (
+              <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>
+                {__('Article sélectionné :', 'amnesty')}{' '}
+                <strong dangerouslySetInnerHTML={{ __html: item.selectedPostTitle }} />
+              </p>
+            )}
+
+            {index === 0 && (
+              <TextControl
+                label={__('Surtitre (facultatif)', 'amnesty')}
+                value={item.subtitle || ''}
+                onChange={(value) => updateItem(index, 'subtitle', value)}
               />
-
-              {itemCategory ? (
-                <PostSearchControl
-                  selectedPostId={item.selectedPostId}
-                  selectedPostTitle={item.selectedPostTitle}
-                  categorySlug={itemCategory}
-                  onChange={(postId, postTitle, postSlug, embedded, postDate, customTerms) => {
-                    const newItems = [...items];
-                    newItems[index] = {
-                      ...newItems[index],
-                      selectedPostId: postId,
-                      selectedPostTitle: postTitle,
-                      selectedPostSlug: postSlug,
-                      _embedded: embedded || null,
-                      selectedPostDate: postDate,
-                      selectedPostCustomTerms: customTerms || [],
-                    };
-                    setAttributes({ items: newItems });
-                  }}
-                />
-              ) : (
-                <p>{__('Sélectionnez une catégorie pour chercher des contenus.', 'amnesty')}</p>
-              )}
-
-              {index === 0 && (
-                <TextControl
-                  label={__('Surtitre (facultatif)', 'amnesty')}
-                  value={item.subtitle || ''}
-                  onChange={(value) => updateItem(index, 'subtitle', value)}
-                />
-              )}
-            </PanelBody>
-          );
-        })}
+            )}
+          </PanelBody>
+        ))}
       </InspectorControls>
 
       <section {...blockProps} className="articles-homepage">
@@ -393,7 +218,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                 </div>
               ) : (
                 <div className="article-main-desktop empty">
-                  {__('Bloc 1 : Choisissez la catégorie et l&apos;article', 'amnesty')}{' '}
+                  {__('Bloc 1 : Choisissez un contenu dans le panneau de droite', 'amnesty')}{' '}
                 </div>
               )}
 
@@ -468,7 +293,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                 </div>
               ) : (
                 <div className="article-main-mobile empty">
-                  {__('Bloc 1 : Choisissez la catégorie et l&apos;article', 'amnesty')}{' '}
+                  {__('Bloc 1 : Choisissez un contenu dans le panneau de droite', 'amnesty')}{' '}
                 </div>
               )}
 
@@ -551,7 +376,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                       </>
                     ) : (
                       <div className="article-side empty">
-                        {`Bloc ${index + 2} : ${__('Choisissez la catégorie et l&apos;article', 'amnesty')}`}{' '}
+                        {`Bloc ${index + 2} : ${__('Choisissez un contenu dans le panneau de droite', 'amnesty')}`}{' '}
                       </div>
                     )}
                   </div>

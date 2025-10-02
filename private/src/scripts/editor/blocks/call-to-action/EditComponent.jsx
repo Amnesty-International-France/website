@@ -1,37 +1,65 @@
 import classnames from 'classnames';
 import CustomButton from '../button/Button.jsx';
+import PostSearchControl from '../../components/PostSearchControl.jsx';
 
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
-const { PanelBody, TextControl, SelectControl } = wp.components;
+const { PanelBody, TextControl, SelectControl, ToggleControl, Button: WpButton } = wp.components;
 
 const EditComponent = ({ attributes, setAttributes }) => {
-  const { direction, title, subTitle, buttonLabel, buttonLink } = attributes;
+  const {
+    direction,
+    title,
+    subTitle,
+    buttonLabel,
+    linkType,
+    internalUrl,
+    externalUrl,
+    internalUrlTitle,
+    targetBlank,
+  } = attributes;
 
-  const updateDirection = (value) => {
-    setAttributes({ direction: value });
+  const allowedTypesForThisBlock = [
+    'post',
+    'pages',
+    'fiche_pays',
+    'landmark',
+    'local-structures',
+    'petition',
+    'press-release',
+    'training',
+    'document',
+    'edh',
+    'chronique',
+    'tribe_events',
+  ];
+
+  const handlePostSelect = (post) => {
+    if (post) {
+      setAttributes({
+        internalUrl: post.link,
+        internalUrlTitle: post.title.rendered,
+        postId: post.id,
+      });
+    } else {
+      setAttributes({
+        internalUrl: '',
+        internalUrlTitle: '',
+        postId: 0,
+      });
+    }
   };
 
-  const updateTitle = (newTitle) => {
-    setAttributes({ title: newTitle });
+  const handleRemoveLink = () => {
+    setAttributes({ internalUrl: '', internalUrlTitle: '', postId: 0 });
   };
 
-  const updateSubTitle = (newSubTitle) => {
-    setAttributes({ subTitle: newSubTitle });
-  };
-
-  const updateButtonLabel = (newButtonLabel) => {
-    setAttributes({ buttonLabel: newButtonLabel });
-  };
-
-  const updateButtonLink = (newButtonLink) => {
-    setAttributes({ buttonLink: newButtonLink });
-  };
+  const finalButtonLink = linkType === 'internal' ? internalUrl : externalUrl;
 
   return (
     <>
       <InspectorControls>
-        <PanelBody title={__('Paramètres du bloc', 'amnesty')} initialOpen={true}>
+        <PanelBody title={__('Contenu du bloc', 'amnesty')} initialOpen={true}>
           <SelectControl
             label={__('Disposition', 'amnesty')}
             value={direction}
@@ -39,32 +67,75 @@ const EditComponent = ({ attributes, setAttributes }) => {
               { label: __('Horizontal', 'amnesty'), value: 'horizontal' },
               { label: __('Vertical', 'amnesty'), value: 'vertical' },
             ]}
-            onChange={updateDirection}
+            onChange={(value) => setAttributes({ direction: value })}
           />
           <TextControl
             label={__('Titre', 'amnesty')}
             value={title}
-            onChange={updateTitle}
+            onChange={(value) => setAttributes({ title: value })}
             placeholder={__('Entrez un titre…', 'amnesty')}
           />
           <TextControl
             label={__('Sous-titre', 'amnesty')}
             value={subTitle}
-            onChange={updateSubTitle}
+            onChange={(value) => setAttributes({ subTitle: value })}
             placeholder={__('Entrez un sous-titre…', 'amnesty')}
           />
+        </PanelBody>
+        <PanelBody title={__('Paramètres du bouton', 'amnesty')}>
           <TextControl
             label={__('Label du bouton', 'amnesty')}
             value={buttonLabel}
-            onChange={updateButtonLabel}
+            onChange={(value) => setAttributes({ buttonLabel: value })}
             placeholder={__('Label du bouton', 'amnesty')}
           />
-          <TextControl
-            label={__('Lien du bouton', 'amnesty')}
-            value={buttonLink}
-            onChange={updateButtonLink}
-            placeholder={__('Lien du bouton', 'amnesty')}
+          <SelectControl
+            label={__('Type de lien', 'amnesty')}
+            value={linkType}
+            options={[
+              { label: 'Lien interne (contenu du site)', value: 'internal' },
+              { label: 'Lien externe (URL)', value: 'external' },
+            ]}
+            onChange={(value) => setAttributes({ linkType: value })}
           />
+
+          {linkType === 'internal' && (
+            <>
+              {!internalUrl ? (
+                <PostSearchControl
+                  onPostSelect={handlePostSelect}
+                  allowedTypes={allowedTypesForThisBlock}
+                />
+              ) : (
+                <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #ccc' }}>
+                  <p style={{ margin: 0 }}>
+                    {__('Lien sélectionné :', 'amnesty')}{' '}
+                    <strong dangerouslySetInnerHTML={{ __html: internalUrlTitle }} />
+                  </p>
+                  <WpButton isLink isDestructive onClick={handleRemoveLink}>
+                    {__('Retirer le lien', 'amnesty')}
+                  </WpButton>
+                </div>
+              )}
+            </>
+          )}
+
+          {linkType === 'external' && (
+            <TextControl
+              label={__('URL du lien externe', 'amnesty')}
+              value={externalUrl}
+              placeholder="https://exemple.com"
+              onChange={(value) => setAttributes({ externalUrl: value })}
+            />
+          )}
+
+          {(internalUrl || externalUrl) && (
+            <ToggleControl
+              label={__('Ouvrir dans un nouvel onglet', 'amnesty')}
+              checked={!!targetBlank}
+              onChange={(value) => setAttributes({ targetBlank: value })}
+            />
+          )}
         </PanelBody>
       </InspectorControls>
 
@@ -77,7 +148,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
           icon="arrow-right"
           label={buttonLabel}
           size="medium"
-          link={buttonLink}
+          link={finalButtonLink}
           style="bg-yellow"
           alignment={direction === 'horizontal' ? 'right' : 'center'}
         />

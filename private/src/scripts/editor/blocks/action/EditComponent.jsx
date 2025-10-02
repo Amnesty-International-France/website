@@ -1,11 +1,11 @@
 import classnames from 'classnames';
 import CustomButton from '../button/Button.jsx';
+import PostSearchControl from '../../components/PostSearchControl.jsx';
 
 const { useEffect, useState } = wp.element;
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
 const { PanelBody, TextControl, SelectControl, Button, Spinner, TextareaControl } = wp.components;
-const { useSelect } = wp.data;
 const apiFetch = wp.apiFetch;
 
 const formatDate = (yyyymmdd) => {
@@ -89,132 +89,6 @@ const PetitionSearchControl = ({ onPetitionSelect }) => {
   );
 };
 
-const PostSearchControl = ({ categorySlug, onPostSelect, selectedPostLink }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedTitle, setSelectedTitle] = useState('');
-
-  const categories = useSelect(
-    (select) => select('core').getEntityRecords('taxonomy', 'category', { per_page: 100 }),
-    [],
-  );
-
-  useEffect(() => {
-    if (!searchTerm || !categorySlug) {
-      setResults([]);
-      return;
-    }
-
-    setLoading(true);
-    let path;
-
-    if (categorySlug === 'landmark') {
-      path = `/wp/v2/landmark?search=${encodeURIComponent(searchTerm)}&per_page=10&_embed`;
-    } else if (categorySlug === 'page') {
-      path = `/wp/v2/pages?search=${encodeURIComponent(searchTerm)}&per_page=10&_embed`;
-    } else {
-      const categoryObj = categories?.find((cat) => cat.slug === categorySlug);
-      if (!categoryObj) {
-        setResults([]);
-        setLoading(false);
-        return;
-      }
-      path = `/wp/v2/posts?search=${encodeURIComponent(
-        searchTerm,
-      )}&category=${categoryObj.id}&per_page=10&_embed`;
-    }
-
-    apiFetch({ path })
-      .then((data) => {
-        setResults(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setResults([]);
-        setLoading(false);
-      });
-  }, [searchTerm, categorySlug, categories]);
-
-  useEffect(() => {
-    if (!selectedPostLink) {
-      setSelectedTitle('');
-    }
-  }, [selectedPostLink]);
-
-  return (
-    <div>
-      <TextControl
-        label={__('Rechercher un contenu', 'amnesty')}
-        value={searchTerm}
-        onChange={setSearchTerm}
-        placeholder={__('Tapez pour chercher', 'amnesty')}
-      />
-
-      {loading && <Spinner />}
-
-      {!loading && results.length > 0 && (
-        <ul
-          style={{
-            border: '1px solid #ccc',
-            padding: 5,
-            maxHeight: 200,
-            overflowY: 'auto',
-            margin: 0,
-            listStyle: 'none',
-          }}
-        >
-          {results.map((post) => {
-            const featuredImageUrl = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
-            return (
-              <li
-                key={post.id}
-                style={{
-                  cursor: 'pointer',
-                  padding: '8px 10px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  borderBottom: '1px solid #eee',
-                }}
-                onClick={() => {
-                  onPostSelect(post);
-                  setSelectedTitle(post.title.rendered);
-                  setSearchTerm('');
-                  setResults([]);
-                }}
-              >
-                {featuredImageUrl && (
-                  <img
-                    src={featuredImageUrl}
-                    alt={post.title.rendered}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      objectFit: 'cover',
-                      borderRadius: 2,
-                      flexShrink: 0,
-                    }}
-                  />
-                )}
-                <div style={{ flexGrow: 1 }}>
-                  <strong dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-      {selectedPostLink && selectedTitle && (
-        <p style={{ marginTop: '8px', fontStyle: 'italic' }}>
-          {__('Contenu sélectionné :', 'amnesty')}{' '}
-          <strong dangerouslySetInnerHTML={{ __html: selectedTitle }} />
-        </p>
-      )}
-    </div>
-  );
-};
-
 const EditComponent = (props) => {
   const { attributes, setAttributes } = props;
   const {
@@ -234,23 +108,21 @@ const EditComponent = (props) => {
   } = attributes;
 
   const blockProps = useBlockProps();
-  const [linkCategorySlug, setLinkCategorySlug] = useState('');
 
-  const categories = useSelect(
-    (select) => select('core').getEntityRecords('taxonomy', 'category', { per_page: 100 }),
-    [],
-  );
-
-  const categoryOptions = categories
-    ? [
-        { label: __('Sélectionnez un type', 'amnesty'), value: '' },
-        ...categories
-          .filter((cat) => cat.name !== 'Non classé')
-          .map((cat) => ({ label: cat.name, value: cat.slug })),
-        { label: 'Pages', value: 'page' },
-        { label: 'Repères', value: 'landmark' },
-      ]
-    : [];
+  const allowedTypesForThisBlock = [
+    'post',
+    'pages',
+    'fiche_pays',
+    'landmark',
+    'local-structures',
+    'petition',
+    'press-release',
+    'training',
+    'document',
+    'edh',
+    'chronique',
+    'tribe_events',
+  ];
 
   const handlePetitionSelect = (selectedPetition) => {
     if (selectedPetition) {
@@ -280,6 +152,8 @@ const EditComponent = (props) => {
   const handlePostLinkSelect = (post) => {
     if (post && post.link) {
       setAttributes({ buttonLink: post.link });
+    } else {
+      setAttributes({ buttonLink: '' });
     }
   };
 
@@ -421,22 +295,10 @@ const EditComponent = (props) => {
                 ]}
                 onChange={(value) => setAttributes({ buttonPosition: value })}
               />
-              <SelectControl
-                label={__('Lier vers un type de contenu', 'amnesty')}
-                value={linkCategorySlug}
-                options={categoryOptions}
-                onChange={(slug) => {
-                  setLinkCategorySlug(slug);
-                  setAttributes({ buttonLink: '' });
-                }}
+              <PostSearchControl
+                onPostSelect={handlePostLinkSelect}
+                allowedTypes={allowedTypesForThisBlock}
               />
-              {linkCategorySlug && (
-                <PostSearchControl
-                  categorySlug={linkCategorySlug}
-                  onPostSelect={handlePostLinkSelect}
-                  selectedPostLink={buttonLink}
-                />
-              )}
               {buttonLink && (
                 <div style={{ marginTop: '1rem' }}>
                   <p style={{ marginTop: 0, marginBottom: '4px', fontSize: '12px' }}>
@@ -466,7 +328,7 @@ const EditComponent = (props) => {
       </InspectorControls>
 
       <div
-        {...blockProps}
+        {...useBlockProps()}
         className={classnames(blockProps.className, 'action-card', type, {
           [backgroundColor]: type === 'action' && backgroundColor,
         })}
@@ -496,7 +358,7 @@ const EditComponent = (props) => {
                 </div>
                 <p className="supports">
                   {`${current.toLocaleString('fr-FR')} ${
-                    current > 1 ? __(' soutiens.', 'amnesty') : __(' soutien.', 'amnesty')
+                    current > 1 ? __('soutiens.', 'amnesty') : __('soutien.', 'amnesty')
                   }`}
                   <span className="help-us">
                     {__('Aidez-nous à atteindre', 'amnesty')} {goal.toLocaleString('fr-FR')}

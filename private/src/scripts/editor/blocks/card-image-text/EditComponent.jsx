@@ -1,12 +1,11 @@
 import classnames from 'classnames';
+import PostSearchControl from '../../components/PostSearchControl.jsx';
 
 const { __ } = wp.i18n;
-const { useEffect, useState } = wp.element;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
-const { PanelBody, TextControl, SelectControl, ToggleControl, TextareaControl, Spinner, Button } =
+const { PanelBody, TextControl, SelectControl, ToggleControl, TextareaControl, Button } =
   wp.components;
 const { useSelect } = wp.data;
-const apiFetch = wp.apiFetch;
 
 const getCategoryLink = (slug) => {
   if (slug === 'landmark') {
@@ -18,219 +17,13 @@ const getCategoryLink = (slug) => {
   return `/${slug}`;
 };
 
-const PostSearchControl = ({ selectedPostId, selectedPostTitle, categorySlug, onChange }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const categories = useSelect(
-    (select) => select('core').getEntityRecords('taxonomy', 'category', { per_page: 100 }),
-    [],
-  );
-
-  useEffect(() => {
-    if (!searchTerm || !categorySlug) {
-      setResults([]);
-      return;
-    }
-
-    setLoading(true);
-    let path;
-
-    if (categorySlug === 'landmark') {
-      path = `/wp/v2/landmark?search=${encodeURIComponent(searchTerm)}&per_page=10&_embed`;
-    } else if (categorySlug === 'page') {
-      path = `/wp/v2/pages?search=${encodeURIComponent(searchTerm)}&per_page=10&_embed`;
-    } else if (categorySlug === 'document') {
-      path = `/wp/v2/document?search=${encodeURIComponent(
-        searchTerm,
-      )}&per_page=10&acf_format=standard&_embed`;
-    } else {
-      const categoryObj = categories?.find((cat) => cat.slug === categorySlug);
-      if (!categoryObj) {
-        setResults([]);
-        setLoading(false);
-        return;
-      }
-      path = `/wp/v2/posts?search=${encodeURIComponent(
-        searchTerm,
-      )}&category=${categoryObj.id}&per_page=10&_embed`;
-    }
-
-    apiFetch({ path })
-      .then((posts) => {
-        setResults(posts);
-        setLoading(false);
-      })
-      .catch(() => {
-        setResults([]);
-        setLoading(false);
-      });
-  }, [searchTerm, categorySlug, categories]);
-
-  const extractAllCustomTerms = (embeddedData) => {
-    if (!embeddedData || !Array.isArray(embeddedData['wp:term'])) {
-      return [];
-    }
-
-    let allCustomTerms = [];
-    embeddedData['wp:term'].forEach((termGroup) => {
-      if (Array.isArray(termGroup)) {
-        const customTermsInGroup = termGroup.filter(
-          (term) => term.taxonomy !== 'category' && term.taxonomy !== 'post_tag',
-        );
-        allCustomTerms = allCustomTerms.concat(
-          customTermsInGroup.map(({ id, name, slug, taxonomy }) => ({ id, name, slug, taxonomy })),
-        );
-      }
-    });
-    return allCustomTerms;
-  };
-
-  return (
-    <div>
-      <TextControl
-        label={__('Sélectionner un contenu spécifique (facultatif)', 'amnesty')}
-        value={searchTerm}
-        onChange={setSearchTerm}
-        placeholder={__('Tapez pour chercher un contenu', 'amnesty')}
-      />
-
-      {loading && <Spinner />}
-
-      {!loading && results.length > 0 && (
-        <ul
-          style={{
-            border: '1px solid #ccc',
-            padding: 5,
-            maxHeight: 150,
-            overflowY: 'auto',
-            margin: 0,
-            listStyle: 'none',
-          }}
-        >
-          {results.map((post) => {
-            const featuredImageUrl =
-              post.acf?.image_du_document?.url ||
-              post._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
-              '';
-            const allExtractedTerms = extractAllCustomTerms(post._embedded);
-
-            return (
-              <li
-                key={post.id}
-                style={{
-                  cursor: 'pointer',
-                  padding: '8px 10px',
-                  backgroundColor: post.id === selectedPostId ? '#e0f2f7' : 'transparent',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  borderBottom: '1px solid #eee',
-                  transition: 'background-color 0.2s ease-in-out',
-                }}
-                onClick={() => {
-                  onChange(post);
-                  setSearchTerm('');
-                  setResults([]);
-                }}
-              >
-                {featuredImageUrl && (
-                  <img
-                    src={featuredImageUrl}
-                    alt={post.title.rendered}
-                    style={{
-                      width: 50,
-                      height: 50,
-                      objectFit: 'cover',
-                      borderRadius: 4,
-                      flexShrink: 0,
-                    }}
-                  />
-                )}
-                <div style={{ flexGrow: 1 }}>
-                  <strong dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-                  <div style={{ fontSize: '0.85em', color: '#666', marginTop: '4px' }}>
-                    {allExtractedTerms.length > 0 && (
-                      <span style={{ marginRight: '8px' }}>
-                        {allExtractedTerms.map((term) => term.name).join(', ')}
-                      </span>
-                    )}
-                    {post._embedded?.['wp:term']?.[0]?.[0]?.name &&
-                      post._embedded['wp:term'][0][0].taxonomy === 'category' && (
-                        <span
-                          style={{
-                            marginLeft: allExtractedTerms.length > 0 ? '0' : '0',
-                            marginRight: '8px',
-                          }}
-                        >
-                          {allExtractedTerms.length > 0 ? '| ' : ''}
-                          {post._embedded['wp:term'][0][0].name}
-                        </span>
-                      )}
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-
-      {selectedPostTitle && (
-        <p>
-          {__('Contenu sélectionné :', 'amnesty')} <strong>{selectedPostTitle}</strong>
-        </p>
-      )}
-    </div>
-  );
-};
-
 const EditComponent = ({ attributes, setAttributes }) => {
-  const {
-    custom,
-    direction,
-    postId,
-    title,
-    subtitle,
-    category,
-    permalink,
-    thumbnail,
-    text,
-    selectedPostCategorySlug,
-  } = attributes;
+  const { custom, direction, postId, title, subtitle, category, permalink, thumbnail, text } =
+    attributes;
 
   const blockProps = useBlockProps();
 
-  const categories = useSelect(
-    (select) => select('core').getEntityRecords('taxonomy', 'category', { per_page: 100 }),
-    [],
-  );
-
-  const categoryOptions = categories
-    ? [
-        { label: __('Sélectionnez un type', 'amnesty'), value: '' },
-        ...categories
-          .filter((cat) => cat.name !== 'Non classé')
-          .map((cat) => ({ label: cat.name, value: cat.slug })),
-        { label: 'Pages', value: 'page' },
-        { label: 'Repères', value: 'landmark' },
-        { label: 'Documents', value: 'document' },
-      ]
-    : [];
-
-  const getCategoryNameFromSlug = (slug) => {
-    if (slug === 'landmark') {
-      return 'Repères';
-    }
-    if (slug === 'page') {
-      return 'Pages';
-    }
-    if (slug === 'document') {
-      return 'Documents';
-    }
-    const selectedCat = categories?.find((cat) => cat.slug === slug);
-    return selectedCat ? selectedCat.name : '';
-  };
+  const allowedTypesForThisBlock = ['post', 'pages', 'landmark', 'document'];
 
   const selectedMedia = useSelect(
     (select) => (thumbnail ? select('core').getMedia(thumbnail) : null),
@@ -310,8 +103,21 @@ const EditComponent = ({ attributes, setAttributes }) => {
     return allCustomTerms;
   };
 
-  const handlePostSearchControlChange = (post) => {
-    if (selectedPostCategorySlug === 'document') {
+  const handlePostSelection = (post) => {
+    if (!post) {
+      setAttributes({
+        postId: null,
+        title: '',
+        subtitle: '',
+        permalink: '',
+        thumbnail: null,
+        text: '',
+        category: '',
+      });
+      return;
+    }
+
+    if (post.type === 'document') {
       const { id, _embedded, excerpt, date, acf } = post;
       const docCategory = _embedded?.['wp:term']
         ?.flat()
@@ -319,24 +125,23 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
       setAttributes({
         postId: id,
-        category: docCategory || '',
+        category: docCategory || 'Document',
         title: post.title.rendered,
         subtitle: '',
         text: excerpt?.rendered || '',
-        selectedPostCategorySlug: 'document',
         selectedPostDate: date,
         selectedPostCustomTerms: [],
         permalink: acf?.upload_du_document?.url || '',
         thumbnail: post.featured_media !== 0 ? post.featured_media : null,
       });
     } else {
-      const { id, slug, _embedded, date, excerpt } = post;
+      const { id, slug, _embedded, date, excerpt, type } = post;
       const allExtractedTerms = extractAllCustomTerms(_embedded);
 
       let postCategoryName = '';
-      if (selectedPostCategorySlug === 'landmark') {
+      if (type === 'landmark') {
         postCategoryName = 'Repères';
-      } else if (selectedPostCategorySlug === 'page') {
+      } else if (type === 'page') {
         postCategoryName = 'Page';
       } else {
         const postCategory = _embedded?.['wp:term']?.[0]?.find(
@@ -350,31 +155,25 @@ const EditComponent = ({ attributes, setAttributes }) => {
         title: post.title.rendered,
         subtitle: '',
         category: postCategoryName,
-        permalink: `${getCategoryLink(selectedPostCategorySlug)}/${slug}`,
+        permalink: `${getCategoryLink(type)}/${slug}`,
         thumbnail: _embedded?.['wp:featuredmedia']?.[0]?.id || null,
         text: excerpt?.rendered || '',
-        selectedPostCategorySlug,
         selectedPostDate: date,
         selectedPostCustomTerms: allExtractedTerms,
       });
     }
   };
 
-  if (!categories) {
-    return (
-      <div {...blockProps}>
-        <Spinner />
-        <p>{__('Chargement…', 'amnesty')}</p>
-      </div>
-    );
-  }
-
   const linkProps = {
     href: permalink,
     className: 'card-image-text-block-link',
   };
 
-  if (custom || selectedPostCategorySlug === 'document') {
+  if (
+    custom ||
+    attributes.selectedPostCategorySlug === 'document' ||
+    (postId && attributes.category === 'Document')
+  ) {
     linkProps.target = '_blank';
     linkProps.rel = 'noopener noreferrer';
   }
@@ -400,33 +199,14 @@ const EditComponent = ({ attributes, setAttributes }) => {
           />
           {!custom && (
             <>
-              <SelectControl
-                label={__('Type de contenu', 'amnesty')}
-                value={selectedPostCategorySlug}
-                options={categoryOptions}
-                onChange={(value) => {
-                  const newCategoryName = getCategoryNameFromSlug(value);
-                  setAttributes({
-                    selectedPostCategorySlug: value,
-                    category: newCategoryName,
-                    postId: null,
-                    title: '',
-                    subtitle: '',
-                    permalink: '',
-                    thumbnail: null,
-                    text: '',
-                  });
-                }}
+              <PostSearchControl
+                allowedTypes={allowedTypesForThisBlock}
+                onPostSelect={handlePostSelection}
               />
-              {selectedPostCategorySlug ? (
-                <PostSearchControl
-                  selectedPostId={postId}
-                  selectedPostTitle={title}
-                  categorySlug={selectedPostCategorySlug}
-                  onChange={handlePostSearchControlChange}
-                />
-              ) : (
-                <p>{__('Sélectionnez un type pour chercher des contenus.', 'amnesty')}</p>
+              {title && (
+                <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>
+                  {__('Contenu sélectionné :', 'amnesty')} <strong>{title}</strong>
+                </p>
               )}
             </>
           )}
