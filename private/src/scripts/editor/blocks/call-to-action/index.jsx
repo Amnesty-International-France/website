@@ -25,9 +25,28 @@ registerBlockType('amnesty-core/call-to-action', {
       type: 'string',
       default: 'Label',
     },
-    buttonLink: {
+    linkType: {
+      type: 'string',
+      default: 'external',
+    },
+    internalUrl: {
+      type: 'string',
+      default: '',
+    },
+    externalUrl: {
       type: 'string',
       default: '#',
+    },
+    postId: {
+      type: 'number',
+    },
+    internalUrlTitle: {
+      type: 'string',
+      default: '',
+    },
+    targetBlank: {
+      type: 'boolean',
+      default: false,
     },
   },
   example: {
@@ -36,7 +55,8 @@ registerBlockType('amnesty-core/call-to-action', {
       title: 'Prêt·e à faire la différence ?',
       subTitle: 'Chaque action, même la plus petite, contribue à un monde plus juste.',
       buttonLabel: 'Découvrir nos actions',
-      buttonLink: '#',
+      linkType: 'external',
+      externalUrl: '#',
     },
   },
   edit: EditComponent,

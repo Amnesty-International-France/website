@@ -1,17 +1,10 @@
 import Button from './Button.jsx';
+import PostSearchControl from '../../components/PostSearchControl.jsx';
 
 const { __ } = wp.i18n;
-const { useEffect, useState } = wp.element;
+const { useEffect } = wp.element;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
-const {
-  PanelBody,
-  SelectControl,
-  TextControl,
-  Spinner,
-  ToggleControl,
-  Button: WpButton,
-} = wp.components;
-const { useSelect } = wp.data;
+const { PanelBody, SelectControl, TextControl, ToggleControl, Button: WpButton } = wp.components;
 const apiFetch = wp.apiFetch;
 
 const EditComponent = (props) => {
@@ -24,16 +17,15 @@ const EditComponent = (props) => {
     linkType,
     externalUrl,
     alignment,
-    postType,
     internalUrl,
     internalUrlTitle,
     postId,
     targetBlank,
   } = attributes;
 
-  const allowedPostTypes = [
+  const allowedTypesForThisBlock = [
     'post',
-    'page',
+    'pages',
     'fiche_pays',
     'landmark',
     'local-structures',
@@ -45,19 +37,6 @@ const EditComponent = (props) => {
     'chronique',
     'tribe_events',
   ];
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
-
-  const availablePostTypes = useSelect((select) => {
-    const types = select('core').getPostTypes({ per_page: -1 });
-    return types ? types.filter((type) => allowedPostTypes.includes(type.slug)) : [];
-  }, []);
-
-  const postTypeOptions = availablePostTypes.map((type) => ({
-    label: type.name,
-    value: type.slug,
-  }));
 
   useEffect(() => {
     if (postId && !internalUrl) {
@@ -78,47 +57,26 @@ const EditComponent = (props) => {
     }
   }, [postId, internalUrl]);
 
-  useEffect(() => {
-    if (!searchTerm || searchTerm.length < 2 || !postType) {
-      setSearchResults([]);
-      return;
-    }
-    const selectedTypeObject = availablePostTypes.find((type) => type.slug === postType);
-    if (!selectedTypeObject) return;
-
-    let path = `/wp/v2/${selectedTypeObject.rest_base}?search=${encodeURIComponent(searchTerm)}&per_page=10&_fields=id,title,link`;
-    if (postType === 'post') {
-      path += '&categories_exclude=1';
-    }
-
-    setIsSearching(true);
-    apiFetch({ path })
-      .then((items) => {
-        setSearchResults(items);
-        setIsSearching(false);
-      })
-      .catch(() => {
-        setSearchResults([]);
-        setIsSearching(false);
+  const handlePostSelect = (post) => {
+    if (post) {
+      setAttributes({
+        internalUrl: post.link,
+        internalUrlTitle: post.title.rendered,
+        postId: post.id,
+        postType: post.type,
       });
-  }, [searchTerm, postType, availablePostTypes]);
+    } else {
+      setAttributes({
+        internalUrl: '',
+        internalUrlTitle: '',
+        postId: 0,
+        postType: '',
+      });
+    }
+  };
 
-  const handleSelectPostType = (value) => {
-    setAttributes({ postType: value, internalUrl: '', internalUrlTitle: '', postId: 0 });
-    setSearchTerm('');
-    setSearchResults([]);
-  };
-  const handleSelectSearchResult = (item) => {
-    setAttributes({
-      internalUrl: item.link,
-      internalUrlTitle: item.title.rendered,
-      postId: item.id,
-    });
-    setSearchTerm('');
-    setSearchResults([]);
-  };
   const handleRemoveLink = () => {
-    setAttributes({ internalUrl: '', internalUrlTitle: '', postId: 0 });
+    setAttributes({ internalUrl: '', internalUrlTitle: '', postId: 0, postType: '' });
   };
 
   return (
@@ -137,53 +95,12 @@ const EditComponent = (props) => {
 
           {linkType === 'internal' && (
             <>
-              <SelectControl
-                label={__('Type de contenu', 'amnesty')}
-                value={postType}
-                options={[
-                  { label: __('Choisir un type', 'amnesty'), value: '' },
-                  ...postTypeOptions,
-                ]}
-                onChange={handleSelectPostType}
-              />
-              {postType && !internalUrl && (
-                <div style={{ marginTop: '10px' }}>
-                  <TextControl
-                    label={__('Rechercher un contenu', 'amnesty')}
-                    value={searchTerm}
-                    onChange={setSearchTerm}
-                    placeholder={__('Tapez au moins 2 caractères', 'amnesty')}
-                  />
-                  {isSearching && <Spinner />}
-                  {!isSearching && searchResults.length > 0 && (
-                    <ul
-                      style={{
-                        border: '1px solid #ccc',
-                        padding: 5,
-                        maxHeight: 150,
-                        overflowY: 'auto',
-                        margin: 0,
-                        listStyle: 'none',
-                      }}
-                    >
-                      {searchResults.map((item) => (
-                        <li
-                          key={item.id}
-                          style={{
-                            cursor: 'pointer',
-                            padding: '8px 10px',
-                            borderBottom: '1px solid #eee',
-                          }}
-                          onClick={() => handleSelectSearchResult(item)}
-                        >
-                          <span dangerouslySetInnerHTML={{ __html: item.title.rendered }} />
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              )}
-              {internalUrl && (
+              {!internalUrl ? (
+                <PostSearchControl
+                  onPostSelect={handlePostSelect}
+                  allowedTypes={allowedTypesForThisBlock}
+                />
+              ) : (
                 <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #ccc' }}>
                   <p style={{ margin: 0 }}>
                     {__('Lien sélectionné :', 'amnesty')}{' '}
