@@ -20,11 +20,8 @@ $countries = get_posts(
     ]
 );
 
-$civilite_map = [
-    'M.'   => 'Monsieur',
-    'Mme'  => 'Madame',
-    'Autre' => 'Autre',
-];
+$inscription_chronique_status = $_GET['inscription_chronique'] ?? '';
+$inscription_chronique_success = $inscription_chronique_status === 'success';
 
 if (isset($_POST['sign_discover_chronicle'])) {
     if (!isset($_POST['discover_chronicle_nonce']) ||
@@ -34,7 +31,7 @@ if (isset($_POST['sign_discover_chronicle'])) {
 
     $themes = isset($_POST['theme']) ? array_map('sanitize_text_field', (array)$_POST['theme']) : [];
     $discover_chronicle = sanitize_email($_POST['discover-chronicle'] ?? '');
-    $civility = sanitize_text_field($civility_map[$_POST['civility']] ?? '');
+    $civility = sanitize_text_field($_POST['civility'] ?? '');
     $lastname = sanitize_text_field($_POST['lastname'] ?? '');
     $firstname = sanitize_text_field($_POST['firstname'] ?? '');
     $street_address = sanitize_text_field($_POST['street-address'] ?? '');
@@ -60,7 +57,7 @@ if (isset($_POST['sign_discover_chronicle'])) {
         'Telephone__c' => $phone,
         'Origin' => 'Web',
         'Type_de_demande_AIF__c' => 'Offre Chronique',
-        'RecordTypeId' => AIF_SALESFORCE_RECORD_TYPE_ID,
+        'RecordTypeId' => AIF_SALESFORCE_RECORD_TYPE_ID ?? getenv('AIF_SALESFORCE_RECORD_TYPE_ID'),
         'Code_Marketing_Prestataire__c' => 'WB_CHRONIQUE',
     ];
 
@@ -69,8 +66,12 @@ if (isset($_POST['sign_discover_chronicle'])) {
 
     if (false === $existing_case) {
         post_salesforce_case($form_data);
+        wp_redirect(add_query_arg('inscription_chronique', 'success', home_url('/numero-decouverte-la-chronique')));
+        exit;
     }
 
+    wp_redirect(add_query_arg('inscription_chronique', 'already-sent', home_url('/numero-decouverte-la-chronique')));
+    exit;
 }
 
 ?>
@@ -79,6 +80,18 @@ if (isset($_POST['sign_discover_chronicle'])) {
 <article class="wp-block-group page <?php print esc_attr($class_name ?? ''); ?>">
 	<!-- wp:group {"tagName":"section","className":"page-content"} -->
 	<section class="wp-block-group page-content <?php echo esc_attr($hero_extra_class); ?> <?php print esc_attr($no_chapo ?? ''); ?>">
+		<?php if (! empty($inscription_chronique_status)): ?>
+		<div class="discover-chronicle-form-container">
+			<div class="discover-chronicle-popin <?php echo $inscription_chronique_status; ?>">
+				<?php
+                if ($inscription_chronique_success): ?>
+					<p>Votre demande a bien été prise en compte.</p>
+				<?php else: ?>
+					<p>Une demande a déjà été envoyé.</p>
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php else: ?>
 		<!-- wp:post-content /-->
 		<div class="discover-chronicle-form-container">
 			<form id="discover-chronicle-form" class="discover-chronicle-form" action="" method="post">
@@ -89,12 +102,12 @@ if (isset($_POST['sign_discover_chronicle'])) {
 						<label for="civility_m">M.</label>
 						<input type="radio" id="civility_m"
 							   name="civility"
-							   value="M."
+							   value="M"
 							   checked>
 						<label for="civility_mme">Mme</label>
 						<input type="radio" id="civility_mme"
 							   name="civility"
-							   value="Mme">
+							   value="MME">
 						<label for="civility_other">Autre</label>
 						<input type="radio" id="civility_other"
 							   name="civility"
@@ -213,6 +226,7 @@ if (isset($_POST['sign_discover_chronicle'])) {
 					vos données personnelles, veuillez consulter notre politique de confidentialité.</p>
 			</div>
 		</div>
+		<?php endif; ?>
 	</section>
 	<!-- /wp:group -->
 </article>
