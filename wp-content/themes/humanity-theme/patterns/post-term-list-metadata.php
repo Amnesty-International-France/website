@@ -25,9 +25,18 @@ $default_chip_style = match ($main_category->slug ?? '') {
 };
 
 foreach ($post_terms as $post_term) :
-    if (($post_term->taxonomy === 'combat' && (int)$post_term->parent !== 0) || in_array($post_term->taxonomy, ['keyword', 'landmark_category'])) {
+    $current_taxonomy = get_term_field('taxonomy', $post_term);
+    $term_link = amnesty_term_link($post_term);
+
+    if ($current_taxonomy === 'location') {
+        $term_slug = get_term_field('slug', $post_term);
+        $term_link = home_url('/categorie/' . $term_slug . '/');
+    }
+
+    if (($current_taxonomy === 'combat' && (int)$post_term->parent !== 0) || in_array($current_taxonomy, ['keyword', 'landmark_category'])) {
         continue;
     }
+
     if ($main_category) {
         if ($post_term->slug === $main_category->slug) {
             continue;
@@ -37,9 +46,9 @@ foreach ($post_terms as $post_term) :
         if ($post_type === 'landmark' || $post_type === 'petition') {
             $chip_style = 'bg-yellow';
         } else {
-            $chip_style = $post_term->taxonomy === 'location' ? 'bg-yellow' : 'outline-black';
+            $chip_style = $current_taxonomy === 'location' ? 'bg-yellow' : 'outline-black';
         }
     }
     ?>
-    <!-- wp:amnesty-core/chip-category {"label":"<?php echo esc_html($post_term->name); ?>","link":"<?php echo esc_url(amnesty_term_link($post_term)); ?>","size":"medium","style":"<?php echo esc_attr($chip_style); ?>"} /-->
+    <!-- wp:amnesty-core/chip-category {"label":"<?php echo esc_html($post_term->name); ?>","link":"<?php echo esc_url($term_link); ?>","size":"medium","style":"<?php echo esc_attr($chip_style); ?>"} /-->
 <?php endforeach; ?>
