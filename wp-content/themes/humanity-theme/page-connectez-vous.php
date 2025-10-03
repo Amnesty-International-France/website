@@ -97,7 +97,7 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
                             name="password" aria-describedby="passwordHelp passphraseRequirements" type="password"
                             id="password" autocomplete="new-password" required aria-required="true"
                             oninput="checkPassphraseStrength()">
-                    </div>  
+                    </div>
                     <?php
     if (!empty($error_message)) {
         aif_include_partial('alert', [
@@ -112,7 +112,7 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
                     <div>
                         <a class="aif-link--primary aif-block"
                             href="<?= get_permalink(get_page_by_path('mot-de-passe-oublie')) ?>">
-                            Mot de passe oublié ? 
+                            Mot de passe oublié ?
                         </a>
                         <a class="aif-link--primary aif-block"
                             href="<?= get_permalink(get_page_by_path('foire-aux-questions')) ?>">
