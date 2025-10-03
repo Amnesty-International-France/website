@@ -11,11 +11,18 @@ if (!function_exists('render_call_to_action_block')) {
      */
     function render_call_to_action_block(array $attributes): string
     {
-        $title        = $attributes['title'] ?? '';
-        $subTitle     = $attributes['subTitle'] ?? '';
-        $buttonLabel  = $attributes['buttonLabel'] ?? __('En savoir plus', 'amnesty');
-        $buttonLink   = $attributes['buttonLink'] ?? '';
-        $direction    = $attributes['direction'] ?? 'horizontal';
+        $title       = $attributes['title'] ?? '';
+        $subTitle    = $attributes['subTitle'] ?? '';
+        $buttonLabel = $attributes['buttonLabel'] ?? __('En savoir plus', 'amnesty');
+        $direction   = $attributes['direction'] ?? 'horizontal';
+
+        $linkType    = $attributes['linkType'] ?? 'external';
+        $internalUrl = $attributes['internalUrl'] ?? '';
+        $externalUrl = $attributes['externalUrl'] ?? '#';
+        $targetBlank = $attributes['targetBlank'] ?? false;
+
+        $final_link  = ($linkType === 'internal') ? $internalUrl : $externalUrl;
+        $target_attr = $targetBlank ? ' target="_blank" rel="noopener noreferrer"' : '';
 
         $buttonAlignmentClass = ($direction === 'vertical') ? 'center' : 'right';
 
@@ -32,13 +39,13 @@ if (!function_exists('render_call_to_action_block')) {
                 <?php endif; ?>
             </div>
             <div class='custom-button-block <?php echo esc_attr($buttonAlignmentClass); ?>'>
-                <a href="<?php echo esc_url($buttonLink); ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
+                <a href="<?php echo esc_url($final_link); ?>"<?php echo $target_attr; ?> class="custom-button">
                     <div class='content bg-yellow medium'>
                         <div class="icon-container">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
-                                viewBox="0 0 24 24"
+                                viewBox="0 0 24"
                                 strokeWidth="1.5"
                                 stroke="currentColor"
                             >
