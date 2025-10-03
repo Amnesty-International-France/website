@@ -22,7 +22,7 @@ function amnesty_register_document_cpt(): void
                 'not_found' => 'Aucun Document trouvé',
                 'not_found_in_trash' => 'Aucun Document dans la corbeille',
             ],
-            'public' => false,
+            'public' => true,
             'has_archive' => true,
             'rewrite' => ['slug' => 'documents'],
             'supports' => ['title', 'thumbnail', 'custom-fields', 'excerpt'],
