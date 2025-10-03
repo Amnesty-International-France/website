@@ -16,6 +16,9 @@ for ($i = 1; $i <= 5; $i++) {
     if (!$lien instanceof \WP_Post) {
         $article['lien'] = get_post($lien);
     }
+    if (!is_string($article['image'])) {
+        $article['image'] = wp_get_original_image_url($article['image']);
+    }
     $articles[] = $article;
 }
 $public_url = sprintf('%s/voir-newsletter?newsletter_id=%s', get_home_url(), $newsletter_id);
