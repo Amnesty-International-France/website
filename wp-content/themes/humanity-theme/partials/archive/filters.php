@@ -16,7 +16,7 @@ if (is_category()) {
     $form_url = get_category_link(get_queried_object_id());
 } elseif (is_tax()) {
     $types = get_post_types(['public' => true, ], 'objects');
-    $types = array_filter($types, static fn ($t) => ! in_array($t->name, ['attachment', 'sidebar', 'feedzy_imports', 'feedzy_categories']));
+    $types = array_filter($types, static fn ($t) => ! in_array($t->name, ['attachment', 'sidebar', 'feedzy_imports', 'feedzy_categories', 'edh', 'fiche_pays', 'chronique', 'training', 'press-release', 'local-structures']));
     $taxonomies = [];
     $form_url = get_term_link(get_queried_object());
 } elseif (is_post_type_archive()) {
