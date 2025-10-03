@@ -44,3 +44,36 @@ function amnesty_filter_cpt_by_multiple_taxonomies(WP_Query $query)
 if (! is_admin()) {
     add_action('pre_get_posts', 'amnesty_filter_cpt_by_multiple_taxonomies');
 }
+
+function apply_tax_location_archive_filters($query)
+{
+    if (!is_admin() && $query->is_main_query() && $query->is_tax('location')) {
+
+        if (isset($_GET['qtype']) && !empty($_GET['qtype'])) {
+            $post_types = explode(',', $_GET['qtype']);
+            $sanitized_post_types = array_map('sanitize_key', $post_types);
+
+            $query->set('post_type', $sanitized_post_types);
+        }
+
+        $tax_query = $query->get('tax_query') ?: [];
+        $tax_query['relation'] = 'AND';
+
+        foreach ($_GET as $key => $value) {
+            if (strpos($key, 'q') === 0 && $key !== 'qtype' && !empty($value)) {
+                $taxonomy = substr($key, 1);
+                $terms = array_map('sanitize_key', explode(',', $value));
+                $tax_query[] = [
+                    'taxonomy' => $taxonomy,
+                    'field'    => 'slug',
+                    'terms'    => $terms,
+                ];
+            }
+        }
+
+        if (count($tax_query) > 1) {
+            $query->set('tax_query', $tax_query);
+        }
+    }
+}
+add_action('pre_get_posts', 'apply_tax_location_archive_filters');
