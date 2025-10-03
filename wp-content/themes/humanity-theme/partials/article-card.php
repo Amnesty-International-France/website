@@ -138,7 +138,7 @@ if (!$post_object instanceof WP_Post) {
                 if (!is_wp_error($term_link)) {
                     $custom_routes = [
                         'combat'   => '/combats/',
-                        'location' => '/pays/',
+                        'location' => '/categorie/',
                     ];
 
                     if (array_key_exists($term->taxonomy, $custom_routes)) {
