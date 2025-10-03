@@ -9,7 +9,7 @@ if (!$newsletter_id || !$post || $post->post_type != 'newsletter') {
 $articles = [];
 for ($i = 1; $i <= 5; $i++) {
     $article = get_field($i, $post);
-    $lien = $article['lien'];
+    $lien = $article['lien'] ?? null;
     if (!$lien) {
         continue;
     }
@@ -63,7 +63,7 @@ $public_url = sprintf('%s/voir-newsletter?newsletter_id=%s', get_home_url(), $ne
 						    setup_postdata($post);
 						    $post_url = esc_url(get_permalink($post->ID));
 						    $title = !empty($article['titre']) ? $article['titre'] : esc_html(get_the_title($post->ID));
-						    $image_url = !isset($article['image']) ? $article['image'] : esc_url(get_the_post_thumbnail_url($post->ID, 'medium'));
+						    $image_url = isset($article['image']) ? $article['image'] : esc_url(get_the_post_thumbnail_url($post->ID, 'medium'));
 						    ?>
 							<table align="center" style="border:1px solid #d6d6d6;box-shadow:0 5px 25px 0 #e2e2e2;margin-top:20px;margin-bottom:30px" cellPadding="0" cellSpacing="0" border="0" valign="top">
 								<tbody>
