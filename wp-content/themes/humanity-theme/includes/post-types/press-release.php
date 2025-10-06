@@ -26,7 +26,7 @@ function amnesty_register_press_release_cpt()
             'has_archive'  => true,
             'rewrite'      => [ 'slug' => 'communiques' ],
             'supports'     => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
-            'menu_icon'    => 'dashicons-admin-page',
+            'menu_icon'    => 'dashicons-rss',
             'show_in_rest' => true,
         ]
     );

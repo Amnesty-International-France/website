@@ -37,7 +37,7 @@ add_action('init', function () {
         ],
         'public' => true,
         'show_in_rest' => true,
-        'menu_icon' => 'dashicons-admin-page',
+        'menu_icon' => 'dashicons-format-aside',
         'menu_position' => 21,
         'supports' => [
             0 => 'title',

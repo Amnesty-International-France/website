@@ -20,7 +20,7 @@ function amnesty_register_petitions_cpt()
         'has_archive' => true,
         'rewrite' => ['slug' => 'petitions'],
         'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
-        'menu_icon' => 'dashicons-admin-page',
+        'menu_icon' => 'dashicons-pressthis',
         'show_in_rest' => true,
     ];
 

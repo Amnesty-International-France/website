@@ -20,7 +20,7 @@ function amnesty_register_local_structures_cpt()
         'has_archive' => true,
         'rewrite' => ['slug' => 'structures-locales'],
         'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
-        'menu_icon' => 'dashicons-admin-page',
+        'menu_icon' => 'dashicons-admin-multisite',
         'show_in_rest' => true,
     ];
 

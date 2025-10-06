@@ -24,7 +24,7 @@ function amnesty_register_trainings_cpt(): void
             'has_archive'         => true,
             'rewrite'             => [ 'slug' => 'formations' ],
             'supports'            => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
-            'menu_icon'           => 'dashicons-admin-page',
+            'menu_icon'           => 'dashicons-welcome-learn-more',
             'show_in_rest'        => true,
             'publicly_queryable'  => true,
             'exclude_from_search' => false,
