@@ -20,7 +20,8 @@
         padding: 36px 24px;
       }
 
-      & > .over-footer-action, .over-footer-social {
+      & > .over-footer-action,
+      .over-footer-social {
         display: flex;
       }
 
@@ -46,7 +47,7 @@
               padding: 2px 12px;
               margin-left: 1rem;
               border: 2px solid var(--wp--preset--color--black);
-              transition: all .2s ease-in;
+              transition: all 0.2s ease-in;
               background-color: var(--wp--preset--color--black);
               color: var(--wp--preset--color--white);
               text-decoration: none;
@@ -63,7 +64,7 @@
                 margin-left: 0;
 
                 &::after {
-                  content: "Je m'inscrit";
+                  content: "Je m'inscris";
                   font-family: var(--wp--preset--font-family--secondary), sans-serif;
                   font-weight: bold;
                   font-size: 24px;
@@ -124,7 +125,6 @@
             margin-top: 20px;
             column-gap: 20px;
           }
-
         }
       }
 
@@ -152,17 +152,16 @@
             display: flex;
             align-items: center;
             height: 62px;
-            background-color: #1A1A1A;
+            background-color: #1a1a1a;
             color: var(--wp--preset--color--white);
             gap: 12px;
             padding: 4px 12px;
             font-family: var(--wp--preset--font-family--secondary), sans-serif;
-            transition: all .2s ease-in;
+            transition: all 0.2s ease-in;
             font-weight: bold;
             font-size: 24px;
             line-height: 100%;
             letter-spacing: 0;
-
 
             &:hover {
               background-color: var(--wp--preset--color--primary);
