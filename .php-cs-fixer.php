@@ -7,6 +7,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in([
         __DIR__.'/wp-content/themes/humanity-theme',
         __DIR__.'/wp-content/plugins/aif-donor-space',
+		__DIR__.'/wp-content/plugins/aif-rss-importer',
         __DIR__.'/wp-content/plugins/interactive-map',
         __DIR__.'/wp-content/plugins/prismic-migration',
     ])

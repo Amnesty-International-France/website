@@ -75,5 +75,6 @@ composer*
 !/wp-content/plugins/prismic-migration/
 !/wp-content/plugins/interactive-map/
 !/wp-content/plugins/aif-donor-space/
+!/wp-content/plugins/aif-rss-importer/
 
 docker-compose.yml
