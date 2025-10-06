@@ -102,6 +102,7 @@ require_once realpath(__DIR__ . '/includes/admin/user-options.php');
 require_once realpath(__DIR__ . '/includes/admin/settings-general.php');
 require_once realpath(__DIR__ . '/includes/admin/landmarks-settings.php');
 require_once realpath(__DIR__ . '/includes/admin/countries-settings.php');
+require_once realpath(__DIR__ . '/includes/admin/block-validation.php');
 require_once realpath(__DIR__ . '/includes/admin/petitions-settings.php');
 require_once realpath(__DIR__ . '/includes/admin/trainings-settings.php');
 require_once realpath(__DIR__ . '/includes/admin/event-venue-auto-geocode.php');
