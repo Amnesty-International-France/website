@@ -63,11 +63,19 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
   const handlePostSelection = (index, post) => {
     const newItems = [...items];
+
     if (post) {
       const allExtractedTerms = extractAllCustomTerms(post._embedded);
       const primaryCategory = post._embedded?.['wp:term']?.[0]?.find(
         (term) => term.taxonomy === 'category',
       );
+
+      const categoryMap = {
+        landmark: 'landmark',
+        'actualities-my-space': 'actualities-my-space',
+      };
+
+      const category = categoryMap[post.type] || primaryCategory?.slug || '';
 
       newItems[index] = {
         ...newItems[index],
@@ -77,18 +85,14 @@ const EditComponent = ({ attributes, setAttributes }) => {
         _embedded: post._embedded || null,
         selectedPostDate: post.date,
         selectedPostCustomTerms: allExtractedTerms || [],
-        category:
-          post.type === 'landmark'
-            ? 'landmark'
-            : post.type === 'actualities-my-space'
-              ? 'actualities-my-space'
-              : primaryCategory?.slug || '',
+        category,
       };
     } else {
       newItems[index] = {
         subtitle: newItems[index].subtitle,
       };
     }
+
     setAttributes({ items: newItems });
   };
 
