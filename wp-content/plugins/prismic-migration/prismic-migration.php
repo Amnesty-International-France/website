@@ -4,7 +4,7 @@
  * Plugin Name:       Prismic Migration
  * Description:       Import data from a Prismic Repository to WordPress with humanity-theme
  * Version:           1.0.0
- * Author:            Les Tilleuls (valentin.dassonville@les-tilleuls.coop)
+ * Author:            Les-Tilleuls.coop (valentin.dassonville@les-tilleuls.coop)
  */
 
 if (! defined('ABSPATH')) {
