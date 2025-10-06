@@ -150,7 +150,7 @@ if (!function_exists('render_articles_homepage_block')) {
             }
 
             $chip_style = match ($entity_slug) {
-                'actualites', 'chroniques', 'landmark' => 'bg-yellow',
+                'actualites', 'chroniques', 'landmark', 'actualities-my-space' => 'bg-yellow',
                 'dossiers', 'campagnes' => 'bg-black',
                 default => 'outline-black',
             };
@@ -220,7 +220,7 @@ if (!function_exists('render_articles_homepage_block')) {
                         $custom_terms = $posts[0]['custom_terms'];
 
                         if ($post->post_type === 'actualities-my-space') {
-                            $entity_label = get_field('category', $posts[0]);
+                            $entity_label = get_field('category', $post);
                             $entity_slug = 'actualities-my-space';
                         }
                         ?>
