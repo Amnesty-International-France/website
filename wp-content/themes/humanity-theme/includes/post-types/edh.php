@@ -27,7 +27,7 @@ function amnesty_register_edh_cpt(): void
             'has_archive'         => true,
             'rewrite'             => [ 'slug' => 'edh' ],
             'supports'            => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
-            'menu_icon'           => 'dashicons-admin-page',
+            'menu_icon'           => 'dashicons-groups',
             'show_in_rest'        => true,
             'publicly_queryable'  => true,
             'exclude_from_search' => false,

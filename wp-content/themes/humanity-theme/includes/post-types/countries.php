@@ -24,7 +24,7 @@ function amnesty_register_countries_cpt()
             'has_archive'  => true,
             'rewrite'      => [ 'slug' => 'pays' ],
             'supports'     => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
-            'menu_icon'    => 'dashicons-admin-page',
+            'menu_icon'    => 'dashicons-flag',
             'show_in_rest' => true,
         ]
     );
