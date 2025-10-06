@@ -56,6 +56,25 @@ if (!function_exists('render_slider_block')) {
             }
         }
 
+        if (!function_exists('find_redirect_link_for_trainings')) {
+            function find_redirect_link_for_trainings(string $post_type, array $post_ids): string
+            {
+                $base_url = get_dynamic_category_or_post_type_link($post_type);
+                if (empty($post_ids)) {
+                    return $base_url;
+                }
+
+                $first_location = get_field('lieu', get_post($post_ids[0]));
+                for ($i = 1; $i < count($post_ids); $i++) {
+                    if (get_field('lieu', get_post($post_ids[$i])) !== $first_location) {
+                        return $base_url;
+                    }
+                }
+
+                return add_query_arg('qlieu', $first_location, $base_url);
+            }
+        }
+
         $post_ids = wp_list_pluck($selected_posts, 'id');
         $query_args = [
             'post_type'      => 'any',
@@ -69,6 +88,7 @@ if (!function_exists('render_slider_block')) {
             return '';
         }
 
+        $redirect_link = $post_type === 'training' ? find_redirect_link_for_trainings($post_type, $post_ids) : get_dynamic_category_or_post_type_link($post_type);
         ob_start();
         ?>
         <div class="slider-block">
@@ -79,7 +99,7 @@ if (!function_exists('render_slider_block')) {
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
                         </svg>
                     </div>
-                    <a class="cat-link" href="<?= get_dynamic_category_or_post_type_link($post_type) ?>">
+                    <a class="cat-link" href="<?= $redirect_link ?>">
                         <?= esc_html(see_all_label($post_type)) ?>
                     </a>
                 </div>
@@ -120,7 +140,7 @@ if (!function_exists('render_slider_block')) {
                                 <div class="swiper-slide">
                                     <div class="article-card see-all-card">
                                         <div class='custom-button-block center'>
-                                            <a href="<?= get_dynamic_category_or_post_type_link($post_type) ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
+                                            <a href="<?= $redirect_link ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
                                                 <div class='content bg-yellow small'>
                                                     <div class="icon-container">
                                                         <svg
