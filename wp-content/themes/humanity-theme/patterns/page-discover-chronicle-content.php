@@ -57,7 +57,7 @@ if (isset($_POST['sign_discover_chronicle'])) {
         'Telephone__c' => $phone,
         'Origin' => 'Web',
         'Type_de_demande_AIF__c' => 'Offre Chronique',
-        'RecordTypeId' => AIF_SALESFORCE_RECORD_TYPE_ID ?? getenv('AIF_SALESFORCE_RECORD_TYPE_ID'),
+        'RecordTypeId' => getenv('AIF_SALESFORCE_RECORD_TYPE_ID'),
         'Code_Marketing_Prestataire__c' => 'WB_CHRONIQUE',
     ];
 
