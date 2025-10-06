@@ -178,7 +178,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'lien',
                         'aria-label' => '',
                         'type' => 'post_object',
-                        'instructions' => '',
+                        'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 1,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -328,7 +328,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'lien',
                         'aria-label' => '',
                         'type' => 'post_object',
-                        'instructions' => '',
+                        'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -478,7 +478,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'lien',
                         'aria-label' => '',
                         'type' => 'post_object',
-                        'instructions' => '',
+                        'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -628,7 +628,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'lien',
                         'aria-label' => '',
                         'type' => 'post_object',
-                        'instructions' => '',
+                        'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -778,7 +778,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'lien',
                         'aria-label' => '',
                         'type' => 'post_object',
-                        'instructions' => '',
+                        'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -928,7 +928,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'lien',
                         'aria-label' => '',
                         'type' => 'post_object',
-                        'instructions' => '',
+                        'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1078,7 +1078,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'lien',
                         'aria-label' => '',
                         'type' => 'post_object',
-                        'instructions' => '',
+                        'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1228,7 +1228,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'lien',
                         'aria-label' => '',
                         'type' => 'post_object',
-                        'instructions' => '',
+                        'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1378,7 +1378,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'lien',
                         'aria-label' => '',
                         'type' => 'post_object',
-                        'instructions' => '',
+                        'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1528,7 +1528,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'lien',
                         'aria-label' => '',
                         'type' => 'post_object',
-                        'instructions' => '',
+                        'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
