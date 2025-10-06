@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-const URL = 'services/data/v57.0/';
 const QUERY_LEAD = 'query/?q=SELECT+Id,Email+FROM+Lead';
 
 function register_salesforce_newsletter(array $data)
