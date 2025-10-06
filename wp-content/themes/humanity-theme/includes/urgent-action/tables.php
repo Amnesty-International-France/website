@@ -24,7 +24,7 @@ function aif_create_action_urgent_tables()
     dbDelta($sql);
 }
 
-add_action('after_setup_theme', 'aif_create_action_urgent_tables');
+add_action('after_switch_theme', 'aif_create_action_urgent_tables');
 
 function aif_create_table_once()
 {
