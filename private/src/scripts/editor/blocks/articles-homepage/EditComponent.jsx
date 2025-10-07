@@ -1,6 +1,7 @@
 import ChipCategory from '../../components/ChipCategory.jsx';
 import PostSearchControl from '../../components/PostSearchControl.jsx';
 
+const { useSelect } = wp.data;
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
 const { PanelBody, TextControl } = wp.components;
@@ -38,22 +39,26 @@ const extractAllCustomTerms = (embeddedData) => {
 const EditComponent = ({ attributes, setAttributes }) => {
   const { items = [] } = attributes;
   const blockProps = useBlockProps();
-
-  const allowedTypesForThisBlock = [
-    'post',
-    'pages',
-    'fiche_pays',
-    'landmark',
-    'local-structures',
-    'petition',
-    'press-release',
-    'training',
-    'document',
-    'edh',
-    'chronique',
-    'tribe_events',
-    'actualities-my-space',
-  ];
+  const isMySpace = useSelect(
+    (select) => select('core/editor').getEditedPostAttribute('slug') === 'mon-espace',
+    [],
+  );
+  const allowedTypesForThisBlock = isMySpace
+    ? ['actualities-my-space']
+    : [
+        'post',
+        'pages',
+        'fiche_pays',
+        'landmark',
+        'local-structures',
+        'petition',
+        'press-release',
+        'training',
+        'document',
+        'edh',
+        'chronique',
+        'tribe_events',
+      ];
 
   const updateItem = (index, key, value) => {
     const newItems = [...items];
