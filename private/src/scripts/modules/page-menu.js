@@ -30,51 +30,43 @@ export const pageMenu = () => {
 };
 
 export const stickyMenu = () => {
-  const heroBlock = document.querySelector('.page-hero-block');
   const menuSticky = document.querySelector('#page-menu');
   const mainMenu = document.querySelector("header[role='banner']");
-  if (!heroBlock || !menuSticky || !mainMenu) return;
+
+  if (!menuSticky || !mainMenu) return;
+
+  const sentinel = document.createElement('div');
+  menuSticky.parentNode.insertBefore(sentinel, menuSticky);
+
+  const placeholder = document.createElement('div');
+  placeholder.style.display = 'none';
+  menuSticky.parentNode.insertBefore(placeholder, menuSticky.nextSibling);
+
+  const mainMenuHeight = mainMenu.offsetHeight;
 
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) {
-          menuSticky.classList.add('fixed');
-        } else {
-          menuSticky.classList.remove('fixed', 'under-main-menu');
-        }
-      });
+      const [entry] = entries;
+
+      const menuHeight = menuSticky.offsetHeight;
+
+      if (entry.boundingClientRect.y < entry.rootBounds.y) {
+        menuSticky.classList.add('fixed', 'under-main-menu');
+
+        placeholder.style.height = `${menuHeight}px`;
+        placeholder.style.display = 'block';
+      } else {
+        menuSticky.classList.remove('fixed', 'under-main-menu');
+        placeholder.style.display = 'none';
+      }
     },
-    { threshold: 0 },
+    {
+      rootMargin: `-${mainMenuHeight}px 0px 0px 0px`,
+      threshold: 1.0,
+    },
   );
 
-  observer.observe(heroBlock);
-
-  let lastScroll = 0;
-  let lastMainMenuClientRectTop = 0;
-  let scrollTimeout;
-
-  window.addEventListener('scroll', () => {
-    if (!mainMenu || !menuSticky) return;
-
-    const currentScrollTop = mainMenu.getBoundingClientRect().top;
-
-    if (window.scrollY > lastScroll) {
-      menuSticky.classList.remove('under-main-menu');
-    }
-
-    clearTimeout(scrollTimeout);
-
-    scrollTimeout = setTimeout(() => {
-      if (currentScrollTop <= 0 && currentScrollTop > lastMainMenuClientRectTop) {
-        menuSticky.classList.add('under-main-menu');
-      }
-
-      lastMainMenuClientRectTop = currentScrollTop;
-    }, 30);
-
-    lastScroll = window.scrollY;
-  });
+  observer.observe(sentinel);
 };
 
 export default { pageMenu, stickyMenu };

@@ -24,10 +24,18 @@
       flex: 0 0 60%;
       max-width: 60%;
     }
+
+    .page-content {
+      padding-top: 0;
+
+      .entry-content > h2.wp-block-heading:first-child {
+        margin-top: 30px;
+      }
+    }
   }
 
   .page-legs-aside {
-    margin-top: 60px;
+    margin-top: 30px;
     flex: 1;
     min-width: 0;
 
