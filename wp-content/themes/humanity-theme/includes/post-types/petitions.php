@@ -126,11 +126,7 @@ add_action('template_redirect', 'amnesty_handle_petition_signature');
 
 function filter_petition_archive(WP_Query $query)
 {
-    if (! $query->is_main_query()) {
-        return;
-    }
-
-    if (! is_post_type_archive('petition')) {
+    if (! $query->is_main_query() || ! is_post_type_archive('petition')) {
         return;
     }
 
@@ -142,9 +138,15 @@ function filter_petition_archive(WP_Query $query)
             'type' => 'DATE',
         ],
     ];
-
     $query->set('meta_query', $meta_query_args);
+
+
+    $query->set('meta_key', 'date_de_fin');
+    $query->set('meta_type', 'DATE');
+    $query->set('orderby', 'meta_value');
+    $query->set('order', 'DESC');
 }
+
 if (!is_admin()) {
     add_action('pre_get_posts', 'filter_petition_archive');
 }
