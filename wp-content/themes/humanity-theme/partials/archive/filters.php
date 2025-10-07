@@ -27,7 +27,7 @@ if (is_category()) {
         $types = get_post_types(['public' => true, ], 'objects');
         $exclude_post_types = [
             'attachment', 'sidebar', 'feedzy_imports', 'feedzy_categories', 'edh', 'fiche_pays',
-            'chronique', 'training', 'press-release', 'local-structures', 'document',
+            'chronique', 'training', 'press-release', 'local-structures', 'document', 'actualities-my-space',
         ];
         $types = array_filter($types, static fn ($t) => ! in_array($t->name, $exclude_post_types, true));
         if (isset($types['fiche_pays'])) {

@@ -11,11 +11,11 @@ if ((!isset($taxonomies) || empty($taxonomies)) && (!isset($types) || empty($typ
 }
 ?>
 <div class="taxonomyArchive-filters" aria-label="<?php esc_attr_e('Filter results by topic', 'amnesty'); ?>">
-    <?php if (isset($types)) : ?>    
+    <?php if (isset($types)) : ?>
     <?php
         $options = [];
         foreach ($types as $type) {
-            if ('tribe_events' === $type->name) {
+            if (in_array($type->name, ['actualities-my-space', 'tribe_events'])) {
                 continue;
             }
 
