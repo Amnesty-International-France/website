@@ -62,7 +62,7 @@ if (isset($success_message)) {
 
         <?php if ($display_form) : ?>
 
-        <section>
+        <section class="aif-forgotten-password">
             <form class="aif-form-container" action="" method="POST">
                 <?php wp_nonce_field('forgotten_password_form', 'forgotten_password_nonce'); ?>
                 <label for="email">Votre email (obligatoire) :</label>
@@ -70,7 +70,13 @@ if (isset($success_message)) {
                     value="<?= $email ? $email : '' ?>"
                     placeholder="adresse@mail.fr" type="email" class="aif-input" id="email" name="email" required
                     aria-required="true">
-                <button class="btn aif-mt1w aif-button--full" type="submit" id="submit-btn">Réinitialiser mon mot de passe</button>
+                <button class='custom-button-block center' type="submit" id="submit-btn">
+                    <div class="custom-button">
+                        <div class='content bg-yellow medium'>
+                            <div class="button-label">Réinitialiser mon mot de passe</div>
+                        </div>
+                    </div>
+                </button>
             </form>
         </section>
         <?php endif ?>
