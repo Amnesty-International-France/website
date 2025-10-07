@@ -42,11 +42,11 @@ if ($is_members_only) {
 		<?php elseif ($acf_date): ?>
 			<p class="training-date">Le <?php echo esc_html($acf_date); ?></p>
 		<?php endif; ?>
-		<h3 class="training-card-title">
-			<a href="<?php echo esc_url($permalink); ?>">
-				<?php echo esc_html($title); ?>
-			</a>
-		</h3>
+		<a href="<?php echo esc_url($permalink); ?>" class="training-card-title-link">
+			<h3 class="training-card-title">
+					<?php echo esc_html($title); ?>
+			</h3>
+		</a>
 		<div class="training-description">
 			<p><?php echo esc_html($description)?></p>
 		</div>
