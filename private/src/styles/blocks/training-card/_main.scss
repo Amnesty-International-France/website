@@ -55,8 +55,8 @@
     gap: 10px;
 
     .training-date {
-      font-family: var(--wp--preset--font-family--secondary),serif;
-      font-size: .875rem;
+      font-family: var(--wp--preset--font-family--secondary), serif;
+      font-size: 0.875rem;
       line-height: 1.25rem;
       color: var(--wp--preset--color--grey-dark);
       margin: 0;
@@ -71,12 +71,13 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
-        -webkit-line-clamp: 3;
-        line-clamp: 3;
+        -webkit-line-clamp: 5;
+        line-clamp: 5;
         font-size: 16px;
         font-weight: 300;
         line-height: 22px;
         color: var(--wp--preset--color--black);
+        margin-bottom: 0;
       }
     }
 
@@ -99,17 +100,26 @@
       }
     }
 
-    .training-card-title {
-      margin: 0;
-      flex: 1;
+    .training-card-title-link {
+      text-decoration: none;
+
+      &:hover {
+        background: none;
+        text-decoration: none;
+      }
+
+      .training-card-title {
+        font-size: 22px;
+        font-weight: bold;
+        line-height: 24px;
+        font-family: var(--wp--preset--font-family--secondary);
+        margin: 0;
+        flex: 1;
+      }
     }
 
-    .training-card-title a {
-      font-size: 22px;
-      font-weight: bold;
-      line-height: 25px;
+    a .training-card-title {
       text-decoration: none;
-      font-family: var(--wp--preset--font-family--secondary);
 
       &:hover {
         background: none;
