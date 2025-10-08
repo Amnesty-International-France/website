@@ -4,10 +4,26 @@
   }
 
   .single-training-my-space {
+    max-width: $container-hg;
     padding-top: 24px;
+    margin: 0;
+
+    .article-meta {
+      margin: 0;
+    }
   }
 }
 
 body:has(.single-actuality-my-space) .page-header {
   display: none;
+}
+
+.single-actuality-my-space {
+  max-width: $container-hg;
+  padding-top: 24px;
+  margin: 0 !important;
+
+  .article-meta {
+    margin: 0 !important;
+  }
 }

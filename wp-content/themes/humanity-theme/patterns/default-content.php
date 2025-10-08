@@ -13,7 +13,7 @@
 <main class="aif-donor-space-content">
     <!-- wp:pattern {"slug":"amnesty/my-space-header"} /-->
     <div class="aif-default">
-        <h2><?php the_title(); ?></h2>
+        <h1><?php the_title(); ?></h1>
         <div>
             <?php the_content(); ?>
         </div>

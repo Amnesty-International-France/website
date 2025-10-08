@@ -8,7 +8,7 @@
 <div class="aif-mobile-header">
     <?php
     if (function_exists('amnesty_logo')) {
-        amnesty_logo(home_url('/mon-espace/')); 
+        amnesty_logo(home_url('/mon-espace/'));
     }
 ?>
     <button id="burger-toggle" class="burger-toggle" aria-label="Ouvrir le menu">
