@@ -8,7 +8,7 @@
 <div class="aif-mobile-header">
     <?php
     if (function_exists('amnesty_logo')) {
-        amnesty_logo();
+        amnesty_logo(home_url('/mon-espace/')); 
     }
 ?>
     <button id="burger-toggle" class="burger-toggle" aria-label="Ouvrir le menu">
@@ -21,7 +21,7 @@
 <div id="my-space-sidebar" class="aif-donor-space-sidebar">
     <div class="aif-donor-space-sidebar-header">
         <div class="aif-sidebar-top-row">
-            <?php amnesty_logo(); ?>
+            <?php amnesty_logo(home_url('/mon-espace/')); ?>
             <button id="close-menu" class="close-menu" aria-label="Fermer le menu">&times;</button>
         </div>
         <h2 class="aif-donor-space-sidebar-title">Mon Espace</h2>
