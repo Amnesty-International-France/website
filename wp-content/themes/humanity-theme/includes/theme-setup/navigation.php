@@ -7,12 +7,17 @@ if (! function_exists('amnesty_logo')) {
      * Output the theme logo markup
      *
      * @package Amnesty\ThemeSetup
-     *
+     * @param string $custom_link Optional. A custom URL for the logo link.
      * @return void
      */
-    function amnesty_logo()
+    function amnesty_logo($custom_link = '')
     {
-        $logo_link   = amnesty_get_option('_header_logo_link') ?: home_url();
+        if (!empty($custom_link)) {
+            $logo_link = $custom_link;
+        } else {
+            $logo_link = amnesty_get_option('_header_logo_link') ?: home_url();
+        }
+
         $logotype_id = amnesty_get_option('_site_logotype_id');
         $logomark_id = amnesty_get_option('_site_logomark_id');
 
