@@ -24,13 +24,15 @@ class RapportTransformer extends DocTransformer
         $wp_post['meta_input']['_ai_index'] = 'field_689a05696c84f';
 
         if (isset($data['typeResource'])) {
-            $wp_post['tax_terms']['document_category'] = match ($data['typeResource']) {
+            $wp_post['tax_terms']['document_type'] = match ($data['typeResource']) {
                 'rapport' => 'rapport',
                 'document' => 'document',
                 "kit d'activisme" => 'kit-activisme',
                 'fiche pédagogique' => 'fiche-pedagogique',
             };
-        }
+        } else {
+			$wp_post['tax_terms']['document_type'] = 'rapport';
+		}
 
         return $wp_post;
     }
