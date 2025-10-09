@@ -31,8 +31,8 @@ class RapportTransformer extends DocTransformer
                 'fiche pédagogique' => 'fiche-pedagogique',
             };
         } else {
-			$wp_post['tax_terms']['document_type'] = 'rapport';
-		}
+            $wp_post['tax_terms']['document_type'] = 'rapport';
+        }
 
         return $wp_post;
     }
