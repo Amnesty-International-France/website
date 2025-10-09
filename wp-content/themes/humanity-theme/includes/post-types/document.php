@@ -24,7 +24,7 @@ function amnesty_register_document_cpt(): void
             ],
             'public' => true,
             'has_archive' => true,
-            'rewrite' => ['slug' => 'documents'],
+            'rewrite' => ['slug' => 'rapports'],
             'supports' => ['title', 'thumbnail', 'custom-fields', 'excerpt'],
             'menu_icon' => 'dashicons-media-document',
             'show_in_rest' => true,

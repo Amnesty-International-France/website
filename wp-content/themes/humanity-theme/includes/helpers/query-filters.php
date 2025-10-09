@@ -14,10 +14,10 @@ function amnesty_filter_cpt_by_multiple_taxonomies(WP_Query $query)
         if (! empty($post_types)) {
             $query->set('post_type', $post_types);
         }
-    } elseif (is_post_type_archive(['landmark', 'petition'])) {
+    } elseif (is_post_type_archive(['landmark', 'petition', 'document'])) {
         $tax_query = [];
 
-        $filterable_taxonomies = [ 'landmark_category', 'combat', 'location', 'keyword' ];
+        $filterable_taxonomies = [ 'document_type', 'landmark_category', 'combat', 'location', 'keyword' ];
 
         foreach ($filterable_taxonomies as $taxonomy) {
             $param_name = 'q' . $taxonomy;

@@ -21,6 +21,7 @@ require_once realpath(__DIR__ . '/includes/root/permalinks.php');
  * Theme helper includes
  */
 // region helpers
+require_once realpath(__DIR__ . '/includes/helpers/attachments.php');
 require_once realpath(__DIR__ . '/includes/helpers/query-filters.php');
 require_once realpath(__DIR__ . '/includes/helpers/category-rewrite.php');
 require_once realpath(__DIR__ . '/includes/helpers/taxonomy-rewrite.php');
