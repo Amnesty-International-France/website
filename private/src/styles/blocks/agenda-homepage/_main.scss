@@ -151,12 +151,12 @@
 
     .custom-button-block {
       margin-top: 38px;
-      margin-bottom: 24px;
       margin-left: 0 !important;
 
       @media (min-width: $container-lg) {
         padding: 0;
         margin-left: auto;
+        margin-bottom: 0 !important;
       }
     }
   }

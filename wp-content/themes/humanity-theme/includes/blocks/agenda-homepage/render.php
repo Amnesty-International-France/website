@@ -11,38 +11,9 @@ declare(strict_types=1);
 if (!function_exists('render_agenda_homepage_block')) {
     function render_agenda_homepage_block(array $attributes): string
     {
-        $selection_mode     = $attributes['selectionMode'] ?? 'latest';
-        $selected_event_ids = $attributes['selectedEventIds'] ?? [];
+        $selection_mode      = $attributes['selectionMode'] ?? 'latest';
+        $selected_event_ids  = $attributes['selectedEventIds'] ?? [];
         $chronicle_image_url = $attributes['chronicleImageUrl'] ?? '';
-
-        $events_args = [];
-
-        if ($selection_mode === 'manual' && !empty($selected_event_ids)) {
-            $events_args = [
-                'post_type'      => 'tribe_events',
-                'posts_per_page' => count($selected_event_ids),
-                'post__in'       => array_map('intval', $selected_event_ids),
-            ];
-        } else {
-            $events_args = [
-                'post_type'      => 'tribe_events',
-                'posts_per_page' => 2,
-                'eventDisplay'   => 'upcoming',
-                'orderby'        => 'meta_value',
-                'meta_key'       => '_EventStartDate',
-                'order'          => 'ASC',
-                'meta_query'     => [
-                    [
-                        'key'     => '_EventStartDate',
-                        'value'   => date('Y-m-d H:i:s'),
-                        'compare' => '>=',
-                        'type'    => 'DATETIME',
-                    ],
-                ],
-            ];
-        }
-
-        $events_query = new WP_Query($events_args);
 
         ob_start();
         ?>
@@ -50,50 +21,87 @@ if (!function_exists('render_agenda_homepage_block')) {
             <div class="agenda-homepage">
                 <h2 class="agenda-homepage-title">Agenda</h2>
                 <div class="agenda-homepage-events">
-                    <?php if ($events_query->have_posts()) : ?>
-                        <?php while ($events_query->have_posts()) : $events_query->the_post(); ?>
-                            <?php
-                            $event_id = get_the_ID();
+                    <?php
+                    if ($selection_mode === 'manual' && !empty($selected_event_ids)) {
+                        $events_args = [
+                            'post_type'      => 'tribe_events',
+                            'posts_per_page' => count($selected_event_ids),
+                            'post__in'       => array_map('intval', $selected_event_ids),
+                            'ignore_sticky_posts' => 1, // Bonne pratique
+                        ];
+                        $events_query = new WP_Query($events_args);
 
-                            $event_card_block_attrs = [
-                                'postId' => $event_id,
-                                'direction' => 'landscape',
-                            ];
+                        $posts_by_id = [];
+                        if ($events_query->have_posts()) {
+                            while ($events_query->have_posts()) {
+                                $events_query->the_post();
+                                $posts_by_id[get_the_ID()] = $events_query->post;
+                            }
+                        }
+                        wp_reset_postdata();
 
-                            $event_card_block = [
-                                'blockName'   => 'amnesty-core/event-card',
-                                'attrs'       => $event_card_block_attrs,
-                                'innerBlocks' => [],
-                            ];
+                        $sorted_posts = [];
+                        foreach ($selected_event_ids as $id) {
+                            $id = intval($id);
+                            if (isset($posts_by_id[$id])) {
+                                $sorted_posts[] = $posts_by_id[$id];
+                            }
+                        }
 
-                            echo render_block($event_card_block);
-                            ?>
-                        <?php endwhile; ?>
-                        <?php wp_reset_postdata(); ?>
-                    <?php else : ?>
-                        <p><?php esc_html_e('Aucun événement à venir trouvé.', 'amnesty-core'); ?></p>
-                    <?php endif; ?>
+                        if (!empty($sorted_posts)) {
+                            global $post;
+                            foreach ($sorted_posts as $post) {
+                                setup_postdata($post);
+
+                                $event_card_block = [
+                                    'blockName'   => 'amnesty-core/event-card',
+                                    'attrs'       => [
+                                        'postId'    => get_the_ID(),
+                                        'direction' => 'landscape',
+                                    ],
+                                ];
+                                echo render_block($event_card_block);
+                            }
+                            wp_reset_postdata();
+                        }
+
+                    } else {
+                        $events_args = [
+                            'post_type'      => 'tribe_events',
+                            'posts_per_page' => 2,
+                            'eventDisplay'   => 'upcoming',
+                            'orderby'        => 'event_date',
+                            'order'          => 'ASC',
+                        ];
+                        $events_query = new WP_Query($events_args);
+
+                        if ($events_query->have_posts()) {
+                            while ($events_query->have_posts()) {
+                                $events_query->the_post();
+                                $event_card_block = [
+                                    'blockName'   => 'amnesty-core/event-card',
+                                    'attrs'       => ['postId' => get_the_ID(), 'direction' => 'landscape'],
+                                ];
+                                echo render_block($event_card_block);
+                            }
+                        } else {
+                            echo '<p>' . esc_html__('Aucun événement à venir trouvé.', 'amnesty-core') . '</p>';
+                        }
+                        wp_reset_postdata();
+                    }
+        ?>
                 </div>
                 <div class='custom-button-block left'>
-                    <a href="/evenements" target="_blank" rel="noopener noreferrer" class="custom-button">
+                     <a href="/evenements" class="custom-button">
                         <div class='content outline-black medium'>
                             <div class="icon-container">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                             </div>
                             <div class="button-label">Voir les événements près de chez moi</div>
                         </div>
                     </a>
                 </div>
             </div>
-
             <div class="chronicle-homepage">
                 <h2 class="chronicle-homepage-title">A découvrir</h2>
                 <div class="chronicle-card">
@@ -106,18 +114,10 @@ if (!function_exists('render_agenda_homepage_block')) {
                         <h3 class="chronicle-card-title">La chronique</h3>
                         <p class="chronicle-card-chapo">Le magazine des droits humains</p>
                         <div class='custom-button-block center'>
-                            <a href="/magazine-la-chronique" target="_blank" rel="noopener noreferrer" class="custom-button">
+                            <a href="/magazine-la-chronique" class="custom-button">
                                 <div class='content bg-yellow medium'>
                                     <div class="icon-container">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth="1.5"
-                                            stroke="currentColor"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                                        </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                                     </div>
                                     <div class="button-label">Abonnez-vous pour 3€/mois</div>
                                 </div>

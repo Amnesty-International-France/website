@@ -1,22 +1,21 @@
 import CustomButton from '../button/Button.jsx';
 import EventCard from '../../components/EventCard.jsx';
+import PostSearchControl from '../../components/PostSearchControl.jsx';
 
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
-const { PanelBody, SelectControl, Spinner, Button } = wp.components;
-const { useSelect } = wp.data;
+const { PanelBody, SelectControl, Spinner, Button, PanelRow } = wp.components;
 const { useState, useEffect } = wp.element;
+const { useSelect } = wp.data;
 const apiFetch = wp.apiFetch;
 
 const EditComponent = ({ attributes, setAttributes }) => {
   const { selectionMode, selectedEventIds = [], chronicleImageUrl, chronicleImageId } = attributes;
+
   const blockProps = useBlockProps();
 
   const [autoEvents, setAutoEvents] = useState([]);
   const [isLoadingAuto, setIsLoadingAuto] = useState(true);
-
-  const [manualEventsState, setManualEventsState] = useState([]);
-  const [isLoadingManualState, setIsLoadingManualState] = useState(false);
 
   useEffect(() => {
     setIsLoadingAuto(true);
@@ -24,7 +23,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
       (allEvents) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-
         const upcomingEvents = allEvents
           .filter((event) => {
             const startDate = new Date(event.meta?._EventStartDate);
@@ -32,77 +30,49 @@ const EditComponent = ({ attributes, setAttributes }) => {
             return startDate >= today;
           })
           .sort((a, b) => new Date(a.meta._EventStartDate) - new Date(b.meta._EventStartDate));
-
         setAutoEvents(upcomingEvents.slice(0, 2));
         setIsLoadingAuto(false);
       },
     );
   }, []);
 
-  const { allEventsForSelector, isLoadingSelector } = useSelect(
+  const { manualEvents, isLoadingManual } = useSelect(
     (select) => {
-      if (selectionMode !== 'manual') {
-        return { allEventsForSelector: [], isLoadingSelector: false };
+      if (selectionMode !== 'manual' || !selectedEventIds || selectedEventIds.length === 0) {
+        return { manualEvents: [], isLoadingManual: false };
       }
 
       const { getEntityRecords, isResolving } = select('core');
 
-      const query = {
-        per_page: 50,
-        orderby: 'title',
-        order: 'asc',
-        _embed: true,
-      };
-
+      const query = { include: selectedEventIds, per_page: selectedEventIds.length, _embed: true };
       const records = getEntityRecords('postType', 'tribe_events', query);
 
       return {
-        allEventsForSelector: records || [],
-        isLoadingSelector: isResolving('getEntityRecords', ['postType', 'tribe_events', query]),
+        manualEvents: records,
+        isLoadingManual: isResolving('getEntityRecords', ['postType', 'tribe_events', query]),
       };
     },
-    [selectionMode],
+    [selectionMode, selectedEventIds],
   );
 
-  useEffect(() => {
-    if (selectionMode !== 'manual' || selectedEventIds.length === 0) {
-      setManualEventsState([]);
-      setIsLoadingManualState(false);
-      return;
+  const handleAddEvent = (event) => {
+    if (event && !selectedEventIds.includes(event.id)) {
+      const updatedIds = [...selectedEventIds, event.id];
+      setAttributes({ selectedEventIds: updatedIds });
     }
-
-    setIsLoadingManualState(true);
-
-    const sanitizedSelectedIds = selectedEventIds
-      .map((id) => parseInt(id, 10))
-      .filter((id) => !Number.isNaN(id) && id > 0);
-
-    apiFetch({
-      path: `/wp/v2/tribe_events?include=${sanitizedSelectedIds.join(',')}&per_page=${sanitizedSelectedIds.length}&_embed=true`,
-    })
-      .then((events) => {
-        const sortedEvents = sanitizedSelectedIds
-          .map((id) => events.find((event) => event.id === id))
-          .filter(Boolean);
-
-        setManualEventsState(sortedEvents);
-        setIsLoadingManualState(false);
-      })
-      .catch(() => {
-        setManualEventsState([]);
-        setIsLoadingManualState(false);
-      });
-  }, [selectionMode, selectedEventIds]);
-
-  const updateSelectedEvent = (eventId, position) => {
-    const updatedIds = [...selectedEventIds];
-    updatedIds[position] = parseInt(eventId, 10) || 0;
-    setAttributes({ selectedEventIds: updatedIds.filter((id) => id) });
   };
 
-  const eventsToDisplay = selectionMode === 'latest' ? autoEvents : manualEventsState;
-  const showSpinner =
-    selectionMode === 'latest' ? isLoadingAuto : isLoadingSelector || isLoadingManualState;
+  const handleRemoveEvent = (eventIdToRemove) => {
+    const updatedIds = selectedEventIds.filter((id) => id !== eventIdToRemove);
+    setAttributes({ selectedEventIds: updatedIds });
+  };
+
+  const sortedManualEvents = selectedEventIds
+    .map((id) => manualEvents?.find((event) => event.id === id))
+    .filter(Boolean);
+
+  const eventsToDisplay = selectionMode === 'latest' ? autoEvents : sortedManualEvents;
+  const showSpinner = selectionMode === 'latest' ? isLoadingAuto : isLoadingManual;
 
   return (
     <>
@@ -115,55 +85,51 @@ const EditComponent = ({ attributes, setAttributes }) => {
               { label: __('Événements à venir (auto)', 'amnesty'), value: 'latest' },
               { label: __('Sélection manuelle', 'amnesty'), value: 'manual' },
             ]}
-            onChange={(newMode) => setAttributes({ selectionMode: newMode })}
+            onChange={(newMode) => setAttributes({ selectionMode: newMode, selectedEventIds: [] })}
           />
           {selectionMode === 'manual' && (
             <>
-              <p style={{ marginTop: '1rem' }}>
-                <strong>{__('Choisir les événements :', 'amnesty')}</strong>
+              <p style={{ marginTop: '1rem', marginBottom: '0.5rem' }}>
+                <strong>{__('Événements sélectionnés :', 'amnesty')}</strong>
               </p>
-              {isLoadingSelector || isLoadingManualState ? (
-                <Spinner />
-              ) : (
-                <>
-                  <SelectControl
-                    label={__('Événement 1', 'amnesty')}
-                    value={selectedEventIds[0] || ''}
-                    options={[
-                      { label: __('Choisir un événement', 'amnesty'), value: '' },
-                      ...allEventsForSelector.map((event) => ({
-                        label: event.title.rendered || __('(Pas de titre)', 'amnesty'),
-                        value: event.id,
-                      })),
-                    ]}
-                    onChange={(eventId) => updateSelectedEvent(eventId, 0)}
+              {isLoadingManual && <Spinner />}
+              {!isLoadingManual &&
+                sortedManualEvents.length > 0 &&
+                sortedManualEvents.map((event) => (
+                  <PanelRow key={event.id}>
+                    <div
+                      style={{ flex: 1 }}
+                      dangerouslySetInnerHTML={{ __html: event.title.rendered }}
+                    />
+                    <Button isLink isDestructive onClick={() => handleRemoveEvent(event.id)}>
+                      {__('Retirer', 'amnesty')}
+                    </Button>
+                  </PanelRow>
+                ))}
+              {!isLoadingManual && sortedManualEvents.length === 0 && (
+                <p style={{ fontStyle: 'italic', color: '#666' }}>
+                  {__('Aucun événement sélectionné.', 'amnesty')}
+                </p>
+              )}
+              {selectedEventIds.length < 2 && (
+                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #ddd' }}>
+                  <p>
+                    <strong>{__('Ajouter un événement', 'amnesty')}</strong>
+                  </p>
+                  <PostSearchControl
+                    onPostSelect={handleAddEvent}
+                    allowedTypes={['tribe_events']}
                   />
-                  <SelectControl
-                    label={__('Événement 2', 'amnesty')}
-                    value={selectedEventIds[1] || ''}
-                    options={[
-                      { label: __('Choisir un événement', 'amnesty'), value: '' },
-                      ...allEventsForSelector.map((event) => ({
-                        label: event.title.rendered || __('(Pas de titre)', 'amnesty'),
-                        value: event.id,
-                      })),
-                    ]}
-                    onChange={(eventId) => updateSelectedEvent(eventId, 1)}
-                  />
-                </>
+                </div>
               )}
             </>
           )}
         </PanelBody>
-
         <PanelBody title={__('Image La Chronique', 'amnesty')}>
           <MediaUploadCheck>
             <MediaUpload
               onSelect={(media) =>
-                setAttributes({
-                  chronicleImageId: media.id,
-                  chronicleImageUrl: media.url,
-                })
+                setAttributes({ chronicleImageId: media.id, chronicleImageUrl: media.url })
               }
               allowedTypes={['image']}
               value={chronicleImageId}
@@ -176,7 +142,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
               )}
             />
           </MediaUploadCheck>
-
           {chronicleImageUrl && (
             <div style={{ marginTop: '10px' }}>
               <img src={chronicleImageUrl} alt="" style={{ maxWidth: '100%', height: 'auto' }} />
@@ -208,7 +173,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
             style="outline-black"
           />
         </div>
-
         <div className="chronicle-homepage">
           <h2 className="chronicle-homepage-title">A découvrir</h2>
           <div className="chronicle-card">
