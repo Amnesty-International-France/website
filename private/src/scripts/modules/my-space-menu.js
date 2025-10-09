@@ -15,7 +15,9 @@ const mySpaceMenu = () => {
     if (!subMenu) return;
 
     const parentUl = parentLiElement.parentElement;
-    const parentTitle = parentLiElement.querySelector(':scope > a').textContent;
+    const link = parentLiElement.querySelector(':scope > a');
+    if (!link) return;
+    const parentTitle = link.textContent;
 
     navigationHistory.push({
       parentUl,
@@ -73,10 +75,18 @@ const mySpaceMenu = () => {
   };
 
   const initMenu = () => {
-    const activeLink = sidebar.querySelector('.current-menu-item > a');
-    initialTitle = activeLink ? activeLink.textContent : titleElement.textContent;
-    titleElement.textContent = initialTitle;
+    initialTitle = titleElement.textContent;
+
     setupAllParentLinks();
+
+    const activeAncestors = sidebar.querySelectorAll('.current-menu-ancestor');
+
+    if (activeAncestors.length > 0) {
+      activeAncestors.forEach((ancestorLi) => {
+        goForward(ancestorLi);
+      });
+    }
+
     titleElement.addEventListener('click', goBack);
   };
 
