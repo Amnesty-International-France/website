@@ -188,6 +188,15 @@ body.menu-open {
         }
       }
 
+      &.current-menu-item > a {
+        span {
+          color: var(--wp--preset--color--primary);
+        }
+
+        color: var(--wp--preset--color--primary);
+        font-weight: bold;
+      }
+
       &.menu-item-has-children > a::after {
         content: '';
         position: absolute;
