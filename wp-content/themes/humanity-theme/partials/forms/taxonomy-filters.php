@@ -15,7 +15,7 @@ if ((!isset($taxonomies) || empty($taxonomies)) && (!isset($types) || empty($typ
     <?php
         $options = [];
         foreach ($types as $type) {
-            if (in_array($type->name, ['actualities-my-space', 'tribe_events'])) {
+            if (in_array($type->name, ['actualities-my-space', 'tribe_events', 'document_democratic_type', 'document_instance_type', 'document_militant_type'])) {
                 continue;
             }
 

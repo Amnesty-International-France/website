@@ -11,7 +11,7 @@ function amnesty_register_document_cpt(): void
         'document',
         [
             'labels' => [
-                'name' => 'Documents',
+                'name' => 'Rapports',
                 'singular_name' => 'Document',
                 'add_new' => 'Ajouter un Document',
                 'add_new_item' => 'Ajouter un nouveau Document',
