@@ -17,7 +17,7 @@ function amnesty_filter_cpt_by_multiple_taxonomies(WP_Query $query)
     } elseif (is_post_type_archive(['landmark', 'petition', 'document'])) {
         $tax_query = [];
 
-        $filterable_taxonomies = [ 'document_type', 'landmark_category', 'combat', 'location', 'keyword' ];
+        $filterable_taxonomies = [ 'landmark_category', 'combat', 'location', 'keyword' ];
 
         foreach ($filterable_taxonomies as $taxonomy) {
             $param_name = 'q' . $taxonomy;
@@ -33,6 +33,14 @@ function amnesty_filter_cpt_by_multiple_taxonomies(WP_Query $query)
                     ];
                 }
             }
+        }
+
+        if (is_post_type_archive('document')) {
+            $tax_query[] = [
+                'taxonomy' => 'document_type',
+                'field'    => 'slug',
+                'terms'    => [ 'rapport' ],
+            ];
         }
 
         if (! empty($tax_query)) {

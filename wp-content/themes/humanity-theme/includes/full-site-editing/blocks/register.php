@@ -10,6 +10,8 @@ require_once realpath(__DIR__) . '/archive-filters-militants-resources/register.
 require_once realpath(__DIR__) . '/archive-filters-militants-resources/render.php';
 require_once realpath(__DIR__) . '/archive-filters-democratic-resources/register.php';
 require_once realpath(__DIR__) . '/archive-filters-democratic-resources/render.php';
+require_once realpath(__DIR__) . '/archive-filters-document/register.php';
+require_once realpath(__DIR__) . '/archive-filters-document/render.php';
 require_once realpath(__DIR__) . '/archive-filters-trainings/register.php';
 require_once realpath(__DIR__) . '/archive-filters-trainings/render.php';
 require_once realpath(__DIR__) . '/archive-filters-trainings-my-space/register.php';
@@ -40,6 +42,7 @@ if (! function_exists('amnesty_register_full_site_editing_blocks')) {
     function amnesty_register_full_site_editing_blocks(): void
     {
         register_archive_filters_block();
+        register_archive_filters_document_block();
         register_archive_filters_actualities_block();
         register_archive_filters_militants_resources_block();
         register_archive_filters_democratic_resources_block();
