@@ -7,6 +7,19 @@ if (!$newsletter_id || !$post || $post->post_type != 'newsletter') {
     return;
 }
 
+$post_title = get_the_title($post->ID);
+$utm_campaign_date_part = $post->post_name;
+
+if (preg_match('/(\d{2})\/(\d{2})\/(\d{4})/', $post_title, $matches)) {
+    $utm_campaign_date_part = $matches[1] . $matches[2] . $matches[3];
+}
+
+$utm_params = [
+    'utm_source'   => 'email_newsletter',
+    'utm_medium'   => 'email',
+    'utm_campaign' => 'newshebdo_' . $utm_campaign_date_part,
+];
+
 $articles = [];
 for ($i = 1; $i <= 5; $i++) {
     $article = get_field($i, $post);
@@ -23,6 +36,12 @@ for ($i = 1; $i <= 5; $i++) {
     $articles[] = $article;
 }
 $public_url = sprintf('%s/voir-newsletter?newsletter_id=%s', get_home_url(), $newsletter_id);
+
+$url_non_adherent_base = 'https://soutenir.amnesty.fr/b?cid=24&reserved_originecode=17TWDE1MEN';
+$url_adherent_base = 'https://soutenir.amnesty.fr/b?cid=228&lang=fr_FR&reserved_originecode=20FH1E1MEM';
+
+$url_non_adherent_final = add_query_arg($utm_params, $url_non_adherent_base);
+$url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 ?>
 <html xmlns="http://www.w.org/1999/xhtml">
 <head>
@@ -30,7 +49,7 @@ $public_url = sprintf('%s/voir-newsletter?newsletter_id=%s', get_home_url(), $ne
     <meta name="referrer" content="no-referrer"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title><?php echo esc_html(get_the_title()); ?></title>
+    <title><?php echo esc_html($post_title); ?></title>
     <style type="text/css">@import url(https://fonts.googleapis.com/css?family=Oswald:400,600);
         body { background: #fff; }
         table { font-family: sans-serif; }
@@ -66,7 +85,7 @@ $public_url = sprintf('%s/voir-newsletter?newsletter_id=%s', get_home_url(), $ne
                         <?php foreach ($articles as $article):
                             $post = $article['lien'];
                             setup_postdata($post);
-                            $post_url = esc_url(get_permalink($post->ID));
+                            $post_url = esc_url(add_query_arg($utm_params, get_permalink($post->ID)));
                             $title = !empty($article['titre']) ? $article['titre'] : esc_html(get_the_title($post->ID));
                             $image_url = $article['image'] ?: esc_url(get_the_post_thumbnail_url($post->ID, 'medium'));
                             ?>
@@ -106,41 +125,9 @@ $public_url = sprintf('%s/voir-newsletter?newsletter_id=%s', get_home_url(), $ne
                 <?php
                 if (isset($_GET['get_source'])): ?>
                     %%[IF (([Tech_Adherent_Actif] == false)) THEN]%%
-                    <tr>
-                        <td align="center">
-                            <span style="font-family:Oswald, Arial, sans-serif;font-size:24px;line-height:14px;color:#000;font-style:normal;text-transform:uppercase;text-align:left">
-                                Donnez-nous les moyens d'agir
-                            </span>
-                            <div style="font-size:20px;height:20px;line-height:20px;mso-line-height-rule:exactly"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            <a href="https://soutenir.amnesty.fr/b?cid=24&amp;reserved_originecode=17TWDE1MEN&amp;utm_source=newshebdo&amp;utm_medium=email&amp;utm_campaign=hebdo"
-                            target="_blank" rel="noopener noreferrer" style="text-decoration:underline">
-                                <button class="button">Devenir Membre</button>
-                            </a>
-                            <div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div>
-                        </td>
-                    </tr>
+                    <tr><td align="center"><span style="font-family:Oswald, Arial, sans-serif;font-size:24px;line-height:14px;color:#000;font-style:normal;text-transform:uppercase;text-align:left">Donnez-nous les moyens d'agir</span><div style="font-size:20px;height:20px;line-height:20px;mso-line-height-rule:exactly"></div></td></tr><tr><td align="center"><a href="<?php echo esc_url($url_non_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:underline"><button class="button">Devenir Membre</button></a><div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div></td></tr>
                     %%[ELSE]%%
-                    <tr>
-                        <td align="center">
-                            <span style="font-family:Oswald, Arial, sans-serif;font-size:24px;line-height:14px;color:#000;font-style:normal;text-transform:uppercase;text-align:left">
-                                Grâce à vous, nous pouvons agir
-                            </span>
-                            <div style="font-size:20px;height:20px;line-height:20px;mso-line-height-rule:exactly"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            <a href="https://soutenir.amnesty.fr/b?cid=228&amp;lang=fr_FR&amp;reserved_originecode=20FH1E1MEM&amp;utm_source=newshebdo&amp;utm_medium=email&amp;utm_campaign=hebdo"
-                            target="_blank" rel="noopener noreferrer" style="text-decoration:underline">
-                                <button class="button">Faire un don</button>
-                            </a>
-                            <div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div>
-                        </td>
-                    </tr>
+                    <tr><td align="center"><span style="font-family:Oswald, Arial, sans-serif;font-size:24px;line-height:14px;color:#000;font-style:normal;text-transform:uppercase;text-align:left">Grâce à vous, nous pouvons agir</span><div style="font-size:20px;height:20px;line-height:20px;mso-line-height-rule:exactly"></div></td></tr><tr><td align="center"><a href="<?php echo esc_url($url_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:underline"><button class="button">Faire un don</button></a><div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div></td></tr>
                     %%[ENDIF]%%
                 <?php elseif ($preview_mode === 'adherent'): ?>
                     <tr>
@@ -151,7 +138,7 @@ $public_url = sprintf('%s/voir-newsletter?newsletter_id=%s', get_home_url(), $ne
                     </tr>
                     <tr>
                         <td align="center">
-                            <a href="https://soutenir.amnesty.fr/b?cid=228&amp;lang=fr_FR&amp;reserved_originecode=20FH1E1MEM&amp;utm_source=newshebdo&amp;utm_medium=email&amp;utm_campaign=hebdo" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">
+                            <a href="<?php echo esc_url($url_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">
                                 <button class="button">Faire un don</button>
                             </a>
                             <div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div>
@@ -166,7 +153,7 @@ $public_url = sprintf('%s/voir-newsletter?newsletter_id=%s', get_home_url(), $ne
                     </tr>
                     <tr>
                         <td align="center">
-                            <a href="https://soutenir.amnesty.fr/b?cid=24&amp;reserved_originecode=17TWDE1MEN&amp;utm_source=newshebdo&amp;utm_medium=email&amp;utm_campaign=hebdo" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">
+                            <a href="<?php echo esc_url($url_non_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">
                                 <button class="button">Devenir Membre</button>
                             </a>
                             <div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div>
