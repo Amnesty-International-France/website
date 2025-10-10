@@ -8,96 +8,112 @@
 
 declare(strict_types=1);
 
-$options_theme_newsletter = [
-    'hebdo' => 'L\'Hebdo (newsletter hebdomadaire)',
-    'refugees' => 'Réfugiés et migrants',
-    'punishment' => 'Torture et peine de mort',
-    'expression' => 'Liberté d\'expression',
-    'crisis' => 'Crises et conflits armés',
-    'discrimination' => 'Discriminations',
-    'impunity' => 'Impunité des États et des entreprises',
-];
+$options_theme_newsletter = [];
+$email_provided = '';
+$inscription_nl_status = '';
+$inscription_nl_success = false;
+$user = null;
+$firstname = null;
+$lastname = null;
+$phone = null;
+$salutation = null;
+$postal_code = null;
 
-$email_provided = $_GET['email'] ?? '';
-if (empty($email_provided)) {
-    wp_redirect(home_url('/').'#newsletter-lead-form');
-}
-$inscription_nl_status = $_GET['inscription__nl'] ?? '';
-$inscription_nl_success = $inscription_nl_status === 'success';
+if (!is_admin()) {
 
-$get_salesforce_user = get_salesforce_user_with_email($email_provided);
-$user = $get_salesforce_user['totalSize'] >= 1 ? $get_salesforce_user['records'][0] : null;
-$firstname = $user['FirstName'] ?? null;
-$lastname = $user['LastName'] ?? null;
-$phone = $user['MobilePhone'] ?? null;
-$salutation = $user['Salutation'] ?? null;
-$postal_code = $user['Code_Postal__c'] ?? null;
-
-if (isset($_POST['sign_newsletter'])) {
-    if (!isset($_POST['newsletter_form_nonce']) ||
-        !wp_verify_nonce($_POST['newsletter_form_nonce'], 'newsletter_form_action')) {
-        wp_die('Échec de sécurité, veuillez réessayer.');
-    }
-
-    $themes = array_map('sanitize_text_field', $_POST['theme'] ?? []);
-    $email = $user ? $email_provided : sanitize_email($_POST['newsletter'] ?? '');
-    $civility = $salutation ?? sanitize_text_field($_POST['civility'] ?? '');
-    $lastname = $lastname ?? sanitize_text_field($_POST['lastname'] ?? '');
-    $firstname = $firstname ?? sanitize_text_field($_POST['firstname'] ?? '');
-    $phone = $phone ?? sanitize_text_field($_POST['phone'] ?? '');
-    $address = sanitize_text_field($_POST['address'] ?? '');
-    $address2 = sanitize_text_field($_POST['additional-address'] ?? '');
-    $zipcode = $postal_code ?? sanitize_text_field($_POST['zipcode'] ?? '');
-    $city = sanitize_text_field($_POST['city'] ?? '');
-
-    $data_to_sf = [
-        'Salutation' => $civility,
-        'FirstName' => $firstname,
-        'LastName' => $lastname,
-        'Email' => $email,
-        'MobilePhone' => $phone,
-        'Ville__c' => $city,
-        'Code_Postal__c' => $zipcode,
-        'Adresse_Ligne_4__c' => $address,
-        'Adresse_Ligne_5__c' => $address2,
-        'Optin_Actionaute_Newsletter_mensuelle__c' => true,
-        'Optin_Refugies_et_migrants__c' => \in_array('refugees', $themes, true),
-        'Optin_torture_et_peine_de_mort__c' => \in_array('punishment', $themes, true),
-        'Optin_Liberte_expression__c' => \in_array('expression', $themes, true),
-        'Optin_Crises_et_conflits_armes__c' => \in_array('crisis', $themes, true),
-        'Optin_Discriminations__c' => \in_array('discrimination', $themes, true),
-        'Optin_Impunites_des_etats__c' => \in_array('impunity', $themes, true),
+    $options_theme_newsletter = [
+        'hebdo' => 'L\'Hebdo (newsletter hebdomadaire)',
+        'refugees' => 'Réfugiés et migrants',
+        'punishment' => 'Torture et peine de mort',
+        'expression' => 'Liberté d\'expression',
+        'crisis' => 'Crises et conflits armés',
+        'discrimination' => 'Discriminations',
+        'impunity' => 'Impunité des États et des entreprises',
     ];
-    $is_salesforce_user = $get_salesforce_user['totalSize'] > 0;
 
-    if (!$is_salesforce_user) {
-        $data = [
-            ...$data_to_sf,
-            'Statut_espace_connecte__c' => 'Non inscrit amnesty.fr',
-            'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
-        ];
-
-        register_salesforce_newsletter($data);
-    } else {
-        $data = [
-            ...$data_to_sf,
-            'Optout_toute_communication__c' => false,
-        ];
-
-        update_salesforce_users($get_salesforce_user['records'][0]['Id'], $data);
+    $email_provided = $_GET['email'] ?? '';
+    if (empty($email_provided)) {
+        wp_redirect(home_url('/').'#newsletter-lead-form');
+        exit;
     }
 
-    $lead_on_sf = get_salesforce_nl_lead($email);
+    $inscription_nl_status = $_GET['inscription__nl'] ?? '';
+    $inscription_nl_success = $inscription_nl_status === 'success';
 
-    if ($lead_on_sf['totalSize'] > 0) {
-        deleting_lead_on_salesforce($lead_on_sf['records'][0]['Id']);
+    $get_salesforce_user = get_salesforce_user_with_email($email_provided);
+    $user = $get_salesforce_user['totalSize'] >= 1 ? $get_salesforce_user['records'][0] : null;
+    $firstname = $user['FirstName'] ?? null;
+    $lastname = $user['LastName'] ?? null;
+    $phone = $user['MobilePhone'] ?? null;
+    $salutation = $user['Salutation'] ?? null;
+    $postal_code = $user['Code_Postal__c'] ?? null;
+
+    if (isset($_POST['sign_newsletter'])) {
+        if (!isset($_POST['newsletter_form_nonce']) ||
+            !wp_verify_nonce($_POST['newsletter_form_nonce'], 'newsletter_form_action')) {
+            wp_die('Échec de sécurité, veuillez réessayer.');
+        }
+
+        $themes = array_map('sanitize_text_field', $_POST['theme'] ?? []);
+        $email = $user ? $email_provided : sanitize_email($_POST['newsletter'] ?? '');
+        $civility = $salutation ?? sanitize_text_field($_POST['civility'] ?? '');
+        $lastname = $lastname ?? sanitize_text_field($_POST['lastname'] ?? '');
+        $firstname = $firstname ?? sanitize_text_field($_POST['firstname'] ?? '');
+        $phone = $phone ?? sanitize_text_field($_POST['phone'] ?? '');
+        $address = sanitize_text_field($_POST['address'] ?? '');
+        $address2 = sanitize_text_field($_POST['additional-address'] ?? '');
+        $zipcode = $postal_code ?? sanitize_text_field($_POST['zipcode'] ?? '');
+        $city = sanitize_text_field($_POST['city'] ?? '');
+
+        $data_to_sf = [
+            'Salutation' => $civility,
+            'FirstName' => $firstname,
+            'LastName' => $lastname,
+            'Email' => $email,
+            'MobilePhone' => $phone,
+            'Ville__c' => $city,
+            'Code_Postal__c' => $zipcode,
+            'Adresse_Ligne_4__c' => $address,
+            'Adresse_Ligne_5__c' => $address2,
+            'Optin_Actionaute_Newsletter_mensuelle__c' => true,
+            'Optin_Refugies_et_migrants__c' => \in_array('refugees', $themes, true),
+            'Optin_torture_et_peine_de_mort__c' => \in_array('punishment', $themes, true),
+            'Optin_Liberte_expression__c' => \in_array('expression', $themes, true),
+            'Optin_Crises_et_conflits_armes__c' => \in_array('crisis', $themes, true),
+            'Optin_Discriminations__c' => \in_array('discrimination', $themes, true),
+            'Optin_Impunites_des_etats__c' => \in_array('impunity', $themes, true),
+        ];
+        $is_salesforce_user = $get_salesforce_user['totalSize'] > 0;
+
+        if (!$is_salesforce_user) {
+            $data = [
+                ...$data_to_sf,
+                'Statut_espace_connecte__c' => 'Non inscrit amnesty.fr',
+                'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
+            ];
+
+            register_salesforce_newsletter($data);
+        } else {
+            $data = [
+                ...$data_to_sf,
+                'Optout_toute_communication__c' => false,
+            ];
+
+            update_salesforce_users($get_salesforce_user['records'][0]['Id'], $data);
+        }
+
+        $lead_on_sf = get_salesforce_nl_lead($email);
+
+        if ($lead_on_sf['totalSize'] > 0) {
+            deleting_lead_on_salesforce($lead_on_sf['records'][0]['Id']);
+        }
+
+        wp_redirect(add_query_arg([
+            'email' => urlencode($email),
+            'inscription__nl' => 'success',
+        ], home_url('/newsletter')));
+        exit;
     }
-
-    wp_redirect(add_query_arg([
-        'email' => urlencode($email),
-        'inscription__nl' => 'success',
-    ], home_url('/newsletter')));
-    exit;
 }
 ?>
 
