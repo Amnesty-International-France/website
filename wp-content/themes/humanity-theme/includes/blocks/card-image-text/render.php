@@ -64,12 +64,6 @@ if (!function_exists('render_card_image_text_block')) {
                         $link = '';
                     }
                 }
-
-                if (empty($category)) {
-                    $post_type_object = get_post_type_object($post_type);
-                    $category = $post_type_object->labels->singular_name;
-                    $link = get_post_type_archive_link($post_type);
-                }
             }
         } else {
             $title = $attributes['title'] ?? '';
