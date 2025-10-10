@@ -35,7 +35,11 @@ if (empty($image_url)) {
 
 if (is_post_type_archive()) {
     $post_type_obj = get_post_type_object(get_post_type());
-    $category_name = $post_type_obj ? $post_type_obj->labels->name : '';
+    if ($post_type === 'document') {
+        $category_name = 'Rapports';
+    } else {
+        $category_name = $post_type_obj ? $post_type_obj->labels->name : '';
+    }
 } elseif (isset($term->name)) {
     $category_name = $term->name;
 } else {
