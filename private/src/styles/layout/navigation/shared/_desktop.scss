@@ -173,6 +173,10 @@
   font-weight: var(--wp--custom--body-bold--font-weight);
 }
 
+.page-nav--main .sub-menu ul span {
+  font-size: var(--wp--preset--font-size--normal);
+}
+
 .page-nav--main ul li.menu-item-has-children:hover > a .submenu-arrow {
   transform: rotate(180deg);
 }
