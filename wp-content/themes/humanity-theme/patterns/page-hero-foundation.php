@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 $featured_image_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
 $page_title         = get_the_title();
-$over_title         = get_field('sur-titre', $post->ID) ?? '';
+$over_title = get_field('sur-titre', get_the_ID()) ?? '';
 
 ?>
 
