@@ -22,7 +22,7 @@ add_filter('get_the_terms', 'amnesty_limit_post_terms_results_for_archive');
 
             <!-- wp:query-no-results -->
             <div class="wp-block-query-no-results">
-                <p>Nous n’avons pas trouvé d’articles correspondant à vos critères de recherche.</p>
+                <p>Nous n'avons pas trouvé de pétitions qui correspondent à vos critères de recherche.</p>
             </div>
             <!-- /wp:query-no-results -->
         </div>

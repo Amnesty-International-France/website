@@ -52,6 +52,36 @@ function amnesty_get_petition_signature_count($post_id)
     return absint($count);
 }
 
+/**
+ * Ajoute les règles de réécriture et le "flag" pour les pétitions "Mon Espace"
+ */
+function aif_myspace_petition_rewrite_rules()
+{
+    add_filter('query_vars', function ($vars) {
+        $vars[] = 'is_my_space_petition';
+        return $vars;
+    });
+
+    add_rewrite_rule(
+        '^mon-espace/agir-et-se-mobiliser/nos-petitions/([^/]+)/?$',
+        'index.php?post_type=petition&name=$matches[1]&is_my_space_petition=1',
+        'top'
+    );
+}
+add_action('init', 'aif_myspace_petition_rewrite_rules');
+
+function aif_myspace_petition_template_include($template)
+{
+    if (get_query_var('is_my_space_petition') && is_singular('petition')) {
+        $new_template = get_stylesheet_directory() . '/patterns/single-petition-my-space.php';
+        if ('' !== $new_template) {
+            return $new_template;
+        }
+    }
+    return $template;
+}
+add_filter('template_include', 'aif_myspace_petition_template_include', 99);
+
 function amnesty_handle_petition_signature()
 {
     if (isset($_POST['sign_petition']) && isset($_POST['user_email']) && isset($_POST['petition_id'])) {
