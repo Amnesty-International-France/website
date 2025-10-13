@@ -19,7 +19,7 @@ $phone = null;
 $salutation = null;
 $postal_code = null;
 
-if (!is_admin()) {
+if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
 
     $options_theme_newsletter = [
         'hebdo' => 'L\'Hebdo (newsletter hebdomadaire)',
