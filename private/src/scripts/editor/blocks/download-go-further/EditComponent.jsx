@@ -25,7 +25,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
     'application/vnd.ms-excel',
     'application/vnd.ms-word',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.openxmlformats.officedocument.spreadsheetml.sheet',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     'application/vnd.oasis.opendocument.spreadsheet',
     'application/vnd.oasis.opendocument.text',
     'application/zip',
@@ -61,8 +61,9 @@ const EditComponent = ({ attributes, setAttributes }) => {
       case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
         return 'Document Word (DOCX)';
       case 'application/vnd.ms-excel':
-      case 'application/vnd.openxmlformats.officedocument.spreadsheetml.sheet':
-        return 'Feuille de calcul Excel';
+        return 'Feuille de calcul Excel (XLS)';
+      case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        return 'Feuille de calcul Excel (XLSX)';
       case 'application/vnd.oasis.opendocument.spreadsheet':
         return 'Feuille de calcul OpenDocument';
       case 'application/vnd.oasis.opendocument.text':
