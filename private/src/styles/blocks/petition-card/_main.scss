@@ -107,6 +107,9 @@
   }
 
   .petition-sign-button {
+    display: flex;
+    flex-direction: column;
+
     .button-label {
       text-transform: uppercase;
     }
@@ -118,6 +121,20 @@
     &:hover {
       background: none;
       text-decoration: underline;
+    }
+  }
+
+  .petition-download-icon {
+    max-height: 24px;
+    max-width: 24px;
+    flex-shrink: 0;
+
+    svg {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
     }
   }
 }

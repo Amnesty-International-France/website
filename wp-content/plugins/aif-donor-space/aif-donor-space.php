@@ -103,6 +103,7 @@ function aif_donor_space_create_pages()
                     'title' => 'Agir et se mobiliser',
                     'children' => [
                         'actualites-militantes' => ['title' => 'Actualités militantes'], // ! used in actualites-loop.php
+                        'nos-petitions' => ['title' => 'Pétitions'],
                     ],
                 ],
                 'vie-democratique' => [
@@ -113,9 +114,10 @@ function aif_donor_space_create_pages()
                     ],
                 ],
                 'boite-a-outils' => [
-                    'title' => 'Boite outils',
+                    'title' => 'Boite à outils',
                     'children' => [
                         'ressources-militants' => ['title' => 'Ressources militants'],
+                        'se-former' => ['title' => 'Se former'],
                     ],
                 ],
                 'mes-dons' => [

@@ -14,6 +14,21 @@
   }
 }
 
+.single.single-petition:has(.single-petition-my-space) {
+  .single-petition-my-space {
+    max-width: 1280px;
+    margin-top: 32px;
+  }
+
+  .page-header {
+    display: none;
+  }
+
+  .yoast-breadcrumb-wrapper:last-child {
+    display: none;
+  }
+}
+
 body:has(.single-actuality-my-space) .page-header {
   display: none;
 }

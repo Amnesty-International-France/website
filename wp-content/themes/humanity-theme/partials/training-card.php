@@ -8,7 +8,6 @@ $acf_date = get_field('date', $post_object);
 $acf_date_fin = get_field('date_fin', $post_object);
 
 $is_empty = empty($place) && empty($city) && ! $is_members_only;
-
 ?>
 
 <article class="training-card <?php

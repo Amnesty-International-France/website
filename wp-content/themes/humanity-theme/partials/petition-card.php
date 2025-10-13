@@ -34,6 +34,16 @@ if (!$post_object instanceof WP_Post) {
     $end_date = !empty($end_date_raw) ? format_date_php($end_date_raw) : '30.06.2025';
     $percentage = ($goal > 0) ? min(($current / $goal) * 100, 100) : 0;
 }
+
+$pdf_file = null;
+if ($GLOBALS['is_my_space_petitions_loop']) {
+    $pdf_file = wp_get_attachment_url(get_field('pdf_petition', $post_id));
+    $page_nos_petitions = get_page_by_path('mon-espace/agir-et-se-mobiliser/nos-petitions');
+    if ($page_nos_petitions) {
+        $permalink_parts = explode('/', parse_url($permalink)['path']);
+        $permalink = sprintf('%s%s/', $page_nos_petitions->guid, $permalink_parts[\count($permalink_parts) - 2]);
+    }
+}
 ?>
 
 <article class="petition-card card-<?php echo esc_attr($direction); ?>">
@@ -81,7 +91,7 @@ echo esc_html(number_format_i18n($current) . ' ' . $soutien_mot);
         </div>
 
         <div class="petition-sign-button">
-            <div class='custom-button-block center'>
+            <div class='custom-button-block center' style="gap: 12px;">
                 <a href="<?= esc_url($permalink); ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
                     <div class='content bg-yellow small'>
                         <div class="icon-container">
@@ -98,6 +108,18 @@ echo esc_html(number_format_i18n($current) . ' ' . $soutien_mot);
                         <div class="button-label">Signer la pétition</div>
                     </div>
                 </a>
+
+				<?php if ($pdf_file): ?>
+					<a href="<?= esc_url($pdf_file); ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
+						<div class='content bg-black small'>
+							<div class="petition-download-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+								</svg>
+							</div>
+						</div>
+					</a>
+				<?php endif; ?>
             </div>
         </div>
     </div>

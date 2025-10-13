@@ -36,6 +36,32 @@ function my_space_custom_breadcrumb($links)
         }
     }
 
+    if (is_singular('petition') && get_query_var('is_my_space_petition')) {
+        $page_mon_espace = get_page_by_path('mon-espace');
+        $page_agir_et_se_mobiliser = get_page_by_path('mon-espace/agir-et-se-mobiliser');
+        $page_nos_petitions = get_page_by_path('mon-espace/agir-et-se-mobiliser/nos-petitions');
+
+        if ($page_mon_espace && $page_agir_et_se_mobiliser && $page_nos_petitions) {
+            $new_breadcrumb = [];
+            $new_breadcrumb[] = [
+                'text' => get_the_title($page_mon_espace),
+                'url'  => get_permalink($page_mon_espace),
+            ];
+            $new_breadcrumb[] = [
+                'text' => get_the_title($page_agir_et_se_mobiliser),
+                'url'  => get_permalink($page_agir_et_se_mobiliser),
+            ];
+            $new_breadcrumb[] = [
+                'text' => get_the_title($page_nos_petitions),
+                'url'  => get_permalink($page_nos_petitions),
+            ];
+            $new_breadcrumb[] = [
+                'text' => get_the_title($post),
+            ];
+            return $new_breadcrumb;
+        }
+    }
+
     if (is_singular('post') && get_query_var('is_my_space_actualites')) {
         $page_mon_espace = get_page_by_path('mon-espace');
         $page_actualites = get_page_by_path('mon-espace/actualites');
