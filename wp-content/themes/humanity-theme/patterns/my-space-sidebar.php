@@ -28,13 +28,33 @@
     </div>
     <ul class="aif-donor-space-sidebar-menu">
         <?php
-    if (function_exists('amnesty_nav')) {
-        amnesty_nav('my-space');
+    $is_member = false;
+
+if (is_user_logged_in()) {
+    $current_user = wp_get_current_user();
+
+    if (function_exists('get_salesforce_member_data')) {
+        $sf_member = get_salesforce_member_data($current_user->user_email);
+
+        if (isset($sf_member) && !empty($sf_member->isMembre)) {
+            $is_member = true;
+        }
     }
+}
+
+if ($is_member) {
+    if (function_exists('amnesty_nav')) {
+        amnesty_nav('my-space-member');
+    }
+} else {
+    if (function_exists('amnesty_nav')) {
+        amnesty_nav('my-space-non-member');
+    }
+}
 ?>
     </ul>
     <ul class="aif-donor-space-sidebar-footer">
-    <?php
+        <?php
 if (function_exists('amnesty_nav')) {
     amnesty_nav('my-account');
 }
@@ -43,4 +63,3 @@ if (function_exists('amnesty_nav')) {
 </div>
 
 <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
-
