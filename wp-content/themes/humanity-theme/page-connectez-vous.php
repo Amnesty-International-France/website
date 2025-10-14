@@ -145,7 +145,9 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
                 <a href="<?=  get_permalink(get_page_by_path('creer-votre-compte')) ?>"class="aif-link--primary create-account aif-block">Créer votre compte</a>
             </div>
         </div>
-        <div class="login-form-decorative-image"></div>
+        <div class="login-form-decorative-image-wrapper">
+            <div class="login-form-decorative-image"></div>
+        </div>
     </div>
 </main>
 
