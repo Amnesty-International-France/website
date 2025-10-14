@@ -36,7 +36,7 @@ if (is_category()) {
 
     } else {
         $types = get_post_types(['public' => true, ], 'objects');
-        $types = array_filter($types, static fn ($t) => ! in_array($t->name, ['attachment', 'sidebar', 'feedzy_imports', 'feedzy_categories', 'edh', 'fiche_pays', 'chronique', 'training', 'press-release', 'local-structures']));
+        $types = array_filter($types, static fn ($t) => ! in_array($t->name, ['attachment', 'sidebar', 'feedzy_imports', 'feedzy_categories', 'edh', 'fiche_pays', 'chronique', 'training', 'local-structures', 'page', 'document']));
     }
 } elseif (is_post_type_archive()) {
     $form_url = get_post_type_archive_link($post_type);
