@@ -20,12 +20,18 @@
     text-decoration: none !important;
     display: flex;
     height: 100%;
+    transition: all ease 0.4s;
 
     &:hover {
-      background-color: transparent;
+      background: transparent;
+
+      .content .button-label {
+        opacity: 0.9;
+      }
     }
 
     .content {
+      position: relative;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -34,8 +40,30 @@
       font-weight: bold;
       cursor: pointer;
       transition: all 0.3s ease;
-      border: 2px solid transparent;
       width: fit-content;
+
+      > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 100%;
+        height: 100%;
+        transform: translate(-50%, -50%);
+        transition: all ease 0.4s;
+        border: 2px solid transparent;
+        z-index: 0;
+      }
+
+      &:hover::before {
+        transform: translate(-50%, -50%) scale(0.96);
+        opacity: 0.7;
+      }
 
       &.small {
         font-size: 15px;
@@ -94,8 +122,14 @@
       }
 
       &.outline {
-        background: transparent;
-        border-color: currentColor;
+        &::before {
+          background: transparent;
+          border-color: currentColor;
+        }
+
+        &:hover::before {
+          opacity: 1;
+        }
       }
 
       &.no-outline {
@@ -107,46 +141,67 @@
       }
 
       &.outline-yellow {
-        background: transparent;
-        border-color: var(--wp--preset--color--primary);
         color: var(--wp--preset--color--primary);
 
         &:hover {
           color: var(--wp--preset--color--primary-dark);
-          border-color: var(--wp--preset--color--primary-dark);
+        }
+
+        &::before {
+          background: transparent;
+          border-color: var(--wp--preset--color--primary);
+        }
+
+        &:hover::before {
+          opacity: 1;
+          background: rgba(255, 225, 0, 0.4);
         }
       }
 
       &.outline-black {
-        background: transparent;
-        border-color: var(--wp--preset--color--black);
         color: var(--wp--preset--color--black);
 
         &:hover {
           color: var(--wp--preset--color--grey-darkest);
-          border-color: var(--wp--preset--color--grey-darkest);
+        }
+
+        &::before {
+          background: transparent;
+          border-color: var(--wp--preset--color--black);
+        }
+
+        &:hover::before {
+          opacity: 1;
+          background: rgba(0, 0, 0, 0.2);
         }
       }
 
       &.bg-black {
-        background-color: var(--wp--preset--color--black);
         color: var(--wp--preset--color--primary);
-        border-color: var(--wp--preset--color--black);
 
-        &:hover {
+        &::before {
+          background-color: var(--wp--preset--color--black);
+          border-color: var(--wp--preset--color--black);
+        }
+
+        &:hover::before {
           background-color: var(--wp--preset--color--grey-darkest);
           border-color: var(--wp--preset--color--grey-darkest);
         }
       }
 
       &.bg-yellow {
-        background-color: var(--wp--preset--color--primary);
         color: var(--wp--preset--color--black);
-        border-color: var(--wp--preset--color--primary);
 
-        &:hover {
+        &::before {
+          background-color: var(--wp--preset--color--primary);
+          border-color: var(--wp--preset--color--primary);
+        }
+
+        &:hover::before {
           background-color: var(--wp--preset--color--primary-dark);
           border-color: var(--wp--preset--color--primary-dark);
+          opacity: 0.9;
         }
       }
     }

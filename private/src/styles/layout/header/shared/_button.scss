@@ -58,7 +58,7 @@
     font-size: 18px;
     font-weight: bold;
     text-decoration: none;
-    transition: 0.1s ease-in-out;
+    transition: all ease 0.3s;
     height: 100%;
     width: fit-content;
     display: flex;
@@ -70,6 +70,14 @@
 
     &:hover {
       background-color: var(--wp--preset--color--light-pink);
+
+      svg {
+        transform: scale(1.2);
+      }
+
+      .icon-heart-full {
+        fill: var(--wp--preset--color--white);
+      }
     }
 
     .link {
@@ -90,6 +98,8 @@
         justify-content: center;
         align-items: center;
         flex-shrink: 0;
+        width: 20px;
+        transition: all ease 0.3s;
       }
 
       .label {
