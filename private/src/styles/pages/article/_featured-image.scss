@@ -193,17 +193,17 @@
 
     .feature-image-description {
       text-align: left;
-      color: var(--wp--preset--color--grey-light);
-      font-weight: lighter;
-      line-height: 16px;
+      color: var(--wp--preset--color--white);
+      font-weight: bold;
+      line-height: 12px;
       font-size: 12px;
     }
 
     .feature-image-caption {
       text-align: left;
-      color: var(--wp--preset--color--white);
-      font-weight: bold;
-      line-height: 12px;
+      color: var(--wp--preset--color--grey-light);
+      font-weight: lighter;
+      line-height: 16px;
       font-size: 12px;
     }
   }
