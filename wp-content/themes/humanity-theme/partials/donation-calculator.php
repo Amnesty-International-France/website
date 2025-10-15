@@ -144,6 +144,8 @@ if (empty($href) && !empty($campaign_url)) {
 							class="input-don-free"
 							placeholder="montant du don">
 					<label id="amount-total" for="input-donation"></label>
+					<span class="currency-symbol currency-monthly">€<span class="by-month">/mois</span></span>
+        			<span class="currency-symbol currency-punctual hidden-currency">€</span>
 				</div>
 			</div>
 		<?php else : ?>
@@ -193,6 +195,3 @@ if (empty($href) && !empty($campaign_url)) {
 	</div>
 </div>
 
-<div class="parente">
-	<Calculette />
-</div>
