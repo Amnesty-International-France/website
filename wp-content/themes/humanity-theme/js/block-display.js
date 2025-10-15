@@ -9,9 +9,7 @@ wp.domReady(() => {
     'amnesty-core/pop-in',
     'amnesty-core/sidebar',
     'amnesty-core/tweet-block',
-    'amnesty-core/articles-homepage',
     'amnesty-core/block-menu',
-    'amnesty/rubric-heading',
     // Média
     'core/cover',
     'core/file',
