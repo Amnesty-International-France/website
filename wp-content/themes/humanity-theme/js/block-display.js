@@ -36,6 +36,7 @@ wp.domReady(() => {
     // Monétiser
     'jetpack/opentable',
     'jetpack/donations',
+    'jetpack/paywall',
     'jetpack/premium-content',
     'jetpack/payment-buttons',
     'jetpack/wordads',
