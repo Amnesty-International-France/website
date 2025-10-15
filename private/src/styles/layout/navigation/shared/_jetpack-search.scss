@@ -82,15 +82,19 @@
 }
 
 button[aria-label='Fermer les résultats de recherche'].jetpack-instant-search__overlay-close {
-  background-color: var(--wp--preset--color--black) !important;
+  background-color: transparent;
+
+  svg.gridicon {
+    fill: var(--wp--preset--color--black) !important;
+  }
 
   &:hover {
-    background-color: var(--wp--preset--color--grey-black) !important;
-  }
-}
+    background-color: var(--wp--preset--color--black) !important;
 
-button.jetpack-instant-search__overlay-close svg.gridicon {
-  fill: var(--wp--preset--color--primary) !important;
+    svg.gridicon {
+      fill: var(--wp--preset--color--primary) !important;
+    }
+  }
 }
 
 .jetpack-instant-search a {
