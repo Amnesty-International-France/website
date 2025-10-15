@@ -34,29 +34,29 @@
 }
 
 .page-nav.page-nav--main .menu-item {
-  a {
+  > a {
     color: var(--wp--preset--color--black);
+    text-align: center;
+    background-color: transparent;
+  }
 
-    &:hover {
-      background-color: var(--wp--preset--color--grey-light);
-    }
+  &:hover > a {
+    background-color: var(--wp--preset--color--grey-light);
   }
 
   .sub-menu {
-    background-color: var(--wp--preset--color--grey-light);
+    background-color: var(--wp--preset--color--grey-lighter);
+    width: 100%;
 
-    &:hover {
-      background-color: var(--wp--preset--color--grey-lighter);
+    .menu-item {
+      > a {
+        background-color: transparent;
+      }
+
+      &:hover > a {
+        background-color: var(--wp--preset--color--grey-light);
+      }
     }
-  }
-}
-
-.page-nav.page-nav--top-main .menu-item a, .menu-user {
-  color: var(--wp--preset--color--white);
-
-  &:hover {
-    background-color: var(--wp--preset--color--grey-light);
-    color: var(--wp--preset--color--black);
   }
 }
 
@@ -175,6 +175,7 @@
 
 .page-nav--main .sub-menu ul span {
   font-size: var(--wp--preset--font-size--normal);
+  line-height: 18px;
 }
 
 .page-nav--main ul li.menu-item-has-children:hover > a .submenu-arrow {
@@ -244,7 +245,6 @@
       &.search path {
         fill: var(--wp--preset--color--primary) !important;
       }
-
     }
 
     &:hover {
