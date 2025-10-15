@@ -31,8 +31,9 @@ if (!function_exists('get_human_readable_file_type')) {
             case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
                 return 'Document Word (DOCX)';
             case 'application/vnd.ms-excel':
-            case 'application/vnd.openxmlformats.officedocument.spreadsheetml.sheet':
-                return 'Feuille de calcul Excel';
+                return 'Feuille de calcul Excel (XLS)';
+            case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                return 'Feuille de calcul Excel (XLSX)';
             case 'application/vnd.oasis.opendocument.spreadsheet':
                 return 'Feuille de calcul OpenDocument';
             case 'application/vnd.oasis.opendocument.text':
