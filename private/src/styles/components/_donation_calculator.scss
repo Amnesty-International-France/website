@@ -11,6 +11,10 @@
   max-width: 360px;
   box-shadow: 0 0 20px 0 #00000026;
 
+  .hidden-currency {
+    display: none !important;
+  }
+
   &.medium {
     width: 272px;
   }
@@ -19,24 +23,23 @@
     cursor: pointer;
     background-color: var(--wp--preset--color--grey-lighter);
     position: relative;
-    height: 200px;
 
     > .tax-deduction {
       position: absolute;
-      width: 300px;
+      width: 260px;
       height: 135px;
       top: -37px;
       left: -20px;
     }
 
     > .donation-title {
-      margin-top: auto;
-      padding: 15px;
+      margin-top: 110px;
+      padding: 0 15px 15px 15px;
 
       > .subtitle {
         margin-bottom: 0;
         font-weight: bold;
-        font-size: 25px;
+        font-size: 22px;
         line-height: 29px;
         letter-spacing: 0;
         text-align: center;
@@ -44,7 +47,7 @@
 
         & > span {
           font-weight: bold;
-          font-size: 18px;
+          font-size: 16px;
           line-height: 25px;
           letter-spacing: 0;
           text-align: center;
@@ -61,7 +64,7 @@
     > .monthly {
       flex: 1 1;
       width: 50%;
-      padding: 20px 0;
+      padding: 15px 0;
       text-transform: uppercase;
       font-weight: bold;
       font-size: 20px;
@@ -74,26 +77,30 @@
 
       &.active {
         background-color: var(--wp--preset--color--white);
-        color: var(--wp--preset--color--black)
+        color: var(--wp--preset--color--black);
       }
     }
   }
 
   .donation-body {
-    padding: 26px 13px;
+    padding: 24px 12px;
     border-bottom: 1px solid var(--wp--preset--color--grey-light);
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    .give, .cost {
+    .give,
+    .cost {
       display: flex;
       width: 100%;
       padding-left: 13px;
       align-items: center;
       justify-content: space-between;
 
-      h4, input, label, input::placeholder {
+      h4,
+      input,
+      label,
+      input::placeholder {
         font-style: normal;
         font-weight: bold;
         line-height: 29px;
@@ -104,7 +111,8 @@
       .input {
         width: 50%;
 
-        > .input-donation, .input-donation-simulated {
+        > .input-donation,
+        .input-donation-simulated {
           padding: 12px 6px;
           width: 80px;
           height: 44px;
@@ -140,11 +148,12 @@
     .amount-punctual {
       width: 100%;
       display: flex;
+      flex: 1;
       column-gap: 11px;
       justify-content: space-between;
 
       > .don-radio {
-        width: 70px;
+        width: 100%;
         height: 46px;
         display: flex;
         justify-content: center;
@@ -198,10 +207,24 @@
       > .input-container {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        gap: 6px;
+
+        .currency-symbol {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: 26px;
+          font-weight: bold;
+          line-height: 29px;
+
+          .by-month {
+            font-family: var(--wp--preset--font-family--secondary);
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 29px;
+          }
+        }
 
         > .input-don-free {
-          max-width: 75%;
+          max-width: 66%;
           font-size: 18px;
 
           &::placeholder {
@@ -291,12 +314,38 @@
       align-items: center;
       gap: 12px;
       flex-shrink: 0;
-      border: 1px solid var(--wp--preset--color--primary);
-      background: var(--wp--preset--color--primary);
       text-transform: uppercase;
       text-decoration: none;
       margin: 0 auto 1rem;
       font-family: var(--wp--preset--font-family--secondary);
+
+      position: relative;
+      color: var(--wp--preset--color--black);
+      background: transparent;
+      border: none;
+      z-index: 1;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 100%;
+        height: 100%;
+        transform: translate(-50%, -50%);
+        transition: all ease 0.4s;
+        z-index: -1;
+
+        background-color: var(--wp--preset--color--primary);
+        border: 1px solid var(--wp--preset--color--primary);
+      }
+
+      &:hover::before {
+        background-color: var(--wp--preset--color--primary-dark);
+        border-color: var(--wp--preset--color--primary-dark);
+        transform: translate(-50%, -50%) scale(0.96);
+        opacity: 0.9;
+      }
     }
   }
 }

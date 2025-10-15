@@ -49,6 +49,8 @@ const initializeTabbedCalculator = (calculator) => {
   const tabsContainer = calculator.querySelector('.donation-tabs');
   const bodyContainer = calculator.querySelector('.donation-body');
   const freeInput = calculator.querySelector('#input-donation');
+  const currencyPunctual = calculator.querySelector('.currency-punctual');
+  const currencyMonthly = calculator.querySelector('.currency-monthly');
 
   const setupListenersForActiveTab = () => {
     const activeBody = bodyContainer.querySelector('div[class*="amount-"].active');
@@ -100,6 +102,12 @@ const initializeTabbedCalculator = (calculator) => {
     const targetId = clickedTab.id;
     const allTabs = tabsContainer.querySelectorAll('div[id]');
     const allBodies = bodyContainer.querySelectorAll('div[class*="amount-"]');
+
+    if (currencyPunctual && currencyMonthly) {
+      const isNowMonthly = targetId === 'monthly';
+      currencyMonthly.classList.toggle('hidden-currency', !isNowMonthly);
+      currencyPunctual.classList.toggle('hidden-currency', isNowMonthly);
+    }
 
     allTabs.forEach((tab) => {
       const isTarget = tab.id === targetId;
