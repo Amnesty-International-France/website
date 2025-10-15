@@ -4,6 +4,7 @@ wp.domReady(() => {
     'core/quote',
     'jetpack/ai-assistant',
     'jetpack/ai-chat',
+    'jetpack/blogging-prompt',
     // Centre d'administration
     'amnesty-core/pop-in',
     'amnesty-core/sidebar',
@@ -14,6 +15,7 @@ wp.domReady(() => {
     // Média
     'core/cover',
     'core/file',
+    'core/audio',
     'videopress/video',
     // Design
     'core/buttons',
@@ -33,6 +35,10 @@ wp.domReady(() => {
     'jetpack/goodreads',
     // Monétiser
     'jetpack/opentable',
+    'jetpack/donations',
+    'jetpack/premium-content',
+    'jetpack/payment-buttons',
+    'jetpack/wordads',
     'jetpack/tock',
     'jetpack/payments-intro',
     'jetpack/paypal-payment-buttons',
