@@ -134,29 +134,28 @@ if (isset($_POST['sign_lead'])) {
 			<h2 class="title">Rester informé·e</h2>
 			<span class="subtitle">Abonnez-vous à notre newsletter hebdo.</span>
 			<div class="nl-container">
-				<form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form">
-					<input type="text" name="newsletter-lead" placeholder="Abonnez-vous à notre newsletter hebdo.">
+				<form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form" class="newsletter-lead-form">
+					<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
 					<?php
                     wp_nonce_field('newsletter_lead_form_action', 'newsletter_lead_form_nonce'); ?>
-					<button class="register-nl" name="sign_lead" disabled>
-						<?php
-                        echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
-					</button>
+					<button class="register-nl" name="sign_lead" disabled>OK</button>
 					<div class="nl-error hidden"></div>
 				</form>
 			</div>
-			<div class="social-network">
+			<div class="social-network-list">
 				<?php
                 foreach ($social_links as $child) : ?>
-					<a href="<?php
-                    echo $child['url']; ?>"
-					   target="_blank"
-					   rel="noopener noreferrer"
-					   title="<?php
-                       esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
-						<?php
-                        echo file_get_contents(get_template_directory() . $child['svg']); ?>
-					</a>
+                    <div class="social-network-item">
+                        <a class="social-network-item-svg" href="<?php
+                        echo $child['url']; ?>"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="<?php
+                        esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
+                            <?php
+                            echo file_get_contents(get_template_directory() . $child['svg']); ?>
+                        </a>
+                    </div>
 				<?php
                 endforeach; ?>
 			</div>
