@@ -36,7 +36,7 @@ if (!$post_object instanceof WP_Post) {
 }
 
 $pdf_file = null;
-if ($GLOBALS['is_my_space_petitions_loop']) {
+if (isset($GLOBALS['is_my_space_petitions_loop'])) {
     $pdf_file = wp_get_attachment_url(get_field('pdf_petition', $post_id));
     $page_nos_petitions = get_page_by_path('mon-espace/agir-et-se-mobiliser/nos-petitions');
     if ($page_nos_petitions) {
