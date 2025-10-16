@@ -53,3 +53,58 @@ function auth_my_space()
         }
     }
 }
+
+add_action('template_redirect', 'aif_restrict_my_space_access');
+
+function aif_restrict_my_space_access()
+{
+    $my_space_parent_slug = 'mon-espace';
+
+    $allowed_for_non_members = [
+        'mes-dons',
+        'mes-informations-personnelles',
+        'mes-recus-fiscaux',
+        'mes-demandes',
+        'mon-compte',
+    ];
+
+    if (!is_user_logged_in() || is_admin()) {
+        return;
+    }
+
+    if (!is_page($my_space_parent_slug) && !get_post_ancestors(get_the_ID())) {
+        $post = get_post(get_the_ID());
+        $parent = get_post($post->post_parent);
+        if (!$parent || $parent->post_name !== $my_space_parent_slug) {
+            return;
+        }
+    }
+
+    $is_member = false;
+    $current_user = wp_get_current_user();
+
+    if (function_exists('get_salesforce_member_data')) {
+        $sf_member = get_salesforce_member_data($current_user->user_email);
+
+        if (isset($sf_member) && !empty($sf_member->isMembre)) {
+            $is_member = true;
+        }
+    }
+
+    if ($is_member) {
+        return;
+    }
+
+    $non_member_homepage = home_url('/' . $my_space_parent_slug . '/' . $allowed_for_non_members[0] . '/');
+
+    if (is_page($my_space_parent_slug)) {
+        wp_redirect($non_member_homepage);
+        exit;
+    }
+
+    $current_page_slug = get_post()->post_name;
+    if (!in_array($current_page_slug, $allowed_for_non_members)) {
+        wp_redirect($non_member_homepage);
+        exit;
+    }
+}
