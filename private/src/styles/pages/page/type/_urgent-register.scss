@@ -1,6 +1,5 @@
 .page-urgent-register,
-.page-register-activist
-{
+.page-register-activist {
   .page-hero-block {
     .page-hero-title-wrapper {
       .container-main {
@@ -21,8 +20,7 @@
   }
 
   .page-urgent-register-layout,
-  .page-register-activist-layout
-  {
+  .page-register-activist-layout {
     display: flex;
     gap: 24px;
     max-width: $container-hg;
@@ -38,8 +36,7 @@
   }
 
   .page-urgent-register-main,
-  .page-register-activist-main
-  {
+  .page-register-activist-main {
     padding: 0 24px;
 
     .page-content {
@@ -72,8 +69,7 @@
   }
 
   .page-urgent-register-aside,
-  .page-register-activist-aside
-  {
+  .page-register-activist-aside {
     padding: 60px 24px;
 
     > .urgent-register {
@@ -86,7 +82,7 @@
 
   .page-register-activist-aside {
     > .urgent-register::after {
-      content: "Envie d'agire ?";
+      content: "Envie d'agir ?";
     }
   }
 }
