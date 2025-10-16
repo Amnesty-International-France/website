@@ -17,7 +17,6 @@ wp.domReady(() => {
     'videopress/video',
     // Design
     'core/buttons',
-    'core/spacer',
     'core/separator',
     // Widgets
     'core/latest-posts',
