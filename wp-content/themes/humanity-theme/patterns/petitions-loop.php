@@ -19,7 +19,7 @@ $args = [
 
 $query = new WP_Query($args);
 ?>
-
+<h2 class="aif-petitions-title"><?php the_title(); ?></h2>
 <div class="wp-block-query">
   <div class="wp-block-group postlist">
     <div class="post-grid">
