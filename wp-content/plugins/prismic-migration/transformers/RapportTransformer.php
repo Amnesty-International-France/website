@@ -33,8 +33,6 @@ class RapportTransformer extends DocTransformer
                 "kit d'activisme" => 'kit-activisme',
                 'fiche pédagogique' => 'fiche-pedagogique',
             };
-        } else {
-            $wp_post['tax_terms']['document_type'] = 'rapport';
         }
 
         return $wp_post;
