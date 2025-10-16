@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import ArrowLeft from './icons/ArrowLeft.jsx';
 import ArrowRight from './icons/ArrowRight.jsx';
+import Heart from './icons/Heart.jsx';
 import Pencil from './icons/Pencil.jsx';
 import ZoomIn from './icons/ZoomIn.jsx';
 
@@ -12,6 +13,7 @@ const Button = ({ label, size, style, icon, link, alignment, className }) => (
           <div className="icon-container">
             {icon === 'arrow-left' && <ArrowLeft />}
             {icon === 'arrow-right' && <ArrowRight />}
+            {icon === 'heart' && <Heart />}
             {icon === 'pencil' && <Pencil />}
             {icon === 'zoom-in' && <ZoomIn />}
           </div>

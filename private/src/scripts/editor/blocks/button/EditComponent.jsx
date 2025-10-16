@@ -173,6 +173,7 @@ const EditComponent = (props) => {
               { label: 'Aucune', value: '' },
               { label: 'Flèche gauche', value: 'arrow-left' },
               { label: 'Flèche droite', value: 'arrow-right' },
+              { label: 'Coeur', value: 'heart' },
               { label: 'Loupe +', value: 'zoom-in' },
             ]}
             onChange={(value) => setAttributes({ icon: value })}
