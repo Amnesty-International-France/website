@@ -37,6 +37,8 @@ require_once __DIR__ . '/collapsable/register.php';
 require_once __DIR__ . '/collapsable/render.php';
 require_once __DIR__ . '/content-callout/register.php';
 require_once __DIR__ . '/content-callout/render.php';
+require_once __DIR__ . '/document-card/register.php';
+require_once __DIR__ . '/document-card/render.php';
 require_once __DIR__ . '/donation-calculator/register.php';
 require_once __DIR__ . '/donation-calculator/render.php';
 require_once __DIR__ . '/download-go-further/register.php';
@@ -120,6 +122,7 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_chip_category_block();
         register_collapsable_block();
         register_content_callout_block();
+        register_document_card_block();
         register_donation_calculator_block();
         register_download_go_further_block();
         register_edh_card_block();
