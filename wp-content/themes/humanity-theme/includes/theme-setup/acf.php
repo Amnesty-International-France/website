@@ -341,7 +341,6 @@ add_action(
                         'post_type'            => [
                             0 => 'post',
                             1 => 'landmark',
-                            2 => 'page',
                         ],
                         'post_status'          => [
                             0 => 'publish',
