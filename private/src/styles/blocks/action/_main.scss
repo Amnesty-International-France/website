@@ -134,6 +134,10 @@
   }
 
   &.action {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
     &.primary {
       background-color: var(--wp--preset--color--primary);
     }
@@ -201,8 +205,8 @@
     }
 
     .content {
-      height: 50%;
       padding: 28px;
+      flex-grow: 1;
 
       .action-content {
         height: 100%;
@@ -213,7 +217,7 @@
 
         .description {
           margin: 0;
-          padding-bottom: 28px;
+          padding-bottom: 0;
           font-size: 16px;
           font-weight: bold;
           line-height: 24px;
@@ -222,6 +226,7 @@
 
         .custom-button-block {
           margin: 0;
+          padding-bottom: 0;
 
           .content {
             height: 100%;
