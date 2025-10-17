@@ -60,6 +60,27 @@ function aif_restrict_my_space_access()
 {
     $my_space_parent_slug = 'mon-espace';
 
+    if (!is_page()) {
+        return;
+    }
+
+    $parent_page = get_page_by_path($my_space_parent_slug);
+
+    if (!$parent_page) {
+        return;
+    }
+
+    global $post;
+    $ancestors = get_post_ancestors($post);
+
+    if ($post->ID !== $parent_page->ID && !in_array($parent_page->ID, $ancestors)) {
+        return;
+    }
+
+    if (!is_user_logged_in() || current_user_can('manage_options')) {
+        return;
+    }
+
     $allowed_for_non_members = [
         'mes-dons',
         'mes-informations-personnelles',
@@ -68,18 +89,6 @@ function aif_restrict_my_space_access()
         'mon-compte',
         'se-deconnecter',
     ];
-
-    if (!is_user_logged_in() || is_admin()) {
-        return;
-    }
-
-    if (!is_page($my_space_parent_slug) && !get_post_ancestors(get_the_ID())) {
-        $post = get_post(get_the_ID());
-        $parent = get_post($post->post_parent);
-        if (!$parent || $parent->post_name !== $my_space_parent_slug) {
-            return;
-        }
-    }
 
     $is_member = false;
     $current_user = wp_get_current_user();
