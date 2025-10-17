@@ -236,7 +236,7 @@ if (!function_exists('render_articles_homepage_block')) {
                         <?php endif; ?>
                         <?php if ($image): ?>
                             <div class="article-image-container">
-                                <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer">
+                                <a href="<?php echo esc_url($url); ?>" <?php if (! is_internal_link($url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
                                     <img class="article-image" src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" />
                                     <div class="article-content">
                                         <div class="article-title-wrapper">
@@ -248,7 +248,7 @@ if (!function_exists('render_articles_homepage_block')) {
                                             </div>
                                         <?php endif; ?>
                                         <div class="article-button-wrapper">
-                                            <a href="<?php echo esc_url($url); ?>" class="article-button" target="_blank" rel="noopener noreferrer">
+                                            <a href="<?php echo esc_url($url); ?>" class="article-button" <?php if (! is_internal_link($url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
                                                 <?php esc_html_e('Lire la suite', 'amnesty'); ?>
                                             </a>
                                         </div>
@@ -273,7 +273,7 @@ if (!function_exists('render_articles_homepage_block')) {
                     </div>
 
                     <div class="article-main-mobile">
-                        <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer">
+                        <a href="<?php echo esc_url($url); ?>" <?php if (! is_internal_link($url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
                             <div class="wrapper">
                                 <?php if (!empty($entity_slug)): ?>
                                     <?= render_chip_category_block([
@@ -343,7 +343,7 @@ if (!function_exists('render_articles_homepage_block')) {
                             }
                             ?>
                         <div class="article-side">
-                            <a href="<?php echo esc_url(url: $url); ?>" target="_blank" rel="noopener noreferrer">
+                            <a href="<?php echo esc_url(url: $url); ?>" <?php if (! is_internal_link($url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
                                 <div class="wrapper">
                                     <?php if (!empty($entity_slug)): ?>
                                         <?= render_chip_category_block([

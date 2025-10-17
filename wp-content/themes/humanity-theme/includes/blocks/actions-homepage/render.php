@@ -60,8 +60,10 @@ if (!function_exists('render_actions_homepage_block')) {
                                         <a
                                             href="<?php echo esc_url($buttonLink); ?>"
                                             class="item-button"
+											<?php if (! is_internal_link($buttonLink)) : ?>
                                             target="_blank"
                                             rel="noopener noreferrer"
+											<?php endif; ?>
                                         >
                                             <div class="icon-container">
                                                 <svg
