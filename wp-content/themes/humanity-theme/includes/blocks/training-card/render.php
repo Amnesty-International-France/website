@@ -17,7 +17,7 @@ if (!function_exists('render_training_card_block')) {
         $post_id = $post_to_render->ID;
 
         $title = get_the_title($post_to_render);
-        $permalink = get_permalink($post_to_render);
+        $permalink = sprintf('%s%s', get_permalink(get_the_ID()), $post_to_render->post_name);
         $thumbnail = get_the_post_thumbnail($post_id, 'medium', ['class' => 'training-card__image']);
 
         $lieu = get_field('lieu', $post_id);
@@ -41,6 +41,8 @@ if (!function_exists('render_training_card_block')) {
             'city'             => $city,
             'is_members_only'  => $is_members_only,
             'category_label'   => $category_label,
+            'session_start'	   => $attributes['session_start'],
+            'session_end'	   => $attributes['session_end'],
         ];
 
         ob_start();

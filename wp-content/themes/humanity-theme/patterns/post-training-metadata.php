@@ -18,12 +18,28 @@ if (! get_the_ID()) {
 
 $lieu            = get_field('lieu', $post->ID);
 $is_members_only = get_field('members_only', $post->ID);
-$acf_date        = get_field('date', $post->ID);
-$acf_date_fin    = get_field('date_fin', $post->ID);
 $category_key    = get_field('categories', $post->ID);
 $field_object    = get_field_object('categories', $post->ID);
 $lieu_list       = get_field_object('field_6883319051ddc');
+$dates = [];
 
+$has_more_sessions = true;
+$i = 1;
+while ($has_more_sessions) {
+    $session = get_field("session_$i", $post->ID);
+    $date_de_debut = $session['date_de_debut'];
+    if (empty($date_de_debut)) {
+        $has_more_sessions = false;
+        continue;
+    }
+    $date_de_fin = $session['date_de_fin'];
+    if (empty($date_de_fin)) {
+        $dates[] = "Le $date_de_debut";
+    } else {
+        $dates[] = "Du $date_de_debut au $date_de_fin";
+    }
+    $i++;
+}
 ?>
 <!-- wp:group {"tagName":"div","className":"article-meta-wrapper"} -->
 <div class="article-meta-wrapper">
@@ -40,7 +56,7 @@ $lieu_list       = get_field_object('field_6883319051ddc');
 		<!-- wp:post-title {"level":1,"className":"article-title"} /-->
 
 		<div class="training-details">
-			<?php if ($acf_date) : ?>
+			<?php if (!empty($dates)) : ?>
 				<div class="training-date">
 					<div class="training-info-icon">
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -48,11 +64,7 @@ $lieu_list       = get_field_object('field_6883319051ddc');
 									d="M1.3335 7.33329H14.6668V13.3333C14.6668 13.7015 14.3684 14 14.0002 14H2.00016C1.63197 14 1.3335 13.7015 1.3335 13.3333V7.33329ZM11.3335 1.99996H14.0002C14.3684 1.99996 14.6668 2.29844 14.6668 2.66663V5.99996H1.3335V2.66663C1.3335 2.29844 1.63197 1.99996 2.00016 1.99996H4.66683V0.666626H6.00016V1.99996H10.0002V0.666626H11.3335V1.99996Z"
 									fill="#575756"/>
 						</svg>
-						<?php if ($acf_date && $acf_date_fin) : ?>
-							<p>Le <?php echo $acf_date; ?> et <?php echo $acf_date_fin; ?></p>
-						<?php elseif ($acf_date) : ?>
-							<p>Le <?php echo $acf_date; ?></p>
-						<?php endif; ?>
+						<p><?= join(' | ', $dates) ?></p>
 					</div>
 				</div>
 			<?php endif; ?>
