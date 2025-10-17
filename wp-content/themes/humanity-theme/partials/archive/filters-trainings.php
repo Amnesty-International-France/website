@@ -6,9 +6,7 @@
  */
 
 global $wp;
-$current_post_type = get_query_var('post_type') ?: 'post';
-$form_url = get_post_type_archive_link($current_post_type);
-
+$form_url = home_url(add_query_arg([], $wp->request));
 ?>
 
 <section class="postlist-categoriesContainer" data-slider>

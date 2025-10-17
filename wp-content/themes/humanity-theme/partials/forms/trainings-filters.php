@@ -22,7 +22,7 @@ if ($lieu_field_obj && isset($lieu_field_obj['choices'])) {
 }
 
 $active_period = isset($_GET['qperiod']) ? explode(',', sanitize_text_field($_GET['qperiod'])) : [];
-$periods_query = $wpdb->get_col("SELECT DISTINCT DATE_FORMAT(meta_value, '%Y-%m') FROM {$wpdb->postmeta} WHERE meta_key = 'date' AND meta_value IS NOT NULL AND meta_value != '' ORDER BY meta_value ASC");
+$periods_query = $wpdb->get_col("SELECT DISTINCT DATE_FORMAT(meta_value, '%Y-%m') FROM {$wpdb->postmeta} WHERE meta_key LIKE '%session%date%de%debut' AND meta_value IS NOT NULL AND meta_value != '' ORDER BY meta_value ASC");
 $period_options = ['' => 'Toutes les périodes'];
 if (!empty($periods_query)) {
     foreach ($periods_query as $period) {

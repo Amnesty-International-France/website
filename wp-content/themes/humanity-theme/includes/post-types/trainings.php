@@ -148,3 +148,14 @@ function aif_myspace_training_template_include($template)
     return $template;
 }
 add_filter('template_include', 'aif_myspace_training_template_include', 99);
+
+function aif_formation_archive_query($query)
+{
+    if (!is_admin() && $query->is_main_query() && $query->is_post_type_archive('training')) {
+        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+        $query->set('paged', $paged);
+        $query->set('posts_per_page', 3);
+        $query->set('found_posts', 99999);
+    }
+}
+add_action('pre_get_posts', 'aif_formation_archive_query');

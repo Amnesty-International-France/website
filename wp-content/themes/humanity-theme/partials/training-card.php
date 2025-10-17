@@ -1,13 +1,5 @@
 <?php
-
-global $post_object;
-
-$place = get_field('lieu', $post_object);
-$description = get_field('description', $post_object);
-$acf_date = get_field('date', $post_object);
-$acf_date_fin = get_field('date_fin', $post_object);
-
-$is_empty = empty($place) && empty($city) && ! $is_members_only;
+$is_empty = empty($lieu) && empty($city) && ! $is_members_only;
 ?>
 
 <article class="training-card <?php
@@ -36,10 +28,10 @@ if ($is_members_only) {
 ?>
 
 	<div class="training-card-content">
-		<?php if ($acf_date && $acf_date_fin): ?>
-			<p class="training-date">Le <?php echo esc_html($acf_date); ?> et <?php echo esc_html($acf_date_fin); ?></p>
-		<?php elseif ($acf_date): ?>
-			<p class="training-date">Le <?php echo esc_html($acf_date); ?></p>
+		<?php if ($session_start && $session_end): ?>
+			<p class="training-date">Du <?php echo esc_html($session_start); ?> au <?php echo esc_html($session_end); ?></p>
+		<?php elseif ($session_start): ?>
+			<p class="training-date">Le <?php echo esc_html($session_start); ?></p>
 		<?php endif; ?>
 		<a href="<?php echo esc_url($permalink); ?>" class="training-card-title-link">
 			<h3 class="training-card-title">
@@ -56,14 +48,14 @@ if ($is_members_only) {
             }
 ?>
 ">
-			<?php if ($place) : ?>
+			<?php if ($lieu) : ?>
 				<div class="training-card-badge">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path
 							d="M12.2427 11.576L8 15.8187L3.75734 11.576C2.91823 10.7369 2.34679 9.66777 2.11529 8.50389C1.88378 7.34 2.0026 6.13361 2.45673 5.03726C2.91086 3.9409 3.6799 3.00384 4.66659 2.34455C5.65328 1.68527 6.81332 1.33337 8 1.33337C9.18669 1.33337 10.3467 1.68527 11.3334 2.34455C12.3201 3.00384 13.0891 3.9409 13.5433 5.03726C13.9974 6.13361 14.1162 7.34 13.8847 8.50389C13.6532 9.66777 13.0818 10.7369 12.2427 11.576ZM8 8.66665C8.35362 8.66665 8.69276 8.52618 8.94281 8.27613C9.19286 8.02608 9.33334 7.68694 9.33334 7.33332C9.33334 6.9797 9.19286 6.64056 8.94281 6.39051C8.69276 6.14046 8.35362 5.99999 8 5.99999C7.64638 5.99999 7.30724 6.14046 7.05719 6.39051C6.80715 6.64056 6.66667 6.9797 6.66667 7.33332C6.66667 7.68694 6.80715 8.02608 7.05719 8.27613C7.30724 8.52618 7.64638 8.66665 8 8.66665Z"
 							fill="#575756"/>
 					</svg>
-					<span class="training-card-badge-label capitalize-place"><?php echo esc_html($place); ?></span>
+					<span class="training-card-badge-label capitalize-place"><?php echo esc_html($lieu); ?></span>
 				</div>
 			<?php endif; ?>
 
