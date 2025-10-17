@@ -66,6 +66,7 @@ function aif_restrict_my_space_access()
         'mes-recus-fiscaux',
         'mes-demandes',
         'mon-compte',
+        'se-deconnecter',
     ];
 
     if (!is_user_logged_in() || is_admin()) {
