@@ -13,7 +13,10 @@ if (is_front_page()) {
 
 $hero_extra_class = ! has_post_thumbnail() ? 'no-featured-image' : '';
 $no_chapo = ! has_block('amnesty-core/chapo') ? 'no-chapo' : '';
-
+$page = get_post();
+$parent = get_post($page->post_parent);
+$is_combat_page = $parent && $parent->post_name === 'nos-combats';
+$has_related_content = !empty(get_field('_related_posts_selected', $page));
 ?>
 
 <!-- wp:group {"tagName":"page","className":"page"} -->
@@ -23,5 +26,8 @@ $no_chapo = ! has_block('amnesty-core/chapo') ? 'no-chapo' : '';
 			<!-- wp:post-content /-->
 		</section>
 	<!-- /wp:group -->
+	<?php if ($is_combat_page && $has_related_content): ?>
+		<!-- wp:amnesty-core/related-posts {"title":"Voir aussi"} /-->
+	<?php endif; ?>
 </article>
 <!-- /wp:group -->
