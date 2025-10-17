@@ -46,7 +46,7 @@ if (!function_exists('render_hero_homepage_block')) {
 								<h3 class="hero-subtitle"><?php echo esc_html($subtitle); ?></h3>
 							<?php endif; ?>
 							<div class='custom-button-block center'>
-								<a href="<?php echo esc_url($button_url); ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
+								<a href="<?php echo esc_url($button_url); ?>" <?php if (! is_internal_link($button_url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?> class="custom-button">
 									<div class='content bg-yellow medium'>
 										<div class="icon-container">
 											<svg

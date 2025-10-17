@@ -138,3 +138,18 @@ if (! function_exists('do_404')) {
         die;
     }
 }
+
+if (!function_exists('is_internal_link')) {
+    function is_internal_link($url)
+    {
+        if (! empty($url) && $url[0] === '/') {
+            return true;
+        }
+
+        if (strpos($url, site_url()) === 0) {
+            return true;
+        }
+
+        return false;
+    }
+}

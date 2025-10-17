@@ -57,7 +57,7 @@ if (!function_exists('render_mission_homepage_block')) {
                     <?php endforeach; ?>
                 </div>
                 <div class='custom-button-block center'>
-                    <a href="/nous-connaitre" target="_blank" rel="noopener noreferrer" class="custom-button">
+                    <a href="/nous-connaitre" class="custom-button">
                         <div class='content outline-yellow medium'>
                             <div class="icon-container">
                                 <svg
