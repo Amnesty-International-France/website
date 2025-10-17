@@ -1,6 +1,8 @@
 export default function capitalizeFirstWord() {
   document.addEventListener('DOMContentLoaded', () => {
-    const headings = document.querySelectorAll('.wp-block-heading');
+    const headings = document.querySelectorAll(
+      'h1.wp-block-heading, h2.wp-block-heading, h3.wp-block-heading',
+    );
 
     headings.forEach((el) => {
       let text = el.textContent.trim();
