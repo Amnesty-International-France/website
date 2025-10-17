@@ -8,9 +8,14 @@
 
 $title = get_the_title();
 $permalink = get_permalink();
-$share_text_encoded = urlencode($title . ' ' . $permalink);
-$email_subject_encoded = rawurlencode($title);
-$email_body_encoded = rawurlencode("Je vous recommande cette pétition : \n\n" . $title . "\n" . $permalink);
+$clean_title = html_entity_decode($title, ENT_QUOTES, 'UTF-8');
+$clean_title = str_replace(['&rsquo;', '&drsquo;'], '’', $clean_title);
+$clean_title = str_replace('&nbsp;', ' ', $clean_title);
+$share_text = $clean_title . ' ' . $permalink;
+$share_text_encoded = urlencode($share_text);
+$email_subject_encoded = rawurlencode($clean_title);
+$email_body_text = "Je vous recommande cette pétition : \n\n" . $clean_title . "\n" . $permalink;
+$email_body_encoded = rawurlencode($email_body_text);
 $featured_image_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
 $end_date = get_field('date_de_fin');
 $signatures_target = get_field('objectif_signatures');
@@ -49,12 +54,12 @@ if (! empty($signatures_target) && $signatures_target > 0) {
             </div>
             <div class="success-content">
                 <p class="you-signed">
-					<?php if (isset($_GET['alreadysigned'])) : ?>
-					Vous aviez déjà signé la pétition :
-					<?php else: ?>
-					Vous avez signé la pétition :
-					<?php endif; ?>
-				</p>
+                    <?php if (isset($_GET['alreadysigned'])) : ?>
+                    Vous aviez déjà signé la pétition :
+                    <?php else: ?>
+                    Vous avez signé la pétition :
+                    <?php endif; ?>
+                </p>
                 <a href="<?php echo esc_url($permalink); ?>" class="petition-title"><?php echo esc_html($title); ?></a>.
                 <p class="thanks-for-action">Merci pour votre action.</p>
             </div>
@@ -186,11 +191,11 @@ if ($random_petition->have_posts()) :
                         <p class="supports">
                             <span class="current-signatures"><?php echo esc_html($current_signatures); ?></span>
                             <?php
-                    if ($current_signatures <= 1) {
-                        echo 'soutien';
-                    } else {
-                        echo 'soutiens';
-                    }
+                            if ($current_signatures <= 1) {
+                                echo 'soutien';
+                            } else {
+                                echo 'soutiens';
+                            }
         ?>.
                             <span class="help-us">Aidez-nous à atteindre <?php echo esc_html($signatures_target); ?></span>
                         </p>
