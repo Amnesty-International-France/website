@@ -10,11 +10,7 @@ $acf_date_fin = get_field('date_fin', $post_object);
 $is_empty = empty($place) && empty($city) && ! $is_members_only;
 ?>
 
-<article class="training-card <?php
-if ($is_members_only) {
-    echo 'bg-yellow';
-}
-?>">
+<article class="training-card">
 	<a href="<?php echo esc_url($permalink); ?>" class="training-card-thumbnail">
 		<?php if ($thumbnail) : ?>
 			<?php echo $thumbnail; ?>
