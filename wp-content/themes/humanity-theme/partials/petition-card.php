@@ -9,8 +9,6 @@ if (!$post_object instanceof WP_Post) {
     $permalink   = $args['permalink'] ?? '#';
     $date        = $args['date'] ?? date('Y-m-d');
     $thumbnail   = $args['thumbnail'] ?? null;
-    $label       = $args['label'] ?? 'Pétition';
-    $chip_style  = 'bg-yellow';
     $post_terms  = $args['terms'] ?? [];
 
     $goal = $args['goal'] ?? 200000;
@@ -23,9 +21,6 @@ if (!$post_object instanceof WP_Post) {
     $date        = get_the_date('', $post_object);
     $thumbnail   = get_the_post_thumbnail($post_id, 'medium', ['class' => 'petition-image']);
 
-    $label       = 'Pétition';
-    $chip_style  = 'bg-yellow';
-
     $post_terms  = wp_get_post_terms($post_id, ['category', 'post_tag']);
 
     $goal = get_field('objectif_signatures', $post_id) ?: 200000;
@@ -35,6 +30,7 @@ if (!$post_object instanceof WP_Post) {
     $percentage = ($goal > 0) ? min(($current / $goal) * 100, 100) : 0;
 }
 
+$label = get_field('type', $post_id)['label'] ?? 'Pétition';
 $pdf_file = null;
 if (isset($GLOBALS['is_my_space_petitions_loop'])) {
     $pdf_file = wp_get_attachment_url(get_field('pdf_petition', $post_id));
@@ -60,7 +56,7 @@ if (isset($GLOBALS['is_my_space_petitions_loop'])) {
             'label' => esc_html($label),
             'link' => '',
             'size' => 'large',
-            'style' => esc_attr($chip_style),
+            'style' => 'bg-yellow',
             'icon' => '',
         ]); ?>
     <?php endif; ?>
