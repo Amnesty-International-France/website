@@ -96,11 +96,9 @@ const showAdditionalForm = async (email) => {
     notRequiredHiddenFields(showAdditional);
 
     if (showAdditional === false) {
-      const otherInitialFields = form.querySelectorAll(
-        '.urgent-register-form-input > .input:not([type="email"])',
-      );
+      const telFields = form.querySelectorAll('input[name="tel"]');
 
-      otherInitialFields.forEach((field) => {
+      telFields.forEach((field) => {
         const currentField = field;
         currentField.required = false;
 
@@ -108,6 +106,7 @@ const showAdditionalForm = async (email) => {
         if (errorContainer && errorContainer.classList.contains('input-error')) {
           errorContainer.classList.add('hidden');
           currentField.classList.remove('error');
+          currentField.classList.remove('success');
         }
       });
     }
