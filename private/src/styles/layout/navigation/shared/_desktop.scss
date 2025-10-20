@@ -51,6 +51,7 @@
     .menu-item {
       > a {
         background-color: transparent;
+        padding: 18px 22px;
       }
 
       &:hover > a {
@@ -164,6 +165,11 @@
 
   @include mq(mobile-nav) {
     display: flex;
+    color: var(--wp--preset--color--white);
+
+    &:hover {
+      color: var(--wp--preset--color--black);
+    }
   }
 }
 
@@ -221,7 +227,7 @@
 
 .page-nav ul {
   & > li .menu-user {
-    font-family: var(--wp--preset--font-family--secondary), sans-serif;
+    font-family: var(--wp--preset--font-family--secondary);
     font-weight: bold;
     font-size: 16px;
     line-height: 100%;
@@ -233,6 +239,7 @@
     height: 100%;
     padding: 12px 22px;
     column-gap: 8px;
+    color: var(--wp--preset--color--white);
 
     & > svg {
       width: 22px;
@@ -241,15 +248,15 @@
       path {
         fill: var(--wp--preset--color--white);
       }
-
-      &.search path {
-        fill: var(--wp--preset--color--primary) !important;
-      }
     }
 
     &:hover {
-      svg > path {
-        fill: var(--wp--preset--color--black);
+      color: var(--wp--preset--color--black);
+
+      & > svg {
+        path {
+          fill: var(--wp--preset--color--black);
+        }
       }
     }
   }
