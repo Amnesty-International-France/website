@@ -71,6 +71,12 @@ const checkIfEmailExist = async (email) => {
   }
 };
 
+const disabledSubmit = (form) => {
+  if (!form) return true;
+
+  return [...form.elements].some((field) => field.required && !field.value.trim());
+};
+
 const showAdditionalForm = async (email) => {
   const additionalForm = document.querySelector('.additional-form');
   const form = document.querySelector(`#urgent-register`);
@@ -95,12 +101,13 @@ const showAdditionalForm = async (email) => {
       );
 
       otherInitialFields.forEach((field) => {
-        field.required = false;
+        const currentField = field;
+        currentField.required = false;
 
-        const errorContainer = field.nextElementSibling;
+        const errorContainer = currentField.nextElementSibling;
         if (errorContainer && errorContainer.classList.contains('input-error')) {
           errorContainer.classList.add('hidden');
-          field.classList.remove('error');
+          currentField.classList.remove('error');
         }
       });
     }
@@ -168,16 +175,12 @@ const throwInputOnError = (input) => {
   input.addEventListener('input', validate);
 };
 
-const disabledSubmit = (form) => {
-  if (!form) return true;
-
-  return [...form.elements].some((field) => field.required && !field.value.trim());
-};
-
 const urgentRegister = () => {
   const form = document.querySelector(`#urgent-register`);
 
   if (!form || !form?.elements) return;
+
+  notRequiredHiddenFields(false);
 
   const submitButton = form.querySelector('button[type="submit"]');
 
@@ -188,6 +191,8 @@ const urgentRegister = () => {
   formFields.forEach((formElement) => {
     throwInputOnError(formElement);
   });
+
+  submitButton.disabled = disabledSubmit(form);
 
   form.addEventListener('input', () => {
     submitButton.disabled = disabledSubmit(form);
@@ -219,7 +224,6 @@ const urgentRegister = () => {
       );
 
       const response = await fetch(UrgentRegisterData.url, {
-        // UrgentRegisterData come from php function amnesty_ua_enqueue_scripts
         method: 'POST',
         body: formData,
         headers,
