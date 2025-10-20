@@ -73,23 +73,39 @@ const checkIfEmailExist = async (email) => {
 
 const showAdditionalForm = async (email) => {
   const additionalForm = document.querySelector('.additional-form');
+  const form = document.querySelector(`#urgent-register`);
+  const submitButton = form.querySelector('button[type="submit"]');
 
-  if (!additionalForm) {
-    console.error('Le formulaire additionnel est introuvable.');
-    throwGlobalFormMessage('.form-mess', "'Le formulaire additionnel est introuvable.'");
+  if (!additionalForm || !form || !submitButton) {
+    console.error('Élément de formulaire manquant (form, additionalForm, ou submitButton).');
     return;
   }
 
   try {
     const emailExisting = await checkIfEmailExist(email);
-    additionalForm.classList.toggle('hidden', !(emailExisting && emailExisting.exists === false));
-    notRequiredHiddenFields(emailExisting && emailExisting.exists === false);
 
-    const form = document.querySelector(`#urgent-register`);
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (submitButton) {
-      submitButton.disabled = disabledSubmit(form);
+    const showAdditional = emailExisting && emailExisting.exists === false;
+
+    additionalForm.classList.toggle('hidden', !showAdditional);
+    notRequiredHiddenFields(showAdditional);
+
+    if (showAdditional === false) {
+      const otherInitialFields = form.querySelectorAll(
+        '.urgent-register-form-input > .input:not([type="email"])',
+      );
+
+      otherInitialFields.forEach((field) => {
+        field.required = false;
+
+        const errorContainer = field.nextElementSibling;
+        if (errorContainer && errorContainer.classList.contains('input-error')) {
+          errorContainer.classList.add('hidden');
+          field.classList.remove('error');
+        }
+      });
     }
+
+    submitButton.disabled = disabledSubmit(form);
   } catch (error) {
     console.error("Erreur lors de la vérification de l'email :", error);
     throwGlobalFormMessage('.form-mess', error.message);
