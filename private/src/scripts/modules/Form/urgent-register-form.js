@@ -84,6 +84,12 @@ const showAdditionalForm = async (email) => {
     const emailExisting = await checkIfEmailExist(email);
     additionalForm.classList.toggle('hidden', !(emailExisting && emailExisting.exists === false));
     notRequiredHiddenFields(emailExisting && emailExisting.exists === false);
+
+    const form = document.querySelector(`#urgent-register`);
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = disabledSubmit(form);
+    }
   } catch (error) {
     console.error("Erreur lors de la vérification de l'email :", error);
     throwGlobalFormMessage('.form-mess', error.message);
