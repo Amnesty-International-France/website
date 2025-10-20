@@ -13,9 +13,9 @@ if (!function_exists('render_carousel_block')) {
     {
         $image_ids = $attributes['mediaIds'] ?? [];
 
-        if (empty($image_ids) || count($image_ids) < 5) {
+        if (empty($image_ids) || count($image_ids) < 2) {
             if (is_admin()) {
-                return '<p>' . esc_html__('Veuillez sélectionner au moins 5 images pour le carrousel.', 'amnesty') . '</p>';
+                return '<p>' . esc_html__('Veuillez sélectionner au moins 2 images pour le carrousel.', 'amnesty') . '</p>';
             } else {
                 return '';
             }
