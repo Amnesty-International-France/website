@@ -34,8 +34,14 @@ if (!function_exists('render_actions_homepage_block')) {
                             $itemTitle       = $item['itemTitle'] ?? '';
                             $itemDescription = $item['itemDescription'] ?? '';
                             $buttonLabel     = $item['buttonLabel'] ?? '';
-                            $buttonLink      = $item['buttonLink'] ?? '#';
                             $imageUrl        = $item['imageUrl'] ?? '';
+                            $linkType    = $item['linkType'] ?? 'external';
+                            $externalUrl = $item['externalUrl'] ?? '';
+                            $internalUrl = $item['internalUrl'] ?? '';
+                            $targetBlank = $item['targetBlank'] ?? false;
+                            $finalUrl = ($linkType === 'internal') ? $internalUrl : $externalUrl;
+                            $targetAttr = $targetBlank ? ' target="_blank"' : '';
+                            $relAttr    = $targetBlank ? ' rel="noopener noreferrer"' : '';
                             ?>
                             <div class="item">
                                 <div class="image-wrapper">
@@ -56,12 +62,13 @@ if (!function_exists('render_actions_homepage_block')) {
                                     <?php if (!empty($itemDescription)) : ?>
                                         <span class="item-description"><?php echo esc_html($itemDescription); ?></span>
                                     <?php endif; ?>
-                                    <?php if (!empty($buttonLabel) && !empty($buttonLink)) : ?>
+                                    
+                                    <?php if (!empty($buttonLabel) && !empty($finalUrl)) : ?>
                                         <a
-                                            href="<?php echo esc_url($buttonLink); ?>"
+                                            href="<?php echo esc_url($finalUrl); ?>"
                                             class="item-button"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
+                                            <?php echo $targetAttr; ?>
+                                            <?php echo $relAttr; ?>
                                         >
                                             <div class="icon-container">
                                                 <svg
