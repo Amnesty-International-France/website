@@ -5,7 +5,6 @@ select,
 textarea {
   font-family: var(--wp--preset--font-family--secondary);
   font-size: var(--wp--preset--font-size--small);
-  text-transform: uppercase;
   font-weight: bold;
 }
 
@@ -14,16 +13,16 @@ textarea {
   resize: vertical;
 }
 
-input[type="password"] {
+input[type='password'] {
   text-transform: none;
 }
 
-input[type="number"] {
+input[type='number'] {
   padding-right: 0;
 }
 
-input[type="checkbox"],
-input[type="radio"] {
+input[type='checkbox'],
+input[type='radio'] {
   position: relative;
   width: 24px;
   height: 24px;
@@ -40,15 +39,15 @@ input[type="radio"] {
   }
 }
 
-input[type="checkbox"]:checked::after {
-  content: "✔";
+input[type='checkbox']:checked::after {
+  content: '✔';
 }
 
-input[type="radio"] {
+input[type='radio'] {
   border-radius: 50%;
 
   &:checked::after {
-    content: "⬤";
+    content: '⬤';
   }
 }
 
