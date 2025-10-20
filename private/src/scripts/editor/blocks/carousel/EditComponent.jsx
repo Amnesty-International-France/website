@@ -14,8 +14,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
   );
 
   const onSelectImages = (newMedia) => {
-    if (newMedia.length < 5) {
-      setErrorMessage(__('Veuillez sélectionner au moins 5 images.', 'amnesty'));
+    if (newMedia.length < 2) {
+      setErrorMessage(__('Veuillez sélectionner au moins 2 images.', 'amnesty'));
       setAttributes({ mediaIds: [] });
     } else {
       setErrorMessage(null);
@@ -67,7 +67,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
         ) : (
           <p>
             {__(
-              "Aucune image sélectionnée ou pas assez d'images sélectionnées (minimum 5).",
+              "Aucune image sélectionnée ou pas assez d'images sélectionnées (minimum 2).",
               'amnesty',
             )}
           </p>
