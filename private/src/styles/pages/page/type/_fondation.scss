@@ -87,8 +87,8 @@
               line-height: 2.8rem;
             }
           }
-          }
-          }
+        }
+      }
     }
   }
 
@@ -112,6 +112,10 @@
 
     @media (max-width: $container-lg) {
       padding: 0 24px;
+    }
+
+    .article-meta {
+      margin: 0;
     }
 
     .page-content {

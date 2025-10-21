@@ -36,6 +36,8 @@ if (empty($post_terms)) {
 
 ?>
 
-<?php foreach ($post_terms as $post_term) : ?>
-	<!-- wp:amnesty-core/chip-category {"label":"<?php echo esc_html($post_term->name); ?>","link":"<?php echo esc_url(amnesty_term_link($post_term)); ?>","size":"medium","style":"bg-gray"} /-->
-<?php endforeach; ?>
+<div class="wp-block-group article-metaActions article-chip-categories">
+    <?php foreach ($post_terms as $post_term) : ?>
+        <!-- wp:amnesty-core/chip-category {"label":"<?php echo esc_html($post_term->name); ?>","link":"<?php echo esc_url(amnesty_term_link($post_term)); ?>","size":"medium","style":"bg-gray"} /-->
+    <?php endforeach; ?>
+</div>

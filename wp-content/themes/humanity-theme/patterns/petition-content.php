@@ -115,6 +115,11 @@ if ($is_thank_you_page && is_singular('petition')) {
 						<?php endif; ?>
                     </section>
                 <!-- /wp:group -->
+                <!-- wp:group {"tagName":"footer","className":"article-footer"} -->
+                <footer class="wp-block-group article-footer">
+                    <!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
+                </footer>
+                <!-- /wp:group -->
             </article>
             <!-- /wp:group -->
         </div>
