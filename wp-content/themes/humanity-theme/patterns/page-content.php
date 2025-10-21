@@ -29,5 +29,12 @@ $has_related_content = !empty(get_field('_related_posts_selected', $page));
 	<?php if ($is_combat_page && $has_related_content): ?>
 		<!-- wp:amnesty-core/related-posts {"title":"Voir aussi"} /-->
 	<?php endif; ?>
+	<?php if (! is_front_page()): ?>
+		<!-- wp:group {"tagName":"footer","className":"article-footer"} -->
+		<footer class="wp-block-group article-footer">
+			<!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
+		</footer>
+		<!-- /wp:group -->
+	<?php endif; ?>
 </article>
 <!-- /wp:group -->

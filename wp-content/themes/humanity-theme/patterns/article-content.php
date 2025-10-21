@@ -85,13 +85,11 @@ $post_type_class = get_post_type() ?: '';
 		</div>
 	<?php endif; ?>
 
-  <?php if (in_array($category_class, ['actualites', 'chroniques']) && get_the_ID()) : ?>
-    <!-- wp:group {"tagName":"footer","className":"article-footer"} -->
-    <footer class="wp-block-group article-footer">
-      <!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
-    </footer>
-    <!-- /wp:group -->
-  <?php endif; ?>
+  <!-- wp:group {"tagName":"footer","className":"article-footer"} -->
+  <footer class="wp-block-group article-footer">
+    <!-- wp:pattern {"slug":"amnesty/post-terms"} /-->
+  </footer>
+  <!-- /wp:group -->
 
 	<?php if ($category_class === 'chroniques') : ?>
 		<!-- wp:amnesty-core/related-posts {"title":"ET AUSSI", "nb_posts": 4, "display": "chronique"} /-->
