@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <main class="aif-container--main">
     <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-        <h1 class="aif-mb1w">Mon espace Don</h1>
+        <h1 class="aif-mb1w">Mon espace</h1>
     </header>
     <div class="aif-container--form">
         <h2>Mot de passe oublié</h2>
