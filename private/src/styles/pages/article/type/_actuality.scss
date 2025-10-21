@@ -1,7 +1,7 @@
 .article.actualites {
   .article-meta {
     padding: 12px 24px;
-    max-width: $container-md;
+    max-width: $container-sm;
     margin-left: auto;
     margin-right: auto;
 
@@ -67,9 +67,5 @@
         max-width: $container-sm;
       }
     }
-  }
-
-  .article-meta {
-    max-width: $container-sm;
   }
 }
