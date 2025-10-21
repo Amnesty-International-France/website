@@ -16,7 +16,7 @@ declare(strict_types=1);
 		{
 			"input": ["tel","email"],
 			"action_type": "Sms",
-			"text_header": "Recevez 1 à 2 sms par mois pour agir en faveur d\'une personne dont les droits sont menacés ou violés."
+			"text_header": "Recevez 1 à 2 sms par mois pour agir en faveur d'une personne dont les droits sont menacés ou violés."
 		}
 	/-->
 </aside>
