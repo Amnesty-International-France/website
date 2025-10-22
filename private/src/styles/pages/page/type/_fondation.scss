@@ -108,10 +108,10 @@
   }
 
   .page-fondation-main {
-    padding: 0;
+    padding: 0 24px;
 
-    @media (max-width: $container-lg) {
-      padding: 0 24px;
+    @media (min-width: 1440px) {
+      padding: 0;
     }
 
     .article-meta {

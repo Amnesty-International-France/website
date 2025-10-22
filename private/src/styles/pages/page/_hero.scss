@@ -3,7 +3,8 @@
   position: relative;
   min-height: 315px;
 
-  .page-figure, .article-figure {
+  .page-figure,
+  .article-figure {
     height: 315px;
     max-height: 315px;
     display: flex;
@@ -38,7 +39,7 @@
       flex-wrap: wrap;
       align-items: center;
 
-      @media (min-width: $container-hg) {
+      @media (min-width: 1440px) {
         padding-left: 0;
       }
 
@@ -148,14 +149,15 @@
           text-transform: initial;
           background-color: transparent;
 
-          &__first-part, &__last-part {
+          &__first-part,
+          &__last-part {
             background-color: var(--wp--preset--color--black);
             color: var(--wp--preset--color--primary);
           }
 
           &__first-part {
             display: inline-block;
-            padding: 0 .3rem;
+            padding: 0 0.3rem;
             margin-bottom: 0;
             font-size: 2.7rem;
             line-height: 1;
@@ -180,14 +182,15 @@
             @media (min-width: $container-lg) {
               font-size: 2.575rem;
               line-height: 2.1rem;
-              padding: .5rem;
+              padding: 0.5rem;
             }
           }
         }
       }
     }
 
-    .page-figure, .article-figure {
+    .page-figure,
+    .article-figure {
       min-height: 315px;
     }
 
@@ -202,7 +205,8 @@
     }
 
     @media (min-width: $container-lg) {
-      .page-figure, .article-figure {
+      .page-figure,
+      .article-figure {
         min-height: 420px;
       }
 
