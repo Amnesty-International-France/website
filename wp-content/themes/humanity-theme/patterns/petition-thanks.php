@@ -127,11 +127,9 @@ if (! empty($signatures_target) && $signatures_target > 0) {
                 <p class="need-you">Nous avons besoin de vous pour continuer à lutter en toute indépendance et impartialité</p>
                 <?php
                 $donate_label = get_option('petition_donate_button_label', 'FAIRE UN DON');
-$uidsf = get_field('uidsf');
-$code_origine = get_field('code_origine');
 ?>
                 <div class="custom-button-block left">
-                    <a class="custom-button" href="https://soutenir.amnesty.fr/b?lang=fr_FR&cid=<?= $uidsf?>&reserved_originecode=<?= $code_origine ?>" target="_blank" rel="noreferrer noopener">
+                    <a class="custom-button" href="https://soutenir.amnesty.fr/b?cid=123&lang=fr_FR&reserved_originecode=WBFXXWSI01" target="_blank" rel="noreferrer noopener">
                         <div class="content outline-black medium">
                             <div class="button-label"><?php echo esc_html($donate_label); ?></div>
                         </div>
