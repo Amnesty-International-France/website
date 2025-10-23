@@ -1,0 +1,37 @@
+.image-block {
+  width: 100%;
+  margin-bottom: 24px;
+  max-width: $container-md;
+
+  .image-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-bottom: 8px solid var(--wp--preset--color--primary);
+
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .image-caption {
+      margin: 0;
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      color: var(--wp--preset--color--white);
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 12px;
+    }
+  }
+
+  .image-description {
+    margin: 0;
+    padding-top: 8px;
+    color: var(--wp--preset--color--grey-dark);
+    font-size: 12px;
+    line-height: 14px;
+  }
+}
