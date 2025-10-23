@@ -15,7 +15,8 @@
       .grunion-field {
         height: 42px;
         padding: 10px 22px;
-        border: 1px solid var(--wp--preset--color--grey-light);
+        border: 1px solid var(--wp--preset--color--grey-light) !important;
+        box-sizing: border-box;
 
         &::placeholder {
           color: var(--wp--preset--color--grey-dark);
@@ -23,6 +24,29 @@
           font-size: 18px !important;
           font-weight: 300;
           text-transform: capitalize;
+        }
+
+        &:is(textarea) {
+          height: auto;
+        }
+      }
+
+      &.grunion-field-select-wrap {
+        > .grunion-field {
+          height: auto;
+          padding: 0;
+          border: none;
+        }
+
+        select {
+          height: 42px;
+          padding: 0 22px;
+          border: 1px solid var(--wp--preset--color--grey-light);
+          width: 100%;
+          box-sizing: border-box;
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
         }
       }
     }
