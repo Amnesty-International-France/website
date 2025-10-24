@@ -63,8 +63,8 @@ function apply_tax_location_archive_filters($query)
 
             $query->set('post_type', $sanitized_post_types);
         } else {
-            $types = get_post_types(['public' => true], 'names'); 
-            
+            $types = get_post_types(['public' => true], 'names');
+
             $exclude_post_types = [
                 'attachment', 'sidebar', 'feedzy_imports', 'feedzy_categories', 'edh', 'fiche_pays',
                 'chronique', 'training', 'local-structures', 'document', 'actualities-my-space',
