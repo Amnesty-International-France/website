@@ -24,7 +24,6 @@ require_once realpath(__DIR__ . '/includes/root/permalinks.php');
 require_once realpath(__DIR__ . '/includes/helpers/attachments.php');
 require_once realpath(__DIR__ . '/includes/helpers/query-filters.php');
 require_once realpath(__DIR__ . '/includes/helpers/category-rewrite.php');
-require_once realpath(__DIR__ . '/includes/helpers/taxonomy-rewrite.php');
 require_once realpath(__DIR__ . '/includes/helpers/class-classnames.php');
 require_once realpath(__DIR__ . '/includes/helpers/class-get-image-data.php');
 require_once realpath(__DIR__ . '/includes/helpers/site.php');

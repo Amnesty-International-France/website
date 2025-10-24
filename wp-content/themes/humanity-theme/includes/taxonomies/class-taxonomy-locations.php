@@ -41,7 +41,7 @@ class Taxonomy_Locations extends Taxonomy
      */
     protected $args = [
         'hierarchical'          => true,
-        'rewrite'               => ['slug' => 'pays'],
+        'rewrite'               => ['slug' => 'categorie'],
         'show_admin_column'     => true,
         'show_in_rest'          => true,
         'query_var'             => true,
