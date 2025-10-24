@@ -66,11 +66,11 @@ if (isset($_POST['sign_discover_chronicle'])) {
 
     if (false === $existing_case) {
         post_salesforce_case($form_data);
-        wp_redirect(add_query_arg('inscription_chronique', 'success', home_url('/numero-decouverte-la-chronique')));
+        wp_redirect(add_query_arg('inscription_chronique', 'success', get_permalink()));
         exit;
     }
 
-    wp_redirect(add_query_arg('inscription_chronique', 'already-sent', home_url('/numero-decouverte-la-chronique')));
+    wp_redirect(add_query_arg('inscription_chronique', 'already-sent', get_permalink()));
     exit;
 }
 
