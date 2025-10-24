@@ -62,6 +62,17 @@ function apply_tax_location_archive_filters($query)
             $sanitized_post_types = array_map('sanitize_key', $post_types);
 
             $query->set('post_type', $sanitized_post_types);
+        } else {
+            $types = get_post_types(['public' => true], 'names'); 
+            
+            $exclude_post_types = [
+                'attachment', 'sidebar', 'feedzy_imports', 'feedzy_categories', 'edh', 'fiche_pays',
+                'chronique', 'training', 'local-structures', 'document', 'actualities-my-space',
+            ];
+
+            $default_post_types = array_filter($types, static fn ($t_name) => ! in_array($t_name, $exclude_post_types, true));
+
+            $query->set('post_type', array_values($default_post_types));
         }
 
         $tax_query = $query->get('tax_query') ?: [];
