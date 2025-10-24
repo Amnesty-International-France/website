@@ -6,12 +6,12 @@
  * @package Amnesty
  */
 
-add_filter( 'redirect_canonical', function( $redirect_url, $requested_url ) {
-    if ( is_tax('location') && is_paged() ) {
+add_filter('redirect_canonical', function ($redirect_url, $requested_url) {
+    if (is_tax('location') && is_paged()) {
         return false;
     }
     return $redirect_url;
-}, 10, 2 );
+}, 10, 2);
 
 /**
  * Theme root includes
