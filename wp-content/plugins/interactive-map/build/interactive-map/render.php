@@ -113,7 +113,7 @@ $geocode_proxy_api_endpoint = rest_url('amnesty/v1/geocode-proxy');
         <p class="agenda-title">Agenda</p>
         <p class="agenda-subtitle">Consultez les événements à venir</p>
         <div class='custom-button-block center'>
-            <a href="/agenda" target="_blank" rel="noopener noreferrer" class="custom-button">
+            <a href="/agir-avec-nous/comment-agir/evenements/" target="_blank" rel="noopener noreferrer" class="custom-button">
                 <div class='content bg-yellow medium'>
                     <div class="icon-container">
                         <svg
