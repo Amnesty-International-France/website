@@ -70,7 +70,7 @@ function aif_format_date($date)
 						<?php
 			        $url = add_query_arg([
 			            'subject' =>  "Ma demande n'a pas pu aboutir",
-			        ], get_permalink(get_page_by_path('nous-contacter')));
+			        ], get_permalink(get_page_by_path('mon-espace/mes-dons/nous-contacter')));
 
 					    aif_include_partial('info-message', [
 					        'content' => "Malheureusement votre demande n'a pas pu aboutir. <a class='aif-link--secondary' href='{$url}'>Contactez-nous pour en savoir plus. </a>."]);
@@ -83,7 +83,7 @@ function aif_format_date($date)
 			<?php endif ?>
 
 			<a class="btn btn--dark aif-mt1w aif-button--full"
-				href="<?= get_permalink(get_page_by_path('nous-contacter')) ?>">Vous
+				href="<?= get_permalink(get_page_by_path('mon-espace/mes-dons/nous-contacter')) ?>">Vous
 				avez une question ?
 			</a>
 		</section>
