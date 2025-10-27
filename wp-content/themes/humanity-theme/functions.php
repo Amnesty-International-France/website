@@ -395,6 +395,13 @@ if (is_multilingualpress_enabled()) {
 // endregion multilingualpress
 
 /**
+ * Theme One Trust includes
+ */
+// region one-trust
+require_once realpath(__DIR__ . '/includes/one-trust/consent.php');
+// endregion one-trust
+
+/**
  * Plugin The Events Calendar
  *
  * Remove post_tag, event categories, unused box
