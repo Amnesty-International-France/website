@@ -173,11 +173,15 @@ function amnesty_get_local_structures_by_bounds($request)
     foreach ($local_structures_ids as $post_id) {
         $latitude  = (float) get_field('latitude', $post_id);
         $longitude = (float) get_field('longitude', $post_id);
+        $distance  = null;
 
-        if (! $is_department_search && $center_lat !== null && $center_lng !== null && $radius > 0) {
+        if ($center_lat !== null && $center_lng !== null) {
             $distance = amnesty_haversine_distance($center_lat, $center_lng, $latitude, $longitude);
-            if ($distance > $radius) {
-                continue;
+
+            if (! $is_department_search && $radius > 0) {
+                if ($distance > $radius) {
+                    continue;
+                }
             }
         }
 
@@ -206,7 +210,21 @@ function amnesty_get_local_structures_by_bounds($request)
             'email'    => $email,
             'facet'    => '',
             'subfacet' => '',
+            'distance' => $distance,
         ];
+    }
+
+    if ($center_lat !== null && $center_lng !== null) {
+        usort($markers_data, function ($a, $b) {
+            if ($a['distance'] === null) {
+                return 1;
+            }
+            if ($b['distance'] === null) {
+                return -1;
+            }
+
+            return $a['distance'] <=> $b['distance'];
+        });
     }
 
     return new WP_REST_Response($markers_data, 200);
@@ -279,7 +297,7 @@ function amnesty_register_geocode_proxy_rest_route()
 
 function amnesty_geocode_proxy_callback($request)
 {
-    $google_api_key = get_option('amnesty_Maps_api_key'); // Récupère la clé ici aussi
+    $google_api_key = get_option('amnesty_Maps_api_key');
 
     if (empty($google_api_key)) {
         return new WP_REST_Response([ 'status' => 'ERROR', 'error_message' => 'Google Maps API Key is missing.' ], 500);
