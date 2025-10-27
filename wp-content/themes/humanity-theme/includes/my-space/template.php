@@ -86,6 +86,7 @@ function aif_restrict_my_space_access()
         'mes-informations-personnelles',
         'mes-recus-fiscaux',
         'mes-demandes',
+        'nous-contacter',
         'mon-compte',
         'se-deconnecter',
     ];

@@ -31,7 +31,7 @@ if (count($tax_reciept) > 0) {
 				<?php
                 $url = add_query_arg([
                     'subject' =>  'Mes dons et adhésions',
-                ], get_permalink(get_page_by_path('nous-contacter')));
+                ], get_permalink(get_page_by_path('mon-espace/mes-dons/nous-contacter')));
 
 aif_include_partial('alert', [
     'content' => "Pour information, les reçus fiscaux annuels seront disponibles à la fin du premier trimestre suivant l'année de vos dons.",
@@ -54,7 +54,7 @@ aif_include_partial('alert', [
 						<div class="aif-mb1w">
 							<div id="aif-success-message-<?=$name?>" class="aif-hide">
 								<?php
-                $url = get_permalink(get_page_by_path('mes-demandes'));
+$url = get_permalink(get_page_by_path('mon-espace/mes-dons/mes-demandes'));
 					    aif_include_partial('alert', [
 					        'title' => 'Votre demande à bien été prise en compte',
 					        'content' => "L'envoi de votre reçu fiscal n'est pas immédiat. Vous le receverez d'ici quelques minutes dans votre boîte email.",
@@ -94,7 +94,7 @@ aif_include_partial('alert', [
 aif_include_partial('alert', ['content' => $content, ]);
 $url = add_query_arg([
     'subject' =>  'Mes reçus fiscaux',
-], get_permalink(get_page_by_path('nous-contacter')));
+], get_permalink(get_page_by_path('mon-espace/mes-dons/nous-contacter')));
 $content2 = "Le montant de votre abonnement au magazine la Chronique n’est pas déductible des impôts. Pour toutes autres demandes concernant vos reçus fiscaux, <a class='aif-link--secondary' title='contacter le service SMD d'Amnesty France' href='{$url}'>contactez-nous </a>";
 
 aif_include_partial('alert', ['content' => $content2, ]);
