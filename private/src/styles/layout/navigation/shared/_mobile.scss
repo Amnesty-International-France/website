@@ -103,7 +103,7 @@
   &:hover,
   &:active,
   &:focus {
-    background-color: var(--wp--preset--color--grey-dark);
+    background-color: var(--wp--preset--color--black);
     color: var(--wp--preset--color--white);
   }
 }
@@ -144,7 +144,7 @@
 .mobile-menu .sub-menu .menu-item button {
   display: none;
   background-color: var(--wp--preset--color--grey-darker);
-  color: var(--wp--preset--color--white);
+  color: var(--wp--preset--color--black);
 
   &:hover,
   &:active,
