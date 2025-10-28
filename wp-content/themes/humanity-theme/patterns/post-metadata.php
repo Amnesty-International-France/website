@@ -27,6 +27,18 @@ if (! get_the_ID()) {
 
 		<!-- wp:post-title {"level":1,"className":"article-title"} /-->
 
+		<?php
+        if (get_post_type(get_the_ID()) === 'local-structures') {
+            $address = get_field('adresse');
+
+            if (! empty($address)) {
+                ?>
+                    <p class="address-text"><?php echo esc_html($address); ?></p>
+                <?php
+            }
+        }
+?>
+
 		<!-- wp:group {"tagName":"div","className":"article-metaData"} -->
 		<div class="wp-block-group article-metaData">
 			<div class="published-updated">
