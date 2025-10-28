@@ -27,7 +27,6 @@ import initCarousels from './modules/carousel';
 import tableOfContents from './modules/table-of-contents';
 import readMoreBlock from './modules/read-more';
 import initAZFilter from './modules/az-filter';
-import capitalizeHeadings from './modules/capitalize-headings';
 import { getUserLocationFromButton, getUserLocationFromForm } from './modules/localisation';
 import initLegsForm from './modules/legs-form';
 import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
@@ -71,7 +70,6 @@ const App = () => {
   tableOfContents();
   readMoreBlock();
   initAZFilter();
-  capitalizeHeadings();
   getUserLocationFromButton();
   getUserLocationFromForm();
   initLegsForm();
