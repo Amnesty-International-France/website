@@ -91,7 +91,7 @@ $geocode_proxy_api_endpoint = rest_url('amnesty/v1/geocode-proxy');
         <p class="join-title">Pas de groupe local près de chez vous ?</p>
         <p class="join-subtitle">Créez-en un !</p>
         <div class='custom-button-block center'>
-            <a href="/rejoindre-un-groupe" target="_blank" rel="noopener noreferrer" class="custom-button">
+            <a href="/agir-avec-nous/agir-pres-de-chez-soi/rejoindre-un-groupe" target="_blank" rel="noopener noreferrer" class="custom-button">
                 <div class='content bg-yellow medium'>
                     <div class="icon-container">
                         <svg
