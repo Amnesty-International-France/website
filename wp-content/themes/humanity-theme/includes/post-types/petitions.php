@@ -182,22 +182,22 @@ if (!is_admin()) {
 }
 
 add_filter('manage_petition_posts_columns', function ($columns) {
-	$columns['type_petition'] = 'Type de pétition';
-	return $columns;
+    $columns['type_petition'] = 'Type de pétition';
+    return $columns;
 });
 
 add_action('manage_petition_posts_custom_column', function ($column, $post_id) {
-	if ($column === 'type_petition') {
-		echo get_field('field_685aca87362cb', $post_id)['label'];
-	}
+    if ($column === 'type_petition') {
+        echo get_field('field_685aca87362cb', $post_id)['label'];
+    }
 }, 10, 2);
 
 add_action('restrict_manage_posts', function ($post_type) {
-	if ($post_type !== 'petition') {
-		return;
-	}
-	$selected = $_GET['type_petition'] ?? '';
-	?>
+    if ($post_type !== 'petition') {
+        return;
+    }
+    $selected = $_GET['type_petition'] ?? '';
+    ?>
 	<select name="type_petition">
 		<option value="">Toutes les pétitions</option>
 		<option value="petition" <?php selected($selected, 'petition'); ?>>Pétition</option>
@@ -206,28 +206,28 @@ add_action('restrict_manage_posts', function ($post_type) {
 	<?php
 });
 
-if( is_admin() ) {
-	add_action('pre_get_posts', function ($query) {
-		global $pagenow;
+if (is_admin()) {
+    add_action('pre_get_posts', function ($query) {
+        global $pagenow;
 
-		if (
-			$pagenow !== 'edit.php' ||
-			!$query->is_main_query() ||
-			$query->get('post_type') !== 'petition'
-		) {
-			return;
-		}
+        if (
+            $pagenow !== 'edit.php' ||
+            !$query->is_main_query() ||
+            $query->get('post_type') !== 'petition'
+        ) {
+            return;
+        }
 
-		$petitionTypeFilter = $_GET['type_petition'] ?? '';
-		if ($petitionTypeFilter !== '') {
-			$query->set('meta_query', [
-				[
-					'key'   => 'type',
-					'value' => $petitionTypeFilter,
-				],
-			]);
-		}
-	});
+        $petitionTypeFilter = $_GET['type_petition'] ?? '';
+        if ($petitionTypeFilter !== '') {
+            $query->set('meta_query', [
+                [
+                    'key'   => 'type',
+                    'value' => $petitionTypeFilter,
+                ],
+            ]);
+        }
+    });
 }
 
 add_action('acf/include_fields', function () {
