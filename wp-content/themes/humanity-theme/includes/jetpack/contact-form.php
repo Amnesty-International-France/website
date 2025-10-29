@@ -2,7 +2,22 @@
 
 add_filter('wp_mail', function ($args) {
 
-    if (!is_page('contact')) {
+    $contact_page = get_page_by_path('contact');
+
+    if (! $contact_page) {
+        return $args;
+    }
+
+    $contact_path = parse_url(get_permalink($contact_page->ID), PHP_URL_PATH);
+    $referer_url = wp_get_referer();
+
+    if (! $referer_url) {
+        return $args;
+    }
+
+    $referer_path = parse_url($referer_url, PHP_URL_PATH);
+
+    if ($referer_path !== $contact_path) {
         return $args;
     }
 
