@@ -50,9 +50,48 @@
       padding: 0;
     }
 
-    .address-text {
-      font-size: 16px;
-      margin: 0;
+    .local-structure-contact-info {
+      .address {
+        display: flex;
+        align-items: center;
+
+        &-icon {
+          margin-right: 8px;
+        }
+
+        &-text {
+          font-size: 16px;
+          margin: 0;
+        }
+      }
+
+      .email {
+        display: flex;
+        align-items: center;
+        font-weight: 300;
+        text-decoration: none;
+        width: fit-content;
+
+        &:hover {
+          background-color: transparent;
+          text-decoration: underline;
+        }
+
+        &-icon {
+          margin-right: 8px;
+
+          svg {
+            display: flex;
+            align-items: center;
+          }
+        }
+
+        &-text {
+          font-size: 16px;
+          font-weight: 300;
+          margin: 0;
+        }
+      }
     }
   }
 
