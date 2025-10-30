@@ -1,12 +1,22 @@
 .article.fiche_pays {
   .article-meta {
-    padding: 0 24px;
-    max-width: $container-hg;
+    max-width: $container-md;
     margin-left: auto;
     margin-right: auto;
+    padding: 0 24px;
 
-    @media (min-width: $container-hg) {
+    @media (min-width: $container-lg) {
       padding: 0;
+    }
+  }
+
+  .article-header {
+    .yoast-breadcrumb-wrapper {
+      .yoast-breadcrumb {
+        & .breadcrumb_last {
+          color: var(--wp--preset--color--white) !important;
+        }
+      }
     }
   }
 
