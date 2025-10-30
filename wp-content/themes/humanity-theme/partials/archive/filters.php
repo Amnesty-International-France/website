@@ -23,21 +23,10 @@ if (is_category()) {
         if ($term) {
             $form_url = home_url('/categorie/' . $term->slug . '/');
         }
-
-        $types = get_post_types(['public' => true, ], 'objects');
-        $exclude_post_types = [
-            'attachment', 'sidebar', 'feedzy_imports', 'feedzy_categories', 'edh', 'fiche_pays',
-            'chronique', 'training', 'local-structures', 'document', 'actualities-my-space',
-        ];
-        $types = array_filter($types, static fn ($t) => ! in_array($t->name, $exclude_post_types, true));
-        if (isset($types['fiche_pays'])) {
-            $types['fiche_pays']->labels->name = __('Pays', 'amnesty');
-        }
-
-    } else {
-        $types = get_post_types(['public' => true, ], 'objects');
-        $types = array_filter($types, static fn ($t) => ! in_array($t->name, ['attachment', 'sidebar', 'feedzy_imports', 'feedzy_categories', 'edh', 'fiche_pays', 'chronique', 'training', 'local-structures', 'page', 'document']));
     }
+	$types = get_post_types(['public' => true, ], 'objects');
+	$filters = ['post', 'press-release', 'petition', 'document', 'landmark'];
+	$types = array_filter($types, static fn ($t) => in_array($t->name, $filters, true));
 } elseif (is_post_type_archive()) {
     $form_url = get_post_type_archive_link($post_type);
 } else {

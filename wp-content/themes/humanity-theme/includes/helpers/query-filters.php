@@ -6,12 +6,33 @@ function amnesty_filter_cpt_by_multiple_taxonomies(WP_Query $query)
         return;
     }
 
-    if ($query->is_tax() && isset($_GET['qtype'])) {
-        $post_types = explode(',', $_GET['qtype']);
-        $post_types = array_map('trim', $post_types);
-        $post_types = array_map('sanitize_key', $post_types);
-        $post_types = array_filter($post_types);
-        if (! empty($post_types)) {
+    if ($query->is_tax()) {
+		if (isset($_GET['qtype'])) {
+			$post_types = explode(',', $_GET['qtype']);
+			$post_types = array_map('trim', $post_types);
+			$post_types = array_map('sanitize_key', $post_types);
+			$post_types = array_filter($post_types);
+		} else {
+			$post_types = ['post', 'press-release', 'petition', 'rapport', 'landmark'];
+		}
+
+		if (in_array('rapport', $post_types, true)) {
+			unset($post_types[array_search('rapport', $post_types, true)]);
+			$location = $query->get('location', null);
+			$combat = $query->get('combat', null);
+			if (isset($location)) {
+				$posts_ids = !empty($post_types) ? handle_post_types_filter($post_types, 'location', $location) : [];
+				$rapports_ids = handle_rapport_filter('location', $location);
+			} else if ( isset($combat)) {
+				$posts_ids = !empty($post_types) ? handle_post_types_filter($post_types, 'combat', $combat) : [];
+				$rapports_ids = handle_rapport_filter('combat', $combat);
+			}
+			$combined = array_merge($posts_ids ?? [], $rapports_ids ?? []);
+			$query->set('post__in', $combined);
+			$post_types[] = 'document';
+		}
+
+        if (!empty($post_types)) {
             $query->set('post_type', $post_types);
         }
     } elseif (is_post_type_archive(['landmark', 'petition', 'document'])) {
@@ -53,46 +74,36 @@ if (! is_admin()) {
     add_action('pre_get_posts', 'amnesty_filter_cpt_by_multiple_taxonomies');
 }
 
-function apply_tax_location_archive_filters($query)
-{
-    if (!is_admin() && $query->is_main_query() && $query->is_tax('location')) {
-
-        if (isset($_GET['qtype']) && !empty($_GET['qtype'])) {
-            $post_types = explode(',', $_GET['qtype']);
-            $sanitized_post_types = array_map('sanitize_key', $post_types);
-
-            $query->set('post_type', $sanitized_post_types);
-        } else {
-            $types = get_post_types(['public' => true], 'names');
-
-            $exclude_post_types = [
-                'attachment', 'sidebar', 'feedzy_imports', 'feedzy_categories', 'edh', 'fiche_pays',
-                'chronique', 'training', 'local-structures', 'document', 'actualities-my-space',
-            ];
-
-            $default_post_types = array_filter($types, static fn ($t_name) => ! in_array($t_name, $exclude_post_types, true));
-
-            $query->set('post_type', array_values($default_post_types));
-        }
-
-        $tax_query = $query->get('tax_query') ?: [];
-        $tax_query['relation'] = 'AND';
-
-        foreach ($_GET as $key => $value) {
-            if (strpos($key, 'q') === 0 && $key !== 'qtype' && !empty($value)) {
-                $taxonomy = substr($key, 1);
-                $terms = array_map('sanitize_key', explode(',', $value));
-                $tax_query[] = [
-                    'taxonomy' => $taxonomy,
-                    'field'    => 'slug',
-                    'terms'    => $terms,
-                ];
-            }
-        }
-
-        if (count($tax_query) > 1) {
-            $query->set('tax_query', $tax_query);
-        }
-    }
+function handle_post_types_filter($post_types, $taxonomy, $term) {
+	$query = new WP_Query([
+		'post_type' => $post_types,
+		'fields' => 'ids',
+		'posts_per_page' => -1,
+		$taxonomy => $term,
+	]);
+	if ($query->have_posts()) {
+		return $query->posts;
+	}
+	return [];
 }
-add_action('pre_get_posts', 'apply_tax_location_archive_filters');
+function handle_rapport_filter($taxonomy, $term) {
+	$query = new WP_Query([
+		'post_type' => 'document',
+		'fields' => 'ids',
+		'posts_per_page' => -1,
+		$taxonomy => $term,
+		'tax_query' => [
+			'relation' => 'AND',
+			[
+				'taxonomy' => 'document_type',
+				'field' => 'slug',
+				'terms' => [ 'rapport' ],
+			],
+		],
+	]);
+	if ($query->have_posts()) {
+		return $query->posts;
+	}
+
+	return [];
+}
