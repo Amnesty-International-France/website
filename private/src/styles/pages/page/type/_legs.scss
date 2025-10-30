@@ -259,6 +259,12 @@
         }
       }
     }
+
+    .page-figure {
+      &::before {
+        background: none;
+      }
+    }
   }
 
   .page-legs-form {
