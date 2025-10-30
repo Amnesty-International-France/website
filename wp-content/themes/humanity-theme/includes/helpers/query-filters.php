@@ -1,5 +1,42 @@
 <?php
 
+function amnesty_set_posts_per_page_for_archive($query)
+{
+    if (is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    if ($query->is_archive()) {
+        $query->set('posts_per_page', 18);
+
+        if ($query->is_tax('location') && !$query->is_paged()) {
+
+            $query->set('posts_per_page', 17);
+        }
+    }
+}
+if (! is_admin()) {
+    add_action('pre_get_posts', 'amnesty_set_posts_per_page_for_archive');
+}
+
+add_filter('the_posts', function ($posts, $query) {
+
+    if (!is_admin() && $query->is_main_query() && is_tax('location') && !is_paged() && !isset($query->_fiche_pays_injectee)) {
+
+        $term = get_queried_object();
+        if (!$term) {
+            return $posts;
+        }
+
+        $pays_post = get_page_by_path($term->slug, OBJECT, 'fiche_pays');
+        if ($pays_post) {
+            array_unshift($posts, $pays_post);
+            $query->_fiche_pays_injectee = true;
+        }
+    }
+    return $posts;
+}, 10, 2);
+
 function amnesty_filter_cpt_by_multiple_taxonomies(WP_Query $query)
 {
     if (! $query->is_main_query()) {
