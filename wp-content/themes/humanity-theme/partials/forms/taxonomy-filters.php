@@ -18,9 +18,13 @@ if ((!isset($taxonomies) || empty($taxonomies)) && (!isset($types) || empty($typ
             if (in_array($type->name, ['actualities-my-space', 'tribe_events'])) {
                 continue;
             }
-
-            $options[$type->name] = $type->labels->name;
+			if ($type->name === 'document') {
+				$options['rapport'] = 'Rapports';
+			} else {
+				$options[$type->name] = $type->labels->name;
+			}
         }
+		asort($options);
         $query_vars = [];
         if (isset($_GET['qtype']) && ! empty($_GET['qtype'])) {
             $query_vars = explode(',', $_GET['qtype']);
