@@ -174,7 +174,7 @@ function filter_petition_archive(WP_Query $query)
     $query->set('meta_key', 'date_de_fin');
     $query->set('meta_type', 'DATE');
     $query->set('orderby', 'meta_value');
-    $query->set('order', 'DESC');
+    $query->set('order', 'ASC');
 }
 
 if (!is_admin()) {
