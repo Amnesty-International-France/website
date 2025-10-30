@@ -18,29 +18,29 @@ if ((!isset($taxonomies) || empty($taxonomies)) && (!isset($types) || empty($typ
             if (in_array($type->name, ['actualities-my-space', 'tribe_events'])) {
                 continue;
             }
-			if ($type->name === 'document') {
-				$options['rapport'] = 'Rapports';
-			} else {
-				$options[$type->name] = $type->labels->name;
-			}
+            if ($type->name === 'document') {
+                $options['rapport'] = 'Rapports';
+            } else {
+                $options[$type->name] = $type->labels->name;
+            }
         }
-		asort($options);
-        $query_vars = [];
-        if (isset($_GET['qtype']) && ! empty($_GET['qtype'])) {
-            $query_vars = explode(',', $_GET['qtype']);
-            $query_vars = array_map('trim', $query_vars);
-            $query_vars = array_filter($query_vars);
-            $query_vars = array_map('sanitize_key', $query_vars);
-            $query_vars = array_unique($query_vars);
-        }
-        amnesty_render_custom_select([
-            'label' => 'Type de contenu',
-            'name' => 'qtype',
-            'active' => $query_vars,
-            'options' => $options,
-            'multiple' => true,
-        ]);
-        ?>
+asort($options);
+$query_vars = [];
+if (isset($_GET['qtype']) && ! empty($_GET['qtype'])) {
+    $query_vars = explode(',', $_GET['qtype']);
+    $query_vars = array_map('trim', $query_vars);
+    $query_vars = array_filter($query_vars);
+    $query_vars = array_map('sanitize_key', $query_vars);
+    $query_vars = array_unique($query_vars);
+}
+amnesty_render_custom_select([
+    'label' => 'Type de contenu',
+    'name' => 'qtype',
+    'active' => $query_vars,
+    'options' => $options,
+    'multiple' => true,
+]);
+?>
     <?php endif; ?>
 
     <?php
