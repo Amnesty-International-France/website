@@ -24,9 +24,9 @@ if (is_category()) {
             $form_url = home_url('/categorie/' . $term->slug . '/');
         }
     }
-	$types = get_post_types(['public' => true, ], 'objects');
-	$filters = ['post', 'press-release', 'petition', 'document', 'landmark'];
-	$types = array_filter($types, static fn ($t) => in_array($t->name, $filters, true));
+    $types = get_post_types(['public' => true, ], 'objects');
+    $filters = ['post', 'press-release', 'petition', 'document', 'landmark'];
+    $types = array_filter($types, static fn ($t) => in_array($t->name, $filters, true));
 } elseif (is_post_type_archive()) {
     $form_url = get_post_type_archive_link($post_type);
 } else {
