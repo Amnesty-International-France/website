@@ -8,28 +8,11 @@
 
 declare(strict_types=1);
 
-$options_theme_newsletter = [];
 $email_provided = '';
 $inscription_nl_status = '';
 $inscription_nl_success = false;
-$user = null;
-$firstname = null;
-$lastname = null;
-$phone = null;
-$salutation = null;
-$postal_code = null;
 
 if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
-
-    $options_theme_newsletter = [
-        'hebdo' => 'L\'Hebdo (newsletter hebdomadaire)',
-        'refugees' => 'Réfugiés et migrants',
-        'punishment' => 'Torture et peine de mort',
-        'expression' => 'Liberté d\'expression',
-        'crisis' => 'Crises et conflits armés',
-        'discrimination' => 'Discriminations',
-        'impunity' => 'Impunité des États et des entreprises',
-    ];
 
     $email_provided = $_GET['email'] ?? '';
     if (empty($email_provided)) {
@@ -40,13 +23,9 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
     $inscription_nl_status = $_GET['inscription__nl'] ?? '';
     $inscription_nl_success = $inscription_nl_status === 'success';
 
+    $local_user = get_local_user($email_provided);
     $get_salesforce_user = get_salesforce_user_with_email($email_provided);
-    $user = $get_salesforce_user['totalSize'] >= 1 ? $get_salesforce_user['records'][0] : null;
-    $firstname = $user['FirstName'] ?? null;
-    $lastname = $user['LastName'] ?? null;
-    $phone = $user['MobilePhone'] ?? null;
-    $salutation = $user['Salutation'] ?? null;
-    $postal_code = $user['Code_Postal__c'] ?? null;
+    $is_salesforce_user = $get_salesforce_user['totalSize'] > 0;
 
     if (isset($_POST['sign_newsletter'])) {
         if (!isset($_POST['newsletter_form_nonce']) ||
@@ -54,52 +33,66 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
             wp_die('Échec de sécurité, veuillez réessayer.');
         }
 
-        $themes = array_map('sanitize_text_field', $_POST['theme'] ?? []);
-        $email = $user ? $email_provided : sanitize_email($_POST['newsletter'] ?? '');
-        $civility = $salutation ?? sanitize_text_field($_POST['civility'] ?? '');
-        $lastname = $lastname ?? sanitize_text_field($_POST['lastname'] ?? '');
-        $firstname = $firstname ?? sanitize_text_field($_POST['firstname'] ?? '');
-        $phone = $phone ?? sanitize_text_field($_POST['phone'] ?? '');
-        $address = sanitize_text_field($_POST['address'] ?? '');
-        $address2 = sanitize_text_field($_POST['additional-address'] ?? '');
-        $zipcode = $postal_code ?? sanitize_text_field($_POST['zipcode'] ?? '');
-        $city = sanitize_text_field($_POST['city'] ?? '');
+        $email = sanitize_email($_POST['newsletter'] ?? '');
+        $civility = sanitize_text_field($_POST['civility'] ?? '');
+        $lastname = sanitize_text_field($_POST['lastname'] ?? '');
+        $firstname = sanitize_text_field($_POST['firstname'] ?? '');
+        $zipcode = sanitize_text_field($_POST['zipcode'] ?? '');
+        $country = sanitize_text_field($_POST['country'] ?? '');
 
-        $data_to_sf = [
-            'Salutation' => $civility,
-            'FirstName' => $firstname,
-            'LastName' => $lastname,
-            'Email' => $email,
-            'MobilePhone' => $phone,
-            'Ville__c' => $city,
-            'Code_Postal__c' => $zipcode,
-            'Adresse_Ligne_4__c' => $address,
-            'Adresse_Ligne_5__c' => $address2,
-            'Optin_Actionaute_Newsletter_mensuelle__c' => true,
-            'Optin_Refugies_et_migrants__c' => \in_array('refugees', $themes, true),
-            'Optin_torture_et_peine_de_mort__c' => \in_array('punishment', $themes, true),
-            'Optin_Liberte_expression__c' => \in_array('expression', $themes, true),
-            'Optin_Crises_et_conflits_armes__c' => \in_array('crisis', $themes, true),
-            'Optin_Discriminations__c' => \in_array('discrimination', $themes, true),
-            'Optin_Impunites_des_etats__c' => \in_array('impunity', $themes, true),
-        ];
+        $local_user = get_local_user($email);
+        $get_salesforce_user = get_salesforce_user_with_email($email);
         $is_salesforce_user = $get_salesforce_user['totalSize'] > 0;
 
-        if (!$is_salesforce_user) {
+        if ($local_user !== false) {
             $data = [
-                ...$data_to_sf,
-                'Statut_espace_connecte__c' => 'Non inscrit amnesty.fr',
-                'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
+                'Email' => $local_user->email,
+                'Salutation' => $local_user->civility,
+                'Code_Postal__c' => $local_user->postal_code,
+                'FirstName' => $local_user->firstname,
+                'LastName' =>  $local_user->lastname,
+                'Pays__c' => $local_user->country,
+                'Optin_Actionaute_Newsletter_mensuelle__c' => true,
             ];
+            if (!$is_salesforce_user) {
+                post_salesforce_users([
+                    ...$data,
+                    'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
+                ]);
+            } else {
+                update_salesforce_users($get_salesforce_user['records'][0]['Id'], [
+                    ...$data,
+                    'Optout_toute_communication__c' => false,
+                ]);
+            }
+        }
 
-            register_salesforce_newsletter($data);
-        } else {
-            $data = [
-                ...$data_to_sf,
-                'Optout_toute_communication__c' => false,
-            ];
-
-            update_salesforce_users($get_salesforce_user['records'][0]['Id'], $data);
+        if (!$local_user) {
+            if ($is_salesforce_user) {
+                $sf_user = $get_salesforce_user['records'][0];
+                insert_user(
+                    $sf_user['Civility__c'] ?? null,
+                    $sf_user['FirstName'],
+                    $sf_user['LastName'],
+                    $sf_user['Email'],
+                    $sf_user['Pays__c'] ?? null,
+                    $sf_user['Code_Postal__c'] ?? null,
+                    $sf_user['MobilePhone'] ?? null
+                );
+            } else {
+                insert_user($civility, $firstname, $lastname, $email, $country, $zipcode, null);
+                post_salesforce_users(
+                    [
+                        'Salutation' => $civility,
+                        'FirstName' => $firstname,
+                        'LastName' => $lastname,
+                        'Email' => $email,
+                        'Code_Postal__c' => $zipcode,
+                        'Pays__c' => $country,
+                        'Optin_Actionaute_Newsletter_mensuelle__c' => true,
+                    ]
+                );
+            }
         }
 
         $lead_on_sf = get_salesforce_nl_lead($email);
@@ -140,41 +133,12 @@ print esc_attr($class_name ?? ''); ?>">
                 wp_nonce_field('newsletter_form_action', 'newsletter_form_nonce'); ?>
 
 				<div class="form-mess hidden"></div>
-				<div class="form-row theme-newsletter">
-					<h3>Choisir les thèmes qui vous intéressent</h3>
-					<?php
-                    foreach ($options_theme_newsletter as $key => $value) : ?>
-						<div class="form-group" data-theme="<?php
-                        echo $key; ?>">
-							<input type="checkbox" class="hidden" value="<?php
-                            echo $key; ?>" name="theme[]">
-							<div class="checkbox <?php
-                            echo $key; ?> <?php
-                            if ($key === 'hebdo') : ?>checked <?php
-                            endif; ?>"></div>
-							<label><?php
-                                echo $value; ?></label>
-						</div>
-					<?php
-                    endforeach; ?>
-				</div>
-				<?php if (isset($user)) : ?>
-					<p>Nous avons detecté un compte connu à l'adresse <?= $email_provided ?>, vos informations seront automatiquement reprises pour votre inscription à notre newsletter.</p>
-				<?php else: ?>
-					<input type="text"
-						   name="newsletter"
-						   id="newsletter"
-						   placeholder="Email"
-						   required
-						   value="<?= esc_attr($email_provided); ?>"
-					>
-				<?php endif; ?>
-				<?php if (!$salutation): ?>
+					<?php if (!$local_user & !$is_salesforce_user) : ?>
 					<div class="form-group civility">
 						<label class="civility-label">Civilité :</label>
 						<div class="civilities">
 							<label for="civility_m">M.</label>
-								<input type="radio" id="civility_m" name="civility" value="M." checked>
+							<input type="radio" id="civility_m" name="civility" value="M." checked>
 							<label for="civility_mme">Mme</label>
 							<input type="radio" id="civility_mme" name="civility" value="Mme">
 							<label for="civility_other">Autre</label>
@@ -182,39 +146,52 @@ print esc_attr($class_name ?? ''); ?>">
 						</div>
 						<div class="input-error-civility hidden"></div>
 					</div>
-				<?php endif; ?>
-				<?php if (!$lastname): ?>
+					<?php endif; ?>
+
+					<input type="email"
+						   name="newsletter"
+						   id="newsletter"
+						   placeholder="Email"
+						   required
+						   value="<?= esc_attr($email_provided); ?>"
+					>
+
+				<?php if (!$local_user & !$is_salesforce_user) : ?>
 				<div class="form-group">
-					<input type="text" id="lastname" name="lastname" placeholder="Nom" value="<?= $lastname ?>" required>
+					<input type="text" id="lastname" name="lastname" placeholder="Nom" required>
 				</div>
-				<?php endif; ?>
-				<?php if (!$firstname): ?>
+
 				<div class="form-group">
-					<input type="text" id="firstname" name="firstname" placeholder="Prénom" value="<?= $firstname ?>" required>
+					<input type="text" id="firstname" name="firstname" placeholder="Prénom" required>
 				</div>
-				<?php endif; ?>
-				<?php if (!$phone): ?>
-				<div class="form-group">
-					<input type="tel" id="phone" name="phone" placeholder="Téléphone" value="<?= $phone ?>">
-				</div>
-				<?php endif; ?>
-				<?php if (!$postal_code): ?>
-				<div class="form-group">
-					<input type="text" id="address" name="address" placeholder="Adresse">
-				</div>
-				<div class="form-group">
-					<input type="text" id="additional-address" name="additional-address"
-						   placeholder="Complément d'adresse">
-				</div>
+
 				<div class="form-row">
 					<div class="form-group">
 						<input type="text" id="zipcode" name="zipcode" placeholder="Code Postal" required>
 					</div>
 					<div class="form-group">
-						<input type="text" id="city" name="city" placeholder="Ville">
+						<select class="country-input " name="country">
+							<option value=""><?php _e('Pays*', 'textdomain'); ?></option>
+							<?php
+                            $countries = get_posts([
+                                'post_type' => 'fiche_pays',
+                                'posts_per_page' => -1,
+                                'orderby' => 'title',
+                                'order' => 'ASC',
+                            ]);
+
+				    foreach ($countries as $country) :
+				        $country_name = get_the_title($country->ID);
+				        ?>
+								<option value="<?php echo esc_attr($country_name); ?>" <?php if (esc_attr($country_name) === 'France') :?> selected="selected"<?php endif;?>>
+									<?php echo esc_html(ucwords(strtolower($country_name))); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
 					</div>
 				</div>
 				<?php endif; ?>
+
 				<button class="newsletter-form-cta" type="submit" name="sign_newsletter">
 					<?php
                     echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>

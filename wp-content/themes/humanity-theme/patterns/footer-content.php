@@ -66,6 +66,9 @@ $action_links = [
     ],
 ];
 
+$inscription_nl_status = $_GET['inscription__nl'] ?? '';
+$inscription_nl_success = $inscription_nl_status === 'success';
+
 if (isset($_POST['sign_lead'])) {
     if (!isset($_POST['newsletter_lead_form_nonce']) ||
         !wp_verify_nonce($_POST['newsletter_lead_form_nonce'], 'newsletter_lead_form_action')) {
@@ -74,9 +77,58 @@ if (isset($_POST['sign_lead'])) {
 
     $email = sanitize_email($_POST['newsletter-lead'] ?? '');
 
-    $get_current_sf_lead = get_salesforce_nl_lead($email);
+    $local_user = get_local_user($email);
     $get_user_sf = get_salesforce_user_with_email($email);
     $contact_exist_on_salesforce = $get_user_sf['totalSize'] > 0;
+
+    if ($local_user !== false && !$contact_exist_on_salesforce) {
+        post_salesforce_users([
+            'Email' => $local_user->email,
+            'Salutation' => $local_user->civility,
+            'Code_Postal__c' => $local_user->postal_code,
+            'FirstName' => $local_user->firstname,
+            'LastName' =>  $local_user->lastname,
+            'Pays__c' => $local_user->country,
+            'Optin_Actionaute_Newsletter_mensuelle__c' => true,
+        ]);
+
+        wp_redirect(add_query_arg([
+            'inscription__nl' => 'success',
+        ], home_url()));
+        exit;
+    }
+
+    if ($contact_exist_on_salesforce) {
+        $sf_user = $get_user_sf['records'][0];
+        if ($local_user === false) {
+            insert_user(
+                $sf_user['Civility__c'] ?? null,
+                $sf_user['FirstName'],
+                $sf_user['LastName'],
+                $sf_user['Email'],
+                $sf_user['Pays__c'] ?? null,
+                $sf_user['Code_Postal__c'] ?? null,
+                $sf_user['MobilePhone'] ?? null
+            );
+        }
+        $data = [
+            ...$sf_user,
+            'Optin_Actionaute_Newsletter_mensuelle__c' => true,
+        ];
+
+        $user_id = $data['Id'];
+        unset($data['Id']);
+        unset($data['attributes']);
+
+        update_salesforce_users($user_id, $data);
+
+        wp_redirect(add_query_arg([
+            'inscription__nl' => 'success',
+        ], home_url()));
+        exit;
+    }
+
+    $get_current_sf_lead = get_salesforce_nl_lead($email);
     $lead_exist_on_sf = $get_current_sf_lead['totalSize'] > 0;
 
     $new_lead = [
@@ -86,7 +138,7 @@ if (isset($_POST['sign_lead'])) {
         'Optin_Actionaute_Newsletter_mensuelle__c' => true,
     ];
 
-    if (false === $lead_exist_on_sf && false === $contact_exist_on_salesforce) {
+    if (false === $lead_exist_on_sf) {
         register_salesforce_lead($new_lead);
         wp_redirect(add_query_arg('email', urlencode($email), home_url('/newsletter')));
         exit;
@@ -98,30 +150,19 @@ if (isset($_POST['sign_lead'])) {
         exit;
     }
 
-    if ($contact_exist_on_salesforce) {
-        $data = [
-            ...$get_user_sf['records'][0],
-            'Optin_Actionaute_Newsletter_mensuelle__c' => true,
-        ];
-
-        $user_id = $data['Id'];
-        unset($data['Id']);
-        unset($data['attributes']);
-
-        update_salesforce_users($user_id, $data);
-
-        wp_redirect(add_query_arg([
-            'email' => urlencode($email),
-            'inscription__nl' => 'success',
-        ], home_url('/newsletter')));
-        exit;
-    }
-
     wp_redirect('/newsletter');
     exit;
 }
 
 ?>
+
+<div id="confirmationPopup" class="popup <?php echo $inscription_nl_success ? 'popup-visible' : ''; ?>">
+	<div class="popup-content">
+		<a href="<?= home_url() ?>" class="close-btn">&times;</a>
+		<h3>Inscription Réussie !</h3>
+		<p>Merci de vous être inscrit·e à la newsletter !</p>
+	</div>
+</div>
 
 <button class="back-to-top hidden">
 	<?php
