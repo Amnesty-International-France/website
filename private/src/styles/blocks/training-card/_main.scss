@@ -48,13 +48,14 @@
   }
 
   .training-card-content {
-    padding: 12px 12px 0;
+    padding-top: 12px;
     display: flex;
     flex: 1;
     flex-direction: column;
     gap: 10px;
 
     .training-date {
+      padding: 0 12px;
       font-family: var(--wp--preset--font-family--secondary), serif;
       font-size: 0.875rem;
       line-height: 1.25rem;
@@ -63,6 +64,7 @@
     }
 
     .training-description {
+      padding: 0 12px;
       margin: 0;
       flex: 1;
 
@@ -101,6 +103,7 @@
     }
 
     .training-card-title-link {
+      padding: 0 12px;
       text-decoration: none;
 
       &:hover {
@@ -135,17 +138,21 @@
     }
 
     .training-term {
-      padding: 8px 0;
+      padding: 8px 12px;
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+
+      &.member-only {
+        background-color: var(--wp--preset--color--primary);
+      }
 
       &:not(.is-empty) {
         border-top: 1px solid var(--wp--preset--color--grey-light);
       }
 
       .capitalize-place {
-          text-transform: capitalize;
+        text-transform: capitalize;
       }
     }
   }

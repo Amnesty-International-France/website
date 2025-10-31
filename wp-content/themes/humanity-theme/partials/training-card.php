@@ -37,13 +37,17 @@ $is_empty = empty($lieu) && empty($city) && ! $is_members_only;
 		<div class="training-description">
 			<p><?php echo esc_html($description)?></p>
 		</div>
-		<div class="training-term
-				<?php
-            if ($is_empty) {
-                echo 'is-empty';
-            }
+		<?php
+        // 1. Préparez vos classes dans un tableau
+        $term_classes = ['training-term'];
+if ($is_empty) {
+    $term_classes[] = 'is-empty';
+}
+if ($is_members_only) {
+    $term_classes[] = 'member-only'; // <-- C'est ici que nous ajoutons votre classe
+}
 ?>
-">
+		<div class="<?php echo esc_attr(implode(' ', $term_classes)); ?>">
 			<?php if ($lieu) : ?>
 				<div class="training-card-badge">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
