@@ -10,32 +10,47 @@ function amnesty_set_posts_per_page_for_archive($query)
         $query->set('posts_per_page', 18);
 
         if ($query->is_tax('location') && !$query->is_paged()) {
+            $query->set('posts_per_page', 17);
+        }
 
+        if ($query->is_tax('combat') && !$query->is_paged()) {
             $query->set('posts_per_page', 17);
         }
     }
 }
-if (! is_admin()) {
+if (!is_admin()) {
     add_action('pre_get_posts', 'amnesty_set_posts_per_page_for_archive');
 }
 
 add_filter('the_posts', function ($posts, $query) {
+    if (!is_admin() && $query->is_main_query()) {
 
-    if (!is_admin() && $query->is_main_query() && is_tax('location') && !is_paged() && !isset($query->_fiche_pays_injectee)) {
-
-        $term = get_queried_object();
-        if (!$term) {
-            return $posts;
+        if (is_tax('location') && !is_paged() && !isset($query->_fiche_pays_injectee)) {
+            $term = get_queried_object();
+            if ($term) {
+                $pays_post = get_page_by_path($term->slug, OBJECT, 'fiche_pays');
+                if ($pays_post) {
+                    array_unshift($posts, $pays_post);
+                    $query->_fiche_pays_injectee = true;
+                }
+            }
         }
 
-        $pays_post = get_page_by_path($term->slug, OBJECT, 'fiche_pays');
-        if ($pays_post) {
-            array_unshift($posts, $pays_post);
-            $query->_fiche_pays_injectee = true;
+        if (is_tax('combat') && !is_paged() && !isset($query->_fiche_combat_injectee)) {
+            $term = get_queried_object();
+            if ($term) {
+                $combat_page = get_page_by_path('nos-combats/' . $term->slug);
+                if ($combat_page) {
+                    array_unshift($posts, $combat_page);
+                    $query->_fiche_combat_injectee = true;
+                }
+            }
         }
     }
+
     return $posts;
 }, 10, 2);
+
 
 function amnesty_filter_cpt_by_multiple_taxonomies(WP_Query $query)
 {
