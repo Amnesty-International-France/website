@@ -1,18 +1,20 @@
 <?php
 /**
- * Title: Archive loop location
- * Description: Template for the loop on archive location page
- * Slug: amnesty/archive-loop-location
+ * Title: Archive combat loop
+ * Description: Template for the loop on archive combat pages
+ * Slug: amnesty/archive-loop-combat
  * Inserter: yes
  */
+
 ?>
 
 <!-- wp:query {"inherit":true} -->
 <div class="wp-block-query">
-    <div class="wp-block-group archive-location section section--small section--tinted has-gutter">
+    <!-- wp:group {"tagName":"div","className":""} -->
+    <div class="wp-block-group news-section section section--small section--tinted has-gutter">
         <!-- wp:group {"tagName":"div","className":"postlist"} -->
         <div class="wp-block-group postlist">
-            <!-- wp:post-template {"layout":{"type":"grid","columnCount":3}} -->
+            <!-- wp:post-template {"layout":{"type":"grid","columnCount":3},"className":"post-grid"} -->
                 <!-- wp:amnesty-core/article-card {"direction":"portrait"} /-->
             <!-- /wp:post-template -->
 
@@ -24,6 +26,7 @@
         </div>
         <!-- /wp:group -->
     </div>
+    <!-- /wp:group -->
 
     <!-- wp:query-pagination {"align":"center","className":"section section--small","paginationArrow":"none","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
         <!-- wp:query-pagination-previous {"label":"<?php echo esc_html(__('Previous', 'amnesty')); ?>"} /-->
