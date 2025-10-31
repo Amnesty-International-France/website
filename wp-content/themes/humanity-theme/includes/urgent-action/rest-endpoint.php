@@ -24,7 +24,7 @@ function register_user_to_urgent_action(string $type, string $user_id): WP_REST_
     return new WP_REST_Response(
         [
             'status'  => 'success',
-            'message' => 'Vous êtes bien inscrit(e) au réseau actions urgentes.',
+            'message' => 'Votre inscription est bien prise en compte.',
         ],
         200
     );
@@ -32,20 +32,6 @@ function register_user_to_urgent_action(string $type, string $user_id): WP_REST_
 
 function post_urgent_action(WP_REST_Request $request)
 {
-    if (
-        ! is_user_logged_in() &&
-        (
-            ! $request->get_header('X-Amnesty-UA-Nonce') ||
-            ! wp_verify_nonce($request->get_header('X-Amnesty-UA-Nonce'), 'amnesty_sign_urgent_action')
-        )
-    ) {
-        return new WP_Error(
-            'invalid_nonce',
-            'Security check failed. Please try again.',
-            [ 'status' => 403 ]
-        );
-    }
-
     $type = sanitize_text_field($request->get_param('type'));
 
     if (! \in_array($type, [ 'Email', 'Sms', 'Militant' ], true)) {
@@ -70,10 +56,10 @@ function post_urgent_action(WP_REST_Request $request)
 
         return new WP_REST_Response(
             [
-                'status'  => 'already_signed',
-                'message' => 'Vous êtes déjà inscrit(e) au réseau actions urgentes.',
+                'status'  => 'success',
+                'message' => 'Votre inscription est bien prise en compte.',
             ],
-            409
+            200
         );
     }
 
