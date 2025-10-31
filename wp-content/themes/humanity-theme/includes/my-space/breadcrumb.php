@@ -16,23 +16,23 @@ function my_space_custom_breadcrumb($links)
         $page_se_former = get_page_by_path('mon-espace/boite-a-outils/se-former');
 
         if ($page_mon_espace && $page_boite_a_outils && $page_se_former) {
-            $new_breadcrumb = [];
-            $new_breadcrumb[] = [
-                'text' => get_the_title($page_mon_espace),
-                'url'  => get_permalink($page_mon_espace),
+            return [
+                [
+                    'text' => get_the_title($page_mon_espace),
+                    'url'  => get_permalink($page_mon_espace),
+                ],
+                [
+                    'text' => get_the_title($page_boite_a_outils),
+                    'url'  => get_permalink($page_boite_a_outils),
+                ],
+                [
+                    'text' => get_the_title($page_se_former),
+                    'url'  => get_permalink($page_se_former),
+                ],
+                [
+                    'text' => get_the_title($post),
+                ],
             ];
-            $new_breadcrumb[] = [
-                'text' => get_the_title($page_boite_a_outils),
-                'url'  => get_permalink($page_boite_a_outils),
-            ];
-            $new_breadcrumb[] = [
-                'text' => get_the_title($page_se_former),
-                'url'  => get_permalink($page_se_former),
-            ];
-            $new_breadcrumb[] = [
-                'text' => get_the_title($post),
-            ];
-            return $new_breadcrumb;
         }
     }
 
@@ -42,23 +42,23 @@ function my_space_custom_breadcrumb($links)
         $page_nos_petitions = get_page_by_path('mon-espace/agir-et-se-mobiliser/nos-petitions');
 
         if ($page_mon_espace && $page_agir_et_se_mobiliser && $page_nos_petitions) {
-            $new_breadcrumb = [];
-            $new_breadcrumb[] = [
-                'text' => get_the_title($page_mon_espace),
-                'url'  => get_permalink($page_mon_espace),
+            return [
+                [
+                    'text' => get_the_title($page_mon_espace),
+                    'url'  => get_permalink($page_mon_espace),
+                ],
+                [
+                    'text' => get_the_title($page_agir_et_se_mobiliser),
+                    'url'  => get_permalink($page_agir_et_se_mobiliser),
+                ],
+                [
+                    'text' => get_the_title($page_nos_petitions),
+                    'url'  => get_permalink($page_nos_petitions),
+                ],
+                [
+                    'text' => get_the_title($post),
+                ],
             ];
-            $new_breadcrumb[] = [
-                'text' => get_the_title($page_agir_et_se_mobiliser),
-                'url'  => get_permalink($page_agir_et_se_mobiliser),
-            ];
-            $new_breadcrumb[] = [
-                'text' => get_the_title($page_nos_petitions),
-                'url'  => get_permalink($page_nos_petitions),
-            ];
-            $new_breadcrumb[] = [
-                'text' => get_the_title($post),
-            ];
-            return $new_breadcrumb;
         }
     }
 
@@ -67,30 +67,35 @@ function my_space_custom_breadcrumb($links)
         $page_actualites = get_page_by_path('mon-espace/actualites');
 
         if ($page_mon_espace && $page_actualites) {
-            $new_breadcrumb = [];
-
-            $new_breadcrumb[] = [
-                'text' => get_the_title($page_mon_espace),
-                'url'  => get_permalink($page_mon_espace),
+            return [
+                [
+                    'text' => get_the_title($page_mon_espace),
+                    'url'  => get_permalink($page_mon_espace),
+                ],
+                [
+                    'text' => get_the_title($page_actualites),
+                    'url'  => get_permalink($page_actualites),
+                ],
+                [
+                    'text' => get_the_title($post),
+                ],
             ];
-
-            $new_breadcrumb[] = [
-                'text' => get_the_title($page_actualites),
-                'url'  => get_permalink($page_actualites),
-            ];
-
-            $new_breadcrumb[] = [
-                'text' => get_the_title($post),
-            ];
-
-            return $new_breadcrumb;
         }
     }
 
     $page_mon_espace = get_page_by_path('mon-espace');
-    if ($page_mon_espace && is_page() && in_array($page_mon_espace->ID, get_post_ancestors($post))) {
-        array_shift($links);
-        return $links;
+
+    if (
+        $page_mon_espace &&
+        is_page() &&
+        strpos(get_permalink($post), '/mon-espace/') !== false
+    ) {
+        $ancestors = get_post_ancestors($post);
+
+        if (in_array($page_mon_espace->ID, $ancestors, true)) {
+            array_shift($links);
+            return $links;
+        }
     }
 
     return $links;
