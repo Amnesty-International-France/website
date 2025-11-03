@@ -39,7 +39,7 @@ add_filter('the_posts', function ($posts, $query) {
         if (is_tax('combat') && !is_paged() && !isset($query->_fiche_combat_injectee)) {
             $term = get_queried_object();
             if ($term) {
-                $combat_page = get_page_by_path('nos-combats/' . $term->slug);
+                $combat_page = get_page_by_path('nous-connaitre/nos-combats/' . $term->slug);
                 if ($combat_page) {
                     array_unshift($posts, $combat_page);
                     $query->_fiche_combat_injectee = true;
