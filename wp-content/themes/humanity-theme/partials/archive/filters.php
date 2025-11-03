@@ -38,7 +38,7 @@ if (!$taxonomies && ! isset($types)) {
 }
 ?>
 
-<?php if (get_post_type() !== 'fiche_pays') : ?>
+<?php if (!is_post_type_archive('fiche_pays')) : ?>
     <section class="postlist-categoriesContainer" data-slider>
         <form id="filter-form" class="news-filters" action="<?php echo esc_url($form_url); ?>">
             <?php require locate_template('partials/forms/taxonomy-filters.php'); ?>
