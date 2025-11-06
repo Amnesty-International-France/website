@@ -179,7 +179,10 @@ if (isset($_POST['sign_lead'])) {
 					<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
 					<?php
                     wp_nonce_field('newsletter_lead_form_action', 'newsletter_lead_form_nonce'); ?>
-					<button class="register-nl" name="sign_lead" disabled>OK</button>
+					<button class="register-nl" name="sign_lead" disabled>
+						<span class="button-text">OK</span>
+						<span class="spinner hidden"></span>
+					</button>
 					<div class="nl-error hidden"></div>
 				</form>
 			</div>
