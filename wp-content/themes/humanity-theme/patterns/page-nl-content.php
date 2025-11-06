@@ -133,7 +133,7 @@ print esc_attr($class_name ?? ''); ?>">
                 wp_nonce_field('newsletter_form_action', 'newsletter_form_nonce'); ?>
 
 				<div class="form-mess hidden"></div>
-					<?php if (!$local_user & !$is_salesforce_user) : ?>
+					<?php if (isset($local_user, $is_salesforce_user) && !$local_user && !$is_salesforce_user) : ?>
 					<div class="form-group civility">
 						<label class="civility-label">Civilité :</label>
 						<div class="civilities">
@@ -156,7 +156,7 @@ print esc_attr($class_name ?? ''); ?>">
 						   value="<?= esc_attr($email_provided); ?>"
 					>
 
-				<?php if (!$local_user & !$is_salesforce_user) : ?>
+				<?php if (isset($local_user, $is_salesforce_user) && !$local_user && !$is_salesforce_user) : ?>
 				<div class="form-group">
 					<input type="text" id="lastname" name="lastname" placeholder="Nom" required>
 				</div>

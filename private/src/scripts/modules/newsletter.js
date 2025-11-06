@@ -10,6 +10,7 @@ const newsletterFormElement = () => {
     footer: footer ?? null,
     overfooter: overfooter ?? null,
     inputFooterNL: inputFooterNL ?? null,
+    formLead: formLead ?? null,
     ctaFooterNL: ctaFooterNL ?? null,
     formNewsletterPage: formNewsletterPage ?? null,
   };
@@ -40,28 +41,28 @@ export const emptyInputNewsletterLead = () => {
   inputFooterNL.addEventListener('input', updateButtonState);
 };
 
-export const selectThemeNl = () => {
-  const { formNewsletterPage } = newsletterFormElement();
+export const handleNewsletterSubmission = () => {
+  const { formLead, ctaFooterNL } = newsletterFormElement();
 
-  if (!formNewsletterPage) return;
+  if (!formLead || !ctaFooterNL) return;
 
-  const themeChoicesNL = formNewsletterPage.querySelector('.theme-newsletter');
+  const buttonText = ctaFooterNL.querySelector('.button-text');
+  const spinner = ctaFooterNL.querySelector('.spinner');
 
-  if (!themeChoicesNL) return;
+  formLead.addEventListener('submit', (event) => {
+    if (ctaFooterNL.disabled) {
+      event.preventDefault();
+      return;
+    }
+    ctaFooterNL.disabled = true;
 
-  themeChoicesNL.addEventListener('click', async (event) => {
-    const currentTheme = event.target.closest('.form-group');
-    if (!currentTheme) return;
-
-    const divCheckBox = currentTheme.querySelector('.checkbox');
-    const inputTheme = currentTheme.querySelector('input[type=checkbox]');
-
-    if (!divCheckBox || !inputTheme) return;
-
-    inputTheme.checked = !inputTheme.checked;
-
-    divCheckBox.classList.toggle('checked', inputTheme.checked);
+    if (buttonText) {
+      buttonText.classList.add('hidden');
+    }
+    if (spinner) {
+      spinner.classList.remove('hidden');
+    }
   });
 };
 
-export default { selectThemeNl, emptyInputNewsletterLead };
+export default { emptyInputNewsletterLead, handleNewsletterSubmission };

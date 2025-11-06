@@ -69,7 +69,7 @@ if (!empty($success_message)) {
             <input placeholder="L'objet de votre demande" type="text" name="subject"
                 aria-labelledby="contact-subject-help-message"
                 value="<?= $subject ?>"
-                class="aif-input <?= $has_error ? 'aif-input-error' : '' ?>"
+                class="aif-input <?= isset($has_error) && $has_error ? 'aif-input-error' : '' ?>"
                 required id="subject" maxlength="255"
             />
             <?php
@@ -82,7 +82,7 @@ aif_include_partial('info-message', [
 
             <label for="message">Message (obligatoire)</label>
             <textarea name="message" aria-labelledby="contact-message-help-message"
-                class="aif-input <?= $has_error ? 'aif-input-error' : '' ?>"
+                class="aif-input <?= isset($has_error) && $has_error ? 'aif-input-error' : '' ?>"
                 required id="message"></textarea>
             <?php
 $url = get_permalink(get_page_by_path('mes-demandes'));
