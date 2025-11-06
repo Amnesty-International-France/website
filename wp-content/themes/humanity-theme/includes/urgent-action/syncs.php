@@ -6,10 +6,13 @@ class Sync_Register_Command
 {
     public function syncs_ua_with_salesforce()
     {
+        $date = date('Y-m-d H:i:s');
+        WP_CLI::log('[ REGISTER AU ] Start sync at ' . $date);
         $unsyncs = get_unsynced_actions();
 
         if (empty($unsyncs)) {
-            WP_CLI::error('[ REGISTER AU ] No new registred user to sync');
+            WP_CLI::error('[ REGISTER AU ] No new registered user to sync');
+            return;
         }
 
         $optins = [];
@@ -38,7 +41,19 @@ class Sync_Register_Command
             $user_from_sf = get_salesforce_user_with_email($user->email);
             $user_exist_on_sf = $user_from_sf['totalSize'] > 0;
 
-            if (false === $user_exist_on_sf) {
+            if ($user_exist_on_sf) {
+                $sfUser = $user_from_sf['records'][0];
+
+                $data_user_sf = [
+                    'ID'    => $sfUser['Id'],
+                    'Email' => $user->email,
+                    ...$optins,
+                    ...$codeModifications,
+                ];
+
+                update_salesforce_users($sfUser['Id'], $data_user_sf);
+                WP_CLI::success('[ REGISTER UA SYNC ] - User updated on Salesforce');
+            } else {
                 switch ($item['type']) {
                     case 'Sms':
                         $optins['Origine__c'] = getenv('AIF_SALESFORCE_CODES_AUWEBAPP');
@@ -61,27 +76,13 @@ class Sync_Register_Command
                     ...$optins,
                 ];
 
-                post_salesforce_users($data_user_sf);
+                $s = post_salesforce_users($data_user_sf);
                 WP_CLI::success('[ REGISTER UA ] - New user registered on Salesforce');
 
                 if ($item['type'] !== 'Militant') {
                     update_ua_syncs_with_sf($item['id']);
                     continue;
                 }
-            }
-
-            if ($user_exist_on_sf) {
-                $sfUser = $user_from_sf['records'][0];
-
-                $data_user_sf = [
-                    'ID'    => $sfUser['Id'],
-                    'Email' => $user->email,
-                    ...$optins,
-                    ...$codeModifications,
-                ];
-
-                update_salesforce_users($sfUser['Id'], $data_user_sf);
-                WP_CLI::success('[ REGISTER UA SYNC ] - User updated on Salesforce');
             }
 
             if ('Militant' === $item['type']) {
@@ -104,7 +105,6 @@ class Sync_Register_Command
             update_ua_syncs_with_sf($item['id']);
             WP_CLI::success('[ UPDATE USER FROM UA ] - Update User on Salesforce');
         }
-        return false;
     }
 }
 

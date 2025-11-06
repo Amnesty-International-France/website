@@ -16,7 +16,7 @@ $countries = get_posts(
 <div class="urgent-register">
 	<div class="urgent-register-header">
 		<p>
-			<?php echo esc_attr($text_header); ?>
+			<?php echo esc_attr($text_header ?? ''); ?>
 		</p>
 	</div>
 	<div class="urgent-register-form">
@@ -24,7 +24,7 @@ $countries = get_posts(
 			<div class="form-mess hidden"></div>
 			<div class="urgent-register-form-input">
 				<?php
-                foreach ($input as $item) :
+                foreach ($input ?? [] as $item) :
                     $item_esc    = esc_attr($item);
                     $placeholder = 'tel' === $item ? 'Téléphone mobile' : $item
                     ?>
@@ -100,7 +100,7 @@ $countries = get_posts(
 							</select>
 						</div>
 					</div>
-					<?php if (! in_array('tel', $input, true)) : ?>
+					<?php if (! in_array('tel', $input ?? [], true)) : ?>
 						<div class="form-group">
 							<label for="tel"></label>
 							<input
@@ -114,7 +114,7 @@ $countries = get_posts(
 					<?php endif; ?>
 				</div>
 				<div class="form-group">
-					<input type="hidden" name="type" value="<?php echo esc_attr($action_type); ?>">
+					<input type="hidden" name="type" value="<?php echo esc_attr($action_type ?? ''); ?>">
 				</div>
 			</div>
 			<div class="urgent-register-form-cta">
