@@ -36,7 +36,7 @@ add_filter('wp_mail', function ($args) {
 
     $map = [
         'Vos dons, votre adhésion, votre abonnement à la Chronique' => 'smd@amnesty.fr',
-        "L'engagement avec Amnesty" => 'mobilisation@amnesty.fr',
+        "L\'engagement avec Amnesty" => 'mobilisation@amnesty.fr',
         'La Chronique' => 'chronique@amnesty.fr',
     ];
 
