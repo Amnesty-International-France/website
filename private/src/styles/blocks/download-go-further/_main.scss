@@ -61,7 +61,6 @@
           text-decoration-thickness: auto;
           text-underline-offset: auto;
           text-underline-position: from-font;
-          text-transform: capitalize;
 
           &:hover {
             color: var(--wp--preset--color--grey-dark);
@@ -71,7 +70,6 @@
 
       a {
         text-decoration: none;
-        flex-shrink: 0;
 
         .item-button {
           display: flex;
