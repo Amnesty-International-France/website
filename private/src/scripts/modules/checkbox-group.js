@@ -260,11 +260,14 @@ const handleMouseEvents = (event) => {
 };
 
 export default () => {
+  const form = document.querySelector('#filter-form');
   const groups = Array.from(document.querySelectorAll('.checkboxGroup'));
 
-  if (!groups.length) {
+  if (!form || !groups.length) {
     return;
   }
+
+  const isControl = form.querySelector('.is-control');
 
   groups.forEach((group) => {
     const button = group.querySelector('.checkboxGroup-button');
@@ -272,6 +275,10 @@ export default () => {
 
     const items = group.querySelectorAll('.checkboxGroup-item input');
     groupsItemsCache.set(group, Array.from(items));
+
+    if (isControl) {
+      items.forEach((item) => item.addEventListener('click', () => form.submit()));
+    }
   });
 
   document.addEventListener('keyup', handleKeyboardEvents);

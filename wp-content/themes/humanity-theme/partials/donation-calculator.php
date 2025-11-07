@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 global $post;
 
+if (!isset($post)) {
+    return;
+}
+
 $campaign_url = get_field('link-donation', $post->ID) ?? '';
 
 $size        = $args['size'] ?? '';

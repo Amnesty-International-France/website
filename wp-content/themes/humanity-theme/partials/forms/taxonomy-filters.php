@@ -38,7 +38,6 @@ amnesty_render_custom_select([
     'name' => 'qtype',
     'active' => $query_vars,
     'options' => $options,
-    'multiple' => true,
 ]);
 ?>
     <?php endif; ?>
@@ -70,12 +69,12 @@ $is_petition_ctx = ($is_petition_selected || $petition_qv || $is_petition_archiv
 
         amnesty_render_custom_select([
             'label'    => $tax_item->label,
+            'show_label' => true,
             'name'     => "q{$tax_item->name}",
-            'active'   => query_var_to_array("q{$tax_item->name}"),
+            'active'   => amnesty_get_query_var("q{$tax_item->name}"),
             'options'  => amnesty_taxonomy_to_option_list($tax_item),
-            'multiple' => true,
         ]);
         ?>
     <?php endforeach; ?>
 </div>
-<button id="search-filters-submit" class="filter-button">Filtrer</button>
+<a type="button" id="search-filters-submit" href="<?php echo esc_url($form_url)?>" class="filter-button">Réinitialiser</a>

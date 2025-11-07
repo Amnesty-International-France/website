@@ -21,7 +21,9 @@
     }
 
     .filter-button {
-      border: none;
+      color: var(--wp--preset--color--black);
+      border: var(--wp--preset--color--black) 2px solid;
+      background-color: var(--wp--preset--color--white);
       padding: 12px 24px;
       font-family: var(--wp--preset--font-family--secondary), serif;
       text-decoration: none;
@@ -29,8 +31,7 @@
       font-weight: bold;
       line-height: 1rem;
       text-transform: uppercase;
-      transition: all 0.2s ease;
-      background-color: var(--wp--preset--color--black);
+      transition: all 0.4s ease;
       text-align: center;
       max-height: 40px;
 
@@ -39,7 +40,9 @@
       }
 
       &:hover {
-        background-color: var(--wp--preset--color--grey-darkest);
+        background-color: transparent;
+        color: var(--wp--preset--color--grey-darkest);
+        cursor: pointer;
       }
     }
 

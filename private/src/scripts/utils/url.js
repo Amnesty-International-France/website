@@ -90,6 +90,14 @@ export const inputsToObject = (inputs) => {
 
       request[arrName].push(input.value);
     }
+
+    if (input.type === 'radio') {
+      if (!input.checked) {
+        return;
+      }
+
+      request[input.name] = input.value;
+    }
   });
 
   return request;

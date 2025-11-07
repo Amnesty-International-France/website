@@ -19,9 +19,6 @@ $make_id = fn (string $value): string => amnesty_hash_id($params['name'] . '-' .
 
 ?>
 <div class="checkboxGroup is-control <?php echo esc_attr($params['class']); ?>">
-<?php if ($params['show_label']) : ?>
-	<span class="checkboxGroup-label"><?php echo esc_html($params['label']); ?></span>
-<?php endif; ?>
 
 	<button class="checkboxGroup-button" type="button" aria-haspopup="listbox" aria-expanded="false" <?php disabled($params['disabled']); ?>>
 	<?php
