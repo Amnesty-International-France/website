@@ -4,8 +4,8 @@ const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
 
 registerBlockType('amnesty-core/download-go-further', {
-  title: __('Pour aller plus loin', 'amnesty'),
-  description: 'Block pour aller plus loin, téléchargement de fichiers',
+  title: __('Documents à télécharger', 'amnesty'),
+  description: 'Block documents à télécharger',
   category: 'amnesty-core',
   icon: 'download',
   attributes: {
