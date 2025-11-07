@@ -78,12 +78,9 @@
   }
 
   &:hover,
-  &:focus-within {
-    background: var(--wp--preset--color--grey-lighter);
-  }
-
+  &:focus-within,
   &:active {
-    background: var(--wp--preset--color--primary-state);
+    background: var(--wp--preset--color--primary) !important;
   }
 
   &:active label {
@@ -97,17 +94,12 @@
   }
 
   &:has(input:checked) {
-    background: var(--wp--preset--color--grey-dark);
-  }
-
-  &:has(input:checked):hover,
-  &:has(input:checked):focus-within {
-    background: var(--wp--preset--color--grey-dark);
+    background: var(--wp--preset--color--primary);
   }
 
   &:has(input:checked):focus,
   &:has(input:checked):active {
-    background: var(--wp--preset--color--primary-state);
+    background: var(--wp--preset--color--primary);
   }
 
   &:has(input:checked) label {

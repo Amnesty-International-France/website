@@ -15,12 +15,13 @@ if ((!isset($taxonomies) || empty($taxonomies)) && (!isset($types) || empty($typ
         <?php
         amnesty_render_custom_select([
             'label'    => $tax_item->labels->my_space_filter_label,
+            'show_label' => true,
             'name'     => "q{$tax_item->name}",
-            'active'   => query_var_to_array("q{$tax_item->name}"),
+            'active'   => amnesty_get_query_var("q{$tax_item->name}"),
             'options'  => amnesty_taxonomy_to_option_list($tax_item),
-            'multiple' => true,
         ]);
         ?>
     <?php endforeach; ?>
 </div>
-<button id="search-filters-submit" class="filter-button">Filtrer</button>
+<a type="button" id="search-filters-submit" href="<?php echo esc_url($form_url)?>" class="filter-button">Réinitialiser</a>
+

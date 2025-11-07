@@ -7,21 +7,21 @@
 
 global $wpdb;
 
-$active_category = isset($_GET['qcategories']) ? explode(',', sanitize_text_field($_GET['qcategories'])) : [];
+$active_category = isset($_GET['qcategories']) ? sanitize_text_field($_GET['qcategories']) : '';
 $category_options = ['' => 'Toutes les catégories'];
 $cat_field_obj = get_field_object('field_688344d2380a3');
 if ($cat_field_obj && isset($cat_field_obj['choices'])) {
     $category_options += $cat_field_obj['choices'];
 }
 
-$active_location = isset($_GET['qlieu']) ? explode(',', sanitize_text_field($_GET['qlieu'])) : [];
+$active_location = isset($_GET['qlieu']) ? sanitize_text_field($_GET['qlieu']) : '';
 $location_options = ['' => 'Tous les lieux'];
 $lieu_field_obj = get_field_object('field_6883319051ddc');
 if ($lieu_field_obj && isset($lieu_field_obj['choices'])) {
     $location_options += $lieu_field_obj['choices'];
 }
 
-$active_period = isset($_GET['qperiod']) ? explode(',', sanitize_text_field($_GET['qperiod'])) : [];
+$active_period = isset($_GET['qperiod']) ? sanitize_text_field($_GET['qperiod']) : '';
 $periods_query = $wpdb->get_col("SELECT DISTINCT DATE_FORMAT(meta_value, '%Y-%m') FROM {$wpdb->postmeta} WHERE meta_key LIKE '%session%date%de%debut' AND meta_value IS NOT NULL AND meta_value != '' ORDER BY meta_value ASC");
 $period_options = ['' => 'Toutes les périodes'];
 if (!empty($periods_query)) {
@@ -43,9 +43,27 @@ if (!empty($periods_query)) {
 
 <div class="taxonomyArchive-filters">
     <?php
-    amnesty_render_custom_select(['label' => 'Catégorie', 'name' => 'qcategories', 'active' => $active_category, 'options' => $category_options, 'multiple' => true]);
-amnesty_render_custom_select(['label' => 'Lieu', 'name' => 'qlieu', 'active' => $active_location, 'options' => $location_options, 'multiple' => true]);
-amnesty_render_custom_select(['label' => 'Date', 'name' => 'qperiod', 'active' => $active_period, 'options' => $period_options, 'multiple' => true]);
+    amnesty_render_custom_select([
+        'label' => 'Catégorie',
+        'show_label' => true,
+        'name' => 'qcategories',
+        'active' => $active_category,
+        'options' => $category_options,
+    ]);
+amnesty_render_custom_select([
+    'label' => 'Lieu',
+    'show_label' => true,
+    'name' => 'qlieu',
+    'active' => $active_location,
+    'options' => $location_options,
+]);
+amnesty_render_custom_select([
+    'label' => 'Date',
+    'show_label' => true,
+    'name' => 'qperiod',
+    'active' => $active_period,
+    'options' => $period_options,
+]);
 ?>
 </div>
-<button id="training-filters-submit" class="filter-button" type="submit">Filtrer</button>
+<a type="button" id="training-filters-submit" href="<?php echo esc_url($form_url)?>" class="filter-button">Réinitialiser</a>

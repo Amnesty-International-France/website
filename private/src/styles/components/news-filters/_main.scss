@@ -9,24 +9,26 @@
   }
 
   .filter-button {
-    border: none;
     padding: 12px 24px;
-    color: var(--wp--preset--color--white);
-    background-color: var(--wp--preset--color--black);
+    color: var(--wp--preset--color--black);
+    border: var(--wp--preset--color--black) 2px solid;
+    background-color: var(--wp--preset--color--white);
     font-family: var(--wp--preset--font-family--secondary);
     font-size: 15px;
     font-weight: bold;
     line-height: 16px;
     text-transform: uppercase;
+    text-decoration: none;
     margin-top: 24px;
-    transition: all 0.2s ease;
+    transition: all 0.4s ease;
 
     @media (min-width: $container-sm) {
       margin: 0;
     }
 
     &:hover {
-      background-color: var(--wp--preset--color--grey-darkest);
+      background-color: transparent;
+      color: var(--wp--preset--color--grey-darkest);
       cursor: pointer;
     }
   }
