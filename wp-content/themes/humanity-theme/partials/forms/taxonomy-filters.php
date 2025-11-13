@@ -27,16 +27,14 @@ if ((!isset($taxonomies) || empty($taxonomies)) && (!isset($types) || empty($typ
 asort($options);
 $query_vars = [];
 if (isset($_GET['qtype']) && ! empty($_GET['qtype'])) {
-    $query_vars = explode(',', $_GET['qtype']);
-    $query_vars = array_map('trim', $query_vars);
-    $query_vars = array_filter($query_vars);
-    $query_vars = array_map('sanitize_key', $query_vars);
-    $query_vars = array_unique($query_vars);
+    $active = sanitize_text_field($_GET['qtype']);
 }
+
 amnesty_render_custom_select([
     'label' => 'Type de contenu',
+    'show_label' => true,
     'name' => 'qtype',
-    'active' => $query_vars,
+    'active' => $active ?? null,
     'options' => $options,
 ]);
 ?>
