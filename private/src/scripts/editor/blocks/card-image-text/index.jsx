@@ -44,9 +44,9 @@ registerBlockType('amnesty-core/card-image-text', {
       type: 'string',
       default: 'Texte par défaut',
     },
-    selectedPostCategorySlug: {
-      type: 'string',
-      default: '',
+    newTab: {
+      type: 'boolean',
+      default: false,
     },
   },
   example: {

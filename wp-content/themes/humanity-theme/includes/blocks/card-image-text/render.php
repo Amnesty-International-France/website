@@ -14,7 +14,7 @@ if (!function_exists('render_card_image_text_block')) {
         $custom = $attributes['custom'] ?? false;
         $postId = $attributes['postId'] ?? null;
         $direction = $attributes['direction'] ?? 'horizontal';
-        $selected_post_category_slug = $attributes['selectedPostCategorySlug'] ?? '';
+        $newTab = $attributes['newTab'] ?? false;
 
         if (! $custom && $postId) {
             $post = get_post($postId);
@@ -80,7 +80,7 @@ if (!function_exists('render_card_image_text_block')) {
         }
 
         $link_extra_attrs = '';
-        if ($custom || $selected_post_category_slug === 'document') {
+        if ($newTab) {
             $link_extra_attrs = ' target="_blank" rel="noopener noreferrer"';
         }
 

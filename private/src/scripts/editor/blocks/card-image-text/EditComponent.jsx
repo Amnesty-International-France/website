@@ -18,7 +18,7 @@ const getCategoryLink = (slug) => {
 };
 
 const EditComponent = ({ attributes, setAttributes }) => {
-  const { custom, direction, postId, title, subtitle, category, permalink, thumbnail, text } =
+  const { custom, newTab, direction, title, subtitle, category, permalink, thumbnail, text } =
     attributes;
 
   const blockProps = useBlockProps();
@@ -45,7 +45,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
         permalink: '',
         thumbnail: null,
         text: '',
-        selectedPostCategorySlug: '',
         selectedPostDate: '',
         selectedPostCustomTerms: [],
       });
@@ -59,6 +58,10 @@ const EditComponent = ({ attributes, setAttributes }) => {
         text: '',
       });
     }
+  };
+
+  const updateNewTab = (value) => {
+    setAttributes({ newTab: value });
   };
 
   const updateDirection = (value) => {
@@ -169,11 +172,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
     className: 'card-image-text-block-link',
   };
 
-  if (
-    custom ||
-    attributes.selectedPostCategorySlug === 'document' ||
-    (postId && attributes.category === 'Document')
-  ) {
+  if (newTab) {
     linkProps.target = '_blank';
     linkProps.rel = 'noopener noreferrer';
   }
@@ -187,6 +186,12 @@ const EditComponent = ({ attributes, setAttributes }) => {
             label={__('Contenu personnalisé', 'amnesty')}
             checked={custom}
             onChange={updateCustom}
+          />
+          <ToggleControl
+            __nextHasNoMarginBottom
+            label={__('Ouvrir dans un nouvel onglet', 'amnesty')}
+            checked={newTab}
+            onChange={updateNewTab}
           />
           <SelectControl
             label={__('Disposition', 'amnesty')}
