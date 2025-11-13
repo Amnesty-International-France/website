@@ -1,11 +1,10 @@
-import classnames from 'classnames';
 import PostSearchControl from '../../components/PostSearchControl.jsx';
 
+const ServerSideRender = wp.serverSideRender;
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
 const { PanelBody, TextControl, SelectControl, ToggleControl, TextareaControl, Button } =
   wp.components;
-const { useSelect } = wp.data;
 
 const getCategoryLink = (slug) => {
   if (slug === 'landmark') {
@@ -21,14 +20,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
   const { custom, newTab, direction, title, subtitle, category, permalink, thumbnail, text } =
     attributes;
 
-  const blockProps = useBlockProps();
-
   const allowedTypesForThisBlock = ['post', 'pages', 'landmark', 'document'];
-
-  const selectedMedia = useSelect(
-    (select) => (thumbnail ? select('core').getMedia(thumbnail) : null),
-    [thumbnail],
-  );
 
   const handleSelectImage = (newMedia) => {
     setAttributes({ thumbnail: newMedia.id });
@@ -45,8 +37,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
         permalink: '',
         thumbnail: null,
         text: '',
-        selectedPostDate: '',
-        selectedPostCustomTerms: [],
       });
     } else {
       setAttributes({
@@ -88,24 +78,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
     setAttributes({ text: newText });
   };
 
-  const extractAllCustomTerms = (embeddedData) => {
-    if (!embeddedData || !Array.isArray(embeddedData['wp:term'])) {
-      return [];
-    }
-    let allCustomTerms = [];
-    embeddedData['wp:term'].forEach((termGroup) => {
-      if (Array.isArray(termGroup)) {
-        const customTermsInGroup = termGroup.filter(
-          (term) => term.taxonomy !== 'category' && term.taxonomy !== 'post_tag',
-        );
-        allCustomTerms = allCustomTerms.concat(
-          customTermsInGroup.map(({ id, name, slug, taxonomy }) => ({ id, name, slug, taxonomy })),
-        );
-      }
-    });
-    return allCustomTerms;
-  };
-
   const handlePostSelection = (post) => {
     if (!post) {
       setAttributes({
@@ -121,7 +93,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
     }
 
     if (post.type === 'document') {
-      const { id, _embedded, excerpt, date, acf } = post;
+      const { id, _embedded, excerpt, acf } = post;
       const docCategory = _embedded?.['wp:term']
         ?.flat()
         ?.find((term) => term.taxonomy === 'document_category')?.name;
@@ -132,14 +104,11 @@ const EditComponent = ({ attributes, setAttributes }) => {
         title: post.title.rendered,
         subtitle: '',
         text: excerpt?.rendered || '',
-        selectedPostDate: date,
-        selectedPostCustomTerms: [],
         permalink: acf?.upload_du_document?.url || '',
         thumbnail: post.featured_media !== 0 ? post.featured_media : null,
       });
     } else {
-      const { id, slug, _embedded, date, excerpt, type } = post;
-      const allExtractedTerms = extractAllCustomTerms(_embedded);
+      const { id, slug, _embedded, excerpt, type } = post;
 
       let postCategoryName = '';
       if (type === 'landmark') {
@@ -161,8 +130,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
         permalink: `${getCategoryLink(type)}/${slug}`,
         thumbnail: _embedded?.['wp:featuredmedia']?.[0]?.id || null,
         text: excerpt?.rendered || '',
-        selectedPostDate: date,
-        selectedPostCustomTerms: allExtractedTerms,
       });
     }
   };
@@ -267,44 +234,12 @@ const EditComponent = ({ attributes, setAttributes }) => {
         </PanelBody>
       </InspectorControls>
 
-      <div {...blockProps} className={classnames('card-image-text-block', direction)}>
-        <p className="card-image-text-category">{category}</p>
-        <div className="card-content-wrapper">
-          <div {...linkProps}>
-            <div className="card-image-text-thumbnail-wrapper">
-              {selectedMedia && (
-                <img className="card-image-text-thumbnail" src={selectedMedia.source_url} alt="" />
-              )}
-            </div>
-            <div className="card-image-text-content-container">
-              <div className="card-image-text-content">
-                <p className="card-image-text-content-subtitle">{subtitle}</p>
-                <p className="card-image-text-content-title">{title}</p>
-                <p
-                  className="card-image-text-content-text"
-                  dangerouslySetInnerHTML={{ __html: text }}
-                />
-                <div className="card-image-text-content-see-more">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M10.7826 7.33336L7.20663 3.75736L8.14930 2.81470L13.3346 8.00003L8.14930 13.1854L7.20663 12.2427L10.7826 8.66670H2.66797V7.33336H10.7826Z"
-                      fill="black"
-                    />
-                  </svg>
-                  <p className="card-image-text-content-see-more-label">Voir la suite</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div {...useBlockProps()}>
+        <ServerSideRender
+          block="amnesty-core/card-image-text"
+          attributes={{ ...attributes, editor: true }}
+          EmptyResponsePlaceholder={() => <p>Chargement de l&apos;aperçu...</p>}
+        />
       </div>
     </>
   );

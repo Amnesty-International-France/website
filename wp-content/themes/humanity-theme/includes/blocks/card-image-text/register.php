@@ -13,8 +13,13 @@ if (!function_exists('register_card_image_text_block')) {
     function register_card_image_text_block(): void
     {
         register_block_type('amnesty-core/card-image-text', [
+            'api_version' => 3,
             'render_callback' => 'render_card_image_text_block',
             'attributes' => [
+                'editor' => [
+                    'type' => 'boolean',
+                    'default' => false,
+                ],
                 'custom' => [
                     'type' => 'boolean',
                     'default' => false,
@@ -24,7 +29,7 @@ if (!function_exists('register_card_image_text_block')) {
                     'default' => 'vertical',
                 ],
                 'postId' => [
-                    'type' => 'integer',
+                    'type' => ['integer', 'null', 'string'],
                     'default' => null,
                 ],
                 'title' => [
@@ -44,7 +49,7 @@ if (!function_exists('register_card_image_text_block')) {
                     'default' => '#',
                 ],
                 'thumbnail' => [
-                    'type' => 'integer',
+                    'type' => ['integer', 'null', 'string'],
                     'default' => null,
                 ],
                 'text' => [
