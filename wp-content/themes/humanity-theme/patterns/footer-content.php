@@ -66,14 +66,15 @@ $action_links = [
     ],
 ];
 
-$inscription_nl_status = $_GET['inscription__nl'] ?? '';
+$inscription_nl_status = $_GET['inscription__nl__footer'] ?? '';
 $inscription_nl_success = $inscription_nl_status === 'success';
 
-if (isset($_POST['sign_lead'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) {
     if (!isset($_POST['newsletter_lead_form_nonce']) ||
         !wp_verify_nonce($_POST['newsletter_lead_form_nonce'], 'newsletter_lead_form_action')) {
         wp_die('Échec de sécurité, veuillez réessayer.');
     }
+    error_log('submit newsletter form');
 
     $email = sanitize_email($_POST['newsletter-lead'] ?? '');
 
@@ -81,8 +82,8 @@ if (isset($_POST['sign_lead'])) {
     $get_user_sf = get_salesforce_user_with_email($email);
     $contact_exist_on_salesforce = $get_user_sf['totalSize'] > 0;
 
-    if ($local_user !== false && !$contact_exist_on_salesforce) {
-        post_salesforce_users([
+    if ($local_user !== false) {
+        $data = [
             'Email' => $local_user->email,
             'Salutation' => $local_user->civility,
             'Code_Postal__c' => $local_user->postal_code,
@@ -90,10 +91,22 @@ if (isset($_POST['sign_lead'])) {
             'LastName' =>  $local_user->lastname,
             'Pays__c' => $local_user->country,
             'Optin_Actionaute_Newsletter_mensuelle__c' => true,
-        ]);
+        ];
+
+        if (!$contact_exist_on_salesforce) {
+            post_salesforce_users([
+                ...$data,
+                'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
+            ]);
+        } else {
+            update_salesforce_users($get_user_sf['records'][0]['Id'], [
+                ...$data,
+                'Optout_toute_communication__c' => false,
+            ]);
+        }
 
         wp_redirect(add_query_arg([
-            'inscription__nl' => 'success',
+            'inscription__nl__footer' => 'success',
         ], home_url()));
         exit;
     }
@@ -123,7 +136,7 @@ if (isset($_POST['sign_lead'])) {
         update_salesforce_users($user_id, $data);
 
         wp_redirect(add_query_arg([
-            'inscription__nl' => 'success',
+            'inscription__nl__footer' => 'success',
         ], home_url()));
         exit;
     }
