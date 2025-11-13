@@ -1,10 +1,9 @@
 .article.dossiers {
   .article-meta {
     max-width: $container-sm;
-    padding: 12px 24px;
 
-    @media (min-width: $container-md) {
-      padding: 0;
+    @media (max-width: $container-hg) {
+      padding: 0 24px;
     }
 
     .article-metaData {
