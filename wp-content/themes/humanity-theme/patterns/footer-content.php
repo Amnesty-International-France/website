@@ -74,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
         !wp_verify_nonce($_POST['newsletter_lead_form_nonce'], 'newsletter_lead_form_action')) {
         wp_die('Échec de sécurité, veuillez réessayer.');
     }
-    error_log('submit newsletter form');
 
     $email = sanitize_email($_POST['newsletter-lead'] ?? '');
 
