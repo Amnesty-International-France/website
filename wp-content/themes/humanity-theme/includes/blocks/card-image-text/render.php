@@ -11,6 +11,7 @@ if (!function_exists('render_card_image_text_block')) {
      */
     function render_card_image_text_block(array $attributes): string
     {
+        $editor = $attributes['editor'] ?? false;
         $custom = $attributes['custom'] ?? false;
         $postId = $attributes['postId'] ?? null;
         $direction = $attributes['direction'] ?? 'horizontal';
@@ -100,7 +101,7 @@ if (!function_exists('render_card_image_text_block')) {
 				]) ?>
             <?php endif; ?>
             <div class="card-content-wrapper">
-                <a href="<?php echo esc_url($permalink); ?>" class="card-image-text-block-link"<?php echo $link_extra_attrs; ?>>
+                <<?= $editor ? 'div' : 'a' ?> href="<?php echo esc_url($permalink); ?>" class="card-image-text-block-link"<?php echo $link_extra_attrs; ?>>
                     <div class="card-image-text-thumbnail-wrapper">
                         <?php if (!empty($thumbnail_url)) : ?>
                             <img class="card-image-text-thumbnail" src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($title); ?>" />
@@ -136,7 +137,7 @@ if (!function_exists('render_card_image_text_block')) {
                             </div>
                         </div>
                     </div>
-                </a>
+                </<?= $editor ? 'div' : 'a' ?>>
             </div>
         </div>
         <?php

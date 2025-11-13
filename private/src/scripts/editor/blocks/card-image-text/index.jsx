@@ -8,6 +8,10 @@ registerBlockType('amnesty-core/card-image-text', {
   category: 'amnesty-core',
   icon: 'id-alt',
   attributes: {
+    editor: {
+      type: 'boolean',
+      default: false,
+    },
     custom: {
       type: 'boolean',
       default: false,
@@ -51,7 +55,7 @@ registerBlockType('amnesty-core/card-image-text', {
   },
   example: {
     attributes: {
-      custom: false,
+      custom: true,
       direction: 'vertical',
       title: "Le Droit à l'Information : Un Pilier de la Démocratie",
       subtitle: "Notre dernier rapport d'enquête",
