@@ -17,7 +17,7 @@ export const pageMenu = () => {
 
   headings.forEach((heading, index) => {
     const h = heading;
-    if (!h.id) h.id = `legs-menu-${index + 1}`;
+    if (!h.id) h.id = `menu-${index + 1}`;
     const li = document.createElement('li');
     const a = document.createElement('a');
     a.textContent = h.textContent;
