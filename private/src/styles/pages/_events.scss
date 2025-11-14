@@ -31,13 +31,9 @@
       font-weight: bold;
       line-height: 1rem;
       text-transform: uppercase;
-      transition: all 0.4s ease;
+      transition: all 0.3s ease;
       text-align: center;
       max-height: 40px;
-
-      &:first-child {
-        color: var(--wp--preset--color--white);
-      }
 
       &:hover {
         background-color: transparent;
@@ -91,12 +87,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             cursor: pointer;
+            color: var(--wp--preset--color--black);
+            background-color: var(--wp--preset--color--white);
 
             &:hover,
             &:active {
-              background-color: var(--wp--preset--color--grey-darkest);
+              background-color: var(--wp--preset--color--black);
+              color: var(--wp--preset--color--primary);
+              cursor: pointer;
             }
 
             > svg {
@@ -130,8 +130,16 @@
           font-weight: bold;
           border: none;
           cursor: pointer;
+          color: var(--wp--preset--color--black);
           background-color: var(--wp--preset--color--primary);
           max-height: 40px;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: var(--wp--preset--color--primary-dark);
+            border-color: var(--wp--preset--color--primary-dark);
+            opacity: 0.9;
+          }
         }
       }
 

@@ -109,13 +109,13 @@ if ($user_longitude && $user_latitude) {
 					<form class="form-location" action="">
 						<label for="input-localisation"></label>
 						<input id="input-localisation" name="location" type="text" placeholder="Ville ou code postal">
-						<button class="filter-button">
+						<button>
 							<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-search.svg'); ?>
 						</button>
 
 					</form>
 					<span>ou</span>
-					<button id="localisation" class="btn btn--yellow">Me Géolocaliser</button>
+					<button id="localisation">Me Géolocaliser</button>
 				</div>
 				<div class="event-filters-results hidden">
 					<ul class="search-results"></ul>
