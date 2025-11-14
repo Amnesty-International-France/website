@@ -150,7 +150,6 @@ class LinksUtils
 
         if (strtolower($type) === 'thematique') {
             $uid = self::mapThematique($uid);
-            echo $uid . PHP_EOL;
         }
 
         $args = [
