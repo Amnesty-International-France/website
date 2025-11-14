@@ -148,6 +148,11 @@ class LinksUtils
             return false;
         }
 
+        if (strtolower($type) === 'thematique') {
+            $uid = self::mapThematique($uid);
+            echo $uid . PHP_EOL;
+        }
+
         $args = [
             'name' => $uid,
             'post_type' => \Type::get_wp_post_type($article_type),
@@ -167,7 +172,23 @@ class LinksUtils
     {
         return match (strtolower($urlType)) {
             'actualites' => \Type::NEWS,
+            'thematique' => \Type::PAGE_FROIDE,
             default => null,
+        };
+    }
+
+    private static function mapThematique(string $uid): string
+    {
+        return match($uid) {
+            'liberte-d-expression' => 'liberte-expression',
+            'peine-de-mort-et-torture' => 'peine-de-mort',
+            'controle-des-armes' => 'respect-droit-international-humanitaire',
+            'justice-internationale-et-impunite' => 'justice-internationale',
+            'responsabilite-des-entreprises' => 'justice-climatique',
+            'discriminations' => 'justice-raciale',
+            'droits-sexuels' => 'justice-de-genre',
+            'conflits-armes-et-populations' => 'respect-droit-international-humanitaire',
+            default => $uid,
         };
     }
 }
