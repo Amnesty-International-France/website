@@ -15,17 +15,33 @@ class ListeFilmsMapper extends BlockMapper
 
         foreach ($prismicBlock['items'] as $item) {
             try {
-                $this->blocks[] = [
-                    'blockName' => 'amnesty-core/card-image-text',
-                    'attrs' => [
-                        'postId' => LinksUtils::processLink($item['link'], ReturnType::ID),
-                        'direction' => 'horizontal',
-                    ],
-                    'innerContent' => [],
-                ];
+				if ($item['link']['link_type'] === 'Web') {
+					$this->blocks[] = [
+						'blockName' => 'amnesty-core/card-image-text',
+						'attrs' => [
+							'custom' => true,
+							'permalink' => $item['link']['url'],
+							'title' => $item['title'],
+							'subtitle' => '',
+							'category' => '',
+							'text' => '',
+							'direction' => 'horizontal',
+							'newTab' => true,
+						],
+						'innerContent' => [],
+					];
+				} else {
+					$this->blocks[] = [
+						'blockName' => 'amnesty-core/card-image-text',
+						'attrs' => [
+							'postId' => LinksUtils::processLink($item['link'], ReturnType::ID),
+							'direction' => 'horizontal',
+						],
+						'innerContent' => [],
+					];
+				}
             } catch (Exception $e) {
             }
-
         }
     }
 
