@@ -17,7 +17,7 @@ if (!function_exists('render_card_image_text_block')) {
         $direction = $attributes['direction'] ?? 'horizontal';
         $newTab = $attributes['newTab'] ?? false;
 
-        if (! $custom && $postId) {
+        if (! $custom && $postId && is_numeric($postId)) {
             $post = get_post($postId);
             $title = $post->post_title ?? '';
             $subtitle = get_the_date('d F, Y', $postId) ?? '';
