@@ -171,7 +171,15 @@ class LinksUtils
     {
         return match (strtolower($urlType)) {
             'actualites' => \Type::NEWS,
-            'thematique' => \Type::PAGE_FROIDE,
+            'thematique', 'personnes' => \Type::PAGE_FROIDE,
+			'structuremilitante' => \Type::STRUCTURE_LOCALE,
+			'petitions' => \Type::PETITION,
+			'focus' => \Type::FOCUS,
+			'dossiers' => \Type::DOSSIER,
+			'actions-soutien' => \Type::ACTION_SOUTIEN,
+			'presse', 'communiquepresse', 'communiques-de-presse' => \Type::COMMUNIQUE_PRESSE,
+			'actions-mobilisation' => \Type::ACTION_MOBILISATION,
+			'chronique' => \Type::ARTICLE_CHRONIQUE,
             default => null,
         };
     }
