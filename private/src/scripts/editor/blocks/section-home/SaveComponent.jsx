@@ -94,6 +94,7 @@ const SaveComponent = (props) => {
               alignment={buttonPosition}
               style="bg-yellow"
               icon="arrow-right"
+              isInternal={true}
             />
           )}
         </div>

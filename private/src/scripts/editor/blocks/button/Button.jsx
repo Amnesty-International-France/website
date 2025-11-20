@@ -5,23 +5,26 @@ import Heart from './icons/Heart.jsx';
 import Pencil from './icons/Pencil.jsx';
 import ZoomIn from './icons/ZoomIn.jsx';
 
-const Button = ({ label, size, style, icon, link, alignment, className }) => (
-  <div className={classnames('custom-button-block', alignment, className)}>
-    <a href={link} target="_blank" rel="noopener noreferrer" className="custom-button">
-      <div className={classnames('content', size, style)}>
-        {icon && (
-          <div className="icon-container">
-            {icon === 'arrow-left' && <ArrowLeft />}
-            {icon === 'arrow-right' && <ArrowRight />}
-            {icon === 'heart' && <Heart />}
-            {icon === 'pencil' && <Pencil />}
-            {icon === 'zoom-in' && <ZoomIn />}
-          </div>
-        )}
-        <div className="button-label">{label}</div>
-      </div>
-    </a>
-  </div>
-);
+const Button = ({ label, size, style, icon, link, alignment, className, isInternal }) => {
+  const targetProps = isInternal ? {} : { target: '_blank', rel: 'noopener noreferrer' };
+  return (
+    <div className={classnames('custom-button-block', alignment, className)}>
+      <a href={link} {...targetProps} className="custom-button">
+        <div className={classnames('content', size, style)}>
+          {icon && (
+            <div className="icon-container">
+              {icon === 'arrow-left' && <ArrowLeft />}
+              {icon === 'arrow-right' && <ArrowRight />}
+              {icon === 'heart' && <Heart />}
+              {icon === 'pencil' && <Pencil />}
+              {icon === 'zoom-in' && <ZoomIn />}
+            </div>
+          )}
+          <div className="button-label">{label}</div>
+        </div>
+      </a>
+    </div>
+  );
+};
 
 export default Button;
