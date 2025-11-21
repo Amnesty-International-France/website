@@ -39,7 +39,7 @@ class SectionMapper extends BlockMapper
 
     protected function getBlockName(): string
     {
-        return 'amnesty-core/group';
+        return 'core/group';
     }
 
     protected function getAttributes(): array

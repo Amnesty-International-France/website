@@ -68,6 +68,39 @@ if (! function_exists('amnesty_get_hero_data')) {
     }
 }
 
+if (! function_exists('amnesty_get_chapo_data')) {
+    /**
+     * Retrieve hero block data for a post
+     *
+     * @package Amnesty\Blocks
+     *
+     * @param mixed $post the post to get the data for
+     *
+     * @return array
+     */
+    function amnesty_get_chapo_data($post = null)
+    {
+        if (is_404() || is_search()) {
+            return null;
+        }
+
+        $post = get_post($post);
+
+        if (! isset($post->ID) || ! $post->ID) {
+            return null;
+        }
+
+        $blocks = parse_blocks($post->post_content);
+        $chapo = amnesty_find_first_block_of_type($blocks, 'amnesty-core/chapo');
+
+        if (! count($chapo)) {
+            return null;
+        }
+
+        return $chapo;
+    }
+}
+
 if (! function_exists('amnesty_remove_first_hero_from_content')) {
     /**
      * Strip the hero block out of the content and overwrite it
@@ -88,5 +121,12 @@ if (! function_exists('amnesty_remove_first_hero_from_content')) {
             $content,
             1
         );
+    }
+}
+
+if (! function_exists('amnesty_remove_chapo_from_content')) {
+    function amnesty_remove_chapo_from_content(string $content): string
+    {
+        return preg_replace('/<!-- wp:amnesty-core\/chapo (.*?)-->(.*?)<!-- \/wp:amnesty-core\/chapo -->/s', '', $content, 1);
     }
 }
