@@ -22,7 +22,7 @@ $has_related_content = !empty(get_field('_related_posts_selected', get_the_ID())
         <div>
             <?php the_content(); ?>
 			<?php if ($has_related_content) : ?>
-			<?php echo render_block(['blockName' => 'amnesty-core/related-posts', 'attrs' => ['title' => "Voir aussi"], 'innerBlocks' => []])?>
+			<?php echo render_block(['blockName' => 'amnesty-core/related-posts', 'attrs' => ['title' => 'Voir aussi'], 'innerBlocks' => []])?>
 			<?php endif; ?>
         </div>
     </div>
