@@ -422,6 +422,11 @@
     font-size: 14px;
     line-height: 12px;
     letter-spacing: 0;
+
+    > a {
+      font-size: 14px;
+      line-height: 12px;
+    }
   }
 
   & > svg {
