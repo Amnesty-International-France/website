@@ -35,7 +35,7 @@ $is_empty = empty($lieu) && empty($city) && ! $is_members_only;
 			</h3>
 		</a>
 		<div class="training-description">
-			<p><?php echo esc_html($description)?></p>
+			<p><?php echo esc_html($description ?? '')?></p>
 		</div>
 		<?php
         // 1. Préparez vos classes dans un tableau
