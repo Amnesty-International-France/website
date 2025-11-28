@@ -58,14 +58,13 @@ if ($categories_filter) {
     }
 }
 
-$query = "SELECT m.post_id, m.meta_key, m.meta_value, m2.meta_value AS lieu, m3.meta_value AS categorie FROM {$wpdb->postmeta} m
-	JOIN {$wpdb->postmeta} m2
-	ON m.post_id = m2.post_id
-	JOIN {$wpdb->postmeta} m3
-	ON m.post_id = m3.post_id
-	JOIN {$wpdb->posts} p
-	ON p.ID = m.post_id
-	WHERE m2.meta_key = 'lieu' AND m3.meta_key = 'categories' AND p.post_type = 'training' AND m.meta_key LIKE %s AND m.meta_value != '' AND m.meta_value NOT LIKE %s{$filter}";
+$query = "SELECT p.ID as post_id, m.meta_key, m.meta_value, m2.meta_value AS lieu, m3.meta_value AS categorie
+    FROM {$wpdb->posts} p
+    JOIN {$wpdb->postmeta} m2 ON p.ID = m2.post_id AND m2.meta_key = 'lieu'
+    JOIN {$wpdb->postmeta} m3 ON p.ID = m3.post_id AND m3.meta_key = 'categories'
+    LEFT JOIN {$wpdb->postmeta} m ON p.ID = m.post_id AND m.meta_key LIKE %s AND m.meta_value != '' AND m.meta_value NOT LIKE %s
+    WHERE p.post_type = 'training'
+    {$filter}";
 $meta_key_filter = '%session%date%de%debut';
 $meta_value_filter = '%field%';
 
@@ -80,9 +79,15 @@ $raw_sessions = $wpdb->get_results($session_query);
 $sessions = [];
 foreach ($raw_sessions as $raw_session) {
     $session = get_post($raw_session->post_id);
-    $date_de_debut = DateTimeImmutable::createFromFormat('Ymd', $raw_session->meta_value);
-    $session->session_start = $date_de_debut->format('d/m/Y');
-    $session->session_end = get_field(str_replace('debut', 'fin', $raw_session->meta_key), $session);
+    if (!empty($raw_session->meta_value)) {
+        $date_de_debut = DateTimeImmutable::createFromFormat('Ymd', $raw_session->meta_value);
+        $session->session_start = $date_de_debut->format('d/m/Y');
+        $session->session_end = get_field(str_replace('debut', 'fin', $raw_session->meta_key), $session);
+    } else {
+        $session->session_start = '';
+        $session->session_end = null;
+    }
+
     $sessions[] = $session;
 }
 ?>
