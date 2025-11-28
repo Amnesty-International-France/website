@@ -21,22 +21,24 @@ const initLegsForm = () => {
   });
 
   const receiveMailCheckbox = form.elements.receive_by_mail;
-  const receiveEmailCheckbox = form.elements.receive_by_email;
+  const testamentCheckbox = form.elements.testament;
+  const assuranceVieCheckbox = form.elements.assurance_vie;
   const receiveOptionsErrorId = 'receive_options';
 
+  const checkUpdate = () => {
+    if (receiveMailCheckbox.checked || testamentCheckbox.checked || assuranceVieCheckbox.checked) {
+      clearFieldError(receiveOptionsErrorId);
+    }
+  };
+
   if (receiveMailCheckbox) {
-    receiveMailCheckbox.addEventListener('change', () => {
-      if (receiveMailCheckbox.checked || receiveEmailCheckbox.checked) {
-        clearFieldError(receiveOptionsErrorId);
-      }
-    });
+    receiveMailCheckbox.addEventListener('change', checkUpdate);
   }
-  if (receiveEmailCheckbox) {
-    receiveEmailCheckbox.addEventListener('change', () => {
-      if (receiveMailCheckbox.checked || receiveEmailCheckbox.checked) {
-        clearFieldError(receiveOptionsErrorId);
-      }
-    });
+  if (testamentCheckbox) {
+    testamentCheckbox.addEventListener('change', checkUpdate);
+  }
+  if (assuranceVieCheckbox) {
+    assuranceVieCheckbox.addEventListener('change', checkUpdate);
   }
 
   form.addEventListener('submit', (event) => {
@@ -56,7 +58,8 @@ const initLegsForm = () => {
     const civility = civilityElement ? civilityElement.value : '';
 
     const receiveByMail = form.elements.receive_by_mail.checked;
-    const receiveByEmail = form.elements.receive_by_email.checked;
+    const testament = form.elements.testament.checked;
+    const assuranceVie = form.elements.assurance_vie.checked;
 
     document.querySelectorAll('.error-message-container').forEach((el) => {
       // eslint-disable-next-line no-param-reassign
@@ -94,7 +97,7 @@ const initLegsForm = () => {
       errors.email = "L'adresse email n'est pas valide.";
     }
 
-    if (!receiveByMail && !receiveByEmail) {
+    if (!receiveByMail && !testament && !assuranceVie) {
       errors.receive_options =
         'Veuillez choisir de recevoir la brochure par courrier postal ou par email.';
     }
@@ -121,8 +124,9 @@ const initLegsForm = () => {
     body += `Ville: ${city}\n`;
     body += `Email: ${email}\n`;
     body += `Téléphone: ${phone || 'Non spécifié'}\n`;
-    body += `Recevoir par courrier: ${receiveByMail ? 'Oui' : 'Non'}\n`;
-    body += `Recevoir par email: ${receiveByEmail ? 'Oui' : 'Non'}\n`;
+    body += `Recevoir par email: ${receiveByMail ? 'Oui' : 'Non'}\n`;
+    body += `Amnesty International France inscrit sur le testament: ${testament ? 'Oui' : 'Non'}\n`;
+    body += `Amnesty International France inscrit sur l'assurance-vie: ${assuranceVie ? 'Oui' : 'Non'}\n`;
 
     const to = 'comnum@amnesty.fr';
     const subject = 'Demande de brochure d’informations sur les legs, donations et assurances-vie';

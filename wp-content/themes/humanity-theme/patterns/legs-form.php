@@ -11,7 +11,7 @@ $image_url      = get_template_directory_uri() . '/assets/images/testator-relati
 $icon_phone_url = get_template_directory_uri() . '/assets/images/icon-phone.svg';
 
 $civility      = $lastName = $firstName = $address = $zipCode = $city = $email = $phone = '';
-$receiveByMail = $receiveByEmail = false;
+$receiveByMail = $testament = $assuranceVie = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $civility       = isset($_POST['civility']) ? htmlspecialchars($_POST['civility']) : '';
@@ -23,7 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email          = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : '';
     $phone          = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : '';
     $receiveByMail  = isset($_POST['receive_by_mail']);
-    $receiveByEmail = isset($_POST['receive_by_email']);
+    $testament = isset($_POST['testament']);
+    $assuranceVie = isset($_POST['assurance_vie']);
 }
 
 ?>
@@ -118,12 +119,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 					<div class="form-group">
 						<div class="receive-by">
-							<input type="checkbox" id="receive_by_mail"
-									name="receive_by_mail" <?php echo($receiveByMail ? 'checked' : ''); ?>>
-							<label for="receive_by_mail">Par courrier postal</label>
-							<input type="checkbox" id="receive_by_email"
-									name="receive_by_email" <?php echo($receiveByEmail ? 'checked' : ''); ?>>
-							<label for="receive_by_email">Par email</label>
+							<div>
+								<input type="checkbox" id="receive_by_mail"
+									   name="receive_by_mail" <?php echo($receiveByMail ? 'checked' : ''); ?>>
+								<label for="receive_by_mail">Je préfère recevoir la brochure par mail</label>
+							</div>
+							<div>
+								<input type="checkbox" id="testament"
+									   name="testament" <?php echo($testament ? 'checked' : ''); ?>>
+								<label for="testament">J'ai déjà inscrit Amnesty International France sur mon testament</label>
+							</div>
+							<div>
+								<input type="checkbox" id="assurance_vie" name="assurance_vie" <?php echo($assuranceVie ? 'checked' : ''); ?>>
+								<label for="assurance_vie">J'ai déjà inscrit Amnesty International France dans mon contrat d'assurance-vie</label>
+							</div>
 						</div>
 						<div id="error-receive_options" class="error-message-container"></div>
 					</div>
@@ -159,7 +168,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			données vous concernant, ainsi qu’un droit à la portabilité. Vous pouvez exercer ces droits en contactant le
 			service relations membres et donateurs d’AIF à l’adresse mentionnée au recto, par email (smd@amnesty.fr) ou
 			par téléphone (01 53 38 65 80). Vous pouvez également introduire une réclamation auprès de la CNIL. Pour
-			plus d’informations sur le traitement de vos données personnelles, veuillez consulter notre politique de
-			confidentialité www.amnesty.fr/politique-de-confidentialite.</p>
+			plus d’informations sur le traitement de vos données personnelles, veuillez consulter notre <a href="/politique-de-confidentialite">politique de confidentialité</a></p>
 	</div>
 </div>

@@ -419,9 +419,8 @@
 
                 visibility: hidden;
                 opacity: 0;
-                transition:
-                  opacity 0.3s ease-in-out,
-                  visibility 0s 0.3s;
+                transition: opacity 0.3s ease-in-out,
+                visibility 0s 0.3s;
 
                 .error-message {
                   color: var(--wp--preset--color--error);
@@ -433,9 +432,8 @@
               .error-message-container.is-visible {
                 visibility: visible;
                 opacity: 1;
-                transition:
-                  opacity 0.3s ease-in-out,
-                  visibility 0s 0s;
+                transition: opacity 0.3s ease-in-out,
+                visibility 0s 0s;
               }
             }
 
@@ -518,11 +516,17 @@
 
             .receive-by {
               display: flex;
-              align-items: center;
+              flex-direction: column;
+              justify-content: center;
               gap: 18px;
 
+              div {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              }
+
               label {
-                text-transform: lowercase;
                 color: var(--wp--preset--color--grey-dark);
                 font-size: 18px;
                 font-weight: bold;
@@ -563,6 +567,14 @@
 
         @media (min-width: $container-lg) {
           padding: 0 100px 50px 100px;
+        }
+
+        a {
+          font-size: 11px;
+
+          &:hover {
+            text-decoration: none;
+          }
         }
       }
     }
