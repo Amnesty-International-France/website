@@ -115,7 +115,7 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
                             Mot de passe oublié ?
                         </a>
                         <a class="aif-link--primary aif-block"
-                            href="https://espacedon.amnesty.fr/foire-aux-questions/">
+                            href="<?= get_permalink(get_page_by_path('probleme-connexion')) ?>">
                             Un problème de connexion ?
                         </a>
                     </div>
