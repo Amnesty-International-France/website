@@ -73,25 +73,13 @@
           .custom-button {
             .content {
               font-size: 23px;
-              color: var(--wp--preset--color--primary);
+              color: var(--wp--preset--color--black);
               border: 2px solid var(--wp--preset--color--primary);
-              background-color: var(--wp--preset--color--black);
+              background-color: var(--wp--preset--color--primary);
 
               &:hover {
-                color: var(--wp--preset--color--primary-dark);
+                background-color: var(--wp--preset--color--primary-dark);
                 border-color: var(--wp--preset--color--primary-dark);
-              }
-
-              @media (min-width: $container-lg) {
-                color: var(--wp--preset--color--black);
-                border: 2px solid var(--wp--preset--color--primary);
-                background-color: var(--wp--preset--color--primary);
-
-                &:hover {
-                  color: var(--wp--preset--color--black);
-                  background-color: var(--wp--preset--color--primary-dark);
-                  border-color: var(--wp--preset--color--primary-dark);
-                }
               }
 
               .button-label {

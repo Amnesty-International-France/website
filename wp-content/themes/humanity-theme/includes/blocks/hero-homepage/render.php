@@ -21,7 +21,7 @@ if (!function_exists('render_hero_homepage_block')) {
         $item = $items[array_rand($items)];
 
         $media_id     = (int) ($item['mediaId'] ?? 0);
-        $image_url    = $media_id ? wp_get_attachment_image_url($media_id, 'large') : '';
+        $image_url    = $media_id ? wp_get_attachment_image_url($media_id, 'full') : '';
         $image_alt    = $media_id ? get_post_meta($media_id, '_wp_attachment_image_alt', true) : '';
 
         $subtitle     = esc_html($item['subtitle'] ?? '');
