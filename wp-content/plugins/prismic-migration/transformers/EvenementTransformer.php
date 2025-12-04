@@ -29,10 +29,6 @@ class EvenementTransformer extends DocTransformer
             ]
         );
 
-        if (! $query->have_posts()) {
-            echo sanitize_title($prismicDoc['uid']) . ' not found' . PHP_EOL;
-        }
-
         if ($query->have_posts() && ! \PrismicMigrationCli::$forceMod) {
             $post_id = $query->next_post()->ID;
         } else {
@@ -43,6 +39,11 @@ class EvenementTransformer extends DocTransformer
             if (isset($data['adresse']) || isset($data['ville'])) {
                 $venue_id = $this->getOrCreateVenue($data);
             }
+
+            if (isset($wp_post['post_title']) && is_array($wp_post['post_title'])) {
+                $wp_post['post_title'] = $wp_post['post_title'][0]['text'] ?? '';
+            }
+
             $args = [
                 'post_title'   => $wp_post['post_title'],
                 'post_name'    => sanitize_title(preg_replace('/[^\p{L}\p{N}\s\-\_]/u', '', $prismicDoc['uid'])),
