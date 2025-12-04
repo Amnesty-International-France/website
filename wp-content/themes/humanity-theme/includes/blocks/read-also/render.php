@@ -11,6 +11,23 @@ if (!function_exists('render_read_also_block')) {
      */
     function render_read_also_block(array $attributes): string
     {
+        if (! empty($attributes['postId']) && empty($attributes['internalUrl'])) {
+            $permalink = get_permalink($attributes['postId']);
+            $title     = get_the_title($attributes['postId']);
+
+            if ($permalink) {
+                $attributes['internalUrl'] = $permalink;
+            }
+
+            if ($title) {
+                $attributes['internalUrlTitle'] = $title;
+            }
+
+            if (empty($attributes['linkType'])) {
+                $attributes['linkType'] = 'internal';
+            }
+        }
+
         $link_type      = $attributes['linkType'] ?? 'internal';
         $internal_url   = $attributes['internalUrl'] ?? '';
         $internal_title = $attributes['internalUrlTitle'] ?? '';
