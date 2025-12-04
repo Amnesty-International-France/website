@@ -380,7 +380,7 @@
         color: var(--wp--preset--color--white);
       }
 
-      > button {
+      > a {
         display: flex;
         align-items: center;
         justify-content: space-evenly;
@@ -394,6 +394,7 @@
         cursor: pointer;
         text-transform: uppercase;
         background-color: var(--wp--preset--color--primary);
+        text-decoration: none;
 
         & > svg {
           margin-right: 8px;
