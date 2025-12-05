@@ -42,24 +42,47 @@ if (! function_exists('render_latest_chronicle_promo')) {
 
         $args = array_merge($shared_args, [
             'post_type'      => 'chronique',
-            'posts_per_page' => 1,
+            'posts_per_page' => 5,
             'post_status'    => 'publish',
+            'no_found_rows' => true,
+            'ignore_sticky_posts' => true,
         ]);
 
         $latest_chronicle_query = new WP_Query($args);
 
         ob_start();
 
+        $found = false;
+        $current_year = (int) date('Y');
+        $current_month = (int) date('m');
+
         if ($latest_chronicle_query->have_posts()) {
             while ($latest_chronicle_query->have_posts()) {
                 $latest_chronicle_query->the_post();
+
+                $pub_year  = (int) get_post_meta(get_the_ID(), 'publication_year', true);
+                $pub_month = (int) get_post_meta(get_the_ID(), 'publication_month', true);
+
+                if ($pub_year > $current_year) {
+                    continue;
+                }
+
+                if ($pub_year === $current_year && $pub_month > $current_month) {
+                    continue;
+                }
+
 
                 get_template_part('patterns/single-chronicle-content', null, [
                     'is_promo_context' => true,
                     'archive_button_url' => $archive_url,
                 ]);
+
+                $found = true;
+                break;
             }
-        } else {
+        }
+
+        if (!$found) {
             echo '<p class="center">Aucun numéro de chronique à afficher.</p>';
         }
 

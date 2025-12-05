@@ -60,34 +60,21 @@ function amnesty_get_chronicle_structure_info(): false|array|null
  */
 function amnesty_get_latest_chronicle_args(): array
 {
-    $current_year = date('Y');
-    $current_month = date('m');
-
     $meta_query = [
         'relation' => 'AND',
         'year_clause' => [
-            'key'     => 'publication_year',
-            'compare' => 'EXISTS',
+            'key'  => 'publication_year',
+            'type' => 'NUMERIC',
         ],
         'month_clause' => [
-            'key'     => 'publication_month',
-            'compare' => 'EXISTS',
-        ],
-        [
-            'relation' => 'OR',
-            [
-                'relation' => 'AND',
-                ['key' => 'publication_year', 'value' => $current_year, 'compare' => '='],
-                ['key' => 'publication_month', 'value' => $current_month, 'compare' => '<='],
-            ],
-            ['key' => 'publication_year', 'value' => $current_year, 'compare' => '<'],
+            'key'  => 'publication_month',
+            'type' => 'NUMERIC',
         ],
     ];
 
     $orderby = [
         'year_clause'  => 'DESC',
         'month_clause' => 'DESC',
-        'date'         => 'DESC',
     ];
 
     return [
