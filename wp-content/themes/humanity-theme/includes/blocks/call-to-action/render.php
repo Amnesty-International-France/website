@@ -11,7 +11,6 @@ if (!function_exists('render_call_to_action_block')) {
      */
     function render_call_to_action_block(array $attributes): string
     {
-        error_log(print_r($attributes, true));
         $title       = $attributes['title'] ?? '';
         $subTitle    = $attributes['subTitle'] ?? '';
         $buttonLabel = $attributes['buttonLabel'] ?? __('En savoir plus', 'amnesty');
