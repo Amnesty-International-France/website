@@ -48,7 +48,7 @@ add_action('post_submitbox_misc_actions', 'amnesty_newsletter_preview_button');
 function amnesty_newsletter_register_preview_page()
 {
     add_submenu_page(
-        null,
+        '',
         'Preview newsletter',
         'Preview newsletter',
         'edit_posts',
