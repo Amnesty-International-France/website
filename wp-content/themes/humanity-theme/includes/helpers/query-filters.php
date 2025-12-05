@@ -9,18 +9,33 @@ function amnesty_set_posts_per_page_for_archive($query)
     if ($query->is_archive()) {
         $query->set('posts_per_page', 18);
 
-        if ($query->is_tax('location') && !$query->is_paged()) {
-            $query->set('posts_per_page', 17);
-        }
+        if ($query->is_tax('location') || $query->is_tax('combat')) {
+            if (!$query->is_paged()) {
+                $query->set('posts_per_page', 17);
+            } else {
+                $paged = $query->get('paged');
+                $offset = (($paged - 1) * 18) - 1;
 
-        if ($query->is_tax('combat') && !$query->is_paged()) {
-            $query->set('posts_per_page', 17);
+                $query->set('offset', $offset);
+            }
         }
     }
 }
 if (!is_admin()) {
     add_action('pre_get_posts', 'amnesty_set_posts_per_page_for_archive');
 }
+
+add_filter('found_posts', function ($found_posts, $query) {
+    if (is_admin() || !$query->is_main_query()) {
+        return $found_posts;
+    }
+
+    if ($query->is_tax('location') || $query->is_tax('combat')) {
+        return $found_posts + 1;
+    }
+
+    return $found_posts;
+}, 10, 2);
 
 add_filter('the_posts', function ($posts, $query) {
     if (!is_admin() && $query->is_main_query()) {
@@ -45,6 +60,10 @@ add_filter('the_posts', function ($posts, $query) {
                     $query->_fiche_combat_injectee = true;
                 }
             }
+        }
+
+        if (!$query->is_paged() && ($query->is_tax('location') || $query->is_tax('combat'))) {
+            $query->max_num_pages = ceil($query->found_posts / 18);
         }
     }
 
