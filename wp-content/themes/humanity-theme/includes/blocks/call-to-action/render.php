@@ -11,6 +11,7 @@ if (!function_exists('render_call_to_action_block')) {
      */
     function render_call_to_action_block(array $attributes): string
     {
+        error_log(print_r($attributes, true));
         $title       = $attributes['title'] ?? '';
         $subTitle    = $attributes['subTitle'] ?? '';
         $buttonLabel = $attributes['buttonLabel'] ?? __('En savoir plus', 'amnesty');
@@ -18,10 +19,13 @@ if (!function_exists('render_call_to_action_block')) {
 
         $linkType    = $attributes['linkType'] ?? 'external';
         $internalUrl = $attributes['internalUrl'] ?? '';
-        $externalUrl = $attributes['externalUrl'] ?? '#';
+        $externalUrl = $attributes['externalUrl'] ?? '';
         $targetBlank = $attributes['targetBlank'] ?? false;
 
         $final_link  = ($linkType === 'internal') ? $internalUrl : $externalUrl;
+        if (empty($final_link)) {
+            $final_link = $attributes['buttonLink'] ?? '#';
+        }
         $target_attr = $targetBlank ? ' target="_blank" rel="noopener noreferrer"' : '';
 
         $buttonAlignmentClass = ($direction === 'vertical') ? 'center' : 'right';

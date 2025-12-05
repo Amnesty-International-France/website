@@ -35,7 +35,7 @@ registerBlockType('amnesty-core/call-to-action', {
     },
     externalUrl: {
       type: 'string',
-      default: '#',
+      default: '',
     },
     postId: {
       type: 'number',
@@ -47,6 +47,10 @@ registerBlockType('amnesty-core/call-to-action', {
     targetBlank: {
       type: 'boolean',
       default: false,
+    },
+    buttonLink: {
+      type: 'string',
+      default: '',
     },
   },
   example: {

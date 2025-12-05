@@ -41,7 +41,7 @@ if (!function_exists('register_call_to_action_block')) {
                 ],
                 'externalUrl' => [
                     'type' => 'string',
-                    'default' => '#',
+                    'default' => '',
                 ],
                 'postId' => [
                     'type' => 'number',
@@ -53,6 +53,10 @@ if (!function_exists('register_call_to_action_block')) {
                 'targetBlank' => [
                     'type' => 'boolean',
                     'default' => false,
+                ],
+                'buttonLink' => [
+                    'type' => 'string',
+                    'default' => '',
                 ],
             ],
         ]);
