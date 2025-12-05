@@ -2,8 +2,10 @@
   position: relative;
   margin-bottom: 3.7rem;
 
-  .page-hero-block--large figcaption {
-    display: none;
+  .page-hero-block--large {
+    figcaption {
+      display: none;
+    }
 
     .page-hero-title-wrapper .container {
       .page-hero-title {
