@@ -4,6 +4,15 @@
 
   .page-hero-block--large figcaption {
     display: none;
+
+    .page-hero-title-wrapper .container {
+      .page-hero-title {
+        &__first-part {
+          font-family: var(--wp--preset--font-family--secondary);
+          font-weight: bold;
+        }
+      }
+    }
   }
 
   .chapo {
