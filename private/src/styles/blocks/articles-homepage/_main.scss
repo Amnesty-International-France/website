@@ -279,6 +279,8 @@
             justify-content: space-between;
             gap: 10px;
             padding: 12px 12px 12px 0;
+            width: 55%;
+            min-width: 55%;
 
             .article-main-mobile-header {
               display: flex;
@@ -309,6 +311,7 @@
               gap: 6px;
               padding-top: 8px;
               border-top: 1px solid var(--wp--preset--color--grey-light);
+              padding-right: 12px;
 
               .term {
                 cursor: pointer;
@@ -435,6 +438,8 @@
               justify-content: space-between;
               gap: 10px;
               padding: 12px 12px 12px 0;
+              width: 55%;
+              min-width: 55%;
 
               .article-side-header {
                 display: flex;
@@ -465,6 +470,7 @@
                 gap: 6px;
                 padding-top: 8px;
                 border-top: 1px solid var(--wp--preset--color--grey-light);
+                padding-right: 12px;
 
                 .term {
                   cursor: pointer;
