@@ -24,14 +24,13 @@ if (!$post_object instanceof WP_Post) {
 } else {
     $permalink = get_permalink($post_object);
     $title = get_the_title($post_object);
-    $date = get_the_date('', $post_object);
+    $date = $args['date'] ?? get_the_date('', $post_object);
     $thumbnail = get_the_post_thumbnail($post_id, 'medium', ['class' => 'article-image']);
 
     if ('press-release' === get_post_type($post_object) && !$thumbnail) {
         $default_image_url = get_template_directory_uri() . '/assets/images/default-press-release-small.png';
         $thumbnail = '<img src="' . esc_url($default_image_url) . '" alt="' . esc_attr($title) . '" class="article-image">';
     }
-
 
     $main_category = amnesty_get_a_post_term($post_id);
     if (!($main_category instanceof WP_Term)) {

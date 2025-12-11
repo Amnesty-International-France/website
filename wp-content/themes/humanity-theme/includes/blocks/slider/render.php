@@ -113,19 +113,74 @@ if (!function_exists('render_slider_block')) {
                     </div>
                     <div class="swiper">
                         <div class="swiper-wrapper">
-                            <?php while ($slider_query->have_posts()): $slider_query->the_post(); ?>
+                            <?php while ($slider_query->have_posts()): $slider_query->the_post();
+                                $current_post_id = get_the_ID();
+
+                                $date_to_use = get_the_date();
+                                $session_start = null;
+                                $session_end = null;
+
+                                if ($post_type === 'training') {
+                                    $sessions_meta = get_post_meta($current_post_id, '', false);
+                                    $raw_start_date_key = null;
+                                    $raw_start = null;
+
+                                    foreach ($sessions_meta as $key => $values) {
+                                        if (strpos($key, 'session') !== false && strpos($key, 'date') !== false && strpos($key, 'debut') !== false) {
+                                            if (!empty($values[0]) && $values[0] !== 'field_...') {
+                                                $raw_start_date_key = $key;
+                                                $raw_start = $values[0];
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (!empty($raw_start)) {
+                                        $date_de_debut = DateTimeImmutable::createFromFormat('Ymd', (string) $raw_start);
+                                        if ($date_de_debut) {
+                                            $session_start = $date_de_debut->format('d/m/Y');
+                                        } else {
+                                            $session_start = (string) $raw_start;
+                                        }
+
+                                        if ($raw_start_date_key) {
+                                            $raw_end_date_key = str_replace('debut', 'fin', $raw_start_date_key);
+                                            $raw_end = get_post_meta($current_post_id, $raw_end_date_key, true);
+
+                                            if (!empty($raw_end)) {
+                                                $date_de_fin = DateTimeImmutable::createFromFormat('Ymd', (string) $raw_end);
+                                                if ($date_de_fin) {
+                                                    $session_end = $date_de_fin->format('d/m/Y');
+                                                } else {
+                                                    $session_end = (string) $raw_end;
+                                                }
+                                            }
+                                        }
+
+                                        if ($session_start) {
+                                            if ($session_end) {
+                                                $date_to_use = sprintf('Du %s au %s', $session_start, $session_end);
+                                            } else {
+                                                $date_to_use = sprintf('Le %s', $session_start);
+                                            }
+                                        }
+                                    }
+                                }
+                                ?>
                                 <div class="swiper-slide">
                                     <?php
-                                    $args = [
-                                        'direction'     => 'portrait',
-                                        'post_id'       => get_the_ID(),
-                                        'title'         => get_the_title(),
-                                        'permalink'     => get_permalink(),
-                                        'date'          => get_the_date(),
-                                        'thumbnail'     => get_the_post_thumbnail(get_the_ID(), 'medium', ['class' => 'article-image']),
-                                        'main_category' => amnesty_get_a_post_term(get_the_ID()),
-                                        'terms'         => wp_get_object_terms(get_the_ID(), get_object_taxonomies(get_post_type())),
-                                    ];
+                                        $args = [
+                                            'direction'     => 'portrait',
+                                            'post_id'       => $current_post_id,
+                                            'title'         => get_the_title(),
+                                            'permalink'     => get_permalink(),
+                                            'date'          => $date_to_use,
+                                            'thumbnail'     => get_the_post_thumbnail($current_post_id, 'medium', ['class' => 'article-image']),
+                                            'main_category' => amnesty_get_a_post_term($current_post_id),
+                                            'terms'         => wp_get_object_terms($current_post_id, get_object_taxonomies(get_post_type())),
+                                            'session_start' => $session_start,
+                                            'session_end'   => $session_end,
+                                        ];
 
                                 $template_path = locate_template('partials/article-card.php');
                                 if ($template_path) {
