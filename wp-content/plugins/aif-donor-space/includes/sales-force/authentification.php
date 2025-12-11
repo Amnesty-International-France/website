@@ -3,18 +3,15 @@
 function get_salesforce_access_token_donor_space_donor_space()
 {
     $access_token = get_option('salesforce_access_token');
-    $expiration_time = intval(get_option('salesforce_token_expiration_time'));
+	$expiration_time = intval(get_option('salesforce_token_expiration_time') ?? -1);
 
     $current_time_in_ms  = floor(microtime(true) * 1000);
 
     $is_valid = $expiration_time > $current_time_in_ms;
 
-
-    // This logic is very very flaky. Need to refactor this.
-
-    // if ($is_valid) {
-    //     return $access_token;
-    // }
+    if ($is_valid) {
+		return $access_token;
+    }
 
     return refresh_salesforce_token_donor_space();
 }
@@ -53,7 +50,7 @@ function refresh_salesforce_token_donor_space()
     if (isset($data['access_token'])) {
 
         $issued_at = intval($data['issued_at']); // warning : this is ms and not seconds
-        $expiration_interval = 5 * 60 * 1000; // 10 minutes in milliseconds
+        $expiration_interval = 10 * 60 * 1000; // 10 minutes in milliseconds
         $expiration_time = $issued_at + $expiration_interval ;
 
         update_option('salesforce_access_token', $data['access_token']);

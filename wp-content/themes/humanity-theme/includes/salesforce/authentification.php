@@ -48,7 +48,7 @@ function refresh_salesforce_token()
 
     if (isset($data['access_token'])) {
         $issued_at = intval($data['issued_at']); // warning : this is ms and not seconds
-        $expiration_interval = 5 * 60 * 1000; // 10 minutes in milliseconds
+        $expiration_interval = 10 * 60 * 1000; // 10 minutes in milliseconds
         $expiration_time = $issued_at + $expiration_interval ;
 
         update_option('salesforce_access_token', $data['access_token']);
