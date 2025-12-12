@@ -10,7 +10,6 @@
     <?php if (!empty($label)): ?>
         <?= render_chip_category_block([
             'label' => esc_html($label),
-            'link' => esc_url($link),
             'size' => 'large',
             'style' => 'bg-yellow',
             'icon' => $icon ?? '',
