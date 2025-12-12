@@ -23,6 +23,14 @@ if (!function_exists('render_slider_block')) {
                 if ($slug === 'landmark') {
                     return esc_url(get_post_type_archive_link('landmark') ?: home_url('/reperes'));
                 } elseif ($slug === 'training') {
+                    $obj = get_queried_object();
+                    $my_space = get_page_by_path('mon-espace');
+                    if ($my_space) {
+                        $ancestors = get_post_ancestors($obj);
+                        if (in_array($my_space->ID, $ancestors)) {
+                            return get_permalink(get_page_by_path('militants-se-former'));
+                        }
+                    }
                     return esc_url(get_post_type_archive_link('training') ?: home_url('/formations'));
                 } elseif ($slug === 'edh') {
                     return esc_url(get_post_type_archive_link('edh') ?: home_url('/edh'));
