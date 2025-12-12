@@ -33,8 +33,13 @@ class RepairLinksCli
                     foreach ($related as $key => $related_article) {
                         if (is_string($related_article)) {
                             $count = LinksUtils::repairLinks($related_article);
+                            if ($related_article === '#') {
+                                unset($related[$key]);
+                            }
                             $related[$key] = (int) $related_article;
                             $total += $count;
+                        } elseif ($related_article === 0) {
+                            unset($related[$key]);
                         }
                     }
                     update_post_meta($post_id, '_related_posts_selected', $related);
