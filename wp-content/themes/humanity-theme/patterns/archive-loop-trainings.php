@@ -97,6 +97,7 @@ foreach ($raw_sessions as $raw_session) {
     <!-- wp:group {"tagName":"div","className":""} -->
     <div class="wp-block-group news-section section section--small section--tinted has-gutter">
         <div class="wp-block-group postlist">
+			<?php if (!empty($sessions)) : ?>
 			<div class="post-grid">
                 <?php
                     foreach ($sessions as $session) {
@@ -114,17 +115,17 @@ foreach ($raw_sessions as $raw_session) {
                         ];
                         echo render_block($block);
                     }
-?>
+			    ?>
 			</div>
 
-			<!-- wp:query-no-results -->
+			<?php else : ?>
 			<div class="wp-block-query-no-results">
 				<p>Nous n'avons pas trouvé de formations qui correspondent à vos critères de recherche.</p>
 			</div>
-			<!-- /wp:query-no-results -->
+			<?php endif; ?>
 		</div>
 		<?php
-        $big = 999999999;
+			            $big = 999999999;
 $pagination = paginate_links([
     'base'      => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
     'format'    => '?paged=%#%',

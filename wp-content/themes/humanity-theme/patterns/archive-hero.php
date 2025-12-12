@@ -8,7 +8,8 @@
 
 $term = get_queried_object();
 $term_slug = isset($term->slug) ? $term->slug : '';
-$post_type_class = is_post_type_archive() ? get_post_type() : '';
+$post_type = get_query_var('post_type');
+$post_type_class = is_post_type_archive() ? $post_type : '';
 
 if (empty($image_url)) {
     $image_url = get_template_directory_uri() . '/assets/images/default-archive-hero.png';
@@ -16,8 +17,8 @@ if (empty($image_url)) {
 }
 
 if (is_post_type_archive()) {
-    $post_type_obj = get_post_type_object(get_post_type());
-    if (get_post_type() === 'document') {
+    $post_type_obj = get_post_type_object($post_type);
+    if ($post_type === 'document') {
         $category_name = 'Rapports';
     } else {
         $category_name = $post_type_obj ? $post_type_obj->labels->name : '';
