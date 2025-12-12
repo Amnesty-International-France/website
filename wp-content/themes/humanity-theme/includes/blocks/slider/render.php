@@ -28,7 +28,16 @@ if (!function_exists('render_slider_block')) {
                     if ($my_space) {
                         $ancestors = get_post_ancestors($obj);
                         if (in_array($my_space->ID, $ancestors)) {
-                            return get_permalink(get_page_by_path('militants-se-former'));
+                            $training_my_space = get_posts([
+                                'name'        => 'militants-se-former',
+                                'post_type'   => 'page',
+                                'post_status' => 'publish',
+                                'numberposts' => 1,
+                                'fields'      => 'ids',
+                            ]);
+                            if (!empty($training_my_space)) {
+                                return get_permalink($training_my_space[0]);
+                            }
                         }
                     }
                     return esc_url(get_post_type_archive_link('training') ?: home_url('/formations'));
