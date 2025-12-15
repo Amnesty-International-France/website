@@ -64,6 +64,7 @@ $query = "SELECT p.ID as post_id, m.meta_key, m.meta_value, m2.meta_value AS lie
     JOIN {$wpdb->postmeta} m3 ON p.ID = m3.post_id AND m3.meta_key = 'categories'
     LEFT JOIN {$wpdb->postmeta} m ON p.ID = m.post_id AND m.meta_key LIKE %s AND m.meta_value != '' AND m.meta_value NOT LIKE %s
     WHERE p.post_type = 'training'
+    AND p.post_status = 'publish'
     {$filter}
     ORDER BY CAST(m.meta_value AS DATE) ASC";
 $meta_key_filter = '%session%date%de%debut';
