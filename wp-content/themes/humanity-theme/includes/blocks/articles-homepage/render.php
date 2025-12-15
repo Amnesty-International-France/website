@@ -248,9 +248,12 @@ if (!function_exists('render_articles_homepage_block')) {
                                             </div>
                                         <?php endif; ?>
                                         <div class="article-button-wrapper">
-                                            <a href="<?php echo esc_url($url); ?>" class="article-button" <?php if (! is_internal_link($url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
-                                                <?php esc_html_e('Lire la suite', 'amnesty'); ?>
-                                            </a>
+                                            <?php
+                                                $button_text = esc_html__('Lire la suite', 'amnesty');
+                            ?>
+                                            <span class="article-button"> 
+                                                <?php echo $button_text; ?>
+                                            </span>
                                         </div>
                                     </div>
                                 </a>

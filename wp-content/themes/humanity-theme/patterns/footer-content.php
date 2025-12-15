@@ -176,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
 	</div>
 </div>
 
-<button class="back-to-top hidden">
+<button class="back-to-top hidden" aria-label="Retour haut de page">
 	<?php
     echo file_get_contents(get_template_directory() . '/assets/images/icon-simple-arrow.svg'); ?>
 </button>
@@ -240,8 +240,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
 		<?php
         foreach ($footer_menu_items['top_level'] as $_id => $item) : ?>
 			<div class="main-footer-item">
-				<h4 class="title"><?php
-                    echo esc_html($item->title); ?></h4>
+				<h3 class="title"><?php
+                    echo esc_html($item->title); ?></h3>
 				<?php
                 if (isset($footer_menu_items['children'][$item->title])) : ?>
 					<ul class="list-children">

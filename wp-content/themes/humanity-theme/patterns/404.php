@@ -10,7 +10,7 @@
 <div class="page-404-content">
     <!-- wp:amnesty-core/chip-category {"label":"Erreur 404", "size":"large","style":"bg-black"} /-->
     <h1 class="wp-block-heading page-404-content-title">Page introuvable</h1>
-    <h3 class="wp-block-heading page-404-content-subtitle">Il semble que la page que vous tentez d'afficher n'existe pas.</h3>
+    <h2 class="wp-block-heading page-404-content-subtitle">Il semble que la page que vous tentez d'afficher n'existe pas.</h2>
     <div class='custom-button-block center'>
         <a href="<?php echo home_url('/'); ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
             <div class='content bg-yellow medium'>

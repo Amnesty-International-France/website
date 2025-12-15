@@ -43,7 +43,7 @@ if (!function_exists('render_hero_homepage_block')) {
 								On se bat ensemble,<br />on gagne ensemble.
 							</h1>
 							<?php if ($subtitle): ?>
-								<h3 class="hero-subtitle"><?php echo esc_html($subtitle); ?></h3>
+								<h2 class="hero-subtitle"><?php echo esc_html($subtitle); ?></h2>
 							<?php endif; ?>
 							<div class='custom-button-block center'>
 								<a href="<?php echo esc_url($button_url); ?>" <?php if (! is_internal_link($button_url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?> class="custom-button">

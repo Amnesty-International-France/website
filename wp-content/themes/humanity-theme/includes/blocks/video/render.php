@@ -58,7 +58,7 @@ if (!function_exists('render_video_block')) {
         <div class="video-block">
             <div class="video-wrapper">
                 <iframe width="100%" src="<?php echo esc_url($embed_url); ?>" frameborder="0"
-                        allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                        allow="autoplay; encrypted-media" allowfullscreen title="<?php echo esc_attr($video_title); ?>"></iframe>
             </div>
             <?php if (!empty($video_title)): ?>
                 <p class="video-title">

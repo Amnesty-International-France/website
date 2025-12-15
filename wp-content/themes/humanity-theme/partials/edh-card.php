@@ -1,5 +1,5 @@
 <article class="edh-card">
-	<a href="<?php echo esc_url($permalink); ?>" class="edh-card-thumbnail">
+	<a href="<?php echo esc_url($permalink); ?>" class="edh-card-thumbnail" aria-label="EDH : <?= esc_attr($title); ?>">
 		<?php if ($thumbnail) : ?>
 			<?php echo $thumbnail; ?>
 		<?php else : ?>

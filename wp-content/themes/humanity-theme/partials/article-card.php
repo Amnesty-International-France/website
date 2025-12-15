@@ -109,7 +109,7 @@ if (!$post_object instanceof WP_Post) {
 
 <article class="article-card card-<?php echo esc_attr($direction); ?>">
     <?php if ($thumbnail) : ?>
-        <a href="<?= esc_url($permalink); ?>" class="article-thumbnail">
+        <a href="<?= esc_url($permalink); ?>" class="article-thumbnail" aria-label="<?= esc_attr($title); ?>">
             <?= $thumbnail; ?>
         </a>
     <?php else : ?>

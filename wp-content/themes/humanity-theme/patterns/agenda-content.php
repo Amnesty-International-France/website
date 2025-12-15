@@ -153,7 +153,7 @@ if ($user_longitude && $user_latitude) {
                                     type="text"
                                     placeholder="Ville ou code postal"
                                 >
-                                <button type="submit" class="filter-button">
+                                <button type="submit" class="filter-button" aria-label="Rechercher">
                                     <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-search.svg'); ?>
                                 </button>
                             </form>

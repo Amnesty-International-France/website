@@ -1,6 +1,13 @@
+<?php
+$aria_label_text = sprintf(
+    esc_html__('Ouvrir le rapport : %s dans un nouvel onglet', 'textdomain'),
+    esc_html($title)
+);
+?>
+
 <article class="article-card card-<?php echo esc_attr($direction); ?>">
     <?php if ($thumbnail) : ?>
-        <a href="<?= esc_url($permalink); ?>" class="article-thumbnail" target="_blank" rel="noopener noreferrer">
+        <a href="<?= esc_url($permalink); ?>" class="article-thumbnail" target="_blank" rel="noopener noreferrer" aria-label="<?= $aria_label_text; ?>">
             <?= $thumbnail; ?>
         </a>
     <?php else : ?>
