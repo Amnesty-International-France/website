@@ -24,14 +24,12 @@ if (!function_exists('render_action_block')) {
     {
         $type = $attributes['type'] ?? 'petition';
         $sur_title = $attributes['surTitle'] ?? '';
-
         $final_title = '';
         $final_image_url = '';
         $description = '';
         $button_text = '';
         $button_link = '#';
         $button_position = 'left';
-
         $wrapper_classes = ['action-card', $type];
 
         if ($type === 'petition') {
@@ -132,7 +130,7 @@ if (!function_exists('render_action_block')) {
                     <div class="action-content">
                         <p class="description"><?php echo esc_html($description); ?></p>
                         <div class='custom-button-block <?php echo esc_attr($button_position); ?>'>
-                            <a href="<?php echo esc_url($button_link); ?>" <?php if (! is_internal_link($button_link)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?> class="custom-button">
+                            <a href="<?php echo esc_url($button_link); ?>" <?php if (! is_internal_link($button_link)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?> class="custom-button" aria-label="Lien vers la page concernant le sujet suivant : <?php echo esc_attr($final_title); ?>">
                                 <div class='content outline-black medium'>
                                     <div class="icon-container">
                                         <svg

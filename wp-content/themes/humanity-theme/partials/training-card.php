@@ -3,7 +3,7 @@ $is_empty = empty($lieu) && empty($city) && ! $is_members_only;
 ?>
 
 <article class="training-card">
-	<a href="<?php echo esc_url($permalink); ?>" class="training-card-thumbnail">
+	<a href="<?php echo esc_url($permalink); ?>" class="training-card-thumbnail" aria-label="Formation : <?= esc_attr($title); ?>">
 		<?php if ($thumbnail) : ?>
 			<?php echo $thumbnail; ?>
 		<?php else : ?>

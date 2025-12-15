@@ -44,7 +44,7 @@ if (isset($GLOBALS['is_my_space_petitions_loop'])) {
 
 <article class="petition-card card-<?php echo esc_attr($direction); ?>">
     <?php if ($thumbnail): ?>
-        <a href="<?= esc_url($permalink); ?>" class="petition-thumbnail">
+        <a href="<?= esc_url($permalink); ?>" class="petition-thumbnail" aria-label="<?= esc_attr($title); ?>">
             <?= $thumbnail; ?>
         </a>
     <?php else: ?>

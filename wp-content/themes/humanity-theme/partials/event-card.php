@@ -54,7 +54,7 @@ if (!$post_object instanceof WP_Post) {
 ?>
 <article class="event-card card-<?php echo esc_attr($direction); ?> <?php if ($is_national_event) : ?> bg-yellow<?php endif; ?>">
 	<?php if ($thumbnail) : ?>
-		<a href="<?= esc_url($permalink); ?>" class="event-thumbnail">
+		<a href="<?= esc_url($permalink); ?>" class="event-thumbnail" aria-label="Lien vers l'évènement : <?= esc_attr($title); ?>">
 			<?= $thumbnail ?>
 		</a>
 	<?php else : ?>
