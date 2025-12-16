@@ -119,7 +119,8 @@
   text-decoration: none;
   transition: 0.1s ease-in-out;
   height: 100%;
-  width: fit-content;
+  flex: 1;
+  max-width: 150px;
   align-items: center;
 
   @media (min-width: 1024px) {
@@ -136,6 +137,7 @@
     width: 100%;
     padding: 0 12px;
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 8px;
 
