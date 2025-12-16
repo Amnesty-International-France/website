@@ -83,6 +83,38 @@
 .main-header {
   height: 64px;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+
+  .search-button-mobile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 50px;
+    border: 2px solid transparent;
+
+    @include mq(mobile-nav) {
+      display: none;
+    }
+
+    .jetpack-search-filter__link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--wp--preset--color--white);
+    }
+  }
+}
+
+.main-header-mobile {
+  display: flex;
+}
+
+.main-header-mobile-buttons {
+  display: flex;
+  align-items: center;
 }
 
 .top-header {

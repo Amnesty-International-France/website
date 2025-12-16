@@ -1,12 +1,10 @@
 .mobile-menu {
   position: fixed;
-  top: 60px; // header height on mobile
+  top: 64px;
   right: 0;
   z-index: 12;
   visibility: hidden;
-  width: calc(100% - 50px);
-  max-width: 250px;
-  max-height: calc(100vh - 60px); // header height on mobile
+  width: 100%;
   overflow-y: auto;
   overscroll-behavior: contain;
   backface-visibility: hidden;
@@ -187,4 +185,40 @@
 
 .mobile-menu .icon-cart {
   @extend %icon-cart-dark;
+}
+
+.mobile-menu .mobile-menu-top {
+  padding: 22px 0 24px 0;
+  background-color: var(--wp--preset--color--black);
+
+  .menu-item {
+    height: 28px;
+    border-top: none;
+
+    a {
+      padding-top: 0;
+      padding-bottom: 0;
+      justify-content: start;
+      text-transform: capitalize;
+      color: var(--wp--preset--color--white);
+
+      &:hover {
+        background-color: var(--wp--preset--color--black);
+      }
+
+      & > svg {
+        &:hover {
+          color: var(--wp--preset--color--white);
+        }
+      }
+
+      span {
+        color: var(--wp--preset--color--white);
+        background-color: transparent;
+        font-family: var(--wp--preset--font-family--secondary);
+        font-size: 18px;
+        font-weight: bold;
+      }
+    }
+  }
 }
