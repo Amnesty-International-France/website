@@ -94,6 +94,10 @@ registerBlockType('amnesty-core/section-home', {
       type: 'string',
       default: '',
     },
+    isExternal: {
+      type: 'boolean',
+      default: false,
+    },
   },
   example: {
     attributes: {
@@ -129,6 +133,7 @@ registerBlockType('amnesty-core/section-home', {
       buttonLabel: 'Toutes nos thématiques',
       buttonLink: '#',
       buttonPosition: 'left',
+      isExternal: false,
     },
   },
   edit: EditComponent,
