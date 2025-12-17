@@ -21,6 +21,7 @@ const SaveComponent = (props) => {
     buttonLabel,
     buttonLink,
     buttonPosition,
+    isExternal,
   } = attributes;
 
   return (
@@ -94,7 +95,7 @@ const SaveComponent = (props) => {
               alignment={buttonPosition}
               style="bg-yellow"
               icon="arrow-right"
-              isInternal={true}
+              isInternal={!isExternal}
             />
           )}
         </div>

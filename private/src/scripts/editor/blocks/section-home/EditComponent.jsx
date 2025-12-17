@@ -211,6 +211,7 @@ const EditComponent = (props) => {
     buttonPosition,
     buttonContentType,
     buttonLinkTitle,
+    isExternal,
   } = attributes;
 
   const contentTypes = useSelect((select) => {
@@ -341,7 +342,6 @@ const EditComponent = (props) => {
             </>
           )}
         </PanelBody>
-
         <PanelBody title={__('Icônes', 'amnesty')}>
           {icons.map((iconItem, index) => (
             <div
@@ -378,7 +378,6 @@ const EditComponent = (props) => {
             </Button>
           )}
         </PanelBody>
-
         <PanelBody title={__('Bouton', 'amnesty')}>
           <ToggleControl
             label={__('Afficher bouton', 'amnesty')}
@@ -392,40 +391,57 @@ const EditComponent = (props) => {
                 value={buttonLabel}
                 onChange={(value) => setAttributes({ buttonLabel: value })}
               />
-              <SelectControl
-                label={__('Type de contenu pour le lien', 'amnesty')}
-                value={buttonContentType}
-                options={contentTypes}
-                onChange={(value) => {
-                  setAttributes({
-                    buttonContentType: value,
-                    buttonLink: '',
-                    buttonLinkTitle: '',
-                  });
-                }}
+              <ToggleControl
+                label={__('Lien externe', 'amnesty')}
+                checked={isExternal}
+                onChange={(value) => setAttributes({ isExternal: value })}
               />
-              {buttonContentType && (
-                <ContentSearchControl
-                  contentType={buttonContentType}
-                  onChange={(link, newTitle) => {
-                    setAttributes({ buttonLink: link, buttonLinkTitle: newTitle });
-                  }}
+              {isExternal ? (
+                <TextControl
+                  label={__('Lien externe (URL)', 'amnesty')}
+                  value={buttonLink}
+                  onChange={(value) => setAttributes({ buttonLink: value })}
                 />
-              )}
-              {buttonLink && buttonLinkTitle && (
-                <div style={{ marginTop: '10px', borderTop: '1px solid #eee', paddingTop: '10px' }}>
-                  <p style={{ margin: 0 }}>
-                    {__('Lien sélectionné :', 'amnesty')}{' '}
-                    <strong dangerouslySetInnerHTML={{ __html: buttonLinkTitle }} />
-                  </p>
-                  <Button
-                    isLink
-                    isDestructive
-                    onClick={() => setAttributes({ buttonLink: '', buttonLinkTitle: '' })}
-                  >
-                    {__('Retirer', 'amnesty')}
-                  </Button>
-                </div>
+              ) : (
+                <>
+                  <SelectControl
+                    label={__('Type de contenu pour le lien', 'amnesty')}
+                    value={buttonContentType}
+                    options={contentTypes}
+                    onChange={(value) => {
+                      setAttributes({
+                        buttonContentType: value,
+                        buttonLink: '',
+                        buttonLinkTitle: '',
+                      });
+                    }}
+                  />
+                  {buttonContentType && (
+                    <ContentSearchControl
+                      contentType={buttonContentType}
+                      onChange={(link, newTitle) => {
+                        setAttributes({ buttonLink: link, buttonLinkTitle: newTitle });
+                      }}
+                    />
+                  )}
+                  {buttonLink && buttonLinkTitle && (
+                    <div
+                      style={{ marginTop: '10px', borderTop: '1px solid #eee', paddingTop: '10px' }}
+                    >
+                      <p style={{ margin: 0 }}>
+                        {__('Lien sélectionné :', 'amnesty')}{' '}
+                        <strong dangerouslySetInnerHTML={{ __html: buttonLinkTitle }} />
+                      </p>
+                      <Button
+                        isLink
+                        isDestructive
+                        onClick={() => setAttributes({ buttonLink: '', buttonLinkTitle: '' })}
+                      >
+                        {__('Retirer', 'amnesty')}
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
               <SelectControl
                 label={__('Position du bouton', 'amnesty')}
@@ -490,7 +506,7 @@ const EditComponent = (props) => {
                 alignment={buttonPosition}
                 style="bg-yellow"
                 icon="arrow-right"
-                isInternal={true}
+                isInternal={!isExternal}
               />
             )}
           </div>
