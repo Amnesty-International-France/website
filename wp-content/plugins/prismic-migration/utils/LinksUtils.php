@@ -133,7 +133,7 @@ class LinksUtils
                 $post = self::getPostByTypeAndUid($type, $uid);
 
                 if ($post !== false) {
-                    $content = str_replace($placeholder, $post->post_title, $content);
+                    $content = str_replace($placeholder, get_the_title($post), $content);
                     $count++;
                 }
             }
