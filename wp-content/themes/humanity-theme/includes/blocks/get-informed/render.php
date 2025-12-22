@@ -73,7 +73,7 @@ function render_get_informed_block(array $attributes): string
                                     href="<?php echo esc_url($url); ?>"
                                     <?php echo ($type === 'video') ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
                                 >
-                                    <?php echo wp_kses_post(stripslashes($title)); ?>
+                                    <?php echo sanitize_text_field($title); ?>
                                 </a>
                             <?php endif; ?>
                         </div>
