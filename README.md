@@ -96,6 +96,9 @@ AIF_SALESFORCE_SECRET=
 AIF_SALESFORCE_ORIGINE__C=
 AIF_SALESFORCE_CODE_ORIGINE__C__WEB=
 AIF_SALESFORCE_RECORD_TYPE_ID=
+AIF_SALESFORCE_CODES_AUWEBAP=
+AIF_SALESFORCE_CODES_AUWEB=
+AIF_SALESFORCE_CODES_MILITANT=
 ```
 
 Then, you can add this code in your `wp-config.php` to be able to retrieve them using `getenv` in the application
