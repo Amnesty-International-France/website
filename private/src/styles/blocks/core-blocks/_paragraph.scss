@@ -1,3 +1,4 @@
-.wp-block-post-content > p:first-child {
+.wp-block-post-content > p:first-child,
+.wp-block-post-content > section:first-child {
   margin-top: 24px;
 }
