@@ -63,7 +63,12 @@ Like the install script, you can specify the path of the WordPress installation 
 
 ## Build blocks and assets
 
-You need to build 
+```bash
+cd private
+# You will maybe need to enable corepack
+yarn && yarn install
+yarn build
+```
 
 ## CI/CD
 
@@ -237,3 +242,7 @@ Each page is associated with a template. To modify a page, you need to modify th
 2. Register the page in the `aif_donor_space_create_pages` function.
 3. Associate the template with the page in the `aif_donor_space_load_template` function.
 4. Deactivate and reactivate the plugin in the admin interface.
+
+## Import Content
+
+See [Prismic migration plugin](wp-content/plugins/prismic-migration/README.md)
