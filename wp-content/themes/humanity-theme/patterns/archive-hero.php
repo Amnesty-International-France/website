@@ -20,6 +20,8 @@ if (is_post_type_archive()) {
     $post_type_obj = get_post_type_object($post_type);
     if ($post_type === 'document') {
         $category_name = 'Rapports';
+    } elseif ($post_type === 'edh') {
+        $category_name = 'Ressources pédagogiques';
     } else {
         $category_name = $post_type_obj ? $post_type_obj->labels->name : '';
     }
