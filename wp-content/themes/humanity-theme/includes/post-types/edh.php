@@ -12,7 +12,7 @@ function amnesty_register_edh_cpt(): void
         'edh',
         [
             'labels'              => [
-                'name'               => 'EDH',
+                'name'               => 'Ressources pédagogiques',
                 'singular_name'      => 'EDH',
                 'add_new'            => 'Ajouter un EDH',
                 'add_new_item'       => 'Ajouter un nouveau EDH',
@@ -25,7 +25,7 @@ function amnesty_register_edh_cpt(): void
             ],
             'public'              => true,
             'has_archive'         => true,
-            'rewrite'             => [ 'slug' => 'edh' ],
+            'rewrite'             => [ 'slug' => 'agir-avec-nous/eduquer-droits-humains/ressources-pedagogiques' ],
             'supports'            => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
             'menu_icon'           => 'dashicons-groups',
             'show_in_rest'        => true,
@@ -39,6 +39,30 @@ function amnesty_register_edh_cpt(): void
 }
 
 add_action('init', 'amnesty_register_edh_cpt');
+
+
+add_filter('wpseo_breadcrumb_links', 'amnesty_custom_edh_breadcrumbs');
+
+function amnesty_custom_edh_breadcrumbs($links)
+{
+    if (is_singular('edh') || is_post_type_archive('edh')) {
+
+        $new_parents = [
+            [
+                'url'  => home_url('/agir-avec-nous/'),
+                'text' => 'Agir avec nous',
+            ],
+            [
+                'url'  => home_url('/agir-avec-nous/eduquer-droits-humains/'),
+                'text' => 'Éduquer aux droits humains',
+            ],
+        ];
+
+        array_splice($links, 1, 0, $new_parents);
+    }
+
+    return $links;
+}
 
 function added_edh_submenus()
 {
