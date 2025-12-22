@@ -12,7 +12,7 @@ function amnesty_register_edh_cpt(): void
         'edh',
         [
             'labels'              => [
-                'name'               => 'Ressources pédagogiques',
+                'name'               => 'EDH',
                 'singular_name'      => 'EDH',
                 'add_new'            => 'Ajouter un EDH',
                 'add_new_item'       => 'Ajouter un nouveau EDH',
