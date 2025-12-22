@@ -2,6 +2,7 @@ wp.domReady(() => {
   const hidden_blocks = [
     // Texte
     'core/quote',
+    'core/accordion',
     'jetpack/ai-assistant',
     'jetpack/ai-chat',
     'jetpack/blogging-prompt',
