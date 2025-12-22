@@ -64,7 +64,7 @@ $button_icon       = file_get_contents($template_directory . '/assets/images/ico
 							<?php echo esc_html(get_the_title($query->post->ID)); ?>
 						</h1>
 						<p class="content">
-							<?php the_field('popin_content'); ?>
+							<?php echo get_field('popin_content', $popin->ID); ?>
 						</p>
 					</div>
 					<a class="cta"
