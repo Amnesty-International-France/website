@@ -9,6 +9,8 @@
 
 if (is_front_page()) {
     $class_name = 'homepage';
+} elseif (is_page('nous-connaitre')) {
+    $class_name = 'nous-connaitre';
 }
 
 $hero_extra_class = ! has_post_thumbnail() ? 'no-featured-image' : '';
