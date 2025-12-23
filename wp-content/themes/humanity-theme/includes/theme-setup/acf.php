@@ -537,7 +537,7 @@ add_action(
                             'a-distance'           => 'À distance',
                         ],
                         'default_value'     => 'Secrétariat national',
-                        'return_format'     => 'value',
+                        'return_format'     => 'label',
                         'multiple'          => 0,
                         'allow_null'        => 0,
                         'allow_in_bindings' => 0,
