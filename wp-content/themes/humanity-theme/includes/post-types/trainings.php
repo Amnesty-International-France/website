@@ -130,7 +130,7 @@ function aif_myspace_training_rewrite_rules()
     });
 
     add_rewrite_rule(
-        '^mon-espace/boite-a-outils/se-former/([^/]+)/?$',
+        '^mon-espace/boite-a-outils/militants-se-former/([^/]+)/?$',
         'index.php?post_type=training&name=$matches[1]&is_my_space_training=1',
         'top'
     );
