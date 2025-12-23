@@ -21,8 +21,12 @@ if (!function_exists('render_hero_homepage_block')) {
         $item = $items[array_rand($items)];
 
         $media_id     = (int) ($item['mediaId'] ?? 0);
-        $image_url    = $media_id ? wp_get_attachment_image_url($media_id, 'full') : '';
-        $image_alt    = $media_id ? get_post_meta($media_id, '_wp_attachment_image_alt', true) : '';
+        $mobile_media_id = (int) ($item['mediaMobileId'] ?? 0);
+
+        $image_url    = $media_id ? wp_get_attachment_image_url($media_id, 'full') : null;
+        $image_alt    = $media_id ? get_post_meta($media_id, '_wp_attachment_image_alt', true) : null;
+        $mobile_image_url = $mobile_media_id ? wp_get_attachment_image_url($mobile_media_id, 'full') : null;
+        $mobile_image_alt = $mobile_media_id ? get_post_meta($mobile_media_id, '_wp_attachment_image_alt', true) : null;
 
         $subtitle     = esc_html($item['subtitle'] ?? '');
         $button_label = esc_html($item['buttonLabel'] ?? '');
@@ -34,9 +38,12 @@ if (!function_exists('render_hero_homepage_block')) {
 		<div class="hero-homepage">
 			<div class="item">
 				<div class="hero-wrapper">
-					<?php if ($image_url): ?>
+					<?php if (isset($image_url) || isset($mobile_image_url)): ?>
 						<div class="hero-image-wrapper">
-							<img class="hero-image" src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($image_alt); ?>">
+							<img class="hero-image" src="<?php echo esc_url($image_url ?? $mobile_image_url ?? ''); ?>" alt="<?php echo esc_attr($image_alt ?? $mobile_image_alt ?? ''); ?>">
+						</div>
+						<div class="hero-image-mobile-wrapper">
+							<img class="hero-image" src="<?php echo esc_url($mobile_image_url ?? $image_url ?? ''); ?>" alt="<?php echo esc_attr($mobile_image_alt ?? $image_alt ?? ''); ?>">
 						</div>
 						<div class="hero-content-wrapper">
 							<h1 class="hero-title">

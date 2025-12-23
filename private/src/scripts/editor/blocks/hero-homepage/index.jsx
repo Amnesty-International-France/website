@@ -11,9 +11,9 @@ registerBlockType('amnesty-core/hero-homepage', {
     items: {
       type: 'array',
       default: [
-        { subtitle: '', mediaId: null, buttonLabel: '', buttonUrl: '' },
-        { subtitle: '', mediaId: null, buttonLabel: '', buttonUrl: '' },
-        { subtitle: '', mediaId: null, buttonLabel: '', buttonUrl: '' },
+        { subtitle: '', mediaId: null, mediaMobileId: null, buttonLabel: '', buttonUrl: '' },
+        { subtitle: '', mediaId: null, mediaMobileId: null, buttonLabel: '', buttonUrl: '' },
+        { subtitle: '', mediaId: null, mediaMobileId: null, buttonLabel: '', buttonUrl: '' },
       ],
     },
     className: {
@@ -30,8 +30,8 @@ registerBlockType('amnesty-core/hero-homepage', {
           buttonLabel: 'Découvrir nos campagnes',
           buttonUrl: '#',
         },
-        { subtitle: 'Slide 2', mediaId: 1221, buttonLabel: '', buttonUrl: '' },
-        { subtitle: 'Slide 3', mediaId: 1222, buttonLabel: '', buttonUrl: '' },
+        { subtitle: 'Slide 2', mediaId: 1221, mediaMobileId: 1221, buttonLabel: '', buttonUrl: '' },
+        { subtitle: 'Slide 3', mediaId: 1222, mediaMobileId: 1222, buttonLabel: '', buttonUrl: '' },
       ],
     },
   },
