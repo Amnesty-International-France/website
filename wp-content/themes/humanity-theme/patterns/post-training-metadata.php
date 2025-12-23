@@ -26,12 +26,12 @@ $has_more_sessions = true;
 $i = 1;
 while ($has_more_sessions) {
     $session = get_field("session_$i", $post->ID);
-    $date_de_debut = $session['date_de_debut'];
+    $date_de_debut = $session['date_de_debut'] ?? '';
     if (empty($date_de_debut)) {
         $has_more_sessions = false;
         continue;
     }
-    $date_de_fin = $session['date_de_fin'];
+    $date_de_fin = $session['date_de_fin'] ?? '';
     if (empty($date_de_fin)) {
         $dates[] = "Le $date_de_debut";
     } else {
