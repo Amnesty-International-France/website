@@ -17,7 +17,11 @@ if (!function_exists('render_training_card_block')) {
         $post_id = $post_to_render->ID;
 
         $title = get_the_title($post_to_render);
-        $permalink = sprintf('%s%s', get_permalink(get_the_ID()), $post_to_render->post_name);
+        if (is_post_type_archive()) {
+            $permalink = get_permalink($post_id);
+        } else {
+            $permalink = sprintf('%s%s', get_permalink(get_the_ID()), $post_to_render->post_name);
+        }
         $thumbnail = get_the_post_thumbnail($post_id, 'medium', ['class' => 'training-card__image']);
 
         $lieu = get_field('lieu', $post_id);
