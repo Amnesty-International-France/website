@@ -41,7 +41,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
           return (
             <PanelBody key={index} title={`Bloc ${index + 1}`} initialOpen={index === 0}>
-              <BaseControl label="Image deskstop">
+              <BaseControl label="Image deskstop" help="2800x1395px recommandée">
                 <MediaUploadCheck>
                   <MediaUpload
                     onSelect={(selectedMedia) => updateItem(index, 'mediaId', selectedMedia.id)}
@@ -66,7 +66,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                 )}
               </BaseControl>
 
-              <BaseControl label="Image mobile">
+              <BaseControl label="Image mobile" help="860x688px recommandée">
                 <MediaUploadCheck>
                   <MediaUpload
                     onSelect={(selectedMedia) =>
