@@ -82,9 +82,9 @@ if (!function_exists('render_slider_block')) {
                     return $base_url;
                 }
 
-                $first_location = get_field('lieu', get_post($post_ids[0]));
+                $first_location = get_field('lieu', get_post($post_ids[0]), false);
                 for ($i = 1; $i < count($post_ids); $i++) {
-                    if (get_field('lieu', get_post($post_ids[$i])) !== $first_location) {
+                    if (get_field('lieu', get_post($post_ids[$i]), false) !== $first_location) {
                         return $base_url;
                     }
                 }
