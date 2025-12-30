@@ -106,7 +106,7 @@ function amnesty_filter_cpt_by_multiple_taxonomies(WP_Query $query)
         if (!empty($post_types)) {
             $query->set('post_type', $post_types);
         }
-    } elseif (is_post_type_archive(['landmark', 'petition', 'document'])) {
+    } elseif (is_post_type_archive(['landmark', 'petition', 'document', 'portrait'])) {
         $tax_query = [];
 
         $filterable_taxonomies = [ 'landmark_category', 'combat', 'location', 'keyword' ];
