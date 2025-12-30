@@ -5,8 +5,9 @@ global $post;
 
 $post_id     = $args['post_id'] ?? ($args['post']->ID ?? ($post->ID ?? null));
 $post_object = get_post($post_id);
+$custom = $args['custom'] ?? false;
 
-if (!$post_object instanceof WP_Post) {
+if (!$post_object instanceof WP_Post || $custom) {
     $title = $args['title'] ?? 'Titre par défaut';
     $permalink = $args['permalink'] ?? '#';
     $date = $args['date'] ?? date('Y-m-d');
