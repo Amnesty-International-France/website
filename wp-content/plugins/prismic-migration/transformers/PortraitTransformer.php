@@ -6,32 +6,11 @@ use Type;
 
 class PortraitTransformer extends DocTransformer
 {
-    public function existsQueryParams(): array
-    {
-        $parent_page = get_or_create_page('page', 'personnes', 'Personnes');
-        if (! $parent_page) {
-            return [];
-        }
-
-        if (is_int($parent_page)) {
-            return ['post_parent' => $parent_page];
-        } else {
-            return ['post_parent' => $parent_page->ID];
-        }
-    }
-
     public function parse($prismicDoc): array
     {
         $wp_post = (new PageFroideTransformer())->parse($prismicDoc);
 
         $wp_post['post_type'] = \Type::get_wp_post_type(Type::PORTRAIT);
-
-        $parent_page = get_or_create_page('page', 'personnes', 'Personnes');
-        if (is_int($parent_page)) {
-            $wp_post['post_parent'] = $parent_page;
-        } elseif (is_object($parent_page)) {
-            $wp_post['post_parent'] = $parent_page->ID;
-        }
 
         $data = $prismicDoc['data'];
         $wp_post['meta_input']['shorttitle'] = $data['shortTitle'];

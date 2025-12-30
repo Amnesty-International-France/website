@@ -1362,8 +1362,6 @@ add_action(
             ]
         );
 
-        $personnes_page = get_page_by_path('personnes', OBJECT, 'page');
-        $personnes_id   = $personnes_page->ID ?? 0;
         acf_add_local_field_group(
             [
                 'key'                   => 'group_68a488d09855d',
@@ -1509,17 +1507,7 @@ add_action(
                         [
                             'param'    => 'post_type',
                             'operator' => '==',
-                            'value'    => 'page',
-                        ],
-                        [
-                            'param'    => 'page_template',
-                            'operator' => '!=',
-                            'value'    => 'page-the-chronicle-promo',
-                        ],
-                        [
-                            'param'    => 'page_parent',
-                            'operator' => '==',
-                            'value'    => (string) $personnes_id,
+                            'value'    => 'portrait',
                         ],
                     ],
                 ],

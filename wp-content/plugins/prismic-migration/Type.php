@@ -27,12 +27,13 @@ enum Type: string
             self::PAYS => 'fiche_pays',
             self::FOCUS => 'landmark',
             self::STRUCTURE_LOCALE => 'local-structures',
-            self::PAGE_FROIDE, self::ACTION_MOBILISATION, self::ACTION, self::PORTRAIT => 'page',
+            self::PAGE_FROIDE, self::ACTION_MOBILISATION, self::ACTION => 'page',
             self::EVENEMENT => 'tribe_events',
             self::PETITION, self::ACTION_SOUTIEN => 'petition',
             self::DOCUMENT => 'document',
             self::COMMUNIQUE_PRESSE => 'press-release',
             self::EDH => 'edh',
+            self::PORTRAIT => 'portrait',
             default => null,
         };
     }
