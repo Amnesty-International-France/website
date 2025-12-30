@@ -10,6 +10,7 @@ if (!function_exists('render_slider_block')) {
      */
     function render_slider_block(array $attributes): string
     {
+        $pageId = get_the_ID();
         $post_type = $attributes['postType'] ?? '';
         $selected_posts = $attributes['selectedPosts'] ?? [];
 
@@ -186,18 +187,33 @@ if (!function_exists('render_slider_block')) {
                                 ?>
                                 <div class="swiper-slide">
                                     <?php
-                                        $args = [
-                                            'direction'     => 'portrait',
-                                            'post_id'       => $current_post_id,
-                                            'title'         => get_the_title(),
-                                            'permalink'     => get_permalink(),
-                                            'date'          => $date_to_use,
-                                            'thumbnail'     => get_the_post_thumbnail($current_post_id, 'medium', ['class' => 'article-image']),
-                                            'main_category' => amnesty_get_a_post_term($current_post_id),
-                                            'terms'         => wp_get_object_terms($current_post_id, get_object_taxonomies(get_post_type())),
-                                            'session_start' => $session_start,
-                                            'session_end'   => $session_end,
-                                        ];
+                                    $permalink = get_permalink();
+                                if ($post_type === 'training') {
+                                    $my_space_page = get_page_by_path('mon-espace');
+                                    if ($my_space_page && in_array($my_space_page->ID, get_post_ancestors($pageId))) {
+                                        $parent = get_posts([
+                                            'name' => 'militants-se-former',
+                                            'post_type' => 'page',
+                                            'post_status' => 'publish',
+                                            'numberposts' => 1,
+                                        ]);
+
+                                        $permalink = sprintf('%s%s', get_permalink($parent[0]->ID), get_post_field('post_name', $current_post_id));
+                                    }
+                                }
+
+                                $args = [
+                                    'custom' => true,
+                                    'direction'     => 'portrait',
+                                    'title'         => get_the_title(),
+                                    'permalink'     => $permalink,
+                                    'date'          => $date_to_use,
+                                    'thumbnail'     => get_the_post_thumbnail($current_post_id, 'medium', ['class' => 'article-image']),
+                                    'main_category' => amnesty_get_a_post_term($current_post_id),
+                                    'terms'         => wp_get_object_terms($current_post_id, get_object_taxonomies(get_post_type())),
+                                    'session_start' => $session_start,
+                                    'session_end'   => $session_end,
+                                ];
 
                                 $template_path = locate_template('partials/article-card.php');
                                 if ($template_path) {
