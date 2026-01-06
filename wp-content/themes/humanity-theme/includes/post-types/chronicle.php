@@ -38,7 +38,7 @@ add_action('init', function () {
         'public' => true,
         'show_in_rest' => true,
         'menu_icon' => 'dashicons-format-aside',
-        'menu_position' => 21,
+        'menu_position' => 19,
         'supports' => [
             0 => 'title',
             1 => 'editor',
