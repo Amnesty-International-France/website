@@ -23,6 +23,7 @@ class TaxMapper
             'conflits-armes-et-populations', 'controle-des-armes' => 'respect-du-droit-international-humanitaire',
             'justice-internationale-et-impunite' => 'justice-internationale',
             'peine-de-mort-et-torture' => 'peine-de-mort',
+            'liberte-d-expression' => 'liberte-expression',
             default => $thematique,
         };
     }
