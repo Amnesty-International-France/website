@@ -34,6 +34,10 @@ $tax_query = [
         'taxonomy' => 'document_democratic_type',
         'operator' => 'EXISTS',
     ],
+    [
+        'taxonomy' => 'document_instance_type',
+        'operator' => 'EXISTS',
+    ],
 ];
 
 $type_filter = isset($_GET['qdocument_democratic_type']) ? $_GET['qdocument_democratic_type'] : null;
@@ -43,6 +47,17 @@ if ($type_filter) {
             'taxonomy' => 'document_democratic_type',
             'field'    => 'term_id',
             'terms'    => array_map('intval', explode(',', $type_filter)),
+        ],
+    ];
+}
+
+$instance_type = isset($_GET['qdocument_instance_type']) ? $_GET['qdocument_instance_type'] : null;
+if ($instance_type) {
+    $tax_query[] = [
+        [
+            'taxonomy' => 'document_instance_type',
+            'field'    => 'term_id',
+            'terms'    => array_map('intval', explode(',', $instance_type)),
         ],
     ];
 }
