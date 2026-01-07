@@ -18,7 +18,7 @@ if (!function_exists('setup_categories')) {
             ],
             'Articles La Chronique' => [
                 'singular_name' => 'Article La Chronique',
-                'slug' => 'chroniques',
+                'slug' => 'chronique',
             ],
         ];
 
