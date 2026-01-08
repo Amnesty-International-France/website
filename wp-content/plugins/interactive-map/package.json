@@ -19,5 +19,8 @@
 	},
 	"dependencies": {
 		"leaflet": "^1.9.4"
-	}
+	},
+  "resolutions": {
+    "qs": "6.14.1"
+  }
 }
