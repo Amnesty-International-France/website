@@ -2,6 +2,12 @@
   width: 100%;
   margin-bottom: 24px;
 
+  &.image-fullwidth {
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
   .image-wrapper {
     position: relative;
     width: 100%;

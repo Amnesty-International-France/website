@@ -15,6 +15,10 @@ registerBlockType('amnesty-core/image', {
       type: 'string',
       default: '',
     },
+    fullWidth: {
+      type: 'boolean',
+      default: false,
+    },
   },
   example: {
     attributes: {
