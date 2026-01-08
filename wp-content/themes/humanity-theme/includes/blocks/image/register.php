@@ -24,6 +24,10 @@ if (!function_exists('register_image_block')) {
                         'type'    => 'string',
                         'default' => '',
                     ],
+                    'fullWidth' => [
+                        'type' => 'boolean',
+                        'default' => false,
+                    ],
                 ],
             ]
         );

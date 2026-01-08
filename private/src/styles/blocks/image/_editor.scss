@@ -3,6 +3,12 @@
   margin-bottom: 24px;
   max-width: $container-md;
 
+  &.image-fullwidth {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
   .image-wrapper {
     position: relative;
     width: 100%;

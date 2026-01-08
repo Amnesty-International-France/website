@@ -26,12 +26,17 @@ if (!function_exists('render_image_block')) {
         $caption = $image_post->post_excerpt;
         $description = $image_post->post_content;
 
+        $full_width = $attributes['fullWidth'] ?? false;
         $classes = $attributes['className'];
+
+        if ($full_width) {
+            $classes = 'image-fullwidth ' . $classes;
+        }
 
         ob_start();
         ?>
 
-        <div class="image-block <?php echo esc_attr($classes) ?>">
+        <div class="image-block <?php echo esc_attr($classes) ?> <?php ?>">
             <div class="image-wrapper">
                 <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($alt); ?>" />
                 <?php if (!empty($caption)) : ?>

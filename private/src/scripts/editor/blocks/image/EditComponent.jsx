@@ -1,11 +1,11 @@
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
-const { PanelBody, Button } = wp.components;
+const { PanelBody, Button, ToggleControl } = wp.components;
 const { useSelect } = wp.data;
 
 const EditComponent = (props) => {
   const { attributes, setAttributes } = props;
-  const { mediaId } = attributes;
+  const { mediaId, fullWidth } = attributes;
 
   const selectedMedia = useSelect(
     (select) => (mediaId ? select('core').getMedia(mediaId) : null),
@@ -20,6 +20,11 @@ const EditComponent = (props) => {
     <>
       <InspectorControls>
         <PanelBody title={__('Paramètres de l’image', 'amnesty')}>
+          <ToggleControl
+            label="Full largeur"
+            checked={fullWidth}
+            onChange={(value) => setAttributes({ fullWidth: value })}
+          />
           <MediaUploadCheck>
             <MediaUpload
               onSelect={onSelectImage}
@@ -35,7 +40,7 @@ const EditComponent = (props) => {
         </PanelBody>
       </InspectorControls>
 
-      <div {...useBlockProps()} className="image-block">
+      <div {...useBlockProps()} className={`image-block ${fullWidth && 'image-fullwidth'}`}>
         {selectedMedia ? (
           <>
             <div className="image-wrapper">
