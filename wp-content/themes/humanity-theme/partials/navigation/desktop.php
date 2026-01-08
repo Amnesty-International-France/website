@@ -38,7 +38,7 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 			<div class="main-header-mobile">
 				<?php amnesty_logo(); ?>
 				<div class="donate-button-mobile">
-					<a href="https://soutenir.amnesty.fr/menu/~mon-don" class="link">
+					<a href="https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012&amount=1500&frequency=regular" class="link">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
 							stroke="currentColor" style="width: 1.25rem; height: 1.25rem;">
 							<path strokeLinecap="round" strokeLinejoin="round"
@@ -52,7 +52,7 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 				<ul class="desktop-nav">
 					<?php amnesty_nav('main-menu', new Desktop_Nav_Walker()); ?>
 				</ul>
-			</nav>	
+			</nav>
 			<div class="main-header-mobile-buttons">
 				<div class="search-button-mobile">
 					<a href="#"
@@ -78,10 +78,10 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 				</nav>
 			</div>
 			<div class="donate-button-desktop">
-				<div class="link">
+				<a class="link" href="https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012&amount=1500&frequency=regular">
 					<svg viewBox="0 0 18 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="HeartIcon" fill="currentColor" fill-rule="nonzero"><g id="icon-heart-outline" fill-rule="nonzero"><path d="M16.19,1.156 C14.518,-0.379 11.807,-0.379 10.135,1.156 L9,2.197 L7.864,1.156 C6.192,-0.379 3.482,-0.379 1.81,1.156 C-0.071,2.882 -0.071,5.675 1.81,7.401 L9,14 L16.19,7.401 C18.07,5.675 18.07,2.881 16.19,1.156 Z M15.124,6.375 L9,12.09 L2.875,6.375 C2.258,5.808 2.019,5.068 2.019,4.281 C2.019,3.494 2.157,2.848 2.775,2.282 C3.32,1.781 4.053,1.505 4.838,1.505 C5.622,1.505 6.355,1.981 6.9,2.483 L9,4.308 L11.099,2.482 C11.645,1.98 12.377,1.504 13.162,1.504 C13.947,1.504 14.68,1.78 15.225,2.281 C15.843,2.847 15.98,3.493 15.98,4.28 C15.98,5.067 15.742,5.808 15.124,6.375 Z" id="Shape"></path></g><g class="icon-heart-full" stroke="none" stroke-width="1" fill-rule="evenodd" fill="none"><path d="M16.19,1.155 C14.518,-0.379 11.807,-0.379 10.135,1.155 L9,2.197 L7.864,1.155 C6.192,-0.379 3.482,-0.379 1.81,1.155 C-0.071,2.882 -0.071,5.675 1.81,7.401 L9,14 L16.19,7.401 C18.07,5.675 18.07,2.881 16.19,1.155 Z" id="Path"></path></g></g></svg>
 					<p class="label">Faire un don</p>
-				</div>
+				</a>
 				<div class="nav-don-calculator">
 					<?php
                         echo do_blocks(
