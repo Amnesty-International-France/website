@@ -21,6 +21,7 @@
   .swiper-slide {
     width: 650px;
     height: 300px;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,8 +38,35 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-bottom: 6px solid var(--wp--preset--color--primary);
     }
+  }
+
+  .carousel-caption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 12px;
+    color: var(--wp--preset--color--white);
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: right;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.00) 100%);
+    border-bottom: 6px solid var(--wp--preset--color--primary);
+    box-sizing: border-box;
+  }
+
+  .carousel-caption-text {
+    display: block;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .swiper-slide.is-caption-active .carousel-caption-text {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .carousel-nav {

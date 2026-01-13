@@ -17,6 +17,24 @@ const initCarousels = () => {
       },
     });
 
+    const clearActiveCaptions = () => {
+      container.querySelectorAll('.swiper-slide').forEach((slide) => {
+        slide.classList.remove('is-caption-active');
+      });
+    };
+
+    const showActiveCaption = () => {
+      const activeSlide = swiper.slides[swiper.activeIndex];
+      if (activeSlide) {
+        activeSlide.classList.add('is-caption-active');
+      }
+    };
+
+    clearActiveCaptions();
+    showActiveCaption();
+    swiper.on('slideChangeTransitionStart', clearActiveCaptions);
+    swiper.on('slideChangeTransitionEnd', showActiveCaption);
+
     container.setAttribute('data-swiper-instance', swiper);
   });
 };
