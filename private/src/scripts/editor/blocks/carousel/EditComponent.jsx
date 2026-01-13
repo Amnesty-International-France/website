@@ -57,13 +57,21 @@ const EditComponent = ({ attributes, setAttributes }) => {
             <div className="swiper-wrapper">
               {selectedMedia.map((img) => {
                 const caption = img?.caption?.rendered || '';
+                const description = img?.description?.rendered || '';
 
                 return (
                   <div key={img.id} className="swiper-slide">
-                    <img src={img.source_url} alt={img.alt_text || ''} />
-                    {caption && (
-                      <RawHTML className="carousel-caption">
-                        <span className="carousel-caption-text">{caption}</span>
+                    <div className="carousel-image">
+                      <img src={img.source_url} alt={img.alt_text || ''} />
+                      {caption && (
+                        <RawHTML className="carousel-caption">
+                          <span className="carousel-caption-text">{caption}</span>
+                        </RawHTML>
+                      )}
+                    </div>
+                    {description && (
+                      <RawHTML className="carousel-description">
+                        <span className="carousel-description-text">{description}</span>
                       </RawHTML>
                     )}
                   </div>
