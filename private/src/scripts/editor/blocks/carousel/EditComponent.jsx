@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
 const { PanelBody, Button, Notice } = wp.components;
 const { useSelect } = wp.data;
-const { useState } = wp.element;
+const { useState, RawHTML } = wp.element;
 
 const EditComponent = ({ attributes, setAttributes }) => {
   const { mediaIds = [] } = attributes;
@@ -55,11 +55,20 @@ const EditComponent = ({ attributes, setAttributes }) => {
         {selectedMedia.length > 0 ? (
           <div className="swiper">
             <div className="swiper-wrapper">
-              {selectedMedia.map((img) => (
-                <div key={img.id} className="swiper-slide">
-                  <img src={img.source_url} alt={img.alt_text || ''} />
-                </div>
-              ))}
+              {selectedMedia.map((img) => {
+                const caption = img?.caption?.rendered || '';
+
+                return (
+                  <div key={img.id} className="swiper-slide">
+                    <img src={img.source_url} alt={img.alt_text || ''} />
+                    {caption && (
+                      <RawHTML className="carousel-caption">
+                        <span className="carousel-caption-text">{caption}</span>
+                      </RawHTML>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             <div className="carousel-nav prev">&#10094;</div>
             <div className="carousel-nav next">&#10095;</div>
