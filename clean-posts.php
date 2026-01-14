@@ -63,7 +63,7 @@ $updated_count = 0;
 $scanned_count = 0;
 $paged = 1;
 $batch_size = 100;
-$post_types = ['post'];
+$post_types = ['post', 'page', 'tribe_events', 'actualities-my-space', 'chronique', 'training', 'edh', 'portrait', 'fiche_pays', 'landmark', 'local-structures', 'petition', 'press-release'];
 
 do {
 	$args = [
