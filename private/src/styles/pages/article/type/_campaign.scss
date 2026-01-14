@@ -1,9 +1,9 @@
 .article.campagnes {
   .article-meta {
-    padding: 12px 24px;
+    max-width: $container-sm;
 
-    @media (min-width: $container-hg) {
-      padding: 0;
+    @media (max-width: $container-hg) {
+      padding: 0 24px;
     }
 
     .article-metaData {
