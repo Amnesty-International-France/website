@@ -13,6 +13,7 @@ if (!function_exists('render_chronicle_card_block')) {
 
         $post_id = $post_to_render->ID;
         $permalink = get_permalink($post_to_render);
+        $title = get_the_title($post_to_render);
         $cover_image = get_field('cover_image', $post_id);
         $cover = null;
 
@@ -27,7 +28,7 @@ if (!function_exists('render_chronicle_card_block')) {
         ob_start();
         ?>
 
-<a href="<?php echo esc_url($permalink); ?>" class="chronicle__permalink">
+<a href="<?php echo esc_url($permalink); ?>" class="chronicle__permalink" aria-label="<?php echo esc_attr($title); ?>">
 	<?php if ($cover): ?>
 		<?php echo $cover; ?>
 	<?php else: ?>
