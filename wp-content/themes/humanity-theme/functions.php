@@ -426,4 +426,13 @@ add_filter(
 
 add_filter('big_image_size_threshold', '__return_false');
 
+add_filter('block_editor_settings_all', function ($settings, $context) {
+    if (current_user_can('edit_theme_options')) {
+        return $settings;
+    }
+
+    $settings['supportsTemplateMode'] = false;
+    return $settings;
+}, 10, 2);
+
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
