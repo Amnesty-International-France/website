@@ -424,4 +424,6 @@ add_filter(
     2
 );
 
+add_filter('big_image_size_threshold', '__return_false');
+
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle

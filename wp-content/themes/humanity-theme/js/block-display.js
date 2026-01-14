@@ -1,5 +1,6 @@
 wp.domReady(() => {
   const hidden_blocks = [
+    'core/group',
     // Texte
     'core/quote',
     'core/accordion',
