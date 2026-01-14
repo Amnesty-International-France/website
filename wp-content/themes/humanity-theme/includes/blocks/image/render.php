@@ -19,7 +19,7 @@ if (!function_exists('render_image_block')) {
         }
 
         $image_id = (int) $attributes['mediaId'];
-        $image_url = wp_get_attachment_image_url($image_id, 'large');
+        $image_url = wp_get_attachment_image_url($image_id, 'full');
         $alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
 
         $image_post = get_post($image_id);
