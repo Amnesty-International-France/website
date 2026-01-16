@@ -29,5 +29,10 @@ jobs:
           SSH_USER: ${{ secrets.PROD_SSH_USER }}
           SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
           SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
+      - name: debug
+        run: |
+          cat ~/.ssh/prod.key
+          cat ~/.ssh/config
+
       - name: Deploy
         run: ssh prod 'source ~/.bash_profile && cd github && bash livraison-prod.sh'
