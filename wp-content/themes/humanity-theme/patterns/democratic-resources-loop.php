@@ -19,7 +19,7 @@ $meta_query = [
     ],
 ];
 
-$search = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : null;
+$search = isset($_GET['q']) ? $_GET['q'] : null;
 $posts_per_page = $search ? -1 : 30;
 
 $args = [
@@ -65,6 +65,10 @@ if ($instance_type) {
 $args['tax_query'] = $tax_query;
 
 if ($search) {
+    $search = str_replace(['«', '»', '"', '“', '”', ' '], ' ', $search);
+    $search = preg_replace('/\s+/u', ' ', $search);
+    $search = sanitize_text_field($search);
+    $search = trim($search);
     $args['s'] = $search;
     unset($args['paged']);
 }
