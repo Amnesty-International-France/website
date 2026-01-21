@@ -17,6 +17,7 @@ wp.domReady(() => {
     'core/file',
     'core/audio',
     'videopress/video',
+    'core/gallery',
     // Design
     'core/buttons',
     'core/separator',
@@ -26,6 +27,8 @@ wp.domReady(() => {
     'jetpack/repeat-visitor',
     'jetpack/related-posts',
     'jetpack/top-posts',
+    'jetpack/slideshow',
+    'jetpack/tiled-gallery',
     // Thème
     'core/navigation',
     'core/post-excerpt',
