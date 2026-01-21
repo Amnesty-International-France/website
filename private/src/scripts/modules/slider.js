@@ -5,7 +5,7 @@ import { Navigation, Pagination } from 'swiper/modules';
 
 const sliderBlock = () => {
   document.querySelectorAll('.slider-block').forEach((container) => {
-    if (container.dataset.swiperInstance) {
+    if (container.dataset.swiperInstance === 'true') {
       return;
     }
 
@@ -37,7 +37,8 @@ const sliderBlock = () => {
       },
     });
 
-    container.setAttribute('data-swiper-instance', swiper);
+    container._swiperInstance = swiper;
+    container.dataset.swiperInstance = 'true';
   });
 };
 
