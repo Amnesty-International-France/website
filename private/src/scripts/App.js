@@ -41,6 +41,7 @@ import mySpaceMenu from './modules/my-space-menu';
 import mySpaceMobileMenu from './modules/my-space-mobile-menu';
 import { pageMenu, stickyMenu } from './modules/page-menu';
 import sliderBlock from './modules/slider';
+import changezLeurHistoireSlider from './modules/changez-leur-histoire-slider';
 import BackToTop from './modules/back-to-top';
 import urgentRegister from './modules/Form/urgent-register-form';
 import { emptyInputNewsletterLead, handleNewsletterSubmission } from './modules/newsletter';
@@ -88,6 +89,7 @@ const App = () => {
   pageMenu();
   stickyMenu();
   sliderBlock();
+  changezLeurHistoireSlider();
   BackToTop();
   urgentRegister();
   emptyInputNewsletterLead();
