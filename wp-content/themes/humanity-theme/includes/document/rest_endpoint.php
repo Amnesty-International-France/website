@@ -11,6 +11,7 @@ function title_filter($where, $wp_query)
 
 function search_resources_by_taxonomies(WP_REST_Request $request, array $taxonomies)
 {
+    add_filter('posts_where', 'title_filter', 10, 2);
     $term = $request->get_param('term');
 
     $tax_query = [];
@@ -37,6 +38,8 @@ function search_resources_by_taxonomies(WP_REST_Request $request, array $taxonom
     ];
 
     $query   = new WP_Query($args);
+    remove_filter('posts_where', 'title_filter', 10);
+
     $results = [];
     if ($query->have_posts()) {
         while ($query->have_posts()) {
@@ -58,7 +61,7 @@ function rest_search_document_militant(WP_REST_Request $request)
 
 function rest_search_document_democratic(WP_REST_Request $request)
 {
-    return rest_ensure_response(search_resources_by_taxonomies($request, ['document_democratic_type']));
+    return rest_ensure_response(search_resources_by_taxonomies($request, ['document_democratic_type', 'document_instance_type']));
 }
 
 add_action(
