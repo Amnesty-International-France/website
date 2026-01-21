@@ -1,0 +1,86 @@
+.page-change-their-history {
+  & > .page-hero-block {
+    & > .wp-block-group.is-layout-flow.wp-block-group-is-layout-flow {
+      & > .wp-block-image.container--full-width.page-figure.is-stretched {
+        & > img {
+          object-position: center top;
+        }
+      }
+    }
+  }
+
+  .page-change-their-history-layout {
+    display: flex;
+    gap: 24px;
+    max-width: $container-hg;
+    margin-inline: auto;
+
+    @media (max-width: $container-lg) {
+      flex-direction: column;
+    }
+
+    @media (min-width: $container-lg) {
+      gap: 100px;
+    }
+  }
+
+  .page-donation-main {
+    padding: 0 24px;
+
+    .page-content {
+      padding: 30px 0 0;
+    }
+
+    @media (min-width: $container-lg) {
+      flex: 0 0 60%;
+      max-width: 60%;
+      margin-bottom: 60px;
+    }
+
+    .article-meta {
+      margin: 0;
+    }
+
+    .chapo > .text {
+      @media (min-width: 768px) {
+        width: 100%;
+      }
+    }
+
+    .wp-block-heading {
+      padding: 15px 0 0;
+
+      &:first-of-type::before {
+        content: none;
+      }
+    }
+
+    p {
+      max-width: $container-sm;
+    }
+  }
+
+  .page-hero-block {
+    .page-hero-title-wrapper {
+      .container {
+        max-width: $container-hg;
+
+        .page-hero-title {
+          color: var(--wp--preset--color--black);
+          background-color: var(--wp--preset--color--primary);
+        }
+      }
+    }
+  }
+
+  .page-donation-aside {
+    padding: 60px 24px;
+
+    > .donation-calculator {
+      position: sticky;
+      top: 150px;
+      z-index: 10;
+      background-color: var(--wp--preset--color--white);
+    }
+  }
+}

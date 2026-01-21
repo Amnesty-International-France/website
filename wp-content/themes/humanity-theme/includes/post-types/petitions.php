@@ -46,6 +46,18 @@ function amnesty_register_petition_signature_count_meta()
 }
 add_action('init', 'amnesty_register_petition_signature_count_meta');
 
+function amnesty_register_petition_type_meta()
+{
+    register_post_meta('petition', 'type', [
+        'show_in_rest'      => true,
+        'single'            => true,
+        'type'              => 'string',
+        'sanitize_callback' => 'sanitize_text_field',
+        'auth_callback'     => 'amnesty_signature_count_permission_check',
+    ]);
+}
+add_action('init', 'amnesty_register_petition_type_meta');
+
 function amnesty_get_petition_signature_count($post_id)
 {
     $count = get_post_meta($post_id, '_amnesty_signature_count', true);
@@ -427,6 +439,27 @@ add_action('acf/include_fields', function () {
                         ],
                     ],
                 ],
+                'wrapper' => [
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ],
+                'default_value' => '',
+                'maxlength' => '',
+                'allow_in_bindings' => 0,
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+            ],
+            [
+                'key' => 'field_68f4b1a4a9c10',
+                'label' => 'Sous-titre CLH',
+                'name' => 'subtitle_clh',
+                'aria-label' => '',
+                'type' => 'text',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
                 'wrapper' => [
                     'width' => '',
                     'class' => '',
