@@ -16,7 +16,7 @@ function post_salesforce_petition(array $data): string|false
     return false;
 }
 
-function patch_salesforce_petition(string $external_id, array $data): bool
+function patch_salesforce_petition(string $external_id, array $data)
 {
     $url = "services/data/v57.0/sobjects/Petition__c/Ext_ID_Petition__c/$external_id";
     return patch_salesforce_data($url, $data);
