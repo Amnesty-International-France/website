@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			<div class="foundation-form">
 				<h2 class="title">À VOTRE ÉCOUTE</h2>
 				<p class="officers-citation">Je suis à votre écoute pour toute question ou pour tout besoin d’information à propos de la Fondation, ou des dispositions fiscales qui accompagnent votre générosité.</p>
-				<form class="form" id="foundationForm" action="" method="POST">
+				<form class="form" id="foundationForm" action="" method="POST" data-gtm-type="fondation" data-gtm-name="fondation">
 					<div id="formMessages"></div>
 
 					<div class="form-group civility">
