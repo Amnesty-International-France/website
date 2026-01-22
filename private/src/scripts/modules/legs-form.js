@@ -116,6 +116,14 @@ const initLegsForm = () => {
       return;
     }
 
+    const gtmType = this.getAttribute('data-gtm-type');
+    const gtmName = this.getAttribute('data-gtm-name');
+    window.dataLayer.push({
+      event: 'form_submit',
+      type: gtmType,
+      name: gtmName,
+    });
+
     let body = `Civilité: ${civility || 'Non spécifié'}\n`;
     body += `Nom: ${lastName}\n`;
     body += `Prénom: ${firstName}\n`;

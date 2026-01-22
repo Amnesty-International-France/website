@@ -20,7 +20,7 @@ $countries = get_posts(
 		</p>
 	</div>
 	<div class="urgent-register-form">
-		<form id="urgent-register" method="post" action="">
+		<form id="urgent-register" method="post" action="" data-gtm-type="action" data-gtm-name="<?php echo esc_attr($action_type ?? ''); ?>">
 			<div class="form-mess hidden"></div>
 			<div class="urgent-register-form-input">
 				<?php
