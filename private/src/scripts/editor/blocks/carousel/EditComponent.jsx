@@ -51,35 +51,20 @@ const EditComponent = ({ attributes, setAttributes }) => {
         </PanelBody>
       </InspectorControls>
 
-      <div {...useBlockProps()} className="carousel-block">
+      <div {...useBlockProps()} className="carousel-block-editor-preview">
         {selectedMedia.length > 0 ? (
-          <div className="swiper">
-            <div className="swiper-wrapper">
-              {selectedMedia.map((img) => {
-                const caption = img?.caption?.rendered || '';
-                const description = img?.description?.rendered || '';
-
-                return (
-                  <div key={img.id} className="swiper-slide">
-                    <div className="carousel-image">
-                      <img src={img.source_url} alt={img.alt_text || ''} />
-                      {caption && (
-                        <RawHTML className="carousel-caption">
-                          <span className="carousel-caption-text">{caption}</span>
-                        </RawHTML>
-                      )}
-                    </div>
-                    {description && (
-                      <RawHTML className="carousel-description">
-                        <span className="carousel-description-text">{description}</span>
-                      </RawHTML>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-            <div className="carousel-nav prev">&#10094;</div>
-            <div className="carousel-nav next">&#10095;</div>
+          <div className="editor-preview-grid">
+            {selectedMedia.map((img) => {
+              const caption = img?.caption?.rendered || '';
+              return (
+                <div key={img.id} className="editor-preview-card">
+                  <img src={img.source_url} alt={img.alt_text || ''} />
+                  {caption && (
+                    <RawHTML className="editor-preview-card-title">{caption}</RawHTML>
+                  )}
+                </div>
+              );
+            })}
           </div>
         ) : (
           <p>
