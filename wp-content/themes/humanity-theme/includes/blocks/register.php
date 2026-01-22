@@ -30,6 +30,8 @@ require_once __DIR__ . '/card-image-text/register.php';
 require_once __DIR__ . '/card-image-text/render.php';
 require_once __DIR__ . '/carousel/register.php';
 require_once __DIR__ . '/carousel/render.php';
+require_once __DIR__ . '/change-their-history-toc/register.php';
+require_once __DIR__ . '/change-their-history-toc/render.php';
 require_once __DIR__ . '/chapo/register.php';
 require_once __DIR__ . '/chip-category/register.php';
 require_once __DIR__ . '/chip-category/render.php';
@@ -119,6 +121,7 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_button_block();
         register_call_to_action_block();
         register_carousel_block();
+        register_change_their_history_toc_block();
         register_card_image_text_block();
         register_chapo_block();
         register_chip_category_block();

@@ -22,42 +22,94 @@
     @media (min-width: $container-lg) {
       gap: 100px;
     }
-  }
-
-  .page-donation-main {
-    padding: 0 24px;
 
     .page-content {
-      padding: 30px 0 0;
-    }
+    padding-top: 0;
 
-    @media (min-width: $container-lg) {
-      flex: 0 0 60%;
-      max-width: 60%;
-      margin-bottom: 60px;
-    }
+    &.no-chapo {
+      > :first-child {
+        margin-top: 24px;
 
-    .article-meta {
-      margin: 0;
-    }
-
-    .chapo > .text {
-      @media (min-width: 768px) {
-        width: 100%;
+        .wp-block-heading {
+          margin-top: 0;
+        }
       }
     }
 
-    .wp-block-heading {
-      padding: 15px 0 0;
+    .download-go-further-block,
+    .get-informed-block,
+    .read-also-block,
+    p:not(
+      .wp-block-amnesty-core-chapo p,
+      .wp-block-amnesty-core-section.small p,
+      .wp-block-amnesty-core-section.large p,
+      .download-go-further-block p,
+      .call-to-action-block p,
+      .wp-block-amnesty-core-section-home p,
+      .wp-block-jetpack-contact-form-container p,
+      .interactive-map p,
+      .wp-block-amnesty-core-card-image-text p
+    ),
+    .wp-block-columns,
+    .wp-block-details,
+    .wp-block-heading,
+    .wp-block-list,
+    .wp-block-amnesty-core-action,
+    .wp-block-amnesty-core-quote-block,
+    .wp-block-amnesty-core-image,
+    .wp-block-amnesty-core-section.small,
+    .wp-block-html,
+    .video-block,
+    .card-image-text-block,
+    .read-more-block,
+    .slider-block,
+    .wp-block-jetpack-contact-form-container {
+      max-width: $container-md;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-      &:first-of-type::before {
-        content: none;
+    .wp-block-image,
+    .image-block {
+      max-width: $container-lg;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .custom-button-block {
+      max-width: $container-md;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 30px;
+    }
+
+    .call-to-action-block {
+      max-width: $container-lg;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .wp-block-amnesty-core-chapo {
+      .text {
+        @media (min-width: $container-lg) {
+          width: 50%;
+          margin-left: 20%;
+        }
       }
     }
 
-    p {
-      max-width: $container-sm;
+    .interactive-map {
+      max-width: $container-hg;
+      margin-left: auto;
+      margin-right: auto;
     }
+
+    .carousel-block {
+      .swiper-slide {
+        max-width: $container-sm;
+      }
+    }
+  }
   }
 
   .page-hero-block {
@@ -70,17 +122,6 @@
           background-color: var(--wp--preset--color--primary);
         }
       }
-    }
-  }
-
-  .page-donation-aside {
-    padding: 60px 24px;
-
-    > .donation-calculator {
-      position: sticky;
-      top: 150px;
-      z-index: 10;
-      background-color: var(--wp--preset--color--white);
     }
   }
 }
