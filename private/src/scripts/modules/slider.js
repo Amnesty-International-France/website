@@ -3,9 +3,11 @@ import 'swiper/swiper-bundle.css';
 
 import { Navigation, Pagination } from 'swiper/modules';
 
+const swiperInstances = new WeakMap();
+
 const sliderBlock = () => {
   document.querySelectorAll('.slider-block').forEach((container) => {
-    if (container.dataset.swiperInstance === 'true') {
+    if (swiperInstances.has(container)) {
       return;
     }
 
@@ -37,8 +39,7 @@ const sliderBlock = () => {
       },
     });
 
-    container._swiperInstance = swiper;
-    container.dataset.swiperInstance = 'true';
+    swiperInstances.set(container, swiper);
   });
 };
 
