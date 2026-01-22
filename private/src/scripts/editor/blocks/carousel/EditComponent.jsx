@@ -59,9 +59,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
               return (
                 <div key={img.id} className="editor-preview-card">
                   <img src={img.source_url} alt={img.alt_text || ''} />
-                  {caption && (
-                    <RawHTML className="editor-preview-card-title">{caption}</RawHTML>
-                  )}
+                  {caption && <RawHTML className="editor-preview-card-title">{caption}</RawHTML>}
                 </div>
               );
             })}
