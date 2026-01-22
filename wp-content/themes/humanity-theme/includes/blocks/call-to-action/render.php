@@ -29,6 +29,18 @@ if (!function_exists('render_call_to_action_block')) {
 
         $buttonAlignmentClass = ($direction === 'vertical') ? 'center' : 'right';
 
+        $attrs = $attributes['attrs'] ?? '';
+        $link_attrs = [];
+        if (!empty($attrs)) {
+            $link_attrs['data-gtm'] = 'clic_cta';
+            $link_attrs['data-position'] = 'contenu';
+            if ($attrs === 'don') {
+                $link_attrs['data-name'] = 'faire un don';
+            } elseif ($attrs === 'membre') {
+                $link_attrs['data-name'] = 'devenir membre';
+            }
+        }
+
         ob_start();
         ?>
         <div class="call-to-action-block <?php echo esc_attr($direction); ?>">
@@ -42,7 +54,7 @@ if (!function_exists('render_call_to_action_block')) {
                 <?php endif; ?>
             </div>
             <div class='custom-button-block <?php echo esc_attr($buttonAlignmentClass); ?>'>
-                <a href="<?php echo esc_url($final_link); ?>"<?php echo $target_attr; ?> class="custom-button">
+                <a href="<?php echo esc_url($final_link); ?>"<?php echo $target_attr; ?> class="custom-button" <?php echo render_attributes($link_attrs);?>>
                     <div class='content bg-yellow medium'>
                         <div class="icon-container">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
