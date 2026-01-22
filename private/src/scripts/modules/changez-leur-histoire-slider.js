@@ -16,9 +16,11 @@ const changezLeurHistoireSlider = () => {
       return;
     }
 
+    const centeredSlides = container.dataset.centeredSlides === 'true';
     const swiper = new Swiper(swiperElement, {
       modules: [Navigation],
-      centeredSlides: true,
+      centeredSlides,
+      slidesOffsetBefore: 0,
       slidesPerView: 'auto',
       spaceBetween: 24,
       loop: false,
