@@ -38,7 +38,7 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
 
         ob_start();
         ?>
-        <div class="changez-leur-histoire-slider-block">
+        <div class="changez-leur-histoire-slider-block" data-centered-slides="false">
             <div class="changez-leur-histoire-slider-wrapper">
                 <div class="slider-nav prev">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -60,10 +60,6 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
                                 ? locate_template('partials/action-card-change-their-history.php')
                                 : locate_template('partials/petition-card-change-their-history.php');
                             if ($template_path) {
-                                $args = [
-                                    'post_id' => $post_id,
-                                    'direction' => 'portrait',
-                                ];
                                 include $template_path;
                             }
                             ?>
