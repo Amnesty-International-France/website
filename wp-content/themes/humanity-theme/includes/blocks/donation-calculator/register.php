@@ -41,6 +41,10 @@ if (! function_exists('register_donation_calculator_block')) {
                         'type'    => 'number',
                         'default' => 66,
                     ],
+                    'is_popin' => [
+                        'type' => 'boolean',
+                        'default' => false,
+                    ],
                 ],
             ]
         );

@@ -17,6 +17,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
     externalUrl,
     internalUrlTitle,
     targetBlank,
+    attrs,
   } = attributes;
 
   const allowedTypesForThisBlock = [
@@ -136,6 +137,17 @@ const EditComponent = ({ attributes, setAttributes }) => {
               onChange={(value) => setAttributes({ targetBlank: value })}
             />
           )}
+
+          <SelectControl
+            label={__('Attribut analytics', 'amnesty')}
+            value={attrs}
+            options={[
+              { label: 'Aucun', value: '' },
+              { label: 'Lien faire un don', value: 'don' },
+              { label: 'Lien devenir membre', value: 'membre' },
+            ]}
+            onChange={(value) => setAttributes({ attrs: value })}
+          />
         </PanelBody>
       </InspectorControls>
 

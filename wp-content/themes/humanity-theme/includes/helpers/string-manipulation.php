@@ -273,3 +273,27 @@ if (! function_exists('remove_arabic_the')) {
         return $the_string;
     }
 }
+
+if (! function_exists('render_attributes')) {
+    function render_attributes(array $attributes): string
+    {
+        $html = [];
+
+        foreach ($attributes as $key => $value) {
+            if ($value === null) {
+                continue;
+            }
+
+            if (is_bool($value)) {
+                if ($value) {
+                    $html[] = $key;
+                }
+                continue;
+            }
+
+            $html[] = $key . '="' . htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8') . '"';
+        }
+
+        return implode(' ', $html);
+    }
+}
