@@ -57,8 +57,22 @@ if (!function_exists('render_video_block')) {
 
         <div class="video-block">
             <div class="video-wrapper">
-                <iframe width="100%" src="<?php echo esc_url($embed_url); ?>" frameborder="0"
+                <iframe width="100%" data-src="<?php echo esc_url($embed_url); ?>" frameborder="0"
                         allow="autoplay; encrypted-media" allowfullscreen title="<?php echo esc_attr($video_title); ?>"></iframe>
+				<script>
+					document.addEventListener('DOMContentLoaded',function() {
+						var iframes =document.querySelectorAll('iframe[data-src]');
+						iframes.forEach(function(iframe) {
+							var src = iframe.getAttribute('data-src');
+							if (!src) {
+								iframe.insertAdjacentHTML(
+									'beforebegin',
+									'<p>Veuillez accepter les cookies pour afficher ce contenu.</p>'
+								);
+							}
+						});
+					});
+				</script>
             </div>
             <?php if (!empty($video_title)): ?>
                 <p class="video-title">
