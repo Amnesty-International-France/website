@@ -2,7 +2,10 @@
 $direction = $args['direction'] ?? 'portrait';
 
 $post_id = $args['post_id'] ?? ($args['post']->ID ?? null);
-$post_object = get_post($post_id);
+if (! $post_id) {
+    $post_id = get_the_ID();
+}
+$post_object = $post_id ? get_post($post_id) : null;
 
 if (!$post_object instanceof WP_Post) {
     $title       = $args['title'] ?? 'Titre par défaut';
@@ -31,9 +34,14 @@ if (!$post_object instanceof WP_Post) {
 }
 
 $subtitle_clh = $post_id ? (get_field('subtitle_clh', $post_id) ?: '') : '';
+
 ?>
 
-<article class="petition-card-change-their-history card-<?php echo esc_attr($direction); ?>">
+<article
+    class="petition-card-change-their-history card-<?php echo esc_attr($direction); ?>"
+    data-petition-id="<?php echo esc_attr((string) $post_id); ?>"
+    data-signature-count="<?php echo esc_attr((string) $current); ?>"
+>
     <?php if ($thumbnail): ?>
         <a href="<?= esc_url($permalink); ?>" class="petition-thumbnail" aria-label="<?= esc_attr($title); ?>">
             <?= $thumbnail; ?>
