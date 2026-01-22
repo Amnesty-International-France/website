@@ -139,6 +139,7 @@ if (!function_exists('render_slider_block')) {
                                 $session_end = null;
 
                                 if ($post_type === 'training') {
+                                    $date_to_use = '';
                                     $sessions_meta = get_post_meta($current_post_id, '', false);
                                     $raw_start_date_key = null;
                                     $raw_start = null;
