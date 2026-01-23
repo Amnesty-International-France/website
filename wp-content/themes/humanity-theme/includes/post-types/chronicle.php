@@ -208,7 +208,7 @@ add_action('acf/include_fields', function () {
                 ],
                 'post_status' => 'publish',
                 'taxonomy' => [
-                    0 => 'category:chroniques',
+                    0 => 'category:chronique',
                 ],
                 'filters' => [
                     0 => 'search',
