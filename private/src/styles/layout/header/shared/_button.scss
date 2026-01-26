@@ -139,7 +139,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 
     &:hover {
       background-color: transparent;
@@ -149,11 +149,30 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
     }
 
     .label {
       margin: 0;
       font-family: var(--wp--preset--font-family--secondary);
+      line-height: 1.1;
+      font-size: 16px;
+
+      @media (min-width: 360px) {
+        font-size: 18px;
+      }
+    }
+  }
+
+  @media (max-width: 360px) {
+    .link {
+      padding: 0 8px;
+
+      .label {
+        line-height: 1.05;
+      }
     }
   }
 }
