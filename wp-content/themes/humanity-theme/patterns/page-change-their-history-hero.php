@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 $hero_title = get_field('change_their_history_hero_title', get_the_ID());
 $hero_description = get_field('change_their_history_hero_description', get_the_ID());
-$hero_button_label = get_field('change_their_history_hero_button_label', get_the_ID());
+$hero_button_label = get_field( 'change_their_history_hero_button_label', get_the_ID());
 
 
 if (! $hero_title) {

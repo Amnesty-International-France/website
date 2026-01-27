@@ -52,21 +52,21 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
                             <div class="swiper-slide">
                                 <?php
                                 $petition_type = get_field('type', $post_id);
-                            if (is_array($petition_type)) {
-                                $petition_type = $petition_type['value'] ?? '';
-                            }
+                                if (is_array($petition_type)) {
+                                    $petition_type = $petition_type['value'] ?? '';
+                                }
 
-                            $template_path = $petition_type === 'action-soutien'
-                                ? locate_template('partials/action-card-change-their-history.php')
-                                : locate_template('partials/petition-card-change-their-history.php');
-                            if ($template_path) {
-                                $args = [
-                                    'post_id' => $post_id,
-                                    'direction' => 'portrait',
-                                ];
-                                include $template_path;
-                            }
-                            ?>
+                                $template_path = $petition_type === 'action-soutien'
+                                    ? locate_template('partials/action-card-change-their-history.php')
+                                    : locate_template('partials/petition-card-change-their-history.php');
+                                if ($template_path) {
+                                    $args = [
+                                        'post_id' => $post_id,
+                                        'direction' => 'portrait',
+                                    ];
+                                    include $template_path;
+                                }
+                                ?>
                             </div>
                         <?php endwhile; ?>
                     </div>
