@@ -70,8 +70,8 @@ if (!function_exists('render_video_block')) {
 
 					<iframe width="560" height="315"
 							class="optanon-category-C0004"
-							data-src="<?php echo esc_url($embed_url); ?>"
-							title="<?php echo esc_attr($video_title); ?>"
+							data-src="https://www.youtube.com/embed/Ey1kFYVXH7w"
+							title="YouTube video player"
 							frameborder="0"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 							allowfullscreen>
