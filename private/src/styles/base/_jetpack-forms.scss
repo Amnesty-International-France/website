@@ -179,13 +179,13 @@
       }
     }
 
-    .wp-block-jetpack-button,
-    .wp-block-button {
+    .wp-block-jetpack-button {
       margin: 0 auto;
 
       .wp-block-button__link {
         padding: 14px 28px;
         border: 2px solid var(--wp--preset--color--black);
+
         background: transparent;
         color: var(--wp--preset--color--black);
         border-radius: 0;
