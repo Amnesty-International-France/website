@@ -122,11 +122,11 @@ if (!function_exists('render_download_go_further_block')) {
 							</a>
 						</li>
 						<script>
-							document.addEventListener('DOMContentLoaded', function() {
+							document.addEventListener('DOMContentLoaded', () => {
 								const downloadLinks = document.querySelectorAll('.js-track-download');
-								downloadLinks.forEach(function(link) {
-									link.addEventListener('click', function() {
-										const fileName = this.getAttribute('data-filename');
+								downloadLinks.forEach((link) => {
+									link.addEventListener('click', (event) => {
+										const fileName = event.currentTarget.getAttribute('data-filename');
 										window.dataLayer.push({
 											event: "download_file",
 											name: fileName

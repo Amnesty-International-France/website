@@ -116,8 +116,8 @@ const initLegsForm = () => {
       return;
     }
 
-    const gtmType = this.getAttribute('data-gtm-type');
-    const gtmName = this.getAttribute('data-gtm-name');
+    const gtmType = event.currentTarget.getAttribute('data-gtm-type');
+    const gtmName = event.currentTarget.getAttribute('data-gtm-name');
     window.dataLayer.push({
       event: 'form_submit',
       type: gtmType,
