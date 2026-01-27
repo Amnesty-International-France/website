@@ -229,15 +229,6 @@ const urgentRegister = () => {
       });
 
       const result = await response.json();
-      if (result.status === 'success') {
-        const gtmType = form.getAttribute('data-gtm-type');
-        const gtmName = form.getAttribute('data-gtm-name');
-        window.dataLayer.push({
-          event: 'formSubmit',
-          type: gtmType,
-          name: gtmName,
-        });
-      }
       throwGlobalFormMessage('.form-mess', result.message, result.status);
     } catch (e) {
       throwGlobalFormMessage('.form-mess', e.message, e.status);

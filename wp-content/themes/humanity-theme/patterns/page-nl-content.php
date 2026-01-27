@@ -104,8 +104,6 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
         wp_redirect(add_query_arg([
             'email' => urlencode($email),
             'inscription__nl' => 'success',
-            'gtm_type' => 'inscription',
-            'gtm_name' => 'newsletter',
         ], home_url('/newsletter')));
         exit;
     }

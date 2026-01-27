@@ -6,9 +6,6 @@
  * @package Amnesty
  */
 
-/**
- * Analytics
- */
 add_action('wp_head', function () {
     ?>
 	<!-- Google Tag Manager -->
@@ -29,27 +26,6 @@ add_action('wp_body_open', function () {
 	<!-- End Google Tag Manager (noscript) -->
 <?php
 }, 1);
-
-add_action('wp_footer', function () {
-    if (isset($_GET['gtm_type'], $_GET['gtm_name'])) {
-        $type = sanitize_text_field($_GET['gtm_type']);
-        $name = sanitize_text_field($_GET['gtm_name']);
-        ?>
-		<script type="text/javascript">
-			window.dataLayer.push({
-				'event': 'form_submit',
-				'type': '<?php echo esc_js($type);?>',
-				'name': '<?php echo esc_js($name);?>',
-			});
-
-			if (window.history.replaceState) {
-				const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-				window.history.replaceState({path:cleanUrl}, '', cleanUrl);
-			}
-		</script>
-<?php
-    }
-});
 
 /**
  * Theme root includes

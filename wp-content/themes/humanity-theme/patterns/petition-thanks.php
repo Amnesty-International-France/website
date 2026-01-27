@@ -39,8 +39,6 @@ if (! empty($signatures_target) && $signatures_target > 0) {
     $progress_percentage = min(100, ($current_signatures / $signatures_target) * 100);
 }
 
-
-
 ?>
 
 <!-- wp:group {"tagName":"div","className":"container petition-container has-gutter","layout":{"type":"constrained"}} -->

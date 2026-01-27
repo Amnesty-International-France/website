@@ -127,10 +127,12 @@ if (!function_exists('render_download_go_further_block')) {
 								downloadLinks.forEach(function(link) {
 									link.addEventListener('click', function() {
 										const fileName = this.getAttribute('data-filename');
-										window.dataLayer.push({
-											event: "download_file",
-											name: fileName
-										});
+										if (window.dataLayer) {
+											window.dataLayer.push({
+												event: "download_file",
+												name: fileName
+											});
+										}
 									});
 								});
 							});

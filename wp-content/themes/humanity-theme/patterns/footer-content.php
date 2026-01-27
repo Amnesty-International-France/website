@@ -106,8 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
 
         wp_redirect(add_query_arg([
             'inscription__nl__footer' => 'success',
-            'gtm_type' => 'inscription',
-            'gtm_name' => 'newsletter',
         ], home_url()));
         exit;
     }
@@ -138,8 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
 
         wp_redirect(add_query_arg([
             'inscription__nl__footer' => 'success',
-            'gtm_type' => 'inscription',
-            'gtm_name' => 'newsletter',
         ], home_url()));
         exit;
     }

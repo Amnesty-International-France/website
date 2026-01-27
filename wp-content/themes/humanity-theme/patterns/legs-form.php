@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				<h2 class="title">DEMANDE DE BROCHURE</h2>
 				<p class="subtitle">Je souhaite recevoir la brochure d'informations sur les legs, donations et
 					assurances-vie gratuitement et sans engagement :</p>
-				<form class="form" id="legsForm" action="" method="POST" data-gtm-type="brochure" data-gtm-name="legs">
+				<form class="form" id="legsForm" action="" method="POST">
 					<div id="formMessages"></div>
 
 					<div class="form-group civility">
