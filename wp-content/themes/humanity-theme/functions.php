@@ -43,8 +43,10 @@ add_action('wp_footer', function () {
 			});
 
 			if (window.history.replaceState) {
-				const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-				window.history.replaceState({path:cleanUrl}, '', cleanUrl);
+				const url = new URL(window.location.href);
+				url.searchParams.delete('gtm_type');
+				url.searchParams.delete('gtm_name');
+				window.history.replaceState({path: url.href}, '', url.href);
 			}
 		</script>
 <?php
