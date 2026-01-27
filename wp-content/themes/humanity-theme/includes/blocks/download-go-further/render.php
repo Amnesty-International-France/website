@@ -107,12 +107,12 @@ if (!function_exists('render_download_go_further_block')) {
 					    $type     = get_human_readable_file_type($mimeType);
 					    ?>
 						<li class="item">
-							<a class="item-link js-track-download" href="<?php echo esc_url($url); ?>" data-filename="<?php echo esc_attr($title)?>" target="_blank" rel="noopener noreferrer">
+							<a class="item-link" href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer">
 								<p class="item-text">
 									<?php echo esc_html(sprintf('%s (%s, %s)', $title, $type, $size)); ?>
 								</p>
 							</a>
-							<a href="<?php echo esc_url($url); ?>" class="item-button-link js-track-download" data-filename="<?php echo esc_attr($title)?>" target="_blank" rel="noopener noreferrer">
+							<a href="<?php echo esc_url($url); ?>" class="item-button-link" target="_blank" rel="noopener noreferrer">
 								<button class="item-button">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
 										<path fill-rule="evenodd" d="M19.5 21a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3h-5.379a.75.75 0 0 1-.53-.22L11.47 3.66A2.25 2.25 0 0 0 9.879 3H4.5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h15Zm-6.75-10.5a.75.75 0 0 0-1.5 0v4.19l-1.72-1.72a.75.75 0 0 0-1.06 1.06l3 3a.75.75 0 0 0 1.06 0l3-3a.75.75 0 1 0-1.06-1.06l-1.72 1.72V10.5Z" clip-rule="evenodd" />
@@ -121,25 +121,8 @@ if (!function_exists('render_download_go_further_block')) {
 								</button>
 							</a>
 						</li>
-						<script>
-							document.addEventListener('DOMContentLoaded', function() {
-								const downloadLinks = document.querySelectorAll('.js-track-download');
-								downloadLinks.forEach(function(link) {
-									link.addEventListener('click', function() {
-										const fileName = this.getAttribute('data-filename');
-										if (window.dataLayer) {
-											window.dataLayer.push({
-												event: "download_file",
-												name: fileName
-											});
-										}
-									});
-								});
-							});
-						</script>
 					<?php endforeach; ?>
 				</ul>
-
 			<?php endif; ?>
 		</div>
 		<?php
