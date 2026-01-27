@@ -23,7 +23,6 @@ import './editor/blocks/button/index.jsx';
 import './editor/blocks/call-to-action/index.jsx';
 import './editor/blocks/card-image-text/index.jsx';
 import './editor/blocks/carousel/index.jsx';
-import './editor/blocks/change-their-history-toc/index.jsx';
 import './editor/blocks/chapo/index.jsx';
 import './editor/blocks/content-callout/index.jsx';
 import './editor/blocks/core-mods';
