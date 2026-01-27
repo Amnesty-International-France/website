@@ -92,7 +92,13 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
                             <table align="center" style="border:1px solid #d6d6d6;box-shadow:0 5px 25px 0 #e2e2e2;margin-top:20px;margin-bottom:30px" cellPadding="0" cellSpacing="0" border="0" valign="top">
                                 <tbody>
                                 <tr>
-                                    <td><a href="<?php echo $post_url; ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:none"><img alt="<?php echo get_the_post_thumbnail_caption($post->ID) ?>" src="<?php echo $image_url ?>" width="580" height="295" style="display:block;outline:none;border:none;text-decoration:none"/></a></td>
+                                    <td>
+                                        <a href="<?php echo $post_url; ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:none">
+                                            <div style="width:580px;height:295px;overflow:hidden;">
+                                                <img alt="<?php echo get_the_post_thumbnail_caption($post->ID) ?>" src="<?php echo $image_url ?>" width="580" height="295" style="display:block;outline:none;border:none;text-decoration:none;width:100%;height:100%;object-fit:cover;"/>
+                                            </div>
+                                        </a>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
