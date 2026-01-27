@@ -145,10 +145,9 @@ if (!function_exists('render_slider_block')) {
 
                                     foreach ($sessions_meta as $key => $values) {
                                         if (strpos($key, 'session') !== false && strpos($key, 'date') !== false && strpos($key, 'debut') !== false) {
-                                            $raw_value = $values[0] ?? '';
-                                            if (!empty($raw_value) && strpos((string) $raw_value, 'field_') !== 0) {
+                                            if (!empty($values[0]) && $values[0] !== 'field_...') {
                                                 $raw_start_date_key = $key;
-                                                $raw_start = $raw_value;
+                                                $raw_start = $values[0];
                                                 break;
                                             }
                                         }
@@ -166,7 +165,7 @@ if (!function_exists('render_slider_block')) {
                                             $raw_end_date_key = str_replace('debut', 'fin', $raw_start_date_key);
                                             $raw_end = get_post_meta($current_post_id, $raw_end_date_key, true);
 
-                                            if (!empty($raw_end) && strpos((string) $raw_end, 'field_') !== 0) {
+                                            if (!empty($raw_end)) {
                                                 $date_de_fin = DateTimeImmutable::createFromFormat('Ymd', (string) $raw_end);
                                                 if ($date_de_fin) {
                                                     $session_end = $date_de_fin->format('d/m/Y');
