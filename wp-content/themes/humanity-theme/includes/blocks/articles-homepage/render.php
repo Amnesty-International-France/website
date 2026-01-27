@@ -122,7 +122,7 @@ if (!function_exists('render_articles_homepage_block')) {
                 continue;
             }
 
-            $image_url = get_the_post_thumbnail_url($post, 'medium');
+            $image_id = get_post_thumbnail_id($post);
 
             $current_post_type = get_post_type($post);
             $entity_slug = '';
@@ -158,7 +158,7 @@ if (!function_exists('render_articles_homepage_block')) {
             $posts[] = [
                 'post'          => $post,
                 'subtitle'      => $subtitle,
-                'image'         => $image_url,
+                'image_id'      => $image_id,
                 'entity_slug'   => $entity_slug,
                 'chip_style'    => $chip_style,
                 'entity_label'  => $entity_label,
@@ -212,7 +212,7 @@ if (!function_exists('render_articles_homepage_block')) {
                         $subtitle = $posts[0]['subtitle'];
                         $title = get_the_title($post);
                         $url = get_permalink($post);
-                        $image = $posts[0]['image'];
+                        $image_id = $posts[0]['image_id'];
                         $entity_slug = $posts[0]['entity_slug'];
                         $chip_style = $posts[0]['chip_style'];
                         $entity_label = $posts[0]['entity_label'];
@@ -234,10 +234,20 @@ if (!function_exists('render_articles_homepage_block')) {
                                 'style' => esc_attr($chip_style),
                             ]) ?>
                         <?php endif; ?>
-                        <?php if ($image): ?>
+                        <?php if ($image_id): ?>
                             <div class="article-image-container">
                                 <a href="<?php echo esc_url($url); ?>" <?php if (! is_internal_link($url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
-                                    <img class="article-image" src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" />
+                                    <?php
+                                        echo wp_get_attachment_image(
+                                            $image_id,
+                                            'full',
+                                            false,
+                                            [
+                                                'class' => 'article-image',
+                                                'alt' => $title,
+                                            ],
+                                        );
+                            ?>
                                     <div class="article-content">
                                         <div class="article-title-wrapper">
                                             <h3 class="article-title"><?php echo esc_html($title); ?></h3>
@@ -249,7 +259,7 @@ if (!function_exists('render_articles_homepage_block')) {
                                         <?php endif; ?>
                                         <div class="article-button-wrapper">
                                             <?php
-                                                $button_text = esc_html__('Lire la suite', 'amnesty');
+                                        $button_text = esc_html__('Lire la suite', 'amnesty');
                             ?>
                                             <span class="article-button"> 
                                                 <?php echo $button_text; ?>
@@ -286,8 +296,18 @@ if (!function_exists('render_articles_homepage_block')) {
                                     ]) ?>
                                 <?php endif; ?>
                                 <div class="article-main-mobile-image-wrapper">
-                                    <?php if ($image): ?>
-                                        <img class="article-main-mobile-image" src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" />
+                                    <?php if ($image_id): ?>
+                                        <?php
+                                            echo wp_get_attachment_image(
+                                                $image_id,
+                                                'full',
+                                                false,
+                                                [
+                                                    'class' => 'article-main-mobile-image',
+                                                    'alt' => $title,
+                                                ],
+                                            );
+                                        ?>
                                     <?php endif; ?>
                                 </div>
                                 <div class="article-main-mobile-content">
@@ -333,7 +353,7 @@ if (!function_exists('render_articles_homepage_block')) {
                             $post = $post_data['post'];
                             $title = get_the_title($post);
                             $url = get_permalink($post);
-                            $image = $post_data['image'];
+                            $image_id = $post_data['image_id'];
                             $entity_slug = $post_data['entity_slug'];
                             $chip_style = $post_data['chip_style'];
                             $entity_label = $post_data['entity_label'];
@@ -356,8 +376,18 @@ if (!function_exists('render_articles_homepage_block')) {
                                         ]) ?>
                                     <?php endif; ?>
                                     <div class="article-side-image-wrapper">
-                                        <?php if ($image): ?>
-                                            <img class="article-side-image" src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" />
+                                        <?php if ($image_id): ?>
+                                            <?php
+                                                echo wp_get_attachment_image(
+                                                    $image_id,
+                                                    'full',
+                                                    false,
+                                                    [
+                                                        'class' => 'article-side-image',
+                                                        'alt' => $title,
+                                                    ],
+                                                );
+                                            ?>
                                         <?php endif; ?>
                                     </div>
                                     <div class="article-side-content">
