@@ -19,7 +19,7 @@ $meta_query = [
     ],
 ];
 
-$search = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : null;
+$search = isset($_GET['q']) ? sanitize_text_field(str_replace("\xc2\xa0", ' ', $_GET['q'])) : null;
 $posts_per_page = $search ? -1 : 30;
 
 $args = [
