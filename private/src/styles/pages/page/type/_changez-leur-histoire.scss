@@ -48,8 +48,7 @@
       .wp-block-amnesty-core-section-home p,
       .wp-block-jetpack-contact-form-container p,
       .interactive-map p,
-      .wp-block-amnesty-core-card-image-text p,
-      .petition-card-change-their-history p
+      .wp-block-amnesty-core-card-image-text p
     ),
     .wp-block-columns,
     .wp-block-details,
@@ -81,7 +80,7 @@
       max-width: $container-md;
       margin-left: auto;
       margin-right: auto;
-      margin-bottom: 0;
+      margin-bottom: 30px;
     }
 
     .call-to-action-block {
