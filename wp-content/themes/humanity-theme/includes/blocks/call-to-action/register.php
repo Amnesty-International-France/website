@@ -58,10 +58,6 @@ if (!function_exists('register_call_to_action_block')) {
                     'type' => 'string',
                     'default' => '',
                 ],
-                'attrs' => [
-                    'type' => 'string',
-                    'default' => '',
-                ],
             ],
         ]);
     }

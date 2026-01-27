@@ -52,10 +52,6 @@ registerBlockType('amnesty-core/call-to-action', {
       type: 'string',
       default: '',
     },
-    attrs: {
-      type: 'string',
-      default: '',
-    },
   },
   example: {
     attributes: {

@@ -16,7 +16,6 @@ $with_tabs   = $args['with_tabs'] ?? false;
 $with_legend = $args['with_legend'] ?? false;
 $href        = $args['href'] ?? '';
 $rate        = $args['rate'] ?? 66;
-$is_popin     = $args['is_popin'] ?? false;
 
 $amount_monthly_donation = [
     8  => [
@@ -184,10 +183,7 @@ if (empty($href) && !empty($campaign_url)) {
 		<?php endif ?>
 		<a href="<?php echo esc_url($href); ?>"
 			target="_self"
-			class="donation-link"
-			data-gtm="clic_cta"
-			data-name="faire un don"
-			data-position="<?php if ($is_popin) :?>header popin<?php else :?>contenu<?php endif; ?>">
+			class="donation-link">
 			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-arrow.svg'); ?>
 			Faire un don
 		</a>

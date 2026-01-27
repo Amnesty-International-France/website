@@ -20,7 +20,6 @@ if (! function_exists('render_donation_calculator_block')) {
         $with_legend = $attributes['with_legend'] ?? false;
         $href        = $attributes['href'] ?? '';
         $rate        = $attributes['rate'] ?? 66;
-        $is_popin     = $attributes['is_popin'] ?? false;
 
         if (! in_array($rate, [ 66, 75 ], true)) {
             $taux = 66;
@@ -33,7 +32,6 @@ if (! function_exists('render_donation_calculator_block')) {
             'with_legend' => $with_legend,
             'href'        => $href,
             'rate'        => $rate,
-            'is_popin'     => $is_popin,
         ];
 
         ob_start();
