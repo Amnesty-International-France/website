@@ -57,26 +57,24 @@ if (!function_exists('render_video_block')) {
 
         <div class="video-block">
             <div class="video-wrapper">
-				<div id="placeholder">
-					<div class="warning">
-						<img src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/warning_26a0-fe0f.png" alt="warning">
-						<p>Contenu indisponible car la catégorie Targeting n’est pas activée.</p>
-						<a href="#" onclick="enableTargeting();">Activer les cookies Targeting</a>
-					</div>
-
-					<script type="text/plain" class="optanon-category-C0004">
-						document.querySelectorAll(".warning").forEach((p) => p.style.display = "none");
-					</script>
-
-					<iframe width="100%"
-							class="optanon-category-C0004"
-							data-src="<?php echo esc_url($embed_url); ?>"
-							title="<?php echo esc_attr($video_title); ?>"
-							frameborder="0"
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-							allowfullscreen>
-					</iframe>
+				<div class="warning">
+					<img src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/warning_26a0-fe0f.png" alt="warning">
+					<p>Contenu indisponible car la catégorie Targeting n’est pas activée.</p>
+					<a href="#" onclick="enableTargeting();">Activer les cookies Targeting</a>
 				</div>
+
+				<script type="text/plain" class="optanon-category-C0004">
+					document.querySelectorAll(".warning").forEach((p) => p.style.display = "none");
+				</script>
+
+				<iframe width="100%"
+						class="optanon-category-C0004"
+						data-src="<?php echo esc_url($embed_url); ?>"
+						title="<?php echo esc_attr($video_title); ?>"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowfullscreen>
+				</iframe>
 
 				<script>
 					function enableTargeting() {
