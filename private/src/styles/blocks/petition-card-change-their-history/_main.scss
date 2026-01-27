@@ -61,19 +61,13 @@
     background-color: var(--wp--preset--color--grey-lighter);
   }
 
-  .petition-title {
+  .petition-title  {
     text-align: center;
-
+   
     a {
       font-size: 29.5px;
       font-weight: bold;
       line-height: 33px;
-      text-decoration: none;
-
-      &:hover {
-        background: none;
-        text-decoration: underline;
-      }
     }
   }
 
@@ -132,4 +126,12 @@
     }
   }
 
+  .petition-title a {
+    text-decoration: none;
+
+    &:hover {
+      background: none;
+      text-decoration: underline;
+    }
+  }
 }

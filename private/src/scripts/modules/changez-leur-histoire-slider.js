@@ -3,11 +3,9 @@ import 'swiper/swiper-bundle.css';
 
 import { Navigation } from 'swiper/modules';
 
-const swiperInstances = new WeakMap();
-
 const changezLeurHistoireSlider = () => {
   document.querySelectorAll('.changez-leur-histoire-slider-block').forEach((container) => {
-    if (swiperInstances.has(container)) {
+    if (container.dataset.swiperInstance === 'true') {
       return;
     }
 
@@ -29,7 +27,8 @@ const changezLeurHistoireSlider = () => {
       },
     });
 
-    swiperInstances.set(container, swiper);
+    container._swiperInstance = swiper;
+    container.dataset.swiperInstance = 'true';
   });
 };
 

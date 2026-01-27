@@ -25,9 +25,8 @@ const changeTheirHistoryToc = () => {
 
     list.innerHTML = '';
     headings.forEach((heading, index) => {
-      const headingId = heading.id || `clh-${blockIndex + 1}-${index + 1}`;
       if (!heading.id) {
-        heading.setAttribute('id', headingId);
+        heading.id = `clh-${blockIndex + 1}-${index + 1}`;
       }
       const text = heading.textContent?.trim();
       if (!text) {
@@ -36,7 +35,7 @@ const changeTheirHistoryToc = () => {
       const li = document.createElement('li');
       const link = document.createElement('a');
       link.textContent = text;
-      link.href = `#${headingId}`;
+      link.href = `#${heading.id}`;
       li.appendChild(link);
       list.appendChild(li);
     });
