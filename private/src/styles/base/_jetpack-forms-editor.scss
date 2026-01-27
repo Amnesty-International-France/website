@@ -1,0 +1,20 @@
+.editor-styles-wrapper {
+  .wp-block-jetpack-contact-form {
+    .wp-block-jetpack-button,
+    .wp-block-button {
+      margin: 0 auto !important;
+
+      .wp-block-button__link {
+        padding: 14px 28px;
+        border: 2px solid var(--wp--preset--color--primary);
+        background: var(--wp--preset--color--primary);;
+        color: var(--wp--preset--color--black);
+        border-radius: 0;
+        font-family: var(--wp--preset--font-family--secondary);
+        font-size: 23px;
+        font-weight: bold;
+        line-height: 26px;
+      }
+    }
+  }
+}
