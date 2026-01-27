@@ -1,6 +1,4 @@
 .page-change-their-history {
-  overflow-x: hidden;
-
   & > .page-hero-block {
     & > .wp-block-group.is-layout-flow.wp-block-group-is-layout-flow {
       & > .wp-block-image.container--full-width.page-figure.is-stretched {
@@ -108,12 +106,8 @@
     }
 
     .carousel-block {
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-      margin-right: calc(50% - 50vw);
-
       .swiper-slide {
-        max-width: none;
+        max-width: $container-sm;
       }
     }
   }
