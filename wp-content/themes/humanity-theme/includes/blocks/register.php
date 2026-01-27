@@ -86,8 +86,6 @@ require_once __DIR__ . '/section/render.php';
 require_once __DIR__ . '/section-home/register.php';
 require_once __DIR__ . '/slider/register.php';
 require_once __DIR__ . '/slider/render.php';
-require_once __DIR__ . '/slider-changez-leur-histoire/register.php';
-require_once __DIR__ . '/slider-changez-leur-histoire/render.php';
 require_once __DIR__ . '/term-list/register.php';
 require_once __DIR__ . '/term-list/render.php';
 require_once __DIR__ . '/training-card/register.php';
@@ -149,7 +147,6 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_section_block();
         register_section_home_block();
         register_slider_block();
-        register_slider_changez_leur_histoire_block();
         register_term_list_block();
         register_training_card_block();
         register_tweet_action_block();
