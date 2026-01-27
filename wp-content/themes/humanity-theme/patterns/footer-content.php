@@ -285,9 +285,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
 				</li>
 			<?php
             endforeach; ?>
-			<li class="child">
-				<a class="ot-sdk-show-settings" style="cursor: pointer">Paramètrer les cookies</a>
-			</li>
 		</ul>
 	<?php
     endif; ?>
