@@ -57,14 +57,43 @@ if (!function_exists('render_video_block')) {
 
         <div class="video-block">
             <div class="video-wrapper">
-                <iframe width="100%" data-src="<?php echo esc_url($embed_url); ?>" frameborder="0"
+				<div id="placeholder">
+					<div id="warning">
+						<img src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/warning_26a0-fe0f.png" alt="warning">
+						<p>Contenu indisponible car la catégorie Targeting n’est pas activée.</p>
+						<a href="#" onclick="enableTargeting();">Activer les cookies Targeting</a>
+					</div>
+
+					<script type="text/plain" class="optanon-category-C0004">
+						document.getElementById("warning").style.display = "none";
+					</script>
+
+					<iframe width="560" height="315"
+							class="optanon-category-C0004"
+							data-src="https://www.youtube.com/embed/Ey1kFYVXH7w"
+							title="YouTube video player"
+							frameborder="0"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+							allowfullscreen>
+					</iframe>
+				</div>
+
+				<script>
+					function enableTargeting() {
+						OneTrust.UpdateConsent("Category","C0004:1");
+					}
+				</script>
+
+
+
+				<!--<iframe width="100%" data-src="<?php echo esc_url($embed_url); ?>" frameborder="0"
                         allow="autoplay; encrypted-media" allowfullscreen title="<?php echo esc_attr($video_title); ?>"></iframe>
 				<script>
 					document.addEventListener('DOMContentLoaded',function() {
 						var iframes =document.querySelectorAll('iframe[data-src]');
 						iframes.forEach(function(iframe) {
 							var src = iframe.getAttribute('data-src');
-							if (!src) {
+							if (src) {
 								iframe.insertAdjacentHTML(
 									'beforebegin',
 									'<p>Veuillez accepter les cookies pour afficher ce contenu.</p>'
@@ -72,7 +101,7 @@ if (!function_exists('render_video_block')) {
 							}
 						});
 					});
-				</script>
+				</script>-->
             </div>
             <?php if (!empty($video_title)): ?>
                 <p class="video-title">
