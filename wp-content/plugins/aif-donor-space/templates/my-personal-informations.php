@@ -138,15 +138,13 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
         <h2>Mes informations personnelles</h2>
 
 
-        <?php if ($sf_member->hasMandatActif) :  ?>
+        <?php if ($sf_member->hasMandatActif) : ?>
 
-        <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} €. Votre prochain prélèvement sera effectué le {$next_payement}." ?>
-        </p>
+        <p>Vous êtes <span class='aif-text-bold aif-uppercase'> <?php echo esc_html($user_status); ?> </span> d’Amnesty International France sous le numéro : <?php echo esc_html($sf_user->Identifiant_contact__c); ?> en prélèvement automatique avec une périodicité <span class='aif-lowercase'> <?php echo esc_html($actifMandate->Periodicite__c) ?> </span> d'un montant de <?php echo esc_html($actifMandate->Montant__c) ?> €. Votre prochain prélèvement sera effectué le <?php echo esc_html($next_payement) ?>.</p>
 
         <?php else : ?>
 
-        <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c}" ?>
-        </p>
+        <p>Vous êtes <span class='aif-text-bold aif-uppercase'> <?php echo esc_html($user_status); ?> </span> d’Amnesty International France sous le numéro : <?php echo esc_html($sf_user->Identifiant_contact__c); ?></p>
 
         <?php endif ?>
 
@@ -154,7 +152,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 			<?php wp_nonce_field('update_personal_info', 'personal_info_nonce'); ?>
             <label for="email">Adresse email (obligatoire)</label>
             <input class="aif-input aif-input--disabled" id="email" readonly read type="email"
-                value="<?= $current_user->user_email ?>"
+                value="<?php echo esc_attr($current_user->user_email); ?>"
                 name="Email" />
 
             <?php
@@ -196,31 +194,31 @@ aif_include_partial('info-message', [
             <label for="firstname">Prénom (obligatoire)</label>
             <input placeholder="Prénom" autocomplete="gi<dven-name" name="FirstName" class="aif-input" required
                 aria-required="" id="firstname" read type="text"
-                value="<?= $sf_user->FirstName ?>" />
+                value="<?php echo esc_attr($sf_user->FirstName); ?>" />
             <label for="lastname">Nom (obligatoire)</label>
             <input placeholder="Nom" autocomplete="lastName" name="LastName" class="aif-input" required aria-required=""
                 id="lastname" read type="text"
-                value="<?= $sf_user->LastName ?>" />
+                value="<?php echo esc_attr($sf_user->LastName); ?>" />
             <label for="street-address">Adresse postale (obligatoire)</label>
             <input placeholder="N° et nom de la rue" autocomplete="street-address" name="Adresse_Ligne_4__c"
                 class="aif-input" required aria-required="" id="street-address" type="text"
-                value="<?= $sf_user->Adresse_Ligne_4__c ?>" />
+                value="<?php echo esc_attr($sf_user->Adresse_Ligne_4__c); ?>" />
             <label for="address-level3">Complément adresse</label>
             <input placeholder="N° d'appartement, étage, bâtiment" autocomplete="address-level3"
                 name="Adresse_Ligne_3__c" class="aif-input" id="address-level3" type="text"
-                value="<?= $sf_user->Adresse_Ligne_3__c ?>" />
+                value="<?php echo esc_attr($sf_user->Adresse_Ligne_3__c); ?>" />
 
             <label for="address-level5">Lieu dit</label>
             <input autocomplete="address-level5" name="Adresse_Ligne_5__c" class="aif-input" id="address-level5"
                 type="text"
-                value="<?= $sf_user->Adresse_Ligne_5__c ?>" />
+                value="<?php echo esc_attr($sf_user->Adresse_Ligne_5__c); ?>" />
             <label for="postal-code">Code Postal (obligatoire)</label>
             <input placeholder="Code Postal" autocomplete="postal-code" name="Code_Postal__c" class="aif-input"
                 id="postal-code" type="text"
-                value="<?= $sf_user->Code_Postal__c ?>" />
+                value="<?php echo esc_attr($sf_user->Code_Postal__c); ?>" />
             <label for="city">Ville (obligatoire)</label>
             <input placeholder="Ville" autocomplete="address-level3" name="Ville__c" class="aif-input" id="city"
-                type="text" value="<?= $sf_user->Ville__c ?>" />
+                type="text" value="<?php echo esc_attr($sf_user->Ville__c); ?>" />
 
 
             <div class="aif-dropdown__container">
@@ -229,7 +227,11 @@ aif_include_partial('info-message', [
                     class="checkboxGroup-button i aif-dropdown__container_button">
 
 
-                    <?=isset($sf_user->Pays__c) ? $sf_user->Pays__c : 'Sélectionner votre Pays' ?>
+                    <?php if (isset($sf_user->Pays__c)) {
+                        echo esc_html($sf_user->Pays__c);
+                    } else {
+                        echo 'Sélectionner votre Pays';
+                    } ?>
 
                 </button>
 
@@ -253,7 +255,7 @@ aif_include_partial('info-message', [
             <div class="aif-hidden">
                 <label for="inputResult">Votre pays</label>
                 <input autocomplete="country"
-                    value="<?= $sf_user->Pays__c ?>" name="Pays__c"
+                    value="<?php echo esc_attr($sf_user->Pays__c); ?>" name="Pays__c"
                     class="aif-input" id="inputResult" type="text" />
             </div>
 
@@ -261,7 +263,7 @@ aif_include_partial('info-message', [
 
             <label for="tel">N° de téléphone portable</label>
             <input placeholder="06 00 00 00 00" autocomplete="tel" name="MobilePhone" class="aif-input" id="tel"
-                type="text" value="<?= $sf_user->MobilePhone ?>" />
+                type="text" value="<?php echo esc_attr($sf_user->MobilePhone); ?>" />
 
             <?php
             if (empty($sf_user->MobilePhone)) {
@@ -273,7 +275,7 @@ aif_include_partial('info-message', [
 
             <label for="HomePhone">N° de téléphone domicile</label>
             <input placeholder="01 00 00 00 00" name="HomePhone" class="aif-input" id="HomePhone" type="text"
-                value="<?= $sf_user->HomePhone ?>" />
+                value="<?php echo esc_attr($sf_user->HomePhone); ?>" />
 
             <button class="btn aif-mt1w aif-button--full" onclick="this.form.submit(); this.disabled=true;"
                 type="submit">Transmettre les modifications</button>
@@ -293,11 +295,12 @@ aif_include_partial('info-message', [
             Mes informations bancaires
         </h2>
 
-        <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$sf_user->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} € le {$day_of_payment} de chaque mois." ?>
-        </p>
+        <p>Vous êtes <span class='aif-text-bold aif-uppercase'> <?php echo esc_html($user_status); ?> </span> d’Amnesty International France sous le numéro : <?php echo esc_html($sf_user->Identifiant_contact__c); ?> en prélèvement automatique avec une périodicité <span class='aif-lowercase'> <?php echo esc_html($actifMandate->Periodicite__c); ?> </span> d'un montant de <?php echo esc_html($actifMandate->Montant__c) ?> € le <?php echo esc_html($day_of_payment); ?> de chaque mois.</p>
 
 
-        <?php aif_include_partial('alert', ['content' => "Prélèvement automatique sur l'IBAN se terminant par {$last4IBANDigit}"]); ?>
+        <?php aif_include_partial('alert', [
+            'content' => "Prélèvement automatique sur l'IBAN se terminant par ". esc_html($last4IBANDigit),
+        ]);?>
 
         <p>
             <a href="<?= get_permalink(get_page_by_path('modification-coordonnees-bancaire')) ?>"
