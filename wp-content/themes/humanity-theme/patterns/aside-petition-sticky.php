@@ -31,10 +31,10 @@ $civility = $civility ?? 'M.';
   <div class="sticky-card">
     <div class="sticky-card-content">
       <div class="sticky-card-title">SIGNEZ LA PÉTITION</div>
-      <p class="recipient"><?php echo esc_html($recipient); ?><?php echo esc_html($form_contenu ?? ''); ?></p>
+      <p class="recipient"><?php echo esc_html($recipient ?? ''); ?><?php echo esc_html($form_contenu ?? ''); ?></p>
         <?php if ($type === 'petition') : ?>
       <div class="punchline-wrapper">
-        <p class="punchline"><?php echo esc_html($punchline); ?></p>
+        <p class="punchline"><?php echo esc_html($punchline ?? ''); ?></p>
         <div class="border"></div>
       </div>
         <?php endif; ?>
