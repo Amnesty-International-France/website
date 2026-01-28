@@ -79,6 +79,10 @@ function checkKeys($requiredFields, $array_to_check)
 }
 
 if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['personal_info_nonce']) || !wp_verify_nonce($_POST['personal_info_nonce'], 'update_personal_info')) {
+        wp_die('Erreur de sécurité : token CSRF invalide.');
+    }
+
     $disable_button = true;
 
     $partial_data = [
@@ -120,6 +124,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 			<?php endif ?>
 
 			<form class="" onsubmit="disablePersonalInformationsButtons()" role="form" method="POST" action="">
+				<?php wp_nonce_field('update_personal_info', 'personal_info_nonce'); ?>
 				<label for="email">Adresse email (obligatoire)</label>
 				<input class="aif-input aif-input--disabled" id="email" readonly read type="email"
 					value="<?= $current_user->user_email ?>"
