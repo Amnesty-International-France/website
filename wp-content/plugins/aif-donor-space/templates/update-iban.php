@@ -46,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
         $success_message = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
     } else {
         $error_message = 'Un problème technique est survenu. Merci de réessayer plus tard';
-
     }
 }
 
@@ -66,8 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
 
         <?php if ($SF_membre_data->hasMandatActif) :  ?>
 
-        <p> <?= "Vous êtes <span class='aif-text-bold aif-uppercase'> {$user_status} </span> d’Amnesty International France sous le numéro : {$SF_User->Identifiant_contact__c} en prélèvement automatique avec une périodicité <span class='aif-lowercase'> {$actifMandate->Periodicite__c} </span> d'un montant de {$actifMandate->Montant__c} € le {$day_of_payment} de chaque mois." ?>
-        </p>
+        <p>Vous êtes <span class='aif-text-bold aif-uppercase'> <?php echo esc_html($user_status); ?> </span> d’Amnesty International France sous le numéro : <?php echo esc_html($SF_User->Identifiant_contact__c); ?> en prélèvement automatique avec une périodicité <span class='aif-lowercase'> <?php echo esc_html($actifMandate->Periodicite__c); ?> </span> d'un montant de <?php echo esc_html($actifMandate->Montant__c); ?> € le <?php echo esc_html($day_of_payment); ?> de chaque mois.</p>
 
         <?php endif ?>
 
@@ -101,7 +99,7 @@ if (!empty($success_message)) {
             <label for="iban">N° IBAN (obligatoire)</label>
             <input placeholder="FR 14 2001 0101 1505 0001 3M02" type="text" id="iban" name="iban"
                 aria-labelledby="iban-help-message"
-                value="<?= $formattedIban ?>"
+                value="<?php echo esc_attr($formattedIban); ?>"
                 class="<?= $has_error ? 'aif-input-error' : '' ?>" />
 
             <?php
