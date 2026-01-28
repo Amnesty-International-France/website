@@ -38,7 +38,7 @@ if (!$post_object instanceof WP_Post) {
     $post_terms = array_filter($post_terms, static fn ($term) => !in_array($term->taxonomy, ['keyword', 'landmark_category']));
 
     $post_type = get_post_type($post_object);
-    $is_national_event = get_field('_EventNational', $post_id);
+    $is_national_event = get_field('_EventNational', $post_id) ?? false;
 
     $chip_style = $is_national_event ? 'bg-black' : 'bg-yellow';
 
