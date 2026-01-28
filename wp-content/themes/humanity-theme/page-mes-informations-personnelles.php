@@ -205,8 +205,8 @@ aif_include_partial('info-message', [
 					<ul role="listbox" id="dropdown-list" class="checkboxGroup-list aif-dropdown__container_option-list">
 						<?php foreach ($countries as $country): ?>
 						<li role="option"
-							class="aif-dropdown__container_option-list__item <?= $country == $sf_user->Pays__c ? 'aif-dropdown__container_option-list__item--curent' : ''  ?> ">
-							<?= $country ?>
+							class="aif-dropdown__container_option-list__item <?= $country === $sf_user->Pays__c ? 'aif-dropdown__container_option-list__item--curent' : ''  ?> ">
+							<?php esc_html($country); ?>
 						</li>
 						<?php endforeach ?>
 					</ul>

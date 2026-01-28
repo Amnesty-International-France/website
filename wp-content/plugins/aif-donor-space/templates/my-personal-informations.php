@@ -241,8 +241,8 @@ aif_include_partial('info-message', [
                     <?php     foreach ($countries as $country): ?>
 
                     <li role="option"
-                        class="aif-dropdown__container_option-list__item <?= $country == $sf_user->Pays__c ? 'aif-dropdown__container_option-list__item--curent' : ''  ?> ">
-                        <?= $country ?>
+                        class="aif-dropdown__container_option-list__item <?= $country === $sf_user->Pays__c ? 'aif-dropdown__container_option-list__item--curent' : ''  ?> ">
+                        <?php echo esc_html($country); ?>
                     </li>
                     <?php     endforeach ?>
 
