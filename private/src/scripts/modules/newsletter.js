@@ -1,6 +1,7 @@
 const newsletterFormElement = () => {
   const footer = document.querySelector('footer');
-  const overfooter = footer?.querySelector('.over-footer');
+  const overfooter =
+    footer?.querySelector('.over-footer') ?? document.querySelector('.over-footer');
   const formLead = overfooter?.querySelector('form[name="newsletter-lead-form"]');
   const inputFooterNL = formLead?.querySelector('input[name="newsletter-lead"]');
   const ctaFooterNL = overfooter?.querySelector('.register-nl');
