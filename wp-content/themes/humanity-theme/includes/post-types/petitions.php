@@ -158,12 +158,12 @@ function amnesty_handle_petition_signature()
 
         $gtm_type = 'petition';
         $gtm_name = get_the_title($petition_id);
-        $petition_permalink = add_query_arg([
+
+        $petition_permalink = trailingslashit(get_permalink($petition_id)) . 'merci';
+        $redirect_url = add_query_arg([
             'gtm_type' => $gtm_type,
             'gtm_name' => urlencode($gtm_name),
-        ], get_permalink($petition_id));
-
-        $redirect_url = trailingslashit($petition_permalink) . 'merci';
+        ], $petition_permalink);
 
         wp_redirect($redirect_url);
         exit;
