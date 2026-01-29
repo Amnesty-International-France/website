@@ -23,8 +23,8 @@ function send_reset_password_email($to_email, $authentification_url)
             'subject' => 'Amnesty France- réinitialiser votre mot de passe',
             't:variables' => json_encode($variables),
             'template' => 'espace-don réinitialisation du mot de passe',
-
         ],
+        'timeout'   => 30,
         'headers' => [
             'Authorization' => 'Basic ' . base64_encode('api:' . $api_key),
         ],
