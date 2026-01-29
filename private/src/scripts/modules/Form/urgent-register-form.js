@@ -230,13 +230,16 @@ const urgentRegister = () => {
 
       const result = await response.json();
       if (result.status === 'success') {
-        const gtmType = event.currentTarget.getAttribute('data-gtm-type');
-        const gtmName = event.currentTarget.getAttribute('data-gtm-name');
-        window.dataLayer.push({
-          event: 'formSubmit',
-          type: gtmType,
-          name: gtmName,
-        });
+        const currentForm = event.currentTarget || form;
+        const gtmType = currentForm?.getAttribute('data-gtm-type');
+        const gtmName = currentForm?.getAttribute('data-gtm-name');
+        if (gtmType && gtmName && window.dataLayer) {
+          window.dataLayer.push({
+            event: 'formSubmit',
+            type: gtmType,
+            name: gtmName,
+          });
+        }
       }
       throwGlobalFormMessage('.form-mess', result.message, result.status);
     } catch (e) {
