@@ -45,6 +45,7 @@ function send_2fa_code($to_email, $code)
             't:variables' => json_encode($variables),
             'template' => '2facode',
         ],
+        'timeout'   => 30,
         'headers' => [
             'Authorization' => 'Basic ' . base64_encode('api:' . $api_key),
         ]]);
