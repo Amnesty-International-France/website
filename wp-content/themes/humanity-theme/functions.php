@@ -295,6 +295,7 @@ require_once realpath(__DIR__ . '/includes/salesforce/petition.php');
 require_once realpath(__DIR__ . '/includes/salesforce/user.php');
 require_once realpath(__DIR__ . '/includes/salesforce/case.php');
 require_once realpath(__DIR__ . '/includes/salesforce/newsletter.php');
+require_once realpath(__DIR__ . '/includes/newsletter/footer-lead.php');
 
 /**
  * Document module
