@@ -5,7 +5,9 @@
   z-index: 12;
   visibility: hidden;
   width: 100%;
+  max-height: calc(100vh - 64px);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   backface-visibility: hidden;
   transition: transform 0.2s ease-in-out;
@@ -135,7 +137,7 @@
 
 .mobile-menu .menu-item.is-open .sub-menu {
   border-top: 1px solid var(--wp--preset--color--grey-light);
-  max-height: 600px;
+  max-height: 9999px;
 }
 
 .mobile-menu .sub-menu .menu-item a,
