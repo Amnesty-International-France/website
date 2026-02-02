@@ -121,23 +121,22 @@ if (!function_exists('render_download_go_further_block')) {
 								</button>
 							</a>
 						</li>
-						<script>
-							document.addEventListener('DOMContentLoaded', () => {
-								const downloadLinks = document.querySelectorAll('.js-track-download');
-								downloadLinks.forEach((link) => {
-									link.addEventListener('click', (event) => {
-										const fileName = event.currentTarget.getAttribute('data-filename');
-										window.dataLayer.push({
-											event: "download_file",
-											name: fileName
-										});
-									});
-								});
-							});
-						</script>
 					<?php endforeach; ?>
 				</ul>
-
+				<script>
+					document.addEventListener('DOMContentLoaded', () => {
+						const downloadLinks = document.querySelectorAll('.js-track-download');
+						downloadLinks.forEach((link) => {
+							link.addEventListener('click', () => {
+								const fileName = link.getAttribute('data-filename');
+								window.dataLayer.push({
+									event: "download_file",
+									name: fileName
+								});
+							});
+						});
+					});
+				</script>
 			<?php endif; ?>
 		</div>
 		<?php
