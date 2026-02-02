@@ -13,7 +13,7 @@
 	<!-- wp:pattern {"slug":"amnesty/my-space-header"} /-->
     <div class="aif-militants-resources">
 		<h2 class="aif-militants-resources-title"><?php the_title(); ?></h2>
-		<p>Texte d’intro à prévoir un mouvement international ancré dans chaque pays. Amnesty en France est une association reconnue d’utilité publique.</p>
+		<p>Retrouvez tous les documents liés à la vie militante : administratif, guide, fiches pratiques, matériel à télécharger etc.</p>
 		<!-- wp:amnesty-core/archive-filters-militants-resources /-->
 		<!-- wp:pattern {"slug":"amnesty/militants-resources-loop"} /-->
 	</div>
