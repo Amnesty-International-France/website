@@ -1,3 +1,12 @@
+const tagLink = (calc, amount, isMonthly) => {
+  if (!calc || Number.isNaN(amount)) return;
+
+  const link = calc.querySelector('.donation-link');
+  const type = isMonthly ? 'mensuel' : 'ponctuel';
+  link.setAttribute('data-type', type);
+  link.setAttribute('data-amount', `${amount}`);
+};
+
 const taxDeductionCalculation = (amount, rate) => {
   const finalPrice = amount - (amount * parseInt(rate, 10)) / 100;
   let priceAsString = finalPrice.toFixed(2);
@@ -36,12 +45,14 @@ const updateCalculatorUI = (calculator, amount, isMonthly) => {
 };
 
 const initializeSimpleCalculator = (calculator) => {
+  tagLink(calculator, 0, null);
   const input = calculator.querySelector('#input-donation');
   if (!input) return;
 
   input.addEventListener('input', () => {
     const amount = parseFloat(input.value) || 0;
     updateCalculatorUI(calculator, amount, null);
+    tagLink(calculator, amount, null);
   });
 };
 
@@ -51,6 +62,7 @@ const initializeTabbedCalculator = (calculator) => {
   const freeInput = calculator.querySelector('#input-donation');
   const currencyPunctual = calculator.querySelector('.currency-punctual');
   const currencyMonthly = calculator.querySelector('.currency-monthly');
+  tagLink(calculator, 15, true);
 
   const setupListenersForActiveTab = () => {
     const activeBody = bodyContainer.querySelector('div[class*="amount-"].active');
@@ -67,6 +79,7 @@ const initializeTabbedCalculator = (calculator) => {
       });
       const amount = parseFloat(freeInput.value) || 0;
       updateCalculatorUI(calculator, amount, isMonthly);
+      tagLink(calculator, amount, isMonthly);
     });
 
     radioContainers.forEach((container) => {
@@ -80,6 +93,7 @@ const initializeTabbedCalculator = (calculator) => {
           const amount = parseFloat(radio.value);
           freeInput.value = amount;
           updateCalculatorUI(calculator, amount, isMonthly);
+          tagLink(calculator, amount, isMonthly);
         }
       });
     });
@@ -89,9 +103,11 @@ const initializeTabbedCalculator = (calculator) => {
       const amount = parseFloat(checkedRadio.value);
       freeInput.value = amount;
       updateCalculatorUI(calculator, amount, isMonthly);
+      tagLink(calculator, amount, isMonthly);
     } else {
       const amount = parseFloat(freeInput.value) || 0;
       updateCalculatorUI(calculator, amount, isMonthly);
+      tagLink(calculator, amount, isMonthly);
     }
   };
 
