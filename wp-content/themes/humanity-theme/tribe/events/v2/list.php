@@ -28,34 +28,34 @@
 global $wpdb;
 
 $current_page = max(1, get_query_var('paged'));
+$events       = is_array($events) ? $events : [];
+$posts_per_page = (int) tribe_get_option('postsPerPage', 10);
 
-$user_longitude = isset($_GET['lon']) ? sanitize_text_field($_GET['lon']) : null;
-$user_latitude = isset($_GET['lat']) ? sanitize_text_field($_GET['lat']) : null;
+$user_longitude = isset($_GET['lon']) ? filter_var(wp_unslash($_GET['lon']), FILTER_VALIDATE_FLOAT) : null;
+$user_latitude  = isset($_GET['lat']) ? filter_var(wp_unslash($_GET['lat']), FILTER_VALIDATE_FLOAT) : null;
 
-if ($user_longitude && $user_latitude) {
-    $posts_per_page = (int)tribe_get_option('postsPerPage');
+if (null !== $user_longitude && false !== $user_longitude && null !== $user_latitude && false !== $user_latitude) {
+    $distance_limit = 100000;
 
     $current_page = max(1, get_query_var('paged'));
     $offset = ($current_page - 1) * $posts_per_page;
 
-    $events = $wpdb->get_results(
+    $geo_events = $wpdb->get_results(
         $wpdb->prepare(
             "
     SELECT
-		*,
-    ST_Distance_Sphere(
-    ST_SRID(POINT(%f, %f), 4326),
-    ST_SRID(
-        POINT(
-            CAST(venue_long.meta_value AS DECIMAL(10,6)),
-            CAST(venue_lat.meta_value AS DECIMAL(10,6))
-        ), 4326
-    )
-) AS distance,
-     event_national.meta_value AS national_event
-	FROM {$wpdb->posts} post
-	LEFT JOIN {$wpdb->postmeta} venue_id
-		ON venue_id.post_id = post.ID
+		post.*,
+		ST_Distance_Sphere(
+			POINT(%f, %f),
+			POINT(
+				CAST(venue_long.meta_value AS DECIMAL(10,6)),
+				CAST(venue_lat.meta_value AS DECIMAL(10,6))
+			)
+		) AS distance,
+		event_national.meta_value AS national_event
+		FROM {$wpdb->posts} post
+		LEFT JOIN {$wpdb->postmeta} venue_id
+			ON venue_id.post_id = post.ID
 		AND venue_id.meta_key = '_EventVenueID'
 	LEFT JOIN {$wpdb->postmeta} venue_long
 		ON venue_long.post_id = venue_id.meta_value
@@ -71,13 +71,13 @@ if ($user_longitude && $user_latitude) {
 	AND (
 		SELECT meta_value
 		FROM {$wpdb->postmeta}
-		WHERE post_id = post.ID
-		  AND meta_key = '_EventEndDate'
-		LIMIT 1
-	) >= NOW()
-	HAVING distance <= 100000 OR event_national.meta_value = 1
+			WHERE post_id = post.ID
+			  AND meta_key = '_EventEndDate'
+			LIMIT 1
+		) >= %s
+	HAVING distance <= %d OR event_national.meta_value = 1
 	ORDER BY distance ASC,
-		(
+			(
 			SELECT meta_value
 			FROM {$wpdb->postmeta}
 			WHERE post_id = post.ID
@@ -85,13 +85,19 @@ if ($user_longitude && $user_latitude) {
 			LIMIT 1
 		) ASC
 	LIMIT %d OFFSET %d
-",
+	",
             $user_longitude,
             $user_latitude,
-            tribe_get_option('postsPerPage'),
+            current_time('mysql'),
+            $distance_limit,
+            $posts_per_page,
             $offset
         )
     );
+
+    if (is_array($geo_events) && '' === $wpdb->last_error) {
+        $events = $geo_events;
+    }
 }
 
 ?>
@@ -143,4 +149,3 @@ if ($user_longitude && $user_latitude) {
 		<?php endif; ?>
 	</div>
 </div>
-
