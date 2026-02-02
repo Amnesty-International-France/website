@@ -24,11 +24,6 @@ $inscription_chronique_status = $_GET['inscription_chronique'] ?? '';
 $inscription_chronique_success = $inscription_chronique_status === 'success';
 
 if (isset($_POST['sign_discover_chronicle'])) {
-    if (!isset($_POST['discover_chronicle_nonce']) ||
-        !wp_verify_nonce($_POST['discover_chronicle_nonce'], 'discover_chronicle_action')) {
-        wp_die('Sécurité : formulaire invalide.');
-    }
-
     $themes = isset($_POST['theme']) ? array_map('sanitize_text_field', (array)$_POST['theme']) : [];
     $discover_chronicle = sanitize_email($_POST['discover-chronicle'] ?? '');
     $civility = sanitize_text_field($_POST['civility'] ?? '');
@@ -207,7 +202,6 @@ if (isset($_POST['sign_discover_chronicle'])) {
 				<div class="form-group">
 					<input type="hidden" name="type" value="">
 				</div>
-				<?php wp_nonce_field('discover_chronicle_action', 'discover_chronicle_nonce'); ?>
 				<button class="discover-chronicle-form-cta" type="submit" name="sign_discover_chronicle">
 					Envoyer ma demande
 				</button>

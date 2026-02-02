@@ -97,11 +97,6 @@ add_filter('template_include', 'aif_myspace_petition_template_include', 99);
 function amnesty_handle_petition_signature()
 {
     if (isset($_POST['sign_petition']) && isset($_POST['user_email']) && isset($_POST['petition_id'])) {
-
-        if (! isset($_POST['amnesty_petition_nonce']) || ! wp_verify_nonce($_POST['amnesty_petition_nonce'], 'amnesty_sign_petition')) {
-            wp_die('Security check failed. Please try again.');
-        }
-
         $petition_id = absint($_POST['petition_id']);
         $user_email = sanitize_email($_POST['user_email']);
 
