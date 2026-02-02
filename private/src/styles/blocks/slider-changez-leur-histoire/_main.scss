@@ -67,19 +67,11 @@
     &.prev {
       transform: translateY(-50%) rotate(180deg);
       left: 0;
-
-      @media (min-width: 1681px) {
-        left: -52px;
-      }
     }
 
     &.next {
       transform: translateY(-50%);
       right: 0;
-
-      @media (min-width: 1681px) {
-        right: -52px;
-      }
     }
   }
 }
