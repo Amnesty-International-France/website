@@ -49,6 +49,7 @@ $civility = $civility ?? 'M.';
         <div class="email-section">
           <input class="email-input" type="email" name="user_email" placeholder="Email*" required>
           <input type="hidden" name="petition_id" value="<?php echo esc_attr($post_id); ?>">
+          <?php wp_nonce_field('amnesty_sign_petition', 'amnesty_petition_nonce'); ?>
         </div>
 
         <div class="full-form">
@@ -67,6 +68,7 @@ $civility = $civility ?? 'M.';
           <div class="firstname-section">
             <input class="firstname-input" type="text" name="user_firstname" placeholder="Prénom*">
             <input type="hidden" name="petition_id" value="<?php echo esc_attr($post_id); ?>">
+            <?php wp_nonce_field('amnesty_sign_petition', 'amnesty_petition_nonce'); ?>
           </div>
 
           <div class="lastname-section">

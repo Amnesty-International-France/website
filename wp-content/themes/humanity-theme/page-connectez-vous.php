@@ -86,7 +86,7 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
         <div class="login-form">
             <h3 class="login-title">Connexion</h3>
             <form class="aif-form-container" role="form" method="POST" action="">
-				<input type="hidden" class="dynamic-nonce" name="login_nonce" data-action="login_form" />
+                <?php wp_nonce_field('login_form', 'login_nonce'); ?>
                 <label for="email" class="sr-only">Votre adresse email (obligatoire)</label>
                 <input placeholder="Email"
                     value="<?= $email ? $email : '' ?>" class="aif-input" type="email" name="email" id="email" autocomplete="email" required="true">

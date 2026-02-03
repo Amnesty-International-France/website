@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
             <h2> Validation de la création de mon compte </h2>
             <p>Pour finaliser la création de votre compte, veuillez rentrer le code à 6 chiffres que vous venez de recevoir par email</p>
             <form role="form" method="POST" action="">
-				<input type="hidden" class="dynamic-nonce" name="2FA_nonce" data-action="2FA_check" />
+                <?php wp_nonce_field('2FA_check', '2FA_nonce'); ?>
                 <label for="2FA-code">Code à 6
                     chiffres (obligatoire)</label>
                 <input class="aif-input" pattern="\d{6}" title="rentrer ici votre code de 6 chiffres reçu par email"
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
             }?>
 
             <form class="aif-form-container" role="form" method="POST" action="">
-				<input type="hidden" class="dynamic-nonce" name="2FA_new_code_nonce" data-action="2FA_send_code" />
+                <?php wp_nonce_field('2FA_send_code', '2FA_new_code_nonce'); ?>
                 <button class="btn aif-mt1w aif-button--full" type="submit">Recevoir un nouveau code</button>
             </form>
 

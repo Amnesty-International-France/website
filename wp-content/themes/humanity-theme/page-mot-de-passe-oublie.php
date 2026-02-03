@@ -64,7 +64,7 @@ if (isset($success_message)) {
 
         <section class="aif-forgotten-password">
             <form class="aif-form-container" action="" method="POST">
-				<input type="hidden" class="dynamic-nonce" name="forgotten_password_nonce" data-action="forgotten_password_form" />
+                <?php wp_nonce_field('forgotten_password_form', 'forgotten_password_nonce'); ?>
                 <label for="email">Votre email (obligatoire) :</label>
                 <input
                     value="<?= $email ? $email : '' ?>"
