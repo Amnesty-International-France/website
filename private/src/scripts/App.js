@@ -46,7 +46,6 @@ import changeTheirHistoryToc from './modules/change-their-history-toc';
 import BackToTop from './modules/back-to-top';
 import urgentRegister from './modules/Form/urgent-register-form';
 import { emptyInputNewsletterLead, handleNewsletterSubmission } from './modules/newsletter';
-import loadNonce from './modules/load-nonce';
 
 const App = () => {
   browserDetector();
@@ -97,7 +96,6 @@ const App = () => {
   urgentRegister();
   emptyInputNewsletterLead();
   handleNewsletterSubmission();
-  loadNonce();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 

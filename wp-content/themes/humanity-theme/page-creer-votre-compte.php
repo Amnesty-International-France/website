@@ -101,7 +101,7 @@ if (!empty($error_no_access_to_donor_space)) {
             <h3 class="aif-sr-only">S'inscrire</h3>
             <form class="aif-form-container" action="" method="POST" onsubmit="return checkPasswordMatch()">
                 <div>
-					<input type="hidden" class="dynamic-nonce" name="create_account_nonce" data-action="create_account_form" />
+                <?php wp_nonce_field('create_account_form', 'create_account_nonce'); ?>
                     <label for="email">Adresse email (obligatoire) :</label>
                     <input type="email" class="aif-input" id="email" name="email" aria-describedby="email-help-message"
                         placeholder="adresse@mail.fr" autocomplete="email" aria-required="true" required>

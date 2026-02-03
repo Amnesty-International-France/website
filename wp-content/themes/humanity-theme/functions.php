@@ -475,32 +475,4 @@ add_filter('block_editor_settings_all', function ($settings, $context) {
     return $settings;
 }, 10, 2);
 
-add_action('rest_api_init', function () {
-    register_rest_route('humanity-theme/v1', '/get-nonce/', [
-        'methods' => 'GET',
-        'callback' => 'get_custom_nonce',
-        'permission_callback' => '__return_true',
-    ]);
-});
-
-function get_custom_nonce($request)
-{
-    $action = $request->get_param('action');
-
-    $allowed_actions = ['login_form', 'forgotten_password_form', 'create_account_form', 'iban_form', 'contact_form', 'update_personal_info', '2FA_check', '2FA_send_code'];
-
-    if (!in_array($action, $allowed_actions)) {
-        return new WP_Error('invalid_action', 'Action non autorisée', [ 'status' => 403 ]);
-    }
-
-    $response = new WP_REST_Response([
-        'nonce' => wp_create_nonce($action),
-    ]);
-
-    $response->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-    $response->header('Pragma', 'no-cache');
-
-    return $response;
-}
-
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle

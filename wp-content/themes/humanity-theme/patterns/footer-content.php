@@ -70,6 +70,10 @@ $inscription_nl_status = $_GET['inscription__nl__footer'] ?? '';
 $inscription_nl_success = $inscription_nl_status === 'success';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) {
+    if (!isset($_POST['newsletter_lead_form_nonce']) ||
+        !wp_verify_nonce($_POST['newsletter_lead_form_nonce'], 'newsletter_lead_form_action')) {
+        wp_die('Échec de sécurité, veuillez réessayer.');
+    }
 
     $email = sanitize_email($_POST['newsletter-lead'] ?? '');
 
@@ -189,6 +193,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
 			<div class="nl-container">
 				<form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form" class="newsletter-lead-form">
 					<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
+					<?php
+                    wp_nonce_field('newsletter_lead_form_action', 'newsletter_lead_form_nonce'); ?>
 					<button class="register-nl" name="sign_lead" disabled>
 						<span class="button-text">OK</span>
 						<span class="spinner hidden"></span>
