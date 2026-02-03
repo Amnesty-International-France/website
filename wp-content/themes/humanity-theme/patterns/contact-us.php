@@ -64,7 +64,7 @@ if (!empty($success_message)) {
 ?>
 
         <form method="post" action="">
-            <?php wp_nonce_field('contact_form', 'contact_nonce'); ?>
+			<input type="hidden" class="dynamic-nonce" name="contact_nonce" data-action="contact_form" />
             <label for="subject">Objet de la demande (obligatoire)</label>
             <input placeholder="L'objet de votre demande" type="text" name="subject"
                 aria-labelledby="contact-subject-help-message"
