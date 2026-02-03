@@ -478,7 +478,7 @@ add_filter('block_editor_settings_all', function ($settings, $context) {
 wp_enqueue_script('load-nonce', get_stylesheet_directory_uri() . '/js/load-nonce.js', [], 1.0, true);
 
 wp_localize_script('load-nonce', 'wpApiSettings', [
-	'nonce' => wp_create_nonce('wp_rest'),
+    'nonce' => wp_create_nonce('wp_rest'),
 ]);
 
 add_action('rest_api_init', function () {
