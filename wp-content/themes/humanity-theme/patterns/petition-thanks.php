@@ -140,12 +140,22 @@ if (! empty($signatures_target) && $signatures_target > 0) {
             </div>
         </div>
         <?php
-        $random_petition = new WP_Query([
-            'post_type'      => 'petition',
-            'posts_per_page' => 1,
-            'orderby'        => 'rand',
-            'post__not_in'   => [ get_the_ID() ],
-        ]);
+        $today = current_time('Y-m-d');
+
+$random_petition = new WP_Query([
+    'post_type'      => 'petition',
+    'posts_per_page' => 1,
+    'orderby'        => 'rand',
+    'post__not_in'   => [ get_the_ID() ],
+    'meta_query'     => [
+        [
+            'key'     => 'date_de_fin',
+            'value'   => $today,
+            'compare' => '>=',
+            'type'    => 'DATE',
+        ],
+    ],
+]);
 
 if ($random_petition->have_posts()) :
     while ($random_petition->have_posts()) : $random_petition->the_post();
