@@ -28,8 +28,7 @@ if (!function_exists('render_document_card_block')) {
 
         if (isset($post) && $post) {
             $post_id = $post->ID;
-            $attachment = get_field('upload_du_document', $post_id);
-            $permalink = wp_get_attachment_url($attachment['ID'] ?? 0);
+            $permalink = amnesty_get_document_access_url($post_id);
             $title = get_the_title($post);
             $date = get_the_date('', $post);
             $thumbnail = get_the_post_thumbnail($post->ID, 'medium', ['class' => 'article-image']);

@@ -22,7 +22,7 @@ $link = '';
 $main_category = amnesty_get_a_post_term($post_id);
 $chip_style = match ($main_category->slug ?? '') {
     'actualites', 'dossiers' => 'bg-black',
-    'chroniques' => 'bg-yellow',
+    'chronique' => 'bg-yellow',
     default => 'bg-black',
 };
 
