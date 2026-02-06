@@ -79,7 +79,7 @@ $post_type_class = get_post_type() ?: '';
   </article>
   <!-- /wp:group -->
 
-  <?php if ($category_class === 'chronique') : ?>
+  <?php if ($category_class === 'chroniques') : ?>
 		<div class="container--large mx-auto">
 			<!-- wp:amnesty-core/call-to-action {"title":"Découvrez La Chronique sans plus tarder : recevez un numéro \"découverte\" gratuit","subTitle":"Remplissez ce formulaire en indiquant votre adresse postale et recevez gratuitement votre premier numéro dans votre boîte aux lettres !", "buttonLabel":"","externalUrl":"/numero-decouverte-la-chronique/", "linkType": "external"} /-->
 		</div>
@@ -91,7 +91,7 @@ $post_type_class = get_post_type() ?: '';
   </footer>
   <!-- /wp:group -->
 
-	<?php if ($category_class === 'chronique') : ?>
+	<?php if ($category_class === 'chroniques') : ?>
 		<!-- wp:amnesty-core/related-posts {"title":"ET AUSSI", "nb_posts": 4, "display": "chronique"} /-->
 	<?php elseif (in_array($category_class, ['actualites', 'dossiers']) || $post_type_class === 'landmark') : ?>
 		<!-- wp:amnesty-core/related-posts {"title":"Voir aussi"} /-->

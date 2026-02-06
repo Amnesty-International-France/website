@@ -58,7 +58,7 @@ if ($is_promo_context) {
 		</figure>
 		<?php endif; ?>
 		<?php
-        echo do_blocks('<!-- wp:amnesty-core/button {"label":"Abonnez-vous pour 3€/mois","size":"medium","icon":"arrow-right","linkType":"external","externalUrl":"https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=WBNCHW1001","alignment":"center"} /-->');
+        echo do_blocks('<!-- wp:amnesty-core/button {"label":"Abonnez-vous pour 3€/mois","size":"medium","icon":"arrow-right","linkType":"external","externalUrl":"https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=null","alignment":"center"} /-->');
 
 $archive_button_attrs = [
     'label'       => 'Voir les anciens numéros',
