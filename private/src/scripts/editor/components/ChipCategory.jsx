@@ -17,7 +17,7 @@ const ChipCategory = ({ item }) => {
   let styleClass = '';
   switch (slug) {
     case 'actualites':
-    case 'chronique':
+    case 'chroniques':
     case 'reperes':
       styleClass = 'bg-yellow';
       break;
