@@ -6,6 +6,7 @@ $militantTaxonomy = get_the_terms($post, 'document_militant_type')[0] ?? null;
 $democraticTaxonomy = get_the_terms($post, 'document_democratic_type')[0] ?? null;
 $instanceTaxonomy = get_the_terms($post, 'document_instance_type')[0] ?? null;
 $uploadedDoc = get_field('upload_du_document');
+$documentUrl = amnesty_get_document_access_url((int) $post->ID);
 ?>
 
 <div class="document-card">
@@ -31,7 +32,7 @@ $uploadedDoc = get_field('upload_du_document');
 		<p class="document-size">(<?= strtoupper($uploadedDoc['subtype']) ?> - <?= round($uploadedDoc['filesize'] / 1000) ?> Ko)</p>
 	</div>
 	<div class="document-card-right">
-		<a target="_blank" href="<?= $uploadedDoc['url'] ?>">
+		<a target="_blank" rel="noopener noreferrer" href="<?= esc_url($documentUrl); ?>">
 			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M7 12L12 17M12 17L17 12M12 17V4M6 20H18" stroke="#575756" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
