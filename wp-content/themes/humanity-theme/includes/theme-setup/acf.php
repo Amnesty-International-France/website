@@ -1692,7 +1692,7 @@ add_action(
                             'class' => '',
                             'id'    => '',
                         ],
-                        'default_value'     => 'https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=null',
+                        'default_value'     => 'https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=WBNCHW1001',
                         'maxlength'         => '',
                         'allow_in_bindings' => 0,
                         'placeholder'       => '',

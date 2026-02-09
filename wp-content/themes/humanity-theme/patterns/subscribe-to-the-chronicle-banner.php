@@ -25,7 +25,7 @@ declare(strict_types=1);
 		<!-- /wp:column -->
 		<!-- wp:column {"className":"column"} -->
 		<div class="column">
-			<!-- wp:amnesty-core/button {"label":"Abonnez-vous pour 3€/mois","size":"medium","icon":"arrow-right","linkType":"external","externalUrl":"https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=null","alignment":"right"} /-->
+			<!-- wp:amnesty-core/button {"label":"Abonnez-vous pour 3€/mois","size":"medium","icon":"arrow-right","linkType":"external","externalUrl":"https://soutenir.amnesty.fr/b?cid=365&lang=fr_FR&reserved_originecode=WBNCHW1001","alignment":"right"} /-->
 		</div>
 		<!-- /wp:column -->
 	<!-- /wp:columns -->
