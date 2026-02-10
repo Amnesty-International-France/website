@@ -253,3 +253,51 @@ add_filter(
     10,
     2
 );
+
+if (! function_exists('amnesty_document_is_private')) {
+    /**
+     * Check whether a document is marked as private.
+     *
+     * @param int $post_id The document post ID.
+     *
+     * @return bool
+     */
+    function amnesty_document_is_private(int $post_id): bool
+    {
+        return (bool) get_post_meta($post_id, 'document_private', true);
+    }
+}
+
+if (! function_exists('amnesty_document_get_download_url')) {
+    /**
+     * Return the appropriate download URL for a document.
+     *
+     * @param int                 $post_id    The document post ID.
+     * @param array<string,mixed> $attachment Attachment data from ACF, if available.
+     *
+     * @return string
+     */
+    function amnesty_document_get_download_url(int $post_id, array $attachment = []): string
+    {
+        if (amnesty_document_is_private($post_id)) {
+            return get_permalink($post_id) ?: '';
+        }
+
+        if (empty($attachment) && function_exists('get_field')) {
+            $attachment = (array) get_field('upload_du_document', $post_id);
+        }
+
+        if (! empty($attachment['url'])) {
+            return $attachment['url'];
+        }
+
+        if (! empty($attachment['ID'])) {
+            $url = wp_get_attachment_url($attachment['ID']);
+            if ($url) {
+                return $url;
+            }
+        }
+
+        return get_permalink($post_id) ?: '';
+    }
+}
