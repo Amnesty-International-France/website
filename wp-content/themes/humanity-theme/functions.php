@@ -503,7 +503,7 @@ function get_custom_nonce($request)
         'nonce' => wp_create_nonce($action),
     ]);
 
-    $response->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    $response->header('Cache-Control', 'private, no-store, no-cache, must-revalidate, max-age=0');
     $response->header('Pragma', 'no-cache');
 
     return $response;
