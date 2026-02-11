@@ -475,11 +475,7 @@ add_filter('block_editor_settings_all', function ($settings, $context) {
     return $settings;
 }, 10, 2);
 
-wp_enqueue_script('load-nonce', get_stylesheet_directory_uri() . '/js/load-nonce.js', [], 1.0, true);
-
-wp_localize_script('load-nonce', 'wpApiSettings', [
-    'nonce' => wp_create_nonce('wp_rest'),
-]);
+wp_enqueue_script('load-nonce', get_stylesheet_directory_uri() . '/js/load-nonce.js', [], 1.1, true);
 
 add_action('rest_api_init', function () {
     register_rest_route('humanity-theme/v1', '/get-nonce/', [
@@ -488,6 +484,23 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true',
     ]);
 });
+
+// Bypass the WordPress cookie+nonce CSRF check for the public get-nonce endpoint.
+// With Cloudflare APO caching HTML pages, the wp_rest nonce embedded in the page
+// becomes stale, causing the REST API to reject the request with a 403 when cookies
+// are present. Since this endpoint is public (GET-only, __return_true permission),
+// CSRF protection is not needed.
+add_filter('rest_authentication_errors', function ($result) {
+    if (!empty($result)) {
+        return $result;
+    }
+
+    if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/humanity-theme/v1/get-nonce') !== false) {
+        return true;
+    }
+
+    return $result;
+}, 99);
 
 function get_custom_nonce($request)
 {
