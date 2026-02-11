@@ -495,7 +495,8 @@ add_filter('rest_authentication_errors', function ($result) {
         return $result;
     }
 
-    if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/humanity-theme/v1/get-nonce') !== false) {
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+    if ($path !== false && preg_match('#/humanity-theme/v1/get-nonce/?$#', $path)) {
         return true;
     }
 
