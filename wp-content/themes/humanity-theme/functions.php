@@ -507,7 +507,7 @@ function get_custom_nonce($request)
 {
     $action = $request->get_param('action');
 
-    $allowed_actions = ['login_form', 'forgotten_password_form', 'create_account_form', 'iban_form', 'contact_form', 'update_personal_info', '2FA_check', '2FA_send_code'];
+    $allowed_actions = ['login_form', 'forgotten_password_form', 'create_account_form', 'iban_form', 'contact_form', 'update_personal_info', '2FA_check', '2FA_send_code', 'reset_password_form'];
 
     if (!in_array($action, $allowed_actions)) {
         return new WP_Error('invalid_action', 'Action non autorisée', [ 'status' => 403 ]);

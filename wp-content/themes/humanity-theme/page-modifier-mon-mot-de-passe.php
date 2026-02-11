@@ -6,6 +6,10 @@ if (!isset($_GET['user']) || !isset($_GET['token'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset($_POST['confirm-password']) && isset($_GET['user']) && isset($_GET['token'])) {
+    if (!isset($_POST['reset_password_nonce']) || !wp_verify_nonce($_POST['reset_password_nonce'], 'reset_password_form')) {
+        die('Invalid nonce.');
+    }
+
     $email = $_GET['user'];
     $token = $_GET['token'];
     $password = $_POST['password'];
@@ -64,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
     <section class="aif-container--form">
         <h2>Modifier mon mot de passe</h2>
         <form class="aif-form-container" action="" method="POST">
+            <input type="hidden" class="dynamic-nonce" name="reset_password_nonce" data-action="reset_password_form" />
             <div class="aif-password-container">
                 <label class="aif-password-container__label" for="password">Nouveau mot de passe (obligatoire)</label>
                 <div class="aif-password-container__input-wrapper">
