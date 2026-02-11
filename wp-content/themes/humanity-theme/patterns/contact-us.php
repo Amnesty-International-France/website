@@ -7,6 +7,11 @@
  * Inserter: no
  */
 
+if (!headers_sent()) {
+    header('Cache-Control: private, no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
+}
+
 $current_user = wp_get_current_user();
 $sf_user_ID = get_SF_user_ID($current_user->ID);
 
@@ -64,7 +69,7 @@ if (!empty($success_message)) {
 ?>
 
         <form method="post" action="">
-			<input type="hidden" class="dynamic-nonce" name="contact_nonce" data-action="contact_form" />
+			<?php wp_nonce_field('contact_form', 'contact_nonce'); ?>
             <label for="subject">Objet de la demande (obligatoire)</label>
             <input placeholder="L'objet de votre demande" type="text" name="subject"
                 aria-labelledby="contact-subject-help-message"
