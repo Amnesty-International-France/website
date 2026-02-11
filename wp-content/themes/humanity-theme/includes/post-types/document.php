@@ -301,3 +301,318 @@ if (! function_exists('amnesty_document_get_download_url')) {
         return get_permalink($post_id) ?: '';
     }
 }
+
+if (! function_exists('amnesty_document_get_private_uploads_dir')) {
+    /**
+     * Resolve the base directory for private document files.
+     *
+     * @return string
+     */
+    function amnesty_document_get_private_uploads_dir(): string
+    {
+        $root = untrailingslashit(ABSPATH);
+        $dir = wp_normalize_path(dirname($root) . '/private-uploads');
+
+        return untrailingslashit($dir);
+    }
+}
+
+if (! function_exists('amnesty_document_get_upload_relative_path')) {
+    /**
+     * Get the relative uploads path stored on an attachment.
+     *
+     * @param int $attachment_id The attachment ID.
+     *
+     * @return string
+     */
+    function amnesty_document_get_upload_relative_path(int $attachment_id): string
+    {
+        $relative = get_post_meta($attachment_id, '_wp_attached_file', true);
+
+        return is_string($relative) ? ltrim($relative, '/') : '';
+    }
+}
+
+if (! function_exists('amnesty_document_get_public_file_path')) {
+    /**
+     * Build the public uploads path for an attachment.
+     *
+     * @param int $attachment_id The attachment ID.
+     *
+     * @return string
+     */
+    function amnesty_document_get_public_file_path(int $attachment_id): string
+    {
+        $relative = amnesty_document_get_upload_relative_path($attachment_id);
+        if ($relative === '') {
+            return '';
+        }
+
+        $uploads = wp_get_upload_dir();
+        if (! empty($uploads['error'])) {
+            return '';
+        }
+
+        $base = untrailingslashit(wp_normalize_path($uploads['basedir']));
+
+        return $base . '/' . $relative;
+    }
+}
+
+if (! function_exists('amnesty_document_get_private_file_path')) {
+    /**
+     * Build the private storage path for an attachment.
+     *
+     * @param int $attachment_id The attachment ID.
+     *
+     * @return string
+     */
+    function amnesty_document_get_private_file_path(int $attachment_id): string
+    {
+        $relative = amnesty_document_get_upload_relative_path($attachment_id);
+        if ($relative === '') {
+            return '';
+        }
+
+        $base = amnesty_document_get_private_uploads_dir();
+
+        return $base . '/' . $relative;
+    }
+}
+
+if (! function_exists('amnesty_document_move_attachment_file')) {
+    /**
+     * Move the attachment file between public uploads and private storage.
+     *
+     * @param int  $attachment_id The attachment ID.
+     * @param bool $to_private    Whether to move to private storage.
+     *
+     * @return bool
+     */
+    function amnesty_document_move_attachment_file(int $attachment_id, bool $to_private): bool
+    {
+        $relative = amnesty_document_get_upload_relative_path($attachment_id);
+        if ($relative === '') {
+            return false;
+        }
+
+        $uploads = wp_get_upload_dir();
+        if (! empty($uploads['error'])) {
+            return false;
+        }
+
+        $public_base = untrailingslashit(wp_normalize_path($uploads['basedir']));
+        $private_base = amnesty_document_get_private_uploads_dir();
+
+        $public_path = $public_base . '/' . $relative;
+        $private_path = $private_base . '/' . $relative;
+
+        $source = $to_private ? $public_path : $private_path;
+        $destination = $to_private ? $private_path : $public_path;
+
+        if (! file_exists($source)) {
+            if (file_exists($destination)) {
+                if ($to_private) {
+                    update_post_meta($attachment_id, '_amnesty_private_file', $relative);
+                } else {
+                    delete_post_meta($attachment_id, '_amnesty_private_file');
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        if (! wp_mkdir_p(dirname($destination))) {
+            return false;
+        }
+
+        $moved = @rename($source, $destination);
+        if (! $moved) {
+            $moved = copy($source, $destination);
+            if ($moved) {
+                @unlink($source);
+            }
+        }
+
+        if (! $moved) {
+            return false;
+        }
+
+        $meta = wp_get_attachment_metadata($attachment_id);
+        if (is_array($meta) && ! empty($meta['sizes']) && is_array($meta['sizes'])) {
+            $relative_dir = dirname($relative);
+            $relative_prefix = $relative_dir === '.' ? '' : trailingslashit($relative_dir);
+
+            foreach ($meta['sizes'] as $size) {
+                if (empty($size['file'])) {
+                    continue;
+                }
+
+                $size_relative = $relative_prefix . $size['file'];
+                $size_source = ($to_private ? $public_base : $private_base) . '/' . $size_relative;
+                $size_destination = ($to_private ? $private_base : $public_base) . '/' . $size_relative;
+
+                if (! file_exists($size_source)) {
+                    continue;
+                }
+
+                if (wp_mkdir_p(dirname($size_destination))) {
+                    if (! @rename($size_source, $size_destination)) {
+                        if (copy($size_source, $size_destination)) {
+                            @unlink($size_source);
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($to_private) {
+            update_post_meta($attachment_id, '_amnesty_private_file', $relative);
+        } else {
+            delete_post_meta($attachment_id, '_amnesty_private_file');
+        }
+
+        return true;
+    }
+}
+
+if (! function_exists('amnesty_document_sync_private_file')) {
+    /**
+     * Move the document file based on its privacy flag.
+     *
+     * @param int     $post_id The document ID.
+     * @param WP_Post $post    The document post.
+     *
+     * @return void
+     */
+    function amnesty_document_sync_private_file(int $post_id, WP_Post $post, bool $update): void
+    {
+        if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
+            return;
+        }
+
+        if ($post->post_type !== 'document') {
+            return;
+        }
+
+        $attachment_id = (int) get_post_meta($post_id, 'upload_du_document', true);
+        if (! $attachment_id) {
+            return;
+        }
+
+        $is_private = amnesty_document_is_private($post_id);
+        $is_moved = (bool) get_post_meta($attachment_id, '_amnesty_private_file', true);
+
+        if ($is_private && ! $is_moved) {
+            amnesty_document_move_attachment_file($attachment_id, true);
+        }
+
+        if (! $is_private && $is_moved) {
+            amnesty_document_move_attachment_file($attachment_id, false);
+        }
+    }
+}
+
+add_action('save_post', 'amnesty_document_sync_private_file', 20, 3);
+
+add_filter(
+    'get_attached_file',
+    function ($file, $attachment_id) {
+        $private_relative = get_post_meta($attachment_id, '_amnesty_private_file', true);
+        if (! $private_relative) {
+            return $file;
+        }
+
+        $private_path = amnesty_document_get_private_file_path((int) $attachment_id);
+        if ($private_path === '') {
+            return $file;
+        }
+
+        return $private_path;
+    },
+    10,
+    2
+);
+
+if (! function_exists('amnesty_document_find_by_attachment_id')) {
+    /**
+     * Find a document post using an attachment ID.
+     *
+     * @param int $attachment_id The attachment ID.
+     *
+     * @return int
+     */
+    function amnesty_document_find_by_attachment_id(int $attachment_id): int
+    {
+        $documents = get_posts(
+            [
+                'post_type'      => 'document',
+                'post_status'    => 'publish',
+                'fields'         => 'ids',
+                'posts_per_page' => 1,
+                'meta_key'       => 'upload_du_document',
+                'meta_value'     => $attachment_id,
+            ]
+        );
+
+        return $documents ? (int) $documents[0] : 0;
+    }
+}
+
+if (! function_exists('amnesty_document_maybe_redirect_uploads')) {
+    /**
+     * Redirect direct uploads access to the document permalink if available.
+     *
+     * @return void
+     */
+    function amnesty_document_maybe_redirect_uploads(): void
+    {
+        if (is_admin() || wp_doing_ajax() || wp_doing_cron()) {
+            return;
+        }
+
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        if ($request_uri === '') {
+            return;
+        }
+
+        $path = wp_parse_url($request_uri, PHP_URL_PATH);
+        if (! is_string($path) || $path === '') {
+            return;
+        }
+
+        $uploads = wp_get_upload_dir();
+        if (! empty($uploads['error'])) {
+            return;
+        }
+
+        $uploads_path = wp_parse_url($uploads['baseurl'], PHP_URL_PATH);
+        if (! is_string($uploads_path) || $uploads_path === '') {
+            return;
+        }
+
+        $uploads_path = untrailingslashit($uploads_path);
+        if (strpos($path, $uploads_path . '/') !== 0) {
+            return;
+        }
+
+        $relative_path = ltrim(substr($path, strlen($uploads_path)), '/');
+        $request_url = trailingslashit($uploads['baseurl']) . $relative_path;
+        $attachment_id = attachment_url_to_postid($request_url);
+        if (! $attachment_id) {
+            return;
+        }
+
+        $document_id = amnesty_document_find_by_attachment_id($attachment_id);
+        if (! $document_id) {
+            return;
+        }
+
+        wp_redirect(get_permalink($document_id), 301);
+        exit;
+    }
+}
+
+add_action('template_redirect', 'amnesty_document_maybe_redirect_uploads', 1);
