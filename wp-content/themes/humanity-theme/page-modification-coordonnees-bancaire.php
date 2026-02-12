@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
         die('Invalid nonce.');
     }
 
+    unset($_POST['iban_nonce'], $_POST['_wp_http_referer']);
     $ibandirty = $_POST['iban'];
     $newIban = str_replace(' ', '', $ibandirty);
 
