@@ -124,7 +124,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 			<?php endif ?>
 
 			<form class="" onsubmit="disablePersonalInformationsButtons()" role="form" method="POST" action="">
-				<input type="hidden" class="dynamic-nonce" name="personal_info_nonce" data-action="update_personal_info" />
+				<?php wp_nonce_field('update_personal_info', 'personal_info_nonce'); ?>
 				<label for="email">Adresse email (obligatoire)</label>
 				<input class="aif-input aif-input--disabled" id="email" readonly read type="email"
 					value="<?php echo esc_attr($current_user->user_email) ?>"

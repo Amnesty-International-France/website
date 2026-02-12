@@ -13,11 +13,11 @@ if (!isset($_GET['user'])) {
     $email = $_GET['user'];
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset($_POST['2FA_nonce'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_check') {
     $code = sanitize_text_field($_POST['2FA-code']) ;
 
-    if (!isset($_POST['2FA_nonce']) || !wp_verify_nonce($_POST['2FA_nonce'], '2FA_check')) {
-        die('Invalid nonce.');
+    if (!verify_turnstile()) {
+        die('Turnstile verification failed.');
     }
 
     $user = get_user_by('email', $email);
@@ -47,9 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
 $send_code_error_message = '';
 $send_code_success_message = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce'])) {
-    if (!isset($_POST['2FA_new_code_nonce']) || !wp_verify_nonce($_POST['2FA_new_code_nonce'], '2FA_send_code')) {
-        die('Invalid nonce.');
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_send_code') {
+    if (!verify_turnstile()) {
+        die('Turnstile verification failed.');
     }
 
     $sf_user = get_salesforce_member_data($email);
@@ -90,7 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
             <h2> Validation de la création de mon compte </h2>
             <p>Pour finaliser la création de votre compte, veuillez rentrer le code à 6 chiffres que vous venez de recevoir par email</p>
             <form role="form" method="POST" action="">
-				<input type="hidden" class="dynamic-nonce" name="2FA_nonce" data-action="2FA_check" />
+				<input type="hidden" name="form_action" value="2FA_check">
+			<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
                 <label for="2FA-code">Code à 6
                     chiffres (obligatoire)</label>
                 <input class="aif-input" pattern="\d{6}" title="rentrer ici votre code de 6 chiffres reçu par email"
@@ -132,7 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['2FA_new_code_nonce']
             }?>
 
             <form class="aif-form-container" role="form" method="POST" action="">
-				<input type="hidden" class="dynamic-nonce" name="2FA_new_code_nonce" data-action="2FA_send_code" />
+				<input type="hidden" name="form_action" value="2FA_send_code">
+			<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
                 <button class="btn aif-mt1w aif-button--full" type="submit">Recevoir un nouveau code</button>
             </form>
 

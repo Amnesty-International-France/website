@@ -28,6 +28,10 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
     $is_salesforce_user = $get_salesforce_user['totalSize'] > 0;
 
     if (isset($_POST['sign_newsletter'])) {
+        if (!verify_turnstile()) {
+            die('Turnstile verification failed.');
+        }
+
         $email = sanitize_email($_POST['newsletter'] ?? '');
         $civility = sanitize_text_field($_POST['civility'] ?? '');
         $lastname = sanitize_text_field($_POST['lastname'] ?? '');
@@ -126,7 +130,7 @@ print esc_attr($class_name ?? ''); ?>">
 				</div>
 			<?php else: ?>
 			<form id="newsletter-form" class="newsletter-form" action="" method="post" name="newsletter-form">
-
+				<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 				<div class="form-mess hidden"></div>
 					<?php if (isset($local_user, $is_salesforce_user) && !$local_user && !$is_salesforce_user) : ?>
 					<div class="form-group civility">

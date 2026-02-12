@@ -39,6 +39,17 @@ if (! function_exists('amnesty_cache_header')) {
             return;
         }
 
+        $no_cache_pages = [
+            'mes-informations-personnelles',
+            'modification-coordonnees-bancaire',
+        ];
+
+        if (is_page($no_cache_pages)) {
+            header('Cache-Control: private, no-store, no-cache, must-revalidate, max-age=0');
+            header('Pragma: no-cache');
+            return;
+        }
+
         header(sprintf('Cache-Control: max-age=%s, must-revalidate', HOUR_IN_SECONDS * 6));
     }
 }
