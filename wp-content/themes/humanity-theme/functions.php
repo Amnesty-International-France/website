@@ -486,6 +486,14 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_script('cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], null, true);
 });
 
+add_filter('script_loader_tag', function ($tag, $handle) {
+    if ('cf-turnstile' !== $handle) {
+        return $tag;
+    }
+
+    return str_replace(' src', ' async defer src', $tag);
+}, 10, 2);
+
 function verify_turnstile(): bool
 {
     $response = $_POST['cf-turnstile-response'] ?? '';
