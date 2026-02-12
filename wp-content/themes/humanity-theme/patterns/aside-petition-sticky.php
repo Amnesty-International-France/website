@@ -41,6 +41,7 @@ $civility = $civility ?? 'M.';
 		<?php if (isset($end_date) && (strtotime($end_date) >= strtotime($current_date))) : ?>
 
       <form class="signature-petition-form" method="post" action="">
+          <div class="cf-turnstile" data-sitekey="<?php echo esc_attr(TURNSTILE_SITE_KEY); ?>"></div>
           <?php if ($type === 'action-soutien' && $enable_user_message) : ?>
           <div class="message-section">
               <textarea class="message-input" type="text" name="user_message" placeholder="Votre message* (<?= $comment_max_length ?> caractères max)" required maxlength="<?= $comment_max_length ?>"></textarea>

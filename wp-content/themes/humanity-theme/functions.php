@@ -483,17 +483,7 @@ add_action('wp_enqueue_scripts', function () {
         return;
     }
 
-    $turnstile_pages = [
-        'connectez-vous',
-        'creer-votre-compte',
-        'mot-de-passe-oublie',
-        'modifier-mon-mot-de-passe',
-        'verifier-votre-email',
-    ];
-
-    if (is_page($turnstile_pages)) {
-        wp_enqueue_script('cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], null, true);
-    }
+    wp_enqueue_script('cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], null, true);
 });
 
 function verify_turnstile(): bool
