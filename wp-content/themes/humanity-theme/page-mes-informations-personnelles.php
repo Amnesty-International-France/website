@@ -83,6 +83,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
         wp_die('Erreur de sécurité : token CSRF invalide.');
     }
 
+    unset($_POST['personal_info_nonce'], $_POST['_wp_http_referer']);
     $disable_button = true;
 
     $partial_data = [
