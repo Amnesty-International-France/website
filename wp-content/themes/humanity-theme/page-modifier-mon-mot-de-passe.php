@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
     <section class="aif-container--form">
         <h2>Modifier mon mot de passe</h2>
         <form class="aif-form-container" action="" method="POST">
-            <div class="cf-turnstile" data-sitekey="<?php echo esc_attr(TURNSTILE_SITE_KEY); ?>"></div>
+            <div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
             <div class="aif-password-container">
                 <label class="aif-password-container__label" for="password">Nouveau mot de passe (obligatoire)</label>
                 <div class="aif-password-container__input-wrapper">

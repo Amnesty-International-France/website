@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
             <p>Pour finaliser la création de votre compte, veuillez rentrer le code à 6 chiffres que vous venez de recevoir par email</p>
             <form role="form" method="POST" action="">
 				<input type="hidden" name="form_action" value="2FA_check">
-			<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(TURNSTILE_SITE_KEY); ?>"></div>
+			<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
                 <label for="2FA-code">Code à 6
                     chiffres (obligatoire)</label>
                 <input class="aif-input" pattern="\d{6}" title="rentrer ici votre code de 6 chiffres reçu par email"
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
 
             <form class="aif-form-container" role="form" method="POST" action="">
 				<input type="hidden" name="form_action" value="2FA_send_code">
-			<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(TURNSTILE_SITE_KEY); ?>"></div>
+			<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
                 <button class="btn aif-mt1w aif-button--full" type="submit">Recevoir un nouveau code</button>
             </form>
 

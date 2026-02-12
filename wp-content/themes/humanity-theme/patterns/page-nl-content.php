@@ -130,7 +130,7 @@ print esc_attr($class_name ?? ''); ?>">
 				</div>
 			<?php else: ?>
 			<form id="newsletter-form" class="newsletter-form" action="" method="post" name="newsletter-form">
-				<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(TURNSTILE_SITE_KEY); ?>"></div>
+				<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 				<div class="form-mess hidden"></div>
 					<?php if (isset($local_user, $is_salesforce_user) && !$local_user && !$is_salesforce_user) : ?>
 					<div class="form-group civility">

@@ -479,7 +479,7 @@ add_filter('block_editor_settings_all', function ($settings, $context) {
  * Cloudflare Turnstile
  */
 add_action('wp_enqueue_scripts', function () {
-    if (!defined('TURNSTILE_SITE_KEY')) {
+    if (!getenv('TURNSTILE_SITE_KEY')) {
         return;
     }
 
@@ -495,7 +495,7 @@ function verify_turnstile(): bool
 
     $result = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
         'body' => [
-            'secret' => TURNSTILE_SECRET_KEY,
+            'secret' => getenv('TURNSTILE_SECRET_KEY'),
             'response' => $response,
             'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
         ],

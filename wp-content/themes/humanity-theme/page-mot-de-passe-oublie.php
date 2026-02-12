@@ -64,7 +64,7 @@ if (isset($success_message)) {
 
         <section class="aif-forgotten-password">
             <form class="aif-form-container" action="" method="POST">
-				<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(TURNSTILE_SITE_KEY); ?>"></div>
+				<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
                 <label for="email">Votre email (obligatoire) :</label>
                 <input
                     value="<?= $email ? $email : '' ?>"

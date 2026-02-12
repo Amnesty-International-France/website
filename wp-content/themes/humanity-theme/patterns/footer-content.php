@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
 			<span class="subtitle">Abonnez-vous à notre newsletter hebdo.</span>
 			<div class="nl-container">
 				<form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form" class="newsletter-lead-form">
-					<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(TURNSTILE_SITE_KEY); ?>"></div>
+					<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 					<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
 					<button class="register-nl" name="sign_lead" disabled>
 						<span class="button-text">OK</span>
