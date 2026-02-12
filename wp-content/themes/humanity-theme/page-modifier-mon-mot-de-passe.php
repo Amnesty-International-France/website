@@ -6,8 +6,8 @@ if (!isset($_GET['user']) || !isset($_GET['token'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset($_POST['confirm-password']) && isset($_GET['user']) && isset($_GET['token'])) {
-    if (!isset($_POST['reset_password_nonce']) || !wp_verify_nonce($_POST['reset_password_nonce'], 'reset_password_form')) {
-        die('Invalid nonce.');
+    if (!verify_turnstile()) {
+        die('Turnstile verification failed.');
     }
 
     $email = $_GET['user'];
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
     <section class="aif-container--form">
         <h2>Modifier mon mot de passe</h2>
         <form class="aif-form-container" action="" method="POST">
-            <?php wp_nonce_field('reset_password_form', 'reset_password_nonce'); ?>
+            <div class="cf-turnstile" data-sitekey="<?php echo esc_attr(TURNSTILE_SITE_KEY); ?>"></div>
             <div class="aif-password-container">
                 <label class="aif-password-container__label" for="password">Nouveau mot de passe (obligatoire)</label>
                 <div class="aif-password-container__input-wrapper">

@@ -40,11 +40,6 @@ if (! function_exists('amnesty_cache_header')) {
         }
 
         $no_cache_pages = [
-            'connectez-vous',
-            'creer-votre-compte',
-            'mot-de-passe-oublie',
-            'modifier-mon-mot-de-passe',
-            'verifier-votre-email',
             'mes-informations-personnelles',
             'modification-coordonnees-bancaire',
         ];

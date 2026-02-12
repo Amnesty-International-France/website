@@ -8,8 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = sanitize_email($_POST['email']);
     $user = get_user_by('email', $email);
 
-    if (!isset($_POST['forgotten_password_nonce']) || !wp_verify_nonce($_POST['forgotten_password_nonce'], 'forgotten_password_form')) {
-        die('Invalid nonce.');
+    if (!verify_turnstile()) {
+        die('Turnstile verification failed.');
     }
 
     if ($user) {
@@ -64,7 +64,7 @@ if (isset($success_message)) {
 
         <section class="aif-forgotten-password">
             <form class="aif-form-container" action="" method="POST">
-				<?php wp_nonce_field('forgotten_password_form', 'forgotten_password_nonce'); ?>
+				<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(TURNSTILE_SITE_KEY); ?>"></div>
                 <label for="email">Votre email (obligatoire) :</label>
                 <input
                     value="<?= $email ? $email : '' ?>"

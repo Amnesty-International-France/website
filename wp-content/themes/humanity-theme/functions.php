@@ -475,4 +475,48 @@ add_filter('block_editor_settings_all', function ($settings, $context) {
     return $settings;
 }, 10, 2);
 
+/**
+ * Cloudflare Turnstile
+ */
+add_action('wp_enqueue_scripts', function () {
+    if (!defined('TURNSTILE_SITE_KEY')) {
+        return;
+    }
+
+    $turnstile_pages = [
+        'connectez-vous',
+        'creer-votre-compte',
+        'mot-de-passe-oublie',
+        'modifier-mon-mot-de-passe',
+        'verifier-votre-email',
+    ];
+
+    if (is_page($turnstile_pages)) {
+        wp_enqueue_script('cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], null, true);
+    }
+});
+
+function verify_turnstile(): bool
+{
+    $response = $_POST['cf-turnstile-response'] ?? '';
+    if (empty($response)) {
+        return false;
+    }
+
+    $result = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+        'body' => [
+            'secret' => TURNSTILE_SECRET_KEY,
+            'response' => $response,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+        ],
+    ]);
+
+    if (is_wp_error($result)) {
+        return false;
+    }
+
+    $body = json_decode(wp_remote_retrieve_body($result), true);
+    return !empty($body['success']);
+}
+
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
