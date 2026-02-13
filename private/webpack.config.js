@@ -91,13 +91,9 @@ const getPlugins = (argv, env) => {
 /**
  * Get the cache configuration for the build mode
  * @param {String} mode the build mode
- * @returns {Object|False}
+ * @returns {Object}
  */
 const getCacheConf = (mode) => {
-  if (mode === 'production') {
-    return false;
-  }
-
   return {
     type: 'filesystem',
     profile: false,
@@ -112,7 +108,7 @@ const config = (env, argv) => ({
   cache: getCacheConf(argv.mode),
   target: 'web',
   profile: false,
-  devtool: 'source-map',
+  devtool: argv.mode === 'production' ? false : 'source-map',
   entry: getEntries(env),
   output: {
     filename: '[name].js',
@@ -129,7 +125,9 @@ const config = (env, argv) => ({
     ignored: /node_modules/,
   },
   performance: {
-    hints: false,
+    hints: argv.mode === 'production' ? 'warning' : false,
+    maxAssetSize: 250000,
+    maxEntrypointSize: 400000,
   },
   optimization: {
     minimize: argv.mode === 'production',
@@ -139,6 +137,23 @@ const config = (env, argv) => ({
         css: true,
       }),
     ],
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+          priority: 10,
+        },
+        common: {
+          minChunks: 2,
+          chunks: 'all',
+          name: 'common',
+          priority: 5,
+          reuseExistingChunk: true,
+        },
+      },
+    },
   },
   resolve: {
     symlinks: false,

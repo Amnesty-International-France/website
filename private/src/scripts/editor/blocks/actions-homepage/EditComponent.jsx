@@ -40,8 +40,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
   };
 
   const handlePostSelect = (index, post) => {
-    console.log('[Bloc Actions] handlePostSelect pour item', index, post);
-
     const newItems = [...items];
 
     if (post) {
@@ -62,7 +60,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
       setAttributes({ items: newItems });
     } else {
-      console.log('[Bloc Actions] Post est nul, suppression du lien.');
       const clearedItem = {
         ...newItems[index],
         internalUrl: '',

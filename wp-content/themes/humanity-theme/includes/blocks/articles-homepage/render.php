@@ -64,6 +64,14 @@ if (!function_exists('render_articles_homepage_block')) {
         if (!function_exists('get_post_custom_terms')) {
             function get_post_custom_terms(int $post_id): array
             {
+                // Check cache first
+                $cache_key = 'post_custom_terms_' . $post_id;
+                $cached = wp_cache_get($cache_key, 'amnesty_terms');
+
+                if (false !== $cached) {
+                    return $cached;
+                }
+
                 $custom_terms_data = [];
                 $post_type = get_post_type($post_id);
                 $taxonomies = get_object_taxonomies($post_type, 'objects');
@@ -86,6 +94,10 @@ if (!function_exists('render_articles_homepage_block')) {
                         }
                     }
                 }
+
+                // Cache for 1 hour
+                wp_cache_set($cache_key, $custom_terms_data, 'amnesty_terms', HOUR_IN_SECONDS);
+
                 return $custom_terms_data;
             }
         }
@@ -245,6 +257,7 @@ if (!function_exists('render_articles_homepage_block')) {
                                             [
                                                 'class' => 'article-image',
                                                 'alt' => $title,
+                                                'loading' => 'lazy',
                                             ],
                                         );
                             ?>
@@ -305,6 +318,7 @@ if (!function_exists('render_articles_homepage_block')) {
                                                 [
                                                     'class' => 'article-main-mobile-image',
                                                     'alt' => $title,
+                                                    'loading' => 'lazy',
                                                 ],
                                             );
                                         ?>
@@ -385,6 +399,7 @@ if (!function_exists('render_articles_homepage_block')) {
                                                     [
                                                         'class' => 'article-side-image',
                                                         'alt' => $title,
+                                                        'loading' => 'lazy',
                                                     ],
                                                 );
                                             ?>

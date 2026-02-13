@@ -6,7 +6,7 @@ module.exports = {
   plugins: [
     autoprefixer(),
     pxtorem({
-      prop_white_list: ['font', 'font-size', 'line-height', 'letter-spacing'],
+      propList: ['font', 'font-size', 'line-height', 'letter-spacing'],
     }),
     reporter({ clearMessages: true }),
   ],

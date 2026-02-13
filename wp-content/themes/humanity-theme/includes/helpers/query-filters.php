@@ -7,17 +7,11 @@ function amnesty_set_posts_per_page_for_archive($query)
     }
 
     if ($query->is_archive()) {
-        $query->set('posts_per_page', 18);
-
         if ($query->is_tax('location') || $query->is_tax('combat')) {
-            if (!$query->is_paged()) {
-                $query->set('posts_per_page', 17);
-            } else {
-                $paged = $query->get('paged');
-                $offset = (($paged - 1) * 18) - 1;
-
-                $query->set('offset', $offset);
-            }
+            // 17 on first page (to accommodate injected post), 18 on subsequent pages
+            $query->set('posts_per_page', $query->is_paged() ? 18 : 17);
+        } else {
+            $query->set('posts_per_page', 18);
         }
     }
 }

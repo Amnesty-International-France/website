@@ -55,7 +55,7 @@ const init = () => {
     return;
   }
 
-  document.addEventListener('scroll', handleScrollEvents);
+  document.addEventListener('scroll', handleScrollEvents, { passive: true });
 };
 
 export default init;

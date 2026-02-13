@@ -17,10 +17,13 @@ const initCarousels = () => {
       },
     });
 
+    // Cache slide elements to avoid repeated DOM queries
+    const slides = container.querySelectorAll('.swiper-slide');
+
     const clearActiveCaptions = () => {
-      container.querySelectorAll('.swiper-slide').forEach((slide) => {
-        slide.classList.remove('is-caption-active');
-      });
+      for (let i = 0; i < slides.length; i += 1) {
+        slides[i].classList.remove('is-caption-active');
+      }
     };
 
     const showActiveCaption = () => {
