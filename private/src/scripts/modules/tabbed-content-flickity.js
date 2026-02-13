@@ -1,4 +1,5 @@
 import Flickity from 'flickity';
+import 'flickity/dist/flickity.css';
 
 const handleStaticClick = (flcktyInstance) => (event, pointer, cellElement, cellIndex) => {
   if (!cellElement) {

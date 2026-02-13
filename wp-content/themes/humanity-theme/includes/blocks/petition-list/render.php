@@ -64,7 +64,7 @@ if (! function_exists('amnesty_render_petition_item')) {
         ?>
 		<article class="grid-item petition-item" aria-label="Article: <?php echo esc_attr(format_for_aria_label($title)); ?>" tabindex="0">
 			<figure>
-				<img class="petition-itemImage aiic-ignore" src="<?php echo esc_url($feature); ?>" alt="">
+				<img class="petition-itemImage aiic-ignore" src="<?php echo esc_url($feature); ?>" alt="" loading="lazy">
 				<?php if (! empty($data['tag'])) : ?>
 				<span class="petition-itemImageCaption">
 					<?php

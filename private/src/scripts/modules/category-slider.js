@@ -1,4 +1,5 @@
 import Flickity from 'flickity';
+import 'flickity/dist/flickity.css';
 
 const setUpSliders = (container) => {
   const slider = container.querySelector('.postlist-categories');
