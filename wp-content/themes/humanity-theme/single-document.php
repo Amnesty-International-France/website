@@ -20,6 +20,8 @@ if (! $attachment_url) {
 $is_private = function_exists('amnesty_document_is_private') && amnesty_document_is_private($id);
 
 if ($is_private) {
+    header('X-Robots-Tag: noindex, nofollow', true);
+
     if (! is_user_logged_in()) {
         $login_page = get_page_by_path('connectez-vous');
         $login_url = $login_page ? get_permalink($login_page) : home_url('/connectez-vous/');
@@ -27,9 +29,6 @@ if ($is_private) {
         wp_redirect($login_url);
         exit;
     }
-
-    // Serve private documents directly to attach X-Robots-Tag headers.
-    header('X-Robots-Tag: noindex, nofollow', true);
 
     $file_path = get_attached_file($attachment_id);
     if ($file_path && is_readable($file_path)) {
