@@ -2,6 +2,87 @@
 
 declare(strict_types=1);
 
+$input = $input ?? [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sign_urgent_action'])) {
+    if (!verify_turnstile()) {
+        die('Turnstile verification failed.');
+    }
+
+    foreach ($input as $item) {
+        if (!isset($_POST[esc_attr($item)])) {
+            wp_safe_redirect(home_url($GLOBALS['wp']->request));
+            exit;
+        }
+    }
+
+    $type = sanitize_text_field($_POST['type'] ?? '');
+    if (! \in_array($type, [ 'Email', 'Sms', 'Militant' ], true)) {
+        wp_safe_redirect(home_url($GLOBALS['wp']->request));
+        exit;
+    }
+
+    $email = sanitize_email($_POST['email'] ?? '');
+    if (! is_email($email)) {
+        wp_safe_redirect(home_url($GLOBALS['wp']->request));
+        exit;
+    }
+
+    $local_user = get_local_user($email);
+
+    if ($local_user) {
+        $user_id = $local_user->id;
+        $action_already_signed = urgent_action_already_signed($user_id, $type);
+
+        if (! $action_already_signed) {
+            insert_urgent_action(
+                $type,
+                $user_id,
+                wp_date('Y-m-d'),
+                false
+            );
+        }
+
+        wp_safe_redirect(
+            add_query_arg([
+                'success' => 'true',
+                'gtm_type' => 'action',
+                'gtm_name' => $action_type ?? '',
+            ], home_url($GLOBALS['wp']->request))
+        );
+        exit;
+    }
+
+    $civility = sanitize_text_field($_POST['civility'] ?? '');
+    $firstname = sanitize_text_field($_POST['firstname'] ?? '');
+    $lastname = sanitize_text_field($_POST['lastname'] ?? '');
+    $postal_code = sanitize_text_field($_POST['zipcode'] ?? '');
+    $country = sanitize_text_field($_POST['country'] ?? '');
+    $phone = sanitize_text_field($_POST['tel'] ?? '');
+
+    $new_user_id = insert_user($civility, $firstname, $lastname, $email, $country, $postal_code, $phone);
+
+    if (! $new_user_id) {
+        exit;
+    }
+
+    insert_urgent_action(
+        $type,
+        (string) $new_user_id,
+        wp_date('Y-m-d'),
+        false
+    );
+
+    wp_safe_redirect(
+        add_query_arg([
+            'success' => 'true',
+            'gtm_type' => 'action',
+            'gtm_name' => $action_type ?? '',
+        ], home_url($GLOBALS['wp']->request))
+    );
+    exit;
+}
+
 $countries = get_posts(
     [
         'post_type'      => 'fiche_pays',
@@ -20,20 +101,28 @@ $countries = get_posts(
 		</p>
 	</div>
 	<div class="urgent-register-form">
-		<form id="urgent-register" method="post" action="" data-gtm-type="action" data-gtm-name="<?php echo esc_attr($action_type ?? ''); ?>">
-			<div class="form-mess hidden"></div>
+		<form id="urgent-register" method="post" action="">
+			<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+			<?php if (isset($_GET['success']) && $_GET['success'] === 'true') : ?>
+			<div class="form-mess success">
+				Votre inscription est bien prise en compte.
+			</div>
+			<?php else : ?>
+				<div class="form-mess hidden"></div>
+			<?php endif; ?>
 			<div class="urgent-register-form-input">
 				<?php
-                foreach ($input ?? [] as $item) :
+                foreach ($input as $item) :
                     $item_esc    = esc_attr($item);
                     $placeholder = 'tel' === $item ? 'Téléphone mobile' : $item
                     ?>
 					<label for="<?php echo $item_esc; ?>"></label>
 					<input class="input"
-							name="<?php echo $item_esc; ?>"
-							type="<?php echo $item_esc; ?>"
-							placeholder="<?php echo esc_attr(ucfirst($placeholder)); ?>"
-					required/>
+						   name="<?php echo $item_esc; ?>"
+						   type="<?php echo $item_esc; ?>"
+						   placeholder="<?php echo esc_attr(ucfirst($placeholder)); ?>"
+						   required
+					/>
 					<div class="input-error hidden"></div>
 				<?php endforeach; ?>
 				<div class="additional-form hidden">

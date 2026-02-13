@@ -43,15 +43,7 @@ function aif_create_tables()
     dbDelta($sql_signatures);
 }
 
-add_action('after_switch_theme', 'aif_create_tables_once');
-
-function aif_create_tables_once()
-{
-    if (!get_option('aif_tables_created')) {
-        aif_create_tables();
-        update_option('aif_tables_created', 1);
-    }
-}
+add_action('after_switch_theme', 'aif_create_tables');
 
 function get_local_user($email)
 {

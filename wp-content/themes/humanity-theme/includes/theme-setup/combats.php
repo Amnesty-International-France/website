@@ -5,7 +5,7 @@ if (!function_exists('setup_combats')) {
     {
         $categories_defaut = [
             'Liberté d\'expression' => [
-                'slug' => 'liberte-d-expression',
+                'slug' => 'liberte-expression',
             ],
             'Droit de manifester' => [
                 'slug' => 'droit-de-manifester',
@@ -35,7 +35,7 @@ if (!function_exists('setup_combats')) {
                 'slug' => 'justice-internationale',
             ],
             'Peine de mort' => [
-                'slug' => 'peine-de-mort',
+                'slug' => 'peine-de-mort-torture',
             ],
         ];
 

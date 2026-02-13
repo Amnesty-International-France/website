@@ -312,7 +312,6 @@ require_once realpath(__DIR__ . '/includes/petitions/rest_endpoint.php');
  * Urgent Action module
  */
 require_once realpath(__DIR__ . '/includes/urgent-action/tables.php');
-require_once realpath(__DIR__ . '/includes/urgent-action/rest-endpoint.php');
 
 if (defined('WP_CLI') && WP_CLI) {
     require_once realpath(__DIR__ . '/includes/petitions/syncs.php');

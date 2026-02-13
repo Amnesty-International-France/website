@@ -7,7 +7,7 @@
  * Inserter: no
  */
 
-$type = get_field('type')['value'];
+$type = get_field('type')['value'] ?? 'petition';
 if ($type === 'action-soutien') {
     $enable_user_message = get_field('autoriser_message_utilisateur');
     $phone_required = get_field('phone_required');
