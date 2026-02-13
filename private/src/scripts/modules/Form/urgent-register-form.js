@@ -1,5 +1,3 @@
-/* global UrgentRegisterData */
-
 const notRequiredHiddenFields = (status = true) => {
   const additionFormHidden = document.querySelector('.additional-form');
 
@@ -195,56 +193,6 @@ const urgentRegister = () => {
 
   form.addEventListener('input', () => {
     submitButton.disabled = disabledSubmit(form);
-  });
-
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    const formData = new FormData();
-
-    formFields.filter((field) => {
-      if ((field.required && field.value.trim() !== '') || field.name === 'type') {
-        formData.append(field.name, field.value);
-        return true;
-      }
-      return false;
-    });
-
-    submitButton.disabled = disabledSubmit(form);
-
-    try {
-      const headers = {};
-
-      Object.assign(
-        headers,
-        UrgentRegisterData.is_connected
-          ? { 'X-WP-Nonce': UrgentRegisterData.nonce }
-          : { 'X-Amnesty-UA-Nonce': UrgentRegisterData.nonce },
-      );
-
-      const response = await fetch(UrgentRegisterData.url, {
-        method: 'POST',
-        body: formData,
-        headers,
-      });
-
-      const result = await response.json();
-      if (result.status === 'success') {
-        const currentForm = event.currentTarget || form;
-        const gtmType = currentForm?.getAttribute('data-gtm-type');
-        const gtmName = currentForm?.getAttribute('data-gtm-name');
-        if (gtmType && gtmName && window.dataLayer) {
-          window.dataLayer.push({
-            event: 'formSubmit',
-            type: gtmType,
-            name: gtmName,
-          });
-        }
-      }
-      throwGlobalFormMessage('.form-mess', result.message, result.status);
-    } catch (e) {
-      throwGlobalFormMessage('.form-mess', e.message, e.status);
-    }
   });
 };
 

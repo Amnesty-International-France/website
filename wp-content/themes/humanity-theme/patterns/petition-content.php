@@ -7,7 +7,7 @@
  */
 
 $title = get_the_title();
-$type = get_field('type')['value'];
+$type = get_field('type')['value'] ?? 'petition';
 $end_date = get_field('date_de_fin');
 $signatures_target = get_field('objectif_signatures');
 $letter = get_field(selector: 'lettre');

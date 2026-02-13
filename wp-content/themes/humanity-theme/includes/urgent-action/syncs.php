@@ -29,7 +29,6 @@ class Sync_Register_Command
                     break;
                 case 'Email':
                     $optins['Optin_Actions_Urgentes__c'] = true;
-                    $optins['Reseaux_thematiques_AU_Origine__c'] = $user->thematicsNetworksOrigin ?? null;
                     break;
                 case 'Militant':
                     if ($user->phone) {
@@ -45,7 +44,6 @@ class Sync_Register_Command
                 $sfUser = $user_from_sf['records'][0];
 
                 $data_user_sf = [
-                    'ID'    => $sfUser['Id'],
                     'Email' => $user->email,
                     ...$optins,
                     ...$codeModifications,
@@ -76,7 +74,7 @@ class Sync_Register_Command
                     ...$optins,
                 ];
 
-                $s = post_salesforce_users($data_user_sf);
+                post_salesforce_users($data_user_sf);
                 WP_CLI::success('[ REGISTER UA ] - New user registered on Salesforce');
 
                 if ($item['type'] !== 'Militant') {
@@ -105,6 +103,9 @@ class Sync_Register_Command
             update_ua_syncs_with_sf($item['id']);
             WP_CLI::success('[ UPDATE USER FROM UA ] - Update User on Salesforce');
         }
+
+        delete_ua_synched();
+        WP_CLI::log('[ REGISTER AU ] End sync at ' . $date);
     }
 }
 
