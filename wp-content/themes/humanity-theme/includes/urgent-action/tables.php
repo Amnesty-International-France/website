@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-function aif_create_action_urgent_tables()
+function aif_create_action_urgent_tables($args = [])
 {
     global $wpdb;
 
@@ -10,6 +10,7 @@ function aif_create_action_urgent_tables()
     $charset_collate = $wpdb->get_charset_collate();
 
     $table_name_action_urgent = $wpdb->prefix . 'aif_urgent_action';
+    $table_name_users = $table_prefix . 'aif_users';
 
     $sql = "CREATE TABLE $table_name_action_urgent (
 		id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -17,8 +18,9 @@ function aif_create_action_urgent_tables()
 		created_at DATETIME NOT NULL,
 		is_sent TINYINT(1) NOT NULL,
 		type VARCHAR(50) NOT NULL,
-		PRIMARY KEY  (id)
-	) ENGINE = InnoDB $charset_collate;";
+		PRIMARY KEY (id, user_id, type),
+		CONSTRAINT fk_ua_user FOREIGN KEY (user_id) REFERENCES $table_name_users(id) ON DELETE CASCADE
+	) $charset_collate ENGINE = InnoDB;";
 
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta($sql);
@@ -26,26 +28,20 @@ function aif_create_action_urgent_tables()
 
 add_action('after_switch_theme', 'aif_create_action_urgent_tables');
 
-function aif_create_table_once()
-{
-
-    if (! get_option('aif_table_urgent_action_created')) {
-        error_log('je passe ici create table once dans if');
-        aif_create_action_urgent_tables();
-        update_option('aif_table_urgent_action_created', 1);
-    }
+if (defined('WP_CLI') && WP_CLI) {
+    WP_CLI::add_command('table-urgent-action', 'aif_create_action_urgent_tables');
 }
 
-function urgent_action_already_signed($action_type, $user_id)
+function urgent_action_already_signed($user_id, $action_type)
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'aif_urgent_action';
 
     $sql = $wpdb->prepare(
-        'SELECT * FROM %i WHERE type = %d AND user_id = %d',
+        'SELECT * FROM %i WHERE user_id = %d AND type = %s',
         $table_name,
+        $user_id,
         $action_type,
-        $user_id
     );
 
     return ! is_null($wpdb->get_row($sql));
@@ -100,6 +96,17 @@ function update_ua_syncs_with_sf(string $ua_id)
         "UPDATE $table_name SET is_sent = %d WHERE id = %s",
         [1, $ua_id]
     );
+
+    $wpdb->query($sql);
+}
+
+function delete_ua_synched()
+{
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'aif_urgent_action';
+
+    $sql = "DELETE FROM $table_name WHERE is_sent = 1";
 
     $wpdb->query($sql);
 }
