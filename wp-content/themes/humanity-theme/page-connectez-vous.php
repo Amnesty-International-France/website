@@ -21,8 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     $email = sanitize_email($_POST['email']);
     $password = sanitize_text_field($_POST['password']) ;
 
-    if (!isset($_POST['login_nonce']) || !wp_verify_nonce($_POST['login_nonce'], 'login_form')) {
-        die('Invalid nonce.');
+    if (!verify_turnstile()) {
+        die('Turnstile verification failed.');
     }
 
     $stored_user = get_user_by('email', $email);
@@ -86,7 +86,7 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
         <div class="login-form">
             <h3 class="login-title">Connexion</h3>
             <form class="aif-form-container" role="form" method="POST" action="">
-				<input type="hidden" class="dynamic-nonce" name="login_nonce" data-action="login_form" />
+				<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
                 <label for="email" class="sr-only">Votre adresse email (obligatoire)</label>
                 <input placeholder="Email"
                     value="<?= $email ? $email : '' ?>" class="aif-input" type="email" name="email" id="email" autocomplete="email" required="true">

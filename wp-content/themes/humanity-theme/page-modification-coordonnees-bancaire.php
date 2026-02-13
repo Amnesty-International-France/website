@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
         die('Invalid nonce.');
     }
 
+    unset($_POST['iban_nonce'], $_POST['_wp_http_referer']);
     $ibandirty = $_POST['iban'];
     $newIban = str_replace(' ', '', $ibandirty);
 
@@ -79,7 +80,7 @@ if (!empty($success_message)) {
 ?>
 
 			<form method="post" action="">
-				<input type="hidden" class="dynamic-nonce" name="iban_nonce" data-action="iban_form" />
+				<?php wp_nonce_field('iban_form', 'iban_nonce'); ?>
 				<label for="iban">N° IBAN (obligatoire)</label>
 				<input placeholder="FR 14 2001 0101 1505 0001 3M02" type="text" id="iban" name="iban"
 					aria-labelledby="iban-help-message"

@@ -475,38 +475,46 @@ add_filter('block_editor_settings_all', function ($settings, $context) {
     return $settings;
 }, 10, 2);
 
-wp_enqueue_script('load-nonce', get_stylesheet_directory_uri() . '/js/load-nonce.js', [], 1.0, true);
-
-wp_localize_script('load-nonce', 'wpApiSettings', [
-    'nonce' => wp_create_nonce('wp_rest'),
-]);
-
-add_action('rest_api_init', function () {
-    register_rest_route('humanity-theme/v1', '/get-nonce/', [
-        'methods' => 'GET',
-        'callback' => 'get_custom_nonce',
-        'permission_callback' => '__return_true',
-    ]);
-});
-
-function get_custom_nonce($request)
-{
-    $action = $request->get_param('action');
-
-    $allowed_actions = ['login_form', 'forgotten_password_form', 'create_account_form', 'iban_form', 'contact_form', 'update_personal_info', '2FA_check', '2FA_send_code'];
-
-    if (!in_array($action, $allowed_actions)) {
-        return new WP_Error('invalid_action', 'Action non autorisée', [ 'status' => 403 ]);
+/**
+ * Cloudflare Turnstile
+ */
+add_action('wp_enqueue_scripts', function () {
+    if (!getenv('TURNSTILE_SITE_KEY')) {
+        return;
     }
 
-    $response = new WP_REST_Response([
-        'nonce' => wp_create_nonce($action),
+    wp_enqueue_script('cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], null, true);
+});
+
+add_filter('script_loader_tag', function ($tag, $handle) {
+    if ('cf-turnstile' !== $handle) {
+        return $tag;
+    }
+
+    return str_replace(' src', ' async defer src', $tag);
+}, 10, 2);
+
+function verify_turnstile(): bool
+{
+    $response = $_POST['cf-turnstile-response'] ?? '';
+    if (empty($response)) {
+        return false;
+    }
+
+    $result = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+        'body' => [
+            'secret' => getenv('TURNSTILE_SECRET_KEY'),
+            'response' => $response,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+        ],
     ]);
 
-    $response->header('Cache-Control', 'private, no-store, no-cache, must-revalidate, max-age=0');
-    $response->header('Pragma', 'no-cache');
+    if (is_wp_error($result)) {
+        return false;
+    }
 
-    return $response;
+    $body = json_decode(wp_remote_retrieve_body($result), true);
+    return !empty($body['success']);
 }
 
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle

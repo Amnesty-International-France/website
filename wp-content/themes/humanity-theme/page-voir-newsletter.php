@@ -135,9 +135,47 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
                 <?php
                 if (isset($_GET['get_source'])): ?>
                     %%[IF (([Tech_Adherent_Actif] == false)) THEN]%%
-                    <tr><td align="center"><span style="font-family:Oswald, Arial, sans-serif;font-size:24px;line-height:14px;color:#000;font-style:normal;text-transform:uppercase;text-align:left">Donnez-nous les moyens d'agir</span><div style="font-size:20px;height:20px;line-height:20px;mso-line-height-rule:exactly"></div></td></tr><tr><td align="center"><a href="<?php echo esc_url($url_non_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:underline"><button class="button">Devenir Membre</button></a><div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div></td></tr>
+                    <tr>
+                        <td align="center">
+                            <span style="font-family:Oswald, Arial, sans-serif;font-size:24px;line-height:14px;color:#000;font-style:normal;text-transform:uppercase;text-align:left">Donnez-nous les moyens d'agir</span>
+                            <div style="font-size:20px;height:20px;line-height:20px;mso-line-height-rule:exactly"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td align="center" bgcolor="#ffffff" style="border:2px solid #000000;padding:5px 15px;">
+                                        <a href="<?php echo esc_url($url_non_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="display:inline-block;font-family:Oswald, Arial, sans-serif;font-size:20px;line-height:20px;color:#000000;text-decoration:none;text-transform:uppercase;mso-line-height-rule:exactly;">
+                                            Devenir Membre
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div>
+                        </td>
+                    </tr>
                     %%[ELSE]%%
-                    <tr><td align="center"><span style="font-family:Oswald, Arial, sans-serif;font-size:24px;line-height:14px;color:#000;font-style:normal;text-transform:uppercase;text-align:left">Grâce à vous, nous pouvons agir</span><div style="font-size:20px;height:20px;line-height:20px;mso-line-height-rule:exactly"></div></td></tr><tr><td align="center"><a href="<?php echo esc_url($url_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:underline"><button class="button">Faire un don</button></a><div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div></td></tr>
+                    <tr>
+                        <td align="center">
+                            <span style="font-family:Oswald, Arial, sans-serif;font-size:24px;line-height:14px;color:#000;font-style:normal;text-transform:uppercase;text-align:left">Grâce à vous, nous pouvons agir</span>
+                            <div style="font-size:20px;height:20px;line-height:20px;mso-line-height-rule:exactly"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td align="center" bgcolor="#ffffff" style="border:2px solid #000000;padding:5px 15px;">
+                                        <a href="<?php echo esc_url($url_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="display:inline-block;font-family:Oswald, Arial, sans-serif;font-size:20px;line-height:20px;color:#000000;text-decoration:none;text-transform:uppercase;mso-line-height-rule:exactly;">
+                                            Faire un don
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div>
+                        </td>
+                    </tr>
                     %%[ENDIF]%%
                 <?php elseif ($preview_mode === 'adherent'): ?>
                     <tr>
@@ -148,9 +186,15 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
                     </tr>
                     <tr>
                         <td align="center">
-                            <a href="<?php echo esc_url($url_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">
-                                <button class="button">Faire un don</button>
-                            </a>
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td align="center" bgcolor="#ffffff" style="border:2px solid #000000;padding:5px 15px;">
+                                        <a href="<?php echo esc_url($url_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="display:inline-block;font-family:Oswald, Arial, sans-serif;font-size:20px;line-height:20px;color:#000000;text-decoration:none;text-transform:uppercase;mso-line-height-rule:exactly;">
+                                            Faire un don
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
                             <div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div>
                         </td>
                     </tr>
@@ -163,9 +207,15 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
                     </tr>
                     <tr>
                         <td align="center">
-                            <a href="<?php echo esc_url($url_non_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">
-                                <button class="button">Devenir Membre</button>
-                            </a>
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td align="center" bgcolor="#ffffff" style="border:2px solid #000000;padding:5px 15px;">
+                                        <a href="<?php echo esc_url($url_non_adherent_final); ?>" target="_blank" rel="noopener noreferrer" style="display:inline-block;font-family:Oswald, Arial, sans-serif;font-size:20px;line-height:20px;color:#000000;text-decoration:none;text-transform:uppercase;mso-line-height-rule:exactly;">
+                                            Devenir Membre
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
                             <div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div>
                         </td>
                     </tr>
