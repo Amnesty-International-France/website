@@ -669,3 +669,38 @@ if (! function_exists('amnesty_document_maybe_redirect_uploads')) {
 }
 
 add_action('template_redirect', 'amnesty_document_maybe_redirect_uploads', 1);
+
+if (! function_exists('amnesty_document_maybe_redirect_attachment_page')) {
+    /**
+     * Redirect attachment pages to their parent document if the document is private.
+     * This handles cases where the PDF attachment has its own permalink like:
+     * /documents/document-slug/attachment-slug/
+     *
+     * @return void
+     */
+    function amnesty_document_maybe_redirect_attachment_page(): void
+    {
+        if (is_admin() || wp_doing_ajax() || wp_doing_cron() || ! is_attachment()) {
+            return;
+        }
+
+        $attachment_id = get_the_ID();
+        if (! $attachment_id) {
+            return;
+        }
+
+        $document_id = amnesty_document_find_by_attachment_id($attachment_id);
+        if (! $document_id) {
+            return;
+        }
+
+        if (! function_exists('amnesty_document_is_private') || ! amnesty_document_is_private($document_id)) {
+            return;
+        }
+
+        wp_redirect(get_permalink($document_id), 301);
+        exit;
+    }
+}
+
+add_action('template_redirect', 'amnesty_document_maybe_redirect_attachment_page', 1);

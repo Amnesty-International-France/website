@@ -1,8 +1,9 @@
 <?php
 
 $id = get_the_ID();
-$attachment = function_exists('get_field') ? get_field('upload_du_document', $id) : null;
-$attachment_id = is_array($attachment) ? ($attachment['ID'] ?? 0) : 0;
+$attachment_id = function_exists('amnesty_document_get_attachment_id')
+    ? amnesty_document_get_attachment_id($id)
+    : 0;
 
 if (! $attachment_id) {
 }
