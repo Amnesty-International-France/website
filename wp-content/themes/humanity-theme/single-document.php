@@ -5,9 +5,6 @@ $attachment = function_exists('get_field') ? get_field('upload_du_document', $id
 $attachment_id = is_array($attachment) ? ($attachment['ID'] ?? 0) : 0;
 
 if (! $attachment_id) {
-    status_header(404);
-    nocache_headers();
-    exit;
 }
 
 $attachment_url = wp_get_attachment_url($attachment_id);
@@ -52,6 +49,10 @@ if ($is_private) {
         readfile($file_path);
         exit;
     }
+
+    status_header(404);
+    nocache_headers();
+    exit;
 }
 
 wp_redirect($attachment_url);
