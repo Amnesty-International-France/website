@@ -317,6 +317,37 @@ if (! function_exists('amnesty_document_get_private_uploads_dir')) {
     }
 }
 
+if (! function_exists('amnesty_document_get_attachment_id')) {
+    /**
+     * Get the attachment ID for a document.
+     *
+     * @param int $post_id The document post ID.
+     *
+     * @return int
+     */
+    function amnesty_document_get_attachment_id(int $post_id): int
+    {
+        $attachment_id = (int) get_post_meta($post_id, 'upload_du_document', true);
+
+        if ($attachment_id) {
+            return $attachment_id;
+        }
+
+        if (function_exists('get_field')) {
+            $attachment = get_field('upload_du_document', $post_id);
+            if (is_array($attachment) && ! empty($attachment['ID'])) {
+                return (int) $attachment['ID'];
+            }
+
+            if (is_numeric($attachment)) {
+                return (int) $attachment;
+            }
+        }
+
+        return 0;
+    }
+}
+
 if (! function_exists('amnesty_document_get_upload_relative_path')) {
     /**
      * Get the relative uploads path stored on an attachment.
@@ -497,7 +528,7 @@ if (! function_exists('amnesty_document_sync_private_file')) {
             return;
         }
 
-        $attachment_id = (int) get_post_meta($post_id, 'upload_du_document', true);
+        $attachment_id = amnesty_document_get_attachment_id($post_id);
         if (! $attachment_id) {
             return;
         }
@@ -516,6 +547,24 @@ if (! function_exists('amnesty_document_sync_private_file')) {
 }
 
 add_action('save_post', 'amnesty_document_sync_private_file', 20, 3);
+
+add_action(
+    'acf/save_post',
+    function ($post_id) {
+        if (! is_numeric($post_id)) {
+            return;
+        }
+
+        $post_id = (int) $post_id;
+        $post = get_post($post_id);
+        if (! $post) {
+            return;
+        }
+
+        amnesty_document_sync_private_file($post_id, $post, true);
+    },
+    30
+);
 
 add_filter(
     'get_attached_file',
@@ -607,6 +656,10 @@ if (! function_exists('amnesty_document_maybe_redirect_uploads')) {
 
         $document_id = amnesty_document_find_by_attachment_id($attachment_id);
         if (! $document_id) {
+            return;
+        }
+
+        if (! function_exists('amnesty_document_is_private') || ! amnesty_document_is_private($document_id)) {
             return;
         }
 

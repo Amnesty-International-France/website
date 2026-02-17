@@ -68,13 +68,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <main class="aif-container--main">
     <header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
-        <h1 class="aif-mb1w">Mon espace Don</h1>
+        <h1 class="aif-mb1w">Mon espace</h1>
     </header>
 
     <div class="aif-container--form">
         <h2> Je crée mon compte </h2>
-        <p class="">Votre espace don vous permet de suivre facilement vos dons et adhésion. Vous pouvez y
-            modifier vos coordonnées personnelles, votre RIB et éditer des duplicatas de vos reçus fiscaux.</p>
+        <p class="">Votre compte "Mon Espace" vous permet de suivre les actualités de la vie démocratique d'Amnesty International France, d'agir et de vous mobiliser pour les droits humains, ainsi que de suivre facilement vos dons et votre adhésion (modifier vos coordonnées personnelles, votre RIB et éditer des duplicatas de vos reçus fiscaux).</p>
         <?php
         if (!empty($error_message)) {
             $title = 'Une erreur est survenue';
