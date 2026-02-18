@@ -94,7 +94,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'titre',
                         'aria-label' => '',
                         'type' => 'text',
-                        'instructions' => 'Laisser le champ vide pour utiliser le titre du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son titre original.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -115,7 +115,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'image',
                         'aria-label' => '',
                         'type' => 'file',
-                        'instructions' => 'Laisser le champ vide pour utiliser l\'image du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son image à la une.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -172,15 +172,53 @@ add_action('acf/include_fields', function () {
                         'prepend' => '',
                         'append' => '',
                     ],
+					[
+						'key' => 'field_98d50683ga140',
+						'label' => 'Type de lien',
+						'name' => 'link_type',
+						'type' => 'button_group',
+						'choices' => [
+							'internal' => 'Page Interne',
+							'external' => 'Lien Externe',
+						],
+						'default_value' => 'interne',
+						'layout' => 'horizontal',
+						'return_format' => 'value',
+					],
+					[
+						'key' => 'field_68dcd6fe8f920',
+						'label' => 'URL Externe',
+						'name' => 'external_link',
+						'type' => 'url',
+						'instructions' => 'Copiez-collez l\'adresse complète (avec https://)',
+						'required' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_98d50683ga140',
+									'operator' => '==',
+									'value' => 'external',
+								],
+							],
+						],
+					],
                     [
                         'key' => 'field_68d5069ffa141',
                         'label' => 'Lien',
-                        'name' => 'lien',
+                        'name' => 'internal_link',
                         'aria-label' => '',
                         'type' => 'post_object',
                         'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 1,
-                        'conditional_logic' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_98d50683ga140',
+									'operator' => '==',
+									'value' => 'internal',
+								],
+							],
+						],
                         'wrapper' => [
                             'width' => '',
                             'class' => '',
@@ -230,6 +268,20 @@ add_action('acf/include_fields', function () {
                             'operator' => '!=empty',
                         ],
                     ],
+					[
+                        [
+                            'field' => 'field_68dcd6fe8f920',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68d50683fa140',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68d50678fa13f',
+                            'operator' => '!=empty',
+                        ],
+                    ],
                 ],
                 'wrapper' => [
                     'width' => '',
@@ -244,7 +296,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'titre',
                         'aria-label' => '',
                         'type' => 'text',
-                        'instructions' => 'Laisser le champ vide pour utiliser le titre du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son titre original.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -265,7 +317,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'image',
                         'aria-label' => '',
                         'type' => 'file',
-                        'instructions' => 'Laisser le champ vide pour utiliser l\'image du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son image à la une.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -322,15 +374,53 @@ add_action('acf/include_fields', function () {
                         'prepend' => '',
                         'append' => '',
                     ],
+					[
+						'key' => 'field_98d50683ga142',
+						'label' => 'Type de lien',
+						'name' => 'link_type',
+						'type' => 'button_group',
+						'choices' => [
+							'internal' => 'Page Interne',
+							'external' => 'Lien Externe',
+						],
+						'default_value' => 'interne',
+						'layout' => 'horizontal',
+						'return_format' => 'value',
+					],
+					[
+						'key' => 'field_68dbd6fe8f921',
+						'label' => 'URL Externe',
+						'name' => 'external_link',
+						'type' => 'url',
+						'instructions' => 'Copiez-collez l\'adresse complète (avec https://)',
+						'required' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_98d50683ga142',
+									'operator' => '==',
+									'value' => 'external',
+								],
+							],
+						],
+					],
                     [
                         'key' => 'field_68dbd60e7f176',
                         'label' => 'Lien',
-                        'name' => 'lien',
+                        'name' => 'internal_link',
                         'aria-label' => '',
                         'type' => 'post_object',
                         'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
-                        'conditional_logic' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_98d50683ga142',
+									'operator' => '==',
+									'value' => 'internal',
+								],
+							],
+						],
                         'wrapper' => [
                             'width' => '',
                             'class' => '',
@@ -380,6 +470,20 @@ add_action('acf/include_fields', function () {
                             'operator' => '!=empty',
                         ],
                     ],
+					[
+                        [
+                            'field' => 'field_68dbd6fe8f921',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd60e7f175',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd60e7f174',
+                            'operator' => '!=empty',
+                        ],
+                    ],
                 ],
                 'wrapper' => [
                     'width' => '',
@@ -394,7 +498,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'titre',
                         'aria-label' => '',
                         'type' => 'text',
-                        'instructions' => 'Laisser le champ vide pour utiliser le titre du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son titre original.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -415,7 +519,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'image',
                         'aria-label' => '',
                         'type' => 'file',
-                        'instructions' => 'Laisser le champ vide pour utiliser l\'image du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son image à la une.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -472,15 +576,53 @@ add_action('acf/include_fields', function () {
                         'prepend' => '',
                         'append' => '',
                     ],
+					[
+						'key' => 'field_64d55383ga140',
+						'label' => 'Type de lien',
+						'name' => 'link_type',
+						'type' => 'button_group',
+						'choices' => [
+							'internal' => 'Page Interne',
+							'external' => 'Lien Externe',
+						],
+						'default_value' => 'interne',
+						'layout' => 'horizontal',
+						'return_format' => 'value',
+					],
+					[
+						'key' => 'field_86dbd6fe8f920',
+						'label' => 'URL Externe',
+						'name' => 'external_link',
+						'type' => 'url',
+						'instructions' => 'Copiez-collez l\'adresse complète (avec https://)',
+						'required' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_64d55383ga140',
+									'operator' => '==',
+									'value' => 'external',
+								],
+							],
+						],
+					],
                     [
                         'key' => 'field_68dbd66250fcd',
                         'label' => 'Lien',
-                        'name' => 'lien',
+                        'name' => 'internal_link',
                         'aria-label' => '',
                         'type' => 'post_object',
                         'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
-                        'conditional_logic' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_64d55383ga140',
+									'operator' => '==',
+									'value' => 'internal',
+								],
+							],
+						],
                         'wrapper' => [
                             'width' => '',
                             'class' => '',
@@ -530,6 +672,20 @@ add_action('acf/include_fields', function () {
                             'operator' => '!=empty',
                         ],
                     ],
+					[
+                        [
+                            'field' => 'field_86dbd6fe8f920',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd66250fcc',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd66250fcb',
+                            'operator' => '!=empty',
+                        ],
+                    ],
                 ],
                 'wrapper' => [
                     'width' => '',
@@ -544,7 +700,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'titre',
                         'aria-label' => '',
                         'type' => 'text',
-                        'instructions' => 'Laisser le champ vide pour utiliser le titre du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son titre original.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -565,7 +721,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'image',
                         'aria-label' => '',
                         'type' => 'file',
-                        'instructions' => 'Laisser le champ vide pour utiliser l\'image du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son image à la une.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -622,15 +778,53 @@ add_action('acf/include_fields', function () {
                         'prepend' => '',
                         'append' => '',
                     ],
+					[
+						'key' => 'field_98d45091ga140',
+						'label' => 'Type de lien',
+						'name' => 'link_type',
+						'type' => 'button_group',
+						'choices' => [
+							'internal' => 'Page Interne',
+							'external' => 'Lien Externe',
+						],
+						'default_value' => 'interne',
+						'layout' => 'horizontal',
+						'return_format' => 'value',
+					],
+					[
+						'key' => 'field_44dbd6fe8f563',
+						'label' => 'URL Externe',
+						'name' => 'external_link',
+						'type' => 'url',
+						'instructions' => 'Copiez-collez l\'adresse complète (avec https://)',
+						'required' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_98d45091ga140',
+									'operator' => '==',
+									'value' => 'external',
+								],
+							],
+						],
+					],
                     [
                         'key' => 'field_68dbd67750fd7',
                         'label' => 'Lien',
-                        'name' => 'lien',
+                        'name' => 'internal_link',
                         'aria-label' => '',
                         'type' => 'post_object',
                         'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
-                        'conditional_logic' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_98d45091ga140',
+									'operator' => '==',
+									'value' => 'internal',
+								],
+							],
+						],
                         'wrapper' => [
                             'width' => '',
                             'class' => '',
@@ -680,6 +874,20 @@ add_action('acf/include_fields', function () {
                             'operator' => '!=empty',
                         ],
                     ],
+					[
+                        [
+                            'field' => 'field_44dbd6fe8f563',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd67750fd6',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd67750fd5',
+                            'operator' => '!=empty',
+                        ],
+                    ],
                 ],
                 'wrapper' => [
                     'width' => '',
@@ -694,7 +902,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'titre',
                         'aria-label' => '',
                         'type' => 'text',
-                        'instructions' => 'Laisser le champ vide pour utiliser le titre du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son titre original.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -715,7 +923,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'image',
                         'aria-label' => '',
                         'type' => 'file',
-                        'instructions' => 'Laisser le champ vide pour utiliser l\'image du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son image à la une.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -772,15 +980,53 @@ add_action('acf/include_fields', function () {
                         'prepend' => '',
                         'append' => '',
                     ],
+					[
+						'key' => 'field_87u50683ga041',
+						'label' => 'Type de lien',
+						'name' => 'link_type',
+						'type' => 'button_group',
+						'choices' => [
+							'internal' => 'Page Interne',
+							'external' => 'Lien Externe',
+						],
+						'default_value' => 'interne',
+						'layout' => 'horizontal',
+						'return_format' => 'value',
+					],
+					[
+						'key' => 'field_98dgh6fe8f920',
+						'label' => 'URL Externe',
+						'name' => 'external_link',
+						'type' => 'url',
+						'instructions' => 'Copiez-collez l\'adresse complète (avec https://)',
+						'required' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_87u50683ga041',
+									'operator' => '==',
+									'value' => 'external',
+								],
+							],
+						],
+					],
                     [
                         'key' => 'field_68dbd68250fe1',
                         'label' => 'Lien',
-                        'name' => 'lien',
+                        'name' => 'internal_link',
                         'aria-label' => '',
                         'type' => 'post_object',
                         'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
-                        'conditional_logic' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_87u50683ga041',
+									'operator' => '==',
+									'value' => 'internal',
+								],
+							],
+						],
                         'wrapper' => [
                             'width' => '',
                             'class' => '',
@@ -830,6 +1076,20 @@ add_action('acf/include_fields', function () {
                             'operator' => '!=empty',
                         ],
                     ],
+					[
+                        [
+                            'field' => 'field_98dgh6fe8f920',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd68250fe0',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd68250fdf',
+                            'operator' => '!=empty',
+                        ],
+                    ],
                 ],
                 'wrapper' => [
                     'width' => '',
@@ -844,7 +1104,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'titre',
                         'aria-label' => '',
                         'type' => 'text',
-                        'instructions' => 'Laisser le champ vide pour utiliser le titre du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son titre original.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -865,7 +1125,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'image',
                         'aria-label' => '',
                         'type' => 'file',
-                        'instructions' => 'Laisser le champ vide pour utiliser l\'image du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son image à la une.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -922,15 +1182,53 @@ add_action('acf/include_fields', function () {
                         'prepend' => '',
                         'append' => '',
                     ],
+					[
+						'key' => 'field_98d50386vf102',
+						'label' => 'Type de lien',
+						'name' => 'link_type',
+						'type' => 'button_group',
+						'choices' => [
+							'internal' => 'Page Interne',
+							'external' => 'Lien Externe',
+						],
+						'default_value' => 'interne',
+						'layout' => 'horizontal',
+						'return_format' => 'value',
+					],
+					[
+						'key' => 'field_68dbd6fv9z920',
+						'label' => 'URL Externe',
+						'name' => 'external_link',
+						'type' => 'url',
+						'instructions' => 'Copiez-collez l\'adresse complète (avec https://)',
+						'required' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_98d50386vf102',
+									'operator' => '==',
+									'value' => 'external',
+								],
+							],
+						],
+					],
                     [
                         'key' => 'field_68dbd68d50feb',
                         'label' => 'Lien',
-                        'name' => 'lien',
+                        'name' => 'internal_link',
                         'aria-label' => '',
                         'type' => 'post_object',
                         'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
-                        'conditional_logic' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_98d50386vf102',
+									'operator' => '==',
+									'value' => 'internal',
+								],
+							],
+						],
                         'wrapper' => [
                             'width' => '',
                             'class' => '',
@@ -980,6 +1278,20 @@ add_action('acf/include_fields', function () {
                             'operator' => '!=empty',
                         ],
                     ],
+					[
+                        [
+                            'field' => 'field_68dbd6fv9z920',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd68d50fea',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd68d50fe9',
+                            'operator' => '!=empty',
+                        ],
+                    ],
                 ],
                 'wrapper' => [
                     'width' => '',
@@ -994,7 +1306,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'titre',
                         'aria-label' => '',
                         'type' => 'text',
-                        'instructions' => 'Laisser le champ vide pour utiliser le titre du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son titre original.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1015,7 +1327,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'image',
                         'aria-label' => '',
                         'type' => 'file',
-                        'instructions' => 'Laisser le champ vide pour utiliser l\'image du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son image à la une.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1072,15 +1384,53 @@ add_action('acf/include_fields', function () {
                         'prepend' => '',
                         'append' => '',
                     ],
+					[
+						'key' => 'field_34p98683ga140',
+						'label' => 'Type de lien',
+						'name' => 'link_type',
+						'type' => 'button_group',
+						'choices' => [
+							'internal' => 'Page Interne',
+							'external' => 'Lien Externe',
+						],
+						'default_value' => 'interne',
+						'layout' => 'horizontal',
+						'return_format' => 'value',
+					],
+					[
+						'key' => 'field_68de2b4a1c828',
+						'label' => 'URL Externe',
+						'name' => 'external_link',
+						'type' => 'url',
+						'instructions' => 'Copiez-collez l\'adresse complète (avec https://)',
+						'required' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_34p98683ga140',
+									'operator' => '==',
+									'value' => 'external',
+								],
+							],
+						],
+					],
                     [
                         'key' => 'field_68dbd69b50ff5',
                         'label' => 'Lien',
-                        'name' => 'lien',
+                        'name' => 'internal_link',
                         'aria-label' => '',
                         'type' => 'post_object',
                         'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
-                        'conditional_logic' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_34p98683ga140',
+									'operator' => '==',
+									'value' => 'internal',
+								],
+							],
+						],
                         'wrapper' => [
                             'width' => '',
                             'class' => '',
@@ -1130,6 +1480,20 @@ add_action('acf/include_fields', function () {
                             'operator' => '!=empty',
                         ],
                     ],
+					[
+                        [
+                            'field' => 'field_68de2b4a1c828',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd69b50ff4',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd69b50ff3',
+                            'operator' => '!=empty',
+                        ],
+                    ],
                 ],
                 'wrapper' => [
                     'width' => '',
@@ -1144,7 +1508,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'titre',
                         'aria-label' => '',
                         'type' => 'text',
-                        'instructions' => 'Laisser le champ vide pour utiliser le titre du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son titre original.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1165,7 +1529,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'image',
                         'aria-label' => '',
                         'type' => 'file',
-                        'instructions' => 'Laisser le champ vide pour utiliser l\'image du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son image à la une.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1222,15 +1586,53 @@ add_action('acf/include_fields', function () {
                         'prepend' => '',
                         'append' => '',
                     ],
+					[
+						'key' => 'field_68de2c8a2ba25',
+						'label' => 'Type de lien',
+						'name' => 'link_type',
+						'type' => 'button_group',
+						'choices' => [
+							'internal' => 'Page Interne',
+							'external' => 'Lien Externe',
+						],
+						'default_value' => 'interne',
+						'layout' => 'horizontal',
+						'return_format' => 'value',
+					],
+					[
+						'key' => 'field_89de2b4a1c828',
+						'label' => 'URL Externe',
+						'name' => 'external_link',
+						'type' => 'url',
+						'instructions' => 'Copiez-collez l\'adresse complète (avec https://)',
+						'required' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_68de2c8a2ba25',
+									'operator' => '==',
+									'value' => 'external',
+								],
+							],
+						],
+					],
                     [
                         'key' => 'field_68dbd6a650fff',
                         'label' => 'Lien',
-                        'name' => 'lien',
+                        'name' => 'internal_link',
                         'aria-label' => '',
                         'type' => 'post_object',
                         'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
-                        'conditional_logic' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_68de2c8a2ba25',
+									'operator' => '==',
+									'value' => 'internal',
+								],
+							],
+						],
                         'wrapper' => [
                             'width' => '',
                             'class' => '',
@@ -1280,6 +1682,20 @@ add_action('acf/include_fields', function () {
                             'operator' => '!=empty',
                         ],
                     ],
+					[
+                        [
+                            'field' => 'field_89de2b4a1c828',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd6a650ffe',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd6a650ffd',
+                            'operator' => '!=empty',
+                        ],
+                    ],
                 ],
                 'wrapper' => [
                     'width' => '',
@@ -1294,7 +1710,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'titre',
                         'aria-label' => '',
                         'type' => 'text',
-                        'instructions' => 'Laisser le champ vide pour utiliser le titre du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son titre original.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1315,7 +1731,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'image',
                         'aria-label' => '',
                         'type' => 'file',
-                        'instructions' => 'Laisser le champ vide pour utiliser l\'image du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son image à la une.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1372,15 +1788,53 @@ add_action('acf/include_fields', function () {
                         'prepend' => '',
                         'append' => '',
                     ],
+					[
+						'key' => 'field_68de2c8a2ba25',
+						'label' => 'Type de lien',
+						'name' => 'link_type',
+						'type' => 'button_group',
+						'choices' => [
+							'internal' => 'Page Interne',
+							'external' => 'Lien Externe',
+						],
+						'default_value' => 'interne',
+						'layout' => 'horizontal',
+						'return_format' => 'value',
+					],
+					[
+						'key' => 'field_68de2c8a2ba53',
+						'label' => 'URL Externe',
+						'name' => 'external_link',
+						'type' => 'url',
+						'instructions' => 'Copiez-collez l\'adresse complète (avec https://)',
+						'required' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_68de2c8a2ba25',
+									'operator' => '==',
+									'value' => 'external',
+								],
+							],
+						],
+					],
                     [
                         'key' => 'field_68dbd6b251009',
                         'label' => 'Lien',
-                        'name' => 'lien',
+                        'name' => 'internal_link',
                         'aria-label' => '',
                         'type' => 'post_object',
                         'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
-                        'conditional_logic' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_68de2c8a2ba25',
+									'operator' => '==',
+									'value' => 'internal',
+								],
+							],
+						],
                         'wrapper' => [
                             'width' => '',
                             'class' => '',
@@ -1430,6 +1884,20 @@ add_action('acf/include_fields', function () {
                             'operator' => '!=empty',
                         ],
                     ],
+					[
+                        [
+                            'field' => 'field_68de2c8a2ba53',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd6b251008',
+                            'operator' => '!=empty',
+                        ],
+                        [
+                            'field' => 'field_68dbd6b251007',
+                            'operator' => '!=empty',
+                        ],
+                    ],
                 ],
                 'wrapper' => [
                     'width' => '',
@@ -1444,7 +1912,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'titre',
                         'aria-label' => '',
                         'type' => 'text',
-                        'instructions' => 'Laisser le champ vide pour utiliser le titre du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son titre original.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1465,7 +1933,7 @@ add_action('acf/include_fields', function () {
                         'name' => 'image',
                         'aria-label' => '',
                         'type' => 'file',
-                        'instructions' => 'Laisser le champ vide pour utiliser l\'image du post par défaut',
+                        'instructions' => 'Si vous liez une page interne, laissez vide pour récupérer automatiquement son image à la une.',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => [
@@ -1522,15 +1990,53 @@ add_action('acf/include_fields', function () {
                         'prepend' => '',
                         'append' => '',
                     ],
+					[
+						'key' => 'field_68de2b4a1c804',
+						'label' => 'Type de lien',
+						'name' => 'link_type',
+						'type' => 'button_group',
+						'choices' => [
+							'internal' => 'Page Interne',
+							'external' => 'Lien Externe',
+						],
+						'default_value' => 'interne',
+						'layout' => 'horizontal',
+						'return_format' => 'value',
+					],
+					[
+						'key' => 'field_68de2c8a2ba38',
+						'label' => 'URL Externe',
+						'name' => 'external_link',
+						'type' => 'url',
+						'instructions' => 'Copiez-collez l\'adresse complète (avec https://)',
+						'required' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_68de2b4a1c804',
+									'operator' => '==',
+									'value' => 'external',
+								],
+							],
+						],
+					],
                     [
                         'key' => 'field_68dbd6fe8f920',
                         'label' => 'Lien',
-                        'name' => 'lien',
+                        'name' => 'internal_link',
                         'aria-label' => '',
                         'type' => 'post_object',
                         'instructions' => 'Entrez le nom d\'un document (article, repère, pétition, page) pour le trouver plus facilement',
                         'required' => 0,
-                        'conditional_logic' => 0,
+						'conditional_logic' => [
+							[
+								[
+									'field' => 'field_68de2b4a1c804',
+									'operator' => '==',
+									'value' => 'internal',
+								],
+							],
+						],
                         'wrapper' => [
                             'width' => '',
                             'class' => '',
