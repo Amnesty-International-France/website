@@ -5,8 +5,8 @@ $preview_mode = isset($_GET['preview_mode']) ? $_GET['preview_mode'] : null;
 
 $post = get_post($newsletter_id);
 if (!$newsletter_id || !$post || $post->post_type != 'newsletter') {
-	echo '<div class="notice notice-error"><p>Aucune newsletter sélectionnée.</p></div>';
-	return;
+    echo '<div class="notice notice-error"><p>Aucune newsletter sélectionnée.</p></div>';
+    return;
 }
 
 $typeLink = get_field('type_lien');
@@ -15,39 +15,39 @@ $post_title = get_the_title($post->ID);
 $utm_campaign_date_part = $post->post_name;
 
 if (preg_match('/(\d{2})\/(\d{2})\/(\d{4})/', $post_title, $matches)) {
-	$utm_campaign_date_part = $matches[1] . $matches[2] . $matches[3];
+    $utm_campaign_date_part = $matches[1] . $matches[2] . $matches[3];
 }
 
 $utm_params = [
-	'utm_source' => 'email_newsletter',
-	'utm_medium' => 'email',
-	'utm_campaign' => 'newshebdo_' . $utm_campaign_date_part,
+    'utm_source' => 'email_newsletter',
+    'utm_medium' => 'email',
+    'utm_campaign' => 'newshebdo_' . $utm_campaign_date_part,
 ];
 
 $articles = [];
 for ($i = 1; $i <= 5; $i++) {
-	$article = get_field($i, $post);
+    $article = get_field($i, $post);
 
-	$link_type = $article['link_type'];
-	$validLinkType = ['external', 'internal'];
+    $link_type = $article['link_type'];
+    $validLinkType = ['external', 'internal'];
 
-	$internal_link = $article['internal_link'] ?? null;
-	$external_link = $article['external_link'] ?? null;
+    $internal_link = $article['internal_link'] ?? null;
+    $external_link = $article['external_link'] ?? null;
 
-	if (
-		(!\in_array($link_type, $validLinkType)) ||
-		(!$internal_link && !$external_link)
-	) {
-		continue;
-	}
+    if (
+        (!\in_array($link_type, $validLinkType)) ||
+        (!$internal_link && !$external_link)
+    ) {
+        continue;
+    }
 
-	if (!$internal_link instanceof \WP_Post) {
-		$article['internal_link'] = get_post($internal_link);
-	}
-	if (!is_string($article['image'])) {
-		$article['image'] = wp_get_original_image_url($article['image']);
-	}
-	$articles[] = $article;
+    if (!$internal_link instanceof \WP_Post) {
+        $article['internal_link'] = get_post($internal_link);
+    }
+    if (!is_string($article['image'])) {
+        $article['image'] = wp_get_original_image_url($article['image']);
+    }
+    $articles[] = $article;
 }
 
 $public_url = sprintf('%s/voir-newsletter?newsletter_id=%s', get_home_url(), $newsletter_id);
@@ -65,7 +65,7 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<title><?php
-		echo esc_html($post_title); ?></title>
+        echo esc_html($post_title); ?></title>
 	<style type="text/css">@import url(https://fonts.googleapis.com/css?family=Oswald:400,600);
 
 		body {
@@ -110,7 +110,7 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 						<div style="font-size:5px;height:5px;line-height:5px;mso-line-height-rule:exactly"></div>
 						<span style="font-family:sans-serif;font-size:12px;line-height:14px;color:#000">Si ce message ne s&#x27;affiche pas correctement,
                               <a href="<?php
-							  echo $public_url; ?>" target="_blank" rel="noopener noreferrer"
+                              echo $public_url; ?>" target="_blank" rel="noopener noreferrer"
 								 style="text-decoration:underline">cliquez ici</a>.</span>
 					</td>
 				</tr>
@@ -127,19 +127,19 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 				<tr>
 					<td>
 						<?php
-						foreach ($articles as $article):
-							$post = $article['internal_link'];
-							setup_postdata($post);
-							$external_link = $article['external_link'];
-							$link_type = $article['link_type'];
-							$post_url = $link_type === 'internal' ? esc_url(add_query_arg($utm_params, get_permalink($post->ID))) : esc_url($external_link);
-							$title = !empty($article['titre']) ? $article['titre'] : esc_html(get_the_title($post->ID));
-							$featured_image_url = get_the_post_thumbnail_url($post->ID, 'post-featured');
-							if (!$featured_image_url) {
-								$featured_image_url = get_the_post_thumbnail_url($post->ID, 'full');
-							}
-							$image_url = $article['image'] ?: esc_url($featured_image_url);
-							?>
+                        foreach ($articles as $article):
+                            $post = $article['internal_link'];
+                            setup_postdata($post);
+                            $external_link = $article['external_link'];
+                            $link_type = $article['link_type'];
+                            $post_url = $link_type === 'internal' ? esc_url(add_query_arg($utm_params, get_permalink($post->ID))) : esc_url($external_link);
+                            $title = !empty($article['titre']) ? $article['titre'] : esc_html(get_the_title($post->ID));
+                            $featured_image_url = get_the_post_thumbnail_url($post->ID, 'post-featured');
+                            if (!$featured_image_url) {
+                                $featured_image_url = get_the_post_thumbnail_url($post->ID, 'full');
+                            }
+                            $image_url = $article['image'] ?: esc_url($featured_image_url);
+                            ?>
 							<table align="center"
 								   style="border:1px solid #d6d6d6;box-shadow:0 5px 25px 0 #e2e2e2;margin-top:20px;margin-bottom:30px"
 								   cellPadding="0" cellSpacing="0" border="0" valign="top">
@@ -147,12 +147,12 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 								<tr>
 									<td>
 										<a href="<?php
-										echo $post_url; ?>" target="_blank" rel="noopener noreferrer"
+                                        echo $post_url; ?>" target="_blank" rel="noopener noreferrer"
 										   style="text-decoration:none">
 											<div style="width:580px;height:295px;overflow:hidden;">
 												<img alt="<?php
-												echo get_the_post_thumbnail_caption($post->ID) ?>" src="<?php
-												echo $image_url ?>" width="580" height="295"
+                                                echo get_the_post_thumbnail_caption($post->ID) ?>" src="<?php
+                                                echo $image_url ?>" width="580" height="295"
 													 style="display:block;outline:none;border:none;text-decoration:none;width:100%;height:100%;object-fit:cover;"/>
 											</div>
 										</a>
@@ -167,17 +167,17 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 												style="font-size:20px;height:20px;line-height:20px;mso-line-height-rule:exactly"></div>
 											<tr>
 												<td><a href="<?php
-													echo $post_url; ?>" target="_blank" rel="noopener noreferrer"
+                                                    echo $post_url; ?>" target="_blank" rel="noopener noreferrer"
 													   style="text-decoration:none"><span
 															style="font-family:Oswald, Arial, sans-serif;font-size:24px;line-height:30px;color:#000;font-style:normal;text-transform:uppercase;text-align:left"><?php
-															echo $title; ?></span></a></td>
+                                                            echo $title; ?></span></a></td>
 											</tr>
 											<tr>
 												<td>
                                                     <span
 														style="font-family:sans-serif;font-size:14px;line-height:14px;color:#000;text-align:left">
                                                         <?php
-														echo $article['accroche']; ?>
+                                                        echo $article['accroche']; ?>
                                                     </span>
 												</td>
 											</tr>
@@ -185,10 +185,10 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 												<td align="right"><span
 														style="font-family:sans-serif;font-size:14px;line-height:14px;color:#000"><a
 															href="<?php
-															echo $post_url; ?>" target="_blank"
+                                                            echo $post_url; ?>" target="_blank"
 															rel="noopener noreferrer"
 															style="color:#EF8200;text-decoration:none"> &gt; <?php
-															echo $article['libelle_du_lien'] ?></a></span></td>
+                                                            echo $article['libelle_du_lien'] ?></a></span></td>
 											</tr>
 											</tbody>
 										</table>
@@ -197,12 +197,12 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 								</tbody>
 							</table>
 						<?php
-						endforeach; ?>
+                        endforeach; ?>
 					</td>
 				</tr>
 
 				<?php
-				if (isset($_GET['get_source'])): ?>
+                if (isset($_GET['get_source'])): ?>
 					%%[IF (([Tech_Adherent_Actif] == false)) THEN]%%
 					<tr>
 						<td align="center">
@@ -218,7 +218,7 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 									<td align="center" bgcolor="#ffffff"
 										style="border:2px solid #000000;padding:5px 15px;">
 										<a href="<?php
-										echo esc_url($url_non_adherent_final); ?>" target="_blank"
+                                        echo esc_url($url_non_adherent_final); ?>" target="_blank"
 										   rel="noopener noreferrer"
 										   style="display:inline-block;font-family:Oswald, Arial, sans-serif;font-size:20px;line-height:20px;color:#000000;text-decoration:none;text-transform:uppercase;mso-line-height-rule:exactly;">
 											Devenir Membre
@@ -244,7 +244,7 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 									<td align="center" bgcolor="#ffffff"
 										style="border:2px solid #000000;padding:5px 15px;">
 										<a href="<?php
-										echo esc_url($url_adherent_final); ?>" target="_blank" rel="noopener noreferrer"
+                                        echo esc_url($url_adherent_final); ?>" target="_blank" rel="noopener noreferrer"
 										   style="display:inline-block;font-family:Oswald, Arial, sans-serif;font-size:20px;line-height:20px;color:#000000;text-decoration:none;text-transform:uppercase;mso-line-height-rule:exactly;">
 											Faire un don
 										</a>
@@ -255,8 +255,7 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 						</td>
 					</tr>
 					%%[ENDIF]%%
-				<?php
-				elseif ($preview_mode === 'adherent'): ?>
+				<?php elseif ($preview_mode === 'adherent'): ?>
 					<tr>
 						<td align="center">
 							<span
@@ -271,7 +270,7 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 									<td align="center" bgcolor="#ffffff"
 										style="border:2px solid #000000;padding:5px 15px;">
 										<a href="<?php
-										echo esc_url($url_adherent_final); ?>" target="_blank" rel="noopener noreferrer"
+                                        echo esc_url($url_adherent_final); ?>" target="_blank" rel="noopener noreferrer"
 										   style="display:inline-block;font-family:Oswald, Arial, sans-serif;font-size:20px;line-height:20px;color:#000000;text-decoration:none;text-transform:uppercase;mso-line-height-rule:exactly;">
 											Faire un don
 										</a>
@@ -281,8 +280,7 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 							<div style="font-size:30px;height:30px;line-height:30px;mso-line-height-rule:exactly"></div>
 						</td>
 					</tr>
-				<?php
-				else: ?>
+				<?php else: ?>
 					<tr>
 						<td align="center">
 							<span
@@ -297,7 +295,7 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
 									<td align="center" bgcolor="#ffffff"
 										style="border:2px solid #000000;padding:5px 15px;">
 										<a href="<?php
-										echo esc_url($url_non_adherent_final); ?>" target="_blank"
+                                        echo esc_url($url_non_adherent_final); ?>" target="_blank"
 										   rel="noopener noreferrer"
 										   style="display:inline-block;font-family:Oswald, Arial, sans-serif;font-size:20px;line-height:20px;color:#000000;text-decoration:none;text-transform:uppercase;mso-line-height-rule:exactly;">
 											Devenir Membre
