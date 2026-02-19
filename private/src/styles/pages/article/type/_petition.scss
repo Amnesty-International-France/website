@@ -1,3 +1,43 @@
+.cta-mobile-form {
+  display: none;
+
+  @media screen and (max-width: $container-lg){
+    display: flex;
+    width: 100%;
+    padding: 12px 50px;
+    background-color: var(--wp--preset--color--primary);
+    position: fixed;
+    bottom: 0;
+    z-index: 20;
+    justify-content: center;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    gap: 12px;
+    align-items: center;
+
+    &::before {
+      position: absolute;
+      left: 0;
+      content: 'AGIR';
+      padding: 12px;
+      background-color: var(--wp--preset--color--black);
+      color: var(--wp--preset--color--white)
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 65px; /* Ajustez cette valeur selon la largeur réelle de votre bloc "AGIR" */
+      transform: translateY(-50%);
+      border-width: 26px;
+      border-style: solid;
+      border-color: transparent transparent transparent var(--wp--preset--color--black);
+      z-index: 21;
+    }
+  }
+}
+
 .petition-hero-block {
   width: 100%;
   position: relative;
