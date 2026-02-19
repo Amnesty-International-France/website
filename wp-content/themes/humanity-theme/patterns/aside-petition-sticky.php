@@ -27,7 +27,7 @@ $post_id = get_the_ID();
 $civility = $civility ?? 'M.';
 ?>
 
-<aside class="petition-aside">
+<aside class="petition-aside" id="petition">
   <div class="sticky-card">
     <div class="sticky-card-content">
       <div class="sticky-card-title">SIGNEZ LA PÉTITION</div>
