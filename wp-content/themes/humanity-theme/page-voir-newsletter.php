@@ -95,9 +95,9 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
                         <?php foreach ($articles as $article):
                             $post = $article['internal_link'];
                             setup_postdata($post);
-							$external_link = $article['external_link'];
-							$link_type = $article['link_type'];
-							$post_url = $link_type === 'internal' ? esc_url(add_query_arg($utm_params, get_permalink($post->ID))) : esc_url($external_link);
+                            $external_link = $article['external_link'];
+                            $link_type = $article['link_type'];
+                            $post_url = $link_type === 'internal' ? esc_url(add_query_arg($utm_params, get_permalink($post->ID))) : esc_url($external_link);
                             $title = !empty($article['titre']) ? $article['titre'] : esc_html(get_the_title($post->ID));
                             $featured_image_url = get_the_post_thumbnail_url($post->ID, 'post-featured');
                             if (! $featured_image_url) {
