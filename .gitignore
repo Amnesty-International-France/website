@@ -38,6 +38,9 @@ web.config
 /wp-content/themes/twenty*
 /wp-content/upgrade/*
 /wp-content/uploads/*
+!/wp-content/uploads/private/
+/wp-content/uploads/private/*
+!/wp-content/uploads/private/.htaccess
 /wp-content/wp-cache-config.php
 /wp-content/db.php
 /wp-cron.php
