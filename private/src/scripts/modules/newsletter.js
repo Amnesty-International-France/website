@@ -17,10 +17,10 @@ const newsletterFormElement = () => {
   };
 };
 
-export const isValidEmail = (value) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-  if (emailRegex.test(value)) {
+export const isValidEmail = (value) => {
+  if (EMAIL_REGEX.test(value)) {
     return value;
   }
 

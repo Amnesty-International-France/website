@@ -27,31 +27,14 @@ if (!function_exists('render_agenda_homepage_block')) {
                             'post_type'      => 'tribe_events',
                             'posts_per_page' => count($selected_event_ids),
                             'post__in'       => array_map('intval', $selected_event_ids),
-                            'ignore_sticky_posts' => 1, // Bonne pratique
+                            'orderby'        => 'post__in',
+                            'ignore_sticky_posts' => 1,
                         ];
                         $events_query = new WP_Query($events_args);
 
-                        $posts_by_id = [];
                         if ($events_query->have_posts()) {
                             while ($events_query->have_posts()) {
                                 $events_query->the_post();
-                                $posts_by_id[get_the_ID()] = $events_query->post;
-                            }
-                        }
-                        wp_reset_postdata();
-
-                        $sorted_posts = [];
-                        foreach ($selected_event_ids as $id) {
-                            $id = intval($id);
-                            if (isset($posts_by_id[$id])) {
-                                $sorted_posts[] = $posts_by_id[$id];
-                            }
-                        }
-
-                        if (!empty($sorted_posts)) {
-                            global $post;
-                            foreach ($sorted_posts as $post) {
-                                setup_postdata($post);
 
                                 $event_card_block = [
                                     'blockName'   => 'amnesty-core/event-card',
@@ -107,7 +90,7 @@ if (!function_exists('render_agenda_homepage_block')) {
                 <div class="chronicle-card">
                     <div class="chronicle-card-image-container">
                         <?php if (!empty($chronicle_image_url)) : ?>
-                            <img src="<?php echo esc_url($chronicle_image_url); ?>" class="chronicle-card-image" alt="<?php esc_attr_e('Image de La Chronique', 'amnesty-core'); ?>" />
+                            <img src="<?php echo esc_url($chronicle_image_url); ?>" class="chronicle-card-image" alt="<?php esc_attr_e('Image de La Chronique', 'amnesty-core'); ?>" loading="lazy" />
                         <?php endif; ?>
                     </div>
                     <div class="chronicle-card-content">

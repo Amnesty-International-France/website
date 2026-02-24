@@ -52,6 +52,8 @@ if (! function_exists('get_theme_image_sizes')) {
             'hero-lg'          => [ 2560, 710, true ],
             'hero-md'          => [ 1468, 710, true ],
             'hero-sm'          => [ 770, 710, true ],
+            'hero-mobile'      => [ 768, 400, true ],
+            'hero-tablet'      => [ 1024, 550, true ],
             'logotype'         => [ 0, 72, false ],
             'logotype@2x'      => [ 0, 144, false ],
             'logomark'         => [ 60, 60, false ],

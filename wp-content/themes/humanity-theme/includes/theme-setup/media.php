@@ -12,7 +12,7 @@ if (! function_exists('amnesty_image_quality')) {
      */
     function amnesty_image_quality()
     {
-        return 100;
+        return 82;
     }
 }
 
