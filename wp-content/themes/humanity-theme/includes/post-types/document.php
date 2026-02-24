@@ -310,10 +310,10 @@ if (! function_exists('amnesty_document_get_private_uploads_dir')) {
      */
     function amnesty_document_get_private_uploads_dir(): string
     {
-        $uploads = wp_get_upload_dir();
-        $base = untrailingslashit(wp_normalize_path($uploads['basedir']));
+        $root = untrailingslashit(ABSPATH);
+        $dir = wp_normalize_path(dirname($root) . '/private-uploads');
 
-        return $base . '/private';
+        return untrailingslashit($dir);
     }
 }
 
