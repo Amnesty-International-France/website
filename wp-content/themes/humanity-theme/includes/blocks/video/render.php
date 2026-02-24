@@ -65,7 +65,7 @@ if (!function_exists('render_video_block')) {
 						souhaitez lire la vidéo, vous devez consentir aux cookies pour une publicité ciblée en
 						cliquant sur le bouton ci-dessous.
 					</p>
-					<a href="#" onclick="enableTargeting();">Paramètre des cookies</a>
+					<a onclick="enableTargeting();">Paramètres des cookies</a>
 				</div>
 
 				<script type="text/plain" class="optanon-category-C0004">
