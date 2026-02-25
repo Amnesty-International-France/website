@@ -39,6 +39,7 @@ if (!function_exists('render_video_block')) {
     {
         $video_url = $attributes['url'] ?? '';
         $video_title = $attributes['title'] ?? '';
+        $image_broken = get_template_directory_uri() . '/assets/images/broken-video.png';
 
         if (empty($video_url)) {
             return '<p>' . esc_html__('Aucune vidéo sélectionnée', 'amnesty') . '</p>';
@@ -58,9 +59,13 @@ if (!function_exists('render_video_block')) {
         <div class="video-block">
             <div class="video-wrapper">
 				<div class="warning">
-					<img src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/warning_26a0-fe0f.png" alt="warning">
-					<p>Contenu indisponible car la catégorie Targeting n’est pas activée.</p>
-					<a href="#" onclick="enableTargeting();">Activer les cookies Targeting</a>
+					<img src="<?= $image_broken ?>" alt="warning">
+					<p>
+						Le visionnage de cette vidéo entraîne un dépôt de cookies de la part de YouTube. Si vous
+						souhaitez lire la vidéo, vous devez consentir aux cookies pour une publicité ciblée en
+						cliquant sur le bouton ci-dessous.
+					</p>
+					<a onclick="enableTargeting();">Accepter les cookies</a>
 				</div>
 
 				<script type="text/plain" class="optanon-category-C0004">

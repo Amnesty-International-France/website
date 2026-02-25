@@ -27,7 +27,6 @@ wp.domReady(() => {
     'jetpack/repeat-visitor',
     'jetpack/related-posts',
     'jetpack/top-posts',
-    'jetpack/slideshow',
     'jetpack/tiled-gallery',
     // Thème
     'core/navigation',

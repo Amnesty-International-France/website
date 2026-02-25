@@ -459,15 +459,8 @@ if (! function_exists('amnesty_document_move_attachment_file')) {
             return false;
         }
 
-        $moved = @rename($source, $destination);
-        if (! $moved) {
-            $moved = copy($source, $destination);
-            if ($moved) {
-                @unlink($source);
-            }
-        }
-
-        if (! $moved) {
+        $copied = @copy($source, $destination);
+        if (!$copied || !file_exists($destination) || !(filesize($destination) === filesize($source))) {
             return false;
         }
 
@@ -475,6 +468,11 @@ if (! function_exists('amnesty_document_move_attachment_file')) {
         if (is_array($meta) && ! empty($meta['sizes']) && is_array($meta['sizes'])) {
             $relative_dir = dirname($relative);
             $relative_prefix = $relative_dir === '.' ? '' : trailingslashit($relative_dir);
+
+            $movedSources = [];
+            $movedDestinations = [];
+            $movedCount = 0;
+            $expectedCount = 0;
 
             foreach ($meta['sizes'] as $size) {
                 if (empty($size['file'])) {
@@ -485,20 +483,40 @@ if (! function_exists('amnesty_document_move_attachment_file')) {
                 $size_source = ($to_private ? $public_base : $private_base) . '/' . $size_relative;
                 $size_destination = ($to_private ? $private_base : $public_base) . '/' . $size_relative;
 
-                if (! file_exists($size_source)) {
+                if (!file_exists($size_source)) {
                     continue;
                 }
 
-                if (wp_mkdir_p(dirname($size_destination))) {
-                    if (! @rename($size_source, $size_destination)) {
-                        if (copy($size_source, $size_destination)) {
-                            @unlink($size_source);
-                        }
-                    }
+                if (!wp_mkdir_p(dirname($size_destination))) {
+                    continue;
                 }
+
+                $expectedCount++;
+                $copied = copy($size_source, $size_destination);
+                if (!$copied || !file_exists($size_destination) || !(filesize($size_destination) === filesize($size_source))) {
+                    continue;
+                }
+
+                $movedCount++;
+                $movedSources[] = $size_source;
+                $movedDestinations[] = $size_destination;
+            }
+
+            if ($movedCount !== $expectedCount) {
+                foreach ($movedDestinations as $movedDestination) {
+                    @unlink($movedDestination);
+                }
+
+                @unlink($destination);
+                return false;
+            }
+
+            foreach ($movedSources as $movedSource) {
+                @unlink($movedSource);
             }
         }
 
+        @unlink($source);
         if ($to_private) {
             update_post_meta($attachment_id, '_amnesty_private_file', $relative);
         } else {
@@ -534,19 +552,15 @@ if (! function_exists('amnesty_document_sync_private_file')) {
         }
 
         $is_private = amnesty_document_is_private($post_id);
-        $is_moved = (bool) get_post_meta($attachment_id, '_amnesty_private_file', true);
+        $moved = amnesty_document_move_attachment_file($attachment_id, $is_private);
 
-        if ($is_private && ! $is_moved) {
-            amnesty_document_move_attachment_file($attachment_id, true);
-        }
-
-        if (! $is_private && $is_moved) {
-            amnesty_document_move_attachment_file($attachment_id, false);
+        if (!$moved) {
+            update_field('field_27dmxqoc8t', !$is_private, $post_id);
         }
     }
 }
 
-add_action('save_post', 'amnesty_document_sync_private_file', 20, 3);
+add_action('save_post', 'amnesty_document_sync_private_file', 999, 3);
 
 add_action(
     'acf/save_post',
@@ -563,7 +577,7 @@ add_action(
 
         amnesty_document_sync_private_file($post_id, $post, true);
     },
-    30
+    999
 );
 
 add_filter(

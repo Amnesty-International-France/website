@@ -5,9 +5,6 @@ $attachment_id = function_exists('amnesty_document_get_attachment_id')
     ? amnesty_document_get_attachment_id($id)
     : 0;
 
-if (! $attachment_id) {
-}
-
 $attachment_url = wp_get_attachment_url($attachment_id);
 if (! $attachment_url) {
     status_header(404);
