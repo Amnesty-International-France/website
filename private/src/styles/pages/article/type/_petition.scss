@@ -1,39 +1,55 @@
-.cta-mobile-form {
+.cta-mobile {
   display: none;
 
-  @media screen and (max-width: $container-lg){
-    display: flex;
-    width: 100%;
-    padding: 12px 50px;
+  @media screen and (max-width: $container-lg) {
     background-color: var(--wp--preset--color--primary);
     position: fixed;
     bottom: 0;
-    z-index: 20;
-    justify-content: center;
+    left: 0;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+    display: flex;
     text-transform: uppercase;
-    text-decoration: none !important;
-    gap: 12px;
-    align-items: center;
+    height: 48px;
+    line-height: 48px;
+    z-index: 2;
+    cursor: pointer;
+    text-decoration: none;
+    width: 100%;
 
-    &::before {
-      position: absolute;
-      left: 0;
-      content: 'AGIR';
-      padding: 12px;
-      background-color: var(--wp--preset--color--black);
-      color: var(--wp--preset--color--white)
+    .cta-mobile-left {
+      background: var(--wp--preset--color--black);
+      color: var(--wp--preset--color--white);
+      padding: 0 10px;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-color: transparent transparent transparent var(--wp--preset--color--black);
+        border-style: solid;
+        border-width: 1.5rem 0 1.5rem .8125rem;
+        top: 0;
+        right: 0;
+        transform: translateX(100%);
+      }
     }
 
-    &::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 65px; /* Ajustez cette valeur selon la largeur réelle de votre bloc "AGIR" */
-      transform: translateY(-50%);
-      border-width: 26px;
-      border-style: solid;
-      border-color: transparent transparent transparent var(--wp--preset--color--black);
-      z-index: 21;
+    .cta-mobile-right {
+      flex: 1 0;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      > svg {
+        margin-right: .3125rem;
+        max-width: 1.25rem;
+      }
     }
   }
 }
@@ -69,11 +85,11 @@
       z-index: 1;
       pointer-events: none;
       background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.9) 0%,
-        rgba(0, 0, 0, 0) 20%,
-        rgba(0, 0, 0, 0) 80%,
-        rgba(0, 0, 0, 0.9) 100%
+          to bottom,
+          rgba(0, 0, 0, 0.9) 0%,
+          rgba(0, 0, 0, 0) 20%,
+          rgba(0, 0, 0, 0) 80%,
+          rgba(0, 0, 0, 0.9) 100%
       );
     }
 
@@ -135,8 +151,7 @@
             width: 16px;
             height: 16px;
             margin: 0 6px;
-            background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E")
-              no-repeat center;
+            background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.78132 7.99999L5.48132 4.69999L6.42399 3.75732L10.6667 7.99999L6.42399 12.2427L5.48132 11.3L8.78132 7.99999Z' fill='%23ffffff'/%3E%3C/svg%3E") no-repeat center;
             background-size: contain;
             vertical-align: middle;
           }
