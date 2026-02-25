@@ -51,10 +51,16 @@ if ($is_thank_you_page && is_singular('petition')) {
 } else {
     ?>
 	<!-- wp:group {"tagName":"div","className":"container petition-container has-gutter","layout":{"type":"constrained"}} -->
-	<a class="cta-mobile-form" href="#petition">
-		<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-plume.svg'); ?>
-		signer la pétition
-	</a>
+	<div id="go-petitions" class="cta-mobile">
+		<div class="cta-mobile-left">
+			agir
+		</div>
+		<div class="cta-mobile-right">
+			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-plume.svg'); ?>
+			signer la pétition
+		</div>
+	</div>
+
 	<div class="wp-block-group container petition-container has-gutter">
 		<div class="petition-layout">
 			<div class="petition-main">
