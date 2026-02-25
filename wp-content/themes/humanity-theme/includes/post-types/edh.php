@@ -326,7 +326,7 @@ function edh_acf_fields()
                     'default_value'     => 'autre',
                     'return_format'     => 'value',
                     'multiple'          => 0,
-                    'allow_null'        => 1,
+                    'allow_null'        => 0,
                     'allow_in_bindings' => 0,
                     'ui'                => 0,
                     'ajax'              => 0,
