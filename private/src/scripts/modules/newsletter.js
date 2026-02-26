@@ -2,9 +2,13 @@ const newsletterFormElement = () => {
   const footer = document.querySelector('footer');
   const overfooter =
     footer?.querySelector('.over-footer') ?? document.querySelector('.over-footer');
-  const formLead = overfooter?.querySelector('form[name="newsletter-lead-form"]');
+
+  const allLeadForms = document.querySelectorAll('form[name="newsletter-lead-form"]');
+  const pageForm = Array.from(allLeadForms).find((f) => !overfooter?.contains(f));
+  const formLead = pageForm ?? overfooter?.querySelector('form[name="newsletter-lead-form"]');
+
   const inputFooterNL = formLead?.querySelector('input[name="newsletter-lead"]');
-  const ctaFooterNL = overfooter?.querySelector('.register-nl');
+  const ctaFooterNL = formLead?.querySelector('.register-nl');
   const formNewsletterPage = document.querySelector('.newsletter-form');
 
   return {
