@@ -147,7 +147,7 @@ function get_signatures_to_sync()
     $users_table_name = $wpdb->prefix . 'aif_users';
     $signatures_table_name = $wpdb->prefix . 'aif_petitions_signatures';
 
-    $query = $wpdb->prepare("SELECT * FROM $signatures_table_name s JOIN $users_table_name u ON(s.user_id = u.id) WHERE s.pending = %d AND s.is_synched = %d AND s.nb_try = %d", [0, 0, 0]);
+    $query = $wpdb->prepare("SELECT * FROM $signatures_table_name s JOIN $users_table_name u ON(s.user_id = u.id) WHERE s.pending = %d AND s.is_synched = %d AND s.nb_try = %d LIMIT 20", [0, 0, 0]);
 
     return $wpdb->get_results($query, ARRAY_A);
 }

@@ -11,21 +11,20 @@ declare(strict_types=1);
 $email_provided = '';
 $inscription_nl_status = '';
 $inscription_nl_success = false;
+$local_user = false;
+$is_salesforce_user = false;
 
 if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
 
     $email_provided = $_GET['email'] ?? '';
-    if (empty($email_provided)) {
-        wp_redirect(home_url('/').'#newsletter-lead-form');
-        exit;
-    }
-
     $inscription_nl_status = $_GET['inscription__nl'] ?? '';
     $inscription_nl_success = $inscription_nl_status === 'success';
 
-    $local_user = get_local_user($email_provided);
-    $get_salesforce_user = get_salesforce_user_with_email($email_provided);
-    $is_salesforce_user = $get_salesforce_user['totalSize'] > 0;
+    if (!empty($email_provided)) {
+        $local_user = get_local_user($email_provided);
+        $get_salesforce_user = get_salesforce_user_with_email($email_provided);
+        $is_salesforce_user = is_array($get_salesforce_user) && $get_salesforce_user['totalSize'] > 0;
+    }
 
     if (isset($_POST['sign_newsletter'])) {
         if (!verify_turnstile()) {
@@ -41,7 +40,7 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
 
         $local_user = get_local_user($email);
         $get_salesforce_user = get_salesforce_user_with_email($email);
-        $is_salesforce_user = $get_salesforce_user['totalSize'] > 0;
+        $is_salesforce_user = is_array($get_salesforce_user) && $get_salesforce_user['totalSize'] > 0;
 
         if ($local_user !== false) {
             $data = [
@@ -96,7 +95,7 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
 
         $lead_on_sf = get_salesforce_nl_lead($email);
 
-        if ($lead_on_sf['totalSize'] > 0) {
+        if (is_array($lead_on_sf) && $lead_on_sf['totalSize'] > 0) {
             deleting_lead_on_salesforce($lead_on_sf['records'][0]['Id']);
         }
 
@@ -132,7 +131,7 @@ print esc_attr($class_name ?? ''); ?>">
 			<form id="newsletter-form" class="newsletter-form" action="" method="post" name="newsletter-form">
 				<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 				<div class="form-mess hidden"></div>
-					<?php if (isset($local_user, $is_salesforce_user) && !$local_user && !$is_salesforce_user) : ?>
+					<?php if (!$local_user && !$is_salesforce_user) : ?>
 					<div class="form-group civility">
 						<label class="civility-label">Civilité :</label>
 						<div class="civilities">
@@ -155,7 +154,7 @@ print esc_attr($class_name ?? ''); ?>">
 						   value="<?= esc_attr($email_provided); ?>"
 					>
 
-				<?php if (isset($local_user, $is_salesforce_user) && !$local_user && !$is_salesforce_user) : ?>
+				<?php if (!$local_user && !$is_salesforce_user) : ?>
 				<div class="form-group">
 					<input type="text" id="lastname" name="lastname" placeholder="Nom" required>
 				</div>
