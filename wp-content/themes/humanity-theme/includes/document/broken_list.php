@@ -5,27 +5,57 @@ class BrokenList_Command
     public function __invoke(): void
     {
         $documents = $this->getAllDocuments();
-        $documents_count = \count($documents);
-        $missing_documents_count = 0;
+        $documentsCount = \count($documents);
+        $missingDocumentsCount = 0;
+        $repairedDocumentsCount = 0;
 
         foreach ($documents as $document) {
-            $post_id = $document->ID;
-            if (!$post_id) {
+            $postId = $document->ID;
+            if (!$postId) {
                 continue;
             }
 
-            $private = amnesty_document_is_private($post_id);
-            $attachment_id = amnesty_document_get_attachment_id($post_id);
+            $private = amnesty_document_is_private($postId);
+            $attachment_id = amnesty_document_get_attachment_id($postId);
 
-            $path = $private ? amnesty_document_get_private_file_path($attachment_id) : amnesty_document_get_public_file_path($attachment_id);
-            $admin_url = admin_url("post.php?post=$post_id&action=edit");
-            if (!file_exists($path)) {
-                WP_CLI::warning("File $path does not exist ($admin_url)");
-                $missing_documents_count++;
+            if ($private) {
+                $good_path = amnesty_document_get_private_file_path($attachment_id);
+                $wrong_path = amnesty_document_get_public_file_path($attachment_id);
+            } else {
+                $good_path = amnesty_document_get_public_file_path($attachment_id);
+                $wrong_path = amnesty_document_get_private_file_path($attachment_id);
+            }
+
+            $adminUrl = admin_url("post.php?post=$postId&action=edit");
+            if (!file_exists($good_path)) {
+                WP_CLI::warning("File not found at expected path $good_path ($adminUrl)");
+                $missingDocumentsCount++;
+            }
+
+            $is_at_wrong_path = file_exists($wrong_path);
+            if (!$is_at_wrong_path) {
+                continue;
+            }
+
+            WP_CLI::log("File found at wrong path $wrong_path, trying to repair it");
+            $moved = amnesty_document_move_attachment_file($attachment_id, $private);
+            if ($moved) {
+                WP_CLI::success("File moved to $good_path");
+                $repairedDocumentsCount++;
+            } else {
+                WP_CLI::warning("File could not be moved to $good_path");
             }
         }
 
-        WP_CLI::log(sprintf('Found %s/%s attachments (%s missing)', $documents_count - $missing_documents_count, $documents_count, $missing_documents_count));
+        WP_CLI::log(
+            sprintf(
+                'Found %s/%s attachments (%s missing - %s should be repaired)',
+                $documentsCount - $missingDocumentsCount,
+                $documentsCount,
+                $missingDocumentsCount,
+                $repairedDocumentsCount
+            )
+        );
     }
 
     private function getAllDocuments(): array
