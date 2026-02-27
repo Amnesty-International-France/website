@@ -316,6 +316,7 @@ require_once realpath(__DIR__ . '/includes/urgent-action/tables.php');
 if (defined('WP_CLI') && WP_CLI) {
     require_once realpath(__DIR__ . '/includes/petitions/syncs.php');
     require_once realpath(__DIR__ . '/includes/urgent-action/syncs.php');
+    require_once realpath(__DIR__ . '/includes/document/broken_list.php');
 }
 
 /**
