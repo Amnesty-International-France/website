@@ -19,7 +19,7 @@ class BrokenList_Command
 
             $path = $private ? amnesty_document_get_private_file_path($attachment_id) : amnesty_document_get_public_file_path($attachment_id);
             $admin_url = admin_url("post.php?post=$post_id&action=edit");
-            if (file_exists($path)) {
+            if (!file_exists($path)) {
                 WP_CLI::warning("File $path does not exist ($admin_url)");
                 $missing_documents_count++;
             }
