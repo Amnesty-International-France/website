@@ -77,18 +77,26 @@ function create_bulk_job_signatures()
 
 function prepare_bulk_data($signatures)
 {
+    $fp = fopen('php://temp', 'r+');
     $csv_header = ['Ext_ID_WP__c', 'Petition__r.Ext_ID_Petition__c', 'Civilite__c', 'Prenom__c', 'Nom__c',
         'Email__c', 'Date_signature_petition__c', 'Pays__c', 'Code_Postal__c',
         'Mobile__c', 'Type_signature__c', 'Code_Marketing_Prestataire__c', 'Lien_annulation__c', 'Message__c'];
+    fputcsv($fp, $csv_header, ',', '"', '"');
 
-    $csv_data = '"' . implode('","', $csv_header) . '"' . "\n";
     foreach ($signatures as $signature) {
         $uidsf = get_field('uidsf', $signature['petition_id']);
+        $message = stripslashes((string) $signature['message']);
+        $message = str_replace('"', '""', $message);
         $line = [$signature['petition_id'], $uidsf, $signature['civility'], $signature['firstname'], $signature['lastname'],
             $signature['email'], $signature['date_signature'], $signature['country'], $signature['postal_code'],
-            $signature['phone'], 'W', $signature['code_origine'], '', $signature['message'] ?? ''];
-        $csv_data .= '"' . implode('","', $line) . '"' . "\n";
+            $signature['phone'], 'W', $signature['code_origine'], '', $message];
+        fputcsv($fp, $line, ',', '"', '"');
     }
+    rewind($fp);
+    $csv_data = stream_get_contents($fp);
+    fclose($fp);
+
+    WP_CLI::log("send data : {$csv_data}");
 
     return $csv_data;
 }
@@ -156,7 +164,8 @@ function poll_job_state($job_id)
         if (! is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
             $job_data = json_decode(wp_remote_retrieve_body($response), true);
             $state = $job_data['state'];
-            WP_CLI::log("Statut du job {$job_id} après {$ecoule}s : {$state}");
+            $job_data_export = var_export($job_data, true);
+            WP_CLI::log("Statut du job {$job_id} après {$ecoule}s : {$state}. Response data : {$job_data_export}");
         } else {
             WP_CLI::error('Error getting bulk job status');
             break;
