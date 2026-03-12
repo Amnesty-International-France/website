@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$post_id = get_post()->ID;
+
 $args = [
     'post_type'      => 'pop-in',
     'posts_per_page' => 1,
@@ -24,7 +26,8 @@ $svg               = file_get_contents($template_directory . '/assets/images/ico
 $logo              = file_get_contents($template_directory . '/assets/images/icon-logo-fr.svg');
 $button_icon       = file_get_contents($template_directory . '/assets/images/icon-arrow.svg');
 ?>
-<div class="urgent-banner hidden">
+
+<div id="urgent-banner-<?= $query->post->ID ?>" class="urgent-banner hidden">
 	<div class="urgent-banner-modal <?= $thumbnail ? 'with-image' : '' ?>">
 		<div class="urgent-container">
 			<?php if ($thumbnail) : ?>
