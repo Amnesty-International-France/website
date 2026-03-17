@@ -55,7 +55,8 @@ export const submitCodeOrigine = () => {
   if (form) {
     form.addEventListener('submit', () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const codeOrigineValue = urlParams.get('reserved_originecode') ?? urlParams.get('code_origine');
+      const codeOrigineValue =
+        urlParams.get('reserved_originecode') ?? urlParams.get('code_origine');
 
       if (codeOrigineValue) {
         if (!form.querySelector('input[name="code_origine"]')) {
