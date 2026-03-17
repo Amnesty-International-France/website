@@ -136,7 +136,7 @@ const initLegsForm = () => {
     body += `Amnesty International France inscrit sur le testament: ${testament ? 'Oui' : 'Non'}\n`;
     body += `Amnesty International France inscrit sur l'assurance-vie: ${assuranceVie ? 'Oui' : 'Non'}\n`;
 
-    const to = 'comnum@amnesty.fr';
+    const to = 'legs@amnesty.fr';
     const subject = 'Demande de brochure d’informations sur les legs, donations et assurances-vie';
 
     const mailtoLink = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
