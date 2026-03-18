@@ -93,6 +93,10 @@ if (!function_exists('render_articles_homepage_block')) {
 
         $posts = [];
         foreach ($items as $item) {
+            $externalPost = $item['externalPost'] ?? false;
+            $externalItemTitle = $item['externalItemTitle'] ?? '';
+            $externalItemLink = $item['externalItemLink'] ?? '';
+            $externalItemImgId = $item['externalItemImgId'] ?? null;
             $selected_id = isset($item['selectedPostId']) ? (int)$item['selectedPostId'] : 0;
             $category_slug_from_attributes = $item['category'] ?? '';
             $subtitle = esc_html($item['subtitle'] ?? '');
@@ -116,6 +120,11 @@ if (!function_exists('render_articles_homepage_block')) {
                 }
                 $fetched_posts = get_posts($args);
                 $post = $fetched_posts[0] ?? null;
+            } elseif ($externalPost) {
+                $post = [
+                    'selectedPostTitle' => $externalItemTitle,
+                    'selectedPostLink' => $externalItemLink,
+                ];
             }
 
             if (!$post) {
@@ -129,7 +138,7 @@ if (!function_exists('render_articles_homepage_block')) {
             $entity_label = '';
 
             if ($current_post_type === 'post') {
-                $main_category = amnesty_get_a_post_term($post->ID);
+                $main_category = !$externalPost && amnesty_get_a_post_term($post->ID);
                 if (is_a($main_category, 'WP_Term')) {
                     $entity_slug = $main_category->slug ?? '';
                     $entity_label = get_field('category_singular_name', $main_category) ?: $main_category->name;
@@ -156,14 +165,17 @@ if (!function_exists('render_articles_homepage_block')) {
             };
 
             $posts[] = [
-                'post'          => $post,
-                'subtitle'      => $subtitle,
-                'image_id'      => $image_id,
-                'entity_slug'   => $entity_slug,
-                'chip_style'    => $chip_style,
-                'entity_label'  => $entity_label,
-                'post_date'     => format_post_date($post),
-                'custom_terms'  => get_post_custom_terms($post->ID),
+                'post' => $post,
+                'title' => $externalPost ? $externalItemTitle : $post->post_title,
+                'subtitle' => $subtitle,
+                'image_id' => $externalPost ? $externalItemImgId : $image_id,
+                'entity_slug' => $externalPost ? '' : $entity_slug,
+                'chip_style' => $externalPost ? '' : $chip_style,
+                'entity_label' => $externalPost ? '' : $entity_label,
+                'post_date' => $externalPost ? '' : format_post_date($post),
+                'custom_terms' => $externalPost ? 0 : get_post_custom_terms($post->ID),
+                'link' => $externalPost ? $externalItemLink : get_permalink($post),
+                'externalPost' => $externalPost ?? false,
             ];
         }
 
@@ -203,21 +215,22 @@ if (!function_exists('render_articles_homepage_block')) {
         <section class="articles-homepage<?php echo $class_name; ?>">
             <div class="articles-homepage-wrapper">
 
-                <h2 class="title"><?php esc_html_e('À la une', 'amnesty'); ?></h2>
+				<h2 class="title"><?php esc_html_e('À la une', 'amnesty'); ?></h2>
 
-                <div class="articles-homepage-container">
-                    <?php
+				<div class="articles-homepage-container">
+					<?php
                     if (isset($posts[0])):
                         $post = $posts[0]['post'];
                         $subtitle = $posts[0]['subtitle'];
-                        $title = get_the_title($post);
-                        $url = get_permalink($post);
+                        $title = $posts[0]['title'] ?? get_the_title($post);
+                        $url = $posts[0]['link'] ?? get_permalink($post);
                         $image_id = $posts[0]['image_id'];
                         $entity_slug = $posts[0]['entity_slug'];
                         $chip_style = $posts[0]['chip_style'];
                         $entity_label = $posts[0]['entity_label'];
                         $post_date = $posts[0]['post_date'];
                         $custom_terms = $posts[0]['custom_terms'];
+                        $externalPost = $posts[0]['externalPost'] ?? false;
 
                         if ($post->post_type === 'actualities-my-space') {
                             $entity_label = get_field('category', $post);
@@ -225,19 +238,21 @@ if (!function_exists('render_articles_homepage_block')) {
                         }
                         ?>
 
-                    <div class="article-main-desktop">
-                        <?php if (!empty($entity_slug)): ?>
-                            <?= render_chip_category_block([
-                                'label' => esc_html($entity_label),
-                                'size'  => 'small',
-                                'link'  => get_dynamic_category_or_post_type_link($entity_slug),
-                                'style' => esc_attr($chip_style),
-                            ]) ?>
-                        <?php endif; ?>
-                        <?php if ($image_id): ?>
-                            <div class="article-image-container">
-                                <a href="<?php echo esc_url($url); ?>" <?php if (! is_internal_link($url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
-                                    <?php
+						<div class="article-main-desktop">
+							<?php if (!empty($entity_slug)): ?>
+								<?= render_chip_category_block([
+								    'label' => esc_html($entity_label),
+								    'size' => 'small',
+								    'link' => get_dynamic_category_or_post_type_link($entity_slug),
+								    'style' => esc_attr($chip_style),
+								]) ?>
+							<?php endif; ?>
+							<?php if ($image_id): ?>
+								<div class="article-image-container">
+									<a href="<?php echo esc_url($url); ?>"
+									   <?php if (!is_internal_link($url)) : ?>target="_blank"
+									   rel="noopener noreferrer"<?php endif; ?>>
+										<?php
                                         echo wp_get_attachment_image(
                                             $image_id,
                                             'full',
@@ -247,57 +262,62 @@ if (!function_exists('render_articles_homepage_block')) {
                                                 'alt' => $title,
                                             ],
                                         );
-                            ?>
-                                    <div class="article-content">
-                                        <div class="article-title-wrapper">
-                                            <h3 class="article-title"><?php echo esc_html($title); ?></h3>
-                                        </div>
-                                        <?php if ($subtitle): ?>
-                                            <div class="article-subtitle-wrapper">
-                                                <p class="article-subtitle"><?php echo $subtitle; ?></p>
-                                            </div>
-                                        <?php endif; ?>
-                                        <div class="article-button-wrapper">
-                                            <?php
-                                        $button_text = esc_html__('Lire la suite', 'amnesty');
-                            ?>
-                                            <span class="article-button"> 
+							    ?>
+										<div class="article-content">
+											<div class="article-title-wrapper">
+												<h3 class="article-title"><?php echo esc_html($title); ?></h3>
+											</div>
+											<?php if ($subtitle): ?>
+												<div class="article-subtitle-wrapper">
+													<p class="article-subtitle"><?php echo $subtitle; ?></p>
+												</div>
+											<?php endif; ?>
+											<?php if (!$externalPost): ?>
+												<div class="article-button-wrapper">
+													<?php
+							                $button_text = esc_html__('Lire la suite', 'amnesty');
+											    ?>
+													<span class="article-button">
                                                 <?php echo $button_text; ?>
                                             </span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <?php if (!empty($entity_slug)) : ?>
-                                <div class="category-link">
-                                    <div class="icon-container">
-                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
-                                        </svg>
-                                    </div>
-                                    <a class="link" href="<?= get_dynamic_category_or_post_type_link($entity_slug) ?>">
-                                        <?= esc_html(see_all_label($entity_slug)) ?>
-                                    </a>
-                                </div>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                    </div>
+												</div>
+											<?php endif; ?>
+										</div>
+									</a>
+								</div>
+								<div class="category-link">
+									<?php if (!empty($entity_slug)) : ?>
+										<div class="icon-container">
+											<svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none"
+												 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+												<path stroke-linecap="round" stroke-linejoin="round"
+													  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+											</svg>
+										</div>
+										<a class="link"
+										   href="<?= get_dynamic_category_or_post_type_link($entity_slug) ?>">
+											<?= esc_html(see_all_label($entity_slug)) ?>
+										</a>
+									<?php endif; ?>
+								</div>
+							<?php endif; ?>
+						</div>
 
-                    <div class="article-main-mobile">
-                        <a href="<?php echo esc_url($url); ?>" <?php if (! is_internal_link($url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
-                            <div class="wrapper">
-                                <?php if (!empty($entity_slug)): ?>
-                                    <?= render_chip_category_block([
-                                        'label' => esc_html($entity_label),
-                                        'size'  => 'small',
-                                        'style' => esc_attr($chip_style),
-                                    ]) ?>
-                                <?php endif; ?>
-                                <div class="article-main-mobile-image-wrapper">
-                                    <?php if ($image_id): ?>
-                                        <?php
+						<div class="article-main-mobile">
+							<a href="<?php echo esc_url($url); ?>"
+							   <?php if (!is_internal_link($url)) : ?>target="_blank"
+							   rel="noopener noreferrer"<?php endif; ?>>
+								<div class="wrapper">
+									<?php if (!empty($entity_slug)): ?>
+										<?= render_chip_category_block([
+										    'label' => esc_html($entity_label),
+										    'size' => 'small',
+										    'style' => esc_attr($chip_style),
+										]) ?>
+									<?php endif; ?>
+									<div class="article-main-mobile-image-wrapper">
+										<?php if ($image_id): ?>
+											<?php
                                             echo wp_get_attachment_image(
                                                 $image_id,
                                                 'full',
@@ -307,132 +327,136 @@ if (!function_exists('render_articles_homepage_block')) {
                                                     'alt' => $title,
                                                 ],
                                             );
-                                        ?>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="article-main-mobile-content">
-                                    <div class="article-main-mobile-header">
-                                        <?php if (!empty($post_date)): ?>
-                                            <p class="article-date"><?php echo esc_html($post_date); ?></p>
-                                        <?php endif; ?>
-                                        <h3 class="article-title"><?php echo esc_html($title); ?></h3>
-                                    </div>
-                                    <?php if (!empty($custom_terms)): ?>
-                                        <div class="article-main-mobile-footer">
-                                            <?php foreach ($custom_terms as $term): ?>
-                                                <span class="term <?php echo esc_attr($term['taxonomy']); ?>">
+										    ?>
+										<?php endif; ?>
+									</div>
+									<div class="article-main-mobile-content">
+										<div class="article-main-mobile-header">
+											<?php if (!empty($post_date)): ?>
+												<p class="article-date"><?php echo esc_html($post_date); ?></p>
+											<?php endif; ?>
+											<h3 class="article-title"><?php echo esc_html($title); ?></h3>
+										</div>
+										<?php if (!empty($custom_terms)): ?>
+											<div class="article-main-mobile-footer">
+												<?php foreach ($custom_terms as $term): ?>
+													<span class="term <?php echo esc_attr($term['taxonomy']); ?>">
                                                     <?php echo esc_html($term['name']); ?>
                                                 </span>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </a>
-                        <?php if (!empty($entity_slug)) : ?>
-                            <div class="category-link">
-                                <div class="icon-container">
-                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
-                                    </svg>
-                                </div>
-                                <a class="link" href="<?= get_dynamic_category_or_post_type_link($entity_slug) ?>">
-                                    <?= esc_html(see_all_label($entity_slug)) ?>
-                                </a>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
+												<?php endforeach; ?>
+											</div>
+										<?php endif; ?>
+									</div>
+								</div>
+							</a>
+							<?php if (!empty($entity_slug)) : ?>
+								<div class="category-link">
+									<div class="icon-container">
+										<svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none"
+											 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round"
+												  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+										</svg>
+									</div>
+									<a class="link" href="<?= get_dynamic_category_or_post_type_link($entity_slug) ?>">
+										<?= esc_html(see_all_label($entity_slug)) ?>
+									</a>
+								</div>
+							<?php endif; ?>
+						</div>
+					<?php endif; ?>
 
-                <?php
-                if (count($posts) > 1): ?>
-                    <div class="articles-side-column">
-                        <?php foreach (array_slice($posts, 1, 2) as $post_data):
-                            $post = $post_data['post'];
-                            $title = get_the_title($post);
-                            $url = get_permalink($post);
-                            $image_id = $post_data['image_id'];
-                            $entity_slug = $post_data['entity_slug'];
-                            $chip_style = $post_data['chip_style'];
-                            $entity_label = $post_data['entity_label'];
-                            $post_date = $post_data['post_date'];
-                            $custom_terms = $post_data['custom_terms'];
+					<?php
+                    if (count($posts) > 1): ?>
+						<div class="articles-side-column">
+							<?php foreach (array_slice($posts, 1, 2) as $post_data):
+							    $post = $post_data['post'];
+							    $title = get_the_title($post);
+							    $url = get_permalink($post);
+							    $image_id = $post_data['image_id'];
+							    $entity_slug = $post_data['entity_slug'];
+							    $chip_style = $post_data['chip_style'];
+							    $entity_label = $post_data['entity_label'];
+							    $post_date = $post_data['post_date'];
+							    $custom_terms = $post_data['custom_terms'];
 
-                            if ($post->post_type === 'actualities-my-space') {
-                                $entity_label = get_field('category', $post);
-                                $entity_slug = 'actualities-my-space';
-                            }
-                            ?>
-                        <div class="article-side">
-                            <a href="<?php echo esc_url(url: $url); ?>" <?php if (! is_internal_link($url)) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
-                                <div class="wrapper">
-                                    <?php if (!empty($entity_slug)): ?>
-                                        <?= render_chip_category_block([
-                                            'label' => esc_html($entity_label),
-                                            'size'  => 'small',
-                                            'style' => esc_attr($chip_style),
-                                        ]) ?>
-                                    <?php endif; ?>
-                                    <div class="article-side-image-wrapper">
-                                        <?php if ($image_id): ?>
-                                            <?php
-                                                echo wp_get_attachment_image(
-                                                    $image_id,
-                                                    'full',
-                                                    false,
-                                                    [
-                                                        'class' => 'article-side-image',
-                                                        'alt' => $title,
-                                                    ],
-                                                );
-                                            ?>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="article-side-content">
-                                        <div class="article-side-header">
-                                            <?php if (!empty($post_date)): ?>
-                                                <p class="article-date">
-                                                    <?php echo esc_html($post_date); ?>
-                                                </p>
-                                            <?php endif; ?>
-                                            <h3 class="article-title"><?php echo esc_html($title); ?></h3>
-                                        </div>
-                                        <?php if (!empty($custom_terms)): ?>
-                                            <div class="article-side-footer">
-                                                <?php foreach ($custom_terms as $term): ?>
-                                                    <span class="term <?php echo esc_attr($term['taxonomy']); ?>">
+							    if ($post->post_type === 'actualities-my-space') {
+							        $entity_label = get_field('category', $post);
+							        $entity_slug = 'actualities-my-space';
+							    }
+							    ?>
+								<div class="article-side">
+									<a href="<?php echo esc_url(url: $url); ?>"
+									   <?php if (!is_internal_link($url)) : ?>target="_blank"
+									   rel="noopener noreferrer"<?php endif; ?>>
+										<div class="wrapper">
+											<?php if (!empty($entity_slug)): ?>
+												<?= render_chip_category_block([
+												    'label' => esc_html($entity_label),
+												    'size' => 'small',
+												    'style' => esc_attr($chip_style),
+												]) ?>
+											<?php endif; ?>
+											<div class="article-side-image-wrapper">
+												<?php if ($image_id): ?>
+													<?php
+							                        echo wp_get_attachment_image(
+							                            $image_id,
+							                            'full',
+							                            false,
+							                            [
+							                                'class' => 'article-side-image',
+							                                'alt' => $title,
+							                            ],
+							                        );
+												    ?>
+												<?php endif; ?>
+											</div>
+											<div class="article-side-content">
+												<div class="article-side-header">
+													<?php if (!empty($post_date)): ?>
+														<p class="article-date">
+															<?php echo esc_html($post_date); ?>
+														</p>
+													<?php endif; ?>
+													<h3 class="article-title"><?php echo esc_html($title); ?></h3>
+												</div>
+												<?php if (!empty($custom_terms)): ?>
+													<div class="article-side-footer">
+														<?php foreach ($custom_terms as $term): ?>
+															<span
+																class="term <?php echo esc_attr($term['taxonomy']); ?>">
                                                         <?php echo esc_html($term['name']); ?>
                                                     </span>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </a>
+														<?php endforeach; ?>
+													</div>
+												<?php endif; ?>
+											</div>
+										</div>
+									</a>
 
-                            <?php if (!empty($entity_slug)) : ?>
-                                <div class="category-link">
-                                    <div class="icon-container">
-                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
-                                        </svg>
-                                    </div>
-                                    <a class="link" href="<?= get_dynamic_category_or_post_type_link($entity_slug) ?>">
-                                        <?= esc_html(see_all_label($entity_slug)) ?>
-                                    </a>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </section>
-        <?php
+									<?php if (!empty($entity_slug)) : ?>
+										<div class="category-link">
+											<div class="icon-container">
+												<svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none"
+													 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+													<path stroke-linecap="round" stroke-linejoin="round"
+														  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+												</svg>
+											</div>
+											<a class="link"
+											   href="<?= get_dynamic_category_or_post_type_link($entity_slug) ?>">
+												<?= esc_html(see_all_label($entity_slug)) ?>
+											</a>
+										</div>
+									<?php endif; ?>
+								</div>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+				</div>
+		</section>
+		<?php
         return ob_get_clean();
     }
 }

@@ -1,10 +1,11 @@
 import ChipCategory from '../../components/ChipCategory.jsx';
 import PostSearchControl from '../../components/PostSearchControl.jsx';
+import ExternalPostControl from '../../components/ExternalPostControl.jsx';
 
 const { useSelect } = wp.data;
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls } = wp.blockEditor;
-const { PanelBody, TextControl } = wp.components;
+const { PanelBody, TextControl, ToggleControl } = wp.components;
 
 const getCategoryLink = (slug) => {
   if (slug === 'landmark') {
@@ -60,8 +61,35 @@ const EditComponent = ({ attributes, setAttributes }) => {
         'tribe_events',
       ];
 
+  const externalLinkDefaultValue = {
+    externalPost: false,
+    externalItemTitle: '',
+    externalItemLink: '',
+    externalItemImgId: null,
+    externalItemImgUrl: '',
+  };
+
   const updateItem = (index, key, value) => {
     const newItems = [...items];
+
+    if (key === 'externalPost' && value === true) {
+      newItems[index] = {
+        ...newItems[index],
+        selectedPostId: null,
+        selectedPostTitle: null,
+        selectedPostSlug: null,
+        _embedded: null,
+        selectedPostDate: null,
+        selectedPostCustomTerms: [],
+        category: '',
+        ...externalLinkDefaultValue,
+      };
+    }
+
+    if (typeof key === 'object') {
+      newItems[index] = { ...newItems[index], ...key };
+    }
+
     newItems[index] = { ...newItems[index], [key]: value };
     setAttributes({ items: newItems });
   };
@@ -91,10 +119,12 @@ const EditComponent = ({ attributes, setAttributes }) => {
         selectedPostDate: post.date,
         selectedPostCustomTerms: allExtractedTerms || [],
         category,
+        ...externalLinkDefaultValue,
       };
     } else {
       newItems[index] = {
         subtitle: newItems[index].subtitle,
+        ...externalLinkDefaultValue,
       };
     }
 
@@ -125,6 +155,18 @@ const EditComponent = ({ attributes, setAttributes }) => {
     return new Date(dateString).toLocaleDateString('fr-FR', options);
   };
 
+  const mainImage = (item) =>
+    item.externalPost
+      ? item.externalItemImgUrl
+      : item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+
+  const mainTitle = (item) => (item.externalPost ? item.externalItemTitle : item.selectedPostTitle);
+
+  const mainSlug = (item) =>
+    item.externalPost
+      ? item.externalItemLink
+      : ` ${getCategoryLink(item.category)}/${item.selectedPostSlug}`;
+
   return (
     <>
       <InspectorControls>
@@ -134,15 +176,29 @@ const EditComponent = ({ attributes, setAttributes }) => {
             title={`${__('Bloc', 'amnesty')} ${index + 1}`}
             initialOpen={index === 0}
           >
-            <PostSearchControl
-              allowedTypes={allowedTypesForThisBlock}
-              onPostSelect={(post) => handlePostSelection(index, post)}
+            <ToggleControl
+              label={'Lien externe'}
+              checked={item.externalPost}
+              onChange={(value) => updateItem(index, 'externalPost', value)}
             />
-            {item.selectedPostTitle && (
-              <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>
-                {__('Article sélectionné :', 'amnesty')}{' '}
-                <strong dangerouslySetInnerHTML={{ __html: item.selectedPostTitle }} />
-              </p>
+            {item.externalPost ? (
+              <ExternalPostControl
+                item={item}
+                updateItem={(key, value) => updateItem(index, key, value)}
+              />
+            ) : (
+              <>
+                <PostSearchControl
+                  allowedTypes={allowedTypesForThisBlock}
+                  onPostSelect={(post) => handlePostSelection(index, post)}
+                />
+                {item.selectedPostTitle && (
+                  <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>
+                    {__('Article sélectionné :', 'amnesty')}{' '}
+                    <strong dangerouslySetInnerHTML={{ __html: item.selectedPostTitle }} />
+                  </p>
+                )}
+              </>
             )}
 
             {index === 0 && (
@@ -162,26 +218,22 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
           {items.length > 0 && (
             <div className="articles-homepage-container">
-              {items[0].selectedPostTitle ? (
+              {mainTitle(items[0]) ? (
                 <div className="article-main-desktop">
                   <ChipCategory item={items[0]} />
-                  {items[0]._embedded?.['wp:featuredmedia']?.[0]?.source_url && (
+                  {mainImage(items[0]) && (
                     <div className="article-image-container">
-                      <a
-                        href={`${getCategoryLink(items[0].category)}/${items[0].selectedPostSlug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <a href={mainSlug(items[0])} target="_blank" rel="noopener noreferrer">
                         <img
                           className="article-image"
-                          src={items[0]._embedded['wp:featuredmedia'][0].source_url}
-                          alt={items[0].selectedPostTitle || ''}
+                          src={mainImage(items[0])}
+                          alt={mainTitle(items[0]) || ''}
                         />
                         <div className="article-content">
                           <div className="article-title-wrapper">
                             <h3
                               className="article-title"
-                              dangerouslySetInnerHTML={{ __html: items[0].selectedPostTitle }}
+                              dangerouslySetInnerHTML={{ __html: mainTitle(items[0]) }}
                             />
                           </div>
                           {items[0].subtitle && (
@@ -189,40 +241,44 @@ const EditComponent = ({ attributes, setAttributes }) => {
                               <p className="article-subtitle">{items[0].subtitle}</p>
                             </div>
                           )}
-                          <div className="article-button-wrapper">
-                            {items[0].selectedPostId && (
+                          {items[0].selectedPostId && (
+                            <div className="article-button-wrapper">
                               <div className="article-button">{__('Lire la suite', 'amnesty')}</div>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </div>
                       </a>
                     </div>
                   )}
-                  <div className="category-link">
-                    <div className="icon-container">
-                      <svg
-                        className="icon"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                        />
-                      </svg>
-                    </div>
-                    <a
-                      className="link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={getCategoryLink(items[0].category)}
-                    >
-                      {seeAll(items[0].category)}
-                    </a>
+                  <div className="category-link" style={{ minHeight: '44px' }}>
+                    {!items[0].externalPost && (
+                      <>
+                        <div className="icon-container">
+                          <svg
+                            className="icon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                            />
+                          </svg>
+                        </div>
+                        <a
+                          className="link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={getCategoryLink(items[0].category)}
+                        >
+                          {seeAll(items[0].category)}
+                        </a>
+                      </>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -231,21 +287,17 @@ const EditComponent = ({ attributes, setAttributes }) => {
                 </div>
               )}
 
-              {items[0].selectedPostTitle ? (
+              {mainTitle(items[0]) ? (
                 <div className="article-main-mobile">
-                  <a
-                    href={`${getCategoryLink(items[0].category)}/${items[0].selectedPostSlug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href={mainSlug(items[0])} target="_blank" rel="noopener noreferrer">
                     <div className="wrapper">
                       <ChipCategory item={items[0]} />
                       <div className="article-main-mobile-image-wrapper">
-                        {items[0]._embedded?.['wp:featuredmedia']?.[0]?.source_url && (
+                        {mainImage(items[0]) && (
                           <img
                             className="article-main-mobile-image"
-                            src={items[0]._embedded['wp:featuredmedia'][0].source_url}
-                            alt={items[0].selectedPostTitle}
+                            src={mainImage(items[0])}
+                            alt={mainTitle(items[0])}
                           />
                         )}
                       </div>
@@ -256,7 +308,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                           )}
                           <h3
                             className="article-title"
-                            dangerouslySetInnerHTML={{ __html: items[0].selectedPostTitle }}
+                            dangerouslySetInnerHTML={{ __html: mainTitle(items[0]) }}
                           />
                         </div>
 
@@ -273,32 +325,34 @@ const EditComponent = ({ attributes, setAttributes }) => {
                       </div>
                     </div>
                   </a>
-                  <div className="category-link">
-                    <div className="icon-container">
-                      <svg
-                        className="icon"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
+                  {!items[0].externalPost && (
+                    <div className="category-link">
+                      <div className="icon-container">
+                        <svg
+                          className="icon"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                          />
+                        </svg>
+                      </div>
+                      <a
+                        className="link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={getCategoryLink(items[0].category)}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                        />
-                      </svg>
+                        {seeAll(items[0].category)}
+                      </a>
                     </div>
-                    <a
-                      className="link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={getCategoryLink(items[0].category)}
-                    >
-                      {seeAll(items[0].category)}
-                    </a>
-                  </div>
+                  )}
                 </div>
               ) : (
                 <div className="article-main-mobile empty">
@@ -356,32 +410,34 @@ const EditComponent = ({ attributes, setAttributes }) => {
                             </div>
                           </div>
                         </a>
-                        <div className="category-link">
-                          <div className="icon-container">
-                            <svg
-                              className="icon"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="currentColor"
+                        {!item.externalPost && (
+                          <div className="category-link">
+                            <div className="icon-container">
+                              <svg
+                                className="icon"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                                />
+                              </svg>
+                            </div>
+                            <a
+                              className="link"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={getCategoryLink(item.category)}
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                              />
-                            </svg>
+                              {seeAll(item.category)}
+                            </a>
                           </div>
-                          <a
-                            className="link"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={getCategoryLink(item.category)}
-                          >
-                            {seeAll(item.category)}
-                          </a>
-                        </div>
+                        )}
                       </>
                     ) : (
                       <div className="article-side empty">
