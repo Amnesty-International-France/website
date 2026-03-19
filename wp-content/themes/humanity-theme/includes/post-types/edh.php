@@ -282,6 +282,7 @@ function edh_acf_fields()
                         'sequence_pedagogique' => 'Séquence pédagogique',
                         'activite_pedagogique' => 'Activité pédagogique',
                         'fiche_de_lecture'     => 'Fiche de lecture',
+                        'autre' => 'Autre',
                     ],
                     'default_value'     => false,
                     'return_format'     => 'value',
@@ -353,6 +354,7 @@ function edh_acf_fields()
                         'approfondir'     => 'Approfondir',
                         'a_voir_lire'     => 'À voir, à lire',
                         'aller_plus_loin' => 'Aller plus loin',
+                        'autre' => 'Autre',
                     ],
                     'default_value'     => false,
                     'return_format'     => 'value',
@@ -382,6 +384,7 @@ function edh_acf_fields()
                     'choices'           => [
                         'moins_une_heure' => 'Moins d\'une heure',
                         'plus_une_heure'  => 'Plus d\'une heure',
+                        'autre' => 'Autre',
                     ],
                     'default_value'     => false,
                     'return_format'     => 'value',
