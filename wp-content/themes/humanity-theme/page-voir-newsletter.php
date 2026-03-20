@@ -21,8 +21,12 @@ $utm_params = [
 ];
 
 $articles = [];
-for ($i = 1; $i <= 5; $i++) {
+for ($i = 1; $i <= 10; $i++) { # Set limit at 10, to match BO limit
     $article = get_field($i, $post);
+
+    if ($article) {
+        break;
+    }
 
     $link_type = $article['link_type'];
     $validLinkType = ['external', 'internal'];
