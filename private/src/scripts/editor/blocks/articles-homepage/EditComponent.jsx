@@ -1,6 +1,7 @@
 import ChipCategory from '../../components/ChipCategory.jsx';
 import PostSearchControl from '../../components/PostSearchControl.jsx';
 import ExternalPostControl from '../../components/ExternalPostControl.jsx';
+import { DateTime } from '../../../../../../wp-content/plugins/the-events-calendar/src/modules/icons';
 
 const { useSelect } = wp.data;
 const { __ } = wp.i18n;
@@ -250,8 +251,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
                       </a>
                     </div>
                   )}
-                  <div className="category-link" style={{ minHeight: '44px' }}>
-                    {!items[0].externalPost && (
+                  {!items[0].externalPost && (
+                    <div className="category-link" style={{ minHeight: '44px' }}>
                       <>
                         <div className="icon-container">
                           <svg
@@ -278,8 +279,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
                           {seeAll(items[0].category)}
                         </a>
                       </>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="article-main-desktop empty">
@@ -363,21 +364,17 @@ const EditComponent = ({ attributes, setAttributes }) => {
               <div className="articles-side-column">
                 {items.slice(1, 3).map((item, index) => (
                   <div key={index} className="article-side">
-                    {item.selectedPostTitle ? (
+                    {mainTitle(item) ? (
                       <>
-                        <a
-                          href={`${getCategoryLink(item.category)}/${item.selectedPostSlug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
+                        <a href={mainSlug(item)} target="_blank" rel="noopener noreferrer">
                           <div className="wrapper">
                             <ChipCategory item={item} />
                             <div className="article-side-image-wrapper">
-                              {item._embedded?.['wp:featuredmedia']?.[0]?.source_url && (
+                              {mainImage(item) && (
                                 <img
                                   className="article-side-image"
-                                  src={item._embedded['wp:featuredmedia'][0].source_url}
-                                  alt={item.selectedPostTitle || ''}
+                                  src={mainImage(item)}
+                                  alt={mainTitle(item) || ''}
                                 />
                               )}
                             </div>
@@ -391,8 +388,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                                 <h3
                                   className="article-title"
                                   dangerouslySetInnerHTML={{
-                                    __html:
-                                      item.selectedPostTitle || __('Aucun contenu', 'amnesty'),
+                                    __html: mainTitle(item) || __('Aucun contenu', 'amnesty'),
                                   }}
                                 />
                               </div>
@@ -432,7 +428,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                               className="link"
                               target="_blank"
                               rel="noopener noreferrer"
-                              href={getCategoryLink(item.category)}
+                              href={mainSlug(item)}
                             >
                               {seeAll(item.category)}
                             </a>
