@@ -212,8 +212,8 @@ if (!function_exists('render_articles_homepage_block')) {
 
         ob_start();
         ?>
-        <section class="articles-homepage<?php echo $class_name; ?>">
-            <div class="articles-homepage-wrapper">
+		<section class="articles-homepage<?php echo $class_name; ?>">
+			<div class="articles-homepage-wrapper">
 
 				<h2 class="title"><?php esc_html_e('À la une', 'amnesty'); ?></h2>
 
@@ -232,10 +232,11 @@ if (!function_exists('render_articles_homepage_block')) {
                         $custom_terms = $posts[0]['custom_terms'];
                         $externalPost = $posts[0]['externalPost'] ?? false;
 
-                        if ($post->post_type === 'actualities-my-space') {
+                        if (!$posts[0]['externalPost'] && $post->post_type === 'actualities-my-space') {
                             $entity_label = get_field('category', $post);
                             $entity_slug = 'actualities-my-space';
                         }
+
                         ?>
 
 						<div class="article-main-desktop">
@@ -285,21 +286,23 @@ if (!function_exists('render_articles_homepage_block')) {
 										</div>
 									</a>
 								</div>
-								<div class="category-link">
-									<?php if (!empty($entity_slug)) : ?>
-										<div class="icon-container">
-											<svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-												 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-												<path stroke-linecap="round" stroke-linejoin="round"
-													  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
-											</svg>
-										</div>
-										<a class="link"
-										   href="<?= get_dynamic_category_or_post_type_link($entity_slug) ?>">
-											<?= esc_html(see_all_label($entity_slug)) ?>
-										</a>
-									<?php endif; ?>
-								</div>
+								<?php if (!$posts[0]['externalPost']) : ?>
+									<div class="category-link">
+										<?php if (!empty($entity_slug)) : ?>
+											<div class="icon-container">
+												<svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none"
+													 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+													<path stroke-linecap="round" stroke-linejoin="round"
+														  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+												</svg>
+											</div>
+											<a class="link"
+											   href="<?= get_dynamic_category_or_post_type_link($entity_slug) ?>">
+												<?= esc_html(see_all_label($entity_slug)) ?>
+											</a>
+										<?php endif; ?>
+									</div>
+								<?php endif; ?>
 							<?php endif; ?>
 						</div>
 
@@ -371,8 +374,8 @@ if (!function_exists('render_articles_homepage_block')) {
 						<div class="articles-side-column">
 							<?php foreach (array_slice($posts, 1, 2) as $post_data):
 							    $post = $post_data['post'];
-							    $title = get_the_title($post);
-							    $url = get_permalink($post);
+							    $title = $post_data['title'] ?? get_the_title($post);
+							    $url = $post_data['link'] ?? get_permalink($post);
 							    $image_id = $post_data['image_id'];
 							    $entity_slug = $post_data['entity_slug'];
 							    $chip_style = $post_data['chip_style'];
@@ -380,7 +383,7 @@ if (!function_exists('render_articles_homepage_block')) {
 							    $post_date = $post_data['post_date'];
 							    $custom_terms = $post_data['custom_terms'];
 
-							    if ($post->post_type === 'actualities-my-space') {
+							    if (!$post_data['externalPost'] && $post->post_type === 'actualities-my-space') {
 							        $entity_label = get_field('category', $post);
 							        $entity_slug = 'actualities-my-space';
 							    }
