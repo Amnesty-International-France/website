@@ -1,7 +1,6 @@
 import ChipCategory from '../../components/ChipCategory.jsx';
 import PostSearchControl from '../../components/PostSearchControl.jsx';
 import ExternalPostControl from '../../components/ExternalPostControl.jsx';
-import { DateTime } from '../../../../../../wp-content/plugins/the-events-calendar/src/modules/icons';
 
 const { useSelect } = wp.data;
 const { __ } = wp.i18n;
