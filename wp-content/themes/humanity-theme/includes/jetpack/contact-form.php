@@ -37,8 +37,7 @@ add_filter('wp_mail', function ($args) {
     $map = [
         'Vos dons, votre adhésion, votre abonnement à la Chronique' => 'smd@amnesty.fr',
         'Un problème de connexion' => 'smd@amnesty.fr',
-        "L\'engagement avec Amnesty" => 'mobilisation@amnesty.fr',
-        'La Chronique' => 'chronique@amnesty.fr',
+        "L\'engagement militant pour agir avec nous" => 'mobilisation@amnesty.fr',
     ];
 
     if (array_key_exists($selected, $map)) {
