@@ -288,6 +288,7 @@
           margin-bottom: 30px;
         }
 
+        /** style for legacy form **/
         .form {
           .form-group {
             flex: 1;
@@ -458,6 +459,76 @@
 
             .button-label {
               text-transform: uppercase !important;
+            }
+          }
+        } /** end of style for legacy form **/
+
+        div[data-test="contact-form"] {
+          box-shadow: none !important;
+          margin-bottom: 0 !important;
+
+          .wp-block-jetpack-contact-form {
+            box-shadow: none !important;
+
+            input:not(.checkbox-multiple),
+            textarea {
+              height: 42px;
+              padding: 10px 22px;
+              border: 1px solid var(--wp--preset--color--grey-light) !important;
+              font-family: var(--wp--preset--font-family--primary);
+              width: 100%;
+              box-sizing: border-box;
+
+              &::placeholder {
+                color: var(--wp--preset--color--grey-dark);
+                font-family: var(--wp--preset--font-family--primary);
+                font-size: 18px !important;
+                font-weight: 300;
+                text-transform: capitalize;
+              }
+            }
+
+            .grunion-field-checkbox-wrap {
+              display: flex;
+              flex-wrap: wrap;
+              flex-direction: row;
+              background-color: var(--wp--preset--color--white) !important;
+
+              input {
+                width: 18px;
+                height: 18px;
+                padding: 0;
+                cursor: pointer;
+              }
+
+              .grunion-field-label {
+                display: inline-block;
+                color: var(--wp--preset--color--grey-dark);
+                font-family: var(--wp--preset--font-family--primary);
+                font-size: 18px !important;
+                font-weight: 300;
+                text-transform: capitalize;
+                width: fit-content;
+                padding-right: 12px;
+              }
+            }
+
+            /** remove border from phone input **/
+            .wp-block-jetpack-field-phone .jetpack-field__input-element {
+              border: none !important;
+            }
+
+            /** remove border from notched elements added by jetpack **/
+            .wp-block-jetpack-field-phone .notched-label__leading,
+            .wp-block-jetpack-field-phone .notched-label__notch,
+            .wp-block-jetpack-field-phone .notched-label__filler,
+            .wp-block-jetpack-field-phone .notched-label__trailing {
+              border: none !important;
+            }
+
+            /** set border for global phone element to light-grey **/
+            .wp-block-jetpack-field-phone {
+              border: 1px solid var(--wp--preset--color--grey-light) !important;
             }
           }
         }
