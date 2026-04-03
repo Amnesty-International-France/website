@@ -313,7 +313,7 @@
 
             .officers-image {
               width: 100%;
-              height: 100;
+              height: 100%;
               object-fit: cover;
               border-radius: 50%;
             }
@@ -391,16 +391,18 @@
             margin-bottom: 30px;
           }
 
-          .form {
-            .form-group {
-              flex: 1;
-              display: flex;
-              flex-direction: column;
+          div[data-test="contact-form"] {
+            box-shadow: none !important;
+            margin-bottom: 0 !important;
 
-              input {
+            .wp-block-jetpack-contact-form {
+              box-shadow: none !important;
+
+              input:not(.checkbox-multiple),
+              textarea {
                 height: 42px;
                 padding: 10px 22px;
-                border: 1px solid var(--wp--preset--color--grey-light);
+                border: 1px solid var(--wp--preset--color--grey-light) !important;
                 font-family: var(--wp--preset--font-family--primary);
                 width: 100%;
                 box-sizing: border-box;
@@ -414,145 +416,22 @@
                 }
               }
 
-              .error-message-container {
-                min-height: 25px;
-
-                visibility: hidden;
-                opacity: 0;
-                transition: opacity 0.3s ease-in-out,
-                visibility 0s 0.3s;
-
-                .error-message {
-                  color: var(--wp--preset--color--error);
-                  margin: 0;
-                  font-size: 12px;
-                }
+              /** remove border from phone input **/
+              .wp-block-jetpack-field-phone .jetpack-field__input-element {
+                border: none !important;
               }
 
-              .error-message-container.is-visible {
-                visibility: visible;
-                opacity: 1;
-                transition: opacity 0.3s ease-in-out,
-                visibility 0s 0s;
-              }
-            }
-
-            .form-row {
-              display: flex;
-              align-items: flex-start;
-              gap: 24px;
-            }
-
-            .civility {
-              display: flex;
-              align-items: center;
-              flex-direction: row;
-              gap: 18px;
-              padding-bottom: 24px;
-
-              .civility-label {
-                color: var(--wp--preset--color--grey-dark);
-                font-family: var(--wp--preset--font-family--primary);
-                font-size: 18px;
-                font-weight: 300;
-                line-height: 28px;
-                text-transform: capitalize;
+              /** remove border from notched elements added by jetpack **/
+              .wp-block-jetpack-field-phone .notched-label__leading,
+              .wp-block-jetpack-field-phone .notched-label__notch,
+              .wp-block-jetpack-field-phone .notched-label__filler,
+              .wp-block-jetpack-field-phone .notched-label__trailing {
+                border: none !important;
               }
 
-              .civilities {
-                display: flex;
-                align-items: center;
-                gap: 18px;
-
-                input {
-                  border: 1px solid var(--wp--preset--color--grey-dark);
-                  height: auto;
-                  padding: 0;
-                }
-
-                input[type='radio'] {
-                  position: absolute;
-                  opacity: 0;
-                  pointer-events: none;
-                }
-
-                label {
-                  position: relative;
-                  padding-left: 25px;
-                  cursor: pointer;
-                  display: inline-flex;
-                  align-items: center;
-                  font-size: 18px;
-                  text-transform: capitalize;
-                }
-
-                label::before {
-                  content: '';
-                  position: absolute;
-                  left: 0;
-                  top: 50%;
-                  transform: translateY(-50%);
-                  width: 18px;
-                  height: 18px;
-                  border: 2px solid var(--wp--preset--color--black);
-                  border-radius: 50%;
-                  background: var(--wp--preset--color--white);
-                  box-sizing: border-box;
-                }
-
-                input[type='radio']:checked + label::after {
-                  content: '';
-                  position: absolute;
-                  left: 4px;
-                  top: 50%;
-                  transform: translateY(-50%);
-                  width: 10px;
-                  height: 10px;
-                  background: var(--wp--preset--color--black);
-                  border-radius: 50%;
-                }
-              }
-            }
-
-            .receive-by {
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              gap: 18px;
-
-              div {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-              }
-
-              label {
-                color: var(--wp--preset--color--grey-dark);
-                font-size: 18px;
-                font-weight: bold;
-                line-height: 28px;
-              }
-
-              input {
-                width: 18px;
-                height: 18px;
-                padding: 0;
-                cursor: pointer;
-
-                &::after {
-                  width: 18px;
-                  height: 18px;
-                  line-height: 1rem;
-                }
-              }
-            }
-
-            .custom-button-block {
-              margin-top: 24px;
-              all: unset;
-
-              .button-label {
-                text-transform: uppercase !important;
+              /** set border for global phone element to light-grey **/
+              .wp-block-jetpack-field-phone {
+                border: 1px solid var(--wp--preset--color--grey-light) !important;
               }
             }
           }
