@@ -87,7 +87,6 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
             <h3 class="login-title">Connexion</h3>
             <form class="aif-form-container" role="form" method="POST" action="">
 				<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
-				<input type="hidden" name="redirect_to" value="<?php echo esc_attr($_GET['redirect_to'] ?? ''); ?>" />
                 <label for="email" class="sr-only">Votre adresse email (obligatoire)</label>
                 <input placeholder="Email"
                     value="<?= $email ? $email : '' ?>" class="aif-input" type="email" name="email" id="email" autocomplete="email" required="true">
