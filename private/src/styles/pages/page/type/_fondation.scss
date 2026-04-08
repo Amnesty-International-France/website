@@ -470,7 +470,7 @@
           .wp-block-jetpack-contact-form {
             box-shadow: none !important;
 
-            input:not(.checkbox-multiple),
+            input:not(.checkbox):not(.radio):not(.jetpack-field__input-element),
             textarea {
               height: 42px;
               padding: 10px 22px;

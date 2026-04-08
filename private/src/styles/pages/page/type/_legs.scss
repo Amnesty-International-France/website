@@ -566,7 +566,7 @@
             .wp-block-jetpack-contact-form {
               box-shadow: none !important;
 
-              input:not(.checkbox-multiple),
+              input:not(.checkbox-multiple):not(.radio):not(.jetpack-field__input-element),
               textarea {
                 height: 42px;
                 padding: 10px 22px;
@@ -600,6 +600,16 @@
               /** set border for global phone element to light-grey **/
               .wp-block-jetpack-field-phone {
                 border: 1px solid var(--wp--preset--color--grey-light) !important;
+              }
+
+              .grunion-field-checkbox-multiple-wrap {
+                .grunion-checkbox-multiple-options {
+                  flex-direction: column;
+
+                  .grunion-field-label {
+                    display: none !important;
+                  }
+                }
               }
             }
           }
