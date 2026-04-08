@@ -60,8 +60,19 @@ div[data-test="contact-form"] {
 
         input[type='radio'] {
           position: absolute;
-          opacity: 0;
+          left: 0 !important;
+          top: 1px !important;
+          opacity: 1;
           pointer-events: none;
+          width: 18px;
+          background: none !important;
+          border: none !important;
+        }
+
+        input[type='radio']:checked::before {
+          content: '';
+          background: var(--wp--preset--color--black);
+          border-radius: 50%;
         }
 
         label {
@@ -72,32 +83,6 @@ div[data-test="contact-form"] {
           align-items: center;
           font-size: 18px;
           text-transform: capitalize;
-        }
-
-        label::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 18px;
-          height: 18px;
-          border: 1px solid var(--wp--preset--color--black);
-          border-radius: 50%;
-          background: var(--wp--preset--color--white);
-          box-sizing: border-box;
-        }
-
-        input[type='radio']:checked + label::after {
-          content: '';
-          position: absolute;
-          left: 4px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 10px;
-          height: 10px;
-          background: var(--wp--preset--color--black);
-          border-radius: 50%;
         }
 
         .contact-form-field {
