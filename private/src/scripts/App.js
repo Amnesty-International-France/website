@@ -36,6 +36,7 @@ import petitionDonateFeedback from './modules/donate-clicked';
 import { toggleFullFormPetition, submitCodeOrigine } from './modules/petition-form';
 import { closeUrgentBanner } from './modules/urgent-banner';
 import initFoundationForm from './modules/Form/foundation-form';
+import initJetpackForm from './modules/Form/jetpack-forms';
 import edhFilters from './modules/search-filters-edh';
 import mySpaceMenu from './modules/my-space-menu';
 import mySpaceMobileMenu from './modules/my-space-mobile-menu';
@@ -75,6 +76,7 @@ const App = () => {
   initAZFilter();
   getUserLocationFromButton();
   getUserLocationFromForm();
+  initFoundationForm();
   initLegsForm();
   enhanceJetpackFormPlaceholders();
   calculator();
@@ -83,7 +85,7 @@ const App = () => {
   toggleFullFormPetition();
   submitCodeOrigine();
   closeUrgentBanner();
-  initFoundationForm();
+  initJetpackForm();
   edhFilters();
   hoverDonationMenu();
   mySpaceMenu();
