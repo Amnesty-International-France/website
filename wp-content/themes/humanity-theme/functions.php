@@ -379,6 +379,7 @@ require_once realpath(__DIR__ . '/includes/users/meta.php');
 require_once realpath(__DIR__ . '/includes/jetpack/contact-form.php');
 require_once realpath(__DIR__ . '/includes/jetpack/go-back-message.php');
 require_once realpath(__DIR__ . '/includes/jetpack/sitemap.php');
+require_once realpath(__DIR__ . '/includes/jetpack/search-redirect.php');
 // endregion jetpack
 
 /**
