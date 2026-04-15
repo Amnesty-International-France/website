@@ -518,4 +518,8 @@ function verify_turnstile(): bool
     return !empty($body['success']);
 }
 
+if (defined('WP_CLI') && WP_CLI) {
+    require_once __DIR__.'/duplicate-country-pages.php';
+    require_once __DIR__.'/upgrade-country-pages.php';
+}
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
