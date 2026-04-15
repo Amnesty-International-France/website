@@ -1,6 +1,6 @@
 <?php
 
-function depublish_post($post)
+function depublish_post($post): bool
 {
     $currentStatus = $post->post_status;
     if ($currentStatus !== 'publish') {
@@ -15,7 +15,7 @@ function depublish_post($post)
     return !is_wp_error($result);
 }
 
-function update_permalink($post, $newSuffix, $oldSuffix, $removeSuffix = false)
+function update_permalink($post, $newSuffix, $oldSuffix, $removeSuffix = false): bool
 {
     $currentPermalink = $post->post_name;
 
@@ -29,7 +29,7 @@ function update_permalink($post, $newSuffix, $oldSuffix, $removeSuffix = false)
     return !is_wp_error($result);
 }
 
-function publish_post($post)
+function publish_post($post): bool
 {
     $currentStatus = $post->post_status;
     if ($currentStatus !== 'draft') {
