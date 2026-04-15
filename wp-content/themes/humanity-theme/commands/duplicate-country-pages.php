@@ -5,7 +5,7 @@ if (!defined('WP_CLI') || !WP_CLI) {
     return;
 }
 
-function duplicate_post($post_id, $suffixe)
+function duplicate_post($post_id, $suffixe, ?string $post_date = null): void
 {
     $post = get_post($post_id);
     $newPost = [
@@ -14,9 +14,15 @@ function duplicate_post($post_id, $suffixe)
         'post_content' => $post->post_content,
         'post_excerpt' => $post->post_excerpt,
         'post_name' => $post->post_name.$suffixe,
-        'post_status' => 'draft',
+        'post_status' => $post_date ? 'future' : 'draft',
         'post_type' => $post->post_type,
     ];
+    if ($post_date) {
+        $newPost['post_date'] = $post_date;
+        $newPost['post_date_gmt'] = get_gmt_from_date($post_date);
+    }
+
+
 
     $newPostId = wp_insert_post($newPost, true);
 
@@ -37,8 +43,10 @@ function duplicate_post($post_id, $suffixe)
 }
 
 $duplicate_countries = function ($args, $assoc_args) {
+    $suffixe = $assoc_args['suffixe'] ?? null;
+    $publish_date = $assoc_args['publish_date'] ?? null;
 
-    if (!isset($assoc_args['suffixe'])) {
+    if (!isset($suffixe)) {
         WP_CLI::error("L'option --suffixe est obligatoire ! Exemple : wp duplicate-countries --suffixe=-2025");
     }
 
@@ -51,19 +59,32 @@ $duplicate_countries = function ($args, $assoc_args) {
 
 
     do {
-        $query = new WP_Query([
+        $query = [
             'post_type' => 'fiche_pays',
             'post_status' => 'publish',
             'posts_per_page' => $batch_size,
             'paged' => $page,
-        ]);
+        ];
 
-        if (! $query->have_posts()) {
+        if ($publish_date) {
+            if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]) ([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/', $publish_date)) {
+                WP_CLI::error('Format de date invalide. Exemple : "2026-04-15 12:00:00"');
+            }
+
+            $query = [
+                ...$query,
+                'post_date' => $publish_date,
+            ];
+        }
+
+        $query_wp =  new WP_Query($query);
+
+        if (! $query_wp->have_posts()) {
             break; // On sort si la page est vide
         }
 
-        foreach ($query->posts as $post) {
-            duplicate_post($post->ID, $suffixe);
+        foreach ($query_wp->posts as $post) {
+            duplicate_post($post->ID, $suffixe, $publish_date ?? null);
             $duplicatedCountries++;
         }
 
@@ -73,7 +94,7 @@ $duplicate_countries = function ($args, $assoc_args) {
             wp_cache_flush();
         }
         $page++;
-    } while ($query->have_posts());
+    } while ($query_wp->have_posts());
 
     WP_CLI::success("$duplicatedCountries posts ont été copiés");
 
