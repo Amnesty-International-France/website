@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-$post_id = get_post()->ID;
-
 $args = [
     'post_type'      => 'pop-in',
     'posts_per_page' => 1,
