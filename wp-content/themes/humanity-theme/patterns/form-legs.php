@@ -14,7 +14,7 @@ $image_url      = get_template_directory_uri() . '/assets/images/testator-relati
 $icon_phone_url = get_template_directory_uri() . '/assets/images/icon-phone.svg';
 ?>
 
-<div class="page-legs-form">
+<div id="legs-form" class="page-legs-form">
     <div class="page-legs-form-wrapper">
         <div class="form-container">
             <div class="officers">
