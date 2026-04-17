@@ -7125,12 +7125,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fizzy-ui-utils@npm:^2.0.0, fizzy-ui-utils@npm:^2.0.7":
+"fizzy-ui-utils@npm:^2.0.7":
   version: 2.0.7
   resolution: "fizzy-ui-utils@npm:2.0.7"
   dependencies:
     desandro-matches-selector: "npm:^2.0.0"
   checksum: 10c0/4c36d45db4e2e0cf1507aa9633af6710a12bdc047146fa89505e10aedc5bfb16cbfb0da686d5dfd89a37e1da4bce86bbee365e22be88705ab4ffccd530b4902a
+  languageName: node
+  linkType: hard
+
+"fizzy-ui-utils@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "fizzy-ui-utils@npm:3.0.0"
+  checksum: 10c0/09a64d0e482d02eb87f4a70689f6f02866cb488b472739d5781046805127f2027a30101b5aefc1b66b21b408e110f097c3f268a2fc0fdf7cfe7bb1b693f2e1f8
   languageName: node
   linkType: hard
 
@@ -7161,17 +7168,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flickity-as-nav-for@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "flickity-as-nav-for@npm:2.0.1"
+"flickity-as-nav-for@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "flickity-as-nav-for@npm:3.0.0"
   dependencies:
-    fizzy-ui-utils: "npm:^2.0.0"
-    flickity: "npm:^2.0.0"
-  checksum: 10c0/d320a8bc5fae66572693c1cdfd045c2c694c199a1355bd393d7092edf6a844b1a2d2f41ca7f4371953b35801b2a715ac08df1ddda298cedba6e99a10195e827b
+    fizzy-ui-utils: "npm:^3.0.0"
+  peerDependencies:
+    flickity: ^3.0.0
+  checksum: 10c0/6c2bb72e23d98ef271f67a18ab424cf15599f85ff204660b29c9924e39b36dc4ca180a3712c84c166fda506fe16e89a94553f5f0ac9e8d988c4ae50b6da6feb7
   languageName: node
   linkType: hard
 
-"flickity@npm:^2.0.0, flickity@npm:^2.3.0":
+"flickity@npm:^2.3.0":
   version: 2.3.0
   resolution: "flickity@npm:2.3.0"
   dependencies:
@@ -7797,7 +7805,7 @@ __metadata:
     expose-loader: "npm:^5.0.1"
     file-loader: "npm:^6.2.0"
     flickity: "npm:^2.3.0"
-    flickity-as-nav-for: "npm:^2.0.1"
+    flickity-as-nav-for: "npm:^3.0.0"
     intersection-observer: "npm:^0.12.2"
     js-cookie: "npm:^3.0.5"
     memize: "npm:^2.1.0"
