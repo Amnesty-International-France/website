@@ -83,6 +83,6 @@
     "object-fit-images": "^3.2.4",
     "react-beautiful-dnd": "^13.1.1",
     "react-select": "^5.10.0",
-    "swiper": "^11.2.6"
+    "swiper": "^12.1.3"
   }
 }

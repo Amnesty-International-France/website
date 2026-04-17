@@ -7824,7 +7824,7 @@ __metadata:
     stylelint-config-recommended-scss: "npm:^13.1.0"
     stylelint-scss: "npm:^5.3.2"
     stylelint-webpack-plugin: "npm:^4.1.1"
-    swiper: "npm:^11.2.6"
+    swiper: "npm:^12.1.3"
     typescript: "npm:^5.7.3"
     webpack: "npm:^5.98.0"
     webpack-cli: "npm:^6.0.1"
@@ -11517,10 +11517,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swiper@npm:^11.2.6":
-  version: 11.2.6
-  resolution: "swiper@npm:11.2.6"
-  checksum: 10c0/36ba63e2d1c5045f647f0f07b3a25c164393fb89b17db63f57fa9f776eb61bc5cb2c34634f80cf69caaddc209a174d0cd7be23c580785534569ea4a098b3a42c
+"swiper@npm:^12.1.3":
+  version: 12.1.3
+  resolution: "swiper@npm:12.1.3"
+  checksum: 10c0/c09dc55ebfda6cd9b990108cf1b94c603ed617f9a88ac312c044cf30f1d25c960b68d35ad8f5a2983e4dfecf2ddb480ddefb5bd3d8fa879a713e6df3beafb0c2
   languageName: node
   linkType: hard
 
