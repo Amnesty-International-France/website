@@ -72,7 +72,7 @@
   "dependencies": {
     "@braintree/sanitize-url": "^7.1.1",
     "classnames": "^2.5.1",
-    "core-js": "^3.40.0",
+    "core-js": "^3.49.0",
     "css-vars-ponyfill": "^2.4.9",
     "delegate": "^3.2.0",
     "flickity": "^2.3.0",
