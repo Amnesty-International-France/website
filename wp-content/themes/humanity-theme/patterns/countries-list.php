@@ -68,8 +68,8 @@ if ($all_countries->have_posts()) {
     </div>
 
     <div class="get-report">
-        <h2 class="title">OBTENIR LE RAPPORT D'AMNESTY INTERNATIONAL 2024/25</h2>
-        <h3 class="subtitle">DOCUMENTER LA SITUATION DES DROITS DE L'HOMME DANS 150 PAYS EN 2024</h3>
+        <h2 class="title">DÉCOUVREZ LE RAPPORT D'AMNESTY INTERNATIONAL 2025/2026</h2>
+        <h3 class="subtitle">UN BILAN DE LA SITUATION DES DROITS HUMAINS DANS 144 PAYS EN 2025</h3>
         <div class="download">
             <div class="icon-container">
                 <img src="<?php echo esc_url(amnesty_asset_uri('images')); ?>/icon-download-arrow-dark.svg" alt="Download Icon" />
