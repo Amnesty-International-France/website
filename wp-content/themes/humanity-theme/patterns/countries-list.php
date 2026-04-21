@@ -24,7 +24,7 @@ if ($all_countries->have_posts()) {
     while ($all_countries->have_posts()) {
         $all_countries->the_post();
         $title = get_the_title();
-        $first_letter = remove_accent(strtoupper(mb_substr($title, 0, 1)));
+        $first_letter = remove_accents(strtoupper(mb_substr($title, 0, 1)));
 
         if (!isset($countries_by_letter[$first_letter])) {
             $countries_by_letter[$first_letter] = [];
