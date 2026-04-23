@@ -46,6 +46,7 @@ import BackToTop from './modules/back-to-top';
 import urgentRegister from './modules/Form/urgent-register-form';
 import { emptyInputNewsletterLead, handleNewsletterSubmission } from './modules/newsletter';
 import GoPetitionsForm from './modules/Form/go-petition-form';
+import { closeAlertBanner } from './modules/alert-banner';
 
 const App = () => {
   browserDetector();
@@ -96,6 +97,7 @@ const App = () => {
   emptyInputNewsletterLead();
   handleNewsletterSubmission();
   GoPetitionsForm();
+  closeAlertBanner();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
