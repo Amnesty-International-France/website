@@ -19,6 +19,7 @@ import './editor/blocks/action/index.jsx';
 import './editor/blocks/actions-homepage/index.jsx';
 import './editor/blocks/agenda-homepage/index.jsx';
 import './editor/blocks/articles-homepage/index.jsx';
+import './editor/blocks/au-thematique-register/index.jsx';
 import './editor/blocks/button/index.jsx';
 import './editor/blocks/call-to-action/index.jsx';
 import './editor/blocks/card-image-text/index.jsx';
