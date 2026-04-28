@@ -92,6 +92,7 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 			</div>
 		</div>
 	</div>
+<?php get_template_part('partials/alert-banner'); ?>
 </header>
 
 <?php get_template_part('partials/urgent-banner'); ?>
