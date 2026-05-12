@@ -27,8 +27,10 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
     }
 
     if (isset($_POST['sign_newsletter'])) {
-        if (!verify_turnstile()) {
-            die('Turnstile verification failed.');
+        $turnstile_error = verify_turnstile();
+        if ($turnstile_error !== null) {
+            wp_safe_redirect(add_query_arg('turnstile_error', urlencode($turnstile_error), wp_get_referer() ?: home_url()));
+            exit;
         }
 
         $email = sanitize_email($_POST['newsletter'] ?? '');

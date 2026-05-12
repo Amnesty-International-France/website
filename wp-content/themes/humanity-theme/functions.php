@@ -12,22 +12,32 @@
 add_action('wp_head', function () {
     ?>
 	<!-- Google Tag Manager -->
-	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-		})(window,document,'script','dataLayer','GTM-MBQ25R');</script>
+	<script>(function (w, d, s, l, i) {
+			w[l] = w[l] || [];
+			w[l].push({
+				'gtm.start':
+					new Date().getTime(), event: 'gtm.js'
+			});
+			var f = d.getElementsByTagName(s)[0],
+				j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+			j.async = true;
+			j.src =
+				'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+			f.parentNode.insertBefore(j, f);
+		})(window, document, 'script', 'dataLayer', 'GTM-MBQ25R');</script>
 	<!-- End Google Tag Manager -->
-<?php
+	<?php
 }, 1);
 
 add_action('wp_body_open', function () {
     ?>
 	<!-- Google Tag Manager (noscript) -->
-	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MBQ25R"
-					  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<noscript>
+		<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MBQ25R"
+		        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+	</noscript>
 	<!-- End Google Tag Manager (noscript) -->
-<?php
+	<?php
 }, 1);
 
 add_action('wp_footer', function () {
@@ -49,7 +59,7 @@ add_action('wp_footer', function () {
 				window.history.replaceState({path: url.href}, '', url.href);
 			}
 		</script>
-<?php
+		<?php
     }
 });
 
@@ -458,7 +468,7 @@ add_filter(
     'tribe_rest_venue_data',
     function ($data) {
         $data['longitude'] = get_post_meta($data['id'], '_VenueLongitude', true);
-        $data['latitude']  = get_post_meta($data['id'], '_VenueLatitude', true);
+        $data['latitude'] = get_post_meta($data['id'], '_VenueLatitude', true);
         return $data;
     },
     10,
@@ -495,11 +505,11 @@ add_filter('script_loader_tag', function ($tag, $handle) {
     return str_replace(' src', ' async defer src', $tag);
 }, 10, 2);
 
-function verify_turnstile(): bool
+function verify_turnstile(): ?string
 {
     $response = $_POST['cf-turnstile-response'] ?? '';
     if (empty($response)) {
-        return false;
+        return 'missing-input-response';
     }
 
     $result = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
@@ -511,15 +521,33 @@ function verify_turnstile(): bool
     ]);
 
     if (is_wp_error($result)) {
-        return false;
+        return 'wp-http-error: ' . $result->get_error_message();
     }
 
     $body = json_decode(wp_remote_retrieve_body($result), true);
-    return !empty($body['success']);
+
+    if (!empty($body['success'])) {
+        return null;
+    }
+
+    $codes = $body['error-codes'] ?? ['unknown-error'];
+    return implode(', ', $codes);
+}
+
+function turnstile_friendly_error(string $error): string
+{
+    return match ($error) {
+        'missing-input-response' => 'Merci de compléter le widget de vérification avant de soumettre le formulaire.',
+        'invalid-input-response', 'timeout-or-duplicate' => 'La session de vérification a expiré ou a déjà été utilisée. Veuillez rafraîchir la page et réessayer.',
+        'bad-request' => 'La requête de vérification est invalide. Veuillez réessayer.',
+        'internal-error' => 'Le service de vérification est temporairement indisponible. Veuillez réessayer dans quelques instants.',
+        'missing-input-secret', 'invalid-input-secret', 'invalid-widget-id', 'invalid-parsed-secret' => 'Une erreur de configuration est survenue. Veuillez contacter le support.',
+        default => 'La vérification de sécurité a échoué. Veuillez réessayer.',
+    };
 }
 
 if (defined('WP_CLI') && WP_CLI) {
     require_once __DIR__ . '/commands/duplicate-country-pages.php';
-    require_once __DIR__.'/commands/upgrade-country-pages.php';
+    require_once __DIR__ . '/commands/upgrade-country-pages.php';
 }
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle

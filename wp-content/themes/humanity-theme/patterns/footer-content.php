@@ -69,9 +69,11 @@ $action_links = [
 $inscription_nl_status = $_GET['inscription__nl__footer'] ?? '';
 $inscription_nl_success = $inscription_nl_status === 'success';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) {
-    if (!verify_turnstile()) {
-        die('Turnstile verification failed.');
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
+    $turnstile_error = verify_turnstile();
+    if ($turnstile_error !== null) {
+        wp_safe_redirect(add_query_arg('turnstile_error', urlencode($turnstile_error), wp_get_referer() ?: home_url()));
+        exit;
     }
 
     $email = sanitize_email($_POST['newsletter-lead'] ?? '');
@@ -86,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
             'Salutation' => $local_user->civility,
             'Code_Postal__c' => $local_user->postal_code,
             'FirstName' => $local_user->firstname,
-            'LastName' =>  $local_user->lastname,
+            'LastName' => $local_user->lastname,
             'Pays__c' => $local_user->country,
             'Optin_Actionaute_Newsletter_mensuelle__c' => true,
         ];
@@ -190,8 +192,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
 			<h2 class="title">Rester informé·e</h2>
 			<span class="subtitle">Abonnez-vous à notre newsletter hebdo.</span>
 			<div class="nl-container">
-				<form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form" class="newsletter-lead-form">
-					<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+				<form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form"
+				      class="newsletter-lead-form">
+					<div class="cf-turnstile"
+					     data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 					<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
 					<button class="register-nl" name="sign_lead" disabled>
 						<span class="button-text">OK</span>
@@ -203,17 +207,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['newsletter-lead'])) 
 			<div class="social-network-list">
 				<?php
                 foreach ($social_links as $child) : ?>
-                    <div class="social-network-item">
-                        <a class="social-network-item-svg" href="<?php
+					<div class="social-network-item">
+						<a class="social-network-item-svg" href="<?php
                         echo $child['url']; ?>"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="<?php
-                        esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
-                            <?php
+						   target="_blank"
+						   rel="noopener noreferrer"
+						   title="<?php
+                           esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
+							<?php
                             echo file_get_contents(get_template_directory() . $child['svg']); ?>
-                        </a>
-                    </div>
+						</a>
+					</div>
 				<?php
                 endforeach; ?>
 			</div>
