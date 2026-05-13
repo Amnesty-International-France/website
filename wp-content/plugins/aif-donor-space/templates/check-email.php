@@ -21,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
             wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
             exit;
         }
-
     } else {
         $error_message = "Vous n'avez pas accès à l'espace don";
     }

@@ -58,8 +58,6 @@ function aif_donor_space_get_partial($partial_name)
 {
     $partial_path = AIF_DONOR_SPACE_PATH . "templates/partials/{$partial_name}.php";
 
-
-
     if (file_exists($partial_path)) {
         include $partial_path;
     } else {

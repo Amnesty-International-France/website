@@ -13,7 +13,7 @@ $inscription_nl_status = '';
 $inscription_nl_success = false;
 $local_user = false;
 $is_salesforce_user = false;
-
+$title_error = 'Une erreur est survenue';
 if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
 
     $email_provided = $_GET['email'] ?? '';
@@ -27,8 +27,11 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
     }
 
     if (isset($_POST['sign_newsletter'])) {
-        if (!verify_turnstile()) {
-            die('Turnstile verification failed.');
+        $turnstile_error = verify_turnstile();
+        if ($turnstile_error !== null) {
+            $error_message = turnstile_friendly_error($turnstile_error);
+            wp_safe_redirect(add_query_arg('turnstile_error', urlencode($turnstile_error), wp_get_referer() ?: home_url()));
+            exit;
         }
 
         $email = sanitize_email($_POST['newsletter'] ?? '');
@@ -106,6 +109,10 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
             'gtm_name' => 'newsletter',
         ], home_url('/newsletter')));
         exit;
+    }
+
+    if (!empty($_GET['turnstile_error'])) {
+        $error_message = turnstile_friendly_error(sanitize_text_field(urldecode($_GET['turnstile_error'])));
     }
 }
 ?>
@@ -189,10 +196,18 @@ print esc_attr($class_name ?? ''); ?>">
 					</div>
 				</div>
 				<?php endif; ?>
+				<?php
+                if (!empty($error_message)) {
+                    aif_include_partial('alert', [
+                        'state' => 'error',
+                        'title' => $title_error,
+                        'content' => $error_message]);
 
+                };
+?>
 				<button class="newsletter-form-cta" type="submit" name="sign_newsletter">
 					<?php
-                    echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
+    echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
 					S'abonner
 				</button>
 			</form>

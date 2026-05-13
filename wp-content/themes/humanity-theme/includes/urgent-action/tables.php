@@ -18,6 +18,7 @@ function aif_create_action_urgent_tables($args = [])
 		created_at DATETIME NOT NULL,
 		is_sent TINYINT(1) NOT NULL,
 		type VARCHAR(50) NOT NULL,
+		thematique VARCHAR(50) NULL,
 		PRIMARY KEY (id, user_id, type),
 		CONSTRAINT fk_ua_user FOREIGN KEY (user_id) REFERENCES $table_name_users(id) ON DELETE CASCADE
 	) $charset_collate ENGINE = InnoDB;";
@@ -47,7 +48,7 @@ function urgent_action_already_signed($user_id, $action_type)
     return ! is_null($wpdb->get_row($sql));
 }
 
-function insert_urgent_action($action_type, $user_id, $date, $is_sent)
+function insert_urgent_action($action_type, $user_id, $date, $is_sent, $thematique = null)
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'aif_urgent_action';
@@ -59,12 +60,14 @@ function insert_urgent_action($action_type, $user_id, $date, $is_sent)
             'user_id'    => $user_id,
             'created_at' => $date,
             'is_sent'    => $is_sent,
+            'thematique' => $thematique,
         ],
         [
             '%s',
             '%d',
             '%s',
             '%d',
+            '%s',
         ]
     );
 
