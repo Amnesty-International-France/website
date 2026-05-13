@@ -8,79 +8,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sign_urgent_action'])
     if (!verify_turnstile()) {
         die('Turnstile verification failed.');
     } else {
-		foreach ($input as $item) {
-			if (!isset($_POST[esc_attr($item)])) {
-				wp_safe_redirect(home_url($GLOBALS['wp']->request));
-				exit;
-			}
-		}
+        foreach ($input as $item) {
+            if (!isset($_POST[esc_attr($item)])) {
+                wp_safe_redirect(home_url($GLOBALS['wp']->request));
+                exit;
+            }
+        }
 
-		$type = sanitize_text_field($_POST['type'] ?? '');
-		if (! \in_array($type, [ 'Email', 'Sms', 'Militant' ], true)) {
-			wp_safe_redirect(home_url($GLOBALS['wp']->request));
-			exit;
-		}
+        $type = sanitize_text_field($_POST['type'] ?? '');
+        if (! \in_array($type, [ 'Email', 'Sms', 'Militant' ], true)) {
+            wp_safe_redirect(home_url($GLOBALS['wp']->request));
+            exit;
+        }
 
-		$email = sanitize_email($_POST['email'] ?? '');
-		if (! is_email($email)) {
-			wp_safe_redirect(home_url($GLOBALS['wp']->request));
-			exit;
-		}
+        $email = sanitize_email($_POST['email'] ?? '');
+        if (! is_email($email)) {
+            wp_safe_redirect(home_url($GLOBALS['wp']->request));
+            exit;
+        }
 
-		$local_user = get_local_user($email);
+        $local_user = get_local_user($email);
 
-		if ($local_user) {
-			$user_id = $local_user->id;
-			$action_already_signed = urgent_action_already_signed($user_id, $type);
+        if ($local_user) {
+            $user_id = $local_user->id;
+            $action_already_signed = urgent_action_already_signed($user_id, $type);
 
-			if (! $action_already_signed) {
-				insert_urgent_action(
-					$type,
-					$user_id,
-					wp_date('Y-m-d'),
-					false
-				);
-			}
+            if (! $action_already_signed) {
+                insert_urgent_action(
+                    $type,
+                    $user_id,
+                    wp_date('Y-m-d'),
+                    false
+                );
+            }
 
-			wp_safe_redirect(
-				add_query_arg([
-					'success' => 'true',
-					'gtm_type' => 'action',
-					'gtm_name' => $action_type ?? '',
-				], home_url($GLOBALS['wp']->request))
-			);
-			exit;
-		}
+            wp_safe_redirect(
+                add_query_arg([
+                    'success' => 'true',
+                    'gtm_type' => 'action',
+                    'gtm_name' => $action_type ?? '',
+                ], home_url($GLOBALS['wp']->request))
+            );
+            exit;
+        }
 
-		$civility = sanitize_text_field($_POST['civility'] ?? '');
-		$firstname = sanitize_text_field($_POST['firstname'] ?? '');
-		$lastname = sanitize_text_field($_POST['lastname'] ?? '');
-		$postal_code = sanitize_text_field($_POST['zipcode'] ?? '');
-		$country = sanitize_text_field($_POST['country'] ?? '');
-		$phone = sanitize_text_field($_POST['tel'] ?? '');
+        $civility = sanitize_text_field($_POST['civility'] ?? '');
+        $firstname = sanitize_text_field($_POST['firstname'] ?? '');
+        $lastname = sanitize_text_field($_POST['lastname'] ?? '');
+        $postal_code = sanitize_text_field($_POST['zipcode'] ?? '');
+        $country = sanitize_text_field($_POST['country'] ?? '');
+        $phone = sanitize_text_field($_POST['tel'] ?? '');
 
-		$new_user_id = insert_user($civility, $firstname, $lastname, $email, $country, $postal_code, $phone);
+        $new_user_id = insert_user($civility, $firstname, $lastname, $email, $country, $postal_code, $phone);
 
-		if (! $new_user_id) {
-			exit;
-		}
+        if (! $new_user_id) {
+            exit;
+        }
 
-		insert_urgent_action(
-			$type,
-			(string) $new_user_id,
-			wp_date('Y-m-d'),
-			false
-		);
+        insert_urgent_action(
+            $type,
+            (string) $new_user_id,
+            wp_date('Y-m-d'),
+            false
+        );
 
-		wp_safe_redirect(
-			add_query_arg([
-				'success' => 'true',
-				'gtm_type' => 'action',
-				'gtm_name' => $action_type ?? '',
-			], home_url($GLOBALS['wp']->request))
-		);
-		exit;
-	}
+        wp_safe_redirect(
+            add_query_arg([
+                'success' => 'true',
+                'gtm_type' => 'action',
+                'gtm_name' => $action_type ?? '',
+            ], home_url($GLOBALS['wp']->request))
+        );
+        exit;
+    }
 }
 
 $countries = get_posts(
