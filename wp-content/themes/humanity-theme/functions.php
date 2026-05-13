@@ -539,7 +539,7 @@ function turnstile_friendly_error(string $error): string
     return match ($error) {
         'missing-input-response' => 'Merci de compléter le widget de vérification avant de soumettre le formulaire.',
         'invalid-input-response' => 'La vérification a échoué. Veuillez rafraichir la page et réessayer.',
-		'timeout-or-duplicate' => 'La session de vérification a expiré ou a déjà été utilisée. Veuillez rafraîchir la page et réessayer.',
+        'timeout-or-duplicate' => 'La session de vérification a expiré ou a déjà été utilisée. Veuillez rafraîchir la page et réessayer.',
         'bad-request' => 'La requête de vérification est invalide. Veuillez réessayer.',
         'internal-error' => 'Le service de vérification est temporairement indisponible. Veuillez réessayer dans quelques instants.',
         'missing-input-secret', 'invalid-input-secret', 'invalid-widget-id', 'invalid-parsed-secret' => 'Une erreur de configuration est survenue. Veuillez contacter le support.',

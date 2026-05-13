@@ -99,8 +99,8 @@ function amnesty_handle_petition_signature(): void
     if (isset($_POST['sign_petition']) && isset($_POST['user_email']) && isset($_POST['petition_id'])) {
         $turnstile_error = verify_turnstile();
         if ($turnstile_error !== null) {
-			$GLOBALS['petition_turnstile_error_message'] = turnstile_friendly_error($turnstile_error);
-			return;
+            $GLOBALS['petition_turnstile_error_message'] = turnstile_friendly_error($turnstile_error);
+            return;
         }
 
         $petition_id = absint($_POST['petition_id']);
