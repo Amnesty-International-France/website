@@ -56,7 +56,7 @@ $action_links = [
     ],
     [
         'name' => 'JE DONNE',
-        'url' => '/nous-soutenir/don/',
+        'url' => 'https://soutenir.amnesty.fr/b?cid=246&lang=fr_FR',
         'svg' => '/assets/images/icon-health.svg',
     ],
     [
@@ -179,7 +179,8 @@ if (!empty($_GET['turnstile_error'])) {
 
 ?>
 
-<div id="confirmationPopup" class="popup <?php echo $inscription_nl_success ? 'popup-visible' : ''; ?>">
+<div id="confirmationPopup" class="popup <?php
+echo $inscription_nl_success ? 'popup-visible' : ''; ?>">
 	<div class="popup-content">
 		<a href="<?= home_url() ?>" class="close-btn">&times;</a>
 		<h3>Inscription Réussie !</h3>
@@ -242,7 +243,7 @@ if (!empty($_GET['turnstile_error'])) {
 				<?php
                 foreach ($action_links as $child) : ?>
 					<a href="<?php
-                    echo $child['url']; ?>">
+                    echo esc_url($child['url']); ?>">
 						<?php
                         echo file_get_contents(get_template_directory() . $child['svg']); ?>
 						<span><?php
