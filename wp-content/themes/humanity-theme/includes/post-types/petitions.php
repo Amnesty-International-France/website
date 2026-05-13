@@ -94,11 +94,16 @@ function aif_myspace_petition_template_include($template)
 }
 add_filter('template_include', 'aif_myspace_petition_template_include', 99);
 
-function amnesty_handle_petition_signature()
+function amnesty_handle_petition_signature(): void
 {
     if (isset($_POST['sign_petition']) && isset($_POST['user_email']) && isset($_POST['petition_id'])) {
-        if (!verify_turnstile()) {
-            die('Turnstile verification failed.');
+        $turnstile_error = verify_turnstile();
+        if ($turnstile_error !== null) {
+            wp_safe_redirect(add_query_arg([
+                'signature_status' => 'turnstile_failed',
+                'turnstile_error'  => urlencode($turnstile_error),
+            ], wp_get_referer() ?: home_url()));
+            exit;
         }
 
         $petition_id = absint($_POST['petition_id']);
