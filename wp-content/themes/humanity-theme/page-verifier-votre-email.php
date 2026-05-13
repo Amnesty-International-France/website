@@ -103,10 +103,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
 				<?php if (!empty($error_message)) : ?>
 					<?php
                     $title = 'Une erreur est survenue';
-				    aif_include_partial('alert', [
-				        'title' => $title,
-				        'state' => 'error',
-				        'content' => $error_message])
+				    aif_include_partial(
+				        'alert',
+				        [
+				            'title' => $title,
+				            'state' => 'error',
+				            'content' => $error_message,
+				        ]
+				    )
 				    ?>
 				<?php endif; ?>
 				<button class="btn aif-mt1w aif-button--full" type="submit">Valider la création de mon compte</button>
@@ -117,10 +121,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
 			<h2>Code non reçu ou invalide ?</h2>
 			<?php if (!empty($send_code_error_message)) {
 			    $title = 'Une erreur est survenue';
-			    aif_include_partial('alert', [
-			        'state' => 'error',
-			        'title' => $title,
-			        'content' => $send_code_error_message]);
+			    aif_include_partial(
+			        'alert',
+			        [
+			            'state' => 'error',
+			            'title' => $title,
+			            'content' => $send_code_error_message,
+			        ]
+			    );
 			} ?>
 
 			<?php

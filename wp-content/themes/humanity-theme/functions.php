@@ -531,7 +531,7 @@ function verify_turnstile(): ?string
     }
 
     $codes = $body['error-codes'] ?? ['unknown-error'];
-    return implode(', ', $codes);
+    return $codes[0];
 }
 
 function turnstile_friendly_error(string $error): string

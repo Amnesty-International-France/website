@@ -7,6 +7,8 @@ $input = $input ?? [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sign_urgent_action'])) {
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
+        $error_message = turnstile_friendly_error($turnstile_error);
+        $title = 'Une erreur est survenue';
         wp_safe_redirect(add_query_arg('turnstile_error', urlencode($turnstile_error), wp_get_referer() ?: home_url()));
         exit;
     }
@@ -85,6 +87,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sign_urgent_action'])
         ], home_url($GLOBALS['wp']->request))
     );
     exit;
+}
+
+if (!empty($_GET['turnstile_error'])) {
+    $error_message = turnstile_friendly_error(sanitize_text_field(urldecode($_GET['turnstile_error'])));
+    $title = 'Une erreur est survenue';
 }
 
 $countries = get_posts(
@@ -216,10 +223,19 @@ $countries = get_posts(
 					<input type="hidden" name="type" value="<?php echo esc_attr($action_type ?? ''); ?>">
 				</div>
 			</div>
+			<?php
+            if (!empty($error_message)) {
+                aif_include_partial('alert', [
+                    'state' => 'error',
+                    'title' => $title,
+                    'content' => $error_message]);
+
+            };
+?>
 			<div class="urgent-register-form-cta">
 				<button type="submit" name="sign_urgent_action">
 					<?php
-                    echo file_get_contents(get_template_directory() . '/assets/images/icon-arrow.svg');
+        echo file_get_contents(get_template_directory() . '/assets/images/icon-arrow.svg');
 ?>
 					S'inscrire
 				</button>

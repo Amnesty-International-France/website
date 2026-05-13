@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
+        $title = 'Une erreur est survenue';
         $error_message = turnstile_friendly_error($turnstile_error);
     } else {
         $stored_user = get_user_by('email', $email);
@@ -47,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                     wp_redirect($urlToRedirectAfterLogin ?: $verification_url);
                     exit;
                 } else {
-                    $title = 'Une erreur est survenue';
                     $error_message = 'Mauvais email ou mot de passe';
                 }
 
@@ -134,8 +134,11 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
 									strokeWidth="1.5"
 									stroke="currentColor"
 								>
-									<path strokeLinecap="round" strokeLinejoin="round"
-									      d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+									/>
 								</svg>
 							</div>
 							<div class="button-label">Se connecter</div>

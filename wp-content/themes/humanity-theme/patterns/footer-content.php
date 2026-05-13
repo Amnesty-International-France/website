@@ -68,10 +68,12 @@ $action_links = [
 
 $inscription_nl_status = $_GET['inscription__nl__footer'] ?? '';
 $inscription_nl_success = $inscription_nl_status === 'success';
+$title_error = 'Une erreur est survenue';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
+        $error_message = turnstile_friendly_error($turnstile_error);
         wp_safe_redirect(add_query_arg('turnstile_error', urlencode($turnstile_error), wp_get_referer() ?: home_url()));
         exit;
     }
@@ -171,6 +173,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
     exit;
 }
 
+if (!empty($_GET['turnstile_error'])) {
+    $error_message = turnstile_friendly_error(sanitize_text_field(urldecode($_GET['turnstile_error'])));
+}
+
 ?>
 
 <div id="confirmationPopup" class="popup <?php echo $inscription_nl_success ? 'popup-visible' : ''; ?>">
@@ -197,6 +203,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
 					<div class="cf-turnstile"
 					     data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 					<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
+					<?php
+                    if (!empty($error_message)) {
+                        aif_include_partial('alert', [
+                            'state' => 'error',
+                            'title' => $title_error,
+                            'content' => $error_message]);
+
+                    };
+?>
 					<button class="register-nl" name="sign_lead" disabled>
 						<span class="button-text">OK</span>
 						<span class="spinner hidden"></span>
@@ -209,13 +224,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
                 foreach ($social_links as $child) : ?>
 					<div class="social-network-item">
 						<a class="social-network-item-svg" href="<?php
-                        echo $child['url']; ?>"
+    echo $child['url']; ?>"
 						   target="_blank"
 						   rel="noopener noreferrer"
 						   title="<?php
-                           esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
+       esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
 							<?php
-                            echo file_get_contents(get_template_directory() . $child['svg']); ?>
+        echo file_get_contents(get_template_directory() . $child['svg']); ?>
 						</a>
 					</div>
 				<?php

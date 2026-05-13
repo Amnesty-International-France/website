@@ -94,7 +94,7 @@ function aif_myspace_petition_template_include($template)
 }
 add_filter('template_include', 'aif_myspace_petition_template_include', 99);
 
-function amnesty_handle_petition_signature()
+function amnesty_handle_petition_signature(): void
 {
     if (isset($_POST['sign_petition']) && isset($_POST['user_email']) && isset($_POST['petition_id'])) {
         $turnstile_error = verify_turnstile();
