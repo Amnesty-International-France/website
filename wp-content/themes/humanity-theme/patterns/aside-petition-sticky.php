@@ -26,8 +26,8 @@ $post_id = get_the_ID();
 
 $civility = $civility ?? 'M.';
 
-$turnstile_error_code = sanitize_text_field(urldecode($_GET['turnstile_error'] ?? ''));
-$turnstile_error_message = $turnstile_error_code ? turnstile_friendly_error($turnstile_error_code) : '';
+$turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
+
 ?>
 
 <aside class="petition-aside" id="petition">
