@@ -80,10 +80,10 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 							</a>
 							<div class="nav-don-calculator">
 								<?php
-								echo do_blocks(
-									'<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012", "is_popin": true } /-->'
-								);
-								?>
+                                echo do_blocks(
+                                    '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012", "is_popin": true } /-->'
+                                );
+?>
 							</div>
 						</div>
 					</li>
