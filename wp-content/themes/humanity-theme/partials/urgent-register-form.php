@@ -5,16 +5,18 @@ declare(strict_types=1);
 $input = $input ?? [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sign_urgent_action'])) {
-    $turnstile_error = verify_turnstile();
-    if ($turnstile_error !== null) {
-        $error_message = turnstile_friendly_error($turnstile_error);
-        $title = 'Une erreur est survenue';
-        wp_safe_redirect(add_query_arg('turnstile_error', urlencode($turnstile_error), wp_get_referer() ?: home_url()));
-        exit;
-    }
+    if (!verify_turnstile()) {
+        die('Turnstile verification failed.');
+    } else {
+        foreach ($input as $item) {
+            if (!isset($_POST[esc_attr($item)])) {
+                wp_safe_redirect(home_url($GLOBALS['wp']->request));
+                exit;
+            }
+        }
 
-    foreach ($input as $item) {
-        if (!isset($_POST[esc_attr($item)])) {
+        $type = sanitize_text_field($_POST['type'] ?? '');
+        if (! \in_array($type, [ 'Email', 'Sms', 'Militant' ], true)) {
             wp_safe_redirect(home_url($GLOBALS['wp']->request));
             exit;
         }
@@ -120,13 +122,6 @@ $countries = get_posts(
 		<form id="urgent-register" method="post" action="">
 			<input type="hidden" name="thematique" value="<?php echo esc_attr($thematique ?? '') ?>"/>
 			<div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
-			<?php if (isset($_GET['success']) && $_GET['success'] === 'true') : ?>
-				<div class="form-mess success">
-					Votre inscription est bien prise en compte.
-				</div>
-			<?php else : ?>
-				<div class="form-mess hidden"></div>
-			<?php endif; ?>
 			<div class="urgent-register-form-input">
 				<?php
         foreach ($input as $item) :

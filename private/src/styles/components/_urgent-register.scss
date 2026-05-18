@@ -200,4 +200,25 @@
       letter-spacing: 0;
     }
   }
+
+.page-standard {
+  .form-mess {
+    padding: 10px;
+    max-width: 768px;
+    margin: 10px auto;
+    background-color: var(--wp--preset--color--pale-error);
+    color: var(--wp--preset--color--error);
+    font-size: 1rem;
+
+    &.error {
+      background-color: var(--wp--preset--color--pale-error);
+      color: var(--wp--preset--color--error);
+    }
+
+    &.success {
+      background-color: var(--wp--preset--color--success-light);
+      color: var(--wp--preset--color--success);
+      border: 1px solid var(--wp--preset--color--success);
+    }
+}
 }
