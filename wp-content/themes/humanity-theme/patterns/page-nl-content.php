@@ -29,6 +29,7 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
     if (isset($_POST['sign_newsletter'])) {
         $turnstile_error = verify_turnstile();
         if ($turnstile_error !== null) {
+            $title = 'Une erreur est survenue';
             $error_message = turnstile_friendly_error($turnstile_error);
         } else {
             $email = sanitize_email($_POST['newsletter'] ?? '');
@@ -191,10 +192,18 @@ print esc_attr($class_name ?? ''); ?>">
 					</div>
 				</div>
 				<?php endif; ?>
+				<?php
+                if (!empty($error_message)) {
+                    aif_include_partial('alert', [
+                        'state' => 'error',
+                        'title' => $title,
+                        'content' => $error_message]);
 
+                };
+?>
 				<button class="newsletter-form-cta" type="submit" name="sign_newsletter">
 					<?php
-                    echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
+    echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
 					S'abonner
 				</button>
 			</form>

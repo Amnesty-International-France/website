@@ -72,6 +72,7 @@ $inscription_nl_success = $inscription_nl_status === 'success';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
+        $title = 'Une erreur est survenue';
         $error_message = turnstile_friendly_error($turnstile_error);
     } else {
         $email = sanitize_email($_POST['newsletter-lead'] ?? '');
@@ -201,6 +202,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
 						<span class="spinner hidden"></span>
 					</button>
 					<div class="nl-error hidden"></div>
+					<?php
+                    if (!empty($error_message)) {
+                        aif_include_partial('alert', [
+                            'state' => 'error',
+                            'title' => $title,
+                            'content' => $error_message]);
+
+                    };
+?>
 				</form>
 			</div>
 			<div class="social-network-list">
@@ -208,13 +218,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
                 foreach ($social_links as $child) : ?>
 					<div class="social-network-item">
 						<a class="social-network-item-svg" href="<?php
-                        echo $child['url']; ?>"
+    echo esc_url($child['url']); ?>"
 						   target="_blank"
 						   rel="noopener noreferrer"
 						   title="<?php
-                           esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
+       esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
 							<?php
-                            echo file_get_contents(get_template_directory() . $child['svg']); ?>
+        echo file_get_contents(get_template_directory() . $child['svg']); ?>
 						</a>
 					</div>
 				<?php
@@ -226,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
 				<?php
                 foreach ($action_links as $child) : ?>
 					<a href="<?php
-                    echo $child['url']; ?>">
+                    echo esc_url($child['url']); ?>">
 						<?php
                         echo file_get_contents(get_template_directory() . $child['svg']); ?>
 						<span><?php
