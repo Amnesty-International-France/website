@@ -25,6 +25,7 @@ $has_related_content = !empty(get_field('_related_posts_selected', $page));
 <article class="wp-block-group page <?php print esc_attr($class_name ?? ''); ?>">
 	<!-- wp:group {"tagName":"section","className":"page-content"} -->
 		<section class="wp-block-group page-content <?php echo esc_attr($hero_extra_class); ?> <?php print esc_attr($no_chapo ?? ''); ?>">
+            <!-- wp:pattern {"slug": "amnesty/register-au-succes-message"} /-->
 			<!-- wp:post-content /-->
 		</section>
 	<!-- /wp:group -->
