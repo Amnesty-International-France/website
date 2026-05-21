@@ -68,119 +68,112 @@ $action_links = [
 
 $inscription_nl_status = $_GET['inscription__nl__footer'] ?? '';
 $inscription_nl_success = $inscription_nl_status === 'success';
-$title_error = 'Une erreur est survenue';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
+        $title = 'Une erreur est survenue';
         $error_message = turnstile_friendly_error($turnstile_error);
-        wp_safe_redirect(add_query_arg('turnstile_error', urlencode($turnstile_error), wp_get_referer() ?: home_url()));
-        exit;
-    }
+    } else {
+        $email = sanitize_email($_POST['newsletter-lead'] ?? '');
 
-    $email = sanitize_email($_POST['newsletter-lead'] ?? '');
+        $local_user = get_local_user($email);
+        $get_user_sf = get_salesforce_user_with_email($email);
+        $contact_exist_on_salesforce = $get_user_sf['totalSize'] > 0;
 
-    $local_user = get_local_user($email);
-    $get_user_sf = get_salesforce_user_with_email($email);
-    $contact_exist_on_salesforce = $get_user_sf['totalSize'] > 0;
+        if ($local_user !== false) {
+            $data = [
+                'Email' => $local_user->email,
+                'Salutation' => $local_user->civility,
+                'Code_Postal__c' => $local_user->postal_code,
+                'FirstName' => $local_user->firstname,
+                'LastName' => $local_user->lastname,
+                'Pays__c' => $local_user->country,
+                'Optin_Actionaute_Newsletter_mensuelle__c' => true,
+            ];
 
-    if ($local_user !== false) {
-        $data = [
-            'Email' => $local_user->email,
-            'Salutation' => $local_user->civility,
-            'Code_Postal__c' => $local_user->postal_code,
-            'FirstName' => $local_user->firstname,
-            'LastName' => $local_user->lastname,
-            'Pays__c' => $local_user->country,
+            if (!$contact_exist_on_salesforce) {
+                post_salesforce_users([
+                    ...$data,
+                    'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
+                ]);
+            } else {
+                update_salesforce_users($get_user_sf['records'][0]['Id'], [
+                    ...$data,
+                    'Optout_toute_communication__c' => false,
+                ]);
+            }
+
+            wp_redirect(add_query_arg([
+                'inscription__nl__footer' => 'success',
+                'gtm_type' => 'inscription',
+                'gtm_name' => 'newsletter',
+            ], home_url()));
+            exit;
+        }
+
+        if ($contact_exist_on_salesforce) {
+            $sf_user = $get_user_sf['records'][0];
+            if ($local_user === false) {
+                insert_user(
+                    $sf_user['Civility__c'] ?? null,
+                    $sf_user['FirstName'],
+                    $sf_user['LastName'],
+                    $sf_user['Email'],
+                    $sf_user['Pays__c'] ?? null,
+                    $sf_user['Code_Postal__c'] ?? null,
+                    $sf_user['MobilePhone'] ?? null
+                );
+            }
+            $data = [
+                ...$sf_user,
+                'Optin_Actionaute_Newsletter_mensuelle__c' => true,
+            ];
+
+            $user_id = $data['Id'];
+            unset($data['Id']);
+            unset($data['attributes']);
+
+            update_salesforce_users($user_id, $data);
+
+            wp_redirect(add_query_arg([
+                'inscription__nl__footer' => 'success',
+                'gtm_type' => 'inscription',
+                'gtm_name' => 'newsletter',
+            ], home_url()));
+            exit;
+        }
+
+        $get_current_sf_lead = get_salesforce_nl_lead($email);
+        $lead_exist_on_sf = $get_current_sf_lead['totalSize'] > 0;
+
+        $new_lead = [
+            'Email' => $email,
+            'LastName' => '_aucun_',
+            'Code_Origine__c' => getenv('AIF_SALESFORCE_CODE_ORIGINE__C__WEB'),
             'Optin_Actionaute_Newsletter_mensuelle__c' => true,
         ];
+
+        if (false === $lead_exist_on_sf) {
+            register_salesforce_lead($new_lead);
+            wp_redirect(add_query_arg('email', urlencode($email), home_url('/newsletter')));
+            exit;
+        }
 
         if (!$contact_exist_on_salesforce) {
-            post_salesforce_users([
-                ...$data,
-                'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
-            ]);
-        } else {
-            update_salesforce_users($get_user_sf['records'][0]['Id'], [
-                ...$data,
-                'Optout_toute_communication__c' => false,
-            ]);
+            update_salesforce_lead($get_current_sf_lead['records'][0]['Id'], $new_lead);
+            wp_redirect(add_query_arg('email', urlencode($email), home_url('/newsletter')));
+            exit;
         }
 
-        wp_redirect(add_query_arg([
-            'inscription__nl__footer' => 'success',
-            'gtm_type' => 'inscription',
-            'gtm_name' => 'newsletter',
-        ], home_url()));
+        wp_redirect('/newsletter');
         exit;
     }
-
-    if ($contact_exist_on_salesforce) {
-        $sf_user = $get_user_sf['records'][0];
-        if ($local_user === false) {
-            insert_user(
-                $sf_user['Civility__c'] ?? null,
-                $sf_user['FirstName'],
-                $sf_user['LastName'],
-                $sf_user['Email'],
-                $sf_user['Pays__c'] ?? null,
-                $sf_user['Code_Postal__c'] ?? null,
-                $sf_user['MobilePhone'] ?? null
-            );
-        }
-        $data = [
-            ...$sf_user,
-            'Optin_Actionaute_Newsletter_mensuelle__c' => true,
-        ];
-
-        $user_id = $data['Id'];
-        unset($data['Id']);
-        unset($data['attributes']);
-
-        update_salesforce_users($user_id, $data);
-
-        wp_redirect(add_query_arg([
-            'inscription__nl__footer' => 'success',
-            'gtm_type' => 'inscription',
-            'gtm_name' => 'newsletter',
-        ], home_url()));
-        exit;
-    }
-
-    $get_current_sf_lead = get_salesforce_nl_lead($email);
-    $lead_exist_on_sf = $get_current_sf_lead['totalSize'] > 0;
-
-    $new_lead = [
-        'Email' => $email,
-        'LastName' => '_aucun_',
-        'Code_Origine__c' => getenv('AIF_SALESFORCE_CODE_ORIGINE__C__WEB'),
-        'Optin_Actionaute_Newsletter_mensuelle__c' => true,
-    ];
-
-    if (false === $lead_exist_on_sf) {
-        register_salesforce_lead($new_lead);
-        wp_redirect(add_query_arg('email', urlencode($email), home_url('/newsletter')));
-        exit;
-    }
-
-    if (!$contact_exist_on_salesforce) {
-        update_salesforce_lead($get_current_sf_lead['records'][0]['Id'], $new_lead);
-        wp_redirect(add_query_arg('email', urlencode($email), home_url('/newsletter')));
-        exit;
-    }
-
-    wp_redirect('/newsletter');
-    exit;
-}
-
-if (!empty($_GET['turnstile_error'])) {
-    $error_message = turnstile_friendly_error(sanitize_text_field(urldecode($_GET['turnstile_error'])));
 }
 
 ?>
 
-<div id="confirmationPopup" class="popup <?php
-echo $inscription_nl_success ? 'popup-visible' : ''; ?>">
+<div id="confirmationPopup" class="popup <?php echo $inscription_nl_success ? 'popup-visible' : ''; ?>">
 	<div class="popup-content">
 		<a href="<?= home_url() ?>" class="close-btn">&times;</a>
 		<h3>Inscription Réussie !</h3>
@@ -204,20 +197,20 @@ echo $inscription_nl_success ? 'popup-visible' : ''; ?>">
 					<div class="cf-turnstile"
 					     data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 					<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
-					<?php
-                    if (!empty($error_message)) {
-                        aif_include_partial('alert', [
-                            'state' => 'error',
-                            'title' => $title_error,
-                            'content' => $error_message]);
-
-                    };
-?>
 					<button class="register-nl" name="sign_lead" disabled>
 						<span class="button-text">OK</span>
 						<span class="spinner hidden"></span>
 					</button>
 					<div class="nl-error hidden"></div>
+					<?php
+                    if (!empty($error_message)) {
+                        aif_include_partial('alert', [
+                            'state' => 'error',
+                            'title' => $title,
+                            'content' => $error_message]);
+
+                    };
+?>
 				</form>
 			</div>
 			<div class="social-network-list">
@@ -225,7 +218,7 @@ echo $inscription_nl_success ? 'popup-visible' : ''; ?>">
                 foreach ($social_links as $child) : ?>
 					<div class="social-network-item">
 						<a class="social-network-item-svg" href="<?php
-    echo $child['url']; ?>"
+    echo esc_url($child['url']); ?>"
 						   target="_blank"
 						   rel="noopener noreferrer"
 						   title="<?php
