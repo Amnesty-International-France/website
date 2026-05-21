@@ -7745,13 +7745,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fizzy-ui-utils@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "fizzy-ui-utils@npm:3.0.0"
-  checksum: 10c0/09a64d0e482d02eb87f4a70689f6f02866cb488b472739d5781046805127f2027a30101b5aefc1b66b21b408e110f097c3f268a2fc0fdf7cfe7bb1b693f2e1f8
-  languageName: node
-  linkType: hard
-
 "flat-cache@npm:^3.2.0":
   version: 3.2.0
   resolution: "flat-cache@npm:3.2.0"
@@ -7786,17 +7779,6 @@ __metadata:
   version: 3.2.9
   resolution: "flatted@npm:3.2.9"
   checksum: 10c0/5c91c5a0a21bbc0b07b272231e5b4efe6b822bcb4ad317caf6bb06984be4042a9e9045026307da0fdb4583f1f545e317a67ef1231a59e71f7fced3cc429cfc53
-  languageName: node
-  linkType: hard
-
-"flickity-as-nav-for@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "flickity-as-nav-for@npm:3.0.0"
-  dependencies:
-    fizzy-ui-utils: "npm:^3.0.0"
-  peerDependencies:
-    flickity: ^3.0.0
-  checksum: 10c0/6c2bb72e23d98ef271f67a18ab424cf15599f85ff204660b29c9924e39b36dc4ca180a3712c84c166fda506fe16e89a94553f5f0ac9e8d988c4ae50b6da6feb7
   languageName: node
   linkType: hard
 
@@ -8454,7 +8436,6 @@ __metadata:
     expose-loader: "npm:^5.0.1"
     file-loader: "npm:^6.2.0"
     flickity: "npm:^2.3.0"
-    flickity-as-nav-for: "npm:^3.0.0"
     intersection-observer: "npm:^0.12.2"
     js-cookie: "npm:^3.0.5"
     memize: "npm:^2.1.0"
