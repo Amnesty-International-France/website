@@ -552,4 +552,34 @@ if (defined('WP_CLI') && WP_CLI) {
     require_once __DIR__ . '/commands/duplicate-country-pages.php';
     require_once __DIR__ . '/commands/upgrade-country-pages.php';
 }
+
+add_filter('render_block', function ($block_content, $block) {
+    if ('jetpack/contact-form' === $block['blockName']) {
+
+        $tags = new WP_HTML_Tag_Processor($block_content);
+        if ($tags->next_tag('form')) {
+
+            $bloc_aria_label = $tags->get_attribute('aria-label');
+
+            if ($bloc_aria_label) {
+                $type_value = match ($bloc_aria_label) {
+                    'Legs et donations' => 'brochure',
+                    'Fondation Amnesty International France' => 'fondation',
+                    default => null,
+                };
+                $name_value = match ($bloc_aria_label) {
+                    'Legs et donations' => 'legs',
+                    'Fondation Amnesty International France' => 'fondation',
+                };
+
+                $tags->set_attribute('data-gtm-type', $type_value);
+                $tags->set_attribute('data-gtm-name', $name_value);
+            }
+            return $tags;
+        }
+    }
+    return $block_content;
+
+}, 10, 2);
+
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
