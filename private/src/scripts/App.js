@@ -48,6 +48,7 @@ import urgentRegister from './modules/Form/urgent-register-form';
 import { emptyInputNewsletterLead, handleNewsletterSubmission } from './modules/newsletter';
 import GoPetitionsForm from './modules/Form/go-petition-form';
 import { closeAlertBanner } from './modules/alert-banner';
+import { Countdown } from './modules/countdown-clh';
 
 const App = () => {
   browserDetector();
@@ -100,6 +101,7 @@ const App = () => {
   handleNewsletterSubmission();
   GoPetitionsForm();
   closeAlertBanner();
+  Countdown();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 
