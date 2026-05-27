@@ -18,3 +18,13 @@ jobs:
         uses: docker://oskarstark/php-cs-fixer-ga:3.25.0
         with:
           args: --config=.php-cs-fixer.php --diff --dry-run
+
+  eslint:
+    name: eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install modules
+        run: yarn
+      - name: Run Es Lint
+        run: yarn lint
