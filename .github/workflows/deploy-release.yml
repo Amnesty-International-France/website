@@ -37,5 +37,4 @@ jobs:
           SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
           SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
         run: |
-          cd var/www/website 
           wp update-db-schema

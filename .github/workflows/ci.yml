@@ -19,12 +19,10 @@ jobs:
         with:
           args: --config=.php-cs-fixer.php --diff --dry-run
 
-  eslint:
-    name: eslint
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Install modules
-        run: cd private/ && yarn
-      - name: Run eslint
-        run: cd private/ && eslint ./src/ && stylelint "src/**/*.scss"
+      - run: corepack enable
+      - run: cd private && yarn --immutable
+      - run: cd private && yarn lint
