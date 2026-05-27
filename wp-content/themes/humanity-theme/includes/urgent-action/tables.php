@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+// À modifier (ex: passer à '1.2') à chaque changement de structure de la table
+const NEW_AU_TABLE_VERSION = '1.1';
+
 function aif_create_action_urgent_tables($args = [])
 {
     global $wpdb;
@@ -31,6 +34,21 @@ add_action('after_switch_theme', 'aif_create_action_urgent_tables');
 
 if (defined('WP_CLI') && WP_CLI) {
     WP_CLI::add_command('table-urgent-action', 'aif_create_action_urgent_tables');
+    WP_CLI::add_command('update-db-schema', 'aif_update_schema_action_urgent_tables');
+}
+
+function aif_update_schema_action_urgent_tables()
+{
+    $current_db_version = get_option('current-aif-action-urgente-version');
+
+    if ($current_db_version != NEW_AU_TABLE_VERSION) {
+        aif_create_action_urgent_tables();
+
+        update_option('current-aif-action-urgente-version', NEW_AU_TABLE_VERSION);
+        WP_CLI::success('Schéma mis à jour vers la version '. NEW_AU_TABLE_VERSION);
+    } else {
+        WP_CLI::info('La table est déjà à la version '. NEW_AU_TABLE_VERSION);
+    }
 }
 
 function urgent_action_already_signed($user_id, $action_type)
