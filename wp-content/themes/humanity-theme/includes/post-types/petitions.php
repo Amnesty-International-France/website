@@ -399,6 +399,40 @@ add_action('acf/include_fields', function () {
                 'ui_off_text' => '',
             ],
             [
+                'key' => 'field_6a155b0a87p9c',
+                'label' => 'Titre court',
+                'name' => 'short_title',
+                'aria-label' => '',
+                'type' => 'text',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => [
+                    [
+                        [
+                            'field' => 'field_685aca87362cb',
+                            'operator' => '==contains',
+                            'value' => 'petition',
+                        ],
+                        [
+                            'field' => 'field_6a154b47c81a1',
+                            'operator' => '==',
+                            'value' => 1,
+                        ],
+                    ],
+                ],
+                'wrapper' => [
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ],
+                'default_value' => '',
+                'maxlength' => '',
+                'allow_in_bindings' => 0,
+                'rows' => '',
+                'placeholder' => '',
+                'new_lines' => '',
+            ],
+            [
                 'key' => 'field_6a155b0a8709c',
                 'label' => 'Description courte',
                 'name' => 'short_description',
