@@ -25,6 +25,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Install modules
-        run: yarn
-      - name: Run Es Lint
-        run: yarn lint
+        run: cd private/ && yarn
+      - name: Run eslint
+        run: cd private/ && eslint ./src/ && stylelint "src/**/*.scss"
