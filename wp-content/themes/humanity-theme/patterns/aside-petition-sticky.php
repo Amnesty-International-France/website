@@ -20,6 +20,12 @@ if ($type === 'action-soutien') {
     $recipient = get_field('destinataire');
 }
 
+$is_clh = get_field('clh_petition', get_the_ID());
+
+if ($type === 'petition' && $is_clh) {
+    $short_description = get_field('short_description', get_the_ID());
+}
+
 $current_date = date('Y-m-d');
 $end_date = get_field('date_de_fin');
 $post_id = get_the_ID();
@@ -43,6 +49,12 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
         <?php endif; ?>
 		<?php if (isset($end_date) && (strtotime($end_date) >= strtotime($current_date))) : ?>
 
+<!--			todo: Adapt this-->
+		<?php if ($type === 'petition' && $is_clh) : ?>
+			<p>CLH MODE ACTIVE</p>
+			<p><?php echo esc_html($short_description ?? ''); ?></p>
+		<?php endif; ?>
+<!--			todo: Adapt this-->
       <form class="signature-petition-form" method="post" action="">
           <div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
           <?php if ($turnstile_error_message) : ?>
