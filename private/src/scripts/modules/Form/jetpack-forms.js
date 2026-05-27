@@ -21,6 +21,5 @@ const initJetpackForm = () => {
       name: gtmName,
     });
   });
-
 };
 export default initJetpackForm;
