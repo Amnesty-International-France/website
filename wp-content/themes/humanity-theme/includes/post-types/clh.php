@@ -40,7 +40,15 @@ add_action('acf/include_fields', function () {
                 'type' => 'textarea',
                 'instructions' => '',
                 'required' => 0,
-                'conditional_logic' => 0,
+                'conditional_logic' => [
+                    [
+                        [
+                            'field' => 'field_6a1590fffec37',
+                            'operator' => '==',
+                            'value' => '1',
+                        ],
+                    ],
+                ],
                 'wrapper' => [
                     'width' => '',
                     'class' => '',
@@ -61,7 +69,15 @@ add_action('acf/include_fields', function () {
                 'type' => 'url',
                 'instructions' => '',
                 'required' => 0,
-                'conditional_logic' => 0,
+                'conditional_logic' => [
+                    [
+                        [
+                            'field' => 'field_6a1590fffec37',
+                            'operator' => '==',
+                            'value' => '1',
+                        ],
+                    ],
+                ],
                 'wrapper' => [
                     'width' => '',
                     'class' => '',
@@ -179,7 +195,7 @@ add_action('acf/include_fields', function () {
                 [
                     'param' => 'page_slug',
                     'operator' => '==',
-                    'value' => 'changer-leur-histoire',
+                    'value' => 'changez-leur-histoire',
                 ],
             ],
         ],
