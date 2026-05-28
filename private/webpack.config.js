@@ -67,8 +67,7 @@ const getPlugins = (argv, env) => {
       new webpack.LoaderOptionsPlugin({ options: { mode: argv.mode } }),
       new StyleLintPlugin({
         threads: true,
-        context: path.resolve(__dirname, './src/'), // Indique où se trouve votre code
-        configFile: path.resolve(__dirname, './.stylelintrc.json'), // Chemin absolu vers votre config
+        context: SRC_PATH,
       }),
       ...staticPlugins,
     ];
@@ -82,8 +81,7 @@ const getPlugins = (argv, env) => {
     new MiniCssExtractPlugin({ filename: '../styles/[name].css', chunkFilename: '[name].css' }),
     new StyleLintPlugin({
       threads: true,
-      context: path.resolve(__dirname, './src/'), // Indique où se trouve votre code
-      configFile: path.resolve(__dirname, './.stylelintrc.json'), // Chemin absolu vers votre config
+      context: SRC_PATH,
     }),
   ];
 
