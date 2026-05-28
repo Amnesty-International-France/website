@@ -11,7 +11,37 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
      */
     function render_slider_changez_leur_histoire_block(array $attributes): string
     {
-        $selected_posts = $attributes['selectedPosts'] ?? [];
+        $page_id = get_the_ID();
+        $is_highlighted = get_field('highlight_clh', $page_id);
+        $start_date = get_field('start_date_highligth_clh', $page_id);
+        $end_date = get_field('end_date_highlight_clh', $page_id);
+
+        $timestamp_now = time();
+        $timestamp_start_date = strtotime($start_date);
+        $timestamp_end_date = strtotime($end_date);
+
+        $selected_posts = [];
+
+        if (!$is_highlighted) {
+            $selected_posts =  $attributes['selectedPosts'];
+        }
+
+        if ($is_highlighted && $timestamp_start_date > $timestamp_now) {
+            $is_highlighted = false;
+        }
+
+        if ($is_highlighted && $timestamp_start_date <= $timestamp_now) {
+            $petitions_list_clh = get_field('list_petition_clh', $page_id) ?? [];
+
+            foreach ($petitions_list_clh as $petition) {
+                $selected_posts[] = [
+                    'id' => $petition->ID,
+                    'title' => $petition->post_title,
+                    'link' => get_permalink($petition->ID),
+                    'featured_media_url' => get_the_post_thumbnail_url($petition->ID, 'full'),
+                ];
+            }
+        }
 
         if (empty($selected_posts)) {
             return '';

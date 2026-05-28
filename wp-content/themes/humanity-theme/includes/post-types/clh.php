@@ -102,7 +102,7 @@ add_action('acf/include_fields', function () {
             [
                 'key' => 'field_6a159187fec39',
                 'label' => 'Date de fin de campagne',
-                'name' => 'end_date_highlith_clh',
+                'name' => 'end_date_highlight_clh',
                 'aria-label' => '',
                 'type' => 'date_time_picker',
                 'instructions' => '',
@@ -179,7 +179,7 @@ add_action('acf/include_fields', function () {
                 [
                     'param' => 'page_slug',
                     'operator' => '==',
-                    'value' => 'changer-leur-histoire',
+                    'value' => 'changez-leur-histoire',
                 ],
             ],
         ],
