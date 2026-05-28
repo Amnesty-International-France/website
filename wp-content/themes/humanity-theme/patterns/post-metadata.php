@@ -16,10 +16,10 @@ if (! get_the_ID()) {
 <!-- wp:group {"tagName":"div","className":"article-meta-wrapper"} -->
 <div class="article-meta-wrapper">
 
+    <!-- wp:pattern {"slug": "amnesty/register-au-succes-message"} /-->
 	<!-- wp:group {"tagName":"div","className":"article-meta container--md mx-auto"} -->
 	<div class="wp-block-group article-meta">
-
-		<!-- wp:group {"tagName":"div","className":"article-metaActions"} -->
+        <!-- wp:group {"tagName":"div","className":"article-metaActions"} -->
 		<div class="wp-block-group article-metaActions">
 			<!-- wp:pattern {"slug":"amnesty/post-back-link"} /-->
 		</div>
