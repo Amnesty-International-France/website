@@ -37,7 +37,7 @@
   .urgent-register-header {
     font-family: var(--wp--preset--font-family--primary);
     font-weight: bold;
-    font-size: 16px;
+    font-size: 18px;
     line-height: 24px;
     letter-spacing: 0;
     vertical-align: middle;
@@ -72,6 +72,7 @@
       margin-bottom: 22px;
       border: 1px solid var(--wp--preset--color--grey-lighter);
       transition: border 0.3s ease, margin-bottom 0.3s ease;
+      font-size: 16px;
 
       &.success {
         border: 2px solid var(--wp--preset--color--success);
@@ -202,7 +203,8 @@
   }
 }
 
-.page-standard {
+.page-content,
+.article-meta-wrapper {
   .form-mess {
     padding: 10px;
     max-width: 768px;
