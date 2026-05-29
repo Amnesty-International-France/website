@@ -22,15 +22,15 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
 
         $selected_posts = [];
 
-        if (!$is_highlighted) {
-            $selected_posts =  $attributes['selectedPosts'];
-        }
-
         if ($is_highlighted && $timestamp_start_date > $timestamp_now) {
             $is_highlighted = false;
         }
 
-        if ($is_highlighted && $timestamp_start_date <= $timestamp_now) {
+        if (!$is_highlighted) {
+            $selected_posts = $attributes['selectedPosts'];
+        }
+
+        if ($is_highlighted && $timestamp_end_date !== false && $timestamp_end_date > $timestamp_now) {
             $petitions_list_clh = get_field('list_petition_clh', $page_id) ?? [];
 
             foreach ($petitions_list_clh as $petition) {
