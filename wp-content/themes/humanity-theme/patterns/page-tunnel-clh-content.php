@@ -50,8 +50,11 @@ foreach ($list_petitions_clh as $petition) {
     $selected_posts[] = [
         'id' => $petition->ID,
         'title' => $petition->post_title,
-        'already_signed' => ($last_signer_email && $current_user && have_signed($petition->ID, $current_user->id))
-            || in_array($petition->ID, $cookie_signed_ids, true),
+        'description' => get_field('short_description', $petition->ID) ?: get_the_excerpt($petition->ID),
+        'link' => get_permalink($petition->ID),
+        'image_id' => get_post_thumbnail_id($petition->ID),
+        'letter' => get_field('lettre', $petition->ID),
+        'already_signed' => $last_signer_email && $current_user && have_signed($petition->ID, $current_user->id),
         'active' => amnesty_is_petition_not_expired($petition->ID),
         'already_skipped' => in_array($petition->ID, $skipped_petitions, true),
     ];
@@ -71,8 +74,8 @@ if ($signed_count >= 10 || empty($not_signed)) {
     exit();
 }
 
-$random_key = array_rand($not_signed);
-$next_petition = $not_signed[$random_key];
+$not_signed = array_values($not_signed);
+$has_navigation = count($not_signed) > 1;
 
 ?>
 <!-- wp:group {"tagName":"page","className":"page"} -->
@@ -136,5 +139,63 @@ $next_petition = $not_signed[$random_key];
 		</div>
 	</section>
 	<!-- /wp:group -->
+<article class="wp-block-group page page-tunnel-clh-card">
+    <div class="page-tunnel-clh-card-content">
+        <div class="changez-leur-histoire-slider-block page-tunnel-clh-carousel" data-centered-slides="false" data-slides-per-view="1">
+            <div class="changez-leur-histoire-slider-wrapper">
+                <?php if ($has_navigation) : ?>
+                    <button type="button" class="slider-nav prev" aria-label="Pétition précédente">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M11 6L21 16L11 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                <?php endif; ?>
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <?php foreach ($not_signed as $index => $petition) : ?>
+                            <div class="swiper-slide">
+                                <article class="page-tunnel-clh-petition-card<?php echo ! empty($petition['image_id']) ? ' has-image' : ''; ?>">
+                                    <div class="page-tunnel-clh-petition-card-content">
+                                        <h2 class="page-tunnel-clh-petition-card-title">
+                                            <?php echo esc_html($petition['title']); ?>
+                                        </h2>
+                                        <?php if (! empty($petition['description'])) : ?>
+                                            <p class="page-tunnel-clh-petition-card-description">
+                                                <?php echo esc_html(wp_strip_all_tags($petition['description'])); ?>
+                                            </p>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php if (! empty($petition['image_id'])) : ?>
+                                        <figure class="page-tunnel-clh-petition-card-media">
+                                            <?php echo wp_get_attachment_image($petition['image_id'], 'medium_large', false, ['class' => 'page-tunnel-clh-petition-card-image']); ?>
+                                        </figure>
+                                    <?php endif; ?>
+                                    <?php if (! empty($petition['letter'])) : ?>
+                                        <figure class="page-tunnel-clh-petition-card-context">
+                                            <?php $accordion_id = sprintf('tunnel-clh-petition-accordion-%d-%d', (int) $petition['id'], $index); ?>
+                                            <div class="tunnel-clh-petition-accordion-container">
+                                                <button type="button" class="tunnel-clh-petition-accordion-toggle" aria-expanded="false" aria-controls="<?php echo esc_attr($accordion_id); ?>">Afficher plus de contexte</button>
+                                                <div id="<?php echo esc_attr($accordion_id); ?>" class="tunnel-clh-petition-accordion-content" hidden>
+                                                    <p class="page-tunnel-clh-petition-card-context-content">
+                                                        <?php echo esc_html(wp_strip_all_tags($petition['letter'])); ?>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </figure>
+                                    <?php endif; ?>
+                                </article>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php if ($has_navigation) : ?>
+                    <button type="button" class="slider-nav next" aria-label="Pétition suivante">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M11 6L21 16L11 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 </article>
-<!-- /wp:group -->
