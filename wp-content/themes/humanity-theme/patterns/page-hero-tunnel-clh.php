@@ -16,7 +16,7 @@ $over_title = get_field('sur-titre', get_the_ID()) ?? '';
 ?>
 
 <?php if (! is_front_page()) : ?>
-	<section class="page-hero-block">
+	<section class="page-hero-block page-tunnel-clh-hero">
 		<!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
 		<div class="yoast-breadcrumb-wrapper">
 			<?php
