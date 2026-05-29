@@ -7,7 +7,6 @@ module.exports = {
     autoprefixer(),
     pxtorem({
       prop_white_list: ['font', 'font-size', 'line-height', 'letter-spacing'],
-      exclude: /node_modules/i,
     }),
     reporter({ clearMessages: true }),
   ],

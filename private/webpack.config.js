@@ -65,10 +65,7 @@ const getPlugins = (argv, env) => {
       new ESLintPlugin({ extensions: ['js', 'jsx', 'ts', 'tsx'] }),
       // Sets mode so we can access it in `postcss.config.js`.
       new webpack.LoaderOptionsPlugin({ options: { mode: argv.mode } }),
-      new StyleLintPlugin({
-        threads: true,
-        context: SRC_PATH,
-      }),
+      new StyleLintPlugin({ threads: true }),
       ...staticPlugins,
     ];
   }
@@ -79,10 +76,7 @@ const getPlugins = (argv, env) => {
     new webpack.LoaderOptionsPlugin({ options: { mode: argv.mode } }),
     // Extract CSS to own bundle, filename relative to output.path.
     new MiniCssExtractPlugin({ filename: '../styles/[name].css', chunkFilename: '[name].css' }),
-    new StyleLintPlugin({
-      threads: true,
-      context: SRC_PATH,
-    }),
+    new StyleLintPlugin({ threads: true }),
   ];
 
   // we're specifying an entry point that isn't static, skip static processing
@@ -167,7 +161,7 @@ const config = (env, argv) => ({
         },
       },
       {
-        test: /\.s[ac]ss$/,
+        test: /\.s?(a|c)?ss$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
@@ -185,25 +179,6 @@ const config = (env, argv) => ({
           },
           {
             loader: 'sass-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-        ],
-      },
-      {
-        test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-              url: false,
-            },
-          },
-          {
-            loader: 'postcss-loader',
             options: {
               sourceMap: true,
             },
