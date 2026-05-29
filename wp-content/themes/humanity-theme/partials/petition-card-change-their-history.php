@@ -20,6 +20,15 @@ if (!$post_object instanceof WP_Post) {
     $percentage = ($goal > 0) ? min(($current / $goal) * 100, 100) : 0;
 } else {
     $permalink   = get_permalink($post_object);
+/*
+    if ($is_active_campaign && $campaign_id) {
+        $permalink = add_query_arg(
+            ['campaign_id' => $campaign_id, 'is_active_campaign_cls' => $is_active_campaign],
+            get_permalink($post_object)
+        );
+
+    }*/
+
     $title       = get_the_title($post_object);
     $date        = get_the_date('', $post_object);
     $thumbnail   = get_the_post_thumbnail($post_id, 'medium', ['class' => 'petition-image']);
