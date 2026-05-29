@@ -16,8 +16,10 @@ $has_related_content = !empty(get_field('_related_posts_selected', $page));
 $is_highlighted = get_field('highlight_clh', $page->ID);
 
 if ($is_highlighted) {
-    $start_date = get_field('start_date_highligth_clh', $page->ID);
-    $end_date = get_field('end_date_highlight_clh', $page->ID) ?? null;
+    $active_campaign = get_field('campaign_clh', $page->ID);
+
+    $start_date = get_field('start_date_highligth_clh', $active_campaign->ID);
+    $end_date = get_field('end_date_highlight_clh', $active_campaign->ID) ?? null;
     $timestamp_now = time();
     $timestamp_start_date = strtotime($start_date);
     $timestamp_end_date = strtotime($end_date);
@@ -33,7 +35,7 @@ if ($is_highlighted) {
         $total_number_of_signatures_collected = 0;
         $total_campaign_signatures = 0;
 
-        $list_petition_current_campaign = get_field('list_petition_clh', $page->ID) ?? [];
+        $list_petition_current_campaign = get_field('list_petition_clh', $active_campaign->ID) ?? [];
 
         foreach ($list_petition_current_campaign as $single_campaign) {
             $total_campaign_signatures += (int)get_post_meta($single_campaign->ID, 'objectif_signatures', true);
@@ -41,6 +43,7 @@ if ($is_highlighted) {
         }
     }
 }
+
 ?>
 
 <!-- wp:group {"tagName":"page","className":"page"} -->
