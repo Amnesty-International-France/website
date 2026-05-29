@@ -9,6 +9,7 @@
 $page_title = get_the_title();
 $hero_extra_class = ! has_post_thumbnail() ? 'no-featured-image' : '';
 $has_chapo = has_block('amnesty-core/chapo');
+
 ?>
 
 <?php if (! is_front_page()) : ?>
