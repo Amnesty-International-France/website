@@ -64,6 +64,89 @@ function amnesty_get_petition_signature_count($post_id)
     return absint($count);
 }
 
+function amnesty_get_clh_petition_tunnel_page(): ?WP_Post
+{
+    $clh_page = get_page_by_path('nous-connaitre/nos-combats/changez-leur-histoire/tunnel-clh');
+
+    if ($clh_page instanceof WP_Post) {
+        return $clh_page;
+    }
+
+    $clh_page = get_page_by_path('tunnel-clh');
+
+    if ($clh_page instanceof WP_Post) {
+        return $clh_page;
+    }
+
+    return null;
+}
+
+function amnesty_get_clh_petition_tunnel_url(): string
+{
+    $clh_page = amnesty_get_clh_petition_tunnel_page();
+
+    if ($clh_page) {
+        $clh_permalink = get_permalink($clh_page);
+
+        return $clh_permalink ?: home_url('/nous-connaitre/nos-combats/changez-leur-histoire/tunnel-clh/');
+    }
+
+    return home_url('/nous-connaitre/nos-combats/changez-leur-histoire/tunnel-clh/');
+}
+
+function amnesty_get_clh_petition_campaign_page(): ?WP_Post
+{
+    $clh_page = get_page_by_path('nous-connaitre/nos-combats/changez-leur-histoire');
+
+    if ($clh_page instanceof WP_Post) {
+        return $clh_page;
+    }
+
+    $clh_page = get_page_by_path('changez-leur-histoire');
+
+    if ($clh_page instanceof WP_Post) {
+        return $clh_page;
+    }
+
+    return null;
+}
+
+function amnesty_is_clh_petition_tunnel_active(): bool
+{
+    $clh_page = amnesty_get_clh_petition_campaign_page();
+
+    if (! $clh_page || ! get_field('highlight_clh', $clh_page->ID)) {
+        return false;
+    }
+
+    $timestamp_now = current_time('timestamp');
+    $start_date = get_field('start_date_highligth_clh', $clh_page->ID);
+    $end_date = get_field('end_date_highlight_clh', $clh_page->ID);
+
+    if ($start_date && strtotime((string) $start_date) > $timestamp_now) {
+        return false;
+    }
+
+    if ($end_date && strtotime((string) $end_date) <= $timestamp_now) {
+        return false;
+    }
+
+    return true;
+}
+
+function amnesty_get_petition_signature_redirect_url(int $petition_id, array $query_args = []): string
+{
+    $redirect_url = get_field('clh_petition', $petition_id) && amnesty_is_clh_petition_tunnel_active()
+        ? amnesty_get_clh_petition_tunnel_url()
+        : trailingslashit(get_permalink($petition_id)) . 'merci/';
+
+    if (! empty($query_args)) {
+        $redirect_url = add_query_arg($query_args, $redirect_url);
+    }
+
+    return $redirect_url;
+}
+
 /**
  * Ajoute les règles de réécriture et le "flag" pour les pétitions "Mon Espace"
  */
@@ -124,8 +207,9 @@ function amnesty_handle_petition_signature(): void
         if ($local_user !== false) {
             $user_id = $local_user->id;
             if (have_signed($petition_id, $user_id)) {
-                $petition_permalink = get_permalink($petition_id);
-                $redirect_url = trailingslashit($petition_permalink) . 'merci/?alreadysigned';
+                $redirect_url = amnesty_get_petition_signature_redirect_url($petition_id, [
+                    'alreadysigned' => '',
+                ]);
                 wp_redirect($redirect_url);
                 exit;
             }
@@ -160,11 +244,10 @@ function amnesty_handle_petition_signature(): void
         $gtm_type = 'petition';
         $gtm_name = get_the_title($petition_id);
 
-        $petition_permalink = trailingslashit(get_permalink($petition_id)) . 'merci/';
-        $redirect_url = add_query_arg([
+        $redirect_url = amnesty_get_petition_signature_redirect_url($petition_id, [
             'gtm_type' => $gtm_type,
             'gtm_name' => urlencode($gtm_name),
-        ], $petition_permalink);
+        ]);
 
         wp_redirect($redirect_url);
         exit;
