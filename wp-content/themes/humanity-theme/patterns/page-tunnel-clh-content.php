@@ -53,9 +53,7 @@ foreach ($list_petitions_clh as $petition) {
     $selected_posts[] = [
         'id' => $petition->ID,
         'title' => $petition->post_title,
-        'link' => get_permalink($petition->ID),
-        'featured_media_url' => get_the_post_thumbnail_url($petition->ID, 'full'),
-        'already_signed' => $last_signer_email && have_signed($petition->ID, $current_user->id),
+        'already_signed' => $last_signer_email && $current_user && have_signed($petition->ID, $current_user->id),
     ];
 }
 
@@ -68,6 +66,8 @@ if (empty($not_signed)) {
 
 $random_key = array_rand($not_signed);
 $next_petition = $not_signed[$random_key];
+$next_petition['link'] = get_permalink($next_petition['id']);
+$next_petition['featured_media_url'] = get_the_post_thumbnail_url($next_petition['id'], 'full');
 
 ?>
 <article class="wp-block-group page">
