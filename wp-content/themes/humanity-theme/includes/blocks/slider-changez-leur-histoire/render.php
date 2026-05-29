@@ -16,21 +16,29 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
         $start_date = get_field('start_date_highligth_clh', $page_id);
         $end_date = get_field('end_date_highlight_clh', $page_id);
 
-        $timestamp_now = time();
-        $timestamp_start_date = strtotime($start_date);
-        $timestamp_end_date = strtotime($end_date);
+        $timestamp_now = current_time('timestamp');
+        $timestamp_start_date = $start_date ? strtotime((string) $start_date) : null;
+        $timestamp_end_date = $end_date ? strtotime((string) $end_date) : null;
 
-        $selected_posts = [];
-
-        if (!$is_highlighted) {
-            $selected_posts =  $attributes['selectedPosts'];
+        if (false === $timestamp_start_date) {
+            $timestamp_start_date = null;
         }
 
-        if ($is_highlighted && $timestamp_start_date > $timestamp_now) {
+        if (false === $timestamp_end_date) {
+            $timestamp_end_date = null;
+        }
+
+        if ($is_highlighted && null !== $timestamp_start_date && $timestamp_start_date > $timestamp_now) {
             $is_highlighted = false;
         }
 
-        if ($is_highlighted && $timestamp_start_date <= $timestamp_now) {
+        if ($is_highlighted && null !== $timestamp_end_date && $timestamp_end_date <= $timestamp_now) {
+            $is_highlighted = false;
+        }
+
+        $selected_posts = $is_highlighted ? [] : ($attributes['selectedPosts'] ?? []);
+
+        if ($is_highlighted) {
             $petitions_list_clh = get_field('list_petition_clh', $page_id) ?? [];
 
             foreach ($petitions_list_clh as $petition) {
