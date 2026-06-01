@@ -19,7 +19,7 @@
     "env": "yarn dlx @wordpress/env"
   },
   "devDependencies": {
-    "@babel/cli": "^7.26.4",
+    "@babel/cli": "^7.29.7",
     "@babel/core": "^7.29.0",
     "@babel/eslint-parser": "^7.26.8",
     "@babel/plugin-proposal-pipeline-operator": "^7.26.7",
