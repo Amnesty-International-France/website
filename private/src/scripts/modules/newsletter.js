@@ -67,6 +67,12 @@ export const handleNewsletterSubmission = () => {
     if (spinner) {
       spinner.classList.remove('hidden');
     }
+
+    window.dataLayer.push({
+      event: 'form_submit',
+      type: 'inscription',
+      name: 'newsLetter',
+    });
   });
 };
 
