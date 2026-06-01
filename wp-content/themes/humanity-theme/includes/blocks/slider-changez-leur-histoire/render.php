@@ -11,39 +11,18 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
      */
     function render_slider_changez_leur_histoire_block(array $attributes): string
     {
-        $page_id = get_the_ID();
-        $active_campaign = get_field('campaign_clh', $page_id);
-        $is_highlighted = get_field('highlight_clh', $page_id) && $active_campaign instanceof WP_Post;
-        $start_date = $active_campaign ? get_field('start_date_highligth_clh', $active_campaign->ID) : null;
-        $end_date   = $active_campaign ? get_field('end_date_highlight_clh', $active_campaign->ID) : null;
+        $page_id         = get_the_ID();
+        $active_campaign = amnesty_get_active_clh_campaign_for_page($page_id);
+        $selected_posts  = [];
 
-        $timestamp_now = time();
-        $timestamp_start_date = !empty($start_date) ? strtotime($start_date) : false;
-        $timestamp_end_date = !empty($end_date) ? strtotime($end_date) : false;
-
-        $selected_posts = [];
-
-        if ($is_highlighted && $timestamp_start_date > $timestamp_now) {
-            $is_highlighted = false;
-        }
-
-        if (!$is_highlighted) {
-            $selected_posts = $attributes['selectedPosts'];
-        }
-
-        $is_active_campaign = $is_highlighted && $timestamp_end_date !== false && $timestamp_end_date > $timestamp_now;
-
-        if ($is_active_campaign) {
+        if ($active_campaign) {
             $petitions_list_clh = get_field('list_petition_clh', $active_campaign->ID) ?? [];
 
-            foreach ($petitions_list_clh as $petition) {
-                $selected_posts[] = [
-                    'id' => $petition->ID,
-                    'title' => $petition->post_title,
-                    'link' => get_permalink($petition->ID),
-                    'featured_media_url' => get_the_post_thumbnail_url($petition->ID, 'full'),
-                ];
+            foreach (array_filter($petitions_list_clh, fn ($p) => amnesty_active_petitions_clh($p->ID)) as $petition) {
+                $selected_posts[] = ['id' => $petition->ID];
             }
+        } else {
+            $selected_posts = $attributes['selectedPosts'] ?? [];
         }
 
         if (empty($selected_posts)) {
@@ -53,7 +32,7 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
         $post_ids = array_filter(array_map('absint', wp_list_pluck($selected_posts, 'id')));
         $post_ids = array_values(array_unique($post_ids));
 
-        if (count($post_ids) < 4 || (!$is_highlighted && count($post_ids) > 20)) {
+        if (count($post_ids) < 4 || (!$active_campaign && count($post_ids) > 20)) {
             return '';
         }
 
@@ -88,8 +67,6 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
                             if (is_array($petition_type)) {
                                 $petition_type = $petition_type['value'] ?? '';
                             }
-
-                            $campaign_id = $is_active_campaign ? $active_campaign->ID : null;
 
                             $template_path = $petition_type === 'action-soutien'
                                 ? locate_template('partials/action-card-change-their-history.php')

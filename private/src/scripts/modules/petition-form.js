@@ -49,6 +49,40 @@ export const toggleFullFormPetition = () => {
   });
 };
 
+export const initTunnelClhForm = () => {
+  const card = document.querySelector('.tunnel-clh-card');
+  if (!card) return;
+
+  const signForm = card.querySelector('.tunnel-clh-sign-form');
+  if (!signForm) return;
+
+  const emailStep = signForm.querySelector('.tunnel-clh-email-step');
+  const signBtn = signForm.querySelector('[name="sign_petition"]');
+
+  if (!signBtn) return;
+
+  signBtn.addEventListener('click', (e) => {
+    const email = card.dataset.email;
+
+    if (email) {
+      let hiddenEmail = signForm.querySelector('input[type="hidden"][name="user_email"]');
+      if (!hiddenEmail) {
+        hiddenEmail = document.createElement('input');
+        hiddenEmail.type = 'hidden';
+        hiddenEmail.name = 'user_email';
+        signForm.appendChild(hiddenEmail);
+      }
+      hiddenEmail.value = email;
+      return;
+    }
+
+    if (!emailStep || !emailStep.hidden) return;
+    e.preventDefault();
+    emailStep.hidden = false;
+    emailStep.querySelector('input[type="email"]')?.focus();
+  });
+};
+
 export const submitCodeOrigine = () => {
   const form = document.querySelector('.signature-petition-form');
 
