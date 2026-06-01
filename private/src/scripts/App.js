@@ -32,7 +32,7 @@ import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
 import { calculator, hoverDonationMenu } from './modules/donation-calculator';
 import petitionShareFeedback from './modules/social-network-clicked';
 import petitionDonateFeedback from './modules/donate-clicked';
-import { toggleFullFormPetition, submitCodeOrigine } from './modules/petition-form';
+import { toggleFullFormPetition, submitCodeOrigine, initTunnelClhForm } from './modules/petition-form';
 import { closeUrgentBanner } from './modules/urgent-banner';
 import initJetpackForm from './modules/Form/jetpack-forms';
 import edhFilters from './modules/search-filters-edh';
@@ -82,6 +82,7 @@ const App = () => {
   petitionDonateFeedback();
   toggleFullFormPetition();
   submitCodeOrigine();
+  initTunnelClhForm();
   closeUrgentBanner();
   initJetpackForm();
   edhFilters();
