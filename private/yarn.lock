@@ -8427,7 +8427,7 @@ __metadata:
     flickity: "npm:^2.3.0"
     intersection-observer: "npm:^0.12.2"
     js-cookie: "npm:^3.0.5"
-    memize: "npm:^2.1.0"
+    memize: "npm:^2.1.1"
     mini-css-extract-plugin: "npm:^2.9.2"
     node-normalize-scss: "npm:^8.1.2"
     object-fit-images: "npm:^3.2.4"
@@ -9622,6 +9622,13 @@ __metadata:
   version: 2.1.0
   resolution: "memize@npm:2.1.0"
   checksum: 10c0/31259bdc943a08e2cc6483ef60b53460050d131cd68302a1e550fe39bb46ebcf77a80103ca14fa4ec74eca2463bda81c3460b908427c246d7e72ac8c39debcd7
+  languageName: node
+  linkType: hard
+
+"memize@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "memize@npm:2.1.1"
+  checksum: 10c0/3bc5b5814ad568656411cfdc9a5c2aaef6be9e11f4fa7edde53f62cc18bd431769bc23cfb36c9e61ef482707a086cae4f3ece6a34a6bc76356f5c5524c2b431e
   languageName: node
   linkType: hard
 
