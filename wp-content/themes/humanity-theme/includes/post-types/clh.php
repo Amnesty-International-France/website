@@ -35,7 +35,7 @@ function amnesty_register_clh_cpt(): void
 add_action('init', 'amnesty_register_clh_cpt');
 
 add_action('acf/include_fields', function () {
-    if (! function_exists('acf_add_local_field_group')) {
+    if (!function_exists('acf_add_local_field_group')) {
         return;
     }
 
@@ -91,7 +91,7 @@ add_action('acf/include_fields', function () {
                 'filters' => ['search'],
                 'return_format' => 'object',
                 'min' => '',
-                'max' => '10',
+                'max' => '',
                 'allow_in_bindings' => 0,
                 'elements' => '',
                 'bidirectional' => 1,
@@ -128,6 +128,8 @@ add_action('acf/include_fields', function () {
                 'allow_in_bindings' => 0,
                 'placeholder' => '',
             ],
+        ],
+        'location' => [
             [
                 [
                     'param' => 'post_type',
@@ -171,7 +173,7 @@ add_action('acf/include_fields', function () {
             ],
             [
                 'key' => 'field_6a199c9f42f0b',
-                'label' => 'Selectionner la campagne CLH',
+                'label' => 'Choisir la campagne CLH',
                 'name' => 'campaign_clh',
                 'aria-label' => '',
                 'type' => 'post_object',
@@ -180,28 +182,24 @@ add_action('acf/include_fields', function () {
                 'conditional_logic' => [
                     [
                         [
-                            'field' => 'field_6a1590fffec37',
+                            'field' => 'field_6a199c4b42f0a',
                             'operator' => '==',
                             'value' => '1',
                         ],
                     ],
                 ],
-                'wrapper' => [
-                    'width' => '',
-                    'class' => '',
-                    'id' => '',
-                ],
-                'post_type' => [
-                    0 => 'clh',
-                ],
-                'post_status' => '',
+                'wrapper' => ['width' => '', 'class' => '', 'id' => ''],
+                'post_type' => ['clh'],
+                'post_status' => ['publish'],
                 'taxonomy' => '',
+                'filters' => ['search'],
                 'return_format' => 'object',
-                'multiple' => 0,
-                'allow_null' => 0,
+                'min' => '',
+                'max' => '',
+                'multiple' => false,
                 'allow_in_bindings' => 0,
+                'elements' => '',
                 'bidirectional' => 0,
-                'ui' => 1,
                 'bidirectional_target' => [],
             ],
         ],
