@@ -8445,7 +8445,7 @@ __metadata:
     resolve-url-loader: "npm:^5.0.0"
     sass: "npm:^1.85.0"
     sass-loader: "npm:^13.3.3"
-    sass-mq: "npm:^6.0.0"
+    sass-mq: "npm:^7.0.0"
     style-loader: "npm:^3.3.4"
     stylelint: "npm:^15.11.0"
     stylelint-config-recommended-scss: "npm:^17.0.0"
@@ -11480,10 +11480,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-mq@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "sass-mq@npm:6.0.0"
-  checksum: 10c0/0f8ec468bb479327e988e2533b93a7eb84c64d6db45b52af16bff0ec8cd1eae18e806e29b0a1cf0136645f9a529e446ea4ce51b1d72c7f96798149b3616255c5
+"sass-mq@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "sass-mq@npm:7.0.0"
+  checksum: 10c0/7bb926b7636453c243eda7be2ebe753e73ab95ee435b37c326f9db2dc9486b7ea89ae7ce6a0534455b9dfb6d71360d7b14c6b7d2a1f48985800d819106345af7
   languageName: node
   linkType: hard
 
