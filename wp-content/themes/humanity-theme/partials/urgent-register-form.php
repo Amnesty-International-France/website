@@ -60,9 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sign_urgent_action'])
         $lastname = sanitize_text_field($_POST['lastname'] ?? '');
         $postal_code = sanitize_text_field($_POST['zipcode'] ?? '');
         $country = sanitize_text_field($_POST['country'] ?? '');
-        $phone = sanitize_text_field($_POST['tel'] ?? '');
 
-        $new_user_id = insert_user($civility, $firstname, $lastname, $email, $country, $postal_code, $phone);
+        $new_user_id = insert_user($civility, $firstname, $lastname, $email, $country, $postal_code, null);
 
         if (! $new_user_id) {
             exit;
@@ -202,18 +201,7 @@ $countries = get_posts(
 							</select>
 						</div>
 					</div>
-					<?php if (! in_array('tel', $input ?? [], true)) : ?>
-						<div class="form-group">
-							<label for="tel"></label>
-							<input
-								id="tel"
-								name="tel"
-								type="tel"
-								placeholder="<?php esc_attr_e('Téléphone mobile', 'text-domain'); ?>"
-							>
-							<div class="input-error hidden"></div>
-						</div>
-					<?php endif; ?>
+
 				</div>
 				<div class="form-group">
 					<input type="hidden" name="type" value="<?php echo esc_attr($action_type ?? ''); ?>">
