@@ -649,6 +649,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/helper-plugin-utils@npm:^7.29.7":
+  version: 7.29.7
+  resolution: "@babel/helper-plugin-utils@npm:7.29.7"
+  checksum: 10c0/380477a06133274a2759f9355929cb60a95e8b8fee624a1ae1fa349e1d1645b89daca456f72833f6d1062bffa12ee4271c5bf0cc5a61c0166cdc24c7591e2408
+  languageName: node
+  linkType: hard
+
 "@babel/helper-remap-async-to-generator@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/helper-remap-async-to-generator@npm:7.25.9"
@@ -718,6 +725,16 @@ __metadata:
     "@babel/traverse": "npm:^7.27.1"
     "@babel/types": "npm:^7.27.1"
   checksum: 10c0/f625013bcdea422c470223a2614e90d2c1cc9d832e97f32ca1b4f82b34bb4aa67c3904cb4b116375d3b5b753acfb3951ed50835a1e832e7225295c7b0c24dff7
+  languageName: node
+  linkType: hard
+
+"@babel/helper-skip-transparent-expression-wrappers@npm:^7.29.7":
+  version: 7.29.7
+  resolution: "@babel/helper-skip-transparent-expression-wrappers@npm:7.29.7"
+  dependencies:
+    "@babel/traverse": "npm:^7.29.7"
+    "@babel/types": "npm:^7.29.7"
+  checksum: 10c0/8c59493621487fc491f27adfc200af82a6aca3b9a5511e4e6050f8716593b4b243472cb56c8d2016e828b7ae12d605a819205aa8600ca08ee291dcd58d65c832
   languageName: node
   linkType: hard
 
@@ -920,6 +937,17 @@ __metadata:
   bin:
     parser: ./bin/babel-parser.js
   checksum: 10c0/e5a4e69e3ac7acdde995f37cf299a68458cfe7009dff66bd0962fd04920bef287201169006af365af479c08ff216bfefbb595e331f87f6ae7283858aebbc3317
+  languageName: node
+  linkType: hard
+
+"@babel/parser@npm:^7.29.7":
+  version: 7.29.7
+  resolution: "@babel/parser@npm:7.29.7"
+  dependencies:
+    "@babel/types": "npm:^7.29.7"
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: 10c0/65133038f80b54a714d6027cb77cee3f9a6b5c4c6842ce674301e13947cbcbfa8055e63acaf1b84c085d34226a14425b2c2b97b829e0e226d2e8f1299942a51d
   languageName: node
   linkType: hard
 
@@ -2142,6 +2170,18 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 10c0/041ad2beae5affb8e68a0bcb6882a2dadb758db3c629a0e012f57488ab43a822ac1ea17a29db8ef36560a28262a5dfa4dbbbf06ed6e431db55abe024b7cd3961
+  languageName: node
+  linkType: hard
+
+"@babel/plugin-transform-optional-chaining@npm:^7.29.7":
+  version: 7.29.7
+  resolution: "@babel/plugin-transform-optional-chaining@npm:7.29.7"
+  dependencies:
+    "@babel/helper-plugin-utils": "npm:^7.29.7"
+    "@babel/helper-skip-transparent-expression-wrappers": "npm:^7.29.7"
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 10c0/71feacf9a7083030f4c69bf4e91db75f2fceae28e58c58b63db040006d908e15bc1e85a464f24ad659f17702e91a64eabbff9f1dd555ba33d78bb1af8a1d697a
   languageName: node
   linkType: hard
 
@@ -8700,7 +8740,7 @@ __metadata:
     "@babel/eslint-parser": "npm:^7.26.8"
     "@babel/plugin-proposal-pipeline-operator": "npm:^7.26.7"
     "@babel/plugin-transform-class-properties": "npm:^7.25.9"
-    "@babel/plugin-transform-optional-chaining": "npm:^7.25.9"
+    "@babel/plugin-transform-optional-chaining": "npm:^7.29.7"
     "@babel/preset-env": "npm:^7.26.9"
     "@babel/preset-react": "npm:^7.26.3"
     "@braintree/sanitize-url": "npm:^7.1.1"
