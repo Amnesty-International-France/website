@@ -47,7 +47,7 @@ function aif_update_schema_action_urgent_tables()
         update_option('current-aif-action-urgente-version', NEW_AU_TABLE_VERSION);
         WP_CLI::success('Schéma mis à jour vers la version '. NEW_AU_TABLE_VERSION);
     } else {
-        WP_CLI::info('La table est déjà à la version '. NEW_AU_TABLE_VERSION);
+        WP_CLI::log('La table est déjà à la version '. NEW_AU_TABLE_VERSION);
     }
 }
 
