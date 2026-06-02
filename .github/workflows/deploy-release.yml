@@ -32,10 +32,4 @@ jobs:
       - name: Deploy
         run: ssh staging '~/deploy.sh'
       - name: Update schema
-        env:
-          SSH_USER: ${{ secrets.STAGING_SSH_USER }}
-          SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
-          SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
-        run: |
-          cd var/www/website 
-          wp update-db-schema
+        run: ssh staging 'cd var/www/website && wp update-db-schema'
