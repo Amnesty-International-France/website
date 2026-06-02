@@ -38,10 +38,4 @@ jobs:
         run: ssh prod 'source ~/.bash_profile && cd github && bash livraison-prod.sh'
 
       - name: Update schema
-        env:
-          SSH_USER: ${{ secrets.STAGING_SSH_USER }}
-          SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
-          SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
-        run: |
-          cd var/www/website 
-          wp update-db-schema
+        run: ssh prod 'cd var/www/website && wp update-db-schema'
