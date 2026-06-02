@@ -1,12 +1,16 @@
 {
   "name": "amnestywebsite/humanity-theme",
+  "description": "Amnesty International France WordPress website",
   "type": "project",
   "license": "none",
   "minimum-stability": "stable",
   "require-dev": {
     "bigbite/phpcs-config": "v3.0.0",
     "friendsofphp/php-cs-fixer": "^3.87",
-    "symfony/var-dumper": "^7.3"
+    "symfony/var-dumper": "^7.3",
+    "phpstan/phpstan": "^2.2",
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "php-stubs/wp-cli-stubs": "2.12.0"
   },
   "config": {
     "allow-plugins": {
@@ -14,6 +18,8 @@
     }
   },
   "scripts": {
+    "analyse": "phpstan analyze",
+    "cs": "php-cs-fixer fix --config=.php-cs-fixer.php --diff --dry-run",
     "lint": "./vendor/bin/phpcs wp-content/themes/humanity-theme",
     "makePot": "wp i18n make-pot wp-content/themes/humanity-theme wp-content/themes/humanity-theme/languages/amnesty.pot --domain=amnesty --exclude=private",
     "updatePoMo": [
@@ -23,9 +29,11 @@
     ]
   },
   "scripts-descriptions": {
+    "analyse": "Runs PHPStan static analysis",
+    "cs": "Runs PHP-CS-Fixer checks",
     "lint": "Runs PHP coding standard checks",
     "makePot": "Re-generates the POT language file",
-    "UpdatePoMo": "Updates PO, MO, and JSON translation files"
+    "updatePoMo": "Updates PO, MO, and JSON translation files"
   },
   "require": {
     "php": ">=8.2",

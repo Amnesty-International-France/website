@@ -9,12 +9,29 @@ on:
       - main
 
 jobs:
-  php-cs-fixer:
-    name: PHP-CS-Fixer
+  php-checks:
+    name: PHP Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Run PHP-CS-Fixer (PHP 8.2)
-        uses: docker://oskarstark/php-cs-fixer-ga:3.25.0
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          args: --config=.php-cs-fixer.php --diff --dry-run
+          php-version: '8.2'
+          coverage: none
+      - name: Validate Composer configuration
+        run: composer validate
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Run PHP-CS-Fixer
+        run: composer run cs
+      - name: Run PHPStan
+        run: composer run analyse -- --no-progress --error-format=github
+
+  github-actions:
+    name: GitHub Actions Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run ActionLint
+        uses: docker://rhysd/actionlint:latest
