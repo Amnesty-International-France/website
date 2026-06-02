@@ -47,13 +47,20 @@ $selected_posts = [];
 $skipped_petitions = amnesty_get_clh_skipped_petitions();
 
 foreach ($list_petitions_clh as $petition) {
+    $goal = get_field('objectif_signatures', $petition->ID) ?: 200000;
+    $current = amnesty_get_petition_signature_count($petition->ID) ?: 0;
+
     $selected_posts[] = [
         'id' => $petition->ID,
+        'slug' => $petition->post_name,
         'title' => $petition->post_title,
         'description' => get_field('short_description', $petition->ID) ?: get_the_excerpt($petition->ID),
         'link' => get_permalink($petition->ID),
         'image_id' => get_post_thumbnail_id($petition->ID),
         'letter' => get_field('lettre', $petition->ID),
+        'goal' => $goal,
+        'current' => $current,
+        'percentage' => ($goal > 0) ? min(($current / $goal) * 100, 100) : 0,
         'already_signed' => $last_signer_email && $current_user && have_signed($petition->ID, $current_user->id),
         'active' => amnesty_is_petition_not_expired($petition->ID),
         'already_skipped' => in_array($petition->ID, $skipped_petitions, true),
@@ -76,6 +83,28 @@ if ($signed_count >= 10 || empty($not_signed)) {
 
 $not_signed = array_values($not_signed);
 $has_navigation = count($not_signed) > 1;
+$requested_petition_slug = isset($_GET['petition']) ? sanitize_title(wp_unslash($_GET['petition'])) : '';
+$initial_petition = $not_signed[0];
+
+foreach ($not_signed as $petition) {
+    if ($requested_petition_slug && $petition['slug'] === $requested_petition_slug) {
+        $initial_petition = $petition;
+        break;
+    }
+}
+
+if (! $requested_petition_slug && $has_navigation) {
+    $initial_petition = $not_signed[array_rand($not_signed)];
+}
+
+$can_quick_sign = $last_signer_email && $current_user;
+$code_origine = '';
+
+if (isset($_GET['reserved_originecode']) && ! empty($_GET['reserved_originecode'])) {
+    $code_origine = sanitize_text_field(wp_unslash($_GET['reserved_originecode']));
+} elseif (isset($_GET['code_origine']) && ! empty($_GET['code_origine'])) {
+    $code_origine = sanitize_text_field(wp_unslash($_GET['code_origine']));
+}
 
 ?>
 <!-- wp:group {"tagName":"page","className":"page"} -->
@@ -140,61 +169,141 @@ $has_navigation = count($not_signed) > 1;
 	</section>
 	<!-- /wp:group -->
 <article class="wp-block-group page page-tunnel-clh-card">
+    <div class="page-tunnel-clh-card-subtitle-wrapper">
+        <h2 class="page-tunnel-clh-subtitle">Signez pour changer leur histoire</h2>
+        <p class="page-tunnel-clh-description">Votre signature compte bien plus que vous ne l'imaginez.
+            Elle change des lois, brise des chaînes, libère des personnes.
+            Nous avons identifié 10 situations qui nécessitent votre mobilisation dès aujourd'hui.
+            Ensemble, nous avons le pouvoir de les aider.</p>
+    </div>
     <div class="page-tunnel-clh-card-content">
-        <div class="changez-leur-histoire-slider-block page-tunnel-clh-carousel" data-centered-slides="false" data-slides-per-view="1">
-            <div class="changez-leur-histoire-slider-wrapper">
-                <?php if ($has_navigation) : ?>
-                    <button type="button" class="slider-nav prev" aria-label="Pétition précédente">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <path d="M11 6L21 16L11 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                <?php endif; ?>
-                <div class="swiper">
-                    <div class="swiper-wrapper">
-                        <?php foreach ($not_signed as $index => $petition) : ?>
-                            <div class="swiper-slide">
-                                <article class="page-tunnel-clh-petition-card<?php echo ! empty($petition['image_id']) ? ' has-image' : ''; ?>">
-                                    <div class="page-tunnel-clh-petition-card-content">
-                                        <h2 class="page-tunnel-clh-petition-card-title">
-                                            <?php echo esc_html($petition['title']); ?>
-                                        </h2>
-                                        <?php if (! empty($petition['description'])) : ?>
-                                            <p class="page-tunnel-clh-petition-card-description">
-                                                <?php echo esc_html(wp_strip_all_tags($petition['description'])); ?>
-                                            </p>
-                                        <?php endif; ?>
-                                    </div>
-                                    <?php if (! empty($petition['image_id'])) : ?>
-                                        <figure class="page-tunnel-clh-petition-card-media">
-                                            <?php echo wp_get_attachment_image($petition['image_id'], 'medium_large', false, ['class' => 'page-tunnel-clh-petition-card-image']); ?>
-                                        </figure>
-                                    <?php endif; ?>
-                                    <?php if (! empty($petition['letter'])) : ?>
-                                        <figure class="page-tunnel-clh-petition-card-context">
-                                            <?php $accordion_id = sprintf('tunnel-clh-petition-accordion-%d-%d', (int) $petition['id'], $index); ?>
-                                            <div class="tunnel-clh-petition-accordion-container">
-                                                <button type="button" class="tunnel-clh-petition-accordion-toggle" aria-expanded="false" aria-controls="<?php echo esc_attr($accordion_id); ?>">Afficher plus de contexte</button>
-                                                <div id="<?php echo esc_attr($accordion_id); ?>" class="tunnel-clh-petition-accordion-content" hidden>
-                                                    <p class="page-tunnel-clh-petition-card-context-content">
-                                                        <?php echo esc_html(wp_strip_all_tags($petition['letter'])); ?>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </figure>
-                                    <?php endif; ?>
-                                </article>
+        <div
+            class="changez-leur-histoire-slider-block page-tunnel-clh-carousel"
+            data-current-petition-slug="<?php echo esc_attr($initial_petition['slug']); ?>"
+            data-storage-key="amnesty.clh.currentPetitionSlug"
+            data-signature-endpoint="<?php echo esc_url(rest_url('humanity/v1/clh/sign-petition')); ?>">
+            <div class="page-tunnel-clh-petitions">
+                <?php foreach ($not_signed as $index => $petition) : ?>
+                    <?php $is_active_petition = $petition['slug'] === $initial_petition['slug']; ?>
+                    <?php $accordion_id = sprintf('tunnel-clh-petition-accordion-%d-%d', (int) $petition['id'], $index); ?>
+                    <article
+                        class="page-tunnel-clh-petition-card<?php echo ! empty($petition['image_id']) ? ' has-image' : ''; ?><?php echo $is_active_petition ? ' is-active' : ''; ?>"
+                        data-petition-id="<?php echo esc_attr((string) $petition['id']); ?>"
+                        data-petition-slug="<?php echo esc_attr($petition['slug']); ?>"
+                        <?php echo $is_active_petition ? '' : 'hidden'; ?>>
+                        <div class="page-tunnel-clh-petition-card-content">
+                            <h2 class="page-tunnel-clh-petition-card-title">
+                                <?php echo esc_html($petition['title']); ?>
+                            </h2>
+                            <?php if (! empty($petition['description'])) : ?>
+                                <p class="page-tunnel-clh-petition-card-description">
+                                    <?php echo esc_html(wp_strip_all_tags($petition['description'])); ?>
+                                </p>
+                            <?php endif; ?>
+                            <div class="petition-infos">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" style="width: <?php echo esc_attr((string) $petition['percentage']); ?>%;"></div>
+                                </div>
+                                <p class="supports">
+                                    <?php
+                                    $soutien_mot = ($petition['current'] > 1) ? 'signatures' : 'signature';
+                                    echo esc_html(number_format_i18n($petition['current']) . ' ' . $soutien_mot);
+                                    ?>
+                                </p>
                             </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                <?php if ($has_navigation) : ?>
-                    <button type="button" class="slider-nav next" aria-label="Pétition suivante">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <path d="M11 6L21 16L11 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                <?php endif; ?>
+                            <?php if ($can_quick_sign) : ?>
+                                <form class="page-tunnel-clh-petition-actions" method="post" action="">
+                                    <input type="hidden" name="user_email" value="<?php echo esc_attr($last_signer_email); ?>">
+                                    <input type="hidden" name="petition_id" value="<?php echo esc_attr((string) $petition['id']); ?>">
+                                    <input type="hidden" name="next_petition_slug" value="">
+                                    <input type="hidden" name="clh_quick_sign_petition" value="1">
+                                    <?php if ($code_origine) : ?>
+                                        <input type="hidden" name="code_origine" value="<?php echo esc_attr($code_origine); ?>">
+                                    <?php endif; ?>
+                                    <?php echo wp_nonce_field('clh_quick_sign_petition_' . (int) $petition['id'], 'clh_quick_sign_nonce', true, false); ?>
+                                    <?php if ($has_navigation) : ?>
+                                        <button type="button" class="page-tunnel-clh-action-button is-secondary" data-tunnel-clh-skip>
+                                            <span>Passer la pétition</span>
+                                            <svg class="action-icon" viewBox="0 0 67 50" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                                <path d="M16.5409 5.11247C15.9551 5.69849 15.6259 6.4932 15.6259 7.32184C15.6259 8.15048 15.9551 8.94519 16.5409 9.53122L32.0097 25L16.5409 40.4687C15.9717 41.0581 15.6567 41.8475 15.6638 42.6669C15.6709 43.4862 15.9996 44.27 16.579 44.8494C17.1584 45.4288 17.9422 45.7575 18.7615 45.7646C19.5809 45.7717 20.3703 45.4567 20.9597 44.8875L38.6378 27.2093C39.2236 26.6233 39.5527 25.8286 39.5527 25C39.5527 24.1713 39.2236 23.3766 38.6378 22.7906L20.9597 5.11247C20.3736 4.52662 19.5789 4.19751 18.7503 4.19751C17.9216 4.19751 17.1269 4.52662 16.5409 5.11247Z" fill="currentColor" />
+                                                <path d="M33.5409 5.11247C32.9551 5.69849 32.6259 6.4932 32.6259 7.32184C32.6259 8.15048 32.9551 8.94519 33.5409 9.53122L49.0097 25L33.5409 40.4687C32.9717 41.0581 32.6567 41.8475 32.6638 42.6669C32.6709 43.4862 32.9996 44.27 33.579 44.8494C34.1584 45.4288 34.9422 45.7575 35.7615 45.7646C36.5809 45.7717 37.3703 45.4567 37.9597 44.8875L55.6378 27.2093C56.2236 26.6233 56.5527 25.8286 56.5527 25C56.5527 24.1713 56.2236 23.3766 55.6378 22.7906L37.9597 5.11247C37.3736 4.52662 36.5789 4.19751 35.7503 4.19751C34.9216 4.19751 34.1269 4.52662 33.5409 5.11247Z" fill="currentColor" />
+                                            </svg>
+
+                                        </button>
+                                    <?php endif; ?>
+                                    <button type="submit" name="clh_quick_sign_petition" class="page-tunnel-clh-action-button is-primary">
+                                        <div class="action-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="20" height="19.97" viewBox="0 0 20 19.97">
+                                                <defs></defs>
+                                                <path fill="currentColor" d="M6.691,0.131 L0.137,6.674 C-0.061,6.872 -0.061,7.216 0.137,7.414 L2.490,9.762 C2.694,9.965 3.026,9.965 3.231,9.762 L3.745,9.249 C5.096,10.921 6.425,13.060 6.425,14.032 C6.425,14.187 6.389,14.302 6.320,14.371 C6.194,14.497 6.137,14.703 6.177,14.874 C6.263,15.244 6.298,15.396 12.933,17.736 C16.079,18.845 19.265,19.924 19.292,19.933 C19.480,19.997 19.691,19.948 19.845,19.793 C19.944,19.694 19.999,19.563 19.999,19.424 C19.999,19.366 19.990,19.310 19.961,19.227 C19.695,18.444 18.749,15.675 17.770,12.907 C15.428,6.283 15.274,6.247 14.904,6.161 C14.727,6.119 14.529,6.175 14.401,6.304 C13.876,6.828 11.357,5.413 9.269,3.733 L9.783,3.220 C9.981,3.022 9.981,2.678 9.783,2.480 L7.431,0.132 C7.226,-0.072 6.895,-0.072 6.691,0.131 ZM14.586,7.370 C15.206,8.761 16.880,13.480 18.252,17.466 L13.151,12.384 C13.288,12.126 13.360,11.839 13.360,11.544 C13.360,11.067 13.174,10.618 12.837,10.282 C12.138,9.585 11.002,9.585 10.304,10.282 C9.966,10.619 9.780,11.068 9.780,11.546 C9.780,12.024 9.966,12.473 10.304,12.811 C10.858,13.364 11.724,13.487 12.409,13.124 L17.499,18.217 C13.502,16.845 8.773,15.172 7.388,14.557 C7.434,14.402 7.457,14.232 7.457,14.048 C7.457,12.364 5.491,9.737 4.541,8.567 L8.587,4.528 C9.951,5.634 12.959,7.851 14.586,7.370 Z"></path>
+                                            </svg>
+                                        </div>
+                                        <span>Signer la pétition</span>
+
+                                    </button>
+                                </form>
+                            <?php else : ?>
+                                <div class="page-tunnel-clh-petition-actions">
+                                    <?php if ($has_navigation) : ?>
+                                        <button type="button" class="page-tunnel-clh-action-button is-secondary" data-tunnel-clh-skip>
+                                            <span>Passer la pétition</span>
+                                            <svg class="action-icon" viewBox="0 0 67 50" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                                <path d="M16.5409 5.11247C15.9551 5.69849 15.6259 6.4932 15.6259 7.32184C15.6259 8.15048 15.9551 8.94519 16.5409 9.53122L32.0097 25L16.5409 40.4687C15.9717 41.0581 15.6567 41.8475 15.6638 42.6669C15.6709 43.4862 15.9996 44.27 16.579 44.8494C17.1584 45.4288 17.9422 45.7575 18.7615 45.7646C19.5809 45.7717 20.3703 45.4567 20.9597 44.8875L38.6378 27.2093C39.2236 26.6233 39.5527 25.8286 39.5527 25C39.5527 24.1713 39.2236 23.3766 38.6378 22.7906L20.9597 5.11247C20.3736 4.52662 19.5789 4.19751 18.7503 4.19751C17.9216 4.19751 17.1269 4.52662 16.5409 5.11247Z" fill="currentColor" />
+                                                <path d="M33.5409 5.11247C32.9551 5.69849 32.6259 6.4932 32.6259 7.32184C32.6259 8.15048 32.9551 8.94519 33.5409 9.53122L49.0097 25L33.5409 40.4687C32.9717 41.0581 32.6567 41.8475 32.6638 42.6669C32.6709 43.4862 32.9996 44.27 33.579 44.8494C34.1584 45.4288 34.9422 45.7575 35.7615 45.7646C36.5809 45.7717 37.3703 45.4567 37.9597 44.8875L55.6378 27.2093C56.2236 26.6233 56.5527 25.8286 56.5527 25C56.5527 24.1713 56.2236 23.3766 55.6378 22.7906L37.9597 5.11247C37.3736 4.52662 36.5789 4.19751 35.7503 4.19751C34.9216 4.19751 34.1269 4.52662 33.5409 5.11247Z" fill="currentColor" />
+                                            </svg>
+                                        </button>
+                                    <?php endif; ?>
+                                    <button type="button" class="page-tunnel-clh-action-button is-primary" data-tunnel-clh-show-signature aria-controls="<?php echo esc_attr($accordion_id); ?>">
+                                        <div class="action-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="20" height="19.97" viewBox="0 0 20 19.97">
+                                                <defs></defs>
+                                                <path fill="currentColor" d="M6.691,0.131 L0.137,6.674 C-0.061,6.872 -0.061,7.216 0.137,7.414 L2.490,9.762 C2.694,9.965 3.026,9.965 3.231,9.762 L3.745,9.249 C5.096,10.921 6.425,13.060 6.425,14.032 C6.425,14.187 6.389,14.302 6.320,14.371 C6.194,14.497 6.137,14.703 6.177,14.874 C6.263,15.244 6.298,15.396 12.933,17.736 C16.079,18.845 19.265,19.924 19.292,19.933 C19.480,19.997 19.691,19.948 19.845,19.793 C19.944,19.694 19.999,19.563 19.999,19.424 C19.999,19.366 19.990,19.310 19.961,19.227 C19.695,18.444 18.749,15.675 17.770,12.907 C15.428,6.283 15.274,6.247 14.904,6.161 C14.727,6.119 14.529,6.175 14.401,6.304 C13.876,6.828 11.357,5.413 9.269,3.733 L9.783,3.220 C9.981,3.022 9.981,2.678 9.783,2.480 L7.431,0.132 C7.226,-0.072 6.895,-0.072 6.691,0.131 ZM14.586,7.370 C15.206,8.761 16.880,13.480 18.252,17.466 L13.151,12.384 C13.288,12.126 13.360,11.839 13.360,11.544 C13.360,11.067 13.174,10.618 12.837,10.282 C12.138,9.585 11.002,9.585 10.304,10.282 C9.966,10.619 9.780,11.068 9.780,11.546 C9.780,12.024 9.966,12.473 10.304,12.811 C10.858,13.364 11.724,13.487 12.409,13.124 L17.499,18.217 C13.502,16.845 8.773,15.172 7.388,14.557 C7.434,14.402 7.457,14.232 7.457,14.048 C7.457,12.364 5.491,9.737 4.541,8.567 L8.587,4.528 C9.951,5.634 12.959,7.851 14.586,7.370 Z"></path>
+                                            </svg>
+                                        </div>
+                                        <span>Signer la pétition</span>
+                                    </button>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php if (! empty($petition['image_id'])) : ?>
+                            <figure class="page-tunnel-clh-petition-card-media">
+                                <?php echo wp_get_attachment_image($petition['image_id'], 'medium_large', false, ['class' => 'page-tunnel-clh-petition-card-image']); ?>
+                            </figure>
+                        <?php endif; ?>
+
+
+                        <figure class="page-tunnel-clh-petition-card-context">
+                            <div class="tunnel-clh-petition-accordion-container">
+                                <button type="button" class="tunnel-clh-petition-accordion-toggle" aria-expanded="false" aria-controls="<?php echo esc_attr($accordion_id); ?>">Afficher plus de contexte</button>
+                                <div id="<?php echo esc_attr($accordion_id); ?>" class="tunnel-clh-petition-accordion-content" hidden>
+                                    <p class="page-tunnel-clh-petition-card-context-content">
+                                        <?php
+                                        if (! empty($petition['letter'])) {
+                                            echo esc_html(wp_strip_all_tags($petition['letter']));
+                                        } else {
+                                            echo 'Détails non disponibles';
+                                        }
+                                        ?>
+                                    </p>
+                                    <?php if (! $can_quick_sign) : ?>
+                                        <aside class="tunnel-clh-petition-signature-card petition-aside" aria-label="<?php echo esc_attr(sprintf('Formulaire de signature pour %s', $petition['title'])); ?>">
+                                            <div class="sticky-card">
+                                                <?php
+                                                get_template_part('partials/petition-signature-card-content', null, [
+                                                    'post_id' => (int) $petition['id'],
+                                                    'form_class' => 'tunnel-clh-petition-signature-form',
+                                                    'force_open' => true,
+                                                    'show_intro' => false,
+                                                ]);
+                                                ?>
+                                            </div>
+                                        </aside>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </figure>
+                    </article>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
