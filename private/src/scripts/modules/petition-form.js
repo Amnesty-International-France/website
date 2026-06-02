@@ -1,51 +1,61 @@
-function setRequiredHiddenFields(status) {
-  document.querySelector('.firstname-input').required = status;
-  document.querySelector('.lastname-input').required = status;
-  document.querySelector('.zipcode-input').required = status;
-  document.querySelector('.country-input').required = status;
+function setRequiredHiddenFields(form, status) {
+  [
+    '.firstname-input',
+    '.lastname-input',
+    '.zipcode-input',
+    '.country-input',
+  ].forEach((selector) => {
+    const field = form.querySelector(selector);
+
+    if (field) {
+      field.required = status;
+    }
+  });
 }
 
 export const toggleFullFormPetition = () => {
-  const emailInput = document.querySelector('.email-input');
-  const fullForm = document.querySelector('.full-form');
+  document.querySelectorAll('.signature-petition-form').forEach((form) => {
+    const emailInput = form.querySelector('.email-input');
+    const fullForm = form.querySelector('.full-form');
 
-  if (!emailInput || !fullForm) return;
+    if (!emailInput || !fullForm) return;
 
-  emailInput.addEventListener('input', () => {
-    const emailValue = emailInput.value.trim();
-    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue);
+    emailInput.addEventListener('input', () => {
+      const emailValue = emailInput.value.trim();
+      const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue);
 
-    if (isValid) {
-      const formData = new URLSearchParams();
-      formData.append('email', emailValue);
+      if (isValid) {
+        const formData = new URLSearchParams();
+        formData.append('email', emailValue);
 
-      fetch('/wp-json/humanity/v1/check-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData,
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error();
-          }
-          return response.json();
+        fetch('/wp-json/humanity/v1/check-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData,
         })
-        .then((data) => {
-          if (data.exists) {
-            fullForm.style.display = 'none';
-            setRequiredHiddenFields(false);
-          } else {
-            fullForm.style.display = 'flex';
-            setRequiredHiddenFields(true);
-          }
-        })
-        .catch();
-    } else {
-      fullForm.style.display = 'none';
-      setRequiredHiddenFields(false);
-    }
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error();
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.exists) {
+              fullForm.style.display = 'none';
+              setRequiredHiddenFields(form, false);
+            } else {
+              fullForm.style.display = 'flex';
+              setRequiredHiddenFields(form, true);
+            }
+          })
+          .catch();
+      } else {
+        fullForm.style.display = 'none';
+        setRequiredHiddenFields(form, false);
+      }
+    });
   });
 };
 
@@ -125,23 +135,19 @@ export const stepperTunnelClh = () => {
 };
 
 export const submitCodeOrigine = () => {
-  const form = document.querySelector('.signature-petition-form');
-
-  if (form) {
+  document.querySelectorAll('.signature-petition-form').forEach((form) => {
     form.addEventListener('submit', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const codeOrigineValue =
         urlParams.get('reserved_originecode') ?? urlParams.get('code_origine');
 
-      if (codeOrigineValue) {
-        if (!form.querySelector('input[name="code_origine"]')) {
-          const hiddenInput = document.createElement('input');
-          hiddenInput.type = 'hidden';
-          hiddenInput.name = 'code_origine';
-          hiddenInput.value = codeOrigineValue;
-          form.appendChild(hiddenInput);
-        }
+      if (codeOrigineValue && !form.querySelector('input[name="code_origine"]')) {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'code_origine';
+        hiddenInput.value = codeOrigineValue;
+        form.appendChild(hiddenInput);
       }
     });
-  }
+  });
 };
