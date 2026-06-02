@@ -32,4 +32,4 @@ jobs:
       - name: Deploy
         run: ssh staging '$HOME/deploy.sh'
       - name: Update schema
-        run: ssh staging 'cd var/www/website && wp update-db-schema'
+        run: ssh staging 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp update-db-schema'
