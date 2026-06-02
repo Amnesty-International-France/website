@@ -6,9 +6,19 @@ This is the repository for the redesign of the Amnesty International France webs
 
 ## Requirements
 
+- Ask for the `.env` file
 - PHP 8.0 or higher
 - MySQL version 8.0 or higher or MariaDB version 10.5 or higher
 - [Castor](https://github.com/jolicode/castor)
+
+Note : The database can be dockerized as follows :
+
+```
+Example with mariadb
+
+Command : docker run --detach --name amnesty -p 3306:3306 --env MARIADB_USER=admin --env MARIADB_PASSWORD=password123 --env MARIADB_DATABASE=amnesty --env MARIADB_ROOT_PASSWORD=root mariadb:latest
+DB_HOST value : your IP (like the one of your wifi)
+```
 
 ## Installation
 
@@ -21,7 +31,7 @@ The script needs to have the path `$HOME/.local/bin` into your `$PATH` because `
 If it is not, add the following line in your `.bashrc` or `.zschrc` : `export PATH="$HOME/.local/bin:$PATH"` 
 
 To start the installation script : `castor install`.  
-Example with all arguments : `castor install --path www --token my-github-token`.
+Example with all arguments : `castor install --path .` (or even `castor install --path www --token my-github-token`).
 
 It will install the environment with the [humanity theme](https://github.com/amnestywebsite/humanity-theme) and its required plugins.
 
@@ -70,6 +80,8 @@ yarn && yarn install
 yarn build
 ```
 
+You may need to execute `corepack enable` before.
+
 ## CI/CD
 
 pushing on branch `main` deploys on http://app-dadec8ba-25dc-44d7-b10d-6dd400a829fd.cleverapps.io 
@@ -85,7 +97,9 @@ For your plugin to be versioned on git, you need to add the following line to th
 
 ## Start WordPress
 
-To start WordPress, run : `wp server`
+To start WordPress, run : `wp server` (or with a clean one : `wp cli cache clear && wp cli cache prune && wp cache flush && wp server`)
+
+Note : You can add `--port={xyz}` to `wp server` if the port `{xyz}` is not `8080`.
 
 ## Configuration
 
@@ -140,8 +154,39 @@ Go in `Yoast SEO > Settings` tab and `Advanced > Breadcrumbs`:
 - Set `Anchor text for the Homepage` to **Accueil**
 - Set `Articles post` to **Types de contenu**
 
-## Amnesty International France - Donor Space Plugin
+### Extensions
 
+Go in `Extensions > Extensions installées` :
+- Tick the checkbox `Extension` (to select all)
+- Select `Action groupées > Activer`
+- `Appliquer`
+
+## Import some content from the (pre)prod
+
+Note : Here is for the homepage
+
+<<< /wp-admin in preprod (cf Google Doc for auth)
+- Select `Pages > Toutes les pages`
+- `Accueil`
+- Burger (next to `Enregistrer` button) => `Editeur de code`
+- Copy the code
+- Burger > `Editeur visuel`
+
+<<< /wp-admin in local
+- Select `Page > Ajouter une page`
+- `Titre : Accueil` (for instance)
+- Burger => `Editeur de code`
+- Paste the code
+- Burger => `Editeur visuel`
+- `Publier`
+
+<<< /wp-admin in local
+- Select `Réglages > Lecture`
+- `La page d’accueil affiche :` > `Une page statique`
+- `Page d’accueil : Accueil`
+- `Enregistrer`
+
+## Amnesty International France - Donor Space Plugin
 
 **Amnesty International France Donor Space** is distributed as a plugin.
 

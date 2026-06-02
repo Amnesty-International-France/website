@@ -27,6 +27,25 @@ import a precise article with **--id** :
 wp prismic-migration --id=ABCD12345
 ```
 
+#### List of some Custom Post Type
+
+- action
+- actionmobilisation
+- articlechronique
+- communiquePresse
+- dossier
+- edh
+- evenement
+- index
+- news
+- page
+- pays
+- petition
+- portrait
+- rapport
+- soutien
+- structureMilitante
+
 ## Repair Links
 
 Execute this command to repair links in posts/pages after an import.
