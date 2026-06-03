@@ -1,16 +1,13 @@
 function setRequiredHiddenFields(form, status) {
-  [
-    '.firstname-input',
-    '.lastname-input',
-    '.zipcode-input',
-    '.country-input',
-  ].forEach((selector) => {
-    const field = form.querySelector(selector);
+  ['.firstname-input', '.lastname-input', '.zipcode-input', '.country-input'].forEach(
+    (selector) => {
+      const field = form.querySelector(selector);
 
-    if (field) {
-      field.required = status;
-    }
-  });
+      if (field) {
+        field.required = status;
+      }
+    },
+  );
 }
 
 export const toggleFullFormPetition = () => {
@@ -60,36 +57,35 @@ export const toggleFullFormPetition = () => {
 };
 
 export const initTunnelClhForm = () => {
-  const card = document.querySelector('.tunnel-clh-card');
-  if (!card) return;
+  document.querySelectorAll('.page-tunnel-clh-card').forEach((card) => {
+    const signForm = card.querySelector('.tunnel-clh-sign-form');
+    if (!signForm) return;
 
-  const signForm = card.querySelector('.tunnel-clh-sign-form');
-  if (!signForm) return;
+    const emailStep = signForm.querySelector('.tunnel-clh-email-step');
+    const signBtn = card.querySelector(`[form="${signForm.id}"][name="sign_petition"]`);
 
-  const emailStep = signForm.querySelector('.tunnel-clh-email-step');
-  const signBtn = signForm.querySelector('[name="sign_petition"]');
+    if (!signBtn) return;
 
-  if (!signBtn) return;
+    signBtn.addEventListener('click', (e) => {
+      const email = card.dataset.email;
 
-  signBtn.addEventListener('click', (e) => {
-    const email = card.dataset.email;
-
-    if (email) {
-      let hiddenEmail = signForm.querySelector('input[type="hidden"][name="user_email"]');
-      if (!hiddenEmail) {
-        hiddenEmail = document.createElement('input');
-        hiddenEmail.type = 'hidden';
-        hiddenEmail.name = 'user_email';
-        signForm.appendChild(hiddenEmail);
+      if (email) {
+        let hiddenEmail = signForm.querySelector('input[type="hidden"][name="user_email"]');
+        if (!hiddenEmail) {
+          hiddenEmail = document.createElement('input');
+          hiddenEmail.type = 'hidden';
+          hiddenEmail.name = 'user_email';
+          signForm.appendChild(hiddenEmail);
+        }
+        hiddenEmail.value = email;
+        return;
       }
-      hiddenEmail.value = email;
-      return;
-    }
 
-    if (!emailStep || !emailStep.hidden) return;
-    e.preventDefault();
-    emailStep.hidden = false;
-    emailStep.querySelector('input[type="email"]')?.focus();
+      if (!emailStep || !emailStep.hidden) return;
+      e.preventDefault();
+      emailStep.hidden = false;
+      emailStep.querySelector('input[type="email"]')?.focus();
+    });
   });
 };
 
