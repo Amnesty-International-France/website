@@ -9,7 +9,9 @@ declare(strict_types=1);
  * Inserter: no
  */
 
-amnesty_start_secure_session();
+$context = amnesty_get_clh_tunnel_context();
+$last_signer_email = $context['last_signer_email'] ?? null;
+$next_petition = $context['next_petition'] ?? null;
 
 $post = get_post();
 $parent = $post->post_parent;
