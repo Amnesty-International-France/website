@@ -20,6 +20,17 @@ if (!$post_object instanceof WP_Post) {
     $percentage = ($goal > 0) ? min(($current / $goal) * 100, 100) : 0;
 } else {
     $permalink   = get_permalink($post_object);
+    $page_id =  get_queried_object_id();
+    $clh_campaign = amnesty_get_active_clh_campaign_for_page($page_id);
+    $is_active_campaign = $clh_campaign instanceof WP_Post;
+
+    if ($is_active_campaign && $clh_campaign->ID) {
+        $permalink = add_query_arg(
+            ['is_active_campaign_clh' => ''],
+            get_permalink($post_object)
+        );
+    }
+
     $title       = get_the_title($post_object);
     $date        = get_the_date('', $post_object);
     $thumbnail   = get_the_post_thumbnail($post_id, 'medium', ['class' => 'petition-image']);
