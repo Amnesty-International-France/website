@@ -26,7 +26,7 @@ jobs:
       - name: Run PHP-CS-Fixer
         run: composer run cs
       - name: Run PHPStan
-        run: composer run analyse -- --no-progress --error-format=github
+        run: composer run analyse -- --no-progress --error-format=raw
 
   github-actions:
     name: GitHub Actions Lint
