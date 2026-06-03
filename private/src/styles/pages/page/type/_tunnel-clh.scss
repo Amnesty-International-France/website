@@ -1,3 +1,31 @@
+.tunnel-clh-stepper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 32px;
+}
+
+.tunnel-clh-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+    color: #aaa;
+
+    &.is-checked {
+        background-color: #e8232a;
+        border-color: #e8232a;
+        color: #fff;
+    }
+}
+
 .tunnel-clh-layout {
     max-width: $container-md;
     margin-inline: auto;
