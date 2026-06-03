@@ -349,7 +349,7 @@ function amnesty_handle_petition_skip(): void
 }
 add_action('template_redirect', 'amnesty_handle_petition_skip');
 
-function amnesty_active_petitions_clh($petition_id): bool
+function amnesty_is_petition_not_expired($petition_id): bool
 {
     $end_date = get_field('date_de_fin', $petition_id);
     $end_date_timestamp = !empty($end_date) ? strtotime($end_date) : false;
