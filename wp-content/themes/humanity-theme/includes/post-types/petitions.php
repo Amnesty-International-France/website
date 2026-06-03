@@ -138,19 +138,30 @@ function amnesty_get_petition_signature_count($post_id)
 if (!function_exists('amnesty_get_clh_petition_tunnel_page')) {
     function amnesty_get_clh_petition_tunnel_page(): ?WP_Post
     {
+        // get_page_by_path() issues a DB query every call and is not object-cached by WordPress.
+        // This function is called from amnesty_get_clh_petition_tunnel_url(), which is itself called
+        // on every petition page load (signature redirect) and on every skip/sign handler.
+        // A static variable with a false sentinel (false = not yet evaluated, null = evaluated & not found)
+        // ensures the two DB queries run at most once per request regardless of how many call sites invoke it.
+        static $cache = false;
+
+        if ($cache !== false) {
+            return $cache;
+        }
+
         $clh_page = get_page_by_path('nous-connaitre/nos-combats/changez-leur-histoire/tunnel-clh');
 
         if ($clh_page instanceof WP_Post) {
-            return $clh_page;
+            return $cache = $clh_page;
         }
 
         $clh_page = get_page_by_path('tunnel-clh');
 
         if ($clh_page instanceof WP_Post) {
-            return $clh_page;
+            return $cache = $clh_page;
         }
 
-        return null;
+        return $cache = null;
     }
 }
 
@@ -172,33 +183,56 @@ if (!function_exists('amnesty_get_clh_petition_tunnel_url')) {
 if (!function_exists('amnesty_get_clh_petition_campaign_page')) {
     function amnesty_get_clh_petition_campaign_page(): ?WP_Post
     {
+        // Same caching rationale as amnesty_get_clh_petition_tunnel_page(): get_page_by_path() is an
+        // uncached DB query. This function is now called unconditionally on every petition page render
+        // (via amnesty_is_clh_petition_tunnel_active() in aside-petition-sticky.php), so without a cache
+        // it issues up to 2 DB queries per request regardless of whether a CLH campaign is active.
+        // false = not yet evaluated; null = evaluated, page not found in DB.
+        static $cache = false;
+
+        if ($cache !== false) {
+            return $cache;
+        }
+
         $clh_page = get_page_by_path('nous-connaitre/nos-combats/changez-leur-histoire');
 
         if ($clh_page instanceof WP_Post) {
-            return $clh_page;
+            return $cache = $clh_page;
         }
 
         $clh_page = get_page_by_path('changez-leur-histoire');
 
         if ($clh_page instanceof WP_Post) {
-            return $clh_page;
+            return $cache = $clh_page;
         }
 
-        return null;
+        return $cache = null;
     }
 }
 
 if (!function_exists('amnesty_get_active_clh_campaign_for_page')) {
     function amnesty_get_active_clh_campaign_for_page(int $page_id): ?WP_Post
     {
+        // This function makes up to 4 get_field() calls (highlight_clh, campaign_clh,
+        // start_date_highligth_clh, end_date_highlight_clh). ACF caches field values per post ID
+        // within a request, but the function itself is invoked from multiple call sites on the same
+        // page (aside-petition-sticky, slider block render, petition-card partial, tunnel content pattern).
+        // A per-page-id static cache avoids redundant ACF lookups and keeps the hot path cheap.
+        // false = not yet evaluated for this page_id; null = evaluated, no active campaign found.
+        static $cache = [];
+
+        if (array_key_exists($page_id, $cache)) {
+            return $cache[$page_id];
+        }
+
         if (!get_field('highlight_clh', $page_id)) {
-            return null;
+            return $cache[$page_id] = null;
         }
 
         $campaign = get_field('campaign_clh', $page_id);
 
         if (!$campaign instanceof WP_Post) {
-            return null;
+            return $cache[$page_id] = null;
         }
 
         $timestamp_now   = current_time('timestamp');
@@ -208,14 +242,14 @@ if (!function_exists('amnesty_get_active_clh_campaign_for_page')) {
         $timestamp_end   = $end_date ? strtotime((string) $end_date) : 0;
 
         if ($timestamp_start > $timestamp_now) {
-            return null;
+            return $cache[$page_id] = null;
         }
 
         if ($timestamp_end <= $timestamp_now) {
-            return null;
+            return $cache[$page_id] = null;
         }
 
-        return $campaign;
+        return $cache[$page_id] = $campaign;
     }
 }
 
@@ -452,6 +486,14 @@ function amnesty_handle_petition_signature(): void
             'expires'  => time() + 30 * DAY_IN_SECONDS,
             'path'     => '/',
             'secure'   => is_ssl(),
+            'samesite' => 'Strict',
+        ]);
+
+        setcookie('clh_user_email', $user_email, [
+            'expires'  => time() + 30 * DAY_IN_SECONDS,
+            'path'     => '/',
+            'secure'   => is_ssl(),
+            'httponly' => false,
             'samesite' => 'Strict',
         ]);
     }
