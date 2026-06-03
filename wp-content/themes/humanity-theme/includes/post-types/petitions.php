@@ -399,7 +399,7 @@ function amnesty_handle_petition_signature(): void
 
     $petition_id = absint($_POST['petition_id']);
     $is_clh_tunnel = amnesty_is_clh_petition_tunnel_active()
-        && (isset($_POST['from_tunnel']) || get_field('clh_petition', $petition_id));
+        && get_field('clh_petition', $petition_id);
 
     $raw_email = $_POST['user_email'] ?? null;
     if (!$raw_email && $is_clh_tunnel) {
