@@ -151,6 +151,56 @@ export const stepperTunnelClh = () => {
   }
 };
 
+const getSignedPetitionIds = () => {
+  try {
+    return JSON.parse(localStorage.getItem('signedPetition') ?? '[]');
+  } catch {
+    return [];
+  }
+};
+
+export const getPetitionIdForCLH = () => {
+  const button = document.getElementById('petition-clh');
+
+  if (!button) return;
+
+  const currentPetitionId = String(button.dataset.petitionId);
+
+  if (!currentPetitionId) return;
+
+  const signForm = button.closest('form');
+
+  if (!signForm) return;
+
+  signForm.addEventListener('submit', () => {
+    const stored = getSignedPetitionIds();
+    const updated = [...new Set([...stored.map(String), currentPetitionId])];
+    localStorage.setItem('signedPetition', JSON.stringify(updated));
+
+    const expires = new Date();
+    expires.setDate(expires.getDate() + 30);
+    document.cookie = `clh_signed_petitions=${encodeURIComponent(JSON.stringify(updated))};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
+  });
+};
+
+export const stepperTunnelClh = () => {
+  const stepper = document.querySelector('.tunnel-clh-stepper');
+  if (!stepper) return;
+
+  const serverCount =
+    stepper?.dataset.signedCount !== undefined ? parseInt(stepper?.dataset.signedCount, 10) : null;
+
+  const localStorageIds = getSignedPetitionIds();
+  const checkedCount = serverCount || localStorageIds.length;
+  const limit = Math.min(checkedCount, stepper.children.length);
+
+  Array.from(stepper.children).forEach((child) => child.classList.remove('is-checked'));
+
+  for (let i = 0; i < limit; i++) {
+    stepper.children[i].classList.add('is-checked');
+  }
+};
+
 export const submitCodeOrigine = () => {
   document.querySelectorAll('.signature-petition-form').forEach((form) => {
     form.addEventListener('submit', () => {

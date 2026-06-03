@@ -9,15 +9,15 @@
 
 $type = get_field('type')['value'] ?? 'petition';
 if ($type === 'action-soutien') {
-    $enable_user_message = get_field('autoriser_message_utilisateur');
-    $phone_required = get_field('phone_required');
-    $form_contenu = get_field('form_contenu');
-    $button_text = get_field('button_text');
-    $comment_max_length = (int)get_field('comment_max_length');
-    $terms = get_field('terms');
+	$enable_user_message = get_field('autoriser_message_utilisateur');
+	$phone_required = get_field('phone_required');
+	$form_contenu = get_field('form_contenu');
+	$button_text = get_field('button_text');
+	$comment_max_length = (int)get_field('comment_max_length');
+	$terms = get_field('terms');
 } else {
-    $punchline = get_field('punchline');
-    $recipient = get_field('destinataire');
+	$punchline = get_field('punchline');
+	$recipient = get_field('destinataire');
 }
 
 $current_date = date('Y-m-d');
