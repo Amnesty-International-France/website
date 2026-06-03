@@ -9,15 +9,15 @@
 
 $type = get_field('type')['value'] ?? 'petition';
 if ($type === 'action-soutien') {
-	$enable_user_message = get_field('autoriser_message_utilisateur');
-	$phone_required = get_field('phone_required');
-	$form_contenu = get_field('form_contenu');
-	$button_text = get_field('button_text');
-	$comment_max_length = (int)get_field('comment_max_length');
-	$terms = get_field('terms');
+    $enable_user_message = get_field('autoriser_message_utilisateur');
+    $phone_required = get_field('phone_required');
+    $form_contenu = get_field('form_contenu');
+    $button_text = get_field('button_text');
+    $comment_max_length = (int)get_field('comment_max_length');
+    $terms = get_field('terms');
 } else {
-	$punchline = get_field('punchline');
-	$recipient = get_field('destinataire');
+    $punchline = get_field('punchline');
+    $recipient = get_field('destinataire');
 }
 
 $current_date = date('Y-m-d');
@@ -93,16 +93,16 @@ $is_campaign_clh = get_field('clh_petition', $post_id) && amnesty_is_clh_petitio
 								<select class="country-input " name="user_country">
 									<option value=""><?php _e('Pays*', 'textdomain'); ?></option>
 									<?php
-									$countries = get_posts([
-										'post_type' => 'fiche_pays',
-										'posts_per_page' => -1,
-										'orderby' => 'title',
-										'order' => 'ASC',
-									]);
+                                    $countries = get_posts([
+                                        'post_type' => 'fiche_pays',
+                                        'posts_per_page' => -1,
+                                        'orderby' => 'title',
+                                        'order' => 'ASC',
+                                    ]);
 
-									foreach ($countries as $country) :
-										$country_name = get_the_title($country->ID);
-										?>
+			    foreach ($countries as $country) :
+			        $country_name = get_the_title($country->ID);
+			        ?>
 										<option
 											value="<?php echo esc_attr($country_name); ?>" <?php if (esc_attr($country_name) === 'France') : ?> selected="selected"<?php endif; ?>>
 											<?php echo esc_html(ucwords(strtolower($country_name))); ?>

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 amnesty_start_secure_session();
 
-$post   = get_post();
+$post = get_post();
 $parent = $post->post_parent;
 
 $active_campaign = amnesty_get_active_clh_campaign_for_page($parent);
@@ -21,10 +21,10 @@ if (!$active_campaign) {
     exit();
 }
 
-$end_date  = get_field('end_date_highlight_clh', $active_campaign->ID);
+$end_date = get_field('end_date_highlight_clh', $active_campaign->ID);
 $countdown = strtotime($end_date) - time();
 
-$raw_email = $_SESSION['clh_last_signer_email'] ?? null;
+$raw_email = $_SESSION['clh_last_signer_email'] ?? $_COOKIE['clh_user_email'] ?? null;
 
 $last_signer_email = ($raw_email && is_email($raw_email)) ? sanitize_email($raw_email) : null;
 $current_user = $last_signer_email ? get_local_user($last_signer_email) : false;
@@ -57,7 +57,7 @@ foreach ($list_petitions_clh as $petition) {
     ];
 }
 $signed_count = count(array_filter($selected_posts, fn ($p) => $p['already_signed'] === true));
-$total_steps  = min(10, count($list_petitions_clh));
+$total_steps = min(10, count($list_petitions_clh));
 
 $not_signed = \array_filter(
     $selected_posts,
@@ -80,7 +80,7 @@ $next_petition = $not_signed[$random_key];
 	<!-- wp:group {"tagName":"section","className":"page-content"} -->
 	<section class="wp-block-group page-content">
 		<div class="tunnel-clh-layout">
-			<div class="tunnel-clh-stepper" data-signed-count="<?=esc_attr($signed_count); ?>">
+			<div class="tunnel-clh-stepper" data-signed-count="<?= esc_attr($signed_count); ?>">
 				<?php for ($i = 0; $i < $total_steps; $i++) : ?>
 					<div class="tunnel-clh-step <?= $i < $signed_count ? 'is-checked' : ''; ?>">
 						<?php if ($i < $signed_count) : ?>
