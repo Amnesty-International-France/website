@@ -113,53 +113,11 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
 					</div>
 				<?php endfor; ?>
 			</div>
-			<div
-				class="tunnel-clh-card"
-				<?php if ($last_signer_email) : ?>
-					data-email="<?= esc_attr($last_signer_email); ?>"
-				<?php endif; ?>
-			>
-				<?php $thumbnail_url = get_the_post_thumbnail_url($next_petition['id'], 'full'); ?>
-				<?php if ($thumbnail_url) : ?>
-					<img src="<?= esc_url($thumbnail_url); ?>"
-					     alt="<?= esc_attr(get_the_title($next_petition['id'])); ?>">
-				<?php endif; ?>
-
-				<h2><?= esc_html(get_the_title($next_petition['id'])); ?></h2>
-
-				<form class="tunnel-clh-sign-form" method="post" action="">
-					<?php if (!$last_signer_email) : ?>
-						<div class="tunnel-clh-email-step" hidden>
-							<div class="email-section">
-								<input class="email-input" type="email" name="user_email" placeholder="Email*" required>
-							</div>
-						</div>
-					<?php endif; ?>
-					<div class="cf-turnstile" data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
-					<input type="hidden" name="petition_id" value="<?= esc_attr((string)$next_petition['id']); ?>">
-					<input type="hidden" name="from_tunnel" value="1">
-					<?php if ($last_signer_email) : ?>
-						<input type="hidden" name="user_email" value="<?= esc_attr($last_signer_email); ?>">
-					<?php endif; ?>
-					<button
-						type="submit"
-						name="sign_petition">
-						Signer la pétition
-					</button>
-				</form>
-				<form class="tunnel-clh-skip-form" method="post" action="">
-					<input type="hidden" name="petition_id" value="<?= esc_attr((string)$next_petition['id']); ?>">
-					<?php if ($last_signer_email) : ?>
-						<input type="hidden" name="user_email" value="<?= esc_attr($last_signer_email); ?>">
-					<?php endif; ?>
-					<button type="submit" name="skip_petition">Passer la pétition</button>
-				</form>
-			</div>
 		</div>
 	</section>
 	<!-- /wp:group -->
 
-<article class="wp-block-group page page-tunnel-clh-card">
+	<article class="wp-block-group page page-tunnel-clh-card">
     <div class="page-tunnel-clh-card-subtitle-wrapper">
         <h2 class="page-tunnel-clh-subtitle">Signez pour changer leur histoire</h2>
         <p class="page-tunnel-clh-description">Votre signature compte bien plus que vous ne l'imaginez.
@@ -287,4 +245,6 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
             </div>
         </div>
     </div>
+	</article>
 </article>
+<!-- /wp:group -->
