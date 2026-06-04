@@ -15,9 +15,20 @@ $stepper_classes = trim('tunnel-clh-stepper ' . $modifier_class);
 ?>
 <div class="<?php echo esc_attr($stepper_classes); ?>" data-signed-count="<?php echo esc_attr((string) $signed_count); ?>" aria-label="Progression des signatures">
     <?php for ($i = 0; $i < $total_steps; $i++) : ?>
-        <div class="tunnel-clh-step<?php echo $i < $signed_count ? ' is-checked' : ''; ?>">
-            <?php if ($i < $signed_count) : ?>
-                <span class="step-icon">&#10003;</span>
+        <?php
+        $is_signed = $i < $signed_count;
+        $step_label = sprintf(
+            'Étape %1$d sur %2$d : pétition %3$s',
+            $i + 1,
+            $total_steps,
+            $is_signed ? 'signée' : 'à signer'
+        );
+        ?>
+        <div class="tunnel-clh-step<?php echo $is_signed ? ' is-checked' : ''; ?>" aria-label="<?php echo esc_attr($step_label); ?>">
+            <?php if ($is_signed) : ?>
+                <span class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="13" viewBox="0 0 16 13" fill="currentColor" aria-hidden="true" focusable="false">
+                        <path d="M5.175 12.95L0 7.775L2.35833 5.41667L5.175 8.24167L13.4083 0L15.7667 2.35833L5.175 12.95Z" fill="currentColor" />
+                    </svg></span>
             <?php else : ?>
                 <span class="step-number"><?php echo esc_html((string) ($i + 1)); ?></span>
             <?php endif; ?>
