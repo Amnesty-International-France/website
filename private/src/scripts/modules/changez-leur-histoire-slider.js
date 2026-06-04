@@ -22,7 +22,7 @@ const setAccordionState = (content, expanded) => {
   content.style.maxHeight = `${content.scrollHeight}px`;
 };
 
-const bindTunnelAccordion = (container, refreshLayout = () => {}) => {
+const bindTunnelAccordion = (container) => {
   if (!container.classList.contains('page-tunnel-clh-carousel')) {
     return;
   }
@@ -60,11 +60,9 @@ const bindTunnelAccordion = (container, refreshLayout = () => {}) => {
 
           content.removeEventListener('transitionend', handleOpenTransitionEnd);
           content.style.maxHeight = 'none';
-          requestAnimationFrame(() => refreshLayout());
         };
 
         content.addEventListener('transitionend', handleOpenTransitionEnd);
-        requestAnimationFrame(() => refreshLayout());
         return;
       }
 
@@ -75,7 +73,6 @@ const bindTunnelAccordion = (container, refreshLayout = () => {}) => {
 
         content.hidden = true;
         content.removeEventListener('transitionend', handleTransitionEnd);
-        refreshLayout();
       };
 
       content.addEventListener('transitionend', handleTransitionEnd);
@@ -112,14 +109,12 @@ const changezLeurHistoireSlider = () => {
     const slidesPerView = container.dataset.slidesPerView
       ? Number(container.dataset.slidesPerView)
       : 'auto';
-    const useAutoHeight = container.classList.contains('page-tunnel-clh-carousel');
     const swiper = new Swiper(swiperElement, {
       modules: [Navigation],
       centeredSlides,
       slidesOffsetBefore: 0,
       slidesPerView,
       spaceBetween: 24,
-      autoHeight: useAutoHeight,
       loop: false,
       initialSlide: 0,
       navigation: {
@@ -129,35 +124,6 @@ const changezLeurHistoireSlider = () => {
     });
 
     swiperInstances.set(container, swiper);
-
-    if (container.classList.contains('page-tunnel-clh-carousel')) {
-      const forceActiveSlideHeight = () => {
-        const activeSlide = container.querySelector('.swiper-slide.swiper-slide-active')
-          || container.querySelector('.swiper-slide');
-
-        if (!activeSlide) {
-          return;
-        }
-
-        const nextHeight = activeSlide.scrollHeight;
-
-        if (!nextHeight) {
-          return;
-        }
-
-        swiper.el.style.height = `${nextHeight}px`;
-        swiper.wrapperEl.style.height = `${nextHeight}px`;
-      };
-
-      const refreshSwiperHeight = () => {
-        swiper.updateAutoHeight();
-        swiper.update();
-        requestAnimationFrame(() => forceActiveSlideHeight());
-      };
-
-      swiper.on('slideChangeTransitionEnd', refreshSwiperHeight);
-      bindTunnelAccordion(container, refreshSwiperHeight);
-    }
   });
 };
 
