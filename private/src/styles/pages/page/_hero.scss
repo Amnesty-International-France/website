@@ -298,7 +298,18 @@
   width: 100vw;
 
   .page-hero-title-wrapper {
-    top: 22%;
+    top: 15%;
+  }
+
+  .page-hero-title-wrapper .container .container-title {
+    text-align: center;
+
+    .page-hero-title {
+      font-family: bely-display, sans-serif;
+      font-weight: normal;
+      line-height: 4.625rem;
+      font-size: 3.5rem;
+    }
   }
 
   @media (max-width: ($container-md - 1px)) {
