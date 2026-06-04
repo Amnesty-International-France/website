@@ -152,6 +152,7 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
                             </p>
                         </div>
                         <form id="<?php echo esc_attr($skip_form_id); ?>" class="tunnel-clh-skip-form" method="post" action="">
+                            <?php wp_nonce_field('clh_skip_petition', 'clh_skip_nonce'); ?>
                             <input type="hidden" name="petition_id" value="<?= esc_attr((string) $next_petition['id']); ?>">
                             <?php if ($last_signer_email) : ?>
                                 <input type="hidden" name="user_email" value="<?= esc_attr($last_signer_email); ?>">
