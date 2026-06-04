@@ -63,10 +63,11 @@ export const initTunnelClhForm = () => {
 
     const emailStep = signForm.querySelector('.tunnel-clh-email-step');
     const signBtn = card.querySelector(`[form="${signForm.id}"][name="sign_petition"]`);
+    const mobileSignCta = card.querySelector(`[data-sign-form="${signForm.id}"]`);
 
     if (!signBtn) return;
 
-    signBtn.addEventListener('click', (e) => {
+    const prepareSignature = () => {
       const email = card.dataset.email;
 
       if (email) {
@@ -78,13 +79,40 @@ export const initTunnelClhForm = () => {
           signForm.appendChild(hiddenEmail);
         }
         hiddenEmail.value = email;
+        return true;
+      }
+
+      if (!emailStep || !emailStep.hidden) return true;
+
+      emailStep.hidden = false;
+      emailStep.querySelector('input[type="email"]')?.focus();
+      return false;
+    };
+
+    signBtn.addEventListener('click', (e) => {
+      if (!prepareSignature()) {
+        e.preventDefault();
+      }
+    });
+
+    const submitFromMobileCta = (event) => {
+      event.preventDefault();
+
+      if (!prepareSignature()) return;
+
+      if (signForm.requestSubmit) {
+        signForm.requestSubmit(signBtn);
         return;
       }
 
-      if (!emailStep || !emailStep.hidden) return;
-      e.preventDefault();
-      emailStep.hidden = false;
-      emailStep.querySelector('input[type="email"]')?.focus();
+      signBtn.click();
+    };
+
+    mobileSignCta?.addEventListener('click', submitFromMobileCta);
+    mobileSignCta?.addEventListener('keydown', (event) => {
+      if (![' ', 'Enter'].includes(event.key)) return;
+
+      submitFromMobileCta(event);
     });
   });
 };
