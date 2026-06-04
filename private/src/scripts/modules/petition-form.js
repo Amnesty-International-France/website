@@ -68,17 +68,10 @@ export const initTunnelClhForm = () => {
     if (!signBtn) return;
 
     const prepareSignature = () => {
-      const email = card.dataset.email;
+      const emailInput = signForm.querySelector('input[name="user_email"]');
+      const email = emailInput?.value.trim();
 
       if (email) {
-        let hiddenEmail = signForm.querySelector('input[type="hidden"][name="user_email"]');
-        if (!hiddenEmail) {
-          hiddenEmail = document.createElement('input');
-          hiddenEmail.type = 'hidden';
-          hiddenEmail.name = 'user_email';
-          signForm.appendChild(hiddenEmail);
-        }
-        hiddenEmail.value = email;
         return true;
       }
 
