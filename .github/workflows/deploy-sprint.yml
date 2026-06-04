@@ -32,4 +32,4 @@ jobs:
       - name: Deploy
         run: ssh server '$HOME/deploy.sh'
       - name: Update schema
-        run: ssh server  'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp update-db-schema'
+        run: ssh server  'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp-cli update-db-schema'
