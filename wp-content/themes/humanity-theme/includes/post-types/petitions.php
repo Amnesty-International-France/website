@@ -368,6 +368,21 @@ function amnesty_handle_petition_signature(): void
 
     if ($is_clh_tunnel) {
         amnesty_set_clh_signer_email($user_email);
+
+        $cookie_signed = [];
+        if (!empty($_COOKIE['clh_signed_petitions'])) {
+            $decoded = json_decode(stripslashes($_COOKIE['clh_signed_petitions']), true);
+            if (is_array($decoded)) {
+                $cookie_signed = array_map('intval', $decoded);
+            }
+        }
+        $cookie_signed[] = $petition_id;
+        setcookie('clh_signed_petitions', wp_json_encode(array_unique($cookie_signed)), [
+            'expires'  => time() + 30 * DAY_IN_SECONDS,
+            'path'     => '/',
+            'secure'   => is_ssl(),
+            'samesite' => 'Strict',
+        ]);
     }
 
     $redirect_url = amnesty_get_petition_signature_redirect_url($petition_id, [

@@ -126,10 +126,6 @@ $is_campaign_clh = get_field('clh_petition', $post_id) && amnesty_is_clh_petitio
 								type="submit"
 								name="sign_petition"
 								class="custom-button"
-								<?php if ($is_campaign_clh) : ?>
-									id="petition-clh"
-									data-petition-id="<?php echo esc_attr($post_id) ?>"
-								<?php endif; ?>
 							>
 								<div class='content bg-yellow medium'>
 									<div class="icon-container">
