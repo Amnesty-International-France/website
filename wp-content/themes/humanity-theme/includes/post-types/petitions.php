@@ -397,10 +397,7 @@ function amnesty_is_clh_petition_tunnel_page(?WP_Post $post = null): bool
 
     $template_slug = get_page_template_slug($post->ID);
     $tunnel_templates = [
-        'page-merci-petition-clh',
-        'page-merci-petition-clh.html',
-        'page-tunnel-clh',
-        'page-tunnel-clh.html',
+        'page-merci-tunnel-clh.html',
     ];
 
     if (in_array($template_slug, $tunnel_templates, true)) {
