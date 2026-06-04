@@ -30,4 +30,6 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
       - name: Deploy
-        run: ssh server '~/deploy.sh'
+        run: ssh server '$HOME/deploy.sh'
+      - name: Update schema
+        run: ssh server  'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp update-db-schema'
