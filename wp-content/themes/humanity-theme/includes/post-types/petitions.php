@@ -155,12 +155,6 @@ if (!function_exists('amnesty_get_clh_petition_tunnel_page')) {
             return $cache = $clh_page;
         }
 
-        $clh_page = get_page_by_path('merci-petition-clh');
-
-        if ($clh_page instanceof WP_Post) {
-            return $cache = $clh_page;
-        }
-
         return $cache = null;
     }
 }
@@ -463,7 +457,7 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
             'current' => $current,
             'percentage' => ($goal > 0) ? min(($current / $goal) * 100, 100) : 0,
             'already_signed' => $last_signer_email && $current_user && have_signed($petition->ID, $current_user->id),
-            'active' => amnesty_active_petitions_clh($petition->ID),
+            'active' => amnesty_is_petition_not_expired($petition->ID),
             'already_skipped' => in_array($petition->ID, $skipped_petitions, true),
         ];
     }
