@@ -1,50 +1,70 @@
 .tunnel-clh-stepper {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-    margin: 24px 0 32px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 24px 0;
+  gap: 20px;
 }
 
 .tunnel-clh-stepper--mobile {
-    display: none;
+  display: none;
+}
+
+@media (min-width: $container-md) {
+  .tunnel-clh-stepper--desktop {
+    .tunnel-clh-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: calc(100% + 4px);
+      width: 12px;
+      height: 1px;
+      background-color: var(--wp--preset--color--black);
+      transform: translateY(-50%);
+    }
+  }
 }
 
 .tunnel-clh-step {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid currentColor;
-    font-size: 14px;
-    font-weight: 600;
-    flex-shrink: 0;
-    color: #aaa;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--wp--preset--color--black);
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+  color: var(--wp--preset--color--black);
 
-    &.is-checked {
-        background-color: #e8232a;
-        border-color: #e8232a;
-        color: #fff;
+  &.is-checked {
+    background-color: var(--wp--preset--color--primary);
+    color: var(--wp--preset--color--black);
+
+    .step-icon {
+      display: flex;
     }
+  }
 }
 
 .tunnel-clh-sign-form,
 .tunnel-clh-skip-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .tunnel-clh-email-step {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 
-    input[type='email'] {
-        width: 100%;
-    }
+  input[type='email'] {
+    width: 100%;
+  }
 }
 
 .page-tunnel-clh-card {
@@ -110,16 +130,19 @@
   .tunnel-clh-stepper--mobile {
     justify-content: center;
     margin: 16px 0 0;
-  }
+    gap: 5px;
 
-  .tunnel-clh-step {
-    background-color: var(--wp--preset--color--white);
-    color: var(--wp--preset--color--black);
+    .tunnel-clh-step {
+      width: 30px;
+      height: 30px;
+      background-color: var(--wp--preset--color--white);
+      color: var(--wp--preset--color--black);
 
-    &.is-checked {
-      background-color: #e8232a;
-      border-color: #e8232a;
-      color: var(--wp--preset--color--white);
+      &.is-checked {
+        background-color: var(--wp--preset--color--primary);
+        border-color: var(--wp--preset--color--black);
+        color: var(--wp--preset--color--black);
+      }
     }
   }
 }
@@ -320,7 +343,9 @@
     content: '';
     flex-shrink: 0;
     margin-left: 8px;
-    transition: transform 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
+    transition:
+      transform 0.3s ease-in-out,
+      -webkit-transform 0.3s ease-in-out;
   }
 
   &[aria-expanded='true']::after {
@@ -420,7 +445,7 @@
         height: 0;
         border-color: transparent transparent transparent var(--wp--preset--color--black);
         border-style: solid;
-        border-width: 1.5rem 0 1.5rem .8125rem;
+        border-width: 1.5rem 0 1.5rem 0.8125rem;
         transform: translateX(100%);
       }
     }
@@ -435,7 +460,7 @@
 
       > svg {
         max-width: 1.25rem;
-        margin-right: .3125rem;
+        margin-right: 0.3125rem;
       }
     }
   }
@@ -456,7 +481,10 @@
   text-decoration: none;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 
   &:focus-visible {
     outline: 2px solid var(--wp--preset--color--primary);
@@ -488,7 +516,10 @@
     background-color: var(--wp--preset--color--white);
     font-size: 15px;
     line-height: 16px;
-    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+    transition:
+      background-color 0.4s ease,
+      border-color 0.4s ease,
+      color 0.4s ease;
 
     .action-icon {
       width: 40px;
