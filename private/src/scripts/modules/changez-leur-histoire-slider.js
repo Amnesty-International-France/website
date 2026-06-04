@@ -7,19 +7,22 @@ const swiperInstances = new WeakMap();
 const tunnelInstances = new WeakMap();
 
 const setAccordionState = (content, expanded) => {
-  if (!expanded) {
-    content.hidden = false;
-    content.style.maxHeight = `${content.scrollHeight}px`;
+  const panel = content;
 
+  panel.hidden = false;
+
+  if (!expanded) {
+    panel.style.maxHeight = `${panel.scrollHeight}px`;
+    panel.getBoundingClientRect();
     requestAnimationFrame(() => {
-      content.style.maxHeight = '0px';
+      panel.style.maxHeight = '0px';
     });
 
     return;
   }
 
-  content.hidden = false;
-  content.style.maxHeight = `${content.scrollHeight}px`;
+  panel.style.maxHeight = '0px';
+  panel.style.maxHeight = `${panel.scrollHeight}px`;
 };
 
 const bindTunnelAccordion = (container) => {
