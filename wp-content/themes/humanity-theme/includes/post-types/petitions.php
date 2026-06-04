@@ -149,7 +149,7 @@ if (!function_exists('amnesty_get_clh_petition_tunnel_page')) {
             return $cache;
         }
 
-        $clh_page = get_page_by_path('nous-connaitre/nos-combats/changez-leur-histoire/tunnel-clh');
+        $clh_page = get_page_by_path('nous-connaitre/nos-combats/changez-leur-histoire/merci-tunnel-clh');
 
         if ($clh_page instanceof WP_Post) {
             return $cache = $clh_page;
@@ -173,10 +173,10 @@ if (!function_exists('amnesty_get_clh_petition_tunnel_url')) {
         if ($clh_page) {
             $clh_permalink = get_permalink($clh_page);
 
-            return $clh_permalink ?: home_url('/nous-connaitre/nos-combats/changez-leur-histoire/tunnel-clh/');
+            return $clh_permalink ?: home_url('/nous-connaitre/nos-combats/changez-leur-histoire/merci-tunnel-clh/');
         }
 
-        return home_url('/nous-connaitre/nos-combats/changez-leur-histoire/tunnel-clh/');
+        return home_url('/nous-connaitre/nos-combats/changez-leur-histoire/merci-tunnel-clh/');
     }
 }
 
