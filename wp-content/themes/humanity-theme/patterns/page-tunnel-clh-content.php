@@ -121,9 +121,7 @@ $next_petition = $not_signed[$random_key];
 					<?php endif; ?>
 					<button
 						type="submit"
-						name="sign_petition"
-						id="petition-clh"
-						data-petition-id="<?php echo esc_attr($next_petition['id']) ?>">
+						name="sign_petition">
 						Signer la pétition
 					</button>
 				</form>
