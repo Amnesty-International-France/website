@@ -362,7 +362,7 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
     }
 
     $active_campaign = $campaign_page_id ? amnesty_get_active_clh_campaign_for_page($campaign_page_id) : null;
-    $raw_email = $_SESSION['clh_last_signer_email'] ?? null;
+    $raw_email = $_SESSION['clh_last_signer_email'] ?? $_COOKIE['clh_user_email'] ?? null;
     $last_signer_email = ($raw_email && is_email($raw_email)) ? sanitize_email($raw_email) : null;
     $current_user = $last_signer_email ? get_local_user($last_signer_email) : false;
     $list_petitions_clh = $active_campaign ? (get_field('list_petition_clh', $active_campaign->ID) ?: []) : [];

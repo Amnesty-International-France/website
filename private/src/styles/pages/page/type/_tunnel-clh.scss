@@ -3,7 +3,11 @@
     flex-direction: row;
     align-items: center;
     gap: 8px;
-    margin-bottom: 32px;
+    margin: 24px 0 32px;
+}
+
+.tunnel-clh-stepper--mobile {
+    display: none;
 }
 
 .tunnel-clh-step {
@@ -24,12 +28,6 @@
         border-color: #e8232a;
         color: #fff;
     }
-}
-
-.tunnel-clh-layout {
-    max-width: $container-md;
-    margin-inline: auto;
-    padding: 40px 24px;
 }
 
 .tunnel-clh-sign-form,
@@ -106,6 +104,34 @@
   line-height: 1.45;
   font-family: var(--wp--preset--font-family--secondary);
   white-space: pre-line;
+}
+
+.page-tunnel-clh-hero {
+  .tunnel-clh-stepper--mobile {
+    justify-content: center;
+    margin: 16px 0 0;
+  }
+
+  .tunnel-clh-step {
+    background-color: var(--wp--preset--color--white);
+    color: var(--wp--preset--color--black);
+
+    &.is-checked {
+      background-color: #e8232a;
+      border-color: #e8232a;
+      color: var(--wp--preset--color--white);
+    }
+  }
+}
+
+@media (max-width: ($container-md - 1px)) {
+  .tunnel-clh-stepper--desktop {
+    display: none;
+  }
+
+  .tunnel-clh-stepper--mobile {
+    display: flex;
+  }
 }
 
 .page-tunnel-clh-carousel {
@@ -312,10 +338,14 @@
   overflow: hidden;
   transition: max-height 0.3s ease-out;
   background-color: #f1f1f1;
+}
 
-  & > .page-tunnel-clh-petition-card-context-content {
-    padding: 15px;
-    margin: 0;
+.page-tunnel-clh-petition-card-context-content {
+  padding: 15px;
+  margin: 0;
+
+  > :last-child {
+    margin-bottom: 0;
   }
 }
 
