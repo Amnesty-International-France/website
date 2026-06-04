@@ -6,6 +6,24 @@
  * @var array $args
  */
 
+if (! function_exists('humanity_get_petition_countries')) {
+    function humanity_get_petition_countries()
+    {
+        static $countries = null;
+
+        if ($countries === null) {
+            $countries = get_posts([
+                'post_type' => 'fiche_pays',
+                'posts_per_page' => -1,
+                'orderby' => 'title',
+                'order' => 'ASC',
+            ]);
+        }
+
+        return $countries;
+    }
+}
+
 $post_id = isset($args['post_id']) ? absint($args['post_id']) : get_the_ID();
 $type_field = get_field('type', $post_id);
 $type = is_array($type_field) ? ($type_field['value'] ?? 'petition') : ($type_field ?: 'petition');
@@ -34,16 +52,7 @@ if (! empty($args['form_class'])) {
     $form_classes[] = sanitize_html_class((string) $args['form_class']);
 }
 
-static $countries = null;
-
-if ($countries === null) {
-    $countries = get_posts([
-        'post_type' => 'fiche_pays',
-        'posts_per_page' => -1,
-        'orderby' => 'title',
-        'order' => 'ASC',
-    ]);
-}
+$countries = humanity_get_petition_countries();
 ?>
 
 <div class="sticky-card-content">
