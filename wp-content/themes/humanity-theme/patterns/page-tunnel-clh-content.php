@@ -99,24 +99,6 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
 ?>
 <!-- wp:group {"tagName":"page","className":"page"} -->
 <article class="wp-block-group page">
-	<!-- wp:group {"tagName":"section","className":"page-content"} -->
-	<section class="wp-block-group page-content">
-		<div class="tunnel-clh-layout">
-			<div class="tunnel-clh-stepper" data-signed-count="<?= esc_attr($signed_count); ?>">
-				<?php for ($i = 0; $i < $total_steps; $i++) : ?>
-					<div class="tunnel-clh-step <?= $i < $signed_count ? 'is-checked' : ''; ?>">
-						<?php if ($i < $signed_count) : ?>
-							<span class="step-icon">✓</span>
-						<?php else : ?>
-							<span class="step-number"><?= $i + 1; ?></span>
-						<?php endif; ?>
-					</div>
-				<?php endfor; ?>
-			</div>
-		</div>
-	</section>
-	<!-- /wp:group -->
-
 	<article class="wp-block-group page page-tunnel-clh-card">
     <div class="page-tunnel-clh-card-subtitle-wrapper">
         <h2 class="page-tunnel-clh-subtitle">Signez pour changer leur histoire</h2>
@@ -124,6 +106,13 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
             Elle change des lois, brise des chaînes, libère des personnes.
             Nous avons identifié 10 situations qui nécessitent votre mobilisation dès aujourd'hui.
             Ensemble, nous avons le pouvoir de les aider.</p>
+        <?php
+        get_template_part('partials/tunnel-clh-stepper', null, [
+            'signed_count' => $signed_count,
+            'total_steps' => $total_steps,
+            'modifier_class' => 'tunnel-clh-stepper--desktop',
+        ]);
+        ?>
     </div>
     <div class="page-tunnel-clh-card-content">
         <div
@@ -180,7 +169,7 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
                             <div class="tunnel-clh-petition-accordion-container">
                                 <button type="button" class="tunnel-clh-petition-accordion-toggle" aria-expanded="false" aria-controls="<?php echo esc_attr($mobile_accordion_id); ?>">Afficher plus de contexte</button>
                                 <div id="<?php echo esc_attr($mobile_accordion_id); ?>" class="tunnel-clh-petition-accordion-content" hidden>
-                                    <p class="page-tunnel-clh-petition-card-context-content">
+                                    <div class="page-tunnel-clh-petition-card-context-content">
                                         <?php
                                         if (! empty($next_petition['letter'])) {
                                             echo wp_kses_post($next_petition['letter']);
@@ -188,7 +177,7 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
                                             echo 'Détails non disponibles';
                                         }
                                         ?>
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
                         </figure>
@@ -230,7 +219,7 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
                         <div class="tunnel-clh-petition-accordion-container">
                             <button type="button" class="tunnel-clh-petition-accordion-toggle" aria-expanded="false" aria-controls="<?php echo esc_attr($accordion_id); ?>">Afficher plus de contexte</button>
                             <div id="<?php echo esc_attr($accordion_id); ?>" class="tunnel-clh-petition-accordion-content" hidden>
-                                <p class="page-tunnel-clh-petition-card-context-content">
+                                <div class="page-tunnel-clh-petition-card-context-content">
                                     <?php
                                     if (! empty($next_petition['letter'])) {
                                         echo esc_html(wp_strip_all_tags($next_petition['letter']));
@@ -238,7 +227,7 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
                                         echo 'Détails non disponibles';
                                     }
                                     ?>
-                                </p>
+                                </div>
                             </div>
                         </div>
                     </figure>
