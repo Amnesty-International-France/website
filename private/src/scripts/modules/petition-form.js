@@ -85,34 +85,25 @@ export const initTunnelClhForm = () => {
 
 const getSignedPetitionIds = () => {
   try {
-    return JSON.parse(localStorage.getItem('signedPetition') ?? '[]');
+    const parsed = JSON.parse(localStorage.getItem('signedPetition') ?? '[]');
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
 };
 
 export const getPetitionIdForCLH = () => {
-  const button = document.getElementById('petition-clh');
+  const cookieMatch = document.cookie.match(/(?:^|; )clh_signed_petitions=([^;]*)/);
+  if (!cookieMatch) return;
 
-  if (!button) return;
-
-  const currentPetitionId = String(button.dataset.petitionId);
-
-  if (!currentPetitionId) return;
-
-  const signForm = button.closest('form');
-
-  if (!signForm) return;
-
-  signForm.addEventListener('submit', () => {
-    const stored = getSignedPetitionIds();
-    const updated = [...new Set([...stored.map(String), currentPetitionId])];
-    localStorage.setItem('signedPetition', JSON.stringify(updated));
-
-    const expires = new Date();
-    expires.setDate(expires.getDate() + 30);
-    document.cookie = `clh_signed_petitions=${encodeURIComponent(JSON.stringify(updated))};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
-  });
+  try {
+    const cookieIds = JSON.parse(decodeURIComponent(cookieMatch[1]));
+    if (Array.isArray(cookieIds)) {
+      localStorage.setItem('signedPetition', JSON.stringify(cookieIds.map(String)));
+    }
+  } catch {
+    // cookie malformé, on ignore
+  }
 };
 
 export const stepperTunnelClh = () => {
