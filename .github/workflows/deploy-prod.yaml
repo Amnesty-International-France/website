@@ -29,13 +29,18 @@ jobs:
           SSH_USER: ${{ secrets.PROD_SSH_USER }}
           SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
           SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
-      - name: debug
-        run: |
-          cat ~/.ssh/prod.key
-          cat ~/.ssh/config
-
       - name: Deploy
         run: ssh prod 'source ~/.bash_profile && cd github && bash livraison-prod.sh'
 
+      # Production exposes DOCUMENT_ROOT_PROD through ~/.bash_profile, not ~/initenv.sh.
+      # Use --path to make WP-CLI independent from the remote shell working directory.
+      # Fail early if DOCUMENT_ROOT_PROD is missing or does not point to a WordPress root.
       - name: Update schema
-        run: ssh prod 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT_PROD" && wp update-db-schema'
+        run: |
+          ssh prod '
+            set -e
+            source "$HOME/.bash_profile"
+            : "${DOCUMENT_ROOT_PROD:?DOCUMENT_ROOT_PROD is required}"
+            test -f "$DOCUMENT_ROOT_PROD/wp-load.php"
+            wp --path="$DOCUMENT_ROOT_PROD" update-db-schema
+          '
