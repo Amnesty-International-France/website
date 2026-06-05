@@ -15,6 +15,7 @@ $over_title = get_field('sur-titre', get_the_ID()) ?? '';
 $clh_tunnel_context = function_exists('amnesty_get_clh_tunnel_context') ? amnesty_get_clh_tunnel_context() : [];
 $clh_signed_count = (int) ($clh_tunnel_context['signed_count'] ?? 0);
 $clh_total_steps = min(10, count($clh_tunnel_context['list_petitions_clh'] ?? []));
+$is_clh_tunnel_thanks_request = function_exists('amnesty_is_clh_tunnel_thanks_request') && amnesty_is_clh_tunnel_thanks_request();
 
 ?>
 
@@ -35,6 +36,7 @@ $clh_total_steps = min(10, count($clh_tunnel_context['list_petitions_clh'] ?? []
 						<h1 class="page-hero-overtitle"><?php echo esc_html($over_title); ?></h1><br/>
 					<?php endif; ?>
 					<span class="page-hero-title"><?php echo esc_html($page_title); ?></span>
+					<?php if (! $is_clh_tunnel_thanks_request) : ?>
 					<?php
                     get_template_part('partials/tunnel-clh-stepper', null, [
                         'signed_count' => $clh_signed_count,
@@ -42,6 +44,7 @@ $clh_total_steps = min(10, count($clh_tunnel_context['list_petitions_clh'] ?? []
                         'modifier_class' => 'tunnel-clh-stepper--mobile',
                     ]);
     ?>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>

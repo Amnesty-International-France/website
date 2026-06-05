@@ -49,6 +49,7 @@ import { pageMenu, stickyMenu } from './modules/page-menu';
 import sliderBlock from './modules/slider';
 import changezLeurHistoireSlider from './modules/changez-leur-histoire-slider';
 import changeTheirHistoryToc from './modules/change-their-history-toc';
+import clhFinalScreen from './modules/clh-final-screen';
 import BackToTop from './modules/back-to-top';
 import urgentRegister from './modules/Form/urgent-register-form';
 import { emptyInputNewsletterLead, handleNewsletterSubmission } from './modules/newsletter';
@@ -102,6 +103,7 @@ const App = () => {
   sliderBlock();
   changezLeurHistoireSlider();
   changeTheirHistoryToc();
+  clhFinalScreen();
   BackToTop();
   urgentRegister();
   emptyInputNewsletterLead();

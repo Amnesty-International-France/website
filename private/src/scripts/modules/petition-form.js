@@ -202,14 +202,14 @@ export const stepperTunnelClh = () => {
     stepper?.dataset.signedCount !== undefined ? parseInt(stepper?.dataset.signedCount, 10) : null;
 
   const localStorageIds = getSignedPetitionIds();
-  const checkedCount = serverCount || localStorageIds.length;
+  const checkedCount = serverCount ?? localStorageIds.length;
   const limit = Math.min(checkedCount, stepper.children.length);
 
   Array.from(stepper.children).forEach((child) => child.classList.remove('is-checked'));
 
-  for (let i = 0; i < limit; i++) {
-    stepper.children[i].classList.add('is-checked');
-  }
+  Array.from(stepper.children)
+    .slice(0, limit)
+    .forEach((child) => child.classList.add('is-checked'));
 };
 
 export const submitCodeOrigine = () => {
