@@ -757,3 +757,348 @@
   height: auto;
   overflow: visible;
 }
+
+.page-tunnel-clh-final-card {
+  &::before {
+    display: none;
+  }
+
+  @media (max-width: ($container-md - 1px)) {
+    margin-top: -90px;
+    background-color: var(--wp--preset--color--white);
+  }
+
+  .page-tunnel-clh-card-content {
+    max-width: 760px;
+  }
+
+  .page-tunnel-clh-description {
+    margin-bottom: 0;
+    max-width: 720px;
+    flex: 1 1 50%;
+  }
+}
+
+.page-tunnel-clh-final-header {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 24px;
+
+  @media (max-width: ($container-md - 1px)) {
+    flex-direction: column;
+    padding: 24px 20px 0;
+  }
+}
+
+.page-tunnel-clh-final-tabs {
+  [hidden] {
+    display: none !important;
+  }
+}
+
+.page-tunnel-clh-final-tablist {
+  display: flex;
+  gap: 0;
+}
+
+.page-tunnel-clh-final-tab {
+  flex: 1 1 50%;
+  min-height: 48px;
+  padding: 10px 16px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background-color: var(--wp--preset--color--white);
+  color: var(--wp--preset--color--black);
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease, border-bottom-color 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    margin-right: 8px;
+    width: 30px;
+    color: var(--wp--preset--color--grey-light);
+    transition: color 0.2s ease;
+
+    path {
+      fill: currentColor;
+    }
+  }
+
+  &:hover,
+  &.is-active {
+    background-color: var(--wp--preset--color--grey-lighter);
+    border-bottom-color: var(--wp--preset--color--primary-dark);
+
+    svg {
+      color: var(--wp--preset--color--primary-dark);
+    }
+  }
+
+  &:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 3px solid var(--wp--preset--color--black);
+    outline-offset: -6px;
+  }
+}
+
+.page-tunnel-clh-final-panel {
+  padding: 28px;
+  background-color: var(--wp--preset--color--grey-lighter);
+
+  @media (max-width: ($container-sm - 1px)) {
+    padding: 24px 20px;
+    background-color: var(--wp--preset--color--white);
+  }
+
+  .share-content,
+  .title-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.1;
+
+    @media (max-width: ($container-sm - 1px)) {
+      font-size: 24px;
+    }
+  }
+
+  p {
+    margin: 0;
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .donation-calculator.medium {
+    margin-top: 8px;
+
+    @media (max-width: ($container-md - 1px)) {
+      box-sizing: border-box;
+      width: calc(100% + 56px);
+      max-width: none;
+      margin-right: -28px;
+      margin-left: -28px;
+      border-top: 1px solid var(--wp--preset--color--black);
+      box-shadow: none;
+    }
+
+    @media (max-width: ($container-sm - 1px)) {
+      width: calc(100% + 40px);
+      margin-right: -20px;
+      margin-left: -20px;
+    }
+
+    @media (min-width: $container-md) {
+      width: 100%;
+      max-width: none;
+      background-color: transparent;
+      box-shadow: none;
+
+      .donation-tabs {
+        > .punctual,
+        > .monthly {
+          border-bottom: 2px solid transparent;
+          background-color: transparent;
+          transition: border-bottom-color 0.2s ease, color 0.2s ease;
+
+          &:hover,
+          &.active {
+            border-bottom-color: var(--wp--preset--color--primary-dark);
+            background-color: transparent;
+            color: var(--wp--preset--color--black);
+          }
+        }
+      }
+
+      .donation-body {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 16px;
+        border-bottom: 0;
+      }
+
+      .amount-monthly.active,
+      .amount-free {
+        flex: 1 1 0;
+      }
+
+      .amount-free {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+
+        > p {
+          margin-top: 0;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
+
+.page-tunnel-clh-final-share {
+  .social-networks {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .social-networks > a,
+  .social-networks > .article-shareCopy {
+    display: inline-flex;
+    text-decoration: none;
+  }
+
+  .share-label {
+    display: none;
+  }
+
+  .page-tunnel-clh-final-donation-link {
+    align-self: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--wp--preset--color--black);
+    font-size: 16px;
+    line-height: 1.35;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 4px;
+    }
+  }
+
+  .icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 9px;
+    background-color: var(--wp--preset--color--black);
+    cursor: pointer;
+
+    svg {
+      width: 100%;
+      height: auto;
+      fill: var(--wp--preset--color--primary);
+      transition: fill 0.2s ease;
+    }
+
+    &:hover svg {
+      fill: var(--wp--preset--color--white);
+    }
+  }
+
+  .article-shareCopy {
+    position: relative;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--wp--preset--color--primary);
+      outline-offset: 3px;
+    }
+
+    &.copied::after {
+      content: 'Lien copié !';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 6px;
+      padding: 4px 8px;
+      background-color: var(--wp--preset--color--black);
+      color: var(--wp--preset--color--primary);
+      font-size: 13px;
+      font-weight: bold;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+  }
+
+  @media (min-width: $container-md) {
+    .social-networks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+      max-width: 520px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .social-networks > a,
+    .social-networks > .article-shareCopy {
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 46px;
+      padding: 0 14px;
+      border: 2px solid var(--wp--preset--color--black);
+      background-color: var(--wp--preset--color--white);
+      color: var(--wp--preset--color--black);
+      font-family: var(--wp--preset--font-family--secondary);
+      text-transform: uppercase;
+      font-size: 1rem;
+      font-weight: bold;
+      line-height: 1.2;
+      transition: background-color 0.2s ease, color 0.2s ease;
+
+      &:hover {
+        background-color: var(--wp--preset--color--grey-lighter);
+        color: var(--wp--preset--color--black);
+      }
+
+      &:hover svg {
+        fill: currentColor;
+      }
+    }
+
+    .article-shareCopy {
+      grid-column: 1 / -1;
+      order: -1;
+    }
+
+    .share-label {
+      display: inline;
+    }
+
+    .icon-container {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      background-color: transparent;
+
+      svg {
+        fill: currentColor;
+      }
+
+      svg path {
+        fill: currentColor;
+      }
+
+      &:hover svg {
+        fill: currentColor;
+      }
+    }
+  }
+}
