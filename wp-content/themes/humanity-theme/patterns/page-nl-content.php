@@ -27,85 +27,88 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
     }
 
     if (isset($_POST['sign_newsletter'])) {
-        if (!verify_turnstile()) {
-            die('Turnstile verification failed.');
-        }
+        $turnstile_error = verify_turnstile();
+        if ($turnstile_error !== null) {
+            $title = 'Une erreur est survenue';
+            $error_message = turnstile_friendly_error($turnstile_error);
+        } else {
+            $email = sanitize_email($_POST['newsletter'] ?? '');
+            $civility = sanitize_text_field($_POST['civility'] ?? '');
+            $lastname = sanitize_text_field($_POST['lastname'] ?? '');
+            $firstname = sanitize_text_field($_POST['firstname'] ?? '');
+            $zipcode = sanitize_text_field($_POST['zipcode'] ?? '');
+            $country = sanitize_text_field($_POST['country'] ?? '');
 
-        $email = sanitize_email($_POST['newsletter'] ?? '');
-        $civility = sanitize_text_field($_POST['civility'] ?? '');
-        $lastname = sanitize_text_field($_POST['lastname'] ?? '');
-        $firstname = sanitize_text_field($_POST['firstname'] ?? '');
-        $zipcode = sanitize_text_field($_POST['zipcode'] ?? '');
-        $country = sanitize_text_field($_POST['country'] ?? '');
+            $local_user = get_local_user($email);
+            $get_salesforce_user = get_salesforce_user_with_email($email);
+            $is_salesforce_user = is_array($get_salesforce_user) && $get_salesforce_user['totalSize'] > 0;
 
-        $local_user = get_local_user($email);
-        $get_salesforce_user = get_salesforce_user_with_email($email);
-        $is_salesforce_user = is_array($get_salesforce_user) && $get_salesforce_user['totalSize'] > 0;
-
-        if ($local_user !== false) {
-            $data = [
-                'Email' => $local_user->email,
-                'Salutation' => $local_user->civility,
-                'Code_Postal__c' => $local_user->postal_code,
-                'FirstName' => $local_user->firstname,
-                'LastName' =>  $local_user->lastname,
-                'Pays__c' => $local_user->country,
-                'Optin_Actionaute_Newsletter_mensuelle__c' => true,
-            ];
-            if (!$is_salesforce_user) {
-                post_salesforce_users([
-                    ...$data,
-                    'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
-                ]);
-            } else {
-                update_salesforce_users($get_salesforce_user['records'][0]['Id'], [
-                    ...$data,
-                    'Optout_toute_communication__c' => false,
-                ]);
+            if ($local_user !== false) {
+                $data = [
+                    'Email' => $local_user->email,
+                    'Salutation' => $local_user->civility,
+                    'Code_Postal__c' => $local_user->postal_code,
+                    'FirstName' => $local_user->firstname,
+                    'LastName' =>  $local_user->lastname,
+                    'Pays__c' => $local_user->country,
+                    'Optin_Actionaute_Newsletter_mensuelle__c' => true,
+                ];
+                if (!$is_salesforce_user) {
+                    post_salesforce_users([
+                        ...$data,
+                        'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
+                    ]);
+                } else {
+                    update_salesforce_users($get_salesforce_user['records'][0]['Id'], [
+                        ...$data,
+                        'Optout_toute_communication__c' => false,
+                    ]);
+                }
             }
-        }
 
-        if (!$local_user) {
-            if ($is_salesforce_user) {
-                $sf_user = $get_salesforce_user['records'][0];
-                insert_user(
-                    $sf_user['Civility__c'] ?? null,
-                    $sf_user['FirstName'],
-                    $sf_user['LastName'],
-                    $sf_user['Email'],
-                    $sf_user['Pays__c'] ?? null,
-                    $sf_user['Code_Postal__c'] ?? null,
-                    $sf_user['MobilePhone'] ?? null
-                );
-            } else {
-                insert_user($civility, $firstname, $lastname, $email, $country, $zipcode, null);
-                post_salesforce_users(
-                    [
-                        'Salutation' => $civility,
-                        'FirstName' => $firstname,
-                        'LastName' => $lastname,
-                        'Email' => $email,
-                        'Code_Postal__c' => $zipcode,
-                        'Pays__c' => $country,
-                        'Optin_Actionaute_Newsletter_mensuelle__c' => true,
-                    ]
-                );
+            if (!$local_user) {
+                if ($is_salesforce_user) {
+                    $sf_user = $get_salesforce_user['records'][0];
+                    insert_user(
+                        $sf_user['Civility__c'] ?? null,
+                        $sf_user['FirstName'],
+                        $sf_user['LastName'],
+                        $sf_user['Email'],
+                        $sf_user['Pays__c'] ?? null,
+                        $sf_user['Code_Postal__c'] ?? null,
+                        $sf_user['MobilePhone'] ?? null
+                    );
+                } else {
+                    insert_user($civility, $firstname, $lastname, $email, $country, $zipcode, null);
+                    post_salesforce_users(
+                        [
+                            'Salutation' => $civility,
+                            'FirstName' => $firstname,
+                            'LastName' => $lastname,
+                            'Email' => $email,
+                            'Code_Postal__c' => $zipcode,
+                            'Pays__c' => $country,
+                            'Optin_Actionaute_Newsletter_mensuelle__c' => true,
+                        ]
+                    );
+                }
             }
+
+            $lead_on_sf = get_salesforce_nl_lead($email);
+
+            if (is_array($lead_on_sf) && $lead_on_sf['totalSize'] > 0) {
+                deleting_lead_on_salesforce($lead_on_sf['records'][0]['Id']);
+            }
+
+            wp_redirect(add_query_arg([
+                'email' => urlencode($email),
+                'inscription__nl' => 'success',
+                'gtm_type' => 'inscription',
+                'gtm_name' => 'newsletter',
+            ], home_url('/newsletter')));
+            exit;
         }
 
-        $lead_on_sf = get_salesforce_nl_lead($email);
-
-        if (is_array($lead_on_sf) && $lead_on_sf['totalSize'] > 0) {
-            deleting_lead_on_salesforce($lead_on_sf['records'][0]['Id']);
-        }
-
-        wp_redirect(add_query_arg([
-            'email' => urlencode($email),
-            'inscription__nl' => 'success',
-            'gtm_type' => 'inscription',
-            'gtm_name' => 'newsletter',
-        ], home_url('/newsletter')));
-        exit;
     }
 }
 ?>
@@ -189,10 +192,18 @@ print esc_attr($class_name ?? ''); ?>">
 					</div>
 				</div>
 				<?php endif; ?>
+				<?php
+                if (!empty($error_message)) {
+                    aif_include_partial('alert', [
+                        'state' => 'error',
+                        'title' => $title,
+                        'content' => $error_message]);
 
+                };
+?>
 				<button class="newsletter-form-cta" type="submit" name="sign_newsletter">
 					<?php
-                    echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
+    echo file_get_contents(get_template_directory() . '/assets/images/icon-letters.svg'); ?>
 					S'abonner
 				</button>
 			</form>

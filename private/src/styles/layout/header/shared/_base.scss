@@ -2,17 +2,12 @@
   position: sticky;
   top: 0;
   z-index: 1200;
-  height: 64px;
   font-size: var(--wp--preset--font-size--regular);
   color: var(--wp--preset--color--black);
   transition: top 0.5s ease-in-out;
   font-family: var(--wp--preset--font-family--secondary);
   text-transform: uppercase;
   box-shadow: 0 0 30px 20px rgba(0, 0, 0, 0.05);
-
-  @media (min-width: 1024px) {
-    height: 108px;
-  }
 
   li button {
     text-transform: uppercase;

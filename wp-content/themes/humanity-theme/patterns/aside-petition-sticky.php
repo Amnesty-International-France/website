@@ -25,6 +25,9 @@ $end_date = get_field('date_de_fin');
 $post_id = get_the_ID();
 
 $civility = $civility ?? 'M.';
+
+$turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
+
 ?>
 
 <aside class="petition-aside" id="petition">
@@ -42,6 +45,9 @@ $civility = $civility ?? 'M.';
 
       <form class="signature-petition-form" method="post" action="">
           <div class="cf-turnstile" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+          <?php if ($turnstile_error_message) : ?>
+              <?php aif_include_partial('alert', ['state' => 'error', 'title' => 'Une erreur est survenue', 'content' => $turnstile_error_message]); ?>
+          <?php endif; ?>
           <?php if ($type === 'action-soutien' && $enable_user_message) : ?>
           <div class="message-section">
               <textarea class="message-input" type="text" name="user_message" placeholder="Votre message* (<?= $comment_max_length ?> caractères max)" required maxlength="<?= $comment_max_length ?>"></textarea>

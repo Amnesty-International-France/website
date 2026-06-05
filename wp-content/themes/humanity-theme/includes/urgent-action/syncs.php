@@ -47,6 +47,7 @@ class Sync_Register_Command
                     'Email' => $user->email,
                     ...$optins,
                     ...$codeModifications,
+                    'Reseaux_thematiques_AU_Origine__c' => $item['thematique'],
                 ];
 
                 update_salesforce_users($sfUser['Id'], $data_user_sf);
@@ -71,6 +72,7 @@ class Sync_Register_Command
                     'FirstName' => $user->firstname,
                     'LastName' =>  $user->lastname,
                     'Pays__c' => $user->country,
+                    'Reseaux_thematiques_AU_Origine__c' => $item['thematique'],
                     ...$optins,
                 ];
 

@@ -11,6 +11,8 @@
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
   padding: 35px 16px 0;
   position: relative;
+  max-width: 768px;
+  margin: 0 auto;
 
   &::after {
     content: "S'inscrire";
@@ -35,7 +37,7 @@
   .urgent-register-header {
     font-family: var(--wp--preset--font-family--primary);
     font-weight: bold;
-    font-size: 16px;
+    font-size: 18px;
     line-height: 24px;
     letter-spacing: 0;
     vertical-align: middle;
@@ -58,7 +60,7 @@
       &.success {
         background-color: var(--wp--preset--color--success-light);
         color: var(--wp--preset--color--success);
-          border: 1px solid var(--wp--preset--color--success);
+        border: 1px solid var(--wp--preset--color--success);
       }
 
       &.hidden {
@@ -70,6 +72,7 @@
       margin-bottom: 22px;
       border: 1px solid var(--wp--preset--color--grey-lighter);
       transition: border 0.3s ease, margin-bottom 0.3s ease;
+      font-size: 16px;
 
       &.success {
         border: 2px solid var(--wp--preset--color--success);
@@ -143,26 +146,26 @@
           }
         }
 
-          .form-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 24px;
+        .form-row {
+          display: flex;
+          align-items: flex-start;
+          gap: 24px;
 
-            .country-selection {
-              width: 50%;
+          .country-selection {
+            width: 50%;
 
-              .country-input {
-                padding: 0 12px;
-                min-height: 42px;
-                width: 100%;
-                border: 1px solid var(--wp--preset--color--grey-light);
-                color: var(--wp--preset--color--grey-dark);
-                font-family: var(--wp--preset--font-family--secondary);
-                font-size: var(--wp--preset--font-size--small);
-                font-weight: bold;
-                text-transform: capitalize;
-              }
+            .country-input {
+              padding: 0 12px;
+              min-height: 42px;
+              width: 100%;
+              border: 1px solid var(--wp--preset--color--grey-light);
+              color: var(--wp--preset--color--grey-dark);
+              font-family: var(--wp--preset--font-family--secondary);
+              font-size: var(--wp--preset--font-size--small);
+              font-weight: bold;
+              text-transform: capitalize;
             }
+          }
         }
 
         &.hidden {
@@ -172,7 +175,7 @@
     }
 
     .urgent-register-form-cta {
-       > button {
+      > button {
         display: flex;
         padding: 14px 24px;
         gap: 12px;
@@ -198,4 +201,27 @@
       letter-spacing: 0;
     }
   }
+}
+
+.page-content,
+.article-meta-wrapper {
+  .form-mess {
+    padding: 10px;
+    max-width: 768px;
+    margin: 10px auto;
+    background-color: var(--wp--preset--color--pale-error);
+    color: var(--wp--preset--color--error);
+    font-size: 1rem;
+
+    &.error {
+      background-color: var(--wp--preset--color--pale-error);
+      color: var(--wp--preset--color--error);
+    }
+
+    &.success {
+      background-color: var(--wp--preset--color--success-light);
+      color: var(--wp--preset--color--success);
+      border: 1px solid var(--wp--preset--color--success);
+    }
+}
 }
