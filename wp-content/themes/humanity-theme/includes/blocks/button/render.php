@@ -66,7 +66,7 @@ function render_button_block(array $attributes): string
     ];
 
     ob_start();
-?>
+    ?>
     <div class="<?php echo esc_attr(implode(' ', $classes)); ?>">
         <a href="<?php echo esc_url($href); ?>" class="custom-button" <?php echo ($target === true) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
             <div class="<?php echo esc_attr(implode(' ', $contentClasses)); ?>">
@@ -80,5 +80,5 @@ function render_button_block(array $attributes): string
         </a>
     </div>
 <?php
-    return ob_get_clean();
+        return ob_get_clean();
 }
