@@ -78,9 +78,13 @@
   box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1);
 
   @media (max-width: ($container-md - 1px)) {
-    margin-top: -48px;
+    margin-top: -65px;
     padding: 0;
     background-color: transparent;
+
+    @media (max-width: 374px) {
+      margin-top: 0;
+    }
 
     &-subtitle-wrapper {
       display: none;
@@ -95,14 +99,14 @@
       content: '';
       position: absolute;
       top: 0;
-      left: 48px;
+      left: 28px;
       width: 2px;
       height: calc(48px + 37px);
       background-color: var(--wp--preset--color--primary);
     }
 
     &-subtitle-wrapper {
-      padding-left: 20px;
+      padding-left: 0;
     }
   }
 
@@ -131,6 +135,13 @@
     justify-content: center;
     margin: 16px 0 0;
     gap: 5px;
+
+    @media (max-width: 374px) {
+      flex-wrap: wrap;
+      max-width: 170px;
+      margin-right: auto;
+      margin-left: auto;
+    }
 
     .tunnel-clh-step {
       width: 30px;
@@ -380,7 +391,7 @@
   gap: 8px;
   align-items: stretch;
 
-  @media screen and (max-width: $container-lg) {
+  @media screen and (max-width: ($container-lg - 1px)) {
     .page-tunnel-clh-action-button.is-primary {
       display: none;
     }
@@ -408,7 +419,7 @@
 .page-tunnel-clh-mobile-sign-cta {
   display: none;
 
-  @media screen and (max-width: $container-lg) {
+  @media screen and (max-width: ($container-lg - 1px)) {
     position: fixed;
     bottom: 0;
     left: 0;
