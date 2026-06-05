@@ -38,4 +38,4 @@ jobs:
         run: ssh prod 'source ~/.bash_profile && cd github && bash livraison-prod.sh'
 
       - name: Update schema
-        run: ssh prod 'cd var/www/website && wp update-db-schema'
+        run: ssh prod 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp update-db-schema'
