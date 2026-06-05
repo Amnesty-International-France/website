@@ -280,8 +280,8 @@ if (! function_exists('amnesty_trigger_scripts')) {
         }
 
         $script = 'App.default();';
-        add_filter('amnesty_csp_script', fn($csp) => sprintf("%s 'sha256-%s'", $csp, base64_encode(hash('sha256', $script, true))));
-        add_action('wp_footer', fn() => printf('<script>%s</script>', $script), 100); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        add_filter('amnesty_csp_script', fn ($csp) => sprintf("%s 'sha256-%s'", $csp, base64_encode(hash('sha256', $script, true))));
+        add_action('wp_footer', fn () => printf('<script>%s</script>', $script), 100); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }
 
