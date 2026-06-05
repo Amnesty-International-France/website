@@ -112,7 +112,7 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
             'total_steps' => $total_steps,
             'modifier_class' => 'tunnel-clh-stepper--desktop',
         ]);
-        ?>
+?>
     </div>
     <div class="page-tunnel-clh-card-content">
         <div
@@ -171,12 +171,12 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
                                 <div id="<?php echo esc_attr($mobile_accordion_id); ?>" class="tunnel-clh-petition-accordion-content" hidden>
                                     <div class="page-tunnel-clh-petition-card-context-content">
                                         <?php
-                                        if (! empty($next_petition['letter'])) {
-                                            echo wp_kses_post($next_petition['letter']);
-                                        } else {
-                                            echo 'Détails non disponibles';
-                                        }
-                                        ?>
+                                if (! empty($next_petition['letter'])) {
+                                    echo wp_kses_post($next_petition['letter']);
+                                } else {
+                                    echo 'Détails non disponibles';
+                                }
+?>
                                     </div>
                                 </div>
                             </div>
@@ -226,7 +226,7 @@ $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int) $next_petition['id']);
                                     } else {
                                         echo 'Détails non disponibles';
                                     }
-                                    ?>
+?>
                                 </div>
                             </div>
                         </div>
