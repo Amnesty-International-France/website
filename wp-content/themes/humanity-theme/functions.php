@@ -570,6 +570,7 @@ add_filter('render_block', function ($block_content, $block) {
                 $name_value = match ($bloc_aria_label) {
                     'Legs et donations' => 'legs',
                     'Fondation Amnesty International France' => 'fondation',
+                    default => null,
                 };
 
                 $tags->set_attribute('data-gtm-type', $type_value);
