@@ -79,3 +79,4 @@ composer*
 !/wp-content/plugins/aif-rss-importer/
 
 docker-compose.yml
+cleaned_posts.txt
