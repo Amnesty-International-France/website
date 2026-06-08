@@ -68,9 +68,7 @@
     "value-no-vendor-prefix": [
       true,
       {
-        "ignoreValues": {
-          "display": ["-webkit-box"]
-        }
+        "ignoreValues": ["box"]
       }
     ]
   }
