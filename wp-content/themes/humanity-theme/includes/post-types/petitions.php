@@ -110,25 +110,6 @@ if (!function_exists('amnesty_get_clh_petition_tunnel_thanks_url')) {
     }
 }
 
-if (!function_exists('amnesty_get_temporary_clh_thanks_page')) {
-    function amnesty_get_temporary_clh_thanks_page(): ?WP_Post
-    {
-        static $cache = false;
-
-        if ($cache !== false) {
-            return $cache;
-        }
-
-        $thanks_page = get_page_by_path('merci');
-
-        if ($thanks_page instanceof WP_Post) {
-            return $cache = $thanks_page;
-        }
-
-        return $cache = null;
-    }
-}
-
 if (!function_exists('amnesty_is_clh_tunnel_thanks_request')) {
     function amnesty_is_clh_tunnel_thanks_request(): bool
     {
@@ -156,15 +137,6 @@ function amnesty_map_clh_tunnel_thanks_request(array $query_vars): array
         return $query_vars;
     }
 
-    // Temporary: during graphic integration, display the generic /merci page on the CLH final URL.
-    $temporary_thanks_page = amnesty_get_temporary_clh_thanks_page();
-
-    if ($temporary_thanks_page instanceof WP_Post) {
-        $query_vars['pagename'] = get_page_uri($temporary_thanks_page);
-
-        return $query_vars;
-    }
-
     $tunnel_page = amnesty_get_clh_petition_tunnel_page();
 
     if (!$tunnel_page instanceof WP_Post) {
@@ -178,15 +150,15 @@ function amnesty_map_clh_tunnel_thanks_request(array $query_vars): array
 }
 add_filter('request', 'amnesty_map_clh_tunnel_thanks_request');
 
-function amnesty_disable_clh_temporary_thanks_canonical($redirect_url)
+function amnesty_disable_clh_thanks_canonical($redirect_url)
 {
-    if (amnesty_is_clh_tunnel_thanks_request() && amnesty_get_temporary_clh_thanks_page() instanceof WP_Post) {
+    if (amnesty_is_clh_tunnel_thanks_request()) {
         return false;
     }
 
     return $redirect_url;
 }
-add_filter('redirect_canonical', 'amnesty_disable_clh_temporary_thanks_canonical');
+add_filter('redirect_canonical', 'amnesty_disable_clh_thanks_canonical');
 
 if (!function_exists('amnesty_get_clh_petition_campaign_page')) {
     function amnesty_get_clh_petition_campaign_page(): ?WP_Post
@@ -727,8 +699,15 @@ function amnesty_handle_petition_signature(): void
 
     $petition_id = absint($_POST['petition_id']);
     $is_clh_tunnel_submission = amnesty_is_clh_tunnel_form_submission() || amnesty_is_clh_petition_tunnel_page();
+    $is_petition_in_active_clh_campaign = amnesty_is_petition_in_active_clh_campaign($petition_id);
+
+    if ($is_clh_tunnel_submission && !$is_petition_in_active_clh_campaign) {
+        wp_redirect(add_query_arg('signature_status', 'invalid', amnesty_get_clh_petition_tunnel_url()));
+        exit;
+    }
+
     $is_clh_petition = amnesty_is_clh_petition_tunnel_active()
-        && ($is_clh_tunnel_submission || amnesty_is_petition_in_active_clh_campaign($petition_id));
+        && $is_petition_in_active_clh_campaign;
 
     $raw_email = $_POST['user_email'] ?? null;
     if ((!$raw_email && !$is_clh_tunnel_submission) || !$petition_id) {
