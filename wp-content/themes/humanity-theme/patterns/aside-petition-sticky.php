@@ -44,79 +44,21 @@ $is_campaign_clh = get_field('clh_petition', $post_id) && amnesty_is_clh_petitio
 				</div>
 			<?php endif; ?>
 			<?php if (isset($end_date) && (strtotime($end_date) >= strtotime($current_date))) : ?>
-
-      <form class="signature-petition-form" method="post" action="">
-          <div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
-          <?php if ($turnstile_error_message) : ?>
-              <?php aif_include_partial('alert', ['state' => 'error', 'title' => 'Une erreur est survenue', 'content' => $turnstile_error_message]); ?>
-          <?php endif; ?>
-          <?php if ($type === 'action-soutien' && $enable_user_message) : ?>
-          <div class="message-section">
-              <textarea class="message-input" type="text" name="user_message" placeholder="Votre message* (<?= $comment_max_length ?> caractères max)" required maxlength="<?= $comment_max_length ?>"></textarea>
-          </div>
-          <?php endif; ?>
-        <div class="email-section">
-          <input class="email-input" type="email" name="user_email" placeholder="Email*" required>
-          <input type="hidden" name="petition_id" value="<?php echo esc_attr($post_id); ?>">
-        </div>
-
-					<div class="full-form">
-						<div class="form-group civility-section">
-							<label class="civility-label">Civilité :</label>
-							<div class="civilities">
-								<input type="radio" id="civility_m" name="civility"
-								       value="M." <?php echo ($civility === 'M.') ? 'checked' : ''; ?>>
-								<label for="civility_m">M.</label>
-								<input type="radio" id="civility_mme" name="civility"
-								       value="Mme" <?php echo ($civility === 'Mme') ? 'checked' : ''; ?>>
-								<label for="civility_mme">Mme</label>
-								<input type="radio" id="civility_other" name="civility"
-								       value="Autre" <?php echo ($civility === 'Autre') ? 'checked' : ''; ?>>
-								<label for="civility_other">Autre</label>
-							</div>
+				<form class="signature-petition-form" method="post" action="">
+					<input type="hidden" name="petition_id" value="<?php echo esc_attr($post_id); ?>">
+					<<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+					<?php if ($turnstile_error_message) : ?>
+						<?php aif_include_partial('alert', ['state' => 'error', 'title' => 'Une erreur est survenue', 'content' => $turnstile_error_message]); ?>
+					<?php endif; ?>
+					<?php if ($type === 'action-soutien' && $enable_user_message) : ?>
+						<div class="message-section">
+							<textarea class="message-input" type="text" name="user_message"
+							          placeholder="Votre message* (<?= $comment_max_length ?> caractères max)" required
+							          maxlength="<?= $comment_max_length ?>"></textarea>
 						</div>
-
-						<div class="firstname-section">
-							<input class="firstname-input" type="text" name="user_firstname" placeholder="Prénom*">
-						</div>
-
-						<div class="lastname-section">
-							<input class="lastname-input" type="text" name="user_lastname" placeholder="Nom*">
-						</div>
-
-						<div class="zipcode-and-country">
-							<div class="zipcode-section">
-								<input class="zipcode-input" type="text" name="user_zipcode" placeholder="Code postal*">
-							</div>
-
-							<div class="country-section">
-								<select class="country-input " name="user_country">
-									<option value=""><?php _e('Pays*', 'textdomain'); ?></option>
-									<?php
-                                    $countries = get_posts([
-                                        'post_type' => 'fiche_pays',
-                                        'posts_per_page' => -1,
-                                        'orderby' => 'title',
-                                        'order' => 'ASC',
-                                    ]);
-
-			    foreach ($countries as $country) :
-			        $country_name = get_the_title($country->ID);
-			        ?>
-										<option
-											value="<?php echo esc_attr($country_name); ?>" <?php if (esc_attr($country_name) === 'France') : ?> selected="selected"<?php endif; ?>>
-											<?php echo esc_html(ucwords(strtolower($country_name))); ?>
-										</option>
-									<?php endforeach; ?>
-								</select>
-							</div>
-						</div>
-
-						<div class="phone-section">
-							<input class="phone-input" type="tel" name="user_phone" placeholder="Téléphone">
-						</div>
-					</div>
-
+					<?php endif; ?>
+					<?php $field_id_suffix = '-petition-' . (int) $post_id; ?>
+					<?php require get_theme_file_path('/patterns/petition-form-fields.php'); ?>
 					<div class="sign-and-legals">
 						<div class="custom-button-block center">
 							<button
