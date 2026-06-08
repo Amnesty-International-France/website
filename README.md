@@ -6,22 +6,40 @@ This is the repository for the redesign of the Amnesty International France webs
 
 ## Requirements
 
+- Ask for the `.env` file
 - PHP 8.0 or higher
 - MySQL version 8.0 or higher or MariaDB version 10.5 or higher
 - [Castor](https://github.com/jolicode/castor)
+
+Note : The database can be dockerized as follows :
+```
+Example with mariadb
+Command : docker run --detach --name amnesty -p 3306:3306 --env MARIADB_USER=admin --env MARIADB_PASSWORD=password123 --env MARIADB_DATABASE=amnesty --env MARIADB_ROOT_PASSWORD=root mariadb:latest
+DB_HOST value : your IP (like the one of your wifi)
+```
+
+Note : Do not use the MySQL `root` account in `.env`. On Ubuntu `root` uses socket authentication, so a password connection fails with `Access denied for user 'root'@'localhost' (1698)`. Create a dedicated user instead, for example :
+```
+CREATE DATABASE amnesty;
+CREATE USER 'amnesty'@'localhost' IDENTIFIED BY 'password123';
+GRANT ALL PRIVILEGES ON amnesty.* TO 'amnesty'@'localhost';
+FLUSH PRIVILEGES;
+```
 
 ## Installation
 
 First, you need to change `.env` file to provide some information to the script for the creation of the WordPress environment.  
 You can create different env file like `.env.local`, `.env.dev`, ...
 
+Note : Values containing spaces must be wrapped in double quotes, otherwise the install aborts with `A value containing spaces must be surrounded by quotes`. Example : `WP_TITLE="Amnesty Local"`.
+
 The installation script takes two optional arguments which are `--path` and `--token`. They correspond respectively to the location where the environment will be created (default: current folder) and the github token to have access to private repositories.
 
 The script needs to have the path `$HOME/.local/bin` into your `$PATH` because `wp-cli` will be installed there.  
-If it is not, add the following line in your `.bashrc` or `.zschrc` : `export PATH="$HOME/.local/bin:$PATH"` 
+If it is not, add the following line in your `.bashrc` or `.zschrc` : `export PATH="$HOME/.local/bin:$PATH"`
 
 To start the installation script : `castor install`.  
-Example with all arguments : `castor install --path www --token my-github-token`.
+Example with all arguments : `castor install --path .` (or even `castor install --path www --token my-github-token`).
 
 It will install the environment with the [humanity theme](https://github.com/amnestywebsite/humanity-theme) and its required plugins.
 
@@ -70,9 +88,11 @@ yarn && yarn install
 yarn build
 ```
 
+You may need to execute `corepack enable` before (use `sudo corepack enable` if you get an `EACCES` permission error).
+
 ## CI/CD
 
-pushing on branch `main` deploys on http://app-dadec8ba-25dc-44d7-b10d-6dd400a829fd.cleverapps.io 
+pushing on branch `main` deploys on http://app-dadec8ba-25dc-44d7-b10d-6dd400a829fd.cleverapps.io
 
 pushing on branch `fairness-dev` deploys on http://app-0feb7822-eaf8-4f15-ba3d-d5d66aca81f2.cleverapps.io
 
@@ -85,7 +105,9 @@ For your plugin to be versioned on git, you need to add the following line to th
 
 ## Start WordPress
 
-To start WordPress, run : `wp server`
+To start WordPress, run : `wp server` (or with a clean one : `wp cli cache clear && wp cli cache prune && wp cache flush && wp server`)
+
+Note : You can add `--port={xyz}` to `wp server` if the port `{xyz}` is not `8080`.
 
 ## Configuration
 
@@ -139,6 +161,45 @@ Go in `Yoast SEO > Settings` tab and `Advanced > Breadcrumbs`:
 - Set `Separator between breadcrumbs` to empty
 - Set `Anchor text for the Homepage` to **Accueil**
 - Set `Articles post` to **Types de contenu**
+
+### Extensions
+
+Go in `Extensions > Extensions installées` :
+- Tick the checkbox `Extension` (to select all)
+- Select `Action groupées > Activer`
+- `Appliquer`
+
+## Import some content from the (pre)prod
+
+Note : Here is for the homepage
+
+<<< /wp-admin in preprod (cf Google Doc for auth)
+- Select `Pages > Toutes les pages`
+- `Accueil`
+- Burger (next to `Enregistrer` button) => `Editeur de code`
+- Copy the code
+- Burger > `Editeur visuel`
+
+<<< /wp-admin in local
+- Select `Page > Ajouter une page`
+- `Titre : Accueil` (for instance)
+- Burger => `Editeur de code`
+- Paste the code
+- Burger => `Editeur visuel`
+- `Publier`
+
+<<< /wp-admin in local
+- Select `Réglages > Lecture`
+- `La page d’accueil affiche :` > `Une page statique`
+- `Page d’accueil : Accueil`
+- `Enregistrer`
+
+If you do not have preprod access yet, you can generate dummy content locally with WP-CLI so the theme has something to display :
+```
+wp post generate --count=20 --post_type=post --post_status=publish
+wp post generate --count=5 --post_type=page --post_status=publish
+wp term generate category --count=8
+```
 
 ## Amnesty International France - Donor Space Plugin
 
