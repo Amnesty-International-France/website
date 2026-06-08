@@ -49,7 +49,7 @@
     "node-normalize-scss": "^8.1.2",
     "postcss": "^8.5.15",
     "postcss-banner": "^4.0.1",
-    "postcss-loader": "^8.1.1",
+    "postcss-loader": "^8.2.1",
     "postcss-pxtorem": "^6.1.0",
     "postcss-reporter": "^7.1.0",
     "postcss-scss": "^4.0.9",
