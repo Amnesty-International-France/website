@@ -104,6 +104,11 @@ if (!empty($error_no_access_to_donor_space)) {
 			<form class="aif-form-container" action="" method="POST" onsubmit="return checkPasswordMatch()">
 				<div>
 					<div class="cf-turnstile"
+					     data-callback="aifTurnstileSuccess"
+					     data-error-callback="aifTurnstileFailure"
+					     data-expired-callback="aifTurnstileFailure"
+					     data-timeout-callback="aifTurnstileFailure"
+					     data-unsupported-callback="aifTurnstileFailure"
 					     data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 					<label for="email">Adresse email (obligatoire) :</label>
 					<input type="email" class="aif-input" id="email" name="email" aria-describedby="email-help-message"

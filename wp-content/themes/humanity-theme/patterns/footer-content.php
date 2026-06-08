@@ -195,6 +195,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
 				<form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form"
 				      class="newsletter-lead-form">
 					<div class="cf-turnstile"
+					     data-callback="aifTurnstileSuccess"
+					     data-error-callback="aifTurnstileFailure"
+					     data-expired-callback="aifTurnstileFailure"
+					     data-timeout-callback="aifTurnstileFailure"
+					     data-unsupported-callback="aifTurnstileFailure"
 					     data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 					<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
 					<button class="register-nl" name="sign_lead" disabled>
