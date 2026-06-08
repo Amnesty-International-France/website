@@ -1001,15 +1001,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-pipeline-operator@npm:^7.26.7":
-  version: 7.26.7
-  resolution: "@babel/plugin-proposal-pipeline-operator@npm:7.26.7"
+"@babel/plugin-proposal-pipeline-operator@npm:^7.29.7":
+  version: 7.29.7
+  resolution: "@babel/plugin-proposal-pipeline-operator@npm:7.29.7"
   dependencies:
-    "@babel/helper-plugin-utils": "npm:^7.26.5"
-    "@babel/plugin-syntax-pipeline-operator": "npm:^7.26.7"
+    "@babel/helper-plugin-utils": "npm:^7.29.7"
+    "@babel/plugin-syntax-pipeline-operator": "npm:^7.29.7"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 10c0/0360e8fe610c828f069732e1068a7a89a9ff1d8136e18855315383a72db1fe72f5ea58dbde71d047d6174ac3fb806dba0341040c316f98cebbfbf9713a2642b2
+  checksum: 10c0/112cfc8ae558e31822ada7bf439675a623a5e47ceb3823f386b4bbd03a4bd9ebc8741f37a4918c4e92b988210245649719008b5e77addada603b2e7a5ead89d8
   languageName: node
   linkType: hard
 
@@ -1242,14 +1242,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-pipeline-operator@npm:^7.26.7":
-  version: 7.26.7
-  resolution: "@babel/plugin-syntax-pipeline-operator@npm:7.26.7"
+"@babel/plugin-syntax-pipeline-operator@npm:^7.29.7":
+  version: 7.29.7
+  resolution: "@babel/plugin-syntax-pipeline-operator@npm:7.29.7"
   dependencies:
-    "@babel/helper-plugin-utils": "npm:^7.26.5"
+    "@babel/helper-plugin-utils": "npm:^7.29.7"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 10c0/af2a1f911c63f47e4ba2914482aeea664894280d4929f7c3d8848b71797d1ec80fa6cd1d3695e322f540a61c132c78a388c7a043f01c34140bcd5b9a375b229b
+  checksum: 10c0/d4afed819b44c5ecd7b9dd22085dfee34bf1eeb3d7ae4fd2fad22a7a1cb110ee51fd9987a70370c6a2d61aa9d1fe9e70d5340a893ed7c9a4400020fa8f0e6145
   languageName: node
   linkType: hard
 
@@ -8487,7 +8487,7 @@ __metadata:
     "@babel/cli": "npm:^7.29.7"
     "@babel/core": "npm:^7.29.0"
     "@babel/eslint-parser": "npm:^7.26.8"
-    "@babel/plugin-proposal-pipeline-operator": "npm:^7.26.7"
+    "@babel/plugin-proposal-pipeline-operator": "npm:^7.29.7"
     "@babel/plugin-transform-class-properties": "npm:^7.25.9"
     "@babel/plugin-transform-optional-chaining": "npm:^7.29.7"
     "@babel/preset-env": "npm:^7.26.9"
