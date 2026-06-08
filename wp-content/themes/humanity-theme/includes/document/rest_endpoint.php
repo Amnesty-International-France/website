@@ -4,7 +4,10 @@ function title_filter($where, $wp_query)
 {
     global $wpdb;
     if ($search_term = $wp_query->get('search_title')) {
-        $where .= ' AND ' . $wpdb->posts . '.post_title LIKE \'%' . $wpdb->esc_like($search_term) . '%\'';
+        $where .= $wpdb->prepare(
+            ' AND ' . $wpdb->posts . '.post_title LIKE %s',
+            '%' . $wpdb->esc_like($search_term) . '%'
+        );
     }
     return $where;
 }
