@@ -365,7 +365,19 @@ function amnesty_set_clh_signer_email(string $email): void
 
 function amnesty_get_clh_skipped_petitions(): array
 {
-    return $_SESSION['clh_skipped_petitions'] ?? [];
+    amnesty_start_secure_session();
+
+    $session_skipped = $_SESSION['clh_skipped_petitions'] ?? [];
+
+    $cookie_skipped = [];
+    if (!empty($_COOKIE['clh_skipped_petitions'])) {
+        $decoded = json_decode(stripslashes($_COOKIE['clh_skipped_petitions']), true);
+        if (is_array($decoded)) {
+            $cookie_skipped = array_map('intval', $decoded);
+        }
+    }
+
+    return array_unique(array_merge($session_skipped, $cookie_skipped));
 }
 
 function amnesty_set_clh_skipped_petition(int $petition_id): void
@@ -373,7 +385,44 @@ function amnesty_set_clh_skipped_petition(int $petition_id): void
     amnesty_start_secure_session();
     $skipped = amnesty_get_clh_skipped_petitions();
     $skipped[] = $petition_id;
-    $_SESSION['clh_skipped_petitions'] = array_unique($skipped);
+    $skipped = array_unique($skipped);
+
+    $_SESSION['clh_skipped_petitions'] = $skipped;
+
+    setcookie('clh_skipped_petitions', wp_json_encode($skipped), [
+        'expires'  => time() + 30 * DAY_IN_SECONDS,
+        'path'     => '/',
+        'secure'   => is_ssl(),
+        'httponly' => true,
+        'samesite' => 'Strict',
+    ]);
+}
+
+function amnesty_get_clh_signed_petitions(): array
+{
+    $cookie_signed = [];
+    if (!empty($_COOKIE['clh_signed_petitions'])) {
+        $decoded = json_decode(stripslashes($_COOKIE['clh_signed_petitions']), true);
+        if (is_array($decoded)) {
+            $cookie_signed = array_map('intval', $decoded);
+        }
+    }
+
+    return array_unique($cookie_signed);
+}
+
+function amnesty_set_clh_signed_petition(int $petition_id): void
+{
+    $signed = amnesty_get_clh_signed_petitions();
+    $signed[] = $petition_id;
+    $signed = array_unique($signed);
+
+    setcookie('clh_signed_petitions', wp_json_encode($signed), [
+        'expires'  => time() + 30 * DAY_IN_SECONDS,
+        'path'     => '/',
+        'secure'   => is_ssl(),
+        'samesite' => 'Strict',
+    ]);
 }
 
 function amnesty_get_clh_tunnel_end_url(): string
@@ -439,6 +488,7 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
     $list_petitions_clh = $active_campaign ? (get_field('list_petition_clh', $active_campaign->ID) ?: []) : [];
     $selected_posts = [];
     $skipped_petitions = amnesty_get_clh_skipped_petitions();
+    $cookie_signed_ids = $last_signer_email ? [] : amnesty_get_clh_signed_petitions();
 
     foreach ($list_petitions_clh as $petition) {
         $goal = get_field('objectif_signatures', $petition->ID) ?: 200000;
@@ -453,7 +503,9 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
             'goal' => $goal,
             'current' => $current,
             'percentage' => ($goal > 0) ? min(($current / $goal) * 100, 100) : 0,
-            'already_signed' => $last_signer_email && $current_user && have_signed($petition->ID, $current_user->id),
+            'already_signed' => $last_signer_email
+                ? ($current_user && have_signed($petition->ID, $current_user->id))
+                : in_array($petition->ID, $cookie_signed_ids, true),
             'active' => amnesty_is_petition_not_expired($petition->ID),
             'already_skipped' => in_array($petition->ID, $skipped_petitions, true),
         ];
@@ -614,12 +666,20 @@ function amnesty_handle_petition_signature(): void
             exit;
         }
     } else {
-        $civility    = $_POST['civility']       ?? '';
-        $firstname   = $_POST['user_firstname'] ?? '';
-        $lastname    = $_POST['user_lastname']  ?? '';
-        $postal_code = $_POST['user_zipcode']   ?? '';
-        $country     = $_POST['user_country']   ?? '';
-        $phone       = $_POST['user_phone']     ?? '';
+        $civility    = sanitize_text_field($_POST['civility']       ?? '');
+        $firstname   = sanitize_text_field($_POST['user_firstname'] ?? '');
+        $lastname    = sanitize_text_field($_POST['user_lastname']  ?? '');
+        $postal_code = sanitize_text_field($_POST['user_zipcode']   ?? '');
+        $country     = sanitize_text_field($_POST['user_country']   ?? '');
+        $phone       = sanitize_text_field($_POST['user_phone']     ?? '');
+
+        if ($firstname === '' || $lastname === '') {
+            $fallback_url = $is_clh_tunnel_submission
+                ? amnesty_get_clh_petition_tunnel_url()
+                : amnesty_get_petition_form_fallback_url($petition_id);
+            wp_redirect(add_query_arg('signature_status', 'missing_fields', $fallback_url));
+            exit;
+        }
 
         $user_id = insert_user($civility, $firstname, $lastname, $user_email, $country, $postal_code, $phone);
 
@@ -647,20 +707,7 @@ function amnesty_handle_petition_signature(): void
     if ($is_clh_petition) {
         amnesty_set_clh_signer_email($user_email);
 
-        $cookie_signed = [];
-        if (!empty($_COOKIE['clh_signed_petitions'])) {
-            $decoded = json_decode(stripslashes($_COOKIE['clh_signed_petitions']), true);
-            if (is_array($decoded)) {
-                $cookie_signed = array_map('intval', $decoded);
-            }
-        }
-        $cookie_signed[] = $petition_id;
-        setcookie('clh_signed_petitions', wp_json_encode(array_unique($cookie_signed)), [
-            'expires'  => time() + 30 * DAY_IN_SECONDS,
-            'path'     => '/',
-            'secure'   => is_ssl(),
-            'samesite' => 'Strict',
-        ]);
+        amnesty_set_clh_signed_petition($petition_id);
 
         setcookie('clh_user_email', $user_email, [
             'expires'  => time() + 30 * DAY_IN_SECONDS,
