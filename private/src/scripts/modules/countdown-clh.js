@@ -1,4 +1,4 @@
-export const Countdown = () => {
+const Countdown = () => {
   const container = document.getElementById('countdown');
   if (!container) return;
 
@@ -30,3 +30,4 @@ export const Countdown = () => {
   tick();
 };
 
+export default Countdown;
