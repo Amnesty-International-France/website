@@ -18,6 +18,7 @@ const OUT_PATH = path.resolve(__dirname, '../wp-content/themes/humanity-theme/as
 const getEntries = (env) => {
   const entries = {
     bundle: path.resolve(__dirname, `${SRC_PATH}/scripts/App.js`),
+    turnstile: path.resolve(__dirname, `${SRC_PATH}/scripts/turnstile.js`),
     blocks: path.resolve(__dirname, `${SRC_PATH}/scripts/blocks.js`),
     editor: path.resolve(__dirname, `${SRC_PATH}/scripts/editor.js`),
     admin: path.resolve(__dirname, `${SRC_PATH}/scripts/admin.js`),

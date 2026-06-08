@@ -495,15 +495,37 @@ add_action('wp_enqueue_scripts', function () {
         return;
     }
 
-    wp_enqueue_script('cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], null, true);
+    $theme = wp_get_theme();
+
+    wp_enqueue_script(
+        'aif-turnstile',
+        get_template_directory_uri() . '/assets/scripts/turnstile.js',
+        [],
+        $theme->get('Version'),
+        ['in_footer' => false]
+    );
+    wp_enqueue_script(
+        'cf-turnstile',
+        'https://challenges.cloudflare.com/turnstile/v0/api.js',
+        ['aif-turnstile'],
+        null,
+        [
+            'in_footer' => false,
+            'strategy'  => 'defer',
+        ]
+    );
 });
 
-add_filter('script_loader_tag', function ($tag, $handle) {
-    if ('cf-turnstile' !== $handle) {
-        return $tag;
+add_filter('wp_resource_hints', function (array $urls, string $relation_type): array {
+    if ('preconnect' !== $relation_type || !getenv('TURNSTILE_SITE_KEY')) {
+        return $urls;
     }
 
-    return str_replace(' src', ' async defer src', $tag);
+    if (!in_array('https://challenges.cloudflare.com', $urls, true)) {
+        $urls[] = 'https://challenges.cloudflare.com';
+    }
+
+    return $urls;
 }, 10, 2);
 
 function verify_turnstile(): ?string
@@ -538,9 +560,9 @@ function verify_turnstile(): ?string
 function turnstile_friendly_error(string $error): string
 {
     return match ($error) {
-        'missing-input-response' => 'Merci de compléter le widget de vérification avant de soumettre le formulaire.',
-        'invalid-input-response' => 'La vérification a échoué. Veuillez rafraîchir la page et réessayer.',
-        'timeout-or-duplicate' => 'La session de vérification a expiré ou a déjà été utilisée. Veuillez rafraîchir la page et réessayer.',
+        'missing-input-response' => 'La vérification de sécurité n’a pas pu être effectuée. Veuillez recharger la page puis réessayer.',
+        'invalid-input-response' => 'La vérification de sécurité a échoué. Veuillez recharger la page puis réessayer.',
+        'timeout-or-duplicate' => 'La session de vérification a expiré. Veuillez recharger la page puis réessayer.',
         'bad-request' => 'La requête de vérification est invalide. Veuillez réessayer.',
         'internal-error' => 'Le service de vérification est temporairement indisponible. Veuillez réessayer dans quelques instants.',
         'missing-input-secret', 'invalid-input-secret', 'invalid-widget-id', 'invalid-parsed-secret' => 'Une erreur de configuration est survenue. Veuillez contacter le support.',

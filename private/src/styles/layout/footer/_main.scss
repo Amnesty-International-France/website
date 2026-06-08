@@ -110,6 +110,23 @@
               width: 100%;
             }
           }
+
+          & > [data-turnstile-client-error] {
+            width: 75%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: var(--wp--preset--color--pale-error);
+            color: var(--wp--preset--color--error);
+            font-size: 1rem;
+
+            &.hidden {
+              display: none;
+            }
+
+            @media (max-width: $container-md) {
+              width: 100%;
+            }
+          }
         }
 
         & > .title {
