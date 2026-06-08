@@ -2,13 +2,118 @@ includes:
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
 
 parameters:
-    level: 1
+    level: 0
     paths:
-        - wp-content/themes/humanity-theme/includes/urgent-action
-    scanFiles:
-        - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
-        - vendor/php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php
-        - vendor/php-stubs/wp-cli-stubs/wp-cli-i18n-stubs.php
-        - vendor/php-stubs/wp-cli-stubs/wp-cli-tools-stubs.php
-        - wp-content/themes/humanity-theme/includes/petitions/tables.php
-        - wp-content/themes/humanity-theme/includes/salesforce/user.php
+        - clean-posts.php
+        - infogerance
+        - wp-content/themes/humanity-theme/
+
+    excludePaths:
+        analyse:
+            - wp-settings.php (?)
+            - wp-content/themes/humanity-theme/functions.php
+            - wp-content/themes/humanity-theme/page-mes-demandes.php
+            - wp-content/themes/humanity-theme/includes/admin/cmb2-helpers.php
+            - wp-content/themes/humanity-theme/includes/blocks/articles-homepage/render.php
+            - wp-content/themes/humanity-theme/includes/blocks/slider/render.php
+            - wp-content/themes/humanity-theme/includes/features/search/class-search-filters.php
+            - wp-content/themes/humanity-theme/includes/helpers/actions-and-filters.php
+            - wp-content/themes/humanity-theme/includes/helpers/class-get-image-data.php
+            - wp-content/themes/humanity-theme/includes/helpers/post-single.php
+            - wp-content/themes/humanity-theme/includes/helpers/site.php
+            - wp-content/themes/humanity-theme/includes/helpers/taxonomies.php
+            - wp-content/themes/humanity-theme/includes/mlp/helpers.php
+            - wp-content/themes/humanity-theme/includes/mlp/rest-api.php
+            - wp-content/themes/humanity-theme/includes/mlp/scheduled-posts.php
+            - wp-content/themes/humanity-theme/includes/multisite/helpers.php
+            - wp-content/themes/humanity-theme/includes/theme-setup/no-js.php
+            - wp-content/themes/humanity-theme/includes/theme-setup/scripts-and-styles.php
+            - wp-content/themes/humanity-theme/includes/users/class-users-controller.php
+            - wp-content/themes/humanity-theme/includes/woo/cart.php
+            - wp-content/themes/humanity-theme/includes/woo/checkout.php
+            - wp-content/themes/humanity-theme/includes/woo/form-fields.php
+            - wp-content/themes/humanity-theme/includes/woo/helpers.php
+            - wp-content/themes/humanity-theme/includes/woo/templates.php
+            - wp-content/themes/humanity-theme/partials/alert-banner.php
+            - wp-content/themes/humanity-theme/partials/archive/filters.php
+            - wp-content/themes/humanity-theme/partials/myaccount/orders.php
+            - wp-content/themes/humanity-theme/partials/product/category.php
+            - wp-content/themes/humanity-theme/partials/search/filters.php
+            - wp-content/themes/humanity-theme/partials/shop/catalogue-header.php
+            - wp-content/themes/humanity-theme/patterns/post-header.php
+            - wp-content/themes/humanity-theme/patterns/shop-categories.php
+            # Temporarily excluded because these files depend on third-party plugin symbols
+            # that are installed locally/on servers but not provisioned in CI yet.
+            - wp-content/themes/humanity-theme/includes/admin/class-accessibility.php
+            - wp-content/themes/humanity-theme/includes/admin/event-national.php
+            - wp-content/themes/humanity-theme/includes/admin/local-structures-search.php
+            - wp-content/themes/humanity-theme/includes/admin/network/class-network-options.php
+            - wp-content/themes/humanity-theme/includes/admin/options-helpers.php
+            - wp-content/themes/humanity-theme/includes/admin/theme-options.php
+            - wp-content/themes/humanity-theme/includes/admin/theme-options/analytics.php
+            - wp-content/themes/humanity-theme/includes/admin/theme-options/footer.php
+            - wp-content/themes/humanity-theme/includes/admin/theme-options/header.php
+            - wp-content/themes/humanity-theme/includes/admin/theme-options/localisation.php
+            - wp-content/themes/humanity-theme/includes/admin/theme-options/localisation/class-taxonomy-labels.php
+            - wp-content/themes/humanity-theme/includes/admin/theme-options/news.php
+            - wp-content/themes/humanity-theme/includes/admin/theme-options/pop-in.php
+            - wp-content/themes/humanity-theme/includes/admin/theme-options/social.php
+            - wp-content/themes/humanity-theme/includes/admin/user-options.php
+            - wp-content/themes/humanity-theme/includes/admin/woo/theme-options.php
+            - wp-content/themes/humanity-theme/includes/blocks/action/render.php
+            - wp-content/themes/humanity-theme/includes/blocks/card-image-text/render.php
+            - wp-content/themes/humanity-theme/includes/blocks/chronicle-card/render.php
+            - wp-content/themes/humanity-theme/includes/blocks/content-callout/render.php
+            - wp-content/themes/humanity-theme/includes/blocks/document-card/render.php
+            - wp-content/themes/humanity-theme/includes/blocks/edh-card/render.php
+            - wp-content/themes/humanity-theme/includes/blocks/hero-large/render.php
+            - wp-content/themes/humanity-theme/includes/blocks/related-posts/render.php
+            - wp-content/themes/humanity-theme/includes/blocks/slider-changez-leur-histoire/render.php
+            - wp-content/themes/humanity-theme/includes/blocks/training-card/render.php
+            - wp-content/themes/humanity-theme/includes/petitions/create-petition.php
+            - wp-content/themes/humanity-theme/includes/petitions/syncs.php
+            - wp-content/themes/humanity-theme/includes/post-types/document.php
+            - wp-content/themes/humanity-theme/includes/post-types/edh.php
+            - wp-content/themes/humanity-theme/includes/post-types/petitions.php
+            - wp-content/themes/humanity-theme/includes/post-types/trainings.php
+            - wp-content/themes/humanity-theme/includes/salesforce/petition.php
+            - wp-content/themes/humanity-theme/includes/seo/opengraph.php
+            - wp-content/themes/humanity-theme/includes/taxonomies/custom-fields/precedence.php
+            - wp-content/themes/humanity-theme/includes/theme-setup/acf.php
+            - wp-content/themes/humanity-theme/page-voir-newsletter.php
+            - wp-content/themes/humanity-theme/partials/action-card-change-their-history.php
+            - wp-content/themes/humanity-theme/partials/article-card.php
+            - wp-content/themes/humanity-theme/partials/document/card.php
+            - wp-content/themes/humanity-theme/partials/donation-calculator.php
+            - wp-content/themes/humanity-theme/partials/event-card.php
+            - wp-content/themes/humanity-theme/partials/forms/edh-filters.php
+            - wp-content/themes/humanity-theme/partials/forms/trainings-filters.php
+            - wp-content/themes/humanity-theme/partials/petition-card-change-their-history.php
+            - wp-content/themes/humanity-theme/partials/petition-card.php
+            - wp-content/themes/humanity-theme/partials/urgent-banner.php
+            - wp-content/themes/humanity-theme/patterns/agenda-content.php
+            - wp-content/themes/humanity-theme/patterns/archive-loop-trainings.php
+            - wp-content/themes/humanity-theme/patterns/article-content.php
+            - wp-content/themes/humanity-theme/patterns/aside-petition-sticky.php
+            - wp-content/themes/humanity-theme/patterns/chapo.php
+            - wp-content/themes/humanity-theme/patterns/default-content.php
+            - wp-content/themes/humanity-theme/patterns/hero-chronicle.php
+            - wp-content/themes/humanity-theme/patterns/page-change-their-history-content.php
+            - wp-content/themes/humanity-theme/patterns/page-change-their-history-hero.php
+            - wp-content/themes/humanity-theme/patterns/page-content.php
+            - wp-content/themes/humanity-theme/patterns/page-hero-foundation.php
+            - wp-content/themes/humanity-theme/patterns/petition-content.php
+            - wp-content/themes/humanity-theme/patterns/petition-thanks.php
+            - wp-content/themes/humanity-theme/patterns/post-back-link.php
+            - wp-content/themes/humanity-theme/patterns/post-metadata.php
+            - wp-content/themes/humanity-theme/patterns/post-training-metadata.php
+            - wp-content/themes/humanity-theme/patterns/single-chronicle-content.php
+            - wp-content/themes/humanity-theme/tribe-events/single-event.php
+            - wp-content/themes/humanity-theme/tribe/events/single-event-blocks.php
+            - wp-content/themes/humanity-theme/tribe/events/v2/list.php
+            - wp-content/themes/humanity-theme/tribe/events/v2/list/nav.php
+            - wp-content/themes/humanity-theme/tribe/events/v2/list/nav/next-disabled.php
+            - wp-content/themes/humanity-theme/tribe/events/v2/list/nav/prev-disabled.php
+    scanDirectories:
+        - vendor/php-stubs
+        - wp-content/plugins
