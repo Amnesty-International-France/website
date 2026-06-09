@@ -7,16 +7,26 @@ This is the repository for the redesign of the Amnesty International France webs
 ## Documentation
 
 - [Architecture overview](./docs/ARCHITECTURE.md)
+- [Environments and deployment](./docs/ENVIRONMENTS.md)
+- [Mon Espace](./docs/MON-ESPACE.md)
+- [Salesforce integration](./docs/SALESFORCE.md)
+- [Cloudflare Turnstile integration](./docs/TURNSTILE.md)
 - [Main theme](./wp-content/themes/humanity-theme/README.md)
 - [Frontend toolchain](./private/README.md)
 - [Playwright E2E tests](./private/tests/e2e/README.md)
 - [AIF Donor Space plugin](./wp-content/plugins/aif-donor-space/README.md)
+- [AIF RSS Importer plugin](./wp-content/plugins/aif-rss-importer/README.md)
+- [Interactive Map plugin](./wp-content/plugins/interactive-map/README.md)
+- [Prismic Migration plugin](./wp-content/plugins/prismic-migration/README.md)
 
 ## Requirements
 
 - Ask for the `.env` file
-- PHP 8.0 or higher
-- MySQL version 8.0 or higher or MariaDB version 10.5 or higher
+- PHP 8.2 or higher, as required by `composer.json`
+- MySQL version 8.0 or higher or MariaDB version 10.6 or higher
+- Composer
+- Node.js with Corepack/Yarn 4 for the frontend toolchain
+- Docker when using the local `wp-env` WordPress stack
 - [Castor](https://github.com/jolicode/castor)
 
 Note : The database can be dockerized as follows :
@@ -36,44 +46,46 @@ FLUSH PRIVILEGES;
 
 ## Installation
 
-First, you need to change `.env` file to provide some information to the script for the creation of the WordPress environment.  
+First, you need to change `.env` file to provide some information to the script for the creation of the WordPress environment.
 You can create different env file like `.env.local`, `.env.dev`, ...
 
 Note : Values containing spaces must be wrapped in double quotes, otherwise the install aborts with `A value containing spaces must be surrounded by quotes`. Example : `WP_TITLE="Amnesty Local"`.
 
 The installation script takes two optional arguments which are `--path` and `--token`. They correspond respectively to the location where the environment will be created (default: current folder) and the github token to have access to private repositories.
 
-The script needs to have the path `$HOME/.local/bin` into your `$PATH` because `wp-cli` will be installed there.  
+The script needs to have the path `$HOME/.local/bin` into your `$PATH` because `wp-cli` will be installed there.
 If it is not, add the following line in your `.bashrc` or `.zschrc` : `export PATH="$HOME/.local/bin:$PATH"`
 
-To start the installation script : `castor install`.  
+To start the installation script : `castor install`.
 Example with all arguments : `castor install --path .` (or even `castor install --path www --token my-github-token`).
 
 It will install the environment with the [humanity theme](https://github.com/amnestywebsite/humanity-theme) and its required plugins.
 
 ## Clever Cloud hosting
 
-on clever cloud hooks in the `clevercloud` directory will be executed at build time and script `infogerance/aif-clever-cloud.php` will replace `wp-config.php`
+On Clever Cloud, hooks in the `clevercloud` directory are executed at build time and the script `infogerance/aif-clever-cloud.php` replaces `wp-config.php`.
 
 These environment variables must be defined :
 
-^ name             ^ purpose ^
-| WP_HOME          | base URL of the WP admin |
-| WP_SITEURL       | base URL of the website |
-| MYSQL_ADDON_HOST | host name of the database (should be automatically set) |
-| MYSQL_ADDON_PORT | port number of the database (should be automatically set) |
-| DB_NAME             | database name (should be automatically set) |
-| DB_USER             | database user name (should be automatically set) |
-| DB_PASSWORD         | database password (should be automatically set) |
-| WP_AUTH_KEY         | random string |
-| WP_AUTH_SALT        | random string |
-| WP_CACHE_KEY_SALT   | random string |
-| WP_LOGGED_IN_KEY    | random string |
-| WP_LOGGED_IN_SALT   | random string |
-| WP_NONCE_KEY        | random string |
-| WP_NONCE_SALT       | random string |
-| WP_SECURE_AUTH_KEY  | random string |
-| WP_SECURE_AUTH_SALT | random string |
+| Name                  | Purpose |
+|-----------------------|---------|
+| `WP_HOME`             | Base URL of the website |
+| `WP_SITEURL`          | Base URL of the WordPress install |
+| `MYSQL_ADDON_HOST`    | Database host, usually provided by Clever Cloud |
+| `MYSQL_ADDON_PORT`    | Database port, usually provided by Clever Cloud |
+| `MYSQL_ADDON_DB`      | Database name, usually provided by Clever Cloud |
+| `MYSQL_ADDON_USER`    | Database user, usually provided by Clever Cloud |
+| `MYSQL_ADDON_PASSWORD` | Database password, usually provided by Clever Cloud |
+| `WP_AUTH_KEY`         | Random string |
+| `WP_AUTH_SALT`        | Random string |
+| `WP_CACHE_KEY_SALT`   | Random string |
+| `WP_LOGGED_IN_KEY`    | Random string |
+| `WP_LOGGED_IN_SALT`   | Random string |
+| `WP_NONCE_KEY`        | Random string |
+| `WP_NONCE_SALT`       | Random string |
+| `WP_SECURE_AUTH_KEY`  | Random string |
+| `WP_SECURE_AUTH_SALT` | Random string |
+| `WP_ENVIRONMENT_TYPE` | Optional WordPress environment type, for example `development`, `staging`, or `production` |
 
 ## Update plugins from Github repositories
 
@@ -92,7 +104,7 @@ Like the install script, you can specify the path of the WordPress installation 
 ```bash
 cd private
 # You will maybe need to enable corepack
-yarn && yarn install
+yarn install --immutable
 yarn build
 ```
 
@@ -100,20 +112,31 @@ You may need to execute `corepack enable` before (use `sudo corepack enable` if 
 
 ## CI/CD
 
-pushing on branch `main` deploys on http://app-dadec8ba-25dc-44d7-b10d-6dd400a829fd.cleverapps.io
+Current deployment workflows are:
 
-pushing on branch `fairness-dev` deploys on http://app-0feb7822-eaf8-4f15-ba3d-d5d66aca81f2.cleverapps.io
+- pushes to `main` run `.github/workflows/deploy-release.yml`, use the `RELEASE` environment, deploy over SSH to the staging host, then run `wp update-db-schema`;
+- pushes to `prod` run `.github/workflows/deploy-prod.yaml`, use the `PROD` environment, deploy over SSH to the production host, then run `wp --path="$DOCUMENT_ROOT_PROD" update-db-schema`;
+- pushes to `fairness-dev` run `.github/workflows/deploy-fairness.yml`, use the `FAIRNESS` environment, and delegate the Clever Cloud deployment to `coopTilleuls/action-clevercloud-deploy`.
 
 ## Custom Plugins
 
-A custom plugin must be developed directly in a folder under `<path>/wp-content/plugins` (example: wp-content/plugins/hello-world).  
+A custom plugin must be developed directly in a folder under `<path>/wp-content/plugins` (example: wp-content/plugins/hello-world).
 This will allow the plugin to be loaded directly into WordPress. Note that it is not activated by default, so you need to activate it in wp-admin.
 
 For your plugin to be versioned on git, you need to add the following line to the plugins section of the `.gitignore` file : `!wp-content/plugins/your-plugin/`
 
 ## Start WordPress
 
-To start WordPress, run : `wp server` (or with a clean one : `wp cli cache clear && wp cli cache prune && wp cache flush && wp server`)
+To start the local Docker-based WordPress stack, run :
+
+```bash
+cd private
+yarn env start --update
+```
+
+The default `wp-env` URL is `http://localhost:8888`.
+
+If you use the manual Castor/WP-CLI installation flow instead, you can still run : `wp server` (or with a clean one : `wp cli cache clear && wp cli cache prune && wp cache flush && wp server`)
 
 Note : You can add `--port={xyz}` to `wp server` if the port `{xyz}` is not `8080`.
 
@@ -121,7 +144,7 @@ Note : You can add `--port={xyz}` to `wp server` if the port `{xyz}` is not `808
 
 ## Environment Variables
 
-This project needs some environment variables to communicate with Salesforce   
+This project needs some environment variables to communicate with Salesforce.
 You can create a `.env` file and define these variables :
 
 ```
@@ -131,12 +154,14 @@ AIF_SALESFORCE_SECRET=
 AIF_SALESFORCE_ORIGINE__C=
 AIF_SALESFORCE_CODE_ORIGINE__C__WEB=
 AIF_SALESFORCE_RECORD_TYPE_ID=
-AIF_SALESFORCE_CODES_AUWEBAP=
+AIF_SALESFORCE_CODES_AUWEBAPP=
 AIF_SALESFORCE_CODES_AUWEB=
 AIF_SALESFORCE_CODES_MILITANT=
+TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET_KEY=
 ```
 
-Then, you can add this code in your `wp-config.php` to be able to retrieve them using `getenv` in the application
+Then, you can add this code in your `wp-config.php` to be able to retrieve them using `getenv` in the application.
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -244,7 +269,7 @@ For more information, visit [MailGun](https://app.mailgun.com/).
 
 ### Plugin Structure
 
-Here is the structure of the "Espace Don" plugin as of 20/02/25:
+Current high-level structure of the "Espace Don" plugin:
 
 ```
 ├── assets
@@ -291,27 +316,29 @@ We have tried to minimize the use of JavaScript as much as possible. The JS file
 
 #### How is JS Included in the Plugin?
 
-Styles are added to the plugin via the `aif_donor_space_enqueue_assets` function, located in the `aif-donor-space.php` file.
+Scripts are added to the plugin via the `aif_donor_space_enqueue_assets` function, located in the `aif-donor-space.php` file.
 
 This function uses the WordPress function [wp_enqueue_script()](https://developer.wordpress.org/reference/functions/wp_enqueue_script/).
 
 ### Routing and Page Management
 
-The plugin's routing is managed by two functions located in the `aif-donor-space.php` file.
+The plugin creates the required donor-space pages from `aif-donor-space.php`.
 
-The first function, `aif_donor_space_create_pages`, creates the directory structure, and the second function, `aif_donor_space_load_template`, links a page to a template.
+The `aif_donor_space_create_pages` function ensures the page tree exists. It is called on `init` through `aif_ensure_critical_pages_exist`, protected by a five-minute transient, and on `after_switch_theme`.
 
-These two functions are triggered by a WordPress hook when the plugin is activated.
+The donor-space page templates are mostly selected by the theme, especially from `wp-content/themes/humanity-theme/includes/my-space/template.php`. See the dedicated plugin README for the detailed boundary between the plugin and the theme.
 
 ### How to Create/Modify/Delete a Page
 
 Each page is associated with a template. To modify a page, you need to modify the template. To add a page, follow these steps:
 
-1. Create the template in the `/template` folder.
+1. Create the template in the `templates/` folder when the template belongs to the plugin, or in the theme when it follows the existing theme-owned donor-space pattern.
 2. Register the page in the `aif_donor_space_create_pages` function.
-3. Associate the template with the page in the `aif_donor_space_load_template` function.
-4. Deactivate and reactivate the plugin in the admin interface.
+3. Associate the template with the page in the relevant theme or plugin template-loading code.
+4. Load the page once, or switch the theme, so the page creation hook can create any missing page.
+
+For more details, see [AIF Donor Space plugin](./wp-content/plugins/aif-donor-space/README.md).
 
 ## Import Content
 
-See [Prismic migration plugin](wp-content/plugins/prismic-migration/README.md)
+See [Prismic migration plugin](./wp-content/plugins/prismic-migration/README.md)

@@ -1,8 +1,8 @@
 # Architecture
 
-This document provides a concise overview of the Amnesty International France
-website architecture. It is intended as an entry point before more detailed
-documentation is written for each module, theme, plugin, or subsystem.
+The Amnesty International France website is a WordPress application organized
+around a custom theme, project-specific plugins, frontend build tooling,
+operational scripts, and several external integrations.
 
 ## Overview
 
@@ -19,10 +19,12 @@ The main building blocks are:
   configuration, JS/SCSS linting, frontend tests, and theme asset generation.
 - [`wp-content/plugins/aif-donor-space`](../wp-content/plugins/aif-donor-space/README.md):
   business plugin for the donor space and part of the authenticated user area.
-- `wp-content/plugins/aif-rss-importer`: RSS import plugin for press releases.
-- `wp-content/plugins/prismic-migration`: Prismic migration plugin exposed
-  through WP-CLI.
-- `wp-content/plugins/interactive-map`: custom Gutenberg block based on Leaflet.
+- [`wp-content/plugins/aif-rss-importer`](../wp-content/plugins/aif-rss-importer/README.md):
+  RSS import plugin for press releases.
+- [`wp-content/plugins/prismic-migration`](../wp-content/plugins/prismic-migration/README.md):
+  Prismic migration plugin exposed through WP-CLI.
+- [`wp-content/plugins/interactive-map`](../wp-content/plugins/interactive-map/README.md):
+  custom Gutenberg block based on Leaflet.
 - `clevercloud`, `infogerance`, `.github/workflows`: installation, hosting,
   backup, and deployment scripts.
 
@@ -104,18 +106,18 @@ organizes the domain around:
 - Salesforce calls;
 - email delivery through Mailgun.
 
-### `aif-rss-importer`
+### [`aif-rss-importer`](../wp-content/plugins/aif-rss-importer/README.md)
 
 RSS import plugin configurable from the WordPress admin. It imports external
 content into the `press-release` post type and schedules imports through
 WP-Cron.
 
-### `prismic-migration`
+### [`prismic-migration`](../wp-content/plugins/prismic-migration/README.md)
 
 Tooling plugin for migrating Prismic content into WordPress. It exposes WP-CLI
 commands, including migration by content type and post-import link repair.
 
-### `interactive-map`
+### [`interactive-map`](../wp-content/plugins/interactive-map/README.md)
 
 Custom Gutenberg block plugin. It has its own build based on `@wordpress/scripts`
 and uses Leaflet for map rendering.
@@ -142,17 +144,19 @@ taxonomies, including:
 
 The project communicates with several external services:
 
-- Salesforce: OAuth client credentials, REST API, and Bulk API for petitions,
-  users, newsletters, cases, and urgent actions;
+- [Salesforce](./SALESFORCE.md): OAuth client credentials, REST API, and Bulk
+  API for petitions, users, newsletters, cases, and urgent actions;
 - Mailgun: email delivery for the donor space and verification flows;
-- Cloudflare Turnstile: security verification for sensitive forms;
+- [Cloudflare Turnstile](./TURNSTILE.md): security verification for sensitive
+  forms;
 - Prismic: historical content source used during migration;
 - Amnesty.org RSS: source for imported press releases;
 - Google Geocoding: local structure search/geocoding;
 - Google Tag Manager, Google Analytics, Hotjar, and VWO: analytics and tracking.
 
-Expected environment variables are documented in `.env.example` and completed by
-the `getenv()` calls in the application code.
+Baseline environment variables are documented in `.env.example`, with
+additional integration-specific variables described in the relevant subsystem
+documents and visible from the `getenv()` calls in the application code.
 
 ## Forms And Security
 
@@ -170,7 +174,8 @@ current authentication state depending on the use case.
 
 ## Environments
 
-The project supports several local and remote workflows:
+The project supports several local and remote workflows, summarized in
+[`ENVIRONMENTS.md`](./ENVIRONMENTS.md):
 
 - historical installation through Castor and WP-CLI;
 - local WordPress environment through `private/.wp-env.json`;
@@ -196,8 +201,8 @@ Available checks are:
 - Vitest through `yarn test`;
 - targeted Turnstile typecheck through `yarn typecheck:turnstile`.
 
-The current GitHub CI runs PHP checks and GitHub Actions linting. Frontend
-checks exist locally but are not yet covered by the main CI workflow.
+The current GitHub CI runs PHP checks, frontend Turnstile build/unit/type/E2E
+checks, and GitHub Actions linting.
 
 ## Documentation Map
 
@@ -207,7 +212,23 @@ live next to the code it describes when possible. Current subsystem documents:
 - [`wp-content/themes/humanity-theme`](../wp-content/themes/humanity-theme/README.md):
   theme, templates, patterns, blocks, hooks, post types, taxonomies, and
   integrations;
+- [`wp-content/themes/humanity-theme/docs/content-authoring-and-api.md`](../wp-content/themes/humanity-theme/docs/content-authoring-and-api.md):
+  content model, blocks, patterns, REST endpoints, and authoring surface;
 - [`private`](../private/README.md): frontend build, assets, JS/SCSS
   conventions, tests, and typecheck;
 - [`wp-content/plugins/aif-donor-space`](../wp-content/plugins/aif-donor-space/README.md):
   donor space, pages, data, Salesforce, Mailgun, and REST API;
+- [`wp-content/plugins/aif-rss-importer`](../wp-content/plugins/aif-rss-importer/README.md):
+  RSS import settings, WP-Cron scheduling, and imported press-release metadata;
+- [`wp-content/plugins/interactive-map`](../wp-content/plugins/interactive-map/README.md):
+  Leaflet Gutenberg block, REST endpoint dependencies, and build workflow;
+- [`wp-content/plugins/prismic-migration`](../wp-content/plugins/prismic-migration/README.md):
+  Prismic WP-CLI migration commands, transformers, and link repair;
+- [`docs/SALESFORCE.md`](./SALESFORCE.md): Salesforce authentication, REST
+  helpers, and Bulk API synchronization;
+- [`docs/TURNSTILE.md`](./TURNSTILE.md): Cloudflare Turnstile runtime flow,
+  local dummy keys, and E2E coverage;
+- [`docs/MON-ESPACE.md`](./MON-ESPACE.md): authenticated donor/member area,
+  theme/plugin boundary, redirects, and weak points;
+- [`docs/ENVIRONMENTS.md`](./ENVIRONMENTS.md): local, staging, production, and
+  deployment environment model.
