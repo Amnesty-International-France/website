@@ -4,6 +4,14 @@ Ceci est le dépôt de la refonte du site web d'Amnesty International France bas
 
 This is the repository for the redesign of the Amnesty International France website based on [humanity theme](https://github.com/amnestywebsite/humanity-theme) [(README)](./README_humanity.md). The repository contains all the elements required to run the site, including specific plugins.
 
+## Documentation
+
+- [Architecture overview](./docs/ARCHITECTURE.md)
+- [Main theme](./wp-content/themes/humanity-theme/README.md)
+- [Frontend toolchain](./private/README.md)
+- [Playwright E2E tests](./private/tests/e2e/README.md)
+- [AIF Donor Space plugin](./wp-content/plugins/aif-donor-space/README.md)
+
 ## Requirements
 
 - Ask for the `.env` file
