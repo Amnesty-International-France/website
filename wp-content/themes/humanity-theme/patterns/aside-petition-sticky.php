@@ -36,7 +36,7 @@ $is_campaign_clh = get_field('clh_petition', $post_id) && amnesty_is_clh_petitio
 <aside class="petition-aside" id="petition">
 	<div class="sticky-card">
 		<div class="sticky-card-content">
-			<div class="sticky-card-title">SIGNEZ LA PÉTITION</div>
+			<div class="sticky-card-title"><?php echo esc_html($sticky_card_title); ?></div>
 			<p class="recipient"><?php echo esc_html($recipient ?? ''); ?><?php echo esc_html($form_contenu ?? ''); ?></p>
 			<?php if ($type === 'petition') : ?>
 				<div class="punchline-wrapper">
