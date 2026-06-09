@@ -1,6 +1,8 @@
 .horizontal-search .additional-filters {
   max-height: 0;
-  transition: max-height .3s, padding .3s;
+  transition:
+    max-height 0.3s,
+    padding 0.3s;
   overflow-y: hidden;
 }
 
@@ -80,7 +82,7 @@
 // no-js styles
 .no-js .horizontal-search .additional-filters {
   max-height: 1000px;
-  transition: max-height .3s;
+  transition: max-height 0.3s;
   padding: 0 0 var(--wp--preset--spacing--half) 0;
   overflow: visible;
 }

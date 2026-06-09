@@ -1,8 +1,7 @@
 .urgent-register,
 .urgent-register-header,
 .urgent-register-form,
-.urgent-register-form-cta
-{
+.urgent-register-form-cta {
   display: flex;
   flex-direction: column;
 }
@@ -20,7 +19,7 @@
     padding: 8px 12px;
     background-color: var(--wp--preset--color--black);
     color: var(--wp--preset--color--primary);
-    top: -.9em;
+    top: -0.9em;
     left: 50%;
     transform: translateX(-50%);
     font-size: 1rem;
@@ -68,10 +67,12 @@
       }
     }
 
-    input:not([type="radio"]) {
+    input:not([type='radio']) {
       margin-bottom: 22px;
       border: 1px solid var(--wp--preset--color--grey-lighter);
-      transition: border 0.3s ease, margin-bottom 0.3s ease;
+      transition:
+        border 0.3s ease,
+        margin-bottom 0.3s ease;
       font-size: 16px;
 
       &.success {
@@ -131,7 +132,7 @@
             align-items: center;
             gap: 12px;
 
-            & > input[type="radio"] {
+            & > input[type='radio'] {
               cursor: pointer;
             }
 
@@ -223,5 +224,5 @@
       color: var(--wp--preset--color--success);
       border: 1px solid var(--wp--preset--color--success);
     }
-}
+  }
 }

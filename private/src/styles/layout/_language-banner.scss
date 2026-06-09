@@ -82,7 +82,7 @@ button.language-selectorClose {
 
 .language-selectorClose::after {
   @include icon(194px, 265px, 16px, 16px);
-  content: "";
+  content: '';
   display: inline-block;
   margin-left: 11px;
 

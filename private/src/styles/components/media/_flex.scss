@@ -1,5 +1,4 @@
 @if ($enable-flexbox) {
-
   /**
    * Media object, flexbox style.
    *
@@ -19,9 +18,9 @@
   /// );
   /// <div class="media media--large">
   $media-figure-sizes: (
-    "large": "180px",
-    "medium": "140px",
-    "small": "100px"
+    'large': '180px',
+    'medium': '140px',
+    'small': '100px',
   ) !default;
 
   /// Media spacing amount.
@@ -54,7 +53,8 @@
   }
 
   .media-figure,
-  .media-figure img { /* 1 */ /* stylelint-disable-line */
+  .media-figure img {
+    /* 1 */ /* stylelint-disable-line */
     vertical-align: bottom;
   }
 
@@ -67,7 +67,8 @@
   .media-body {
     flex: 1;
 
-    &:last-child, > *:last-child {
+    &:last-child,
+    > *:last-child {
       margin-bottom: 0; /* 2 */
     }
   }
@@ -159,5 +160,4 @@
       float: none; /* 2 */
     }
   }
-
 }

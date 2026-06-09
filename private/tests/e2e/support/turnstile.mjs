@@ -100,11 +100,13 @@ export const mockSilentTurnstile = async (page) =>
   routeTurnstileApi(page, { mode: 'silent', delay: 0, token: '', trigger: 'render' });
 
 export const expectTurnstileScriptsInHead = async (page, expect) => {
-  const scriptOrder = await page.locator('head script[src]').evaluateAll((scripts) =>
-    scripts.map((script) => script.getAttribute('src')),
-  );
+  const scriptOrder = await page
+    .locator('head script[src]')
+    .evaluateAll((scripts) => scripts.map((script) => script.getAttribute('src')));
 
-  const localGuardIndex = scriptOrder.findIndex((src) => src.includes('/assets/scripts/turnstile.js'));
+  const localGuardIndex = scriptOrder.findIndex((src) =>
+    src.includes('/assets/scripts/turnstile.js'),
+  );
   const cloudflareIndex = scriptOrder.findIndex((src) =>
     src.includes('https://challenges.cloudflare.com/turnstile/v0/api.js'),
   );

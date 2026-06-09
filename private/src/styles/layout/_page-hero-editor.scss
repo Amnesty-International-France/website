@@ -1,4 +1,4 @@
-[data-type="amnesty-core/block-hero"] {
+[data-type='amnesty-core/block-hero'] {
   max-width: 100% !important;
   width: 100% !important;
 }
@@ -10,7 +10,6 @@
   background-size: cover;
   background-position: center center;
   color: var(--wp--preset--color--white);
-
 }
 
 .page-hero + .components-base-control {
@@ -172,7 +171,7 @@ p.page-heroContent {
   margin: 0;
 }
 
-.page-heroAlignment--right .editor-rich-text__tinymce[data-is-placeholder-visible="true"] {
+.page-heroAlignment--right .editor-rich-text__tinymce[data-is-placeholder-visible='true'] {
   right: 0;
 }
 

@@ -8,13 +8,13 @@
 }
 
 @include mq(medium-sm) {
-  .tax-location .post+.post {
+  .tax-location .post + .post {
     margin-left: flexy-gutter();
   }
 }
 
 @include mq($until: medium-sm) {
-  .tax-location .post+.post {
+  .tax-location .post + .post {
     margin-top: flexy-gutter();
   }
 }
@@ -56,7 +56,9 @@
 
 .post-title span {
   background-color: var(--wp--preset--color--white);
-  box-shadow: -8px 0 0 0 var(--wp--preset--color--white), 8px 0 0 0 var(--wp--preset--color--white);
+  box-shadow:
+    -8px 0 0 0 var(--wp--preset--color--white),
+    8px 0 0 0 var(--wp--preset--color--white);
   box-decoration-break: clone;
   line-height: 1.2;
 }
@@ -112,7 +114,7 @@
 }
 
 .postImage--none .post-content::after {
-  content: "";
+  content: '';
   display: block;
   height: 8px;
   width: 75%;
@@ -138,7 +140,7 @@
 
 .post .post-figure img {
   backface-visibility: hidden;
-  transition: opacity .3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .post-figure {
@@ -152,13 +154,13 @@
 .post:hover,
 .post:focus {
   .post-figure img {
-    opacity: .6;
+    opacity: 0.6;
   }
 }
 
 .post:focus-within {
   .post-figure img {
-    opacity: .6;
+    opacity: 0.6;
   }
 }
 

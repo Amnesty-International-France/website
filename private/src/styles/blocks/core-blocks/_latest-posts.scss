@@ -16,7 +16,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   background-color: var(--wp--preset--color--white);
-  transition: .25s ease-in-out, color .25s ease-in-out;
+  transition:
+    0.25s ease-in-out,
+    color 0.25s ease-in-out;
   display: flex;
 }
 
