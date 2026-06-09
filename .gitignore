@@ -80,3 +80,5 @@ composer*
 
 docker-compose.yml
 cleaned_posts.txt
+/private/playwright-report/
+/private/test-results/
