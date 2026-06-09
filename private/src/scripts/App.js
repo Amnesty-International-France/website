@@ -32,7 +32,7 @@ import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
 import { calculator, hoverDonationMenu } from './modules/donation-calculator';
 import petitionShareFeedback from './modules/social-network-clicked';
 import petitionDonateFeedback from './modules/donate-clicked';
-import { toggleFullFormPetition, submitCodeOrigine } from './modules/petition-form';
+import { toggleFullFormPetition, submitCodeOrigine, initTunnelClhForm, getPetitionIdForCLH, stepperTunnelClh } from './modules/petition-form';
 import { closeUrgentBanner } from './modules/urgent-banner';
 import initJetpackForm from './modules/Form/jetpack-forms';
 import edhFilters from './modules/search-filters-edh';
@@ -47,6 +47,7 @@ import urgentRegister from './modules/Form/urgent-register-form';
 import { emptyInputNewsletterLead, handleNewsletterSubmission } from './modules/newsletter';
 import GoPetitionsForm from './modules/Form/go-petition-form';
 import { closeAlertBanner } from './modules/alert-banner';
+import { Countdown } from './modules/countdown-clh';
 
 const App = () => {
   browserDetector();
@@ -81,6 +82,7 @@ const App = () => {
   petitionDonateFeedback();
   toggleFullFormPetition();
   submitCodeOrigine();
+  initTunnelClhForm();
   closeUrgentBanner();
   initJetpackForm();
   edhFilters();
@@ -98,6 +100,9 @@ const App = () => {
   handleNewsletterSubmission();
   GoPetitionsForm();
   closeAlertBanner();
+  Countdown();
+  getPetitionIdForCLH();
+  stepperTunnelClh();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);
 

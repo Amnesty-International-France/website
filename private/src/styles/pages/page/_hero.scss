@@ -291,3 +291,44 @@
     z-index: -1;
   }
 }
+
+.page-tunnel-clh-hero {
+  position: relative;
+  background-color: var(--wp--preset--color--black);
+  width: 100vw;
+
+  .page-hero-title-wrapper {
+    top: 15%;
+  }
+
+  .page-hero-title-wrapper .container .container-title {
+    text-align: center;
+
+    .page-hero-title {
+      font-family: bely-display, sans-serif;
+      font-weight: normal;
+      line-height: 4.625rem;
+      font-size: 3.5rem;
+    }
+  }
+
+  @media (max-width: ($container-md - 1px)) {
+    min-height: 253px;
+
+    .page-figure,
+    .article-figure {
+      height: 253px;
+      max-height: 253px;
+    }
+
+    .page-hero-title-wrapper .container {
+      padding-right: 24px;
+
+      .container-title .page-hero-title {
+        font-size: 28px;
+        line-height: 34px;
+        padding: 0;
+      }
+    }
+  }
+}
