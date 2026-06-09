@@ -126,6 +126,8 @@ Important theme integration points:
 Because the theme directly calls plugin functions, the donor-space templates
 expect this plugin to be active.
 
+Cross-subsystem documentation: [Mon Espace](../../../docs/MON-ESPACE.md).
+
 ## Salesforce Integration
 
 Salesforce authentication uses the client credentials flow.
@@ -236,6 +238,19 @@ These assets are static files in the plugin. They are not built by the
 On admin pages, `aif_donor_space_check_requirements()` checks the required
 Salesforce and Mailgun variables for administrators. If one is missing, it shows
 an admin notice and calls `deactivate_plugins('aif-donor-space')`.
+
+## Known Weak Points
+
+- The plugin provides business services, but the theme still owns most page
+  rendering and form controllers.
+- Theme templates call plugin functions directly, so plugin deactivation can
+  break authenticated-area pages.
+- Salesforce and Mailgun availability directly affect login, account creation,
+  verification, password reset, and donor/member pages.
+- Local fixtures do not currently model full Salesforce and Mailgun behavior for
+  donor/member flows.
+- Browser-triggered REST endpoints should keep explicit nonce and authentication
+  checks when they are changed.
 
 ## Change Conventions
 

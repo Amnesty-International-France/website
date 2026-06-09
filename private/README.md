@@ -255,3 +255,18 @@ Recommended checks by change type:
 - JavaScript module changes: `yarn lint:scripts` and the relevant Webpack build;
 - SCSS changes: `yarn lint:styles` and the relevant Webpack build;
 - shared entry changes: `yarn lint`, `yarn test`, and `yarn build:prod`.
+
+## Known Weak Points
+
+- Source files live in `private/src`, but WordPress consumes versioned generated
+  assets under `wp-content/themes/humanity-theme/assets`; source/build drift is
+  possible when only one side is updated.
+- The public `bundle` entry initializes many unrelated modules through
+  `App.js`, so shared changes can have broad frontend impact.
+- The Turnstile client guard is intentionally separate from `bundle` and depends
+  on load order before the Cloudflare API script.
+- Gutenberg editor behavior is split between PHP block registration in the
+  theme and JavaScript/CSS source in `private`.
+- Local `wp-env` and E2E fixtures are useful for deterministic tests, but they
+  do not model all production integrations such as real Salesforce and Mailgun
+  flows.

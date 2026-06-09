@@ -143,6 +143,8 @@ When adding rendering code:
 - use a classic PHP template only when WordPress template resolution or
   request-specific control is required.
 
+Detailed documentation: [Content authoring and API](./docs/content-authoring-and-api.md).
+
 ## Content Model
 
 The theme registers multiple custom post types. Some use direct registration
@@ -186,6 +188,8 @@ Important taxonomies include:
 Several default terms are seeded on `after_switch_theme` from
 `includes/theme-setup/*`, for example categories, countries, combats, keywords,
 and document classification terms.
+
+Detailed documentation: [Content authoring and API](./docs/content-authoring-and-api.md).
 
 ## Business Tables
 
@@ -238,6 +242,8 @@ It handles:
 - email existence checks through `humanity/v1/check-email`;
 - WP-CLI synchronization of pending signatures to Salesforce.
 
+Detailed documentation: [Petitions and urgent actions](./docs/petitions-urgent-actions.md).
+
 ### Urgent Actions
 
 The urgent action module lives under `includes/urgent-action`.
@@ -249,6 +255,8 @@ It handles:
 - unsynchronized action lookup;
 - Salesforce synchronization through WP-CLI;
 - schema update command used during production deployment.
+
+Detailed documentation: [Petitions and urgent actions](./docs/petitions-urgent-actions.md).
 
 ### Documents
 
@@ -285,6 +293,8 @@ It handles:
 - redirects for unauthorized pages;
 - Yoast breadcrumb customization for authenticated-area contexts.
 
+Detailed documentation: [Mon Espace](../../../docs/MON-ESPACE.md).
+
 ## REST API
 
 The theme registers several REST endpoints. Important namespaces include:
@@ -297,6 +307,8 @@ Some endpoints are public, while others require `is_user_logged_in`,
 WordPress capabilities, or nonce validation. Permission handling should be
 reviewed when adding endpoints, especially for routes that expose business data
 or proxy external services.
+
+Detailed documentation: [Content authoring and API](./docs/content-authoring-and-api.md).
 
 ## Assets
 
