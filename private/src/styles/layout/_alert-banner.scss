@@ -1,40 +1,52 @@
 .alert-banner {
   background-color: var(--wp--preset--color--primary);
   padding: 30px 25px;
+  position: relative;
+
+  @media screen and (max-width: $container-md) {
+    padding-top: 50px;
+  }
+
+  > .icon-cross {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: var(--wp--preset--color--black);
+    cursor: pointer;
+  }
 
   > .alert-banner-body {
+    max-width: $container-hg;
+    margin: 0 auto;
     width: 100%;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 30px;
     font-family: var(--wp--preset--font-family--secondary);
 
-    @media screen and (max-width: $container-lg) {
-      flex-direction: column;
-    }
-
-    .alert-body-image {
-      max-width: 195px;
-
-      @media screen and (max-width: $container-lg) {
-        max-width: 100%;
-      }
-
-      > img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-
-    .alert-body-content {
+    > .alert-banner-main {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 30px;
       width: 100%;
 
-      > .header {
-        width: 100%;
-        position: relative;
+      .alert-body-image {
+        max-width: 195px;
+        flex-shrink: 0;
+
+        > img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+      }
+
+      .alert-body-text {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
 
         > .title {
           margin-bottom: 10px;
@@ -46,39 +58,28 @@
           text-wrap: balance;
         }
 
-        > .icon-cross {
-          position: absolute;
-          top: 0;
-          right: 0;
-          color: var(--wp--preset--color--black);
-          cursor: pointer;
+        > .description {
+          font-size: 18px;
+          letter-spacing: 0;
+          font-family: var(--wp--preset--font-family--primary);
+          text-transform: none;
         }
       }
+    }
 
-      > .description {
-        font-size: 18px;
-        text-transform: uppercase;
-        letter-spacing: 0;
-        margin-bottom: 40px;
-        font-family: var(--wp--preset--font-family--primary);
-      }
+    > .cta {
+      padding: 6px 30px;
+      background: transparent;
+      color: var(--wp--preset--color--black);
+      border: 2px solid var(--wp--preset--color--black);
+      font-weight: bold;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all ease 0.4s;
 
-      > .cta {
-        padding: 6px 30px;
-        background-color: var(--wp--preset--color--black);
-        color: var(--wp--preset--color--primary);
-        font-weight: bold;
-        text-transform: uppercase;
-        text-decoration: none;
-        margin: 0 auto;
-      }
-
-      &.center {
-        align-items: center;
-
-        > .header {
-          justify-content: center;
-        }
+      &:hover {
+        background: rgba(0, 0, 0, 0.2);
+        color: var(--wp--preset--color--grey-darkest);
       }
     }
   }
