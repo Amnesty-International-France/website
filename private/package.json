@@ -22,6 +22,7 @@
     "lint:scripts": "eslint ./src/",
     "lint:styles": "stylelint \"src/**/*.scss\"",
     "lint": "yarn lint:scripts; yarn lint:styles",
+    "format": "prettier --write .",
     "env": "wp-env",
     "env:e2e": "wp-env --config=tests/e2e/.wp-env.e2e.json",
     "env:e2e:start": "yarn env:e2e start --update",
