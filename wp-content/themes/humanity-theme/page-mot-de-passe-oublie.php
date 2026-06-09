@@ -72,7 +72,7 @@ if (isset($success_message)) {
 					     data-expired-callback="aifTurnstileFailure"
 					     data-timeout-callback="aifTurnstileFailure"
 					     data-unsupported-callback="aifTurnstileFailure"
-					     data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+					     data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
 					<label for="email">Votre email (obligatoire) :</label>
 					<input
 						value="<?= $email ? $email : '' ?>"
