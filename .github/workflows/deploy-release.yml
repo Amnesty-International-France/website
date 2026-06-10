@@ -30,6 +30,6 @@ jobs:
           SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
           SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
       - name: Deploy
-        run: ssh staging '$HOME/deploy.sh'
+        run: ssh staging '$HOME/deploy.sh ${{ github.ref_name }}'
       - name: Update schema
         run: ssh staging 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp update-db-schema'

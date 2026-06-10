@@ -29,42 +29,42 @@ $svg = file_get_contents($template_directory . '/assets/images/icon-cross.svg');
 ?>
 
 <div id="alert-banner-<?= $query->post->ID ?>" class="alert-banner">
-	<div class="alert-banner-body">
-		<?php if ($thumbnail) : ?>
-			<div class="alert-body-image">
-				<?php echo $thumbnail; ?>
-			</div>
-		<?php endif; ?>
-		<div class="alert-body-content <?php if (!$thumbnail) : ?> center<?php endif; ?>">
-			<div class="header">
-				<p class="title"><?php echo esc_html(get_the_title($alert_banner->ID)); ?></p>
-				<?php
-                echo wp_kses(
-                    $svg,
-                    [
-                        'svg' => [
-                            'class' => true,
-                            'width' => true,
-                            'height' => true,
-                            'viewBox' => true,
-                            'fill' => true,
-                            'xmlns' => true,
-                        ],
-                        'path' => [
-                            'd' => true,
-                            'stroke' => true,
-                            'stroke-width' => true,
-                            'stroke-linecap' => true,
-                            'stroke-linejoin' => true,
-                        ],
-                    ]
-                );
+	<?php
+    echo wp_kses(
+        $svg,
+        [
+            'svg' => [
+                'class' => true,
+                'width' => true,
+                'height' => true,
+                'viewBox' => true,
+                'fill' => true,
+                'xmlns' => true,
+            ],
+            'path' => [
+                'd' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'stroke-linecap' => true,
+                'stroke-linejoin' => true,
+            ],
+        ]
+    );
 ?>
+	<div class="alert-banner-body">
+		<div class="alert-banner-main">
+			<?php if ($thumbnail) : ?>
+				<div class="alert-body-image">
+					<?php echo $thumbnail; ?>
+				</div>
+			<?php endif; ?>
+			<div class="alert-body-text">
+				<p class="title"><?php echo esc_html(get_the_title($alert_banner->ID)); ?></p>
+				<p class="description"><?php echo esc_html($alert_banner_description); ?></p>
 			</div>
-			<p class="description"><?php echo esc_html($alert_banner_description); ?></p>
-			<a class="cta" href="<?php echo esc_url($alert_banner_url); ?>" target="_blank"
-			   rel="noopener noreferrer"><?php echo esc_html($alert_banner_label_cta); ?></a>
 		</div>
+		<a class="cta" href="<?php echo esc_url($alert_banner_url); ?>" target="_blank"
+		   rel="noopener noreferrer"><?php echo esc_html($alert_banner_label_cta); ?></a>
 	</div>
 </div>
 <?php
