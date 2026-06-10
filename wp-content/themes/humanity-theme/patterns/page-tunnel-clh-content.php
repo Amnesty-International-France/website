@@ -71,11 +71,6 @@ foreach ($list_petitions_clh as $petition) {
 $signed_count = count(array_filter($selected_posts, fn($p) => $p['already_signed'] === true));
 $total_steps = min(10, count($list_petitions_clh));
 
-$available_petitions = \array_filter(
-    $selected_posts,
-    static fn($petition) => $petition['already_signed'] === false &&
-        $petition['active'] === true
-);
 $not_signed = \array_filter(
     $selected_posts,
     static fn($petition) => $petition['already_signed'] === false &&
@@ -83,16 +78,7 @@ $not_signed = \array_filter(
         $petition['active'] === true
 );
 
-if (empty($not_signed)) {
-    $not_signed = $available_petitions;
-}
-
 $show_final_screen = $signed_count >= 10 || empty($not_signed);
-
-if (!$show_final_screen && empty($not_signed)) {
-    wp_redirect(amnesty_get_clh_tunnel_end_url());
-    exit();
-}
 
 if ($show_final_screen) {
     $fallback_share_petition = $selected_posts[0] ?? null;

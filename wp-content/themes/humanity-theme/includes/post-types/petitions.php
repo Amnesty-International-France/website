@@ -565,12 +565,6 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
     }
 
     $signed_count = count(array_filter($selected_posts, fn ($petition) => $petition['already_signed'] === true));
-    $available_petitions = array_filter(
-        $selected_posts,
-        static fn ($petition) =>
-        $petition['already_signed'] === false &&
-        $petition['active'] === true
-    );
     $not_signed = array_filter(
         $selected_posts,
         static fn ($petition) =>
@@ -578,10 +572,6 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
         $petition['already_skipped'] === false &&
         $petition['active'] === true
     );
-
-    if (empty($not_signed)) {
-        $not_signed = $available_petitions;
-    }
 
     $next_petition = null;
 
