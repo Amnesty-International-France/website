@@ -2,13 +2,14 @@
 
 The Amnesty International France website is a WordPress application organized
 around a custom theme, project-specific plugins, frontend build tooling,
-operational scripts, and several external integrations.
+workflow definitions, hosting support files, and several external integrations.
 
 ## Overview
 
 The project is a full WordPress application. The repository versions WordPress
 core, the main theme, several third-party plugins, project-specific plugins,
-frontend build tooling, installation scripts, and deployment scripts.
+frontend build tooling, installation scripts, and deployment workflow
+definitions.
 
 The main building blocks are:
 
@@ -26,7 +27,7 @@ The main building blocks are:
 - [`wp-content/plugins/interactive-map`](../wp-content/plugins/interactive-map/README.md):
   custom Gutenberg block based on Leaflet.
 - `clevercloud`, `infogerance`, `.github/workflows`: installation, hosting,
-  backup, and deployment scripts.
+  backup, and deployment workflow support.
 
 ## WordPress Runtime
 
@@ -174,18 +175,21 @@ current authentication state depending on the use case.
 
 ## Environments
 
-The project supports several local and remote workflows, summarized in
+The project supports several local and remote environments, mapped in
 [`ENVIRONMENTS.md`](./ENVIRONMENTS.md):
 
 - historical installation through Castor and WP-CLI;
 - local WordPress environment through `private/.wp-env.json`;
 - local MySQL/MariaDB database;
 - `.env`-based configuration;
-- historical Clever Cloud deployment;
-- production deployment through GitHub Actions on the `prod` branch.
+- Infomaniak preprod and production hosts;
+- historical Clever Cloud support.
 
 The Clever Cloud file `infogerance/aif-clever-cloud.php` generates a WordPress
 configuration from platform environment variables.
+
+Detailed GitHub Actions and Infomaniak remote-script deployment behavior is
+documented in [`DEPLOYMENT.md`](./DEPLOYMENT.md).
 
 ## Quality And CI
 
@@ -230,5 +234,7 @@ live next to the code it describes when possible. Current subsystem documents:
   local dummy keys, and E2E coverage;
 - [`docs/MON-ESPACE.md`](./MON-ESPACE.md): authenticated donor/member area,
   theme/plugin boundary, redirects, and weak points;
-- [`docs/ENVIRONMENTS.md`](./ENVIRONMENTS.md): local, staging, production, and
-  deployment environment model.
+- [`docs/ENVIRONMENTS.md`](./ENVIRONMENTS.md): local, test, staging,
+  production, and historical environment map;
+- [`docs/DEPLOYMENT.md`](./DEPLOYMENT.md): GitHub Actions deployment flows,
+  remote scripts, operational checks, and deployment weak points.

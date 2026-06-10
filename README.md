@@ -7,7 +7,8 @@ This is the repository for the redesign of the Amnesty International France webs
 ## Documentation
 
 - [Architecture overview](./docs/ARCHITECTURE.md)
-- [Environments and deployment](./docs/ENVIRONMENTS.md)
+- [Environments](./docs/ENVIRONMENTS.md)
+- [Deployment](./docs/DEPLOYMENT.md)
 - [Mon Espace](./docs/MON-ESPACE.md)
 - [Salesforce integration](./docs/SALESFORCE.md)
 - [Cloudflare Turnstile integration](./docs/TURNSTILE.md)
@@ -112,11 +113,9 @@ You may need to execute `corepack enable` before (use `sudo corepack enable` if 
 
 ## CI/CD
 
-Current deployment workflows are:
-
-- pushes to `main` run `.github/workflows/deploy-release.yml`, use the `RELEASE` environment, deploy over SSH to the staging host, then run `wp update-db-schema`;
-- pushes to `prod` run `.github/workflows/deploy-prod.yaml`, use the `PROD` environment, deploy over SSH to the production host, then run `wp --path="$DOCUMENT_ROOT_PROD" update-db-schema`;
-- pushes to `fairness-dev` run `.github/workflows/deploy-fairness.yml`, use the `FAIRNESS` environment, and delegate the Clever Cloud deployment to `coopTilleuls/action-clevercloud-deploy`.
+Deployments are handled by GitHub Actions for `main`, `prod`, and
+`fairness-dev`. See [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md) for the
+deployment model, remote-script checks, and schema-update flow.
 
 ## Custom Plugins
 

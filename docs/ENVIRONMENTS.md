@@ -1,105 +1,66 @@
-# Environments And Deployment
+# Environments
 
-This document summarizes the project environment model and the main deployment
-paths. It complements the root README and subsystem documentation.
+The project runs in several local, test, staging, production, and historical
+hosting contexts. This document maps those environments and where their
+configuration comes from. Deployment operations live in
+[`DEPLOYMENT.md`](./DEPLOYMENT.md).
 
-## Local WordPress
+## Environment Matrix
 
-The historical local installation path uses the root `.env` file, Castor,
-WP-CLI, and a local MySQL or MariaDB database.
+| Environment | Purpose | Runtime | Configuration Source | Main Docs |
+| --- | --- | --- | --- | --- |
+| Local Castor/WP-CLI | Historical manual local development | Local PHP, WP-CLI, MySQL or MariaDB | Root `.env`, based on `.env.example` | [`README.md`](../README.md) |
+| Local `wp-env` | Docker-based local WordPress development | `@wordpress/env` on `http://localhost:8888` | `private/.wp-env.json` and local support plugins | [`private/README.md`](../private/README.md) |
+| E2E `wp-env` | Playwright end-to-end tests | `@wordpress/env` on `http://localhost:8898` | `private/tests/e2e/.wp-env.e2e.json` and E2E support plugin | [`private/tests/e2e/README.md`](../private/tests/e2e/README.md) |
+| Release / preprod | Remote validation environment for `main` | Infomaniak WordPress host | GitHub `RELEASE` environment, remote `~/initenv.sh`, host crontab | [`DEPLOYMENT.md`](./DEPLOYMENT.md) |
+| Production | Public production site for `prod` | Infomaniak WordPress host | GitHub `PROD` environment, remote `~/initenv.sh`, host crontab | [`DEPLOYMENT.md`](./DEPLOYMENT.md) |
+| Fairness / Clever Cloud | Historical or dedicated Clever Cloud deployment path | Clever Cloud PHP runtime | Clever Cloud environment variables and `infogerance/aif-clever-cloud.php` | [`DEPLOYMENT.md`](./DEPLOYMENT.md), [`ARCHITECTURE.md`](./ARCHITECTURE.md) |
 
-The required baseline variables are listed in `.env.example`:
+## Variable Ownership
 
-- database connection;
-- WordPress URL, title, and admin account;
-- `WP_ENVIRONMENT_TYPE`;
-- Salesforce credentials;
-- Mailgun credentials.
+Use the narrowest source of truth for each variable family:
 
-Local `.env` values must be loaded by the developer WordPress configuration,
-for example from `wp-config.php` as shown in the root README. Runtime
-application code mostly reads configuration through `getenv()`, with a few
-subsystems also accepting constants.
+- `.env.example`: baseline variables expected by the historical local
+  Castor/WP-CLI setup, including database, WordPress admin, Salesforce, and
+  Mailgun values.
+- `private/.wp-env.json`: local Docker WordPress mounts, local-only plugins, and
+  lifecycle activation for the default `wp-env` stack.
+- `private/tests/e2e/.wp-env.e2e.json`: isolated E2E WordPress runtime, port, and
+  local test support plugin.
+- GitHub environments and secrets: SSH credentials and environment selection for
+  deployment workflows.
+- Remote `~/initenv.sh` and host crontab: Infomaniak deployment variables such as
+  `REPO_DIR` and `DOCUMENT_ROOT`.
+- `infogerance/aif-clever-cloud.php`: Clever Cloud mapping from platform
+  environment variables to WordPress configuration.
 
-## Frontend Local Stack
+Integration-specific variables are documented with their subsystem:
 
-The frontend toolchain lives in `private/`.
+- [`SALESFORCE.md`](./SALESFORCE.md): Salesforce OAuth and business-code
+  variables.
+- [`TURNSTILE.md`](./TURNSTILE.md): Cloudflare Turnstile site and secret keys,
+  including local dummy-key behavior.
+- [`MON-ESPACE.md`](./MON-ESPACE.md): authenticated user-area behavior and
+  integration boundaries.
 
-Important commands:
+## Related Operations
 
-```bash
-cd private
-yarn install --immutable
-yarn build
-yarn env start --update
-```
+- To change GitHub Actions deployment commands, remote scripts, or schema-update
+  checks, start with [`DEPLOYMENT.md`](./DEPLOYMENT.md).
+- To run the default local Docker WordPress stack or rebuild frontend assets, use
+  [`private/README.md`](../private/README.md).
+- To run Playwright against the isolated E2E WordPress stack, use
+  [`private/tests/e2e/README.md`](../private/tests/e2e/README.md).
+- To add or change integration variables, update `.env.example` and the relevant
+  integration document.
 
-`private/.wp-env.json` mounts the main theme and required CMB2 plugins into a
-local WordPress container. It also mounts `private/wp-env/dev-turnstile` so the
-local stack can display Turnstile widgets with Cloudflare dummy keys.
+## Weak Points
 
-`@wordpress/env` uses `http://localhost:8888` by default for the development
-site. This project does not override that port in `private/.wp-env.json`.
-
-The E2E stack is separate and uses `private/tests/e2e/.wp-env.e2e.json` on port
-`8898`, with `testsEnvironment` disabled. See
-[`private/tests/e2e/README.md`](../private/tests/e2e/README.md).
-
-## Clever Cloud
-
-Historical Clever Cloud support is kept under:
-
-- `clevercloud/pre_build.sh`;
-- `clevercloud/post_build.sh`;
-- `clevercloud/cron.json`;
-- `infogerance/aif-clever-cloud.php`.
-
-`infogerance/aif-clever-cloud.php` generates a WordPress configuration from
-platform environment variables. It maps Clever Cloud MySQL variables to
-WordPress constants and enables Jetpack development or staging behavior based on
-`WP_ENVIRONMENT_TYPE`.
-
-## GitHub Actions Deployment
-
-Deployment workflows live in `.github/workflows`.
-
-Current deployment paths:
-
-- `deploy-release.yml`: runs on pushes to `main`, uses the `RELEASE`
-  environment, connects to the staging SSH host, executes `$HOME/deploy.sh`,
-  then runs `wp update-db-schema` from
-  `$DOCUMENT_ROOT`;
-- `deploy-prod.yaml`: runs on pushes to `prod`, uses the `PROD` environment,
-  connects to the production SSH host, executes `livraison-prod.sh`, then runs
-  `wp --path="$DOCUMENT_ROOT_PROD" update-db-schema`;
-- `deploy-fairness.yml`: runs on pushes to `fairness-dev` and delegates the
-  Clever Cloud deployment to `coopTilleuls/action-clevercloud-deploy`.
-
-Staging and production do not expose the same shell variables. Do not assume
-that a deployment command validated on staging can be copied to production
-without checking the remote shell profile and document root variables.
-
-## Remote Operational Context
-
-Known staging context:
-
-- SSH alias: `amnesty-preprod`;
-- `~/initenv.sh` exposes `REPO_DIR` and `DOCUMENT_ROOT`;
-- observed WP-CLI version: `2.12.0`.
-
-Useful non-mutating check:
-
-```bash
-ssh amnesty-preprod 'source $HOME/initenv.sh && printf "DOCUMENT_ROOT=%s\n" "$DOCUMENT_ROOT" && test -d "$DOCUMENT_ROOT" && cd "$DOCUMENT_ROOT" && wp --version'
-```
-
-## Change Conventions
-
-When changing environment or deployment behavior:
-
-- update `.env.example` and docs when a new required variable is introduced;
-- keep local `wp-env`, E2E `wp-env`, staging, and production assumptions
-  separate;
-- validate deployment shell changes with a non-mutating remote command before
-  running a state-changing command;
-- check `wp update-db-schema` paths independently for staging and production.
+- Remote Infomaniak variables are owned by host-side shell scripts and crontabs,
+  not by this repository.
+- Local `wp-env` and E2E `wp-env` are deterministic but do not model all
+  production integrations.
+- Clever Cloud support is historical and follows a different configuration model
+  from Infomaniak.
+- Several integrations read directly from `getenv()`, so new required variables
+  should update `.env.example` and the relevant integration documentation.
