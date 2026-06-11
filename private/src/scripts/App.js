@@ -27,6 +27,7 @@ import initCarousels from './modules/carousel';
 import tableOfContents from './modules/table-of-contents';
 import readMoreBlock from './modules/read-more';
 import initAZFilter from './modules/az-filter';
+import initActualitesArchive from './modules/actualites-archive';
 import { getUserLocationFromButton, getUserLocationFromForm } from './modules/localisation';
 import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
 import { calculator, hoverDonationMenu } from './modules/donation-calculator';
@@ -73,6 +74,7 @@ const App = () => {
   tableOfContents();
   readMoreBlock();
   initAZFilter();
+  initActualitesArchive();
   getUserLocationFromButton();
   getUserLocationFromForm();
   enhanceJetpackFormPlaceholders();
