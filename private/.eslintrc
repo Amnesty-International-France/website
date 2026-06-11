@@ -6,7 +6,6 @@
     "plugin:react-hooks/recommended",
     "plugin:@wordpress/eslint-plugin/i18n",
   ],
-  "plugins": ["prettier"],
   "globals": {
     "lodash": true,
     "React": true,
@@ -21,7 +20,6 @@
     "requireConfigFile": false,
   },
   "rules": {
-    "prettier/prettier": ["error"],
     "react/prop-types": "off",
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "@wordpress/i18n-text-domain": ["error", { "allowedTextDomain": ["amnesty", "default"] }],
