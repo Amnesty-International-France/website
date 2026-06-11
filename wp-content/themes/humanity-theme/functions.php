@@ -585,13 +585,13 @@ add_filter('render_block', function ($block_content, $block) {
 
             if ($bloc_aria_label) {
                 $type_value = match ($bloc_aria_label) {
-                    'Legs et donations' => 'brochure',
-                    'Fondation Amnesty International France' => 'fondation',
+                    'Formulaire legs' => 'brochure',
+                    'Formulaire fondation' => 'fondation',
                     default => null,
                 };
                 $name_value = match ($bloc_aria_label) {
-                    'Legs et donations' => 'legs',
-                    'Fondation Amnesty International France' => 'fondation',
+                    'Formulaire legs' => 'legs',
+                    'Formulaire fondation' => 'fondation',
                     default => null,
                 };
 
