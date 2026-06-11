@@ -135,9 +135,7 @@ test('shows a failure message when Turnstile never creates a token', async ({
   await fillForgottenPasswordForm(page);
   await page.locator('#submit-btn').click();
 
-  await expect(page.getByRole('alert')).toContainText(
-    'La vérification de sécurité est en cours',
-  );
+  await expect(page.getByRole('alert')).toContainText('La vérification de sécurité est en cours');
   await expect(page.getByRole('alert')).toContainText(
     'La vérification de sécurité n’a pas pu être effectuée',
     { timeout: 5000 },

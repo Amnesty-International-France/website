@@ -10,7 +10,7 @@
 
 .wp-block-quote cite::after,
 .wp-block-quote.has-text-align-center cite::after {
-  content: "";
+  content: '';
   display: block;
   margin: 8px auto 0;
   max-width: 200px;
@@ -107,8 +107,6 @@
     font-size: 1.25rem !important;
   }
 }
-
-
 
 .wp-block-quote cite::after,
 .wp-block-quote.has-black-color cite::after,

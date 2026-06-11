@@ -38,7 +38,7 @@
 
   &::after {
     position: absolute;
-    content: "";
+    content: '';
     top: 0;
     right: 0;
     bottom: 0;
@@ -104,7 +104,7 @@
 }
 
 .linkList-authorDivider::before {
-  content: " ";
+  content: ' ';
   height: 12px;
   width: 1px;
   background: var(--wp--preset--color--black);

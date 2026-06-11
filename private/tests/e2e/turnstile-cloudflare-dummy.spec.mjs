@@ -45,7 +45,9 @@ test.describe('@cloudflare-smoke Turnstile dummy keys', () => {
     await page.getByLabel('Votre email (obligatoire) :').fill(UNKNOWN_EMAIL);
     await page.locator('#submit-btn').click();
 
-    await expect(page.getByText('La vérification de sécurité a échoué.', { exact: true })).toBeVisible();
+    await expect(
+      page.getByText('La vérification de sécurité a échoué.', { exact: true }),
+    ).toBeVisible();
     await expect(page.getByText('Votre utilisateur nous est inconnu')).toHaveCount(0);
   });
 });

@@ -26,97 +26,97 @@
     }
 
     .page-content {
-    padding-top: 0;
+      padding-top: 0;
 
-    &.no-chapo {
-      > :first-child {
-        margin-top: 24px;
+      &.no-chapo {
+        > :first-child {
+          margin-top: 24px;
 
-        .wp-block-heading {
-          margin-top: 0;
+          .wp-block-heading {
+            margin-top: 0;
+          }
+        }
+      }
+
+      .download-go-further-block,
+      .get-informed-block,
+      .read-also-block,
+      p:not(
+        .wp-block-amnesty-core-chapo p,
+        .wp-block-amnesty-core-section.small p,
+        .wp-block-amnesty-core-section.large p,
+        .download-go-further-block p,
+        .call-to-action-block p,
+        .wp-block-amnesty-core-section-home p,
+        .interactive-map p,
+        .wp-block-amnesty-core-card-image-text p,
+        .petition-card-change-their-history p
+      ),
+      .wp-block-columns,
+      .wp-block-details,
+      .wp-block-heading,
+      .wp-block-list,
+      .wp-block-amnesty-core-action,
+      .wp-block-amnesty-core-quote-block,
+      .wp-block-amnesty-core-image,
+      .wp-block-amnesty-core-section.small,
+      .wp-block-html,
+      .video-block,
+      .card-image-text-block,
+      .read-more-block,
+      .slider-block,
+      div[data-test='contact-form'] p,
+      div[data-test='contact-form'] {
+        max-width: $container-md;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .wp-block-image,
+      .image-block {
+        max-width: $container-lg;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .custom-button-block {
+        max-width: $container-md;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 0;
+      }
+
+      .call-to-action-block {
+        max-width: $container-lg;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .wp-block-amnesty-core-chapo {
+        .text {
+          @media (min-width: $container-lg) {
+            width: 50%;
+            margin-left: 20%;
+          }
+        }
+      }
+
+      .interactive-map {
+        max-width: $container-hg;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .carousel-block {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+
+        .swiper-slide {
+          max-width: none;
         }
       }
     }
-
-    .download-go-further-block,
-    .get-informed-block,
-    .read-also-block,
-    p:not(
-      .wp-block-amnesty-core-chapo p,
-      .wp-block-amnesty-core-section.small p,
-      .wp-block-amnesty-core-section.large p,
-      .download-go-further-block p,
-      .call-to-action-block p,
-      .wp-block-amnesty-core-section-home p,
-      .interactive-map p,
-      .wp-block-amnesty-core-card-image-text p,
-      .petition-card-change-their-history p
-    ),
-    .wp-block-columns,
-    .wp-block-details,
-    .wp-block-heading,
-    .wp-block-list,
-    .wp-block-amnesty-core-action,
-    .wp-block-amnesty-core-quote-block,
-    .wp-block-amnesty-core-image,
-    .wp-block-amnesty-core-section.small,
-    .wp-block-html,
-    .video-block,
-    .card-image-text-block,
-    .read-more-block,
-    .slider-block,
-    div[data-test="contact-form"] p,
-    div[data-test="contact-form"] {
-      max-width: $container-md;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .wp-block-image,
-    .image-block {
-      max-width: $container-lg;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .custom-button-block {
-      max-width: $container-md;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 0;
-    }
-
-    .call-to-action-block {
-      max-width: $container-lg;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .wp-block-amnesty-core-chapo {
-      .text {
-        @media (min-width: $container-lg) {
-          width: 50%;
-          margin-left: 20%;
-        }
-      }
-    }
-
-    .interactive-map {
-      max-width: $container-hg;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .carousel-block {
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-      margin-right: calc(50% - 50vw);
-
-      .swiper-slide {
-        max-width: none;
-      }
-    }
-  }
   }
 
   .page-hero-block {

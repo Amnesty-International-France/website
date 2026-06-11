@@ -3,22 +3,28 @@ import { mockSuccessfulTurnstile } from './support/turnstile.mjs';
 
 const FORGOT_PASSWORD_PATH = '/mot-de-passe-oublie/';
 
-const setServerSideTurnstileResult = async (page, { success, error = 'invalid-input-response' }) => {
-  await page.locator('form.aif-form-container').evaluate((form, options) => {
-    const appendHiddenInput = (name, value) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = name;
-      input.value = value;
-      form.appendChild(input);
-    };
+const setServerSideTurnstileResult = async (
+  page,
+  { success, error = 'invalid-input-response' },
+) => {
+  await page.locator('form.aif-form-container').evaluate(
+    (form, options) => {
+      const appendHiddenInput = (name, value) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      };
 
-    appendHiddenInput('aif_e2e_turnstile_verify_success', options.success ? '1' : '0');
+      appendHiddenInput('aif_e2e_turnstile_verify_success', options.success ? '1' : '0');
 
-    if (!options.success) {
-      appendHiddenInput('aif_e2e_turnstile_verify_error', options.error);
-    }
-  }, { success, error });
+      if (!options.success) {
+        appendHiddenInput('aif_e2e_turnstile_verify_error', options.error);
+      }
+    },
+    { success, error },
+  );
 };
 
 const submitForgotPasswordForm = async (page, email = 'unknown@example.org') => {
@@ -54,7 +60,9 @@ test.describe('forgot password Turnstile server-side flow', () => {
     });
     await submitForgotPasswordForm(page);
 
-    await expect(page.getByText('La vérification de sécurité a échoué.', { exact: true })).toBeVisible();
+    await expect(
+      page.getByText('La vérification de sécurité a échoué.', { exact: true }),
+    ).toBeVisible();
     await expect(page.getByText('Votre utilisateur nous est inconnu')).toHaveCount(0);
   });
 });

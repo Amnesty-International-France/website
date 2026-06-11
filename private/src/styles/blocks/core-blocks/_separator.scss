@@ -19,7 +19,7 @@
 }
 
 .wp-block-separator.is-style-dots::before {
-  content: "\00b7 \00b7 \00b7";
+  content: '\00b7 \00b7 \00b7';
   padding-left: 2em;
   font-size: var(--wp--preset--font-size--regular);
   color: var(--wp--preset--color--black);
