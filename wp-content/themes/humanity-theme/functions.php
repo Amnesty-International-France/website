@@ -104,6 +104,7 @@ require_once realpath(__DIR__ . '/includes/helpers/archive-chronicle-helpers.php
 require_once realpath(__DIR__ . '/includes/helpers/list-alignment.php');
 require_once realpath(__DIR__ . '/includes/helpers/reading-time.php');
 require_once realpath(__DIR__ . '/includes/helpers/page-the-chronicle-promo-helpers.php');
+require_once realpath(__DIR__ . '/includes/helpers/actualites-archive-helper.php');
 // endregion helpers
 
 /**

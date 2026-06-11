@@ -411,5 +411,12 @@
       "title": "Footer",
       "area": "footer"
     }
+  ],
+  "customTemplates": [
+    {
+      "name": "page-actualites-archive",
+      "title": "Archive des actualités",
+      "postTypes": ["page"]
+    }
   ]
 }
