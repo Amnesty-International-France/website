@@ -11,7 +11,7 @@
  */
 add_filter(
     'password_change_email',
-    static function ( array $email_args ): array {
+    static function (array $email_args): array {
         $email_args['message'] = str_replace(
             '###ADMIN_EMAIL###',
             'smd@amnesty.fr',
