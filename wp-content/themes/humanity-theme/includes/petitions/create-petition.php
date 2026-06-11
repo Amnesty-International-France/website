@@ -17,7 +17,9 @@ function create_petition(int $post_id)
     $terms = get_the_terms($post, 'combat');
 
     $data = [
-        'Name' => $post->post_title,
+        'Name' => mb_strlen($post->post_title) > 80
+            ? rtrim(mb_substr($post->post_title, 0, 80))
+            : $post->post_title,
         'RecordTypeId' => '0121o000000kdzmAAA',
         'Date_de_cloture__c' => (new DateTime(get_field('date_de_fin', $post_id)))->format('Y-m-d'),
         'Description_de_la_petition__c' => $post->post_excerpt,
