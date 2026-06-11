@@ -326,7 +326,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 									<button type="button" class="tunnel-clh-petition-accordion-toggle"
 									        aria-expanded="false"
 									        aria-controls="<?php echo esc_attr($mobile_accordion_id); ?>">
-										Afficher plus de contexte
+										Afficher la lettre de pétition
 									</button>
 									<div id="<?php echo esc_attr($mobile_accordion_id); ?>"
 									     class="tunnel-clh-petition-accordion-content" hidden>
@@ -368,7 +368,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 						<figure class="page-tunnel-clh-petition-card-context is-desktop-context">
 							<div class="tunnel-clh-petition-accordion-container">
 								<button type="button" class="tunnel-clh-petition-accordion-toggle" aria-expanded="false"
-								        aria-controls="<?php echo esc_attr($accordion_id); ?>">Afficher plus de contexte
+								        aria-controls="<?php echo esc_attr($accordion_id); ?>">Afficher la lettre de pétition
 								</button>
 								<div id="<?php echo esc_attr($accordion_id); ?>"
 								     class="tunnel-clh-petition-accordion-content" hidden>
