@@ -572,7 +572,7 @@
     text-transform: none;
   }
 
-  @media screen and (max-width: ($container-lg - 1px)) {
+  @media (max-width: ($container-sm - 1px)) {
     .page-tunnel-clh-action-button.is-primary {
       display: none;
     }
@@ -593,10 +593,6 @@
   }
 
   @media (min-width: $container-sm) {
-    flex-direction: row;
-  }
-
-  @media (min-width: $container-lg) {
     flex-direction: row-reverse;
     justify-content: space-between;
     align-items: flex-end;
@@ -607,7 +603,7 @@
 .page-tunnel-clh-mobile-sign-cta {
   display: none;
 
-  @media screen and (max-width: ($container-lg - 1px)) {
+  @media (max-width: ($container-sm - 1px)) {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -710,47 +706,20 @@
   }
 
   &.is-secondary {
-    padding: 12px;
-    border: var(--wp--preset--color--black) 2px solid;
-    background-color: var(--wp--preset--color--white);
-    font-size: 15px;
-    line-height: 16px;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    font-family: var(--wp--preset--font-family--primary);
+    font-weight: 300;
+    text-transform: none;
+    cursor: pointer;
     transition:
       background-color 0.4s ease,
       border-color 0.4s ease,
       color 0.4s ease;
 
-    .action-icon {
-      width: 40px;
-      height: auto;
-      flex-shrink: 0;
-      color: currentColor;
-    }
-
     &:hover {
-      border-color: var(--wp--preset--color--grey-darkest);
-      background-color: var(--wp--preset--color--grey-lighter);
-      color: var(--wp--preset--color--grey-darkest);
-    }
-  }
-
-  @media (min-width: $container-lg) {
-    &.is-secondary {
-      padding: 0;
-      border: 0;
       background-color: transparent;
-      font-family: var(--wp--preset--font-family--primary);
-      font-weight: 300;
-      text-transform: none;
-      cursor: pointer;
-
-      .action-icon {
-        display: none;
-      }
-
-      &:hover {
-        background-color: transparent;
-      }
     }
   }
 
@@ -769,10 +738,6 @@
       line-height: 24px;
       text-align: right;
       text-transform: none;
-
-      .action-icon {
-        display: none;
-      }
 
       &:hover {
         background-color: transparent;
