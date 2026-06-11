@@ -490,8 +490,18 @@ add_filter('block_editor_settings_all', function ($settings, $context) {
 /**
  * Cloudflare Turnstile
  */
+function aif_turnstile_site_key(): string
+{
+    return (string) getenv('TURNSTILE_SITE_KEY');
+}
+
+function aif_turnstile_secret_key(): string
+{
+    return (string) getenv('TURNSTILE_SECRET_KEY');
+}
+
 add_action('wp_enqueue_scripts', function () {
-    if (!getenv('TURNSTILE_SITE_KEY')) {
+    if (!aif_turnstile_site_key()) {
         return;
     }
 
@@ -517,7 +527,7 @@ add_action('wp_enqueue_scripts', function () {
 });
 
 add_filter('wp_resource_hints', function (array $urls, string $relation_type): array {
-    if ('preconnect' !== $relation_type || !getenv('TURNSTILE_SITE_KEY')) {
+    if ('preconnect' !== $relation_type || !aif_turnstile_site_key()) {
         return $urls;
     }
 
@@ -537,7 +547,7 @@ function verify_turnstile(): ?string
 
     $result = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
         'body' => [
-            'secret' => getenv('TURNSTILE_SECRET_KEY'),
+            'secret' => aif_turnstile_secret_key(),
             'response' => $response,
             'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
         ],
