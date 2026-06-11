@@ -381,6 +381,7 @@ require_once realpath(__DIR__ . '/includes/seo/schema-breadcrumbs.php');
 require_once realpath(__DIR__ . '/includes/users/class-users-controller.php');
 require_once realpath(__DIR__ . '/includes/users/contact-methods.php');
 require_once realpath(__DIR__ . '/includes/users/meta.php');
+require_once realpath(__DIR__ . '/includes/users/emails.php');
 // endregion users
 
 /**
