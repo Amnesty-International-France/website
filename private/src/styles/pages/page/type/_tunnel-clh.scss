@@ -288,6 +288,8 @@
   .page-tunnel-clh-petition-card-context.is-mobile-context {
     display: block;
     width: calc(100% + 40px);
+    margin-top: auto;
+    margin-bottom: -20px;
     margin-right: -20px;
     margin-left: -20px;
   }
@@ -578,7 +580,7 @@
 
   @media (max-width: ($container-sm - 1px)) {
     gap: 0;
-    margin: 0 -20px -20px;
+    margin: 0 -20px 0;
 
     .page-tunnel-clh-action-button.is-primary {
       order: 1;
@@ -592,6 +594,13 @@
 
   @media (min-width: $container-sm) {
     flex-direction: row;
+  }
+
+  @media (min-width: $container-lg) {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
   }
 }
 
@@ -722,6 +731,26 @@
       border-color: var(--wp--preset--color--grey-darkest);
       background-color: var(--wp--preset--color--grey-lighter);
       color: var(--wp--preset--color--grey-darkest);
+    }
+  }
+
+  @media (min-width: $container-lg) {
+    &.is-secondary {
+      padding: 0;
+      border: 0;
+      background-color: transparent;
+      font-family: var(--wp--preset--font-family--primary);
+      font-weight: 300;
+      text-transform: none;
+      cursor: pointer;
+
+      .action-icon {
+        display: none;
+      }
+
+      &:hover {
+        background-color: transparent;
+      }
     }
   }
 
