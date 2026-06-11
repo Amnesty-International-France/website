@@ -131,9 +131,10 @@ add_filter('query_vars', 'amnesty_register_clh_tunnel_thanks_query_var');
 function amnesty_map_clh_tunnel_thanks_request(array $query_vars): array
 {
     $pagename = isset($query_vars['pagename']) ? trim((string) $query_vars['pagename'], '/') : '';
+    $request_path = trim((string) wp_parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
     $thanks_path = trim((string) wp_parse_url(amnesty_get_clh_petition_tunnel_thanks_url(), PHP_URL_PATH), '/');
 
-    if ($pagename !== $thanks_path) {
+    if ($pagename !== $thanks_path && $request_path !== $thanks_path) {
         return $query_vars;
     }
 
@@ -145,6 +146,7 @@ function amnesty_map_clh_tunnel_thanks_request(array $query_vars): array
 
     $query_vars['pagename'] = get_page_uri($tunnel_page);
     $query_vars['clh_final_thanks'] = '1';
+    unset($query_vars['error']);
 
     return $query_vars;
 }
