@@ -35,6 +35,56 @@ if (! function_exists('amnesty_normalise_canonical_host')) {
     }
 }
 
+if (! function_exists('amnesty_filter_opengraph_url')) {
+    /**
+     * Force the Yoast og:url onto the production host.
+     *
+     * Yoast serves og:url from the precomputed indexable, so it bypasses the
+     * `wpseo_canonical` filter and can still expose the preview (Infomaniak)
+     * host. Normalise it explicitly.
+     *
+     * @param string $url The Open Graph URL.
+     *
+     * @return string The Open Graph URL on the production host.
+     */
+    function amnesty_filter_opengraph_url($url): string
+    {
+        return amnesty_normalise_canonical_host((string) $url);
+    }
+}
+
+add_filter('wpseo_opengraph_url', 'amnesty_filter_opengraph_url');
+
+if (! function_exists('amnesty_filter_schema_graph')) {
+    /**
+     * Force any preview host in the Yoast JSON-LD schema graph onto production.
+     *
+     * The schema `@id` / `url` nodes derive from the precomputed canonical, so
+     * they can still carry the Infomaniak host. Walk the graph and normalise the
+     * host of every absolute URL value.
+     *
+     * @param array $graph The Yoast schema graph (array of nodes).
+     *
+     * @return array The schema graph with production hosts only.
+     */
+    function amnesty_filter_schema_graph($graph): array
+    {
+        if (! is_array($graph)) {
+            return $graph;
+        }
+
+        array_walk_recursive($graph, function (&$value) {
+            if (is_string($value) && strpos($value, 'http') === 0) {
+                $value = amnesty_normalise_canonical_host($value);
+            }
+        });
+
+        return $graph;
+    }
+}
+
+add_filter('wpseo_schema_graph', 'amnesty_filter_schema_graph');
+
 if (! function_exists('amnesty_render_canonical')) {
     /**
      * Render the canonical href on posts
