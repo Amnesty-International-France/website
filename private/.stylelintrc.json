@@ -19,7 +19,12 @@
     "color-hex-length": "short",
     "color-named": "never",
     "color-no-invalid-hex": true,
-    "comment-empty-line-before": "always",
+    "comment-empty-line-before": [
+      "always",
+      {
+        "except": ["first-nested"]
+      }
+    ],
     "comment-whitespace-inside": "always",
     "declaration-block-no-duplicate-properties": true,
     "declaration-block-no-shorthand-property-overrides": true,
@@ -50,6 +55,8 @@
     "scss/at-if-closing-brace-newline-after": "always-last-in-chain",
     "scss/at-if-closing-brace-space-after": "always-intermediate",
     "scss/no-global-function-names": null,
+    "scss/operator-no-newline-after": null,
+    "scss/operator-no-newline-before": null,
     "selector-attribute-quotes": "always",
     "selector-max-id": 0,
     "selector-no-qualifying-type": [

@@ -21,7 +21,7 @@
     "typecheck:turnstile": "tsc --project tsconfig.json",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "lint:scripts": "eslint ./src/",
+    "lint:scripts": "eslint src tests",
     "lint:styles": "stylelint \"src/**/*.scss\"",
     "lint": "yarn lint:scripts; yarn lint:styles; yarn format:check",
     "env": "wp-env",
