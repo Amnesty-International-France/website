@@ -1,32 +1,30 @@
 # CLever-Cloud
 
-
 ## Préparation, installation d'un nouvel environnement
 
 ### Application et Add-on
-* Application PHP
-* Une base de données Mysql
-* Un File Storage FS Bucket
-* Un Cellar S3 storage
+
+- Application PHP
+- Une base de données Mysql
+- Un File Storage FS Bucket
+- Un Cellar S3 storage
 
 #### Variables d'environnement de l'application PH
 
-| Variable           | Valeur |
-| --------           | -------|
-| APP_ENV            | prod   |
-| BUCKET_NAME | `aif-wp-backup-<env> ` |
-| CC_FS_BUCKET       |`/www:<fs-bucket-url> ` |
-| CC_POST_BUILD_HOOK |`clevercloud/post_build.sh`   |
-| CC_PRE_BUILD_HOOK  |`curl "https://castor.jolicode.com/install" \| bash ` |
-| CC_WEBROOT |/www |
-| RESTIC_PASSWORD |random string |
-| WP_ADMIN_EMAIL|email |
-| WP_ADMIN_PASSWORD |random secure string|
-| WP_ADMIN_USER |admin |
-| WP_TITLE |AMNESTY FR |
-| WP_URL |site URL |
-
-
+| Variable           | Valeur                                                |
+| ------------------ | ----------------------------------------------------- |
+|  APP_ENV           | prod                                                  |
+| BUCKET_NAME        | `aif-wp-backup-<env> `                                |
+| CC_FS_BUCKET       | `/www:<fs-bucket-url> `                               |
+| CC_POST_BUILD_HOOK | `clevercloud/post_build.sh`                           |
+| CC_PRE_BUILD_HOOK  | `curl "https://castor.jolicode.com/install" \| bash ` |
+|  CC_WEBROOT        | /www                                                  |
+| RESTIC_PASSWORD    | random string                                         |
+|  WP_ADMIN_EMAIL    | email                                                 |
+|  WP_ADMIN_PASSWORD | random secure string                                  |
+| WP_ADMIN_USER      | admin                                                 |
+| WP_TITLE           | AMNESTY FR                                            |
+| WP_URL             | site URL                                              |
 
 ## Baskup & restore
 
@@ -63,6 +61,3 @@ rm rf ${RESTORE_DIR}
 mkdir -p ${RESTORE_DIR}
 restic restore --target ${RESTORE_DIR} <ID>
 ```
-
-
-

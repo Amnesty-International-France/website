@@ -57,7 +57,7 @@
   margin-right: 16px;
   width: 16px;
   height: 16px;
-  background-image: url("../images/sprite.svg"), none;
+  background-image: url('../images/sprite.svg'), none;
   background-repeat: no-repeat;
   background-size: 313px 300px;
   background-position: -234px -240px;
@@ -97,7 +97,7 @@
 }
 
 .post-paginationLink button[disabled] .icon {
-  opacity: .4;
+  opacity: 0.4;
 }
 
 .post-paginationNext a,

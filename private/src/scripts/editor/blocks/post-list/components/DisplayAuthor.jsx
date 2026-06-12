@@ -114,27 +114,30 @@ class DisplayAuthor extends Component {
 
     api
       .getPostsFromAuthors(requestArguments, value)
-      .then((data = [], i, xhr) => { // eslint-disable-line
-        const posts = data.map((p) => {
-          if (!p.featured_media || p.featured_media < 1) {
+      .then(
+        // eslint-disable-next-line default-param-last
+        (data = [], i, xhr) => {
+          const posts = data.map((p) => {
+            if (!p.featured_media || p.featured_media < 1) {
+              return {
+                ...p,
+                featured_image: false,
+              };
+            }
+
             return {
               ...p,
-              featured_image: false,
+              // eslint-disable-next-line no-underscore-dangle
+              featured_image: p._embedded['wp:featuredmedia'][0].source_url || false,
             };
-          }
+          });
 
           return {
-            ...p,
-            // eslint-disable-next-line no-underscore-dangle
-            featured_image: p._embedded['wp:featuredmedia'][0].source_url || false,
+            xhr,
+            data: posts,
           };
-        });
-
-        return {
-          xhr,
-          data: posts,
-        };
-      })
+        },
+      )
       .then(({ data = [] }) => {
         this.setState({
           results: DisplayAuthor.alterResults(data),

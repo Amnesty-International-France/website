@@ -6,8 +6,8 @@
   max-height: 1000px;
   overflow-y: hidden;
   transition-property: all;
-  transition-duration: .5s;
-  transition-timing-function: cubic-bezier(0, 1, .5, 1);
+  transition-duration: 0.5s;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
 }
 
 .pop-in.is-closed {
@@ -38,12 +38,12 @@
   }
 }
 
-.pop-in[aria-hidden="false"] ~ .page-header--transparent-light {
+.pop-in[aria-hidden='false'] ~ .page-header--transparent-light {
   background-color: var(--wp--preset--color--white);
   color: var(--wp--preset--color--black);
 }
 
 // negishim
-.pop-in[aria-hidden="false"] ~ .accessibility_component .btn_accessibility {
+.pop-in[aria-hidden='false'] ~ .accessibility_component .btn_accessibility {
   top: 165px;
 }

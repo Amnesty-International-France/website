@@ -1,5 +1,5 @@
-@import "./initial-filters";
-@import "./additional-filters";
+@import './initial-filters';
+@import './additional-filters';
 
 .horizontal-search {
   margin-bottom: var(--wp--preset--spacing--single);
@@ -81,12 +81,12 @@
 
 .btn.toggle-search-filters .icon-arrow-down {
   @extend %icon-arrow-down-light;
-  transform: scale(.75);
-  transition: transform .3s;
+  transform: scale(0.75);
+  transition: transform 0.3s;
 }
 
 .btn.toggle-search-filters.is-expanded .icon-arrow-down {
-  transform: scale(.75) rotate(180deg);
+  transform: scale(0.75) rotate(180deg);
 }
 
 .horizontal-search .section.postlist-categoriesContainer {

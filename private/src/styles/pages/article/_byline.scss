@@ -20,9 +20,9 @@
   }
 
   &::before {
-    content: " ";
+    content: ' ';
     display: inline-block;
-    transform: scale(.6);
+    transform: scale(0.6);
     vertical-align: -20%;
 
     @include icon(246px, 131px, 20px, 17px);

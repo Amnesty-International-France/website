@@ -1,0 +1,25 @@
+{
+  "$schema": "./private/node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "node_modules/**",
+    "vendor/**",
+    "wp-admin/**",
+    "wp-includes/**",
+    "wp-content/plugins/**",
+    "wp-content/uploads/**",
+    "wp-content/cache/**",
+    "wp-content/languages/**",
+    "wp-content/themes/humanity-theme/assets/**",
+    "wp-content/themes/humanity-theme/**/*.html",
+    "wp-content/themes/humanity-theme/languages/**",
+    "private/node_modules/**",
+    "private/wp-env/**",
+    "private/playwright-report/**",
+    "private/test-results/**",
+    "private/yarn.lock"
+  ]
+}
