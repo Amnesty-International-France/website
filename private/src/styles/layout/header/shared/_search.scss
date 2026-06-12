@@ -5,7 +5,7 @@
   @extend %icon-search-dark;
   display: inline-block;
   margin-left: var(--wp--preset--spacing--half);
-  content: "";
+  content: '';
 
   @include mq(mobile-nav) {
     margin-left: 0;

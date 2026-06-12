@@ -27,10 +27,12 @@
       }
     }
 
-    input:not([type="radio"]) {
+    input:not([type='radio']) {
       margin-bottom: 22px;
       border: 1px solid var(--wp--preset--color--grey-lighter);
-      transition: border 0.3s ease, margin-bottom 0.3s ease;
+      transition:
+        border 0.3s ease,
+        margin-bottom 0.3s ease;
 
       &.success {
         border: 2px solid var(--wp--preset--color--success);
@@ -70,7 +72,7 @@
         align-items: center;
         gap: 12px;
 
-        & > input[type="radio"] {
+        & > input[type='radio'] {
           cursor: pointer;
         }
 
@@ -147,7 +149,7 @@
   .newsletter-legend > p {
     font-family: var(--wp--preset--font-family--primary);
     font-weight: lighter;
-    font-size: .625rem;
+    font-size: 0.625rem;
     line-height: 18px;
     letter-spacing: 0;
   }
@@ -167,7 +169,6 @@
     &.success {
       border: 2px solid var(--wp--preset--color--grey-lighter);
       background-color: var(--wp--preset--color--grey-lighter);
-
     }
   }
 }

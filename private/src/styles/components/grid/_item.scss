@@ -91,7 +91,9 @@ h3.grid-itemTitle > span,
 h3.grid-itemTitle > a {
   color: var(--wp--preset--color--black);
   background-color: var(--wp--preset--color--white);
-  box-shadow: -12px 0 0 0 var(--wp--preset--color--white), 12px 0 0 0 var(--wp--preset--color--white);
+  box-shadow:
+    -12px 0 0 0 var(--wp--preset--color--white),
+    12px 0 0 0 var(--wp--preset--color--white);
   box-decoration-break: clone;
   text-decoration: none;
   max-width: 100%;
@@ -99,7 +101,7 @@ h3.grid-itemTitle > a {
 
 .grid-itemTitle a::before {
   position: absolute;
-  content: "";
+  content: '';
   top: 0;
   right: 0;
   bottom: 0;
@@ -149,7 +151,7 @@ h3.grid-itemTitle > a {
   }
 }
 
-.grid-5 :nth-child(n+3) {
+.grid-5 :nth-child(n + 3) {
   grid-column: span 3;
 
   @include mq($from: x-small, $until: medium) {
@@ -161,7 +163,7 @@ h3.grid-itemTitle > a {
   }
 }
 
-.grid-5 :nth-child(-n+2) {
+.grid-5 :nth-child(-n + 2) {
   grid-column: span 3;
 
   @include mq($from: x-small, $until: medium) {
@@ -193,7 +195,7 @@ h3.grid-itemTitle > a {
   }
 }
 
-.grid-6 :nth-child(-n+2) {
+.grid-6 :nth-child(-n + 2) {
   grid-column: span 1;
 
   @include mq(x-small) {
@@ -217,7 +219,7 @@ h3.grid-itemTitle > a {
   }
 }
 
-.grid-7 :nth-child(-n+3) {
+.grid-7 :nth-child(-n + 3) {
   grid-column: span 1;
 
   @include mq(x-small) {
@@ -229,7 +231,7 @@ h3.grid-itemTitle > a {
   }
 }
 
-.grid-7 :nth-child(n+4) {
+.grid-7 :nth-child(n + 4) {
   grid-column: span 1;
 
   @include mq(x-small) {
