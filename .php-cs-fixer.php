@@ -13,7 +13,9 @@ $finder = PhpCsFixer\Finder::create()
     ])
     ->name('*.php')
     ->ignoreDotFiles(true)
-    ->ignoreVCS(true);
+    ->ignoreVCS(true)
+    ->exclude('node_modules')
+    ->exclude('vendor');
 
 return (new PhpCsFixer\Config())
     ->setRules([
