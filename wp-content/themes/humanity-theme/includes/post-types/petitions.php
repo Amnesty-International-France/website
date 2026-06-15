@@ -801,7 +801,7 @@ function amnesty_handle_petition_signature(): void
 
     $user_email = sanitize_email($raw_email);
 
-        $type = amnesty_get_petition_type($petition_id) ?: 'petition';
+    $type = amnesty_get_petition_type($petition_id) ?: 'petition';
 
     if (!amnesty_is_petition_not_expired($petition_id)) {
         $fallback_url = $is_clh_tunnel_submission

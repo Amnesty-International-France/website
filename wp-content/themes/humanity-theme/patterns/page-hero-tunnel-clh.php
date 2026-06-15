@@ -43,7 +43,7 @@ $is_clh_tunnel_thanks_request = function_exists('amnesty_is_clh_tunnel_thanks_re
                         'total_steps' => $clh_total_steps,
                         'modifier_class' => 'tunnel-clh-stepper--mobile',
                     ]);
-    ?>
+					    ?>
 					<?php endif; ?>
 				</div>
 			</div>
