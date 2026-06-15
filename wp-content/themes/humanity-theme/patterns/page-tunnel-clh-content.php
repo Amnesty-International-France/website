@@ -91,6 +91,8 @@ if ($show_final_screen) {
         return strtr($text, [
             '{url}' => $share_url,
             '{title}' => $share_title,
+            '[lien]' => $share_url,
+            '[titre]' => $share_title,
         ]);
     };
     $social_message_template = get_field('message_clh', $active_campaign->ID) ?: 'Signez cette pétition pour changer leur histoire : {url}';
@@ -100,8 +102,10 @@ if ($show_final_screen) {
         $social_message = trim($social_message . ' ' . $share_url);
     }
 
-    $email_subject = $share_title;
-    $email_body = $replace_share_placeholders("Je vous recommande cette pétition :\n\n{title}\n{url}");
+    $email_subject_template = get_field('email_object', $active_campaign->ID) ?: $share_title;
+    $email_subject = trim($replace_share_placeholders((string) $email_subject_template));
+    $email_body_template = get_field('email_body', $active_campaign->ID) ?: "Je vous recommande cette pétition :\n\n[titre]\n[lien]";
+    $email_body = $replace_share_placeholders((string) $email_body_template);
 ?>
     <!-- wp:group {"tagName":"page","className":"page"} -->
     <article class="wp-block-group page">
