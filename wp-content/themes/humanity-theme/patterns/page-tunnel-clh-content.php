@@ -68,12 +68,12 @@ foreach ($list_petitions_clh as $petition) {
         'already_skipped' => in_array($petition->ID, $skipped_petitions, true),
     ];
 }
-$signed_count = count(array_filter($selected_posts, fn($p) => $p['already_signed'] === true));
+$signed_count = count(array_filter($selected_posts, fn ($p) => $p['already_signed'] === true));
 $total_steps = min(10, count($list_petitions_clh));
 
 $not_signed = \array_filter(
     $selected_posts,
-    static fn($petition) => $petition['already_signed'] === false &&
+    static fn ($petition) => $petition['already_signed'] === false &&
         $petition['already_skipped'] === false &&
         $petition['active'] === true
 );
@@ -91,6 +91,8 @@ if ($show_final_screen) {
         return strtr($text, [
             '{url}' => $share_url,
             '{title}' => $share_title,
+            '[lien]' => $share_url,
+            '[titre]' => $share_title,
         ]);
     };
     $social_message_template = get_field('message_clh', $active_campaign->ID) ?: 'Signez cette pétition pour changer leur histoire : {url}';
@@ -100,9 +102,11 @@ if ($show_final_screen) {
         $social_message = trim($social_message . ' ' . $share_url);
     }
 
-    $email_subject = $share_title;
-    $email_body = $replace_share_placeholders("Je vous recommande cette pétition :\n\n{title}\n{url}");
-?>
+    $email_subject_template = get_field('email_object', $active_campaign->ID) ?: $share_title;
+    $email_subject = trim($replace_share_placeholders((string) $email_subject_template));
+    $email_body_template = get_field('email_body', $active_campaign->ID) ?: "Je vous recommande cette pétition :\n\n[titre]\n[lien]";
+    $email_body = $replace_share_placeholders((string) $email_body_template);
+    ?>
     <!-- wp:group {"tagName":"page","className":"page"} -->
     <article class="wp-block-group page">
         <article class="wp-block-group page page-tunnel-clh-card page-tunnel-clh-final-card">
@@ -151,10 +155,10 @@ if ($show_final_screen) {
                                 <p>En faisant un don dès aujourd'hui, vous soutenez notre liberté d'action et nous permettez de changer la vie de personnes dont les droits sont bafoués.</p>
 
                                 <?php
-                                echo do_blocks(
-                                    '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012", "is_popin": true } /-->'
-                                );
-                                ?>
+                                    echo do_blocks(
+                                        '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012", "is_popin": true } /-->'
+                                    );
+    ?>
                             </div>
                         </div>
                     </div>
