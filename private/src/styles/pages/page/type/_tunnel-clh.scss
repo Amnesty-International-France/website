@@ -422,6 +422,7 @@
       display: flex;
       align-items: center;
       flex-direction: row;
+      flex-wrap: wrap;
       gap: 18px;
 
       .civility-label {
@@ -439,8 +440,9 @@
         gap: 18px;
 
         @media screen and (max-width: $container-lg) {
-          gap: 0;
-          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 12px;
+          justify-content: flex-start;
         }
 
         input {
@@ -718,6 +720,12 @@
       border-color 0.4s ease,
       color 0.4s ease;
 
+    > span {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
     &:hover {
       background-color: transparent;
     }
@@ -741,7 +749,6 @@
 
       &:hover {
         background-color: transparent;
-        color: var(--wp--preset--color--black);
       }
     }
   }
@@ -829,7 +836,7 @@
   &:hover,
   &.is-active {
     background-color: var(--wp--preset--color--grey-lighter);
-    border-bottom-color: var(--wp--preset--color--primary-dark);
+    border-bottom: 5px solid var(--wp--preset--color--primary-dark);
 
     svg {
       color: var(--wp--preset--color--primary-dark);
@@ -878,6 +885,14 @@
     line-height: 1.45;
   }
 
+  &.page-tunnel-clh-final-panel--donation {
+    @media (max-width: ($container-md - 1px)) {
+      .amount-free {
+        align-items: center;
+      }
+    }
+  }
+
   .donation-calculator.medium {
     margin-top: 8px;
 
@@ -903,22 +918,6 @@
       background-color: transparent;
       box-shadow: none;
 
-      .donation-tabs {
-        > .punctual,
-        > .monthly {
-          border-bottom: 2px solid transparent;
-          background-color: transparent;
-          transition: border-bottom-color 0.2s ease, color 0.2s ease;
-
-          &:hover,
-          &.active {
-            border-bottom-color: var(--wp--preset--color--primary-dark);
-            background-color: transparent;
-            color: var(--wp--preset--color--black);
-          }
-        }
-      }
-
       .donation-body {
         flex-direction: row;
         align-items: flex-start;
@@ -926,12 +925,12 @@
         border-bottom: 0;
       }
 
-      .amount-monthly.active,
-      .amount-free {
+      .amount-monthly.active {
         flex: 1 1 0;
       }
 
       .amount-free {
+        flex: 1 1 0;
         flex-direction: row;
         align-items: center;
         gap: 12px;
@@ -941,6 +940,12 @@
           white-space: nowrap;
         }
       }
+    }
+  }
+
+  .donation-body {
+    .input-don-free {
+      text-align: right;
     }
   }
 }
