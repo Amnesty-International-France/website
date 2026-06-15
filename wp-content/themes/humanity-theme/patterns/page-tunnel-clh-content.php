@@ -142,7 +142,7 @@ if ($show_final_screen) {
                     </div>
                     <div
                         id="clh-final-donation-panel"
-                        class="page-tunnel-clh-final-panel is-active"
+                        class="page-tunnel-clh-final-panel page-tunnel-clh-final-panel--donation is-active"
                         role="tabpanel"
                         aria-labelledby="clh-final-donation-tab">
                         <div class="share-content">
