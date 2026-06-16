@@ -1,0 +1,83 @@
+// Reuses the /pays `.az-filter` chrome (index + big display) declared in
+// `pages/_archive.scss`; only the year/month specifics are overridden here.
+.actualites-archive {
+  .az-index {
+    justify-content: center;
+  }
+
+  // `.az-letter` is now a <button> on this page: reset the native chrome
+  // while keeping the shared `.az-letter` look from `pages/_archive.scss`.
+  .az-letter {
+    width: auto;
+    min-width: 75px;
+    padding: 0 16px;
+    border: 0;
+    font: inherit;
+    font-weight: bold;
+  }
+
+  // Keep the big year number visible while scrolling its month list.
+  .az-letter-display {
+    position: sticky;
+    top: 16px;
+    align-self: flex-start;
+  }
+
+  // On mobile, stack the year above its content (single column).
+  @media (max-width: $container-md) {
+    .az-display {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .az-letter-display {
+      position: static;
+    }
+  }
+
+  .actualites-years {
+    width: 100%;
+  }
+
+  // Hidden by default; the active year is revealed by JS. The first block
+  // stays visible as a no-JS fallback (it is also the most recent year).
+  .actualites-year-block {
+    display: none;
+
+    &:first-child {
+      display: block;
+    }
+  }
+
+  .actualites-archive-month {
+    margin-bottom: 24px;
+  }
+
+  .actualites-archive-month-title {
+    width: fit-content;
+    margin-bottom: 0.9rem;
+    padding: 1px 7px;
+    color: var(--wp--preset--color--primary);
+    background-color: var(--wp--preset--color--black);
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .actualites-archive-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 16px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    @media (max-width: $container-sm) {
+      grid-template-columns: 1fr;
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+}
