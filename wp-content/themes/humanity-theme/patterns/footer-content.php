@@ -197,15 +197,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
 					<div class="cf-turnstile"
 					     data-callback="aifTurnstileSuccess"
 					     data-error-callback="aifTurnstileFailure"
+					     data-appearance="interaction-only"
 					     data-expired-callback="aifTurnstileFailure"
 					     data-timeout-callback="aifTurnstileFailure"
 					     data-unsupported-callback="aifTurnstileFailure"
 					     data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
-					<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
-					<button class="register-nl" name="sign_lead" disabled>
-						<span class="button-text">OK</span>
-						<span class="spinner hidden"></span>
-					</button>
+					<div class="nl-input-group">
+						<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
+						<button class="register-nl" name="sign_lead" disabled>
+							<span class="button-text">OK</span>
+							<span class="spinner hidden"></span>
+						</button>
+					</div>
 					<div class="nl-error hidden"></div>
 					<?php
                     if (!empty($error_message)) {
