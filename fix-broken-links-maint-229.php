@@ -115,7 +115,8 @@ function maint229_resolve_country_url( string $country ): ?string {
 }
 
 /**
- * Construit la table de remplacement CAT 2 : ancienne URL `?p=ID...` => permalink résolu.
+ * Construit la table de remplacement CAT 2 : ancienne URL `?p=ID...` => chemin résolu
+ * (`/pays/{slug}/`, relatif au host pour préserver le domaine du contenu).
  * Logge les pays non résolus (fiche pays absente) afin de les traiter manuellement.
  *
  * @return array{0: array<string,string>, 1: array<int,string>}
@@ -133,7 +134,7 @@ function maint229_build_country_map( array $anchors, $log_file ): array {
 			continue;
 		}
 
-		$map[ (string) $id ] = $url;
+		$map[ (string) $id ] = wp_make_link_relative( $url );
 	}
 
 	return [ $map, $unresolved ];
@@ -154,39 +155,41 @@ function maint229_cf_decode_email( string $encoded ): string {
 }
 
 /**
- * CAT 1 — Remplace une URL absolue par une autre, en gérant le slash final
- * et en exigeant une frontière pour ne pas casser une URL plus longue.
+ * CAT 1 — Remplace le chemin d'une URL interne par un autre, indépendamment du
+ * scheme/host (amnesty.fr en prod, localhost en local…), qui est préservé tel quel.
+ * Gère le slash final et exige une frontière pour ne pas casser une URL plus longue.
  */
 function maint229_replace_absolute_url( string $content, string $old, string $new, int &$count ): string {
-	$old_no_slash = rtrim( $old, '/' );
-	$new_canonical = rtrim( $new, '/' ) . '/';
+	$old_path = rtrim( (string) wp_parse_url( $old, PHP_URL_PATH ), '/' );
+	$new_path = rtrim( (string) wp_parse_url( $new, PHP_URL_PATH ), '/' ) . '/';
 
-	// Slash final optionnel, suivi d'une frontière (guillemet, balise, espace, fin, etc.).
-	$pattern = '~' . preg_quote( $old_no_slash, '~' ) . '/?(?=["\'\\\\\s<>)\]}#?]|$)~';
+	// (scheme://host) capturé puis préservé ; chemin + slash final optionnel + frontière.
+	$pattern = '~(https?://[^/"\'\s<>]+)' . preg_quote( $old_path, '~' ) . '/?(?=["\'\\\\\s<>)\]}#?]|$)~';
 
 	return (string) preg_replace_callback(
 		$pattern,
-		static function () use ( $new_canonical, &$count ) {
+		static function ( array $m ) use ( $new_path, &$count ) {
 			$count++;
-			return $new_canonical;
+			return $m[1] . $new_path;
 		},
 		$content
 	);
 }
 
 /**
- * CAT 2 — Remplace une ancienne URL de fiche pays `?p=ID&post_type=fiche_pays`,
- * en tolérant les différents encodages de l'esperluette (&, &amp;, &, &#038;).
+ * CAT 2 — Remplace une ancienne URL de fiche pays `?p=ID&post_type=fiche_pays` par
+ * le chemin résolu (`/pays/{slug}/`), en préservant le scheme/host et en tolérant
+ * les différents encodages de l'esperluette (&, &amp;, &, &#038;).
  */
-function maint229_replace_country_url( string $content, string $id, string $new, int &$count ): string {
+function maint229_replace_country_url( string $content, string $id, string $new_path, int &$count ): string {
 	$amp     = '(?:&|&amp;|\\\\u0026|&#0?38;)';
-	$pattern = '~https://www\.amnesty\.fr/\?p=' . preg_quote( $id, '~' ) . $amp . 'post_type=fiche_pays~';
+	$pattern = '~(https?://[^/"\'\s<>]+)/\?p=' . preg_quote( $id, '~' ) . $amp . 'post_type=fiche_pays~';
 
 	return (string) preg_replace_callback(
 		$pattern,
-		static function () use ( $new, &$count ) {
+		static function ( array $m ) use ( $new_path, &$count ) {
 			$count++;
-			return $new;
+			return $m[1] . $new_path;
 		},
 		$content
 	);
