@@ -1,5 +1,4 @@
 @if ($enable-flexbox == false) {
-
   /**
    * Media object.
    *
@@ -19,9 +18,9 @@
   /// );
   /// <div class="media media--large">
   $media-figure-sizes: (
-    "large": "180px",
-    "medium": "140px",
-    "small": "100px"
+    'large': '180px',
+    'medium': '140px',
+    'small': '100px',
   ) !default;
 
   /// Media spacing amount.
@@ -53,7 +52,8 @@
   }
 
   .media-figure,
-  .media-figure img { /* 1 */ /* stylelint-disable-line */
+  .media-figure img {
+    /* 1 */ /* stylelint-disable-line */
     display: inline-block;
     vertical-align: bottom;
   }
@@ -67,7 +67,8 @@
   .media-body {
     overflow: hidden; /* 1 */
 
-    &:last-child, > *:last-child {
+    &:last-child,
+    > *:last-child {
       margin-bottom: 0; /* 2 */
     }
   }
@@ -165,7 +166,8 @@
       max-height: 100%;
     }
 
-    .media--valign.media--#{$key} > .media-figure img { /* 1 */
+    .media--valign.media--#{$key} > .media-figure img {
+      /* 1 */
       max-width: none; /* 2 */
       width: #{$value}; /* 3 */
     }
@@ -219,7 +221,7 @@
     .media--valign > .media-figure,
     .media--valign.media--flip .media-figure {
       padding-right: 0; /* 3 */
-      padding-left: 0;  /* 3 */
+      padding-left: 0; /* 3 */
     }
   }
 }

@@ -22,14 +22,14 @@
 .social-twitter::after,
 .social-youtube::after,
 .social-telegram::after {
-  content: "";
+  content: '';
   position: absolute;
   top: calc(50% - 10px);
   left: calc(50% - 10px);
   display: block;
   width: 20px;
   height: 20px;
-  background-image: url("../images/sprite.svg"), none;
+  background-image: url('../images/sprite.svg'), none;
   background-repeat: no-repeat;
   background-size: 313px 300px;
   visibility: visible;

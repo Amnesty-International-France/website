@@ -38,6 +38,7 @@ ne supporte que `stylelint ^13-15`. Ces trois contraintes sont mutuellement excl
 ou ne signalaient aucune erreur SCSS (règles `scss/*` silencieusement ignorées).
 
 **Correction (`private/package.json`) :**
+
 ```diff
 - "stylelint-scss": "^7.1.1",
 + "stylelint-scss": "^5.3.2",
@@ -56,6 +57,7 @@ La v17.0.0 (état stable précédent) est compatible avec `stylelint@15`.
 causant des erreurs ou un lint silencieusement vide à chaque build.
 
 **Correction (`private/package.json`) :**
+
 ```diff
 - "stylelint-config-recommended-scss": "^17.0.1",
 + "stylelint-config-recommended-scss": "^17.0.0",
@@ -74,6 +76,7 @@ Les valeurs `px` de Swiper pour ces propriétés étaient converties en `rem`,
 transformant un CSS vendor non conçu pour ça.
 
 **Correction (`private/postcss.config.js`) :**
+
 ```diff
   pxtorem({
     prop_white_list: ['font', 'font-size', 'line-height', 'letter-spacing'],
@@ -86,12 +89,14 @@ transformant un CSS vendor non conçu pour ça.
 ### 4. Duplication de `SRC_PATH` et `configFile` hardcodé dans `webpack.config.js`
 
 **Problèmes :**
+
 - `path.resolve(__dirname, './src/')` était écrit deux fois au lieu de réutiliser
   la constante `SRC_PATH` déjà définie ligne 10.
 - `configFile: path.resolve(__dirname, './.stylelintrc.json')` rendait le build
   fragile si le fichier était renommé (stylelint le découvre automatiquement via cosmiconfig).
 
 **Correction (`private/webpack.config.js`) — appliquée aux deux instances :**
+
 ```diff
   new StyleLintPlugin({
     threads: true,
@@ -105,12 +110,12 @@ transformant un CSS vendor non conçu pour ça.
 
 ## Fichiers modifiés
 
-| Fichier | Nature de la modification |
-|---|---|
-| `private/package.json` | Revert `stylelint-scss` → `^5.3.2`, `stylelint-config-recommended-scss` → `^17.0.0` |
-| `private/postcss.config.js` | Ajout `exclude: /node_modules/i` dans pxtorem |
-| `private/webpack.config.js` | Remplacement `path.resolve('./src/')` par `SRC_PATH`, suppression `configFile` |
-| `private/yarn.lock` | Mis à jour automatiquement par `yarn install` |
+| Fichier                     | Nature de la modification                                                           |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| `private/package.json`      | Revert `stylelint-scss` → `^5.3.2`, `stylelint-config-recommended-scss` → `^17.0.0` |
+| `private/postcss.config.js` | Ajout `exclude: /node_modules/i` dans pxtorem                                       |
+| `private/webpack.config.js` | Remplacement `path.resolve('./src/')` par `SRC_PATH`, suppression `configFile`      |
+| `private/yarn.lock`         | Mis à jour automatiquement par `yarn install`                                       |
 
 ---
 

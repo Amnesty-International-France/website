@@ -14,7 +14,7 @@
 /// .block {
 ///   color: palette(brand, light);
 /// }
-@function palette($palette, $tone: "base") {
+@function palette($palette, $tone: 'base') {
   @if map-has-key($palettes, $palette) {
     @if map-has-key(map-get($palettes, $palette), $tone) {
       @return map-get(map-get($palettes, $palette), $tone);

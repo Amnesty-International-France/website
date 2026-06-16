@@ -11,7 +11,7 @@
 
   &::before {
     @include icon(290px, 200px, 17px, 11px);
-    content: " ";
+    content: ' ';
   }
 
   .rtl & {

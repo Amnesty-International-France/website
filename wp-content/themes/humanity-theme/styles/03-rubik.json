@@ -49,10 +49,10 @@
           "slug": "primary"
         },
         {
-			"fontFamily": "Rubik, sans-serif",
-			"name": "Rubik",
-			"slug": "secondary"
-		  }
+          "fontFamily": "Rubik, sans-serif",
+          "name": "Rubik",
+          "slug": "secondary"
+        }
       ]
     }
   }

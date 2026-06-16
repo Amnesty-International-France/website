@@ -12,7 +12,10 @@
   opacity: 1;
 }
 
-.element-select .select2-container--default .select2-selection--single .select2-selection__rendered {
+.element-select
+  .select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
   padding: 0;
   font-weight: bold;
   line-height: normal;

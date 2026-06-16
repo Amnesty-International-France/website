@@ -12,13 +12,17 @@
   background-color: color-mix(in srgb, var(--wp--preset--color--grey-darkest) 80%, transparent);
   opacity: 0;
   z-index: -999;
-  transition: opacity .3s ease-in-out, z-index .3s step-end;
+  transition:
+    opacity 0.3s ease-in-out,
+    z-index 0.3s step-end;
 }
 
 .modal-container.is-open {
   z-index: 999;
   opacity: 1;
-  transition: opacity .3s ease-in-out, z-index .3s step-start;
+  transition:
+    opacity 0.3s ease-in-out,
+    z-index 0.3s step-start;
 }
 
 .modal-container .container {
@@ -29,8 +33,10 @@
   overscroll-behavior: contain;
   opacity: 0;
   transform: translateY(50px);
-  transition: opacity .3s ease-in-out, transform .3s ease-in-out;
-  transition-delay: .2s;
+  transition:
+    opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+  transition-delay: 0.2s;
 
   @media screen and (max-height: 450px) {
     max-width: 450px;
@@ -56,7 +62,7 @@
 
 .modal-close::after {
   @include icon_scale(194px, 265px, 16px, 16px, 1);
-  content: "";
+  content: '';
   display: inline-block;
   margin-left: 8px;
 }

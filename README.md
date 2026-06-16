@@ -12,6 +12,7 @@ This is the repository for the redesign of the Amnesty International France webs
 - [Castor](https://github.com/jolicode/castor)
 
 Note : The database can be dockerized as follows :
+
 ```
 Example with mariadb
 Command : docker run --detach --name amnesty -p 3306:3306 --env MARIADB_USER=admin --env MARIADB_PASSWORD=password123 --env MARIADB_DATABASE=amnesty --env MARIADB_ROOT_PASSWORD=root mariadb:latest
@@ -19,6 +20,7 @@ DB_HOST value : your IP (like the one of your wifi)
 ```
 
 Note : Do not use the MySQL `root` account in `.env`. On Ubuntu `root` uses socket authentication, so a password connection fails with `Access denied for user 'root'@'localhost' (1698)`. Create a dedicated user instead, for example :
+
 ```
 CREATE DATABASE amnesty;
 CREATE USER 'amnesty'@'localhost' IDENTIFIED BY 'password123';
@@ -49,22 +51,22 @@ on clever cloud hooks in the `clevercloud` directory will be executed at build t
 
 These environment variables must be defined :
 
-^ name             ^ purpose ^
-| WP_HOME          | base URL of the WP admin |
-| WP_SITEURL       | base URL of the website |
+^ name ^ purpose ^
+| WP_HOME | base URL of the WP admin |
+| WP_SITEURL | base URL of the website |
 | MYSQL_ADDON_HOST | host name of the database (should be automatically set) |
 | MYSQL_ADDON_PORT | port number of the database (should be automatically set) |
-| DB_NAME             | database name (should be automatically set) |
-| DB_USER             | database user name (should be automatically set) |
-| DB_PASSWORD         | database password (should be automatically set) |
-| WP_AUTH_KEY         | random string |
-| WP_AUTH_SALT        | random string |
-| WP_CACHE_KEY_SALT   | random string |
-| WP_LOGGED_IN_KEY    | random string |
-| WP_LOGGED_IN_SALT   | random string |
-| WP_NONCE_KEY        | random string |
-| WP_NONCE_SALT       | random string |
-| WP_SECURE_AUTH_KEY  | random string |
+| DB_NAME | database name (should be automatically set) |
+| DB_USER | database user name (should be automatically set) |
+| DB_PASSWORD | database password (should be automatically set) |
+| WP_AUTH_KEY | random string |
+| WP_AUTH_SALT | random string |
+| WP_CACHE_KEY_SALT | random string |
+| WP_LOGGED_IN_KEY | random string |
+| WP_LOGGED_IN_SALT | random string |
+| WP_NONCE_KEY | random string |
+| WP_NONCE_SALT | random string |
+| WP_SECURE_AUTH_KEY | random string |
 | WP_SECURE_AUTH_SALT | random string |
 
 ## Update plugins from Github repositories
@@ -113,7 +115,7 @@ Note : You can add `--port={xyz}` to `wp server` if the port `{xyz}` is not `808
 
 ## Environment Variables
 
-This project needs some environment variables to communicate with Salesforce   
+This project needs some environment variables to communicate with Salesforce
 You can create a `.env` file and define these variables :
 
 ```
@@ -129,6 +131,7 @@ AIF_SALESFORCE_CODES_MILITANT=
 ```
 
 Then, you can add this code in your `wp-config.php` to be able to retrieve them using `getenv` in the application
+
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -145,6 +148,7 @@ In `Apparence > Menus` tab, you can define the menus that are show in the websit
 ### Permalinks
 
 `Réglages > Permaliens` :
+
 - Set the permalink structure to `/%category%/%postname%/`
 - Set the category prefix to `.`
 
@@ -153,11 +157,13 @@ In `Apparence > Menus` tab, you can define the menus that are show in the websit
 You can create a Page in the **Pages** tab.
 
 `Réglages > Lecture` :
+
 - Select **static page** for showing the homepage and select your page as homepage.
 
 ### Yoast SEO
 
 Go in `Yoast SEO > Settings` tab and `Advanced > Breadcrumbs`:
+
 - Set `Separator between breadcrumbs` to empty
 - Set `Anchor text for the Homepage` to **Accueil**
 - Set `Articles post` to **Types de contenu**
@@ -165,6 +171,7 @@ Go in `Yoast SEO > Settings` tab and `Advanced > Breadcrumbs`:
 ### Extensions
 
 Go in `Extensions > Extensions installées` :
+
 - Tick the checkbox `Extension` (to select all)
 - Select `Action groupées > Activer`
 - `Appliquer`
@@ -174,6 +181,7 @@ Go in `Extensions > Extensions installées` :
 Note : Here is for the homepage
 
 <<< /wp-admin in preprod (cf Google Doc for auth)
+
 - Select `Pages > Toutes les pages`
 - `Accueil`
 - Burger (next to `Enregistrer` button) => `Editeur de code`
@@ -181,6 +189,7 @@ Note : Here is for the homepage
 - Burger > `Editeur visuel`
 
 <<< /wp-admin in local
+
 - Select `Page > Ajouter une page`
 - `Titre : Accueil` (for instance)
 - Burger => `Editeur de code`
@@ -189,12 +198,14 @@ Note : Here is for the homepage
 - `Publier`
 
 <<< /wp-admin in local
+
 - Select `Réglages > Lecture`
 - `La page d’accueil affiche :` > `Une page statique`
 - `Page d’accueil : Accueil`
 - `Enregistrer`
 
 If you do not have preprod access yet, you can generate dummy content locally with WP-CLI so the theme has something to display :
+
 ```
 wp post generate --count=20 --post_type=post --post_status=publish
 wp post generate --count=5 --post_type=page --post_status=publish
@@ -202,7 +213,6 @@ wp term generate category --count=8
 ```
 
 ## Amnesty International France - Donor Space Plugin
-
 
 **Amnesty International France Donor Space** is distributed as a plugin.
 
@@ -214,11 +224,11 @@ Before activating the plugin, ensure that you have added the following environme
 
 This plugin requires access to SalesForce. To enable SalesForce integration, please add the following environment variables:
 
-| Name                     | Description                                           |
-|--------------------------|-------------------------------------------------------|
-| `AIF_SALESFORCE_URL`     | The URL of the SalesForce instance used by the plugin |
-| `AIF_SALESFORCE_CLIENT_ID` | The `client_id` from SalesForce                      |
-| `AIF_SALESFORCE_SECRET`  | The `client_secret` from SalesForce                   |
+| Name                       | Description                                           |
+| -------------------------- | ----------------------------------------------------- |
+| `AIF_SALESFORCE_URL`       | The URL of the SalesForce instance used by the plugin |
+| `AIF_SALESFORCE_CLIENT_ID` | The `client_id` from SalesForce                       |
+| `AIF_SALESFORCE_SECRET`    | The `client_secret` from SalesForce                   |
 
 To obtain these details, please contact Amnesty International France.
 
@@ -226,11 +236,11 @@ To obtain these details, please contact Amnesty International France.
 
 This plugin requires access to MailGun for email sending. To enable MailGun, please add the following environment variables:
 
-| Name                  | Description                                    |
-|-----------------------|------------------------------------------------|
-| `AIF_MAILGUN_TOKEN`   | The MailGun Token                              |
-| `AIF_MAILGUN_URL`     | The MailGun URL                                |
-| `AIF_MAILGUN_DOMAIN`  | The domain name used for sending emails        |
+| Name                 | Description                             |
+| -------------------- | --------------------------------------- |
+| `AIF_MAILGUN_TOKEN`  | The MailGun Token                       |
+| `AIF_MAILGUN_URL`    | The MailGun URL                         |
+| `AIF_MAILGUN_DOMAIN` | The domain name used for sending emails |
 
 For more information, visit [MailGun](https://app.mailgun.com/).
 

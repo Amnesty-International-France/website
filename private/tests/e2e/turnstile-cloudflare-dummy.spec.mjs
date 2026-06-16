@@ -1,5 +1,5 @@
-import { expect, test } from './support/fixtures.mjs';
-import { TEST_SITE_KEY, expectWidgetSiteKey } from './support/turnstile.mjs';
+import { expect, test } from './support/fixtures';
+import { TEST_SITE_KEY, expectWidgetSiteKey } from './support/turnstile';
 
 const runCloudflareSmoke = process.env.RUN_CLOUDFLARE_SMOKE === '1';
 const FAILING_SECRET = '2x0000000000000000000000000000000AA';
@@ -45,7 +45,9 @@ test.describe('@cloudflare-smoke Turnstile dummy keys', () => {
     await page.getByLabel('Votre email (obligatoire) :').fill(UNKNOWN_EMAIL);
     await page.locator('#submit-btn').click();
 
-    await expect(page.getByText('La vérification de sécurité a échoué.', { exact: true })).toBeVisible();
+    await expect(
+      page.getByText('La vérification de sécurité a échoué.', { exact: true }),
+    ).toBeVisible();
     await expect(page.getByText('Votre utilisateur nous est inconnu')).toHaveCount(0);
   });
 });
