@@ -14,47 +14,57 @@ $posts_per_page = 18;
 $offset = ($paged - 1) * $posts_per_page;
 
 $filter = '';
-$periode_filter = isset($_GET['qperiod']) ? $_GET['qperiod'] : null;
+$filter_values = [];
+$get_training_filter = static function ($key) {
+    if (!isset($_GET[$key])) {
+        return null;
+    }
+
+    $value = wp_unslash($_GET[$key]);
+    if (!is_scalar($value)) {
+        return null;
+    }
+
+    return sanitize_text_field((string) $value);
+};
+$periode_filter = $get_training_filter('qperiod');
 if ($periode_filter) {
-    $periodes = explode(',', $periode_filter);
+    $periodes = array_filter(array_map(static function ($periode) {
+        return str_replace('-', '', trim($periode));
+    }, explode(',', $periode_filter)));
+
     if (\count($periodes) > 1) {
-        $filter .= 'AND (';
+        $filter .= ' AND (' . implode(' OR ', array_fill(0, \count($periodes), 'm.meta_value LIKE %s')) . ')';
         foreach ($periodes as $periode) {
-            $periode = str_replace('-', '', $periode);
-            $filter .= "m.meta_value LIKE '{$periode}%' OR ";
+            $filter_values[] = $wpdb->esc_like($periode) . '%';
         }
-        $filter = substr($filter, 0, -4) . ')';
-    } else {
-        $periode_filter = str_replace('-', '', $periode_filter);
-        $filter .= " AND m.meta_value LIKE '{$periode_filter}%'";
+    } elseif (\count($periodes) === 1) {
+        $filter .= ' AND m.meta_value LIKE %s';
+        $filter_values[] = $wpdb->esc_like(reset($periodes)) . '%';
     }
 }
 
-$lieu_filter = isset($_GET['qlieu']) ? $_GET['qlieu'] : null;
+$lieu_filter = $get_training_filter('qlieu');
 if ($lieu_filter) {
-    $lieux = explode(',', $lieu_filter);
+    $lieux = array_filter(array_map('trim', explode(',', $lieu_filter)));
     if (\count($lieux) > 1) {
-        $filter .= ' AND m2.meta_value IN (';
-        foreach ($lieux as $lieu) {
-            $filter .= "'{$lieu}',";
-        }
-        $filter = substr($filter, 0, -1) . ')';
-    } else {
-        $filter .= " AND m2.meta_value = '{$lieu_filter}'";
+        $filter .= ' AND m2.meta_value IN (' . implode(', ', array_fill(0, \count($lieux), '%s')) . ')';
+        $filter_values = array_merge($filter_values, $lieux);
+    } elseif (\count($lieux) === 1) {
+        $filter .= ' AND m2.meta_value = %s';
+        $filter_values[] = reset($lieux);
     }
 }
 
-$categories_filter = isset($_GET['qcategories']) ? $_GET['qcategories'] : null;
+$categories_filter = $get_training_filter('qcategories');
 if ($categories_filter) {
-    $categories = explode(',', $categories_filter);
+    $categories = array_filter(array_map('trim', explode(',', $categories_filter)));
     if (\count($categories) > 1) {
-        $filter .= ' AND m3.meta_value IN (';
-        foreach ($categories as $category) {
-            $filter .= "'{$category}',";
-        }
-        $filter = substr($filter, 0, -1) . ')';
-    } else {
-        $filter .= " AND m3.meta_value = '{$categories_filter}'";
+        $filter .= ' AND m3.meta_value IN (' . implode(', ', array_fill(0, \count($categories), '%s')) . ')';
+        $filter_values = array_merge($filter_values, $categories);
+    } elseif (\count($categories) === 1) {
+        $filter .= ' AND m3.meta_value = %s';
+        $filter_values[] = reset($categories);
     }
 }
 
@@ -71,12 +81,12 @@ $meta_key_filter = '%session%date%de%debut';
 $meta_value_filter = '%field%';
 
 $total_query = "SELECT COUNT(1) AS count FROM ({$query}) AS combined_table";
-$total_result = $wpdb->prepare($total_query, $meta_key_filter, $meta_value_filter);
+$total_result = $wpdb->prepare($total_query, array_merge([$meta_key_filter, $meta_value_filter], $filter_values));
 $total = $wpdb->get_results($total_result)[0]->count;
 $max_num_page = ceil($total / $posts_per_page);
 $wpdb->max_num_pages = $max_num_page;
 
-$session_query = $wpdb->prepare(sprintf('%s LIMIT %d, %d', $query, $offset, $posts_per_page), $meta_key_filter, $meta_value_filter);
+$session_query = $wpdb->prepare(sprintf('%s LIMIT %d, %d', $query, $offset, $posts_per_page), array_merge([$meta_key_filter, $meta_value_filter], $filter_values));
 $raw_sessions = $wpdb->get_results($session_query);
 $sessions = [];
 foreach ($raw_sessions as $raw_session) {

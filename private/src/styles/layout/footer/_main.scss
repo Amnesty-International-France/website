@@ -36,73 +36,83 @@
         & > .nl-container {
           & > form {
             display: flex;
+            flex-wrap: wrap;
             width: 75%;
-            height: 50px;
+            min-height: 50px;
 
-            input {
-              border: none;
-
-              &::placeholder {
-                color: var(--wp--preset--color--grey);
-                text-transform: none;
-              }
+            .cf-turnstile {
+              width: 100%;
             }
 
-            > .register-nl {
-              flex: 1;
+            .nl-input-group {
               display: flex;
-              align-items: center;
-              column-gap: 13.5px;
-              width: fit-content;
-              padding: 2px 20px;
-              transition: all 0.2s ease-in;
-              background-color: var(--wp--preset--color--black);
-              color: var(--wp--preset--color--white);
-              text-decoration: none;
-              text-transform: uppercase;
-              position: relative;
-              cursor: pointer;
-              font-family: var(--wp--preset--font-family--secondary);
-              font-weight: bold;
-              font-size: 14px;
+              width: 100%;
 
-              & > svg > path {
-                fill: var(--wp--preset--color--primary);
-              }
+              input {
+                border: none;
 
-              @media (max-width: $container-md) {
-                width: 100%;
-              }
-
-              &:disabled {
-                cursor: not-allowed;
-                opacity: 0.6;
-                filter: grayscale(30%);
-              }
-
-              .spinner {
-                border: 4px solid rgba(255, 255, 255, 0.3);
-                border-top: 4px solid #fff;
-                border-radius: 50%;
-                width: 16px;
-                height: 16px;
-                animation: spin 1s linear infinite;
-                display: inline-block;
-                vertical-align: middle;
-              }
-
-              @keyframes spin {
-                0% {
-                  transform: rotate(0deg);
-                }
-
-                100% {
-                  transform: rotate(360deg);
+                &::placeholder {
+                  color: var(--wp--preset--color--grey);
+                  text-transform: none;
                 }
               }
 
-              .hidden {
-                display: none !important;
+              > .register-nl {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                column-gap: 13.5px;
+                width: fit-content;
+                padding: 2px 20px;
+                transition: all 0.2s ease-in;
+                background-color: var(--wp--preset--color--black);
+                color: var(--wp--preset--color--white);
+                text-decoration: none;
+                text-transform: uppercase;
+                position: relative;
+                cursor: pointer;
+                font-family: var(--wp--preset--font-family--secondary);
+                font-weight: bold;
+                font-size: 14px;
+
+                & > svg > path {
+                  fill: var(--wp--preset--color--primary);
+                }
+
+                @media (max-width: $container-md) {
+                  width: 100%;
+                }
+
+                &:disabled {
+                  cursor: not-allowed;
+                  opacity: 0.6;
+                  filter: grayscale(30%);
+                }
+
+                .spinner {
+                  border: 4px solid rgba(255, 255, 255, 0.3);
+                  border-top: 4px solid #fff;
+                  border-radius: 50%;
+                  width: 16px;
+                  height: 16px;
+                  animation: spin 1s linear infinite;
+                  display: inline-block;
+                  vertical-align: middle;
+                }
+
+                @keyframes spin {
+                  0% {
+                    transform: rotate(0deg);
+                  }
+
+                  100% {
+                    transform: rotate(360deg);
+                  }
+                }
+
+                .hidden {
+                  display: none !important;
+                }
               }
             }
 

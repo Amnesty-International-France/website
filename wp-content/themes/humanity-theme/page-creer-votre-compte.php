@@ -109,7 +109,7 @@ if (!empty($error_no_access_to_donor_space)) {
 					     data-expired-callback="aifTurnstileFailure"
 					     data-timeout-callback="aifTurnstileFailure"
 					     data-unsupported-callback="aifTurnstileFailure"
-					     data-sitekey="<?php echo esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+					     data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
 					<label for="email">Adresse email (obligatoire) :</label>
 					<input type="email" class="aif-input" id="email" name="email" aria-describedby="email-help-message"
 					       placeholder="adresse@mail.fr" autocomplete="email" aria-required="true" required>

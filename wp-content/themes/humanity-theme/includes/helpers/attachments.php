@@ -33,6 +33,36 @@ function add_id_suffix_to_attachment_slug($attachment_ID)
 add_action('add_attachment', 'add_id_suffix_to_attachment_slug');
 
 /**
+ * Taille maximale autorisée pour l'upload d'une image, en octets (500 Ko).
+ */
+const AIF_MAX_IMAGE_UPLOAD_SIZE = 500 * 1024;
+
+/**
+ * Bloque l'upload des images dépassant la taille maximale autorisée.
+ *
+ * @param array $file Les données du fichier en cours d'upload ($_FILES).
+ *
+ * @return array Les données du fichier, avec une erreur si la limite est dépassée.
+ */
+function limit_image_upload_size($file)
+{
+    if (strpos((string) ($file['type'] ?? ''), 'image/') !== 0) {
+        return $file;
+    }
+
+    if (($file['size'] ?? 0) > AIF_MAX_IMAGE_UPLOAD_SIZE) {
+        $file['error'] = sprintf(
+            'L\'image dépasse la taille maximale autorisée de %s Ko.',
+            number_format_i18n(AIF_MAX_IMAGE_UPLOAD_SIZE / 1024)
+        );
+    }
+
+    return $file;
+}
+
+add_filter('wp_handle_upload_prefilter', 'limit_image_upload_size');
+
+/**
  * Affiche une notice dans l'admin pour lancer le script de mise à jour des slugs.
  */
 function show_update_slugs_admin_notice_batch()
