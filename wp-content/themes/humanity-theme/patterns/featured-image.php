@@ -24,7 +24,7 @@ if (get_post_meta($post_id_to_use, '_hide_featured_image', true)) {
 }
 
 $image_id = get_post_thumbnail_id($post_id_to_use);
-$alt = get_post_meta( $image_id, '_wp_attachment_image_alt', true ) ?? '';
+$alt = amnesty_get_image_alt_text((int) $image_id);
 
 if (! $image_id) {
     if ('press-release' === get_post_type()) {
