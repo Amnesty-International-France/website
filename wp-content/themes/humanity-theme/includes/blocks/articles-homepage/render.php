@@ -146,6 +146,9 @@ if (!function_exists('render_articles_homepage_block')) {
             } elseif ($current_post_type === 'landmark') {
                 $entity_slug = 'landmark';
                 $entity_label = 'Repère';
+            } elseif ($current_post_type === 'chronique') {
+                $entity_slug = 'chroniques';
+                $entity_label = 'Article La Chronique';
             }
 
             if (empty($entity_slug) && $category_slug_from_attributes) {

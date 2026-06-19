@@ -106,6 +106,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
       const categoryMap = {
         landmark: 'landmark',
         'actualities-my-space': 'actualities-my-space',
+        chronique: 'chroniques',
       };
 
       const category = categoryMap[post.type] || primaryCategory?.slug || '';
