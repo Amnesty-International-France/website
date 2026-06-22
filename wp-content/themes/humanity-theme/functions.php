@@ -390,6 +390,7 @@ require_once realpath(__DIR__ . '/includes/users/meta.php');
  * Theme Jetpack includes
  */
 // region jetpack
+require_once realpath(__DIR__. '/includes/jetpack/jetpack-modules.php');
 require_once realpath(__DIR__ . '/includes/jetpack/contact-form.php');
 require_once realpath(__DIR__ . '/includes/jetpack/go-back-message.php');
 require_once realpath(__DIR__ . '/includes/jetpack/sitemap.php');
