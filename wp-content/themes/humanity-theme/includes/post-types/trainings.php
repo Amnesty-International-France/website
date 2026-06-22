@@ -274,19 +274,42 @@ function aif_get_trainings_max_num_pages(int $posts_per_page = AIF_TRAININGS_PER
 }
 
 /**
- * Align the main query pagination with the trainings actually displayed.
+ * Align the trainings archive pagination with the sessions actually displayed.
  *
- * The archive is rendered by a custom query (see the archive-loop-trainings
- * pattern), so WordPress' main query — which feeds Yoast's "Page X of Y" title —
- * would otherwise report the wrong number of pages.
+ * The archive is rendered by a custom sessions query (see the
+ * archive-loop-trainings pattern), so WordPress' main query reports the wrong
+ * number of pages. This both feeds Yoast's "Page X of Y" title and, worse, makes
+ * WP::handle_404() serve valid deep pages as 404 as soon as the main query runs
+ * out of training posts (handle_404() 404s a paged request whose $wp_query->posts
+ * is empty), even though sessions still exist for that page.
+ *
+ * Hooking on `pre_handle_404` — fired at the very start of WP::handle_404(), i.e.
+ * before the 404 decision *and* before wp_head/Yoast — lets us fix max_num_pages
+ * and short-circuit the spurious 404 in one place. Hooking later (e.g. on `wp`)
+ * would correct the title but leave those pages served as 404.
+ *
+ * @param bool      $preempt  Short-circuit value for handle_404().
+ * @param \WP_Query $wp_query The query object (the main query at this point).
+ *
+ * @return bool True to mark the request as handled (HTTP 200) when the requested
+ *              page is within the sessions range; otherwise $preempt unchanged.
  */
-function aif_formation_archive_fix_pagination(): void
+function aif_formation_archive_fix_pagination($preempt, $wp_query)
 {
-    if (is_admin() || !is_post_type_archive('training')) {
-        return;
+    if (is_admin() || !$wp_query->is_main_query() || !$wp_query->is_post_type_archive('training')) {
+        return $preempt;
     }
 
-    global $wp_query;
     $wp_query->max_num_pages = aif_get_trainings_max_num_pages();
+
+    $paged = max(1, (int) $wp_query->get('paged'));
+
+    // Page backed by existing sessions: prevent handle_404() from 404ing it just
+    // because the main query exhausted its (unused) training posts.
+    if ($paged <= $wp_query->max_num_pages) {
+        return true;
+    }
+
+    return $preempt;
 }
-add_action('wp', 'aif_formation_archive_fix_pagination');
+add_filter('pre_handle_404', 'aif_formation_archive_fix_pagination', 10, 2);
