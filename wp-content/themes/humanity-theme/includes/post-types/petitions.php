@@ -58,6 +58,33 @@ function amnesty_register_petition_type_meta()
 }
 add_action('init', 'amnesty_register_petition_type_meta');
 
+function amnesty_custom_support_petition_breadcrumbs($links)
+{
+    if (! is_singular('petition')) {
+        return $links;
+    }
+
+    $type_field = function_exists('get_field') ? get_field('type') : null;
+    $type = is_array($type_field) ? ($type_field['value'] ?? '') : (string) $type_field;
+
+    if ($type === '') {
+        $type = get_post_meta(get_the_ID(), 'type', true);
+    }
+
+    if ($type !== 'action-soutien') {
+        return $links;
+    }
+
+    foreach ($links as $index => $link) {
+        if (($link['text'] ?? '') === 'Pétitions') {
+            $links[$index]['text'] = 'Soutien';
+        }
+    }
+
+    return $links;
+}
+add_filter('wpseo_breadcrumb_links', 'amnesty_custom_support_petition_breadcrumbs');
+
 function amnesty_get_petition_signature_count($post_id)
 {
     $count = get_post_meta($post_id, '_amnesty_signature_count', true);
