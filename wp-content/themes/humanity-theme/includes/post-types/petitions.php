@@ -177,7 +177,7 @@ function amnesty_handle_petition_signature(): void
         $petition_id = absint($_POST['petition_id']);
         $user_email = sanitize_email($_POST['user_email']);
 
-        $type = get_field('type', $petition_id)['value'];
+        $type = amnesty_get_petition_type($petition_id) ?: 'petition';
         $current_date = date('Y-m-d');
         $end_date = get_field('date_de_fin', $petition_id);
 
@@ -302,7 +302,7 @@ add_action('restrict_manage_posts', function ($post_type) {
 	<select name="type_petition">
 		<option value="">Toutes les pétitions</option>
 		<option value="petition" <?php selected($selected, 'petition'); ?>>Pétition</option>
-		<option value="action-soutien" <?php selected($selected, 'action-soutie'); ?>>Action de soutien</option>
+		<option value="action-soutien" <?php selected($selected, 'action-soutien'); ?>>Action de soutien</option>
 	</select>
 	<?php
 });
