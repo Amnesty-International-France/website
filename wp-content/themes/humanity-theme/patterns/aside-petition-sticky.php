@@ -27,13 +27,14 @@ $post_id = get_the_ID();
 $civility = $civility ?? 'M.';
 
 $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
+$sticky_card_title = $type === 'action-soutien' ? 'SOUTIEN' : 'SIGNEZ LA PÉTITION';
 
 ?>
 
 <aside class="petition-aside" id="petition">
   <div class="sticky-card">
     <div class="sticky-card-content">
-      <div class="sticky-card-title">SIGNEZ LA PÉTITION</div>
+      <div class="sticky-card-title"><?php echo esc_html($sticky_card_title); ?></div>
       <p class="recipient"><?php echo esc_html($recipient ?? ''); ?><?php echo esc_html($form_contenu ?? ''); ?></p>
         <?php if ($type === 'petition') : ?>
       <div class="punchline-wrapper">
