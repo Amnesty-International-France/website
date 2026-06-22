@@ -155,11 +155,36 @@ function maint229_cf_decode_email( string $encoded ): string {
 }
 
 /**
+ * Indique si un host fait partie des hosts internes autorisés à la réécriture.
+ * Match exact ou sous-domaine (ex. « amnesty.fr » couvre « www.amnesty.fr »).
+ * Évite de réécrire un lien externe partageant le même chemin qu'un mapping interne.
+ */
+function maint229_host_allowed( string $host, array $allowed_hosts ): bool {
+	$host = strtolower( $host );
+
+	foreach ( $allowed_hosts as $allowed ) {
+		$allowed = strtolower( (string) $allowed );
+
+		if ( '' === $allowed ) {
+			continue;
+		}
+
+		if ( $host === $allowed || str_ends_with( $host, '.' . $allowed ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
  * CAT 1 — Remplace le chemin d'une URL interne par un autre, indépendamment du
  * scheme/host (amnesty.fr en prod, localhost en local…), qui est préservé tel quel.
  * Gère le slash final et exige une frontière pour ne pas casser une URL plus longue.
+ * Ne réécrit que les hosts internes connus ($allowed_hosts) pour épargner les liens
+ * externes ayant fortuitement le même chemin.
  */
-function maint229_replace_absolute_url( string $content, string $old, string $new, int &$count ): string {
+function maint229_replace_absolute_url( string $content, string $old, string $new, array $allowed_hosts, int &$count ): string {
 	$old_path = rtrim( (string) wp_parse_url( $old, PHP_URL_PATH ), '/' );
 	$new_path = rtrim( (string) wp_parse_url( $new, PHP_URL_PATH ), '/' ) . '/';
 
@@ -168,7 +193,10 @@ function maint229_replace_absolute_url( string $content, string $old, string $ne
 
 	return (string) preg_replace_callback(
 		$pattern,
-		static function ( array $m ) use ( $new_path, &$count ) {
+		static function ( array $m ) use ( $new_path, $allowed_hosts, &$count ) {
+			if ( ! maint229_host_allowed( (string) wp_parse_url( $m[1], PHP_URL_HOST ), $allowed_hosts ) ) {
+				return $m[0];
+			}
 			$count++;
 			return $m[1] . $new_path;
 		},
@@ -180,14 +208,18 @@ function maint229_replace_absolute_url( string $content, string $old, string $ne
  * CAT 2 — Remplace une ancienne URL de fiche pays `?p=ID&post_type=fiche_pays` par
  * le chemin résolu (`/pays/{slug}/`), en préservant le scheme/host et en tolérant
  * les différents encodages de l'esperluette (&, &amp;, &, &#038;).
+ * Limité aux hosts internes connus ($allowed_hosts).
  */
-function maint229_replace_country_url( string $content, string $id, string $new_path, int &$count ): string {
+function maint229_replace_country_url( string $content, string $id, string $new_path, array $allowed_hosts, int &$count ): string {
 	$amp     = '(?:&|&amp;|\\\\u0026|&#0?38;)';
 	$pattern = '~(https?://[^/"\'\s<>]+)/\?p=' . preg_quote( $id, '~' ) . $amp . 'post_type=fiche_pays~';
 
 	return (string) preg_replace_callback(
 		$pattern,
-		static function ( array $m ) use ( $new_path, &$count ) {
+		static function ( array $m ) use ( $new_path, $allowed_hosts, &$count ) {
+			if ( ! maint229_host_allowed( (string) wp_parse_url( $m[1], PHP_URL_HOST ), $allowed_hosts ) ) {
+				return $m[0];
+			}
 			$count++;
 			return $m[1] . $new_path;
 		},
@@ -230,15 +262,15 @@ function maint229_replace_cf_emails( string $content, int &$count ): string {
  *
  * @return array{0: string, 1: array<string,int>} Contenu réécrit + compteurs par catégorie.
  */
-function maint229_apply_all( string $content, array $cat1, array $cat2 ): array {
+function maint229_apply_all( string $content, array $cat1, array $cat2, array $allowed_hosts ): array {
 	$counts = [ 'cat1' => 0, 'cat2' => 0, 'cat3' => 0 ];
 
 	foreach ( $cat1 as $old => $new ) {
-		$content = maint229_replace_absolute_url( $content, $old, $new, $counts['cat1'] );
+		$content = maint229_replace_absolute_url( $content, $old, $new, $allowed_hosts, $counts['cat1'] );
 	}
 
 	foreach ( $cat2 as $id => $url ) {
-		$content = maint229_replace_country_url( $content, $id, $url, $counts['cat2'] );
+		$content = maint229_replace_country_url( $content, $id, $url, $allowed_hosts, $counts['cat2'] );
 	}
 
 	$content = maint229_replace_cf_emails( $content, $counts['cat3'] );
@@ -251,14 +283,14 @@ function maint229_apply_all( string $content, array $cat1, array $cat2 ): array 
  *
  * @return array<string,int> Compteurs de remplacements par catégorie pour ce post.
  */
-function maint229_process_post( WP_Post $post, array $cat1, array $cat2, bool $live, $log_file ): array {
+function maint229_process_post( WP_Post $post, array $cat1, array $cat2, array $allowed_hosts, bool $live, $log_file, int &$failures ): array {
 	$content = $post->post_content;
 
 	if ( '' === $content ) {
 		return [ 'cat1' => 0, 'cat2' => 0, 'cat3' => 0 ];
 	}
 
-	[ $new_content, $counts ] = maint229_apply_all( $content, $cat1, $cat2 );
+	[ $new_content, $counts ] = maint229_apply_all( $content, $cat1, $cat2, $allowed_hosts );
 
 	if ( array_sum( $counts ) > 0 && $new_content !== $content ) {
 		fwrite(
@@ -275,15 +307,18 @@ function maint229_process_post( WP_Post $post, array $cat1, array $cat2, bool $l
 		);
 
 		if ( $live ) {
+			// wp_update_post() appelle wp_unslash() en interne : on doit lui passer
+			// des données slashées, sinon les backslashes du contenu seraient perdus.
 			$result = wp_update_post(
 				[
 					'ID'           => $post->ID,
-					'post_content' => $new_content,
+					'post_content' => wp_slash( $new_content ),
 				],
 				true
 			);
 
 			if ( is_wp_error( $result ) ) {
+				$failures++;
 				fwrite( $log_file, "    /!\\ ÉCHEC wp_update_post : " . $result->get_error_message() . PHP_EOL );
 				WP_CLI::warning( "Échec de mise à jour du post {$post->ID} : " . $result->get_error_message() );
 			}
@@ -300,14 +335,14 @@ function maint229_process_post( WP_Post $post, array $cat1, array $cat2, bool $l
  *
  * @return array<string,int> Compteurs de remplacements par catégorie pour ce terme.
  */
-function maint229_process_term( WP_Term $term, array $cat1, array $cat2, bool $live, $log_file ): array {
+function maint229_process_term( WP_Term $term, array $cat1, array $cat2, array $allowed_hosts, bool $live, $log_file, int &$failures ): array {
 	$content = (string) $term->description;
 
 	if ( '' === $content ) {
 		return [ 'cat1' => 0, 'cat2' => 0, 'cat3' => 0 ];
 	}
 
-	[ $new_content, $counts ] = maint229_apply_all( $content, $cat1, $cat2 );
+	[ $new_content, $counts ] = maint229_apply_all( $content, $cat1, $cat2, $allowed_hosts );
 
 	if ( array_sum( $counts ) > 0 && $new_content !== $content ) {
 		fwrite(
@@ -325,13 +360,15 @@ function maint229_process_term( WP_Term $term, array $cat1, array $cat2, bool $l
 		);
 
 		if ( $live ) {
+			// wp_update_term() applique wp_unslash() à la description : on slash en amont.
 			$result = wp_update_term(
 				$term->term_id,
 				$term->taxonomy,
-				[ 'description' => $new_content ]
+				[ 'description' => wp_slash( $new_content ) ]
 			);
 
 			if ( is_wp_error( $result ) ) {
+				$failures++;
 				fwrite( $log_file, "    /!\\ ÉCHEC wp_update_term : " . $result->get_error_message() . PHP_EOL );
 				WP_CLI::warning( "Échec de mise à jour du terme {$term->term_id} : " . $result->get_error_message() );
 			}
@@ -356,6 +393,15 @@ if ( ! $log_file ) {
 WP_CLI::line( '=== MAINT-229 — Correction des liens cassés ===' );
 WP_CLI::line( $fix_links_live ? 'Mode : LIVE (les contenus seront modifiés)' : 'Mode : DRY-RUN (aucune écriture)' );
 fwrite( $log_file, '=== MAINT-229 — ' . ( $fix_links_live ? 'LIVE' : 'DRY-RUN' ) . ' ===' . PHP_EOL );
+
+/**
+ * Hosts internes autorisés à la réécriture : host courant (prod amnesty.fr,
+ * staging/local…) + famille amnesty.fr (sous-domaines inclus via suffixe).
+ */
+$maint229_site_host    = (string) wp_parse_url( home_url(), PHP_URL_HOST );
+$maint229_allowed_hosts = array_unique( array_filter( [ $maint229_site_host, 'amnesty.fr' ] ) );
+
+$write_failures = 0;
 
 WP_CLI::line( 'Résolution des fiches pays (CAT 2)...' );
 fwrite( $log_file, '--- Résolution CAT 2 ---' . PHP_EOL );
@@ -386,7 +432,7 @@ do {
 
 	foreach ( $query->posts as $post ) {
 		$scanned++;
-		$counts = maint229_process_post( $post, $cat1_mappings, $cat2_map, $fix_links_live, $log_file );
+		$counts = maint229_process_post( $post, $cat1_mappings, $cat2_map, $maint229_allowed_hosts, $fix_links_live, $log_file, $write_failures );
 
 		if ( array_sum( $counts ) > 0 ) {
 			$updated++;
@@ -420,7 +466,7 @@ $terms         = get_terms(
 if ( ! is_wp_error( $terms ) ) {
 	foreach ( $terms as $term ) {
 		$terms_scanned++;
-		$counts = maint229_process_term( $term, $cat1_mappings, $cat2_map, $fix_links_live, $log_file );
+		$counts = maint229_process_term( $term, $cat1_mappings, $cat2_map, $maint229_allowed_hosts, $fix_links_live, $log_file, $write_failures );
 
 		if ( array_sum( $counts ) > 0 ) {
 			$terms_updated++;
@@ -454,6 +500,12 @@ if ( $cat2_unresolved ) {
 }
 
 if ( $fix_links_live ) {
+	if ( $write_failures > 0 ) {
+		// Au moins une écriture a échoué : exit non-zero pour ne pas masquer
+		// l'échec partiel derrière un « Corrections appliquées ».
+		WP_CLI::error( "$write_failures écriture(s) en échec sur les contenus à corriger. Détail dans $log_filename" );
+	}
+
 	WP_CLI::success( "Corrections appliquées. Détail dans $log_filename" );
 } else {
 	WP_CLI::success( "Dry-run terminé (aucune écriture). Détail dans $log_filename — relancer avec 'live' pour appliquer." );
