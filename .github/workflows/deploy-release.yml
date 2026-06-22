@@ -34,4 +34,4 @@ jobs:
       - name: Update schema
         run: ssh staging 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp update-db-schema'
       - name: Purge Cache Cloudflare
-        run: ssh staging 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp cloudflare cache purge'
+        run: ssh staging 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp-cli cloudflare cache purge'
