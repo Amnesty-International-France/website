@@ -197,6 +197,16 @@ if ($show_final_screen) {
                                         <span class="share-label"><?php esc_html_e('facebook', 'amnesty'); ?></span>
                                     </a>
 
+                                    <a class="article-shareX" target="_blank" rel="noreferrer noopener"
+                                        href="<?php echo esc_url('https://x.com/intent/post?text=' . rawurlencode($social_message)); ?>"
+                                        title="<?php esc_attr_e('Partager sur X', 'amnesty'); ?>"
+                                        aria-label="<?php esc_attr_e('Partager sur X', 'amnesty'); ?>">
+                                        <div class="icon-container">
+                                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-x.svg'); ?>
+                                        </div>
+                                        <span class="share-label"><?php esc_html_e('x', 'amnesty'); ?></span>
+                                    </a>
+
                                     <a class="article-shareBluesky" target="_blank" rel="noreferrer noopener"
                                         href="<?php echo esc_url('https://bsky.app/intent/compose?text=' . rawurlencode($social_message)); ?>"
                                         title="<?php esc_attr_e('Partager sur Bluesky', 'amnesty'); ?>"
