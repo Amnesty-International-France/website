@@ -27,13 +27,14 @@ $post_id = get_the_ID();
 $civility = $civility ?? 'M.';
 
 $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
+$sticky_card_title = $type === 'action-soutien' ? 'SOUTIEN' : 'SIGNEZ LA PÉTITION';
 
 ?>
 
 <aside class="petition-aside" id="petition">
   <div class="sticky-card">
     <div class="sticky-card-content">
-      <div class="sticky-card-title">SIGNEZ LA PÉTITION</div>
+      <div class="sticky-card-title"><?php echo esc_html($sticky_card_title); ?></div>
       <p class="recipient"><?php echo esc_html($recipient ?? ''); ?><?php echo esc_html($form_contenu ?? ''); ?></p>
         <?php if ($type === 'petition') : ?>
       <div class="punchline-wrapper">
@@ -44,7 +45,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 		<?php if (isset($end_date) && (strtotime($end_date) >= strtotime($current_date))) : ?>
 
       <form class="signature-petition-form" method="post" action="">
-          <div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+          <div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-appearance="interaction-only" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
           <?php if ($turnstile_error_message) : ?>
               <?php aif_include_partial('alert', ['state' => 'error', 'title' => 'Une erreur est survenue', 'content' => $turnstile_error_message]); ?>
           <?php endif; ?>

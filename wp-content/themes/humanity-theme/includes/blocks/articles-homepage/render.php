@@ -146,6 +146,9 @@ if (!function_exists('render_articles_homepage_block')) {
             } elseif ($current_post_type === 'landmark') {
                 $entity_slug = 'landmark';
                 $entity_label = 'Repère';
+            } elseif ($current_post_type === 'chronique') {
+                $entity_slug = 'chroniques';
+                $entity_label = 'Article La Chronique';
             }
 
             if (empty($entity_slug) && $category_slug_from_attributes) {
@@ -159,7 +162,7 @@ if (!function_exists('render_articles_homepage_block')) {
             }
 
             $chip_style = match ($entity_slug) {
-                'actualites', 'chroniques', 'landmark', 'actualities-my-space' => 'bg-yellow',
+                'actualites', 'chronique', 'chroniques', 'landmark', 'actualities-my-space' => 'bg-yellow',
                 'dossiers', 'campagnes' => 'bg-black',
                 default => 'outline-black',
             };
@@ -198,6 +201,7 @@ if (!function_exists('render_articles_homepage_block')) {
                         return 'Voir toutes les actualités';
                     case 'campagnes':
                         return 'Voir toutes les campagnes';
+                    case 'chronique':
                     case 'chroniques':
                         return 'Voir tous les articles la chronique';
                     case 'dossiers':

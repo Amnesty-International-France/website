@@ -1,4 +1,4 @@
-@use "sass:math";
+@use 'sass:math';
 
 $flexy-outer-gutter: $flexy-gutter-width !default;
 
@@ -43,10 +43,17 @@ $flexy-outer-gutter: $flexy-gutter-width !default;
 ///   width: calc(50% - 10px);
 /// }
 @mixin flexy-grid($noOfItems, $gutterWidth: $flexy-gutter-width) {
-  @if unit($gutterWidth) == "%" {
-    @include flexy-flex(#{math.div(100, $noOfItems) - math.div($gutterWidth * ($noOfItems - 1), $noOfItems)});
+  @if unit($gutterWidth) == '%' {
+    @include flexy-flex(
+      #{math.div(100, $noOfItems) - math.div($gutterWidth * ($noOfItems - 1), $noOfItems)}
+    );
   } @else {
-    @include flexy-flex(calc(#{math.div(100, $noOfItems) + "%"} - #{math.div($gutterWidth * ($noOfItems - 1), $noOfItems)}));
+    @include flexy-flex(
+      calc(
+        #{math.div(100, $noOfItems) + '%'} -
+          #{math.div($gutterWidth * ($noOfItems - 1), $noOfItems)}
+      )
+    );
   }
 }
 
@@ -67,7 +74,11 @@ $flexy-outer-gutter: $flexy-gutter-width !default;
 /// @param  {string} $outer-gutter - Outer Gutter
 /// @return {number}
 ///
-@function flexy-col($noOfColumns: 1, $containerWidth: $flexy-container, $outer-gutter: $flexy-outer-gutter) {
+@function flexy-col(
+  $noOfColumns: 1,
+  $containerWidth: $flexy-container,
+  $outer-gutter: $flexy-outer-gutter
+) {
   $col: math.div($flexy-column-width, ($containerWidth - 2 * $outer-gutter)) * 100;
   $gutter: flexy-gutter($containerWidth);
   $myValue: ($col * $noOfColumns) + ($gutter * ($noOfColumns - 1));

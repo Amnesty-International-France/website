@@ -34,7 +34,6 @@ With a child theme, it would have been necessary to create page templates and ma
 
 #### 3. Proximity to the Humanity Theme
 
-
 Initially, we wanted to stay as close as possible to the Humanity Theme. However, we encountered several issues:
 
 - **Incomplete Documentation**: The theme's documentation was insufficient for developers. For example, there were no instructions on creating certain UI elements.
@@ -52,4 +51,3 @@ For these reasons, we introduced custom CSS for the donation space, contained in
 ### Integration into the Global Site and "Standalone" Version
 
 To meet this need, we decided that each URL of the donation space would be a sub-route prefixed by `/espace-don`.
-

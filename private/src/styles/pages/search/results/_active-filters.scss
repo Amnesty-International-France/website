@@ -31,7 +31,7 @@
   font-size: var(--wp--preset--font-size--x-small);
 
   &::after {
-    content: "x";
+    content: 'x';
     display: inline-block;
     margin-left: var(--wp--preset--spacing--quarter);
   }

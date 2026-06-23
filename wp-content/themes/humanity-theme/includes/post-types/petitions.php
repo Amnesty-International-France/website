@@ -58,6 +58,77 @@ function amnesty_register_petition_type_meta()
 }
 add_action('init', 'amnesty_register_petition_type_meta');
 
+function amnesty_get_petition_type($post_id = null): string
+{
+    $post_id = $post_id ?: get_the_ID();
+    $type_field = function_exists('get_field') ? get_field('type', $post_id) : null;
+    $type = is_array($type_field) ? ($type_field['value'] ?? '') : (string) $type_field;
+
+    if ($type === '') {
+        $type = get_post_meta($post_id, 'type', true);
+    }
+
+    return (string) $type;
+}
+
+function amnesty_get_support_petitions_archive_link(): string
+{
+    $archive_link = get_post_type_archive_link('petition') ?: home_url('/petitions/');
+
+    return add_query_arg('qtype_petition', 'action-soutien', $archive_link);
+}
+
+function amnesty_is_petition_archive_breadcrumb_link(array $link): bool
+{
+    if (($link['ptarchive'] ?? '') === 'petition') {
+        return true;
+    }
+
+    if (empty($link['url'])) {
+        return false;
+    }
+
+    $archive_link = get_post_type_archive_link('petition');
+
+    if (! $archive_link) {
+        return false;
+    }
+
+    $link_path = wp_parse_url($link['url'], PHP_URL_PATH);
+    $archive_path = wp_parse_url($archive_link, PHP_URL_PATH);
+
+    return $link_path && $archive_path && untrailingslashit($link_path) === untrailingslashit($archive_path);
+}
+
+function amnesty_custom_support_petition_breadcrumbs($links)
+{
+    if (! is_singular('petition')) {
+        return $links;
+    }
+
+    if (get_query_var('is_my_space_petition') || amnesty_get_petition_type() !== 'action-soutien') {
+        return $links;
+    }
+
+    foreach ($links as $index => $link) {
+        if (amnesty_is_petition_archive_breadcrumb_link($link)) {
+            $links[$index]['text'] = 'Soutien';
+            $links[$index]['url'] = amnesty_get_support_petitions_archive_link();
+        }
+    }
+
+    return $links;
+}
+add_filter('wpseo_breadcrumb_links', 'amnesty_custom_support_petition_breadcrumbs', 20);
+
+function amnesty_petition_add_query_vars($vars)
+{
+    $vars[] = 'qtype_petition';
+
+    return $vars;
+}
+add_filter('query_vars', 'amnesty_petition_add_query_vars');
+
 function amnesty_get_petition_signature_count($post_id)
 {
     $count = get_post_meta($post_id, '_amnesty_signature_count', true);
@@ -106,7 +177,7 @@ function amnesty_handle_petition_signature(): void
         $petition_id = absint($_POST['petition_id']);
         $user_email = sanitize_email($_POST['user_email']);
 
-        $type = get_field('type', $petition_id)['value'];
+        $type = amnesty_get_petition_type($petition_id) ?: 'petition';
         $current_date = date('Y-m-d');
         $end_date = get_field('date_de_fin', $petition_id);
 
@@ -179,6 +250,7 @@ function filter_petition_archive(WP_Query $query)
     }
 
     $meta_query_args = [
+        'relation' => 'AND',
         [
             'key' => 'date_de_fin',
             'value' => date('Y-m-d'),
@@ -186,6 +258,17 @@ function filter_petition_archive(WP_Query $query)
             'type' => 'DATE',
         ],
     ];
+
+    $petition_type = sanitize_key((string) get_query_var('qtype_petition'));
+
+    if (in_array($petition_type, [ 'petition', 'action-soutien' ], true)) {
+        $meta_query_args[] = [
+            'key' => 'type',
+            'value' => $petition_type,
+            'compare' => '=',
+        ];
+    }
+
     $query->set('meta_query', $meta_query_args);
 
 
@@ -219,7 +302,7 @@ add_action('restrict_manage_posts', function ($post_type) {
 	<select name="type_petition">
 		<option value="">Toutes les pétitions</option>
 		<option value="petition" <?php selected($selected, 'petition'); ?>>Pétition</option>
-		<option value="action-soutien" <?php selected($selected, 'action-soutie'); ?>>Action de soutien</option>
+		<option value="action-soutien" <?php selected($selected, 'action-soutien'); ?>>Action de soutien</option>
 	</select>
 	<?php
 });

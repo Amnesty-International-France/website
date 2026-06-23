@@ -104,6 +104,7 @@ require_once realpath(__DIR__ . '/includes/helpers/archive-chronicle-helpers.php
 require_once realpath(__DIR__ . '/includes/helpers/list-alignment.php');
 require_once realpath(__DIR__ . '/includes/helpers/reading-time.php');
 require_once realpath(__DIR__ . '/includes/helpers/page-the-chronicle-promo-helpers.php');
+require_once realpath(__DIR__ . '/includes/helpers/actualites-archive-helper.php');
 // endregion helpers
 
 /**
@@ -151,6 +152,7 @@ require_once realpath(__DIR__ . '/includes/admin/petitions-settings.php');
 require_once realpath(__DIR__ . '/includes/admin/trainings-settings.php');
 require_once realpath(__DIR__ . '/includes/admin/event-venue-auto-geocode.php');
 require_once realpath(__DIR__ . '/includes/admin/event-national.php');
+require_once realpath(__DIR__ . '/includes/admin/event-require-address.php');
 require_once realpath(__DIR__ . '/includes/admin/event-pagination-redirect.php');
 require_once realpath(__DIR__ . '/includes/admin/local-structures-search.php');
 // endregion admin

@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
 
 permissions:
   contents: read
@@ -33,3 +33,5 @@ jobs:
         run: ssh staging '$HOME/deploy.sh ${{ github.ref_name }}'
       - name: Update schema
         run: ssh staging 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp update-db-schema'
+      - name: Purge Cache Cloudflare
+        run: ssh staging 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp-cli cloudflare cache_purge'

@@ -1,4 +1,4 @@
-import { expect, test } from './support/fixtures.mjs';
+import { expect, test } from './support/fixtures';
 import {
   TEST_SITE_KEY,
   expectTurnstileScriptsInHead,
@@ -6,7 +6,7 @@ import {
   mockFailingTurnstile,
   mockSilentTurnstile,
   mockSuccessfulTurnstile,
-} from './support/turnstile.mjs';
+} from './support/turnstile';
 
 const FORGOT_PASSWORD_PATH = '/mot-de-passe-oublie/';
 const NEWSLETTER_PATH = '/newsletter/';
@@ -135,9 +135,7 @@ test('shows a failure message when Turnstile never creates a token', async ({
   await fillForgottenPasswordForm(page);
   await page.locator('#submit-btn').click();
 
-  await expect(page.getByRole('alert')).toContainText(
-    'La vérification de sécurité est en cours',
-  );
+  await expect(page.getByRole('alert')).toContainText('La vérification de sécurité est en cours');
   await expect(page.getByRole('alert')).toContainText(
     'La vérification de sécurité n’a pas pu être effectuée',
     { timeout: 5000 },

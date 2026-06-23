@@ -181,30 +181,33 @@ class DisplaySelect extends Component {
 
     return api
       .getPosts(requestArguments, this.state.taxonomy, this.state.term)
-      .then((data = [], i, xhr) => { // eslint-disable-line
-        const posts = data.map((p) => {
-          if (!p.featured_media || p.featured_media < 1) {
+      .then(
+        // eslint-disable-next-line default-param-last
+        (data = [], i, xhr) => {
+          const posts = data.map((p) => {
+            if (!p.featured_media || p.featured_media < 1) {
+              return {
+                ...p,
+                featured_image: false,
+              };
+            }
+
             return {
               ...p,
-              featured_image: false,
+              featured_image:
+                get(
+                  p,
+                  '_embedded["wp:featuredmedia"][0].media_details.sizes["logomark@2x"].source_url',
+                ) || get(p, '_embedded["wp:featuredmedia"][0].source_url', false),
             };
-          }
+          });
 
           return {
-            ...p,
-            featured_image:
-              get(
-                p,
-                '_embedded["wp:featuredmedia"][0].media_details.sizes["logomark@2x"].source_url',
-              ) || get(p, '_embedded["wp:featuredmedia"][0].source_url', false),
+            xhr,
+            data: posts,
           };
-        });
-
-        return {
-          xhr,
-          data: posts,
-        };
-      })
+        },
+      )
       .then(({ data = [], xhr }) => {
         if (requestArguments.search) {
           this.setState({

@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ "prod" ]
+    branches: ['prod']
 
 permissions:
   contents: read
@@ -33,3 +33,5 @@ jobs:
         run: ssh prod '$HOME/deploy.sh'
       - name: Update schema
         run: ssh prod 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp update-db-schema'
+      - name: Purge Cache Cloudflare
+        run: ssh prod 'source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp-cli cloudflare cache_purge'

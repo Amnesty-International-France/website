@@ -106,6 +106,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
       const categoryMap = {
         landmark: 'landmark',
         'actualities-my-space': 'actualities-my-space',
+        chronique: 'chroniques',
       };
 
       const category = categoryMap[post.type] || primaryCategory?.slug || '';
@@ -138,6 +139,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
         return 'Voir toutes les actualités';
       case 'campagnes':
         return 'Voir toutes les campagnes';
+      case 'chronique':
       case 'chroniques':
         return 'Voir tous les articles la chronique';
       case 'dossiers':

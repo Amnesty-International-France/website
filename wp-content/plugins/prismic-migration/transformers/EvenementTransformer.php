@@ -139,7 +139,13 @@ class EvenementTransformer extends DocTransformer
         ];
 
         if (isset($data['adresse'])) {
-            $args['Address'] = $data['adresse'];
+            [$street, $zip] = $this->splitAddress($data['adresse'], $data['ville'] ?? null);
+
+            $args['Address'] = $street;
+
+            if ($zip !== '') {
+                $args['Zip'] = $zip;
+            }
         }
 
         if (isset($data['ville'])) {
@@ -168,6 +174,39 @@ class EvenementTransformer extends DocTransformer
         }
 
         return $id;
+    }
+
+    /**
+     * Split a Prismic free-text address into [street, zip].
+     *
+     * Prismic stores the whole address as a single string with the French
+     * 5-digit postal code embedded (e.g. "1 esplanade du 18 juin 1940, 94370
+     * Sucy-en-Brie"). We extract the postal code and keep only the street part
+     * so the venue's _VenueZip is populated and _VenueAddress is not redundant
+     * with the city.
+     *
+     * @return array{0: string, 1: string} [street, zip]
+     */
+    private function splitAddress(string $address, ?string $city): array
+    {
+        $zip = '';
+
+        if (preg_match('/\b(\d{5})\b/', $address, $matches)) {
+            $zip = $matches[1];
+
+            // Keep everything before the postal code as the street.
+            $address = substr($address, 0, (int) strpos($address, $zip));
+        }
+
+        // Drop a trailing city left over when there is no postal code.
+        if ($zip === '' && $city !== null && $city !== '') {
+            $address = preg_replace('/,?\s*' . preg_quote($city, '/') . '\.?\s*$/iu', '', $address) ?? $address;
+        }
+
+        // Trim stray separators / whitespace left at either end.
+        $street = trim($address, " \t\n\r\0\x0B,.");
+
+        return [$street, $zip];
     }
 
 }
