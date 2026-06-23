@@ -230,7 +230,7 @@
 
   &-media {
     order: -1;
-    height: 300px;
+    height: 250px;
     margin: 20px 20px 0;
     overflow: hidden;
 
@@ -254,6 +254,10 @@
     font-weight: bold;
     line-height: 1.15;
     text-transform: uppercase;
+
+    @media (max-width: $container-sm) {
+      text-transform: none;
+    }
   }
 
   &-description {
