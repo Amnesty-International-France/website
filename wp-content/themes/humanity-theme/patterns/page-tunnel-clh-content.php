@@ -314,6 +314,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 								<form id="<?php echo esc_attr($sign_form_id); ?>" class="tunnel-clh-sign-form"
 								      method="post" action="">
 									<div class="cf-turnstile"
+									     data-appearance="interaction-only"
 									     data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 									<input type="hidden" name="petition_id" value="<?= esc_attr((string)$next_petition['id']); ?>">
 									<input type="hidden" name="from_tunnel" value="1">
@@ -357,6 +358,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 							<figure class="page-tunnel-clh-petition-card-anonymous">
 								<form id="<?php echo esc_attr($sign_form_id); ?>" class="tunnel-clh-sign-form-anonymous" method="post" action="">
 									<div class="cf-turnstile"
+									     data-appearance="interaction-only"
 									     data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 									<?php if ($turnstile_error_message) : ?>
 										<?php aif_include_partial('alert', ['state' => 'error', 'title' => 'Une erreur est survenue', 'content' => $turnstile_error_message]); ?>
