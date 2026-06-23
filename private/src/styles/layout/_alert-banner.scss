@@ -16,7 +16,7 @@
   }
 
   > .alert-banner-body {
-    max-width: $container-hg;
+    max-width: $container-md;
     margin: 0 auto;
     width: 100%;
     display: flex;
@@ -54,8 +54,8 @@
           font-size: 32px;
           font-weight: bold;
           letter-spacing: 0;
-          text-transform: uppercase;
           text-wrap: balance;
+          text-transform: none;
         }
 
         > .description {
