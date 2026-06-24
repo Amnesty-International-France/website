@@ -27,8 +27,8 @@ const initShortDescriptionCounter = () => {
     counter.className = 'amnesty-acf-character-count';
     counter.setAttribute('aria-live', 'polite');
 
-    textarea.maxLength = MAX_LENGTH;
-    textarea.dataset.characterCounterInitialised = 'true';
+    textarea.setAttribute('maxlength', MAX_LENGTH);
+    textarea.setAttribute('data-character-counter-initialised', 'true');
     wrapper.insertBefore(container, textarea);
     container.appendChild(textarea);
     container.appendChild(counter);
