@@ -1,36 +1,42 @@
-const FIELD_SELECTOR = '#acf-field_6a155b0a8709c';
+const FIELD_SELECTOR = '.acf-field[data-name="short_description"] textarea';
 const MAX_LENGTH = 1000;
 
 const getCounterText = (value) => `${value.length} / ${MAX_LENGTH} caractères`;
 
 const initShortDescriptionCounter = () => {
-  const textarea = document.querySelector(FIELD_SELECTOR);
+  const textareas = document.querySelectorAll(FIELD_SELECTOR);
 
-  if (!textarea || textarea.dataset.characterCounterInitialised === 'true') {
+  if (!textareas.length) {
     return;
   }
 
-  const wrapper = textarea.parentElement;
+  textareas.forEach((textarea) => {
+    if (textarea.dataset.characterCounterInitialised === 'true') {
+      return;
+    }
 
-  if (!wrapper) {
-    return;
-  }
+    const wrapper = textarea.parentElement;
 
-  const container = document.createElement('div');
-  const counter = document.createElement('span');
-  container.className = 'amnesty-acf-character-count-wrapper';
-  counter.className = 'amnesty-acf-character-count';
-  counter.setAttribute('aria-live', 'polite');
+    if (!wrapper) {
+      return;
+    }
 
-  textarea.maxLength = MAX_LENGTH;
-  textarea.dataset.characterCounterInitialised = 'true';
-  wrapper.insertBefore(container, textarea);
-  container.appendChild(textarea);
-  container.appendChild(counter);
+    const container = document.createElement('div');
+    const counter = document.createElement('span');
+    container.className = 'amnesty-acf-character-count-wrapper';
+    counter.className = 'amnesty-acf-character-count';
+    counter.setAttribute('aria-live', 'polite');
 
-  counter.textContent = getCounterText(textarea.value);
-  textarea.addEventListener('input', () => {
+    textarea.maxLength = MAX_LENGTH;
+    textarea.dataset.characterCounterInitialised = 'true';
+    wrapper.insertBefore(container, textarea);
+    container.appendChild(textarea);
+    container.appendChild(counter);
+
     counter.textContent = getCounterText(textarea.value);
+    textarea.addEventListener('input', () => {
+      counter.textContent = getCounterText(textarea.value);
+    });
   });
 };
 
