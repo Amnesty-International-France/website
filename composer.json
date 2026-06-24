@@ -10,7 +10,8 @@
     "symfony/var-dumper": "^7.3",
     "phpstan/phpstan": "^2.2",
     "szepeviktor/phpstan-wordpress": "^2.0",
-    "php-stubs/wp-cli-stubs": "2.12.0"
+    "php-stubs/wp-cli-stubs": "2.12.0",
+    "phpunit/phpunit": "^11.5"
   },
   "config": {
     "allow-plugins": {
@@ -21,6 +22,7 @@
     "analyse": "phpstan analyze",
     "cs": "php-cs-fixer fix --config=.php-cs-fixer.php --diff --dry-run",
     "lint": "./vendor/bin/phpcs wp-content/themes/humanity-theme",
+    "test:salesforce": "phpunit --testsuite Salesforce",
     "makePot": "wp i18n make-pot wp-content/themes/humanity-theme wp-content/themes/humanity-theme/languages/amnesty.pot --domain=amnesty --exclude=private",
     "updatePoMo": [
       "wp i18n update-po wp-content/themes/humanity-theme/languages/amnesty.pot",
@@ -32,6 +34,7 @@
     "analyse": "Runs PHPStan static analysis",
     "cs": "Runs PHP-CS-Fixer checks",
     "lint": "Runs PHP coding standard checks",
+    "test:salesforce": "Runs focused Salesforce PHP tests",
     "makePot": "Re-generates the POT language file",
     "updatePoMo": "Updates PO, MO, and JSON translation files"
   },
