@@ -16,7 +16,7 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
         $selected_posts  = [];
 
         if ($active_campaign) {
-            $petitions_list_clh = get_field('list_petition_clh', $active_campaign->ID) ?? [];
+            $petitions_list_clh = get_field('list_petition_clh', $page_id) ?? [];
 
             foreach (array_filter($petitions_list_clh, fn ($p) => amnesty_is_petition_not_expired($p->ID)) as $petition) {
                 $selected_posts[] = ['id' => $petition->ID];
@@ -28,6 +28,8 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
         if (empty($selected_posts)) {
             return '';
         }
+
+
 
         $post_ids = array_filter(array_map('absint', wp_list_pluck($selected_posts, 'id')));
         $post_ids = array_values(array_unique($post_ids));
