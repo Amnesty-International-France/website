@@ -14,7 +14,7 @@ add_filter(
     static function (array $email_args): array {
         $email_args['message'] = str_replace(
             '###ADMIN_EMAIL###',
-            'smd@amnesty.fr',
+            getenv('AIF_SUPPORT_EMAIL') ?: 'smd@amnesty.fr',
             $email_args['message']
         );
 
