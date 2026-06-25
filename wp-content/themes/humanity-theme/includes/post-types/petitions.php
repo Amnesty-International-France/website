@@ -1125,7 +1125,7 @@ add_action('acf/include_fields', function () {
                     'id' => '',
                 ],
                 'default_value' => '',
-                'maxlength' => 1000,
+                'maxlength' => '',
                 'allow_in_bindings' => 0,
                 'rows' => '',
                 'placeholder' => '',
