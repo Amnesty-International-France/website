@@ -17,13 +17,13 @@ $active_campaign = amnesty_get_active_clh_campaign_for_page($page->ID);
 $is_highlighted  = $active_campaign !== null;
 
 if ($is_highlighted) {
-    $end_date  = get_field('end_date_highlight_clh', $active_campaign->ID);
+    $end_date  = get_field('end_date_highlight_clh', $page->ID);
     $countdown = strtotime($end_date) - time();
 
     $total_number_of_signatures_collected = 0;
     $total_campaign_signatures = 0;
 
-    $list_petition_current_campaign = get_field('list_petition_clh', $active_campaign->ID) ?? [];
+    $list_petition_current_campaign = get_field('list_petition_clh', $page->ID) ?? [];
 
     foreach ($list_petition_current_campaign as $single_campaign) {
         $total_campaign_signatures            += (int) get_post_meta($single_campaign->ID, 'objectif_signatures', true);
