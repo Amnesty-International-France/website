@@ -26,6 +26,10 @@ const PUBLIC_PLUGINS = [
     "cmb2-field-order" => [
         "repo_url" => "https://github.com/jaymcp/cmb2-field-order/",
         "zip_url" => "https://github.com/jaymcp/cmb2-field-order/archive/refs/tags/%version%.zip"
+    ],
+    "wp-sentry-integration" => [
+        "repo_url" => "https://github.com/stayallive/wp-sentry",
+        "zip_url" => "https://github.com/stayallive/wp-sentry/releases/download/%version%/wp-sentry-integration-plugin-%version%.zip"
     ]
 ];
 
@@ -101,7 +105,7 @@ function install(string $path = '.', string $token = ''): void
 
     io()->info("Core installed.".PHP_EOL."Installing required plugins...");
     run("wp plugin install cloudflare --activate", context: $context);
-	run("wp plugin install cmb2 jetpack advanced-custom-fields wordpress-seo the-events-calendar --activate", context: $context);
+	run("wp plugin install cmb2 jetpack advanced-custom-fields wordpress-seo the-events-calendar wp-sentry-integration --activate", context: $context);
 
     run("wp theme activate humanity-theme", context: $context);
 
