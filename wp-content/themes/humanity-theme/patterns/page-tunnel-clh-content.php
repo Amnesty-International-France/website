@@ -35,7 +35,7 @@ $last_signer_email = ($raw_email && is_email($raw_email)) ? sanitize_email($raw_
 $current_user = $last_signer_email ? get_local_user($last_signer_email) : false;
 
 $cookie_signed_ids = $last_signer_email ? [] : amnesty_get_clh_signed_petitions();
-$list_petitions_clh = get_field('list_petition_clh', $active_campaign->ID);
+$list_petitions_clh = get_field('list_petition_clh', $parent);
 
 if (empty($list_petitions_clh)) {
     wp_redirect(amnesty_get_clh_tunnel_end_url());
@@ -82,7 +82,7 @@ $show_final_screen = $signed_count >= 10 || empty($not_signed);
 
 if ($show_final_screen) {
     $fallback_share_petition = $selected_posts[0] ?? null;
-    $share_url = get_field('url_petition_share', $active_campaign->ID) ?: ($fallback_share_petition['link'] ?? get_permalink($parent));
+    $share_url = get_field('url_petition_share', $parent) ?: ($fallback_share_petition['link'] ?? get_permalink($parent));
     $share_url = esc_url_raw((string) $share_url);
     $share_post_id = $share_url ? url_to_postid($share_url) : 0;
     $share_title = $share_post_id ? get_the_title($share_post_id) : ($fallback_share_petition['title'] ?? get_the_title($parent));
@@ -95,16 +95,16 @@ if ($show_final_screen) {
             '[titre]' => $share_title,
         ]);
     };
-    $social_message_template = get_field('message_clh', $active_campaign->ID) ?: 'Signez cette pétition pour changer leur histoire : {url}';
+    $social_message_template = get_field('message_clh', $parent) ?: 'Signez cette pétition pour changer leur histoire : {url}';
     $social_message = trim($replace_share_placeholders((string) $social_message_template));
 
     if ($share_url && !str_contains($social_message, $share_url)) {
         $social_message = trim($social_message . ' ' . $share_url);
     }
 
-    $email_subject_template = get_field('email_object', $active_campaign->ID) ?: $share_title;
+    $email_subject_template = get_field('email_object', $parent) ?: $share_title;
     $email_subject = trim($replace_share_placeholders((string) $email_subject_template));
-    $email_body_template = get_field('email_body', $active_campaign->ID) ?: "Je vous recommande cette pétition :\n\n[titre]\n[lien]";
+    $email_body_template = get_field('email_body', $parent) ?: "Je vous recommande cette pétition :\n\n[titre]\n[lien]";
     $email_body = $replace_share_placeholders((string) $email_body_template);
     ?>
     <!-- wp:group {"tagName":"page","className":"page"} -->

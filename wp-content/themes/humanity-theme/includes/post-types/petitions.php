@@ -266,11 +266,15 @@ if (!function_exists('amnesty_get_clh_petition_campaign_page')) {
 if (!function_exists('amnesty_get_active_clh_campaign_for_page')) {
     function amnesty_get_active_clh_campaign_for_page(int $page_id): ?WP_Post
     {
-        // This function makes up to 4 get_field() calls (highlight_clh, campaign_clh,
-        // start_date_highligth_clh, end_date_highlight_clh). ACF caches field values per post ID
-        // within a request, but the function itself is invoked from multiple call sites on the same
-        // page (aside-petition-sticky, slider block render, petition-card partial, tunnel content pattern).
-        // A per-page-id static cache avoids redundant ACF lookups and keeps the hot path cheap.
+        // The CLH campaign fields (highlight_clh, dates, list_petition_clh, share fields) now live
+        // directly on the campaign page itself — there is no longer a dedicated `clh` post. The
+        // highlight_clh toggle drives activation; when active and within the date window, the page
+        // post IS the campaign, so we return it (consumers read the remaining fields via its ID).
+        //
+        // This makes up to 3 get_field() calls (highlight_clh, start/end dates). ACF caches field
+        // values per post ID within a request, but the function is invoked from multiple call sites
+        // on the same page (aside-petition-sticky, slider block render, petition-card partial,
+        // tunnel content pattern). A per-page-id static cache avoids redundant ACF lookups.
         // false = not yet evaluated for this page_id; null = evaluated, no active campaign found.
         static $cache = [];
 
@@ -282,15 +286,15 @@ if (!function_exists('amnesty_get_active_clh_campaign_for_page')) {
             return $cache[$page_id] = null;
         }
 
-        $campaign = get_field('campaign_clh', $page_id);
+        $campaign = get_post($page_id);
 
         if (!$campaign instanceof WP_Post) {
             return $cache[$page_id] = null;
         }
 
         $timestamp_now   = time();
-        $start_date      = get_field('start_date_highligth_clh', $campaign->ID);
-        $end_date        = get_field('end_date_highlight_clh', $campaign->ID);
+        $start_date      = get_field('start_date_highligth_clh', $page_id);
+        $end_date        = get_field('end_date_highlight_clh', $page_id);
         $timestamp_start = $start_date ? strtotime((string) $start_date) : 0;
         $timestamp_end   = $end_date ? strtotime((string) $end_date) : 0;
 
@@ -327,7 +331,7 @@ function amnesty_get_active_clh_campaign_petition_ids(): array
     $active_campaign = $clh_page instanceof WP_Post
         ? amnesty_get_active_clh_campaign_for_page((int) $clh_page->ID)
         : null;
-    $list_petitions_clh = $active_campaign ? (get_field('list_petition_clh', $active_campaign->ID) ?: []) : [];
+    $list_petitions_clh = $active_campaign ? (get_field('list_petition_clh', (int) $clh_page->ID) ?: []) : [];
 
     return $cache = array_map(static fn ($petition) => (int) $petition->ID, $list_petitions_clh);
 }
@@ -608,7 +612,7 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
     $raw_email = $_SESSION['clh_last_signer_email'] ?? $_COOKIE['clh_user_email'] ?? null;
     $last_signer_email = ($raw_email && is_email($raw_email)) ? sanitize_email($raw_email) : null;
     $current_user = $last_signer_email ? get_local_user($last_signer_email) : false;
-    $list_petitions_clh = $active_campaign ? (get_field('list_petition_clh', $active_campaign->ID) ?: []) : [];
+    $list_petitions_clh = $active_campaign ? (get_field('list_petition_clh', $campaign_page_id) ?: []) : [];
     $selected_posts = [];
     $skipped_petitions = amnesty_get_clh_skipped_petitions();
     $cookie_signed_ids = $last_signer_email ? [] : amnesty_get_clh_signed_petitions();
