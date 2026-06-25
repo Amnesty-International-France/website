@@ -28,6 +28,10 @@
   pointer-events: none;
 }
 
+.amnesty-acf-character-count-current.is-over-limit {
+  color: #d63638;
+}
+
 :root {
   --ms-base: 16;
   --ms-ratio: 1.2;
