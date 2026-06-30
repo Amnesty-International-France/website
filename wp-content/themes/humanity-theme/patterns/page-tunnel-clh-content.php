@@ -106,10 +106,12 @@ if ($show_final_screen) {
     $email_subject = trim($replace_share_placeholders((string) $email_subject_template));
     $email_body_template = get_field('email_body', $parent) ?: "Je vous recommande cette pétition :\n\n[titre]\n[lien]";
     $email_body = $replace_share_placeholders((string) $email_body_template);
+    $encoded_share_url = rawurlencode($share_url);
+    $encoded_social_message = rawurlencode($social_message);
 
     $social_network = [
         'facebook' => [
-            'url' => 'https://www.facebook.com/sharer/sharer.php?u=',
+            'href' => 'https://www.facebook.com/sharer/sharer.php?u=' . $encoded_share_url,
             'title' => 'Partager sur Facebook',
             'aria_label' => 'Partager sur Facebook',
             'icon' => '/assets/images/icon-facebook.svg',
@@ -117,23 +119,23 @@ if ($show_final_screen) {
             'class' => 'article-shareFacebook',
         ],
         'x' => [
-            'url' => 'https://x.com/intent/post?text=',
+            'href' => 'https://x.com/intent/post?text=' . $encoded_social_message,
             'title' => 'Partager sur X',
             'aria_label' => 'Partager sur X',
             'icon' => '/assets/images/icon-x.svg',
             'text_button' => 'x',
-            'class' => 'article-shareBluesky',
+            'class' => 'article-shareX',
         ],
         'bluesky' => [
-            'url' => 'https://bsky.app/intent/compose?text=',
+            'href' => 'https://bsky.app/intent/compose?text=' . $encoded_social_message,
             'title' => 'Partager sur Bluesky',
             'aria_label' => 'Partager sur Bluesky',
             'icon' => '/assets/images/icon-bluesky.svg',
             'text_button' => 'bluesky',
-            'class' => 'article-shareFa',
+            'class' => 'article-shareBluesky',
         ],
         'mastodon' => [
-            'url' => 'https://mastodon.social/share?text=',
+            'href' => 'https://mastodon.social/share?text=' . $encoded_social_message,
             'title' => 'Partager sur Mastodon',
             'aria_label' => 'Partager sur Mastodon',
             'icon' => '/assets/images/icon-mastodon.svg',
@@ -141,15 +143,15 @@ if ($show_final_screen) {
             'class' => 'article-shareMastodon',
         ],
         'whatsapp' => [
-            'url' => 'https://wa.me/?text=',
+            'href' => 'https://wa.me/?text=' . $encoded_social_message,
             'title' => 'Partager sur WhatsApp',
             'aria_label' => 'Partager sur WhatsApp',
             'icon' => '/assets/images/icon-whatsapp.svg',
             'text_button' => 'whatsapp',
-            'class' => 'article-shareWhatapp',
+            'class' => 'article-shareWhatsapp',
         ],
         'telegram' => [
-            'url' => 'https://t.me/share/url?url=',
+            'href' => 'https://t.me/share/url?url=' . $encoded_share_url . '&text=' . $encoded_social_message,
             'title' => 'Partager sur Telegram',
             'aria_label' => 'Partager sur Telegram',
             'icon' => '/assets/images/icon-telegram.svg',
@@ -157,7 +159,7 @@ if ($show_final_screen) {
             'class' => 'article-shareTelegram',
         ],
         'email' => [
-            'url' => 'mailto:?subject=',
+            'href' => 'mailto:?subject=' . rawurlencode($email_subject) . '&body=' . rawurlencode($email_body),
             'title' => 'Partager par email',
             'aria_label' => 'Partager par email',
             'icon' => '/assets/images/icon-mail.svg',
@@ -248,14 +250,14 @@ if ($show_final_screen) {
                                     </div>
 
 									<?php foreach ($social_network as $sn) : ?>
-										<a class=<?php esc_attr($sn['class']); ?> target="_blank" rel="noreferrer noopener"
-										   href="<?php echo esc_url($sn['url'] . rawurlencode($share_url)); ?>"
-										   title="<?php esc_attr_e($sn['title'], 'amnesty'); ?>"
-										   aria-label="<?php esc_attr_e($sn['aria_label'], 'amnesty'); ?>">
+										<a class="<?php echo esc_attr($sn['class']); ?>" target="_blank" rel="noreferrer noopener"
+										   href="<?php echo esc_url($sn['href']); ?>"
+										   title="<?php echo esc_attr($sn['title']); ?>"
+										   aria-label="<?php echo esc_attr($sn['aria_label']); ?>">
 											<div class="icon-container">
 												<?php echo file_get_contents(get_template_directory() . $sn['icon']); ?>
 											</div>
-											<span class="share-label"><?php esc_html_e($sn['text_button'], 'amnesty'); ?></span>
+											<span class="share-label"><?php echo esc_html($sn['text_button']); ?></span>
 										</a>
 									<?php endforeach; ?>
                                 </div>
