@@ -106,6 +106,66 @@ if ($show_final_screen) {
     $email_subject = trim($replace_share_placeholders((string) $email_subject_template));
     $email_body_template = get_field('email_body', $parent) ?: "Je vous recommande cette pétition :\n\n[titre]\n[lien]";
     $email_body = $replace_share_placeholders((string) $email_body_template);
+
+    $social_network = [
+        'facebook' => [
+            'url' => 'https://www.facebook.com/sharer/sharer.php?u=',
+            'title' => 'Partager sur Facebook',
+            'aria_label' => 'Partager sur Facebook',
+            'icon' => '/assets/images/icon-facebook.svg',
+            'text_button' => 'facebook',
+            'class' => 'article-shareFacebook',
+        ],
+        'x' => [
+            'url' => 'https://x.com/intent/post?text=',
+            'title' => 'Partager sur X',
+            'aria_label' => 'Partager sur X',
+            'icon' => '/assets/images/icon-x.svg',
+            'text_button' => 'x',
+            'class' => 'article-shareBluesky',
+        ],
+        'bluesky' => [
+            'url' => 'https://bsky.app/intent/compose?text=',
+            'title' => 'Partager sur Bluesky',
+            'aria_label' => 'Partager sur Bluesky',
+            'icon' => '/assets/images/icon-bluesky.svg',
+            'text_button' => 'bluesky',
+            'class' => 'article-shareFa',
+        ],
+        'mastodon' => [
+            'url' => 'https://mastodon.social/share?text=',
+            'title' => 'Partager sur Mastodon',
+            'aria_label' => 'Partager sur Mastodon',
+            'icon' => '/assets/images/icon-mastodon.svg',
+            'text_button' => 'mastodon',
+            'class' => 'article-shareMastodon',
+        ],
+        'whatsapp' => [
+            'url' => 'https://wa.me/?text=',
+            'title' => 'Partager sur WhatsApp',
+            'aria_label' => 'Partager sur WhatsApp',
+            'icon' => '/assets/images/icon-whatsapp.svg',
+            'text_button' => 'whatsapp',
+            'class' => 'article-shareWhatapp',
+        ],
+        'telegram' => [
+            'url' => 'https://t.me/share/url?url=',
+            'title' => 'Partager sur Telegram',
+            'aria_label' => 'Partager sur Telegram',
+            'icon' => '/assets/images/icon-telegram.svg',
+            'text_button' => 'telegram',
+            'class' => 'article-shareTelegram',
+        ],
+        'email' => [
+            'url' => 'mailto:?subject=',
+            'title' => 'Partager par email',
+            'aria_label' => 'Partager par email',
+            'icon' => '/assets/images/icon-mail.svg',
+            'text_button' => 'email',
+            'class' => 'article-shareEmail',
+        ],
+    ];
+
     ?>
     <!-- wp:group {"tagName":"page","className":"page"} -->
     <article class="wp-block-group page">
@@ -187,55 +247,17 @@ if ($show_final_screen) {
                                         <span class="share-label"><?php esc_html_e('copier le lien', 'amnesty'); ?></span>
                                     </div>
 
-                                    <a class="article-shareFacebook" target="_blank" rel="noreferrer noopener"
-                                        href="<?php echo esc_url('https://www.facebook.com/sharer/sharer.php?u=' . rawurlencode($share_url)); ?>"
-                                        title="<?php esc_attr_e('Partager sur Facebook', 'amnesty'); ?>"
-                                        aria-label="<?php esc_attr_e('Partager sur Facebook', 'amnesty'); ?>">
-                                        <div class="icon-container">
-                                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-facebook.svg'); ?>
-                                        </div>
-                                        <span class="share-label"><?php esc_html_e('facebook', 'amnesty'); ?></span>
-                                    </a>
-
-                                    <a class="article-shareX" target="_blank" rel="noreferrer noopener"
-                                        href="<?php echo esc_url('https://x.com/intent/post?text=' . rawurlencode($social_message)); ?>"
-                                        title="<?php esc_attr_e('Partager sur X', 'amnesty'); ?>"
-                                        aria-label="<?php esc_attr_e('Partager sur X', 'amnesty'); ?>">
-                                        <div class="icon-container">
-                                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-x.svg'); ?>
-                                        </div>
-                                        <span class="share-label"><?php esc_html_e('x', 'amnesty'); ?></span>
-                                    </a>
-
-                                    <a class="article-shareBluesky" target="_blank" rel="noreferrer noopener"
-                                        href="<?php echo esc_url('https://bsky.app/intent/compose?text=' . rawurlencode($social_message)); ?>"
-                                        title="<?php esc_attr_e('Partager sur Bluesky', 'amnesty'); ?>"
-                                        aria-label="<?php esc_attr_e('Partager sur Bluesky', 'amnesty'); ?>">
-                                        <div class="icon-container">
-                                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-bluesky.svg'); ?>
-                                        </div>
-                                        <span class="share-label"><?php esc_html_e('bluesky', 'amnesty'); ?></span>
-                                    </a>
-
-                                    <a class="article-shareMastodon" target="_blank" rel="noreferrer noopener"
-                                        href="<?php echo esc_url('https://mastodon.social/share?text=' . rawurlencode($social_message)); ?>"
-                                        title="<?php esc_attr_e('Partager sur Mastodon', 'amnesty'); ?>"
-                                        aria-label="<?php esc_attr_e('Partager sur Mastodon', 'amnesty'); ?>">
-                                        <div class="icon-container">
-                                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-mastodon.svg'); ?>
-                                        </div>
-                                        <span class="share-label"><?php esc_html_e('mastodon', 'amnesty'); ?></span>
-                                    </a>
-
-                                    <a class="article-shareEmail" target="_blank" rel="noreferrer noopener"
-                                        href="<?php echo esc_url('mailto:?subject=' . rawurlencode($email_subject) . '&body=' . rawurlencode($email_body)); ?>"
-                                        title="<?php esc_attr_e('Partager par email', 'amnesty'); ?>"
-                                        aria-label="<?php esc_attr_e('Partager par email', 'amnesty'); ?>">
-                                        <div class="icon-container">
-                                            <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-mail.svg'); ?>
-                                        </div>
-                                        <span class="share-label"><?php esc_html_e('email', 'amnesty'); ?></span>
-                                    </a>
+									<?php foreach ($social_network as $sn) : ?>
+										<a class=<?php esc_attr($sn['class']); ?> target="_blank" rel="noreferrer noopener"
+										   href="<?php echo esc_url($sn['url'] . rawurlencode($share_url)); ?>"
+										   title="<?php esc_attr_e($sn['title'], 'amnesty'); ?>"
+										   aria-label="<?php esc_attr_e($sn['aria_label'], 'amnesty'); ?>">
+											<div class="icon-container">
+												<?php echo file_get_contents(get_template_directory() . $sn['icon']); ?>
+											</div>
+											<span class="share-label"><?php esc_html_e($sn['text_button'], 'amnesty'); ?></span>
+										</a>
+									<?php endforeach; ?>
                                 </div>
                                 <button
                                     type="button"
