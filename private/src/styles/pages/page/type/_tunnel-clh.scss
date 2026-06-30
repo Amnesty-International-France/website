@@ -960,7 +960,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    margin-top: 4px;
+    max-width: 212px;
+    margin: 4px auto 0;
   }
 
   .social-networks > a,
@@ -1074,11 +1075,6 @@
       &:hover svg {
         fill: currentColor;
       }
-    }
-
-    .article-shareCopy {
-      grid-column: 1 / -1;
-      order: -1;
     }
 
     .share-label {
