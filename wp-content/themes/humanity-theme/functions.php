@@ -373,6 +373,7 @@ require_once realpath(__DIR__ . '/includes/seo/canonical.php');
 require_once realpath(__DIR__ . '/includes/seo/language.php');
 require_once realpath(__DIR__ . '/includes/seo/opengraph.php');
 require_once realpath(__DIR__ . '/includes/seo/primary-term.php');
+require_once realpath(__DIR__ . '/includes/seo/schema-author.php');
 require_once realpath(__DIR__ . '/includes/seo/schema-breadcrumbs.php');
 require_once realpath(__DIR__ . '/includes/seo/sitemap.php');
 // endregion seo
