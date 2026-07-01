@@ -35,7 +35,7 @@ $last_signer_email = ($raw_email && is_email($raw_email)) ? sanitize_email($raw_
 $current_user = $last_signer_email ? get_local_user($last_signer_email) : false;
 
 $cookie_signed_ids = $last_signer_email ? [] : amnesty_get_clh_signed_petitions();
-$list_petitions_clh = get_field('list_petition_clh', $parent);
+$list_petitions_clh = amnesty_get_clh_campaign_petitions((int) $parent);
 
 if (empty($list_petitions_clh)) {
     wp_redirect(amnesty_get_clh_tunnel_end_url());

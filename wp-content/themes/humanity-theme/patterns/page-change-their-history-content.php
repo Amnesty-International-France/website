@@ -23,7 +23,7 @@ if ($is_highlighted) {
     $total_number_of_signatures_collected = 0;
     $total_campaign_signatures = 0;
 
-    $list_petition_current_campaign = get_field('list_petition_clh', $page->ID) ?? [];
+    $list_petition_current_campaign = amnesty_get_clh_campaign_petitions($page->ID);
 
     foreach ($list_petition_current_campaign as $single_campaign) {
         $total_campaign_signatures            += (int) get_post_meta($single_campaign->ID, 'objectif_signatures', true);

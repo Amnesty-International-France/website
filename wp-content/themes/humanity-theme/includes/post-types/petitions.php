@@ -331,9 +331,68 @@ function amnesty_get_active_clh_campaign_petition_ids(): array
     $active_campaign = $clh_page instanceof WP_Post
         ? amnesty_get_active_clh_campaign_for_page((int) $clh_page->ID)
         : null;
-    $list_petitions_clh = $active_campaign ? (get_field('list_petition_clh', (int) $clh_page->ID) ?: []) : [];
+    $list_petitions_clh = $active_campaign ? amnesty_get_clh_campaign_petitions((int) $clh_page->ID) : [];
 
     return $cache = array_map(static fn ($petition) => (int) $petition->ID, $list_petitions_clh);
+}
+
+function amnesty_get_clh_campaign_petitions(int $page_id): array
+{
+    $field = get_field_object('field_6a1591cefec3a', $page_id, true, true);
+
+    if (!is_array($field)) {
+        if (is_admin() || (defined('WP_DEBUG') && WP_DEBUG)) {
+            error_log(sprintf(
+                'Invalid list_petition_clh field configuration for CLH campaign page %d.',
+                $page_id
+            ));
+        }
+
+        return [];
+    }
+
+    $petitions = $field['value'] ?? [];
+
+    if (empty($petitions)) {
+        return [];
+    }
+
+    if (!is_array($petitions)) {
+        if (is_admin() || (defined('WP_DEBUG') && WP_DEBUG)) {
+            error_log(sprintf(
+                'Invalid list_petition_clh value for CLH campaign page %d: expected WP_Post array, got %s.',
+                $page_id,
+                gettype($petitions)
+            ));
+        }
+
+        return [];
+    }
+
+    $normalized_petitions = [];
+    $normalized_petition_ids = [];
+
+    foreach ($petitions as $petition) {
+        if (!$petition instanceof WP_Post || $petition->post_type !== 'petition') {
+            continue;
+        }
+
+        if (isset($normalized_petition_ids[$petition->ID])) {
+            continue;
+        }
+
+        $normalized_petitions[] = $petition;
+        $normalized_petition_ids[$petition->ID] = true;
+    }
+
+    if (empty($normalized_petitions) && (is_admin() || (defined('WP_DEBUG') && WP_DEBUG))) {
+        error_log(sprintf(
+            'Invalid list_petition_clh value for CLH campaign page %d: no valid petition found after normalization.',
+            $page_id
+        ));
+    }
+
+    return $normalized_petitions;
 }
 
 function amnesty_is_petition_in_active_clh_campaign(int $petition_id): bool
@@ -612,7 +671,7 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
     $raw_email = $_SESSION['clh_last_signer_email'] ?? $_COOKIE['clh_user_email'] ?? null;
     $last_signer_email = ($raw_email && is_email($raw_email)) ? sanitize_email($raw_email) : null;
     $current_user = $last_signer_email ? get_local_user($last_signer_email) : false;
-    $list_petitions_clh = $active_campaign ? (get_field('list_petition_clh', $campaign_page_id) ?: []) : [];
+    $list_petitions_clh = $active_campaign ? amnesty_get_clh_campaign_petitions($campaign_page_id) : [];
     $selected_posts = [];
     $skipped_petitions = amnesty_get_clh_skipped_petitions();
     $cookie_signed_ids = $last_signer_email ? [] : amnesty_get_clh_signed_petitions();
