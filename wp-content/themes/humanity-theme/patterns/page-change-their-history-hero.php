@@ -8,9 +8,16 @@
 
 declare(strict_types=1);
 
-$hero_title = get_field('change_their_history_hero_title', get_the_ID());
-$hero_description = get_field('change_their_history_hero_description', get_the_ID());
-$hero_button_label = get_field('change_their_history_hero_button_label', get_the_ID());
+$page_id = (int) get_the_ID();
+$hero_title = get_field('change_their_history_hero_title', $page_id);
+$hero_description = get_field('change_their_history_hero_description', $page_id);
+$hero_button_label = get_field('change_their_history_hero_button_label', $page_id);
+$active_campaign = function_exists('amnesty_get_active_clh_campaign_for_page')
+    ? amnesty_get_active_clh_campaign_for_page($page_id)
+    : null;
+$hero_button_url = ($active_campaign && function_exists('amnesty_get_clh_petition_tunnel_url'))
+    ? amnesty_get_clh_petition_tunnel_url()
+    : '';
 
 
 if (! $hero_title) {
@@ -26,9 +33,9 @@ if (! $hero_title) {
         <?php if ($hero_description) : ?>
             <p class="page-change-their-history-hero-content-description"><?php echo esc_html($hero_description); ?></p>
         <?php endif; ?>
-        <?php if ($hero_button_label) : ?>
+        <?php if ($hero_button_label && $hero_button_url) : ?>
             <div class='custom-button-block center'>
-                <a href="#" class="custom-button">
+                <a href="<?php echo esc_url($hero_button_url); ?>" class="custom-button">
                     <div class='content outline-yellow medium'>
                         <div class="icon-container">
                             <svg
