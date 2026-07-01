@@ -8,6 +8,12 @@ function create_petition(int $post_id)
         return;
     }
 
+    // Only create the petition in Salesforce once the post is published, so that
+    // draft/autosave "save" actions don't generate duplicate Salesforce records.
+    if ($post->post_status !== 'publish') {
+        return;
+    }
+
     $ext_id = get_field('uidsf', $post_id);
 
     if ($ext_id) {
