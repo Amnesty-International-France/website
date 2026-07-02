@@ -46,7 +46,7 @@ jobs:
         working-directory: private
         run: echo "dir=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
       - name: Cache Yarn
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ steps.yarn-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('private/yarn.lock') }}
