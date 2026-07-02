@@ -373,6 +373,7 @@ require_once realpath(__DIR__ . '/includes/seo/canonical.php');
 require_once realpath(__DIR__ . '/includes/seo/language.php');
 require_once realpath(__DIR__ . '/includes/seo/opengraph.php');
 require_once realpath(__DIR__ . '/includes/seo/primary-term.php');
+require_once realpath(__DIR__ . '/includes/seo/schema-author.php');
 require_once realpath(__DIR__ . '/includes/seo/schema-breadcrumbs.php');
 require_once realpath(__DIR__ . '/includes/seo/sitemap.php');
 // endregion seo
@@ -384,12 +385,14 @@ require_once realpath(__DIR__ . '/includes/seo/sitemap.php');
 require_once realpath(__DIR__ . '/includes/users/class-users-controller.php');
 require_once realpath(__DIR__ . '/includes/users/contact-methods.php');
 require_once realpath(__DIR__ . '/includes/users/meta.php');
+require_once realpath(__DIR__ . '/includes/users/emails.php');
 // endregion users
 
 /**
  * Theme Jetpack includes
  */
 // region jetpack
+require_once realpath(__DIR__. '/includes/jetpack/jetpack-modules.php');
 require_once realpath(__DIR__ . '/includes/jetpack/contact-form.php');
 require_once realpath(__DIR__ . '/includes/jetpack/go-back-message.php');
 require_once realpath(__DIR__ . '/includes/jetpack/sitemap.php');
