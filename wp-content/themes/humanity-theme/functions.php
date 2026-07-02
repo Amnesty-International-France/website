@@ -621,4 +621,11 @@ add_filter('render_block', function ($block_content, $block) {
 
 }, 10, 2);
 
+// sentry
+// par défaut le plugin sentry-for-wordpress expose la version de Wordpress dans le js public, donc on le supprime
+add_filter('wp_sentry_public_context', function (array $context): array {
+    unset($context['tags']['wordpress']);
+    return $context;
+});
+
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle
