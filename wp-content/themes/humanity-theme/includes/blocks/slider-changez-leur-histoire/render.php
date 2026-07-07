@@ -16,7 +16,7 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
         $selected_posts  = [];
 
         if ($active_campaign) {
-            $petitions_list_clh = amnesty_get_clh_campaign_petitions($page_id);
+            $petitions_list_clh = amnesty_get_clh_campaign_petitions();
 
             foreach (array_filter($petitions_list_clh, fn ($p) => amnesty_is_petition_not_expired($p->ID)) as $petition) {
                 $selected_posts[] = ['id' => $petition->ID];
