@@ -8,7 +8,8 @@
     width: 100%;
     aspect-ratio: 16 / 9;
 
-    iframe {
+    iframe,
+    video {
       position: absolute;
       top: 0;
       left: 0;
@@ -17,6 +18,11 @@
       border: none;
       z-index: 1;
       border-bottom: 6px solid var(--wp--preset--color--primary);
+    }
+
+    video {
+      object-fit: contain;
+      background: var(--wp--preset--color--black);
     }
 
     .warning {

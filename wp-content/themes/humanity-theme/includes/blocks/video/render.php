@@ -70,7 +70,7 @@ if (!function_exists('render_video_block')) {
 
             <div class="video-block">
                 <div class="video-wrapper">
-                    <video width="100%" controls preload="metadata" src="<?php echo esc_url($video_url); ?>">
+                    <video width="100%" controls playsinline preload="metadata" src="<?php echo esc_url($video_url); ?>">
                         <?php echo esc_html__('Votre navigateur ne peut pas lire cette vidéo.', 'amnesty'); ?>
                     </video>
                 </div>
