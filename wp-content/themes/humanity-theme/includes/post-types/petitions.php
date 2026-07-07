@@ -1243,7 +1243,7 @@ add_action('acf/include_fields', function () {
                 'aria-label' => '',
                 'type' => 'date_picker',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => 0,
                 'wrapper' => [
                     'width' => '',
@@ -1262,7 +1262,7 @@ add_action('acf/include_fields', function () {
                 'aria-label' => '',
                 'type' => 'number',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => 0,
                 'wrapper' => [
                     'width' => '',
