@@ -117,7 +117,8 @@ function maint229_resolve_country_url( string $country ): ?string {
 /**
  * Construit la table de remplacement CAT 2 : ancienne URL `?p=ID...` => chemin résolu
  * (`/pays/{slug}/`, relatif au host pour préserver le domaine du contenu).
- * Logge les pays non résolus (fiche pays absente) afin de les traiter manuellement.
+ * Les pays sans fiche publiée (brouillon ou absente) sont redirigés vers la page
+ * liste `/pays/` en attendant publication, et loggés comme fallback.
  *
  * @return array{0: array<string,string>, 1: array<int,string>}
  */
@@ -129,8 +130,9 @@ function maint229_build_country_map( array $anchors, $log_file ): array {
 		$url = maint229_resolve_country_url( $country );
 
 		if ( null === $url ) {
-			$unresolved[ $id ] = $country;
-			fwrite( $log_file, "  [CAT2][NON RÉSOLU] p=$id ($country) : aucune fiche pays publiée trouvée." . PHP_EOL );
+			$unresolved[ $id ]   = $country;
+			$map[ (string) $id ] = '/pays/';
+			fwrite( $log_file, "  [CAT2][FALLBACK] p=$id ($country) : fiche non publiée — redirigé vers /pays/." . PHP_EOL );
 			continue;
 		}
 
@@ -406,7 +408,7 @@ $write_failures = 0;
 WP_CLI::line( 'Résolution des fiches pays (CAT 2)...' );
 fwrite( $log_file, '--- Résolution CAT 2 ---' . PHP_EOL );
 [ $cat2_map, $cat2_unresolved ] = maint229_build_country_map( $cat2_country_anchors, $log_file );
-WP_CLI::line( sprintf( '  %d fiches pays résolues, %d non résolues.', count( $cat2_map ), count( $cat2_unresolved ) ) );
+WP_CLI::line( sprintf( '  %d fiches pays résolues, dont %d en fallback vers /pays/.', count( $cat2_map ), count( $cat2_unresolved ) ) );
 
 fwrite( $log_file, '--- Posts modifiés ---' . PHP_EOL );
 
@@ -496,7 +498,7 @@ WP_CLI::line( "$terms_scanned termes analysés, $terms_updated descriptions à c
 WP_CLI::line( $summary );
 
 if ( $cat2_unresolved ) {
-	WP_CLI::warning( 'Fiches pays non résolues (à traiter manuellement) : ' . implode( ', ', $cat2_unresolved ) );
+	WP_CLI::warning( 'Fiches pays non publiées, liens redirigés vers /pays/ en attendant publication : ' . implode( ', ', $cat2_unresolved ) );
 }
 
 if ( $fix_links_live ) {
