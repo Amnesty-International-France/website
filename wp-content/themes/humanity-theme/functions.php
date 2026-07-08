@@ -377,6 +377,7 @@ require_once realpath(__DIR__ . '/includes/seo/primary-term.php');
 require_once realpath(__DIR__ . '/includes/seo/schema-author.php');
 require_once realpath(__DIR__ . '/includes/seo/schema-breadcrumbs.php');
 require_once realpath(__DIR__ . '/includes/seo/sitemap.php');
+require_once realpath(__DIR__ . '/includes/seo/news-sitemap.php');
 // endregion seo
 
 /**
