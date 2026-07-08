@@ -60,7 +60,7 @@ function enforce_event_address(int $post_id): void
         return;
     }
 
-    if ('1' === get_post_meta($post_id, '_EventNational', true)) {
+    if (get_field('_EventNational', $post_id)) {
         return;
     }
 
