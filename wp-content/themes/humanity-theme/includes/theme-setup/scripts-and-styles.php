@@ -287,6 +287,38 @@ if (! function_exists('amnesty_trigger_scripts')) {
 
 add_action('wp_loaded', 'amnesty_trigger_scripts', 1);
 
+if (! function_exists('amnesty_alert_banner_inline_script')) {
+    /**
+     * Script hiding the alert banner before paint if the user already dismissed it this session,
+     * printed inline right after the banner markup to avoid a flash of the banner on reload.
+     *
+     * @package Amnesty\ThemeSetup
+     *
+     * @return string
+     */
+    function amnesty_alert_banner_inline_script(): string
+    {
+        return "(function(){var b=document.querySelector('.alert-banner');if(!b)return;var id=b.id.split('-')[2];if(sessionStorage.getItem('user_is_done_with_alert_banner_'+id)==='true'){b.classList.add('hidden');}})();";
+    }
+}
+
+if (! function_exists('amnesty_register_alert_banner_script_csp')) {
+    /**
+     * Register the alert banner inline script hash with the CSP
+     *
+     * @package Amnesty\ThemeSetup
+     *
+     * @return void
+     */
+    function amnesty_register_alert_banner_script_csp(): void
+    {
+        $script = amnesty_alert_banner_inline_script();
+        add_filter('amnesty_csp_script', fn ($csp) => sprintf("%s 'sha256-%s'", $csp, base64_encode(hash('sha256', $script, true))));
+    }
+}
+
+add_action('wp_loaded', 'amnesty_register_alert_banner_script_csp', 1);
+
 if (! function_exists('amnesty_localise_timeinfo')) {
     /**
      * Get server and setting timezones
