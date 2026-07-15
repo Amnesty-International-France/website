@@ -111,7 +111,7 @@ if ($show_final_screen) {
 
     $social_network = [
         'facebook' => [
-            'href' => 'https://www.facebook.com/sharer/sharer.php?u=' . $encoded_share_url,
+            'href' => 'https://www.facebook.com/sharer/sharer.php?u=' . $encoded_share_url . '&t=' . $encoded_social_message,
             'title' => 'Partager sur Facebook',
             'aria_label' => 'Partager sur Facebook',
             'icon' => '/assets/images/icon-facebook.svg',
