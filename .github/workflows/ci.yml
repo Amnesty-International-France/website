@@ -25,6 +25,10 @@ jobs:
         run: composer install --no-interaction --no-progress --prefer-dist
       - name: Run Salesforce PHP tests
         run: composer run test:salesforce
+      - name: Run Donor Space PHP tests
+        run: composer run test:donor-space
+      - name: Run Petitions PHP tests
+        run: composer run test:petitions
       - name: Run PHP-CS-Fixer
         run: composer run cs
       - name: Run PHPStan

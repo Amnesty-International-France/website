@@ -24,6 +24,8 @@
     "cs": "php-cs-fixer fix --config=.php-cs-fixer.php --diff --dry-run",
     "lint": "./vendor/bin/phpcs wp-content/themes/humanity-theme",
     "test:salesforce": "phpunit --testsuite Salesforce",
+    "test:donor-space": "phpunit --testsuite DonorSpace",
+    "test:petitions": "phpunit --testsuite Petitions",
     "makePot": "wp i18n make-pot wp-content/themes/humanity-theme wp-content/themes/humanity-theme/languages/amnesty.pot --domain=amnesty --exclude=private",
     "updatePoMo": [
       "wp i18n update-po wp-content/themes/humanity-theme/languages/amnesty.pot",
@@ -36,6 +38,8 @@
     "cs": "Runs PHP-CS-Fixer checks",
     "lint": "Runs PHP coding standard checks",
     "test:salesforce": "Runs focused Salesforce PHP tests",
+    "test:donor-space": "Runs donor/member space PHP tests",
+    "test:petitions": "Runs petitions and urgent action PHP tests",
     "makePot": "Re-generates the POT language file",
     "updatePoMo": "Updates PO, MO, and JSON translation files"
   },

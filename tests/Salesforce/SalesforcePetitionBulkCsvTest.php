@@ -4,40 +4,12 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-class WP_CLI
-{
-    public static function log(string $message): void
-    {
-    }
-
-    public static function error(string $message): void
-    {
-    }
-}
-
-$posted_salesforce_data = [];
 $updated_signature_statuses = [];
 $local_users = [];
 
-function post_salesforce_data(string $url, array $params = []): array
-{
-    global $posted_salesforce_data;
-
-    $posted_salesforce_data[] = [
-        'url' => $url,
-        'params' => $params,
-    ];
-
-    return [
-        'id' => '750-job-id',
-        'contentUrl' => 'services/data/v57.0/jobs/ingest/750-job-id/batches',
-    ];
-}
-
-function get_field(string $name, int $post_id): string
-{
-    return "UID-{$post_id}";
-}
+// post_salesforce_data() is stubbed once for the whole suite in tests/bootstrap.php
+// (shared across domains that call it, e.g. petitions and users) - see setUp()
+// below for how this test seeds/reads its calls and canned response.
 
 function update_signature_status($petition_id, $user_id, $pending, $is_synched, $last_sync, $increment_nb_try = false): void
 {
@@ -55,18 +27,29 @@ function get_local_user(string $email): object
     ];
 }
 
-require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
+// require_once: other testsuites (e.g. Petitions) also depend on this real
+// file for its thin Salesforce-petition-object wrappers; require_once avoids
+// a "cannot redeclare" fatal if both get loaded in the same PHP process.
+require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
 
 final class SalesforcePetitionBulkCsvTest extends TestCase
 {
     protected function setUp(): void
     {
-        global $posted_salesforce_data, $updated_signature_statuses, $local_users;
+        global $updated_signature_statuses, $local_users;
 
-        $posted_salesforce_data = [];
         $updated_signature_statuses = [];
         $local_users = [
             'processed@example.test' => 456,
+        ];
+        $GLOBALS['__phpunit_acf_field_values'] = [
+            123 => ['uidsf' => 'UID-123'],
+            789 => ['uidsf' => 'UID-789'],
+        ];
+        $GLOBALS['__phpunit_salesforce_data_calls'] = [];
+        $GLOBALS['__phpunit_salesforce_data_response'] = [
+            'id' => '750-job-id',
+            'contentUrl' => 'services/data/v57.0/jobs/ingest/750-job-id/batches',
         ];
     }
 
@@ -115,13 +98,13 @@ final class SalesforcePetitionBulkCsvTest extends TestCase
 
     public function testBulkIngestJobDeclaresCsvContentAndLineEndings(): void
     {
-        global $posted_salesforce_data;
-
         create_bulk_job_signatures();
 
-        self::assertSame('services/data/v57.0/jobs/ingest', $posted_salesforce_data[0]['url']);
-        self::assertSame('CSV', $posted_salesforce_data[0]['params']['contentType']);
-        self::assertSame('CRLF', $posted_salesforce_data[0]['params']['lineEnding']);
+        $call = $GLOBALS['__phpunit_salesforce_data_calls'][0];
+
+        self::assertSame('services/data/v57.0/jobs/ingest', $call['url']);
+        self::assertSame('CSV', $call['params']['contentType']);
+        self::assertSame('CRLF', $call['params']['lineEnding']);
     }
 
     public function testBulkResultRowsUpdateLocalSignatureAndReturnProcessedKeys(): void

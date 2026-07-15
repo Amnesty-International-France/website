@@ -9,10 +9,46 @@ if (function_exists('wp_get_environment_type') && !in_array(wp_get_environment_t
     return;
 }
 
+if (!defined('AIF_E2E_ACF_SELECT_FIELDS')) {
+    define('AIF_E2E_ACF_SELECT_FIELDS', ['type']);
+}
+
 if (!function_exists('get_field')) {
+    /**
+     * Real ACF isn't installed in this e2e environment (see .wp-env.e2e.json),
+     * so business code calling get_field() would otherwise fatal. ACF stores
+     * a field's raw value as regular postmeta under the same key, so this
+     * stub reads that postmeta as a fallback - seeding real values via
+     * `wp post meta set <id> <selector> <value>` in seed-wordpress.sh then
+     * makes get_field() behave like ACF would for that field, instead of
+     * always returning null regardless of what's seeded.
+     *
+     * A handful of ACF "select" fields are consumed by business code as
+     * ['value' => ..., 'label' => ...] (e.g. `get_field('type')['value']`);
+     * those selectors are listed in AIF_E2E_ACF_SELECT_FIELDS below and
+     * wrapped accordingly. Everything else is returned as the raw postmeta
+     * string, which is how this codebase consumes its date/number/text/
+     * boolean/wysiwyg ACF fields.
+     */
     function get_field($selector = null, $post_id = false, $format_value = true)
     {
-        return null;
+        $resolved_post_id = $post_id ?: get_the_ID();
+
+        if (!$selector || !$resolved_post_id) {
+            return null;
+        }
+
+        $value = get_post_meta($resolved_post_id, $selector, true);
+
+        if ($value === '') {
+            return null;
+        }
+
+        if (in_array($selector, AIF_E2E_ACF_SELECT_FIELDS, true)) {
+            return ['value' => $value, 'label' => $value];
+        }
+
+        return $value;
     }
 }
 
