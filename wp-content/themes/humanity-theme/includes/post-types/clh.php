@@ -159,7 +159,7 @@ add_action('acf/include_fields', function () {
                 'name' => 'email_object',
                 'aria-label' => '',
                 'type' => 'text',
-                'instructions' => 'Objet de l\'email de partage. Balises disponibles : [titre], [lien].',
+                'instructions' => 'Objet de l\'email de partage.',
                 'required' => 0,
                 'conditional_logic' => [
                     [

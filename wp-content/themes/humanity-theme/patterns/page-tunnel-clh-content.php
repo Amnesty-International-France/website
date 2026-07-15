@@ -103,7 +103,7 @@ if ($show_final_screen) {
     }
 
     $email_subject_template = get_field('email_object', $parent) ?: $share_title;
-    $email_subject = trim($replace_share_placeholders((string) $email_subject_template));
+    $email_subject = trim((string) $email_subject_template);
     $email_body_template = get_field('email_body', $parent) ?: "Je vous recommande cette pétition :\n\n[titre]\n[lien]";
     $email_body = $replace_share_placeholders((string) $email_body_template);
     $encoded_share_url = rawurlencode($share_url);
