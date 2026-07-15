@@ -44,7 +44,13 @@ if (! function_exists('amnesty_cache_header')) {
             'modification-coordonnees-bancaire',
         ];
 
-        if (is_page($no_cache_pages)) {
+        // The CLH tunnel renders a per-session, randomized petition (array_rand on the
+        // not-yet-signed/skipped list). Caching it makes "Passer la pétition" redirect
+        // back to a stale page that always shows the first petition. Never cache it.
+        $is_clh_tunnel = function_exists('amnesty_is_clh_petition_tunnel_page')
+            && amnesty_is_clh_petition_tunnel_page();
+
+        if (is_page($no_cache_pages) || $is_clh_tunnel) {
             header('Cache-Control: private, no-store, no-cache, must-revalidate, max-age=0');
             header('Pragma: no-cache');
             return;
