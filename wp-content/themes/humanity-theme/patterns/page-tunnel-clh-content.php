@@ -424,6 +424,12 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 								</div>
 							</div>
 						</figure>
+						<button type="submit"
+								form="<?php echo esc_attr($skip_form_id); ?>"
+								name="skip_petition"
+						        class="page-tunnel-clh-action-button mobile is-secondary">
+							<span>Passer la pétition</span>
+						</button>
 					</article>
 				</div>
 			</div>

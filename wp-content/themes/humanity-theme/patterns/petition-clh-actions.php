@@ -28,14 +28,4 @@ declare(strict_types=1);
 		</div>
 		<span>Signer la pétition</span>
 	</button>
-	<div class="cta-mobile page-tunnel-clh-mobile-sign-cta" role="button" tabindex="0"
-	     data-sign-form="<?php echo esc_attr($sign_form_id); ?>">
-		<div class="cta-mobile-left">
-			agir
-		</div>
-		<div class="cta-mobile-right">
-			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-plume.svg'); ?>
-			signer la pétition
-		</div>
-	</div>
 </div>
