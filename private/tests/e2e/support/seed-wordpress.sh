@@ -263,3 +263,167 @@ $locations = get_theme_mod("nav_menu_locations", []);
 $locations["main-menu"] = $menu_id;
 set_theme_mod("nav_menu_locations", $locations);
 '
+
+# Donation page: templates/page-don.html is picked up automatically for a
+# page with slug "don" (also set _wp_page_template explicitly to match how
+# production configures it). Its "amnesty/aside-donation-sticky" pattern
+# embeds the donation-calculator block with a hardcoded href/rate, so the
+# page'"'"'s own (empty) content is irrelevant to that calculator.
+yarn env:e2e run cli wp eval '
+global $wpdb;
+
+if (get_page_by_path("don")) {
+    return;
+}
+
+$now = current_time("mysql");
+$now_gmt = current_time("mysql", true);
+
+$wpdb->insert($wpdb->posts, [
+    "post_author" => 1,
+    "post_date" => $now,
+    "post_date_gmt" => $now_gmt,
+    "post_content" => "",
+    "post_title" => "Faire un don (e2e)",
+    "post_excerpt" => "",
+    "post_status" => "publish",
+    "comment_status" => "closed",
+    "ping_status" => "closed",
+    "post_password" => "",
+    "post_name" => "don",
+    "to_ping" => "",
+    "pinged" => "",
+    "post_modified" => $now,
+    "post_modified_gmt" => $now_gmt,
+    "post_content_filtered" => "",
+    "post_parent" => 0,
+    "guid" => home_url("/don/"),
+    "menu_order" => 0,
+    "post_type" => "page",
+    "post_mime_type" => "",
+    "comment_count" => 0,
+]);
+
+$post_id = (int) $wpdb->insert_id;
+clean_post_cache($post_id);
+
+update_post_meta($post_id, "_wp_page_template", "page-don");
+'
+
+# Legs page: templates/page-legs.html (slug "legs") embeds parts/legs-form.html
+# -> patterns/form-legs.php, which fetches a SEPARATE page ("formulaire-legs")
+# and echoes its content through the_content. That real production page is a
+# Jetpack contact-form block living only in the prod DB (not in this repo,
+# and Jetpack isn'"'"'t installed in this e2e stack to render/process it anyway),
+# so we seed our OWN representative static form markup here - enough to
+# verify the "Demander notre brochure" link reveals a real, fillable form,
+# but NOT a real Jetpack submission (no plugin to process it in e2e).
+yarn env:e2e run cli wp eval '
+global $wpdb;
+
+if (get_page_by_path("legs")) {
+    return;
+}
+
+$now = current_time("mysql");
+$now_gmt = current_time("mysql", true);
+
+$wpdb->insert($wpdb->posts, [
+    "post_author" => 1,
+    "post_date" => $now,
+    "post_date_gmt" => $now_gmt,
+    "post_content" => "",
+    "post_title" => "Legs et donations (e2e)",
+    "post_excerpt" => "",
+    "post_status" => "publish",
+    "comment_status" => "closed",
+    "ping_status" => "closed",
+    "post_password" => "",
+    "post_name" => "legs",
+    "to_ping" => "",
+    "pinged" => "",
+    "post_modified" => $now,
+    "post_modified_gmt" => $now_gmt,
+    "post_content_filtered" => "",
+    "post_parent" => 0,
+    "guid" => home_url("/legs/"),
+    "menu_order" => 0,
+    "post_type" => "page",
+    "post_mime_type" => "",
+    "comment_count" => 0,
+]);
+
+$post_id = (int) $wpdb->insert_id;
+clean_post_cache($post_id);
+
+update_post_meta($post_id, "_wp_page_template", "page-legs");
+'
+
+yarn env:e2e run cli wp eval '
+global $wpdb;
+
+if (get_page_by_path("formulaire-legs")) {
+    return;
+}
+
+$now = current_time("mysql");
+$now_gmt = current_time("mysql", true);
+
+// Field set/labels match the real "formulaire-legs" page as rendered at
+// /nous-soutenir/legs/ in production (a Jetpack Forms block) - civility,
+// nom, prénom, adresse, code postal, ville, e-mail, téléphone, a two-option
+// "je souhaite recevoir la brochure" checkbox group, and a consent checkbox.
+// This is plain static markup, not a real Jetpack block: the plugin isn'"'"'t
+// installed in this e2e stack (see the spec file for why), so this only
+// supports verifying the form is reachable and fillable, not a real
+// submission/thank-you flow.
+$form_content = "<div class=\"wp-block-jetpack-contact-form\" data-test=\"contact-form\">"
+    . "<form>"
+    . "<fieldset><legend>Civilité</legend>"
+    . "<label><input type=\"radio\" name=\"civilite\" value=\"Madame\"> Madame</label>"
+    . "<label><input type=\"radio\" name=\"civilite\" value=\"Monsieur\"> Monsieur</label>"
+    . "<label><input type=\"radio\" name=\"civilite\" value=\"Autre\"> Autre</label>"
+    . "</fieldset>"
+    . "<p><label for=\"legs-nom\">Nom</label><input type=\"text\" id=\"legs-nom\" name=\"nom\" required></p>"
+    . "<p><label for=\"legs-prenom\">Prénom</label><input type=\"text\" id=\"legs-prenom\" name=\"prenom\" required></p>"
+    . "<p><label for=\"legs-adresse\">Adresse</label><textarea id=\"legs-adresse\" name=\"adresse\" required></textarea></p>"
+    . "<p><label for=\"legs-codepostal\">Code Postal</label><input type=\"text\" id=\"legs-codepostal\" name=\"codepostal\" required></p>"
+    . "<p><label for=\"legs-ville\">Ville</label><input type=\"text\" id=\"legs-ville\" name=\"ville\" required></p>"
+    . "<p><label for=\"legs-email\">E-mail</label><input type=\"email\" id=\"legs-email\" name=\"email\" required></p>"
+    . "<p><label for=\"legs-telephone\">Téléphone</label><input type=\"tel\" id=\"legs-telephone\" name=\"telephone\" required></p>"
+    . "<fieldset><legend>Je souhaite recevoir la brochure</legend>"
+    . "<label><input type=\"checkbox\" name=\"brochure[]\" value=\"Par courrier postal\"> Par courrier postal</label>"
+    . "<label><input type=\"checkbox\" name=\"brochure[]\" value=\"Par email\"> Par email</label>"
+    . "</fieldset>"
+    . "<p><label><input type=\"checkbox\" name=\"consent\" required> J'"'"'accepte que mes données soient traitées par Amnesty International France</label></p>"
+    . "<button type=\"submit\">Envoyer</button>"
+    . "</form>"
+    . "</div>";
+
+$wpdb->insert($wpdb->posts, [
+    "post_author" => 1,
+    "post_date" => $now,
+    "post_date_gmt" => $now_gmt,
+    "post_content" => $form_content,
+    "post_title" => "Formulaire legs (e2e)",
+    "post_excerpt" => "",
+    "post_status" => "publish",
+    "comment_status" => "closed",
+    "ping_status" => "closed",
+    "post_password" => "",
+    "post_name" => "formulaire-legs",
+    "to_ping" => "",
+    "pinged" => "",
+    "post_modified" => $now,
+    "post_modified_gmt" => $now_gmt,
+    "post_content_filtered" => "",
+    "post_parent" => 0,
+    "guid" => home_url("/formulaire-legs/"),
+    "menu_order" => 0,
+    "post_type" => "page",
+    "post_mime_type" => "",
+    "comment_count" => 0,
+]);
+
+clean_post_cache((int) $wpdb->insert_id);
+'

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { calculator } from '../../../src/scripts/modules/donation-calculator';
 
 const dispatchInput = (input, value) => {
+  // eslint-disable-next-line no-param-reassign -- intentionally mutating the DOM element passed in
   input.value = value;
   input.dispatchEvent(new Event('input', { bubbles: true }));
 };

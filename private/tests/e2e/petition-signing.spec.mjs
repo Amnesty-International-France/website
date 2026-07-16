@@ -70,6 +70,6 @@ test.describe('petition signing', () => {
     await page.getByRole('button', { name: 'Signer' }).click();
 
     await expect(page.getByText('La vérification de sécurité a échoué')).toBeVisible();
-    await expect(page).toHaveURL(new RegExp(PETITION_PATH.replace(/\//g, '\\/') + '$'));
+    await expect(page).toHaveURL(new RegExp(`${PETITION_PATH.replace(/\//g, '\\/')  }$`));
   });
 });
