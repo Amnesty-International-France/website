@@ -6,6 +6,7 @@
     "amnestywebsite/cmb2-message-field",
     "amnestywebsite/cmb2-password-field",
     "jaymcp/cmb2-field-order",
+    "../wp-content/plugins/jetpack",
     "./tests/e2e/wordpress/aif-e2e-support"
   ],
   "config": {
@@ -14,6 +15,6 @@
   "port": 8898,
   "testsEnvironment": false,
   "lifecycleScripts": {
-    "afterStart": "yarn env:e2e run cli wp plugin activate aif-e2e-support && yarn env:e2e run cli wp theme activate humanity-theme"
+    "afterStart": "yarn env:e2e run cli wp plugin activate aif-e2e-support && yarn env:e2e run cli wp theme activate humanity-theme && yarn env:e2e run cli wp plugin activate jetpack && yarn env:e2e run cli wp jetpack module activate contact-form"
   }
 }

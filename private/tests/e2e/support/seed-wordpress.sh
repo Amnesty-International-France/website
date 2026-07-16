@@ -6,6 +6,15 @@ yarn env:e2e run cli wp theme activate humanity-theme
 yarn env:e2e run cli wp option update permalink_structure '/%postname%/'
 yarn env:e2e run cli wp rewrite flush
 
+# French locale: the site's own content is hardcoded French already, but
+# plugin-generated UI strings (e.g. Jetpack Forms'"'"' submit button/success
+# message) go through WordPress i18n and stay in English without this -
+# install/activate both the core and Jetpack fr_FR translations so specs can
+# assert on the real French copy a visitor actually sees.
+yarn env:e2e run cli wp language core install fr_FR
+yarn env:e2e run cli wp site switch-language fr_FR
+yarn env:e2e run cli wp language plugin install jetpack fr_FR
+
 yarn env:e2e run cli wp eval '
 global $wpdb;
 
@@ -370,35 +379,33 @@ $now = current_time("mysql");
 $now_gmt = current_time("mysql", true);
 
 // Field set/labels match the real "formulaire-legs" page as rendered at
-// /nous-soutenir/legs/ in production (a Jetpack Forms block) - civility,
-// nom, prénom, adresse, code postal, ville, e-mail, téléphone, a two-option
-// "je souhaite recevoir la brochure" checkbox group, and a consent checkbox.
-// This is plain static markup, not a real Jetpack block: the plugin isn'"'"'t
-// installed in this e2e stack (see the spec file for why), so this only
-// supports verifying the form is reachable and fillable, not a real
-// submission/thank-you flow.
-$form_content = "<div class=\"wp-block-jetpack-contact-form\" data-test=\"contact-form\">"
-    . "<form>"
-    . "<fieldset><legend>Civilité</legend>"
-    . "<label><input type=\"radio\" name=\"civilite\" value=\"Madame\"> Madame</label>"
-    . "<label><input type=\"radio\" name=\"civilite\" value=\"Monsieur\"> Monsieur</label>"
-    . "<label><input type=\"radio\" name=\"civilite\" value=\"Autre\"> Autre</label>"
-    . "</fieldset>"
-    . "<p><label for=\"legs-nom\">Nom</label><input type=\"text\" id=\"legs-nom\" name=\"nom\" required></p>"
-    . "<p><label for=\"legs-prenom\">Prénom</label><input type=\"text\" id=\"legs-prenom\" name=\"prenom\" required></p>"
-    . "<p><label for=\"legs-adresse\">Adresse</label><textarea id=\"legs-adresse\" name=\"adresse\" required></textarea></p>"
-    . "<p><label for=\"legs-codepostal\">Code Postal</label><input type=\"text\" id=\"legs-codepostal\" name=\"codepostal\" required></p>"
-    . "<p><label for=\"legs-ville\">Ville</label><input type=\"text\" id=\"legs-ville\" name=\"ville\" required></p>"
-    . "<p><label for=\"legs-email\">E-mail</label><input type=\"email\" id=\"legs-email\" name=\"email\" required></p>"
-    . "<p><label for=\"legs-telephone\">Téléphone</label><input type=\"tel\" id=\"legs-telephone\" name=\"telephone\" required></p>"
-    . "<fieldset><legend>Je souhaite recevoir la brochure</legend>"
-    . "<label><input type=\"checkbox\" name=\"brochure[]\" value=\"Par courrier postal\"> Par courrier postal</label>"
-    . "<label><input type=\"checkbox\" name=\"brochure[]\" value=\"Par email\"> Par email</label>"
-    . "</fieldset>"
-    . "<p><label><input type=\"checkbox\" name=\"consent\" required> J'"'"'accepte que mes données soient traitées par Amnesty International France</label></p>"
-    . "<button type=\"submit\">Envoyer</button>"
-    . "</form>"
-    . "</div>";
+// /nous-soutenir/legs/ in production - civility, nom, prénom, adresse, code
+// postal, ville, e-mail, téléphone, a two-option "je souhaite recevoir la
+// brochure" checkbox group, and a consent checkbox. Uses Jetpack'"'"'s classic
+// [contact-form] shortcode (still supported by the "contact-form" module
+// activated via .wp-env.e2e.json'"'"'s afterStart script) rather than hand-authoring
+// the current block-comment markup/attributes, which is more likely to drift
+// across Jetpack versions. Jetpack auto-detects "localhost" as offline/dev
+// mode (no account/connection needed), so the module renders and processes
+// a REAL AJAX submission here - unlike the rest of this e2e stack, this one
+// genuinely exercises Jetpack'"'"'s own form validation and success state.
+$form_content = "[contact-form to=\"e2e@example.test\" subject=\"Demande de brochure - legs (e2e)\"]"
+    . "[contact-field label=\"Civilité\" type=\"radio\" options=\"Madame,Monsieur,Autre\" required=\"1\"]"
+    . "[contact-field label=\"Nom\" type=\"name\" required=\"1\"]"
+    . "[contact-field label=\"Prénom\" type=\"name\" required=\"1\"]"
+    . "[contact-field label=\"Adresse\" type=\"textarea\" required=\"1\"]"
+    . "[contact-field label=\"Code Postal\" type=\"text\" required=\"1\"]"
+    . "[contact-field label=\"Ville\" type=\"text\" required=\"1\"]"
+    . "[contact-field label=\"E-mail\" type=\"email\" required=\"1\"]"
+    . "[contact-field label=\"Téléphone\" type=\"telephone\" required=\"1\"]"
+    . "[contact-field label=\"Je souhaite recevoir la brochure\" type=\"checkbox-multiple\" options=\"Par courrier postal,Par email\"]"
+    // consentType="explicit" renders a real, checkable checkbox. Without it,
+    // Jetpack defaults to "implicit" consent (a hidden input pre-set to
+    // "Oui") whose value the Interactivity API'"'"'s own client-side validation
+    // state doesn'"'"'t seed from - it fails "champ obligatoire" on submit even
+    // though the field is never shown to (or actionable by) a visitor.
+    . "[contact-field label=\"J'"'"'accepte que mes données soient traitées par Amnesty International France\" type=\"consent\" consentType=\"explicit\" required=\"1\"]"
+    . "[/contact-form]";
 
 $wpdb->insert($wpdb->posts, [
     "post_author" => 1,
@@ -419,6 +426,104 @@ $wpdb->insert($wpdb->posts, [
     "post_content_filtered" => "",
     "post_parent" => 0,
     "guid" => home_url("/formulaire-legs/"),
+    "menu_order" => 0,
+    "post_type" => "page",
+    "post_mime_type" => "",
+    "comment_count" => 0,
+]);
+
+clean_post_cache((int) $wpdb->insert_id);
+'
+
+# Foundation page: templates/page-fondation.html (slug "fondation") embeds
+# parts/foundation-form.html -> patterns/form-foundation.php, which fetches a
+# SEPARATE page (note the English spelling: "formulaire-foundation", not
+# "formulaire-fondation" - must match exactly for get_page_by_path() to find
+# it) and echoes its content through the_content, exactly like the legs form.
+# Verified against the real page at /fondation-amnesty-international-france/:
+# Civilité (optional radio), Nom/Prénom/E-mail (required), Téléphone
+# (optional, no country selector here for simplicity), an optional message,
+# and an optional "receive by post" checkbox - no consent field this time.
+yarn env:e2e run cli wp eval '
+global $wpdb;
+
+if (get_page_by_path("fondation")) {
+    return;
+}
+
+$now = current_time("mysql");
+$now_gmt = current_time("mysql", true);
+
+$wpdb->insert($wpdb->posts, [
+    "post_author" => 1,
+    "post_date" => $now,
+    "post_date_gmt" => $now_gmt,
+    "post_content" => "",
+    "post_title" => "Fondation Amnesty International France (e2e)",
+    "post_excerpt" => "",
+    "post_status" => "publish",
+    "comment_status" => "closed",
+    "ping_status" => "closed",
+    "post_password" => "",
+    "post_name" => "fondation",
+    "to_ping" => "",
+    "pinged" => "",
+    "post_modified" => $now,
+    "post_modified_gmt" => $now_gmt,
+    "post_content_filtered" => "",
+    "post_parent" => 0,
+    "guid" => home_url("/fondation/"),
+    "menu_order" => 0,
+    "post_type" => "page",
+    "post_mime_type" => "",
+    "comment_count" => 0,
+]);
+
+$post_id = (int) $wpdb->insert_id;
+clean_post_cache($post_id);
+
+update_post_meta($post_id, "_wp_page_template", "page-fondation");
+'
+
+yarn env:e2e run cli wp eval '
+global $wpdb;
+
+if (get_page_by_path("formulaire-foundation")) {
+    return;
+}
+
+$now = current_time("mysql");
+$now_gmt = current_time("mysql", true);
+
+$form_content = "[contact-form to=\"e2e@example.test\" subject=\"Contact fondation (e2e)\"]"
+    . "[contact-field label=\"Civilité\" type=\"radio\" options=\"Madame,Monsieur,Autre\"]"
+    . "[contact-field label=\"Nom\" type=\"name\" required=\"1\"]"
+    . "[contact-field label=\"Prénom\" type=\"name\" required=\"1\"]"
+    . "[contact-field label=\"E-mail\" type=\"email\" required=\"1\"]"
+    . "[contact-field label=\"Téléphone\" type=\"telephone\"]"
+    . "[contact-field label=\"Un message à nous laisser ?\" type=\"textarea\"]"
+    . "[contact-field label=\"Je souhaite recevoir des informations sur la Fondation Amnesty International France par courrier postal.\" type=\"checkbox\"]"
+    . "[/contact-form]";
+
+$wpdb->insert($wpdb->posts, [
+    "post_author" => 1,
+    "post_date" => $now,
+    "post_date_gmt" => $now_gmt,
+    "post_content" => $form_content,
+    "post_title" => "Formulaire fondation (e2e)",
+    "post_excerpt" => "",
+    "post_status" => "publish",
+    "comment_status" => "closed",
+    "ping_status" => "closed",
+    "post_password" => "",
+    "post_name" => "formulaire-foundation",
+    "to_ping" => "",
+    "pinged" => "",
+    "post_modified" => $now,
+    "post_modified_gmt" => $now_gmt,
+    "post_content_filtered" => "",
+    "post_parent" => 0,
+    "guid" => home_url("/formulaire-foundation/"),
     "menu_order" => 0,
     "post_type" => "page",
     "post_mime_type" => "",
