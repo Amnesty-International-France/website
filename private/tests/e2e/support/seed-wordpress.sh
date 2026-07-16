@@ -191,6 +191,51 @@ update_post_meta($post_id, "date_de_fin", date("Y-m-d", strtotime("+1 year")));
 update_post_meta($post_id, "objectif_signatures", 1000);
 '
 
+# Country: the petition/urgent-action signature forms'"'"' country <select> is
+# browser-required, and its options come exclusively from published
+# fiche_pays posts (cached for an hour in the amnesty_fiche_pays_list
+# transient) - with none seeded, the form has no valid option to select and
+# fails HTML5 validation on submit, silently blocking every signature.
+yarn env:e2e run cli wp eval '
+global $wpdb;
+
+delete_transient("amnesty_fiche_pays_list");
+
+if (get_page_by_path("france-e2e", OBJECT, "fiche_pays")) {
+    return;
+}
+
+$now = current_time("mysql");
+$now_gmt = current_time("mysql", true);
+
+$wpdb->insert($wpdb->posts, [
+    "post_author" => 1,
+    "post_date" => $now,
+    "post_date_gmt" => $now_gmt,
+    "post_content" => "",
+    "post_title" => "France",
+    "post_excerpt" => "",
+    "post_status" => "publish",
+    "comment_status" => "closed",
+    "ping_status" => "closed",
+    "post_password" => "",
+    "post_name" => "france-e2e",
+    "to_ping" => "",
+    "pinged" => "",
+    "post_modified" => $now,
+    "post_modified_gmt" => $now_gmt,
+    "post_content_filtered" => "",
+    "post_parent" => 0,
+    "guid" => home_url("/pays/france-e2e/"),
+    "menu_order" => 0,
+    "post_type" => "fiche_pays",
+    "post_mime_type" => "",
+    "comment_count" => 0,
+]);
+
+clean_post_cache((int) $wpdb->insert_id);
+'
+
 # Navigation: no menu is assigned to any location out of the box, so
 # amnesty_nav("main-menu") renders nothing.
 yarn env:e2e run cli wp eval '
