@@ -35,7 +35,7 @@ add_action('acf/include_fields', function () {
                 'aria-label' => '',
                 'type' => 'date_time_picker',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => [
                     [
                         [
@@ -75,36 +75,6 @@ add_action('acf/include_fields', function () {
                 'first_day' => 1,
                 'default_to_current_date' => 0,
                 'allow_in_bindings' => 0,
-            ],
-            [
-                'key' => 'field_6a1591cefec3a',
-                'label' => 'Liste des pétitions CLH',
-                'name' => 'list_petition_clh',
-                'aria-label' => '',
-                'type' => 'relationship',
-                'instructions' => '',
-                'required' => 0,
-                'conditional_logic' => [
-                    [
-                        [
-                            'field' => 'field_6a199c4b42f0a',
-                            'operator' => '==',
-                            'value' => '1',
-                        ],
-                    ],
-                ],
-                'wrapper' => ['width' => '', 'class' => '', 'id' => ''],
-                'post_type' => ['petition'],
-                'post_status' => '',
-                'taxonomy' => '',
-                'filters' => ['search'],
-                'return_format' => 'object',
-                'min' => '',
-                'max' => '',
-                'allow_in_bindings' => 0,
-                'elements' => '',
-                'bidirectional' => 1,
-                'bidirectional_target' => '',
             ],
             [
                 'key' => 'field_6a16f00bb9903',
@@ -225,17 +195,3 @@ add_action('acf/include_fields', function () {
         'display_title' => '',
     ]);
 });
-
-add_filter(
-    'acf/fields/relationship/query/name=list_petition_clh',
-    function (array $args): array {
-        $args['meta_query'] = [
-            [
-                'key' => 'clh_petition',
-                'value' => '1',
-                'compare' => '=',
-            ],
-        ];
-        return $args;
-    }
-);
