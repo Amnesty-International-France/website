@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-// Declares get_local_user()/update_signature_status() for real, which
-// tests/Salesforce fakes under the same names - run testsuites independently
-// (see "Toujours lancer un testsuite à la fois" in tests/README.md).
-require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/tables.php';
+// Shared with the Salesforce tests, which exercise these real persistence
+// functions through the in-memory wpdb double from tests/bootstrap.php.
+require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/tables.php';
 
 final class PetitionsTablesTest extends TestCase
 {

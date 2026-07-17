@@ -408,7 +408,8 @@ if (!class_exists('wpdb')) {
      * every call is recorded on ->calls so tests can assert on the exact
      * query/params sent. Seed a canned response via ->var_result/->row_result/
      * ->results_result/->insert_result/->update_result/->query_result before
-     * calling the code under test.
+     * calling the code under test. For successive get_row() calls, seed
+     * ->row_results; once the queue is empty, ->row_result remains the fallback.
      */
     class wpdb
     {
@@ -420,6 +421,7 @@ if (!class_exists('wpdb')) {
 
         public mixed $var_result = null;
         public mixed $row_result = null;
+        public array $row_results = [];
         public array $results_result = [];
         public bool|int $insert_result = 1;
         public bool|int $update_result = 1;
@@ -459,6 +461,10 @@ if (!class_exists('wpdb')) {
         public function get_row(string $query): mixed
         {
             $this->calls[] = ['method' => 'get_row', 'query' => $query];
+
+            if ($this->row_results !== []) {
+                return array_shift($this->row_results);
+            }
 
             return $this->row_result;
         }

@@ -43,44 +43,28 @@ modèle de `Salesforce` :
 ```
 
 accompagné d'un script composer dédié (voir `composer.json`, ex.
-`test:salesforce`) et de son ajout au job `php-checks` de la CI
-(`.github/workflows/ci.yml`).
+`test:salesforce`). La commande agrégée `composer test`, également utilisée
+par le job `php-checks` de la CI, doit toujours rester fonctionnelle.
 
 ### Lancer les tests
 
 ```
 composer install # une seule fois, installe phpunit dans vendor/
+composer test # toute la suite
 composer run test:salesforce
 composer run test:donor-space
 composer run test:petitions
 composer run test:salesforce-sync # ~30s, voir plus bas
 # ou directement :
+./vendor/bin/phpunit
 ./vendor/bin/phpunit --testsuite Salesforce
 ```
 
-### Toujours lancer un testsuite à la fois
-
-Ne lancez jamais `./vendor/bin/phpunit` sans `--testsuite` (ou un script
-composer dédié) : PHPUnit charge (`require`) le fichier de chaque test au
-démarrage pour découvrir ses méthodes, même si les tests eux-mêmes ne
-s'exécutent jamais ensemble. Or `get_local_user()`/`update_signature_status()`
-sont de vraies fonctions dans `tests/Petitions/` (via `petitions/tables.php`)
-mais un faux stub de scénario partagé par `tests/Salesforce/` et
-`tests/SalesforceSync/` (`tests/support/local-user-stubs.php`) - charger
-`Petitions` avec l'un des deux autres dans le même process provoque un fatal
-"cannot redeclare", **peu importe l'ordre** (le stub partagé n'est délibérément
-pas protégé par `function_exists()` : le protéger transformerait ce fatal en
-un résultat faux silencieux selon l'ordre de chargement, ce qui est pire -
-voir le commentaire en tête de `local-user-stubs.php`). Ce n'est pas
-seulement `phpunit` bare qui est concerné : n'importe quel `--testsuite`
-combinant `Petitions` avec `Salesforce` et/ou `SalesforceSync` fatal aussi
-(`Salesforce,Petitions`, `Petitions,SalesforceSync`, etc.). Toute combinaison
-qui n'inclut pas `Petitions` (ex. `Salesforce,SalesforceSync`,
-`DonorSpace,SalesforceSync`) ou qui n'inclut pas `Salesforce`/`SalesforceSync`
-(ex. `DonorSpace,Petitions`) reste, elle, sûre. Chaque script
-composer (`test:salesforce`, `test:donor-space`, `test:petitions`, ...) est
-déjà scopé via `--testsuite` pour cette raison ; c'est la façon supportée de
-lancer les tests, en local comme en CI.
+Les scripts ciblés accélèrent le travail sur un domaine, mais ne remplacent
+pas la commande complète : PHPUnit découvre toutes les suites dans un même
+processus. Les fichiers de test qui partagent une fonction de production la
+chargent donc avec `require_once`, et isolent leurs données en recréant leurs
+doubles dans `setUp()` plutôt qu'en redéclarant des fonctions globales.
 
 ### Test d'intégration de la sync CLI Salesforce (`test:salesforce-sync`)
 
@@ -104,24 +88,13 @@ vérification, donc ce coût est payé une seule fois (~30s) - c'est pourquoi ce
 test vit dans son propre testsuite (`SalesforceSync`), séparé des autres
 suites Salesforce qui restent rapides.
 
-Ce fichier partage ses stubs de `get_local_user()`/`update_signature_status()`
-avec `SalesforcePetitionBulkCsvTest.php` via `tests/support/local-user-stubs.php`
-(`require_once`), plutôt que d'en déclarer chacun sa propre copie. Ce n'est
-pas juste une question de style : deux copies distinctes, même identiques en
-apparence, sont un piège de collision silencieuse. PHP ne garde que la
-première déclaration chargée dans un process donné ; si les deux testsuites
-se retrouvent un jour chargées dans le même process (ex.
-`phpunit --testsuite Salesforce,SalesforceSync`), la seconde copie voit sa
-fonction déjà définie (via son propre `function_exists()`) et n'installe
-jamais la sienne - le test utilise alors silencieusement les globales de
-l'*autre* fichier, sans fatal, juste un résultat faux. Un seul fichier
-`require_once`-é par les deux évite ce problème par construction : quel que
-soit l'ordre de chargement, les deux utilisent toujours la même définition.
-Ce fichier partagé n'est volontairement pas dans `bootstrap.php` (toujours
-chargé) pour la même raison que d'habitude : la vraie implémentation dans
-`petitions/tables.php` est testée directement par
-`tests/Petitions/PetitionsTablesTest.php`, et un stub partagé dans
-`bootstrap.php` la masquerait en permanence.
+Ce fichier et `SalesforcePetitionBulkCsvTest.php` utilisent les vraies
+fonctions `get_local_user()`/`update_signature_status()` de
+`petitions/tables.php`. La base reste simulée : chaque test installe une
+nouvelle instance du double `wpdb` défini dans `tests/bootstrap.php`, configure
+ses réponses en mémoire, puis vérifie les requêtes enregistrées. Cette frontière
+évite les collisions de fonctions globales et rend les suites compatibles avec
+la découverte agrégée de PHPUnit et des IDE.
 
 ## Tests JS unitaires (Vitest)
 

@@ -14,11 +14,11 @@ use PHPUnit\Framework\TestCase;
 //
 // poll_job_state() contains a real, unstubbable sleep(30) between status
 // checks; this test's canned job status reaches "JobComplete" on the first
-// check, so it pays that cost exactly once. Run in isolation via
+// check, so it pays that cost exactly once. Run it directly via
 // `composer run test:salesforce-sync`.
 
+require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/tables.php';
 require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
-require_once dirname(__DIR__) . '/support/local-user-stubs.php';
 
 #[Group('slow')]
 final class SyncSignaturesToSalesforceTest extends TestCase
@@ -29,14 +29,12 @@ final class SyncSignaturesToSalesforceTest extends TestCase
 
     protected function setUp(): void
     {
-        global $updated_signature_statuses, $local_users;
-
         putenv('AIF_SALESFORCE_URL=' . self::SALESFORCE_URL);
 
-        $updated_signature_statuses = [];
-        $local_users = [
-            'ada@example.test' => 456,
-            'grace@example.test' => 457,
+        $GLOBALS['wpdb'] = new wpdb();
+        $GLOBALS['wpdb']->row_results = [
+            (object) ['id' => 456],
+            (object) ['id' => 457],
         ];
         $GLOBALS['__phpunit_acf_field_values'] = [
             123 => ['uidsf' => 'UID-123'],
@@ -82,8 +80,6 @@ final class SyncSignaturesToSalesforceTest extends TestCase
 
     public function testSyncSignaturesToSalesforceRunsFullBulkJobAndUpdatesLocalStatuses(): void
     {
-        global $updated_signature_statuses;
-
         $signatures = [
             [
                 'petition_id' => 123,
@@ -161,32 +157,42 @@ final class SyncSignaturesToSalesforceTest extends TestCase
         self::assertStringEndsWith('/failedResults', $failed_call['url']);
         self::assertStringEndsWith('/unprocessedrecords', $unprocessed_call['url']);
 
-        $statuses = $updated_signature_statuses;
-        self::assertCount(4, $statuses);
+        $database_calls = $GLOBALS['wpdb']->calls;
+        self::assertCount(6, $database_calls);
+
+        [$pending_ada, $pending_grace, $find_ada, $sync_ada, $find_grace, $sync_grace] = $database_calls;
 
         // Signatures are first marked pending as soon as the job is launched.
-        self::assertSame(123, $statuses[0]['petition_id']);
-        self::assertSame(456, $statuses[0]['user_id']);
-        self::assertSame(1, $statuses[0]['pending']);
-        self::assertSame(0, $statuses[0]['is_synched']);
+        self::assertSame('query', $pending_ada['method']);
+        self::assertStringContainsString('SET pending = 1, is_synched = 0', $pending_ada['query']);
+        self::assertStringEndsWith('WHERE petition_id = 123 AND user_id = 456', $pending_ada['query']);
 
-        self::assertSame(124, $statuses[1]['petition_id']);
-        self::assertSame(457, $statuses[1]['user_id']);
-        self::assertSame(1, $statuses[1]['pending']);
-        self::assertSame(0, $statuses[1]['is_synched']);
+        self::assertSame('query', $pending_grace['method']);
+        self::assertStringContainsString('SET pending = 1, is_synched = 0', $pending_grace['query']);
+        self::assertStringEndsWith('WHERE petition_id = 124 AND user_id = 457', $pending_grace['query']);
 
         // Once the job completes, both signatures come back in the
         // successful-results CSV and are marked synced.
-        self::assertEquals(123, $statuses[2]['petition_id']);
-        self::assertEquals(456, $statuses[2]['user_id']);
-        self::assertSame(0, $statuses[2]['pending']);
-        self::assertSame(1, $statuses[2]['is_synched']);
-        self::assertTrue($statuses[2]['increment_nb_try']);
+        self::assertSame([
+            'method' => 'get_row',
+            'query' => "SELECT * FROM `wp_aif_users` WHERE email = 'ada@example.test'",
+        ], $find_ada);
+        self::assertSame('query', $sync_ada['method']);
+        self::assertStringContainsString(
+            'SET pending = 0, nb_try = nb_try + 1, is_synched = 1',
+            $sync_ada['query']
+        );
+        self::assertStringEndsWith('WHERE petition_id = 123 AND user_id = 456', $sync_ada['query']);
 
-        self::assertEquals(124, $statuses[3]['petition_id']);
-        self::assertEquals(457, $statuses[3]['user_id']);
-        self::assertSame(0, $statuses[3]['pending']);
-        self::assertSame(1, $statuses[3]['is_synched']);
-        self::assertTrue($statuses[3]['increment_nb_try']);
+        self::assertSame([
+            'method' => 'get_row',
+            'query' => "SELECT * FROM `wp_aif_users` WHERE email = 'grace@example.test'",
+        ], $find_grace);
+        self::assertSame('query', $sync_grace['method']);
+        self::assertStringContainsString(
+            'SET pending = 0, nb_try = nb_try + 1, is_synched = 1',
+            $sync_grace['query']
+        );
+        self::assertStringEndsWith('WHERE petition_id = 124 AND user_id = 457', $sync_grace['query']);
     }
 }
