@@ -211,8 +211,8 @@ explicitement, en mode hors-ligne, tout module marqué `Requires Connection:
 Yes` dans son fichier (`wp-content/plugins/jetpack/class.jetpack.php`,
 recherche `requires_connection`). C'est le cas du module "Search" (Instant
 Search), qui est payant et nécessite un vrai compte connecté - impossible à
-débloquer de la même façon. Voir `search.spec.mjs` et la section suivante pour
-comment la recherche est testée à la place.
+débloquer de la même façon ; il n'y a pas de test e2e sur la recherche pour
+cette raison.
 
 Deux pièges rencontrés en écrivant les tests de formulaires Jetpack, à
 connaître avant d'en ajouter un nouveau :
@@ -226,19 +226,6 @@ connaître avant d'en ajouter un nouveau :
   synchronisée avec l'état de validation côté client et fait toujours
   échouer la soumission. Ajouter `consentType="explicit"` dans le shortcode
   `[contact-field]` pour obtenir une vraie case à cocher testable.
-
-### Recherche : un `wp_template` seedé plutôt que Jetpack
-
-Le thème n'a pas de fichier `templates/search.html` ; sans lui, une recherche
-retombe sur `index.html` (un simple bloc `post-content` sans boucle de
-requête), qui affiche un contenu incohérent (parfois l'accueil, parfois
-rien). `seed-wordpress.sh` seed un post `wp_template` (post_type
-`wp_template` + terme de taxonomie `wp_theme`) pour le slot "search" -
-exactement ce que ferait l'éditeur de site WordPress. Un `wp_template` en
-base est toujours prioritaire sur les fichiers du thème, donc ça corrige
-l'affichage sans toucher au moindre fichier du thème. Son contenu réutilise
-la pattern `amnesty/search-results`, déjà fonctionnelle et indépendante de
-Jetpack.
 
 ### Parcours se terminant par un vrai appel Salesforce
 
@@ -259,16 +246,17 @@ exposée en lecture/suppression via `/wp-json/aif-e2e/v1/salesforce-calls`
 (voir `support/salesforce.mjs`). Un test peut donc :
 
 ```js
+import { expect, test } from './support/fixtures';
 import { getSalesforceCalls, resetSalesforceCalls } from './support/salesforce';
 
-test.beforeEach(async ({ request }) => {
-  await resetSalesforceCalls(request); // état propre entre deux tests
+test.beforeEach(async ({ request, salesforceTestId }) => {
+  await resetSalesforceCalls(request, salesforceTestId); // état propre entre deux tests
 });
 
-test('...', async ({ page, request, gotoWithoutCookieOverlay }) => {
+test('...', async ({ page, request, gotoWithoutCookieOverlay, salesforceTestId }) => {
   // ... remplir et soumettre le formulaire ...
 
-  const calls = await getSalesforceCalls(request);
+  const calls = await getSalesforceCalls(request, salesforceTestId);
   const contactCall = calls.find((c) => c.method === 'POST' && c.url.includes('sobjects/Contact/'));
   expect(contactCall).toBeTruthy();
   expect(JSON.parse(contactCall.body).Email).toBe(uniqueEmail);
@@ -278,6 +266,23 @@ test('...', async ({ page, request, gotoWithoutCookieOverlay }) => {
 Par défaut, toute requête SOQL (`query/?q=`) mockée répond "aucun résultat"
 (`totalSize: 0`), ce qui fait passer le code testé par sa branche "nouveau
 contact/lead" - voir `newsletter-signup.spec.mjs` comme référence complète.
+
+**Le journal des appels est isolé par test**, pas partagé dans une seule
+option globale : Playwright peut exécuter plusieurs specs - ou le même spec
+sur les projets `chromium`/`mobile-chromium` - en parallèle dans des workers
+différents, contre le même `wp-env`. Sans isolation, deux tests touchant
+Salesforce en même temps écraseraient/mélangeraient leurs appels respectifs
+dans le même journal - un problème invisible tant qu'un seul test l'utilise,
+mais qui rendrait le suivant flaky. La fixture `salesforceTestId`
+(`support/fixtures.mjs`) génère un identifiant unique par test (l'id de test
+Playwright) et l'envoie en header `X-AIF-E2E-Test-Id` sur toutes les requêtes
+du navigateur ; `aif-e2e-support.php` s'en sert pour namespacer l'option
+(`aif_e2e_salesforce_calls_<id>`) au lieu d'une option unique. Le fixture
+`request` (client HTTP séparé du navigateur) n'hérite pas de ce header
+automatiquement : passer explicitement `salesforceTestId` à
+`getSalesforceCalls()`/`resetSalesforceCalls()` comme dans l'exemple
+ci-dessus. Tout nouveau test qui vérifie un appel Salesforce doit faire de
+même.
 
 ### Ajouter un nouveau test e2e
 

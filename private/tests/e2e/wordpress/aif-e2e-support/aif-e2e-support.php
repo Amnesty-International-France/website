@@ -127,6 +127,33 @@ if (!getenv('AIF_SALESFORCE_URL')) {
 }
 
 /**
+ * The recorded call log is namespaced per test (see support/fixtures.mjs'
+ * salesforceTestId), not one shared option: Playwright can run several
+ * specs - or the same spec across the chromium/mobile-chromium projects -
+ * concurrently in different workers against this same wp-env backend. A
+ * single shared option would let two Salesforce-touching tests running at
+ * the same time overwrite/interleave each other's calls, which would only
+ * ever show up as flakiness once a second such test existed. Every request
+ * a test makes (both browser navigation/form submits and its own direct
+ * REST calls to the routes below) carries an X-AIF-E2E-Test-Id header,
+ * available here via $_SERVER because it's the incoming request that,
+ * while being handled, triggers the outbound Salesforce call this filter
+ * intercepts.
+ */
+function aif_e2e_get_test_id(): string
+{
+    $test_id = isset($_SERVER['HTTP_X_AIF_E2E_TEST_ID']) ? (string) $_SERVER['HTTP_X_AIF_E2E_TEST_ID'] : '';
+    $test_id = sanitize_key($test_id);
+
+    return '' !== $test_id ? $test_id : 'default';
+}
+
+function aif_e2e_salesforce_calls_option_name(): string
+{
+    return 'aif_e2e_salesforce_calls_' . aif_e2e_get_test_id();
+}
+
+/**
  * Mocks every outbound Salesforce call (includes/salesforce/data.php +
  * authentification.php always go through AIF_SALESFORCE_URL) and records
  * each one in an option, so specs for journeys that end with a real,
@@ -139,13 +166,14 @@ add_filter('pre_http_request', function ($preempt, $args, $url) {
         return $preempt;
     }
 
-    $calls = get_option('aif_e2e_salesforce_calls', []);
+    $option_name = aif_e2e_salesforce_calls_option_name();
+    $calls = get_option($option_name, []);
     $calls[] = [
         'method' => $args['method'] ?? 'GET',
         'url' => $url,
         'body' => $args['body'] ?? null,
     ];
-    update_option('aif_e2e_salesforce_calls', $calls, false);
+    update_option($option_name, $calls, false);
 
     $path = substr($url, strlen(AIF_E2E_SALESFORCE_BASE_URL));
 
@@ -188,7 +216,7 @@ add_action('rest_api_init', function () {
     register_rest_route('aif-e2e/v1', '/salesforce-calls', [
         'methods' => 'GET',
         'callback' => function () {
-            return new WP_REST_Response(get_option('aif_e2e_salesforce_calls', []), 200);
+            return new WP_REST_Response(get_option(aif_e2e_salesforce_calls_option_name(), []), 200);
         },
         'permission_callback' => '__return_true',
     ]);
@@ -196,7 +224,7 @@ add_action('rest_api_init', function () {
     register_rest_route('aif-e2e/v1', '/salesforce-calls', [
         'methods' => 'DELETE',
         'callback' => function () {
-            delete_option('aif_e2e_salesforce_calls');
+            delete_option(aif_e2e_salesforce_calls_option_name());
             return new WP_REST_Response(['cleared' => true], 200);
         },
         'permission_callback' => '__return_true',

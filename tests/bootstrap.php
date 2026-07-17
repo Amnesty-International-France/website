@@ -260,6 +260,29 @@ if (!class_exists('WP_REST_Request')) {
     }
 }
 
+if (!function_exists('__phpunit_next_queued_response')) {
+    /**
+     * Shared "dequeue a canned response, or fall back to a single one" used
+     * by every stub below that fakes an external HTTP call
+     * (get/post/patch_salesforce_data(), wp_remote_get()/wp_remote_request()).
+     * Each caller passes its own pair of $GLOBALS keys, so unrelated stubs
+     * don't share state while still reusing the same lookup logic:
+     * seed $GLOBALS[$fallback_key] for a single canned response reused by
+     * every call, or $GLOBALS[$queue_key] when a test triggers several calls
+     * that must each return something different (e.g. a POST followed by a
+     * GET) - one entry per call, consumed in order, falling back to the
+     * single response once the queue is empty.
+     */
+    function __phpunit_next_queued_response(string $queue_key, string $fallback_key): mixed
+    {
+        if (!empty($GLOBALS[$queue_key])) {
+            return array_shift($GLOBALS[$queue_key]);
+        }
+
+        return $GLOBALS[$fallback_key];
+    }
+}
+
 if (!function_exists('post_salesforce_data')) {
     $GLOBALS['__phpunit_salesforce_data_calls'] = [];
     $GLOBALS['__phpunit_salesforce_data_response'] = [];
@@ -273,41 +296,28 @@ if (!function_exists('post_salesforce_data')) {
      * more than one such suite runs in the same PHPUnit process.
      *
      * Tests read $GLOBALS['__phpunit_salesforce_data_calls'] to assert on
-     * what was sent. For a single canned response reused by every call, seed
-     * $GLOBALS['__phpunit_salesforce_data_response']. When a test triggers
-     * several calls that must each return something different (e.g. a POST
-     * followed by a GET), seed $GLOBALS['__phpunit_salesforce_data_response_queue']
-     * instead - one entry per call, consumed in order; falls back to the
-     * single response once the queue is empty.
+     * what was sent; see __phpunit_next_queued_response() above for how the
+     * canned response(s) are seeded.
      */
-    function __phpunit_next_salesforce_data_response(): mixed
-    {
-        if (!empty($GLOBALS['__phpunit_salesforce_data_response_queue'])) {
-            return array_shift($GLOBALS['__phpunit_salesforce_data_response_queue']);
-        }
-
-        return $GLOBALS['__phpunit_salesforce_data_response'];
-    }
-
     function get_salesforce_data(string $url): mixed
     {
         $GLOBALS['__phpunit_salesforce_data_calls'][] = ['method' => 'GET', 'url' => $url];
 
-        return __phpunit_next_salesforce_data_response();
+        return __phpunit_next_queued_response('__phpunit_salesforce_data_response_queue', '__phpunit_salesforce_data_response');
     }
 
     function post_salesforce_data(string $url, array $params = []): mixed
     {
         $GLOBALS['__phpunit_salesforce_data_calls'][] = ['method' => 'POST', 'url' => $url, 'params' => $params];
 
-        return __phpunit_next_salesforce_data_response();
+        return __phpunit_next_queued_response('__phpunit_salesforce_data_response_queue', '__phpunit_salesforce_data_response');
     }
 
     function patch_salesforce_data(string $url, array $params = []): mixed
     {
         $GLOBALS['__phpunit_salesforce_data_calls'][] = ['method' => 'PATCH', 'url' => $url, 'params' => $params];
 
-        return __phpunit_next_salesforce_data_response();
+        return __phpunit_next_queued_response('__phpunit_salesforce_data_response_queue', '__phpunit_salesforce_data_response');
     }
 }
 
@@ -349,25 +359,16 @@ if (!function_exists('wp_remote_get')) {
      * wrappers above (e.g. includes/salesforce/petition.php's
      * upload_bulk_data()/poll_job_state()/get_bulk_*_results()).
      *
-     * Both functions share one call log and one response queue/single-value
-     * fallback (same pattern as __phpunit_next_salesforce_data_response),
-     * since a single orchestration function typically calls them in a known
-     * sequence a test can seed responses for in order.
+     * Both functions share one call log and, via
+     * __phpunit_next_queued_response() above, one response queue/single-value
+     * fallback, since a single orchestration function typically calls them in
+     * a known sequence a test can seed responses for in order.
      */
-    function __phpunit_next_wp_remote_response(): array
-    {
-        if (!empty($GLOBALS['__phpunit_wp_remote_response_queue'])) {
-            return array_shift($GLOBALS['__phpunit_wp_remote_response_queue']);
-        }
-
-        return $GLOBALS['__phpunit_wp_remote_response'];
-    }
-
     function wp_remote_get(string $url, array $args = []): mixed
     {
         $GLOBALS['__phpunit_wp_remote_calls'][] = ['method' => 'GET', 'url' => $url, 'args' => $args];
 
-        return __phpunit_next_wp_remote_response();
+        return __phpunit_next_queued_response('__phpunit_wp_remote_response_queue', '__phpunit_wp_remote_response');
     }
 
     function wp_remote_request(string $url, array $args = []): mixed
@@ -378,7 +379,7 @@ if (!function_exists('wp_remote_get')) {
             'args' => $args,
         ];
 
-        return __phpunit_next_wp_remote_response();
+        return __phpunit_next_queued_response('__phpunit_wp_remote_response_queue', '__phpunit_wp_remote_response');
     }
 
     function wp_remote_retrieve_body(mixed $response): string
@@ -443,7 +444,7 @@ if (!class_exists('wpdb')) {
                 return match ($matches[0]) {
                     '%d' => (string) (int) $value,
                     '%s' => "'" . addslashes((string) $value) . "'",
-                    '%i' => '`' . str_replace('`', '', (string) $value) . '`',
+                    '%i' => '`' . str_replace('`', '``', (string) $value) . '`',
                 };
             }, $query);
         }

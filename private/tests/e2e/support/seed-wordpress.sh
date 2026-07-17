@@ -139,59 +139,6 @@ update_option("show_on_front", "page");
 update_option("page_on_front", $post_id);
 '
 
-# Search: the on-site search trigger ("Ouvrir la recherche") is Jetpack
-# Instant Search - a PAID Jetpack module (Free: false, Requires Connection:
-# Yes, Plans: business/complete), unlike the free "contact-form" module.
-# Jetpack'"'"'s own code explicitly disables any "requires connection" module
-# while in offline mode (class.jetpack.php, ~line 1672), so there is no
-# equivalent trick to unlock it here - it genuinely needs a live, paid
-# WordPress.com connection.
-#
-# The GOOD news: the actual search RESULTS page doesn'"'"'t need Jetpack at all.
-# It'"'"'s pure theme code (the amnesty-core/search-header block + the
-# "amnesty/search-results" pattern), reached via WordPress'"'"'s own native
-# pretty-permalink search URL (/search/<term>/). The only reason this didn'"'"'t
-# work before: this theme has no templates/search.html file, so is_search()
-# falls back to templates/index.html, which is just a bare "core/post-content"
-# block with no query loop - it renders unpredictably (sometimes the front
-# page'"'"'s content, sometimes nothing) for a non-singular query.
-#
-# Fix: seed a "wp_template" post (a *database* template override, exactly
-# what the Site Editor itself would create) for the "search" slot. Block
-# themes check the DB for a matching wp_template post before falling back to
-# theme files, so this takes priority over index.html without touching any
-# theme file - same principle as the get_field()/postmeta fallback trick,
-# applied to template resolution instead of ACF. Its content re-embeds the
-# theme'"'"'s own working "amnesty/search-results" pattern (a real wp:query with
-# {"inherit":true}, which correctly filters by the live is_search() query -
-# unlike a plain custom page, which can'"'"'t combine with ?s= at all: WordPress
-# 404s a request for both a specific page AND a search query at once).
-yarn env:e2e run cli wp eval '
-if (!term_exists("humanity-theme", "wp_theme")) {
-    wp_insert_term("humanity-theme", "wp_theme");
-}
-
-$existing = get_page_by_path("search", OBJECT, "wp_template");
-if ($existing) {
-    return;
-}
-
-$content = "<!-- wp:group {\"tagName\":\"main\",\"layout\":{\"type\":\"constrained\"}} -->\n"
-    . "<main class=\"wp-block-group\"><!-- wp:pattern {\"slug\":\"amnesty/search-results\"} /--></main>\n"
-    . "<!-- /wp:group -->\n\n"
-    . "<!-- wp:template-part {\"slug\":\"footer\",\"theme\":\"humanity-theme\",\"area\":\"footer\",\"className\":\"amnesty-footer-template-part\"} /-->";
-
-$post_id = wp_insert_post([
-    "post_type" => "wp_template",
-    "post_name" => "search",
-    "post_title" => "Search",
-    "post_status" => "publish",
-    "post_content" => $content,
-]);
-
-wp_set_object_terms($post_id, "humanity-theme", "wp_theme");
-'
-
 # Petition: seeded via a raw $wpdb insert (like the pages above) rather than
 # wp_insert_post()/`wp post create`, so the acf/save_post save_post hook chain
 # - which includes create_petition() posting to the real Salesforce API - is
@@ -421,9 +368,7 @@ $now = current_time("mysql");
 $now_gmt = current_time("mysql", true);
 
 // Field set/labels match the real "formulaire-legs" page as rendered at
-// /nous-soutenir/legs/ in production - civility, nom, prénom, adresse, code
-// postal, ville, e-mail, téléphone, a two-option "je souhaite recevoir la
-// brochure" checkbox group, and a consent checkbox. Uses Jetpack'"'"'s classic
+// /nous-soutenir/legs/ in production. Uses Jetpack classic
 // [contact-form] shortcode (still supported by the "contact-form" module
 // activated via .wp-env.e2e.json'"'"'s afterStart script) rather than hand-authoring
 // the current block-comment markup/attributes, which is more likely to drift

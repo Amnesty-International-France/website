@@ -2,6 +2,15 @@ import { expect, test } from './support/fixtures';
 
 const DON_PATH = '/don/';
 
+// The header nav also embeds donation-calculator instance(s) (a popin and
+// static links) on every page; the page's own calculator is the one whose
+// link is tagged data-position="contenu" - scope everything through it to
+// avoid matching the header's duplicate #input-donation/#donation-tabs ids.
+const getPageDonationCalculator = (page) =>
+  page
+    .locator('.donation-calculator')
+    .filter({ has: page.locator('a.donation-link[data-position="contenu"]') });
+
 // The donation calculator never leads to an on-site cart/checkout: it only
 // builds a link to an external, third-party donation platform
 // (soutenir.amnesty.fr) by appending amount (in cents) and frequency query
@@ -14,13 +23,7 @@ test.describe('donation page calculator', () => {
   }) => {
     await gotoWithoutCookieOverlay(DON_PATH);
 
-    // The header nav also embeds donation-calculator instance(s) (a popin and
-    // static links) on every page; the page's own calculator is the one whose
-    // link is tagged data-position="contenu" - scope everything through it to
-    // avoid matching the header's duplicate #input-donation/#donation-tabs ids.
-    const calculator = page
-      .locator('.donation-calculator')
-      .filter({ has: page.locator('a.donation-link[data-position="contenu"]') });
+    const calculator = getPageDonationCalculator(page);
     await expect(calculator).toBeVisible();
 
     const link = calculator.locator('a.donation-link');
@@ -39,13 +42,7 @@ test.describe('donation page calculator', () => {
   }) => {
     await gotoWithoutCookieOverlay(DON_PATH);
 
-    // The header nav also embeds donation-calculator instance(s) (a popin and
-    // static links) on every page; the page's own calculator is the one whose
-    // link is tagged data-position="contenu" - scope everything through it to
-    // avoid matching the header's duplicate #input-donation/#donation-tabs ids.
-    const calculator = page
-      .locator('.donation-calculator')
-      .filter({ has: page.locator('a.donation-link[data-position="contenu"]') });
+    const calculator = getPageDonationCalculator(page);
     await calculator.locator('.donation-tabs').getByText('Don Ponctuel', { exact: true }).click();
 
     const link = calculator.locator('a.donation-link');
@@ -63,13 +60,7 @@ test.describe('donation page calculator', () => {
   }) => {
     await gotoWithoutCookieOverlay(DON_PATH);
 
-    // The header nav also embeds donation-calculator instance(s) (a popin and
-    // static links) on every page; the page's own calculator is the one whose
-    // link is tagged data-position="contenu" - scope everything through it to
-    // avoid matching the header's duplicate #input-donation/#donation-tabs ids.
-    const calculator = page
-      .locator('.donation-calculator')
-      .filter({ has: page.locator('a.donation-link[data-position="contenu"]') });
+    const calculator = getPageDonationCalculator(page);
     const freeInput = calculator.locator('#input-donation');
     await freeInput.fill('50');
 

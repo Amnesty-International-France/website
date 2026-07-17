@@ -1,8 +1,9 @@
 import { expect, test } from './support/fixtures';
-import { mockSuccessfulTurnstile } from './support/turnstile';
+import { mockSuccessfulTurnstile, setServerSideTurnstileResult } from './support/turnstile';
 import { getSalesforceCalls, resetSalesforceCalls } from './support/salesforce';
 
 const NEWSLETTER_PATH = '/newsletter/';
+const NEWSLETTER_FORM = '#newsletter-form';
 
 // Unlike petition signing / legs / foundation forms (verified to only touch
 // local DB, or a Jetpack flow with no Salesforce wiring at all), newsletter
@@ -12,41 +13,22 @@ const NEWSLETTER_PATH = '/newsletter/';
 // aif-e2e-support.php mocks every Salesforce call and records it, so this
 // spec can assert that call actually happened, not just that the page
 // behaved as if it had.
-const setServerSideTurnstileResult = async (page, { success, error = 'invalid-input-response' }) => {
-  await page.locator('#newsletter-form').evaluate(
-    (form, options) => {
-      const appendHiddenInput = (name, value) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = name;
-        input.value = value;
-        form.appendChild(input);
-      };
-
-      appendHiddenInput('aif_e2e_turnstile_verify_success', options.success ? '1' : '0');
-
-      if (!options.success) {
-        appendHiddenInput('aif_e2e_turnstile_verify_error', options.error);
-      }
-    },
-    { success, error },
-  );
-};
 
 test.describe('newsletter signup', () => {
-  test.beforeEach(async ({ request }) => {
-    await resetSalesforceCalls(request);
+  test.beforeEach(async ({ request, salesforceTestId }) => {
+    await resetSalesforceCalls(request, salesforceTestId);
   });
 
   test('signs up a new subscriber and triggers a real Salesforce Contact creation call', async ({
     page,
     request,
     gotoWithoutCookieOverlay,
+    salesforceTestId,
   }) => {
     await mockSuccessfulTurnstile(page, { token: 'mock-newsletter-signup-token' });
 
     await gotoWithoutCookieOverlay(NEWSLETTER_PATH);
-    await setServerSideTurnstileResult(page, { success: true });
+    await setServerSideTurnstileResult(page, NEWSLETTER_FORM, { success: true });
 
     const uniqueEmail = `e2e-${Date.now()}-${Math.floor(Math.random() * 1e6)}@example.test`;
     await page.locator('#newsletter').fill(uniqueEmail);
@@ -60,7 +42,7 @@ test.describe('newsletter signup', () => {
     // newsletter popup markup on every page - scope to the first match.
     await expect(page.getByText('Merci de vous être inscrit').first()).toBeVisible();
 
-    const calls = await getSalesforceCalls(request);
+    const calls = await getSalesforceCalls(request, salesforceTestId);
     const contactCall = calls.find(
       (call) => call.method === 'POST' && call.url.includes('sobjects/Contact/'),
     );
@@ -77,11 +59,12 @@ test.describe('newsletter signup', () => {
     page,
     request,
     gotoWithoutCookieOverlay,
+    salesforceTestId,
   }) => {
     await mockSuccessfulTurnstile(page, { token: 'mock-newsletter-rejected-token' });
 
     await gotoWithoutCookieOverlay(NEWSLETTER_PATH);
-    await setServerSideTurnstileResult(page, { success: false });
+    await setServerSideTurnstileResult(page, NEWSLETTER_FORM, { success: false });
 
     await page.locator('#newsletter').fill(`e2e-${Date.now()}@example.test`);
     await page.locator('#lastname').fill('Lovelace');
@@ -92,7 +75,7 @@ test.describe('newsletter signup', () => {
     await expect(page.getByText('La vérification de sécurité a échoué')).toBeVisible();
     await expect(page).not.toHaveURL(/inscription__nl=success/);
 
-    const calls = await getSalesforceCalls(request);
+    const calls = await getSalesforceCalls(request, salesforceTestId);
     expect(calls.filter((call) => call.url.includes('sobjects/Contact/'))).toHaveLength(0);
   });
 });
