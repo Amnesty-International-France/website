@@ -63,11 +63,21 @@ composer run test:salesforce-sync # ~30s, voir plus bas
 Ne lancez jamais `./vendor/bin/phpunit` sans `--testsuite` (ou un script
 composer dédié) : PHPUnit charge (`require`) le fichier de chaque test au
 démarrage pour découvrir ses méthodes, même si les tests eux-mêmes ne
-s'exécutent jamais ensemble. Or plusieurs suites font exprès de déclarer une
-fonction du même nom que celle testée réellement par une autre (ex.
-`get_local_user()` est une vraie fonction dans `tests/Petitions/` mais un faux
-stub de scénario dans `tests/Salesforce/SalesforcePetitionBulkCsvTest.php`) -
-les charger ensemble provoque un fatal "cannot redeclare". Chaque script
+s'exécutent jamais ensemble. Or `get_local_user()`/`update_signature_status()`
+sont de vraies fonctions dans `tests/Petitions/` (via `petitions/tables.php`)
+mais un faux stub de scénario partagé par `tests/Salesforce/` et
+`tests/SalesforceSync/` (`tests/support/local-user-stubs.php`) - charger
+`Petitions` avec l'un des deux autres dans le même process provoque un fatal
+"cannot redeclare", **peu importe l'ordre** (le stub partagé n'est délibérément
+pas protégé par `function_exists()` : le protéger transformerait ce fatal en
+un résultat faux silencieux selon l'ordre de chargement, ce qui est pire -
+voir le commentaire en tête de `local-user-stubs.php`). Ce n'est pas
+seulement `phpunit` bare qui est concerné : n'importe quel `--testsuite`
+combinant `Petitions` avec `Salesforce` et/ou `SalesforceSync` fatal aussi
+(`Salesforce,Petitions`, `Petitions,SalesforceSync`, etc.). Toute combinaison
+qui n'inclut pas `Petitions` (ex. `Salesforce,SalesforceSync`,
+`DonorSpace,SalesforceSync`) ou qui n'inclut pas `Salesforce`/`SalesforceSync`
+(ex. `DonorSpace,Petitions`) reste, elle, sûre. Chaque script
 composer (`test:salesforce`, `test:donor-space`, `test:petitions`, ...) est
 déjà scopé via `--testsuite` pour cette raison ; c'est la façon supportée de
 lancer les tests, en local comme en CI.
