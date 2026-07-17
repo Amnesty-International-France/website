@@ -15,6 +15,6 @@
   "port": 8898,
   "testsEnvironment": false,
   "lifecycleScripts": {
-    "afterStart": "yarn env:e2e run cli wp plugin activate aif-e2e-support && yarn env:e2e run cli wp theme activate humanity-theme && yarn env:e2e run cli wp plugin activate jetpack && yarn env:e2e run cli wp jetpack module activate contact-form"
+    "afterStart": "yarn env:e2e run cli wp plugin activate aif-e2e-support && yarn env:e2e run cli wp theme activate humanity-theme && yarn env:e2e run cli wp jetpack module activate contact-form"
   }
 }

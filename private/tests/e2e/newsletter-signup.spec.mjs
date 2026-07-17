@@ -1,4 +1,4 @@
-import { expect, test } from './support/fixtures';
+import { expect, test, uniqueEmail } from './support/fixtures';
 import { mockSuccessfulTurnstile, setServerSideTurnstileResult } from './support/turnstile';
 import { getSalesforceCalls, resetSalesforceCalls } from './support/salesforce';
 
@@ -26,8 +26,8 @@ test.describe('newsletter signup', () => {
     await gotoWithoutCookieOverlay(NEWSLETTER_PATH);
     await setServerSideTurnstileResult(page, NEWSLETTER_FORM, { success: true });
 
-    const uniqueEmail = `e2e-${Date.now()}-${Math.floor(Math.random() * 1e6)}@example.test`;
-    await page.locator('#newsletter').fill(uniqueEmail);
+    const email = uniqueEmail();
+    await page.locator('#newsletter').fill(email);
     await page.locator('#lastname').fill('Lovelace');
     await page.locator('#firstname').fill('Ada');
     await page.locator('#zipcode').fill('75001');
@@ -45,7 +45,7 @@ test.describe('newsletter signup', () => {
 
     expect(contactCall).toBeTruthy();
     const payload = JSON.parse(contactCall.body);
-    expect(payload.Email).toBe(uniqueEmail);
+    expect(payload.Email).toBe(email);
     expect(payload.FirstName).toBe('Ada');
     expect(payload.LastName).toBe('Lovelace');
     expect(payload.Optin_Actionaute_Newsletter_mensuelle__c).toBe(true);
@@ -62,7 +62,7 @@ test.describe('newsletter signup', () => {
     await gotoWithoutCookieOverlay(NEWSLETTER_PATH);
     await setServerSideTurnstileResult(page, NEWSLETTER_FORM, { success: false });
 
-    await page.locator('#newsletter').fill(`e2e-${Date.now()}@example.test`);
+    await page.locator('#newsletter').fill(uniqueEmail());
     await page.locator('#lastname').fill('Lovelace');
     await page.locator('#firstname').fill('Ada');
     await page.locator('#zipcode').fill('75001');

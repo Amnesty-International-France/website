@@ -81,6 +81,25 @@ if (!function_exists('aif_include_partial')) {
     }
 }
 
+/**
+ * Shared shape for every faked pre_http_request response below (Turnstile and
+ * Salesforce): WordPress expects this exact array whenever a filter preempts
+ * the real HTTP request, only the JSON-encoded body actually differs per mock.
+ */
+function aif_e2e_fake_http_response(array $body): array
+{
+    return [
+        'headers' => [],
+        'body' => wp_json_encode($body),
+        'response' => [
+            'code' => 200,
+            'message' => 'OK',
+        ],
+        'cookies' => [],
+        'filename' => null,
+    ];
+}
+
 add_filter('pre_http_request', function ($preempt, $args, $url) {
     if ('https://challenges.cloudflare.com/turnstile/v0/siteverify' !== $url) {
         return $preempt;
@@ -100,16 +119,7 @@ add_filter('pre_http_request', function ($preempt, $args, $url) {
         $body['error-codes'] = [$error];
     }
 
-    return [
-        'headers' => [],
-        'body' => wp_json_encode($body),
-        'response' => [
-            'code' => 200,
-            'message' => 'OK',
-        ],
-        'cookies' => [],
-        'filename' => null,
-    ];
+    return aif_e2e_fake_http_response($body);
 }, 10, 3);
 
 const AIF_E2E_SALESFORCE_BASE_URL = 'https://fake-salesforce.e2e.test/';
@@ -185,16 +195,7 @@ add_filter('pre_http_request', function ($preempt, $args, $url) {
         $body = ['success' => true, 'id' => 'fake-sf-id-new'];
     }
 
-    return [
-        'headers' => [],
-        'body' => wp_json_encode($body),
-        'response' => [
-            'code' => 200,
-            'message' => 'OK',
-        ],
-        'cookies' => [],
-        'filename' => null,
-    ];
+    return aif_e2e_fake_http_response($body);
 }, 10, 3);
 
 add_action('rest_api_init', function () {

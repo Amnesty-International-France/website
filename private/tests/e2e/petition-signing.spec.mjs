@@ -1,4 +1,4 @@
-import { expect, test } from './support/fixtures';
+import { expect, test, uniqueEmail } from './support/fixtures';
 import { mockSuccessfulTurnstile, setServerSideTurnstileResult } from './support/turnstile';
 
 const PETITION_PATH = '/petitions/aif-e2e-petition/';
@@ -25,8 +25,7 @@ test.describe('petition signing', () => {
     await gotoWithoutCookieOverlay(PETITION_PATH);
     await setServerSideTurnstileResult(page, PETITION_FORM, { success: true });
 
-    const uniqueEmail = `e2e-${Date.now()}-${Math.floor(Math.random() * 1e6)}@example.test`;
-    await fillSignatureForm(page, uniqueEmail);
+    await fillSignatureForm(page, uniqueEmail());
 
     await page.getByRole('button', { name: 'Signer' }).click();
 
@@ -47,8 +46,7 @@ test.describe('petition signing', () => {
       error: 'invalid-input-response',
     });
 
-    const uniqueEmail = `e2e-${Date.now()}-${Math.floor(Math.random() * 1e6)}@example.test`;
-    await fillSignatureForm(page, uniqueEmail);
+    await fillSignatureForm(page, uniqueEmail());
 
     await page.getByRole('button', { name: 'Signer' }).click();
 
