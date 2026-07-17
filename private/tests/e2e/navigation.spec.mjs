@@ -7,7 +7,18 @@ test.describe('main navigation', () => {
   }) => {
     await gotoWithoutCookieOverlay('/');
 
-    await page.locator('nav a[href$="/petitions/"]').first().click();
+    const mobileMenuToggle = page.locator('button.burger');
+    const isMobileNavigation = await mobileMenuToggle.isVisible();
+    const navigation = isMobileNavigation
+      ? page.locator('#mobile-menu')
+      : page.locator('.desktop-nav');
+
+    if (isMobileNavigation) {
+      await mobileMenuToggle.click();
+      await expect(navigation).toBeVisible();
+    }
+
+    await navigation.locator('a[href$="/petitions/"]').click();
 
     await expect(page).toHaveURL(/\/petitions\/?$/);
   });

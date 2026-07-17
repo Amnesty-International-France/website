@@ -6,7 +6,7 @@
     "amnestywebsite/cmb2-message-field",
     "amnestywebsite/cmb2-password-field",
     "jaymcp/cmb2-field-order",
-    "../wp-content/plugins/jetpack",
+    "https://downloads.wordpress.org/plugin/jetpack.15.8.zip",
     "./tests/e2e/wordpress/aif-e2e-support"
   ],
   "config": {
