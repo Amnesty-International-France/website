@@ -172,16 +172,17 @@ yarn env:e2e:stop                                # coupe l'environnement
 
 ### Jetpack est installé, mais seulement pour ce qui marche hors-ligne
 
-`.wp-env.e2e.json` installe le plugin Jetpack vendu dans le dépôt
-(`wp-content/plugins/jetpack`) et active son module **"contact-form"** au
-démarrage. Jetpack détecte "localhost" comme environnement hors-ligne/dev
+`.wp-env.e2e.json` télécharge l'archive versionnée Jetpack 15.8 depuis
+WordPress.org, puis active son module **"contact-form"** au démarrage. Le
+premier démarrage dépend donc d'un accès réseau et de la disponibilité de
+cette archive. Jetpack détecte "localhost" comme environnement hors-ligne/dev
 (aucun compte ni connexion requis), ce qui suffit à faire fonctionner
 réellement les formulaires `jetpack/contact-form` (legs, fondation) - y
 compris leur vraie soumission AJAX, pas juste leur affichage.
 
 Cette astuce **ne marche pas pour tous les modules** : Jetpack désactive
 explicitement, en mode hors-ligne, tout module marqué `Requires Connection:
-Yes` dans son fichier (`wp-content/plugins/jetpack/class.jetpack.php`,
+Yes` dans son installation (`wp-content/plugins/jetpack/class.jetpack.php`,
 recherche `requires_connection`). C'est le cas du module "Search" (Instant
 Search), qui est payant et nécessite un vrai compte connecté - impossible à
 débloquer de la même façon ; il n'y a pas de test e2e sur la recherche pour
