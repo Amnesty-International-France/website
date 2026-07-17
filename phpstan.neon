@@ -90,6 +90,7 @@ parameters:
             - wp-content/themes/humanity-theme/partials/forms/trainings-filters.php
             - wp-content/themes/humanity-theme/partials/petition-card-change-their-history.php
             - wp-content/themes/humanity-theme/partials/petition-card.php
+            - wp-content/themes/humanity-theme/partials/petition-signature-card-content.php
             - wp-content/themes/humanity-theme/partials/urgent-banner.php
             - wp-content/themes/humanity-theme/patterns/agenda-content.php
             - wp-content/themes/humanity-theme/patterns/archive-loop-trainings.php
@@ -102,6 +103,8 @@ parameters:
             - wp-content/themes/humanity-theme/patterns/page-change-their-history-hero.php
             - wp-content/themes/humanity-theme/patterns/page-content.php
             - wp-content/themes/humanity-theme/patterns/page-hero-foundation.php
+            - wp-content/themes/humanity-theme/patterns/page-hero-tunnel-clh.php
+            - wp-content/themes/humanity-theme/patterns/page-tunnel-clh-content.php
             - wp-content/themes/humanity-theme/patterns/petition-content.php
             - wp-content/themes/humanity-theme/patterns/petition-thanks.php
             - wp-content/themes/humanity-theme/patterns/post-back-link.php

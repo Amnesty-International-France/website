@@ -68,6 +68,7 @@ $svg = file_get_contents($template_directory . '/assets/images/icon-cross.svg');
 	</div>
 </div>
 <?php
+printf('<script data-cfasync="false">%s</script>', amnesty_alert_banner_inline_script()); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 wp_reset_postdata();
 ?>
 

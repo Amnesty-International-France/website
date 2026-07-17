@@ -258,6 +258,7 @@ require_once realpath(__DIR__ . '/includes/post-types/edh.php');
 require_once realpath(__DIR__ . '/includes/post-types/chronicle.php');
 require_once realpath(__DIR__ . '/includes/post-types/actualities-my-space.php');
 require_once realpath(__DIR__ . '/includes/post-types/alert-banner.php');
+require_once realpath(__DIR__ . '/includes/post-types/clh.php');
 // endregion post types
 
 /**
@@ -376,6 +377,7 @@ require_once realpath(__DIR__ . '/includes/seo/primary-term.php');
 require_once realpath(__DIR__ . '/includes/seo/schema-author.php');
 require_once realpath(__DIR__ . '/includes/seo/schema-breadcrumbs.php');
 require_once realpath(__DIR__ . '/includes/seo/sitemap.php');
+require_once realpath(__DIR__ . '/includes/seo/news-sitemap.php');
 // endregion seo
 
 /**
@@ -620,5 +622,12 @@ add_filter('render_block', function ($block_content, $block) {
     return $block_content;
 
 }, 10, 2);
+
+// sentry
+// par défaut le plugin sentry-for-wordpress expose la version de Wordpress dans le js public, donc on le supprime
+add_filter('wp_sentry_public_context', function (array $context): array {
+    unset($context['tags']['wordpress']);
+    return $context;
+});
 
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle

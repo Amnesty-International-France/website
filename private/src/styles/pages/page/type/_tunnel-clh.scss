@@ -1,0 +1,1104 @@
+.tunnel-clh-stepper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 24px 0;
+  gap: 20px;
+}
+
+.tunnel-clh-stepper--mobile {
+  display: none;
+}
+
+@media (min-width: $container-md) {
+  .tunnel-clh-stepper--desktop {
+    .tunnel-clh-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: calc(100% + 4px);
+      width: 12px;
+      height: 1px;
+      background-color: var(--wp--preset--color--black);
+      transform: translateY(-50%);
+    }
+  }
+}
+
+.tunnel-clh-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--wp--preset--color--black);
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+  color: var(--wp--preset--color--black);
+
+  &.is-checked {
+    background-color: var(--wp--preset--color--primary);
+    color: var(--wp--preset--color--black);
+
+    .step-icon {
+      display: flex;
+    }
+  }
+}
+
+.tunnel-clh-sign-form,
+.tunnel-clh-skip-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tunnel-clh-email-step {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  input[type='email'] {
+    width: 100%;
+  }
+}
+
+.page-tunnel-clh-card {
+  position: relative;
+  z-index: 2;
+  width: calc(100% - 48px);
+  max-width: $container-md;
+  margin: -64px auto 48px;
+  padding: 32px 24px;
+  background-color: var(--wp--preset--color--white);
+  box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1);
+
+  @media (max-width: ($container-md - 1px)) {
+    margin-top: -65px;
+    padding: 0;
+    background-color: transparent;
+
+    @media (max-width: 374px) {
+      margin-top: 0;
+    }
+
+    &-subtitle-wrapper {
+      display: none;
+    }
+  }
+
+  @media (min-width: $container-md) {
+    margin-top: -80px;
+    padding: 48px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 28px;
+      width: 2px;
+      height: calc(48px + 37px);
+      background-color: var(--wp--preset--color--primary);
+    }
+
+    &-subtitle-wrapper {
+      padding-left: 0;
+    }
+  }
+
+  &-content {
+    margin: 0 auto;
+  }
+
+  &-subtitle-wrapper {
+    position: relative;
+  }
+}
+
+.page-tunnel-clh-subtitle {
+  margin-bottom: 0.5rem;
+}
+
+.page-tunnel-clh-description {
+  font-size: 1rem;
+  line-height: 1.45;
+  font-family: var(--wp--preset--font-family--secondary);
+  white-space: pre-line;
+}
+
+.page-tunnel-clh-hero {
+  .tunnel-clh-stepper--mobile {
+    justify-content: center;
+    margin: 16px 0 0;
+    gap: 5px;
+
+    @media (max-width: 374px) {
+      flex-wrap: wrap;
+      max-width: 170px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .tunnel-clh-step {
+      width: 30px;
+      height: 30px;
+      background-color: var(--wp--preset--color--white);
+      color: var(--wp--preset--color--black);
+
+      &.is-checked {
+        background-color: var(--wp--preset--color--primary);
+        border-color: var(--wp--preset--color--black);
+        color: var(--wp--preset--color--black);
+      }
+    }
+  }
+
+  @media (max-width: ($container-md - 1px)) {
+    .yoast-breadcrumb-wrapper {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: ($container-md - 1px)) {
+  .tunnel-clh-stepper--desktop {
+    display: none;
+  }
+
+  .tunnel-clh-stepper--mobile {
+    display: flex;
+  }
+}
+
+.page-tunnel-clh-carousel {
+  padding-top: 0;
+  overflow: hidden;
+
+  [hidden] {
+    display: none !important;
+  }
+
+  &.is-petition-accordion-expanded {
+    overflow: visible;
+
+    .page-tunnel-clh-petitions {
+      overflow: visible;
+    }
+  }
+}
+
+.page-tunnel-clh-petitions {
+  width: 100%;
+  padding: 8px 14px 18px 0;
+
+  @media (max-width: ($container-md - 1px)) {
+    padding: 0;
+  }
+}
+
+.page-tunnel-clh-petition-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 220px;
+  margin: 0;
+  background-color: var(--wp--preset--color--white);
+  border: 1px solid var(--wp--preset--color--grey-light);
+  box-shadow: 5px 6px 12px rgba(0, 0, 0, 0.12);
+
+  &.is-accordion-expanded {
+    height: auto;
+  }
+
+  @media (min-width: $container-sm) {
+    &.has-image {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      height: auto;
+
+      .page-tunnel-clh-petition-card-context {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+    color: var(--wp--preset--color--black);
+  }
+
+  &-media {
+    order: -1;
+    height: 250px;
+    margin: 20px 20px 0;
+    overflow: hidden;
+
+    @media (min-width: $container-sm) {
+      height: 100%;
+      min-height: 220px;
+      margin: 0;
+    }
+  }
+
+  &-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &-title {
+    margin: 0 0 10px;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.15;
+    text-transform: uppercase;
+
+    @media (max-width: $container-sm) {
+      text-transform: none;
+    }
+  }
+
+  &-description {
+    margin-bottom: 10px;
+    color: var(--wp--preset--color--grey-darkest);
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  &-context {
+    display: block;
+    align-self: stretch;
+    width: 100%;
+    margin: auto 0 0;
+    color: var(--wp--preset--color--grey-darkest);
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 14px;
+    line-height: 1.45;
+
+    @media (max-width: ($container-sm - 1px)) {
+      margin: 0;
+    }
+  }
+}
+
+.page-tunnel-clh-petition-card-context.is-mobile-context {
+  display: none;
+}
+
+@media (max-width: ($container-sm - 1px)) {
+  .page-tunnel-clh-petition-card-context.is-mobile-context {
+    display: block;
+    width: calc(100% + 40px);
+    margin-top: auto;
+    margin-bottom: -20px;
+    margin-right: -20px;
+    margin-left: -20px;
+  }
+
+  .page-tunnel-clh-petition-card-context.is-desktop-context {
+    display: none;
+  }
+}
+
+.petition-infos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+
+  .progress-bar-container {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    overflow: hidden;
+    border: 2px solid var(--wp--preset--color--black);
+    background-color: var(--wp--preset--color--white);
+  }
+
+  .progress-bar {
+    height: 100%;
+    background-color: var(--wp--preset--color--black);
+    transition: width 0.5s ease-in-out;
+  }
+
+  .supports {
+    margin: 0;
+    font-family: var(--wp--preset--font-family--primary);
+    font-size: 14px;
+    line-height: 18px;
+
+    .help-us {
+      font-weight: normal;
+    }
+  }
+}
+
+.tunnel-clh-petition-accordion-container {
+  width: 100%;
+}
+
+.tunnel-clh-petition-accordion-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+  color: #555;
+  cursor: pointer;
+  padding: 15px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+
+  &::after {
+    @include icon-scaled(271px, 215px, 16px, 16px, 1.5);
+    position: relative;
+    content: '';
+    flex-shrink: 0;
+    margin-left: 8px;
+    transition:
+      transform 0.3s ease-in-out,
+      -webkit-transform 0.3s ease-in-out;
+  }
+
+  &[aria-expanded='true']::after {
+    transform: rotate(180deg);
+  }
+
+  @media (max-width: ($container-sm - 1px)) {
+    font-size: 20px;
+    min-height: 70px;
+  }
+}
+
+.tunnel-clh-petition-accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  background-color: #f1f1f1;
+}
+
+.page-tunnel-clh-petition-card-context-content {
+  padding: 15px;
+  margin: 0;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.page-tunnel-clh-petition-card-anonymous {
+  grid-column: 1 / -1;
+  border-bottom: none;
+  padding: 28px 24px;
+
+  @media screen and (max-width: $container-lg) {
+    padding: 20px;
+  }
+
+  .email-section > .email-input {
+    border: 1px solid var(--wp--preset--color--grey-light);
+    font-size: var(--wp--preset--font-size--medium);
+    text-transform: none;
+    margin-bottom: 18px;
+
+    &::placeholder {
+      font-family: var(--wp--preset--font-family--primary);
+      color: var(--wp--preset--color--grey-dark);
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 28px;
+      text-transform: capitalize;
+    }
+  }
+
+  .full-form {
+    display: none;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 18px;
+
+    .civility-section {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 18px;
+
+      .civility-label {
+        color: var(--wp--preset--color--grey-dark);
+        font-family: var(--wp--preset--font-family--primary);
+        font-size: 18px;
+        font-weight: 300;
+        line-height: 28px;
+        text-transform: capitalize;
+      }
+
+      .civilities {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+
+        @media screen and (max-width: $container-lg) {
+          flex-wrap: wrap;
+          gap: 12px;
+          justify-content: flex-start;
+        }
+
+        input {
+          border: 1px solid var(--wp--preset--color--grey-dark);
+          height: auto;
+          padding: 0;
+        }
+
+        input[type='radio'] {
+          position: absolute;
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        label {
+          position: relative;
+          padding-left: 25px;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          font-family: var(--wp--preset--font-family--primary);
+          font-weight: 300;
+          font-size: 18px;
+          text-transform: capitalize;
+          color: var(--wp--preset--color--grey-dark);
+        }
+
+        label::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 18px;
+          height: 18px;
+          border: 2px solid var(--wp--preset--color--grey-dark);
+          border-radius: 50%;
+          background: var(--wp--preset--color--white);
+          box-sizing: border-box;
+        }
+
+        input[type='radio']:checked + label::after {
+          content: '';
+          position: absolute;
+          left: 4px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 10px;
+          height: 10px;
+          background: var(--wp--preset--color--black);
+          border-radius: 50%;
+        }
+      }
+    }
+
+    .firstname-section,
+    .lastname-section,
+    .phone-section {
+      .firstname-input,
+      .lastname-input,
+      .phone-input {
+        border: 1px solid var(--wp--preset--color--grey-light);
+
+        &::placeholder {
+          font-family: var(--wp--preset--font-family--primary);
+          color: var(--wp--preset--color--grey-dark);
+          font-size: 18px;
+          font-weight: 300;
+          line-height: 28px;
+          text-transform: capitalize;
+        }
+      }
+    }
+
+    .zipcode-and-country {
+      display: flex;
+      gap: 18px;
+
+      .zipcode-section {
+        width: 50%;
+
+        .zipcode-input {
+          border: 1px solid var(--wp--preset--color--grey-light);
+
+          &::placeholder {
+            font-family: var(--wp--preset--font-family--primary);
+            color: var(--wp--preset--color--grey-dark);
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 28px;
+            text-transform: capitalize;
+          }
+        }
+      }
+
+      .country-section {
+        width: 50%;
+
+        .country-input {
+          padding: 0 12px;
+          height: 100%;
+          width: 100%;
+          border: 1px solid var(--wp--preset--color--grey-light);
+          color: var(--wp--preset--color--grey-dark);
+          font-family: var(--wp--preset--font-family--secondary);
+          font-size: var(--wp--preset--font-size--small);
+          font-weight: bold;
+          text-transform: capitalize;
+        }
+      }
+    }
+  }
+
+  .page-tunnel-clh-petition-actions {
+    justify-content: space-evenly;
+  }
+}
+
+
+.page-tunnel-clh-petition-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+
+  > .email-input {
+    border: 1px solid var(--wp--preset--color--grey-light);
+    font-size: var(--wp--preset--font-size--medium);
+    text-transform: none;
+  }
+
+
+  @media (max-width: ($container-sm - 1px)) {
+    gap: 0;
+    margin: 0 -20px 0;
+
+    .page-tunnel-clh-action-button.is-secondary {
+      display: none;
+    }
+  }
+
+  @media (min-width: $container-sm) {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
+  }
+}
+
+.page-tunnel-clh-mobile-skip-cta {
+  display: none;
+
+  @media (max-width: ($container-sm - 1px)) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    width: 100%;
+    height: 48px;
+    margin: 0;
+    background-color: var(--wp--preset--color--primary);
+    font-size: 1.25rem;
+    font-weight: bold;
+    line-height: 48px;
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--wp--preset--color--black);
+      outline-offset: -4px;
+    }
+
+    .cta-mobile-left {
+      position: relative;
+      padding: 0 10px;
+      background: var(--wp--preset--color--black);
+      color: var(--wp--preset--color--white);
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-color: transparent transparent transparent var(--wp--preset--color--black);
+        border-style: solid;
+        border-width: 1.5rem 0 1.5rem 0.8125rem;
+        transform: translateX(100%);
+      }
+    }
+
+    .cta-mobile-right {
+      display: flex;
+      flex: 1 0;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+
+      > svg {
+        max-width: 1.25rem;
+        margin-right: 0.3125rem;
+      }
+    }
+  }
+}
+
+.page-tunnel-clh-action-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 15px;
+  border: 2px solid var(--wp--preset--color--black);
+  color: var(--wp--preset--color--black);
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--wp--preset--color--primary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  &.is-primary {
+    background-color: var(--wp--preset--color--primary);
+    border-color: var(--wp--preset--color--primary);
+
+    &:hover {
+      background-color: var(--wp--preset--color--primary-dark);
+      border-color: var(--wp--preset--color--primary-dark);
+    }
+
+    .action-icon {
+      padding-right: 12px;
+    }
+  }
+
+  &.is-secondary {
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    font-family: var(--wp--preset--font-family--primary);
+    font-weight: 300;
+    text-transform: none;
+    cursor: pointer;
+    transition:
+      background-color 0.4s ease,
+      border-color 0.4s ease,
+      color 0.4s ease;
+
+    > span {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    @media screen and (min-width: $container-lg) {
+      &.mobile {
+        display: none;
+      }
+    }
+  }
+
+  @media (max-width: ($container-sm - 1px)) {
+    font-size: 20px;
+
+    &.is-secondary {
+      justify-content: center;
+      padding: 12px 20px;
+      border: 0;
+      background-color: transparent;
+      color: var(--wp--preset--color--black);
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 24px;
+      text-align: right;
+      text-transform: none;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+.wp-block-group.is-petition-accordion-expanded {
+  height: auto;
+  overflow: visible;
+}
+
+.page-tunnel-clh-final-card {
+  &::before {
+    display: none;
+  }
+
+  @media (max-width: ($container-md - 1px)) {
+    margin-top: -90px;
+    background-color: var(--wp--preset--color--white);
+  }
+
+  .page-tunnel-clh-card-content {
+    max-width: 760px;
+  }
+
+  .page-tunnel-clh-description {
+    margin-bottom: 0;
+    max-width: 720px;
+    flex: 1 1 50%;
+  }
+}
+
+.page-tunnel-clh-final-header {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 24px;
+
+  @media (max-width: ($container-md - 1px)) {
+    flex-direction: column;
+    padding: 24px 20px 0;
+  }
+}
+
+.page-tunnel-clh-final-tabs {
+  [hidden] {
+    display: none !important;
+  }
+}
+
+.page-tunnel-clh-final-tablist {
+  display: flex;
+  gap: 0;
+}
+
+.page-tunnel-clh-final-tab {
+  flex: 1 1 50%;
+  min-height: 48px;
+  padding: 10px 16px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background-color: var(--wp--preset--color--white);
+  color: var(--wp--preset--color--black);
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease, border-bottom-color 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    margin-right: 8px;
+    width: 30px;
+    color: var(--wp--preset--color--grey-light);
+    transition: color 0.2s ease;
+
+    path {
+      fill: currentColor;
+    }
+  }
+
+  &:hover,
+  &.is-active {
+    background-color: var(--wp--preset--color--grey-lighter);
+    border-bottom: 5px solid var(--wp--preset--color--primary-dark);
+
+    svg {
+      color: var(--wp--preset--color--primary-dark);
+    }
+  }
+
+  &:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 3px solid var(--wp--preset--color--black);
+    outline-offset: -6px;
+  }
+}
+
+.page-tunnel-clh-final-panel {
+  padding: 28px;
+  background-color: var(--wp--preset--color--grey-lighter);
+
+  @media (max-width: ($container-sm - 1px)) {
+    padding: 24px 20px;
+    background-color: var(--wp--preset--color--white);
+  }
+
+  .share-content,
+  .title-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.1;
+
+    @media (max-width: ($container-sm - 1px)) {
+      font-size: 24px;
+    }
+  }
+
+  p {
+    margin: 0;
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  &.page-tunnel-clh-final-panel--donation {
+    @media (max-width: ($container-md - 1px)) {
+      .amount-free {
+        align-items: center;
+      }
+    }
+  }
+
+  .donation-calculator.medium {
+    margin-top: 8px;
+
+    @media (max-width: ($container-md - 1px)) {
+      box-sizing: border-box;
+      width: calc(100% + 56px);
+      max-width: none;
+      margin-right: -28px;
+      margin-left: -28px;
+      border-top: 1px solid var(--wp--preset--color--black);
+      box-shadow: none;
+    }
+
+    @media (max-width: ($container-sm - 1px)) {
+      width: calc(100% + 40px);
+      margin-right: -20px;
+      margin-left: -20px;
+    }
+
+    @media (min-width: $container-md) {
+      width: 100%;
+      max-width: none;
+      background-color: transparent;
+      box-shadow: none;
+
+      .donation-body {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 16px;
+        border-bottom: 0;
+      }
+
+      .amount-monthly.active {
+        flex: 1 1 0;
+      }
+
+      .amount-free {
+        flex: 1 1 0;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+
+        > p {
+          margin-top: 0;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+
+  .donation-body {
+    .input-don-free {
+      text-align: right;
+    }
+  }
+}
+
+.page-tunnel-clh-final-share {
+  .social-networks {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    max-width: 212px;
+    margin: 4px auto 0;
+  }
+
+  .social-networks > a,
+  .social-networks > .article-shareCopy {
+    display: inline-flex;
+    text-decoration: none;
+  }
+
+  .share-label {
+    display: none;
+  }
+
+  .page-tunnel-clh-final-donation-link {
+    align-self: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--wp--preset--color--black);
+    font-size: 16px;
+    line-height: 1.35;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 4px;
+    }
+  }
+
+  .icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 9px;
+    background-color: var(--wp--preset--color--black);
+    cursor: pointer;
+
+    svg {
+      width: 100%;
+      height: auto;
+      fill: var(--wp--preset--color--primary);
+      transition: fill 0.2s ease;
+    }
+
+    &:hover svg {
+      fill: var(--wp--preset--color--white);
+    }
+  }
+
+  .article-shareCopy {
+    position: relative;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--wp--preset--color--primary);
+      outline-offset: 3px;
+    }
+
+    &.copied::after {
+      content: 'Lien copié !';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 6px;
+      padding: 4px 8px;
+      background-color: var(--wp--preset--color--black);
+      color: var(--wp--preset--color--primary);
+      font-size: 13px;
+      font-weight: bold;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+  }
+
+  @media (min-width: $container-md) {
+    .social-networks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+      max-width: 520px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .social-networks > a,
+    .social-networks > .article-shareCopy {
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 46px;
+      padding: 0 14px;
+      border: 2px solid var(--wp--preset--color--black);
+      background-color: var(--wp--preset--color--white);
+      color: var(--wp--preset--color--black);
+      font-family: var(--wp--preset--font-family--secondary);
+      text-transform: uppercase;
+      font-size: 1rem;
+      font-weight: bold;
+      line-height: 1.2;
+      transition: background-color 0.2s ease, color 0.2s ease;
+
+      &:hover {
+        background-color: var(--wp--preset--color--grey-lighter);
+        color: var(--wp--preset--color--black);
+      }
+
+      &:hover svg {
+        fill: currentColor;
+      }
+    }
+
+    .share-label {
+      display: inline;
+    }
+
+    .icon-container {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      background-color: transparent;
+
+      svg {
+        fill: currentColor;
+      }
+
+      svg path {
+        fill: currentColor;
+      }
+
+      &:hover svg {
+        fill: currentColor;
+      }
+    }
+  }
+}
