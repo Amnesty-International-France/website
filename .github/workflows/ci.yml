@@ -55,9 +55,9 @@ jobs:
       - name: Install frontend dependencies
         working-directory: private
         run: yarn install --immutable
-      - name: Build Turnstile asset
+      - name: Build frontend assets
         working-directory: private
-        run: yarn build:prod --env entry=turnstile
+        run: yarn build
       - name: Run frontend unit tests
         working-directory: private
         run: yarn test
