@@ -15,20 +15,12 @@ if (!defined('AIF_E2E_ACF_SELECT_FIELDS')) {
 
 if (!function_exists('get_field')) {
     /**
-     * Real ACF isn't installed in this e2e environment (see .wp-env.e2e.json),
-     * so business code calling get_field() would otherwise fatal. ACF stores
-     * a field's raw value as regular postmeta under the same key, so this
-     * stub reads that postmeta as a fallback - seeding real values via
-     * `wp post meta set <id> <selector> <value>` in seed-wordpress.sh then
-     * makes get_field() behave like ACF would for that field, instead of
-     * always returning null regardless of what's seeded.
-     *
-     * A handful of ACF "select" fields are consumed by business code as
-     * ['value' => ..., 'label' => ...] (e.g. `get_field('type')['value']`);
-     * those selectors are listed in AIF_E2E_ACF_SELECT_FIELDS below and
-     * wrapped accordingly. Everything else is returned as the raw postmeta
-     * string, which is how this codebase consumes its date/number/text/
-     * boolean/wysiwyg ACF fields.
+     * Real ACF isn't installed here, so this falls back to reading the raw
+     * postmeta ACF would otherwise store under the same key - seed values via
+     * `wp post meta set` in seed-wordpress.sh. AIF_E2E_ACF_SELECT_FIELDS lists
+     * the "select" fields business code reads as ['value' => ..., 'label' =>
+     * ...] (e.g. `get_field('type')['value']`); everything else returns the
+     * raw string.
      */
     function get_field($selector = null, $post_id = false, $format_value = true)
     {
@@ -127,18 +119,11 @@ if (!getenv('AIF_SALESFORCE_URL')) {
 }
 
 /**
- * The recorded call log is namespaced per test (see support/fixtures.mjs'
- * salesforceTestId), not one shared option: Playwright can run several
- * specs - or the same spec across the chromium/mobile-chromium projects -
- * concurrently in different workers against this same wp-env backend. A
- * single shared option would let two Salesforce-touching tests running at
- * the same time overwrite/interleave each other's calls, which would only
- * ever show up as flakiness once a second such test existed. Every request
- * a test makes (both browser navigation/form submits and its own direct
- * REST calls to the routes below) carries an X-AIF-E2E-Test-Id header,
- * available here via $_SERVER because it's the incoming request that,
- * while being handled, triggers the outbound Salesforce call this filter
- * intercepts.
+ * Namespaces the call log per test (see support/fixtures.mjs' salesforceTestId)
+ * instead of one shared option: Playwright can run tests concurrently against
+ * this same wp-env backend, and a shared log would let them overwrite each
+ * other's calls. The X-AIF-E2E-Test-Id header is on every request a test
+ * makes, so it's readable here via $_SERVER while handling that same request.
  */
 function aif_e2e_get_test_id(): string
 {

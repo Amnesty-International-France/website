@@ -2,20 +2,14 @@ import { expect, test } from './support/fixtures';
 
 const LEGS_PATH = '/legs/';
 
-// The real "formulaire-legs" content (rendered at /nous-soutenir/legs/ in
-// production) is a Jetpack Forms block. Its markup only exists in
-// production's database (not in this repo), so seed-wordpress.sh recreates
-// it with the real field labels via Jetpack's classic [contact-form]
-// shortcode. Jetpack's "contact-form" module is installed/activated in this
-// e2e stack (see .wp-env.e2e.json): Jetpack auto-detects "localhost" as
-// offline/dev mode (no account/connection needed), so - unlike most of this
-// e2e suite - this genuinely exercises Jetpack's own client-side validation
-// and AJAX submission, not just a static approximation.
+// The real "formulaire-legs" content is a Jetpack Forms block only living in
+// production's DB; seed-wordpress.sh recreates it via Jetpack's classic
+// [contact-form] shortcode, which genuinely renders and processes a real
+// AJAX submission (Jetpack treats "localhost" as offline/dev mode).
 const fillRequiredFields = async (form) => {
   await form.getByLabel('Madame', { exact: true }).check();
-  // Jetpack appends a "(obligatoire)" required-marker inside the <label>, so
-  // its accessible name is "Nom(obligatoire)" - anchor with ^ to avoid also
-  // matching "Prénom" (a plain substring match on "Nom" would be ambiguous).
+  // Jetpack's required-marker "(obligatoire)" is inside the <label>, so a
+  // plain "Nom" match would be ambiguous with "Prénom" - anchor with ^.
   await form.getByLabel(/^Nom/).fill('Lovelace');
   await form.getByLabel('Prénom').fill('Ada');
   await form.getByLabel('Adresse').fill('1 rue de Rivoli');
@@ -23,9 +17,8 @@ const fillRequiredFields = async (form) => {
   await form.getByLabel('Ville').fill('Paris');
   await form.getByLabel('E-mail').fill('ada@example.test');
   await form.getByLabel('Téléphone').fill('0102030405');
-  // The consent checkbox's <label> wraps the input but carries no visible
-  // text (the GDPR message renders separately, below the submit button) -
-  // there's no accessible name to query by, so target it via its class.
+  // No accessible name on the consent checkbox (its GDPR text renders
+  // separately, below the submit button) - target it via its class instead.
   await form.locator('input.consent[type="checkbox"]').check();
 };
 

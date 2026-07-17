@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-// require_once: post_salesforce_petition()/get_salesforce_petition()/
-// patch_salesforce_petition() are thin wrappers over get/post/patch_salesforce_data()
-// (already stubbed generically in tests/bootstrap.php) - requiring the real
-// file here (rather than faking these three ourselves) avoids a "cannot
-// redeclare" collision with tests/Salesforce/SalesforcePetitionBulkCsvTest.php,
-// which also requires this same file for its own (unrelated) scenario.
+// require_once avoids a "cannot redeclare" collision with
+// tests/Salesforce/SalesforcePetitionBulkCsvTest.php, which also requires
+// this same file for its own scenario.
 require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
 require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/create-petition.php';
 
@@ -24,11 +21,8 @@ final class CreatePetitionTest extends TestCase
         $GLOBALS['__phpunit_post_terms'] = [];
         $GLOBALS['__phpunit_post_permalinks'] = [];
         $GLOBALS['__phpunit_salesforce_data_calls'] = [];
-        // false => post_salesforce_petition()/get_salesforce_petition() both
-        // resolve to "no usable Salesforce response"; enough for tests that
-        // only care about the payload sent (still recorded in ->calls
-        // regardless of the return value) rather than the update_field()
-        // side effects of a full success round-trip.
+        // false => "no usable Salesforce response"; enough for tests that
+        // only care about the payload sent (still recorded in ->calls).
         $GLOBALS['__phpunit_salesforce_data_response'] = false;
         $GLOBALS['__phpunit_salesforce_data_response_queue'] = [];
     }

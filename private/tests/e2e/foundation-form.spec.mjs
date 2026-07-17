@@ -2,15 +2,10 @@ import { expect, test } from './support/fixtures';
 
 const FONDATION_PATH = '/fondation/';
 
-// The real "formulaire-foundation" content (rendered at
-// /fondation-amnesty-international-france/ in production) is a Jetpack
-// Forms block, same situation as the legs form: its markup only exists in
-// production's database, so seed-wordpress.sh recreates it with the real
-// field labels via Jetpack's classic [contact-form] shortcode. Unlike the
-// legs page, this form has no scroll-to CTA - it's a plain always-visible
-// section - and only Nom/Prénom/E-mail are required (Civilité, Téléphone,
-// the message, and the postal-mail checkbox are all optional, no consent
-// field at all).
+// Same situation as the legs form (see legacy-giving-form.spec.mjs): the real
+// content is a Jetpack Forms block only living in production's DB, recreated
+// by seed-wordpress.sh. Here only Nom/Prénom/E-mail are required, and there's
+// no consent field.
 test.describe('foundation contact form', () => {
   test('is reachable directly on the page and shows its fields', async ({
     page,

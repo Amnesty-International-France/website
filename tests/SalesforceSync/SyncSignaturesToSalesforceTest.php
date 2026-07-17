@@ -8,30 +8,14 @@ use PHPUnit\Framework\TestCase;
 // Integration test for the CLI cron job (`wp sync signatures`) that petition
 // signing defers its real Salesforce sync to: sync_signatures_to_salesforce()
 // in includes/salesforce/petition.php. Unlike SalesforcePetitionBulkCsvTest
-// (which tests each helper function in isolation with hand-built inputs),
-// this test drives the whole orchestration function end-to-end - bulk job
-// creation, CSV upload, job close, polling, and result processing - through
-// the same generic wp_remote_get()/wp_remote_request()/get_salesforce_data()
-// stubs from tests/bootstrap.php, asserting on the full call sequence and the
-// resulting local signature-status updates.
+// (unit-level, hand-built inputs), this drives the whole orchestration
+// end-to-end - bulk job creation, CSV upload, job close, polling, result
+// processing - through the generic wp_remote_*()/get_salesforce_data() stubs.
 //
-// get_local_user()/update_signature_status() are shared with
-// tests/Salesforce/SalesforcePetitionBulkCsvTest.php via a single
-// require_once'd file rather than each declaring its own copy - two separate
-// function_exists()-guarded copies of the same function names is a silent
-// collision trap: whichever test file loads first "wins", and the second one
-// silently ends up reading/writing the FIRST file's backing globals instead
-// of its own the moment both testsuites load in the same PHPUnit process
-// (no fatal, just a wrong result). Not shared in bootstrap.php (always
-// loaded for every suite) because tests/Petitions/PetitionsTablesTest.php
-// requires the REAL implementation from petitions/tables.php directly, and a
-// shared bootstrap stub would permanently shadow it there.
-//
-// poll_job_state() contains a real, unstubbable sleep(SECONDS_BETWEEN_CHECKS)
-// (= sleep(30)) between each status check - it's PHP's built-in sleep(), not
-// interceptable from the global namespace. This test's canned job status
-// reaches "JobComplete" on the first check, so it pays that cost exactly
-// once (~30s). Run in isolation via `composer run test:salesforce-sync`.
+// poll_job_state() contains a real, unstubbable sleep(30) between status
+// checks; this test's canned job status reaches "JobComplete" on the first
+// check, so it pays that cost exactly once. Run in isolation via
+// `composer run test:salesforce-sync`.
 
 require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
 require_once dirname(__DIR__) . '/support/local-user-stubs.php';

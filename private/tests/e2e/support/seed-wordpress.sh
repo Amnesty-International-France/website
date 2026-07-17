@@ -6,11 +6,9 @@ yarn env:e2e run cli wp theme activate humanity-theme
 yarn env:e2e run cli wp option update permalink_structure '/%postname%/'
 yarn env:e2e run cli wp rewrite flush
 
-# French locale: the site's own content is hardcoded French already, but
-# plugin-generated UI strings (e.g. Jetpack Forms'"'"' submit button/success
-# message) go through WordPress i18n and stay in English without this -
-# install/activate both the core and Jetpack fr_FR translations so specs can
-# assert on the real French copy a visitor actually sees.
+# French locale: page content is hardcoded French, but plugin-generated UI
+# strings (e.g. Jetpack Forms'"'"' submit button/success message) go through
+# WordPress i18n and stay in English without this.
 yarn env:e2e run cli wp language core install fr_FR
 yarn env:e2e run cli wp site switch-language fr_FR
 yarn env:e2e run cli wp language plugin install jetpack fr_FR
@@ -311,11 +309,8 @@ update_post_meta($post_id, "_wp_page_template", "page-don");
 # Legs page: templates/page-legs.html (slug "legs") embeds parts/legs-form.html
 # -> patterns/form-legs.php, which fetches a SEPARATE page ("formulaire-legs")
 # and echoes its content through the_content. That real production page is a
-# Jetpack contact-form block living only in the prod DB (not in this repo,
-# and Jetpack isn'"'"'t installed in this e2e stack to render/process it anyway),
-# so we seed our OWN representative static form markup here - enough to
-# verify the "Demander notre brochure" link reveals a real, fillable form,
-# but NOT a real Jetpack submission (no plugin to process it in e2e).
+# Jetpack contact-form block living only in the prod DB (not in this repo) -
+# seeded below as an equivalent Jetpack shortcode instead.
 yarn env:e2e run cli wp eval '
 global $wpdb;
 
@@ -367,15 +362,10 @@ if (get_page_by_path("formulaire-legs")) {
 $now = current_time("mysql");
 $now_gmt = current_time("mysql", true);
 
-// Field set/labels match the real "formulaire-legs" page as rendered at
-// /nous-soutenir/legs/ in production. Uses Jetpack classic
-// [contact-form] shortcode (still supported by the "contact-form" module
-// activated via .wp-env.e2e.json'"'"'s afterStart script) rather than hand-authoring
-// the current block-comment markup/attributes, which is more likely to drift
-// across Jetpack versions. Jetpack auto-detects "localhost" as offline/dev
-// mode (no account/connection needed), so the module renders and processes
-// a REAL AJAX submission here - unlike the rest of this e2e stack, this one
-// genuinely exercises Jetpack'"'"'s own form validation and success state.
+// Field set/labels match the real "formulaire-legs" production page. Uses the
+// classic [contact-form] shortcode rather than the block markup, less likely
+// to drift across Jetpack versions. Jetpack treats "localhost" as offline/dev
+// mode, so this renders and processes a REAL AJAX submission.
 $form_content = "[contact-form to=\"e2e@example.test\" subject=\"Demande de brochure - legs (e2e)\"]"
     . "[contact-field label=\"Civilité\" type=\"radio\" options=\"Madame,Monsieur,Autre\" required=\"1\"]"
     . "[contact-field label=\"Nom\" type=\"name\" required=\"1\"]"
@@ -387,10 +377,8 @@ $form_content = "[contact-form to=\"e2e@example.test\" subject=\"Demande de broc
     . "[contact-field label=\"Téléphone\" type=\"telephone\" required=\"1\"]"
     . "[contact-field label=\"Je souhaite recevoir la brochure\" type=\"checkbox-multiple\" options=\"Par courrier postal,Par email\"]"
     // consentType="explicit" renders a real, checkable checkbox. Without it,
-    // Jetpack defaults to "implicit" consent (a hidden input pre-set to
-    // "Oui") whose value the Interactivity API'"'"'s own client-side validation
-    // state doesn'"'"'t seed from - it fails "champ obligatoire" on submit even
-    // though the field is never shown to (or actionable by) a visitor.
+    // Jetpack defaults to a hidden, pre-checked "implicit" consent input that
+    // always fails client-side validation on submit.
     . "[contact-field label=\"J'"'"'accepte que mes données soient traitées par Amnesty International France\" type=\"consent\" consentType=\"explicit\" required=\"1\"]"
     . "[/contact-form]";
 
@@ -422,15 +410,9 @@ $wpdb->insert($wpdb->posts, [
 clean_post_cache((int) $wpdb->insert_id);
 '
 
-# Foundation page: templates/page-fondation.html (slug "fondation") embeds
-# parts/foundation-form.html -> patterns/form-foundation.php, which fetches a
-# SEPARATE page (note the English spelling: "formulaire-foundation", not
-# "formulaire-fondation" - must match exactly for get_page_by_path() to find
-# it) and echoes its content through the_content, exactly like the legs form.
-# Verified against the real page at /fondation-amnesty-international-france/:
-# Civilité (optional radio), Nom/Prénom/E-mail (required), Téléphone
-# (optional, no country selector here for simplicity), an optional message,
-# and an optional "receive by post" checkbox - no consent field this time.
+# Foundation page: same pattern as the legs page above, via a separate
+# "formulaire-foundation" page (note the English spelling, not "fondation" -
+# must match exactly for get_page_by_path() to find it).
 yarn env:e2e run cli wp eval '
 global $wpdb;
 

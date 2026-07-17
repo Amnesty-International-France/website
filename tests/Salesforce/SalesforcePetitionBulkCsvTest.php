@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-// post_salesforce_data() is stubbed once for the whole suite in tests/bootstrap.php
-// (shared across domains that call it, e.g. petitions and users) - see setUp()
-// below for how this test seeds/reads its calls and canned response.
+// post_salesforce_data() is stubbed once for the whole suite in
+// tests/bootstrap.php - see setUp() below for how this test seeds/reads its
+// calls and canned response.
 
-// get_local_user()/update_signature_status() are shared with
-// tests/SalesforceSync/SyncSignaturesToSalesforceTest.php via a single
-// require_once'd file rather than each declaring its own copy - see that
-// file's comment for why two separate copies is a silent-collision trap.
+// Shared with tests/SalesforceSync/SyncSignaturesToSalesforceTest.php (see
+// that file's local-user-stubs.php require for why one shared copy matters).
 require_once dirname(__DIR__) . '/support/local-user-stubs.php';
 
-// require_once: other testsuites (e.g. Petitions) also depend on this real
-// file for its thin Salesforce-petition-object wrappers; require_once avoids
+// require_once: Petitions also depends on this real file; require_once avoids
 // a "cannot redeclare" fatal if both get loaded in the same PHP process.
 require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
 

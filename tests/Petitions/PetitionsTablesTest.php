@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-// petitions/tables.php declares get_local_user()/update_signature_status()
-// for real, which tests/Salesforce/SalesforcePetitionBulkCsvTest.php stubs
-// as fakes under the same names for its own (unrelated) scenario. PHPUnit
-// loads every test file of a run up front (even test methods that never
-// execute together still get their file require()'d for discovery), so this
-// suite and the Salesforce suite fatal with "cannot redeclare" if loaded in
-// the same `phpunit` invocation. Run testsuites independently via their own
-// composer script (see tests/README.md) rather than a filter-less `phpunit`.
+// Declares get_local_user()/update_signature_status() for real, which
+// tests/Salesforce fakes under the same names - run testsuites independently
+// (see "Toujours lancer un testsuite à la fois" in tests/README.md).
 require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/tables.php';
 
 final class PetitionsTablesTest extends TestCase

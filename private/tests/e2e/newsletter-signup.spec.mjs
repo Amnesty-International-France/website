@@ -5,14 +5,10 @@ import { getSalesforceCalls, resetSalesforceCalls } from './support/salesforce';
 const NEWSLETTER_PATH = '/newsletter/';
 const NEWSLETTER_FORM = '#newsletter-form';
 
-// Unlike petition signing / legs / foundation forms (verified to only touch
-// local DB, or a Jetpack flow with no Salesforce wiring at all), newsletter
-// signup (patterns/page-nl-content.php) makes a REAL, synchronous Salesforce
-// call as part of handling the POST: for a brand new email it calls
-// insert_user() (local) then post_salesforce_users() (Contact creation).
-// aif-e2e-support.php mocks every Salesforce call and records it, so this
-// spec can assert that call actually happened, not just that the page
-// behaved as if it had.
+// Unlike petition signing/legs/foundation, newsletter signup makes a REAL,
+// synchronous Salesforce call while handling the POST (a new email triggers
+// post_salesforce_users()) - aif-e2e-support.php mocks and records it so this
+// spec can assert it actually happened.
 
 test.describe('newsletter signup', () => {
   test.beforeEach(async ({ request, salesforceTestId }) => {
