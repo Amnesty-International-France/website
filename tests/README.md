@@ -53,6 +53,7 @@ composer install # une seule fois, installe phpunit dans vendor/
 composer run test:salesforce
 composer run test:donor-space
 composer run test:petitions
+composer run test:salesforce-sync # ~30s, voir plus bas
 # ou directement :
 ./vendor/bin/phpunit --testsuite Salesforce
 ```
@@ -70,6 +71,34 @@ les charger ensemble provoque un fatal "cannot redeclare". Chaque script
 composer (`test:salesforce`, `test:donor-space`, `test:petitions`, ...) est
 déjà scopé via `--testsuite` pour cette raison ; c'est la façon supportée de
 lancer les tests, en local comme en CI.
+
+### Test d'intégration de la sync CLI Salesforce (`test:salesforce-sync`)
+
+La signature d'une pétition (`amnesty_handle_petition_signature()`) n'appelle
+jamais Salesforce en direct : elle écrit seulement en local, et la synchro
+Salesforce est déférée à une tâche CLI séparée (`wp sync signatures` →
+`Sync_Command::signatures()` → `sync_signatures_to_salesforce()` dans
+`includes/salesforce/petition.php`). C'est ce job CLI, pas la requête HTTP de
+signature, qui fait le vrai appel Salesforce - `tests/SalesforceSync/
+SyncSignaturesToSalesforceTest.php` le teste de bout en bout (création du bulk
+job, upload du CSV, fermeture du job, polling, lecture des résultats
+succès/échec/non-traités, mise à jour du statut local de chaque signature),
+contrairement à `tests/Salesforce/SalesforcePetitionBulkCsvTest.php` qui teste
+chaque fonction isolément avec des entrées construites à la main.
+
+Ce test a un coût réel et volontaire : `poll_job_state()` contient un vrai
+`sleep(30)` (constante `SECONDS_BETWEEN_CHECKS`) entre deux vérifications de
+statut du job, que rien ne peut stuber (fonction native PHP dans le namespace
+global). Le job simulé passe à l'état `JobComplete` dès la première
+vérification, donc ce coût est payé une seule fois (~30s) - c'est pourquoi ce
+test vit dans son propre testsuite (`SalesforceSync`), séparé des autres
+suites Salesforce qui restent rapides.
+
+Comme `SalesforcePetitionBulkCsvTest.php`, ce fichier définit ses propres
+stubs locaux pour `get_local_user()`/`update_signature_status()` (pas
+partagés dans `bootstrap.php`, pour la même raison : la vraie implémentation
+dans `petitions/tables.php` est testée directement par
+`tests/Petitions/PetitionsTablesTest.php`).
 
 ## Tests JS unitaires (Vitest)
 
@@ -187,6 +216,45 @@ base est toujours prioritaire sur les fichiers du thème, donc ça corrige
 l'affichage sans toucher au moindre fichier du thème. Son contenu réutilise
 la pattern `amnesty/search-results`, déjà fonctionnelle et indépendante de
 Jetpack.
+
+### Parcours se terminant par un vrai appel Salesforce
+
+Certains parcours font un vrai appel réseau synchrone à Salesforce pendant la
+requête (ex. l'inscription newsletter, `patterns/page-nl-content.php`, qui
+appelle `post_salesforce_users()` pour créer le Contact) - à ne pas confondre
+avec des parcours qui ne font que des écritures locales et déclenchent leur
+sync Salesforce plus tard via une tâche CLI séparée (c'est le cas de la
+signature de pétition : `insert_petition_signature()` est local, la sync
+Salesforce est un job `wp sync signatures` distinct, jamais appelé pendant la
+requête HTTP).
+
+`aif-e2e-support.php` mocke **tout** appel sortant vers Salesforce
+(`includes/salesforce/data.php`/`authentification.php`, via la variable
+d'environnement `AIF_SALESFORCE_URL` pointée vers une fausse URL) et
+enregistre chaque appel (méthode, URL, corps) dans une option WordPress,
+exposée en lecture/suppression via `/wp-json/aif-e2e/v1/salesforce-calls`
+(voir `support/salesforce.mjs`). Un test peut donc :
+
+```js
+import { getSalesforceCalls, resetSalesforceCalls } from './support/salesforce';
+
+test.beforeEach(async ({ request }) => {
+  await resetSalesforceCalls(request); // état propre entre deux tests
+});
+
+test('...', async ({ page, request, gotoWithoutCookieOverlay }) => {
+  // ... remplir et soumettre le formulaire ...
+
+  const calls = await getSalesforceCalls(request);
+  const contactCall = calls.find((c) => c.method === 'POST' && c.url.includes('sobjects/Contact/'));
+  expect(contactCall).toBeTruthy();
+  expect(JSON.parse(contactCall.body).Email).toBe(uniqueEmail);
+});
+```
+
+Par défaut, toute requête SOQL (`query/?q=`) mockée répond "aucun résultat"
+(`totalSize: 0`), ce qui fait passer le code testé par sa branche "nouveau
+contact/lead" - voir `newsletter-signup.spec.mjs` comme référence complète.
 
 ### Ajouter un nouveau test e2e
 

@@ -311,6 +311,87 @@ if (!function_exists('post_salesforce_data')) {
     }
 }
 
+// Deliberately NOT stubbing get_local_user()/update_signature_status() here:
+// unlike post_salesforce_data() (never required for real anywhere), these
+// two have a REAL implementation in petitions/tables.php that
+// tests/Petitions/PetitionsTablesTest.php requires directly to test it. A
+// blanket stub here would permanently shadow that real function for every
+// suite. Any test needing to fake these (because it requires a *different*
+// file that only calls them, e.g. salesforce/petition.php) must keep its own
+// local stub, scoped to its own testsuite - see
+// tests/SalesforceSync/SyncSignaturesToSalesforceTest.php.
+
+if (!function_exists('get_salesforce_access_token')) {
+    $GLOBALS['__phpunit_salesforce_access_token'] = 'fake-e2e-access-token';
+
+    /**
+     * Stub for includes/salesforce/authentification.php's
+     * get_salesforce_access_token(). Bypasses the real OAuth refresh flow
+     * entirely (stub the external boundary, not its internals) - seed
+     * $GLOBALS['__phpunit_salesforce_access_token'] with a WP_Error instance
+     * to simulate a token failure.
+     */
+    function get_salesforce_access_token(): mixed
+    {
+        return $GLOBALS['__phpunit_salesforce_access_token'];
+    }
+}
+
+if (!function_exists('wp_remote_get')) {
+    $GLOBALS['__phpunit_wp_remote_calls'] = [];
+    $GLOBALS['__phpunit_wp_remote_response'] = ['body' => '', 'response' => ['code' => 200]];
+    $GLOBALS['__phpunit_wp_remote_response_queue'] = [];
+
+    /**
+     * Generic stubs for wp_remote_get()/wp_remote_request() and their
+     * companion accessors. Needed by code that calls the WP HTTP API
+     * directly instead of going through the get/post/patch_salesforce_data()
+     * wrappers above (e.g. includes/salesforce/petition.php's
+     * upload_bulk_data()/poll_job_state()/get_bulk_*_results()).
+     *
+     * Both functions share one call log and one response queue/single-value
+     * fallback (same pattern as __phpunit_next_salesforce_data_response),
+     * since a single orchestration function typically calls them in a known
+     * sequence a test can seed responses for in order.
+     */
+    function __phpunit_next_wp_remote_response(): array
+    {
+        if (!empty($GLOBALS['__phpunit_wp_remote_response_queue'])) {
+            return array_shift($GLOBALS['__phpunit_wp_remote_response_queue']);
+        }
+
+        return $GLOBALS['__phpunit_wp_remote_response'];
+    }
+
+    function wp_remote_get(string $url, array $args = []): mixed
+    {
+        $GLOBALS['__phpunit_wp_remote_calls'][] = ['method' => 'GET', 'url' => $url, 'args' => $args];
+
+        return __phpunit_next_wp_remote_response();
+    }
+
+    function wp_remote_request(string $url, array $args = []): mixed
+    {
+        $GLOBALS['__phpunit_wp_remote_calls'][] = [
+            'method' => $args['method'] ?? 'GET',
+            'url' => $url,
+            'args' => $args,
+        ];
+
+        return __phpunit_next_wp_remote_response();
+    }
+
+    function wp_remote_retrieve_body(mixed $response): string
+    {
+        return is_array($response) ? (string) ($response['body'] ?? '') : '';
+    }
+
+    function wp_remote_retrieve_response_code(mixed $response): int
+    {
+        return is_array($response) ? (int) ($response['response']['code'] ?? 0) : 0;
+    }
+}
+
 if (!defined('ARRAY_A')) {
     define('ARRAY_A', 'ARRAY_A');
     define('ARRAY_N', 'ARRAY_N');

@@ -14,5 +14,8 @@
         <testsuite name="Petitions">
             <directory>tests/Petitions</directory>
         </testsuite>
+        <testsuite name="SalesforceSync">
+            <directory>tests/SalesforceSync</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

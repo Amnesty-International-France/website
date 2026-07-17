@@ -120,6 +120,89 @@ add_filter('pre_http_request', function ($preempt, $args, $url) {
     ];
 }, 10, 3);
 
+const AIF_E2E_SALESFORCE_BASE_URL = 'https://fake-salesforce.e2e.test/';
+
+if (!getenv('AIF_SALESFORCE_URL')) {
+    putenv('AIF_SALESFORCE_URL=' . AIF_E2E_SALESFORCE_BASE_URL);
+}
+
+/**
+ * Mocks every outbound Salesforce call (includes/salesforce/data.php +
+ * authentification.php always go through AIF_SALESFORCE_URL) and records
+ * each one in an option, so specs for journeys that end with a real,
+ * synchronous Salesforce call (e.g. newsletter signup) can assert it was
+ * actually triggered via the /aif-e2e/v1/salesforce-calls REST route below,
+ * without a real network call ever leaving this environment.
+ */
+add_filter('pre_http_request', function ($preempt, $args, $url) {
+    if (!str_starts_with($url, AIF_E2E_SALESFORCE_BASE_URL)) {
+        return $preempt;
+    }
+
+    $calls = get_option('aif_e2e_salesforce_calls', []);
+    $calls[] = [
+        'method' => $args['method'] ?? 'GET',
+        'url' => $url,
+        'body' => $args['body'] ?? null,
+    ];
+    update_option('aif_e2e_salesforce_calls', $calls, false);
+
+    $path = substr($url, strlen(AIF_E2E_SALESFORCE_BASE_URL));
+
+    if (str_starts_with($path, 'services/oauth2/token')) {
+        // issued_at is genuinely in milliseconds (see the "warning" comment in
+        // refresh_salesforce_token()) - a real-looking value keeps the token
+        // valid for this request and any others in the same test.
+        $body = [
+            'access_token' => 'fake-e2e-access-token',
+            'issued_at' => (string) floor(microtime(true) * 1000),
+            'instance_url' => rtrim(AIF_E2E_SALESFORCE_BASE_URL, '/'),
+            'token_type' => 'Bearer',
+        ];
+    } elseif (str_contains($path, 'query/?q=')) {
+        // SOQL lookup (existing Contact/Lead by email). Defaults to "not
+        // found" so the create branch of whichever handler is under test
+        // runs; a test can seed a match via aif_e2e_sf_query_found=1.
+        $found = isset($_REQUEST['aif_e2e_sf_query_found']) && '1' === $_REQUEST['aif_e2e_sf_query_found'];
+        $body = $found
+            ? ['totalSize' => 1, 'records' => [['Id' => 'fake-sf-id-existing']]]
+            : ['totalSize' => 0, 'records' => []];
+    } else {
+        // Any create/update/delete call (Contact, Lead, Case, ...).
+        $body = ['success' => true, 'id' => 'fake-sf-id-new'];
+    }
+
+    return [
+        'headers' => [],
+        'body' => wp_json_encode($body),
+        'response' => [
+            'code' => 200,
+            'message' => 'OK',
+        ],
+        'cookies' => [],
+        'filename' => null,
+    ];
+}, 10, 3);
+
+add_action('rest_api_init', function () {
+    register_rest_route('aif-e2e/v1', '/salesforce-calls', [
+        'methods' => 'GET',
+        'callback' => function () {
+            return new WP_REST_Response(get_option('aif_e2e_salesforce_calls', []), 200);
+        },
+        'permission_callback' => '__return_true',
+    ]);
+
+    register_rest_route('aif-e2e/v1', '/salesforce-calls', [
+        'methods' => 'DELETE',
+        'callback' => function () {
+            delete_option('aif_e2e_salesforce_calls');
+            return new WP_REST_Response(['cleared' => true], 200);
+        },
+        'permission_callback' => '__return_true',
+    ]);
+});
+
 $site_key = $_REQUEST['aif_e2e_turnstile_site_key'] ?? null;
 $secret_key = $_REQUEST['aif_e2e_turnstile_secret_key'] ?? null;
 
