@@ -15,10 +15,17 @@ use PHPUnit\Framework\TestCase;
 // stubs from tests/bootstrap.php, asserting on the full call sequence and the
 // resulting local signature-status updates.
 //
-// get_local_user()/update_signature_status() get their own local stubs here
-// (not shared in bootstrap.php) for the same reason as
-// SalesforcePetitionBulkCsvTest: petitions/tables.php defines the real ones,
-// and tests/Petitions/PetitionsTablesTest.php requires that file directly.
+// get_local_user()/update_signature_status() are shared with
+// tests/Salesforce/SalesforcePetitionBulkCsvTest.php via a single
+// require_once'd file rather than each declaring its own copy - two separate
+// function_exists()-guarded copies of the same function names is a silent
+// collision trap: whichever test file loads first "wins", and the second one
+// silently ends up reading/writing the FIRST file's backing globals instead
+// of its own the moment both testsuites load in the same PHPUnit process
+// (no fatal, just a wrong result). Not shared in bootstrap.php (always
+// loaded for every suite) because tests/Petitions/PetitionsTablesTest.php
+// requires the REAL implementation from petitions/tables.php directly, and a
+// shared bootstrap stub would permanently shadow it there.
 //
 // poll_job_state() contains a real, unstubbable sleep(SECONDS_BETWEEN_CHECKS)
 // (= sleep(30)) between each status check - it's PHP's built-in sleep(), not
@@ -27,35 +34,7 @@ use PHPUnit\Framework\TestCase;
 // once (~30s). Run in isolation via `composer run test:salesforce-sync`.
 
 require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
-
-if (!function_exists('get_local_user')) {
-    function get_local_user(string $email): object
-    {
-        return (object) [
-            'id' => $GLOBALS['__phpunit_local_users_by_email'][strtolower($email)]->id ?? 0,
-        ];
-    }
-}
-
-if (!function_exists('update_signature_status')) {
-    function update_signature_status(
-        $petition_id,
-        $user_id,
-        $pending,
-        $is_synched,
-        $last_sync,
-        $increment_nb_try = false
-    ) {
-        $GLOBALS['__phpunit_updated_signature_statuses'][] = [
-            'petition_id' => $petition_id,
-            'user_id' => $user_id,
-            'pending' => $pending,
-            'is_synched' => $is_synched,
-            'last_sync' => $last_sync,
-            'increment_nb_try' => $increment_nb_try,
-        ];
-    }
-}
+require_once dirname(__DIR__) . '/support/local-user-stubs.php';
 
 #[Group('slow')]
 final class SyncSignaturesToSalesforceTest extends TestCase
@@ -66,12 +45,14 @@ final class SyncSignaturesToSalesforceTest extends TestCase
 
     protected function setUp(): void
     {
+        global $updated_signature_statuses, $local_users;
+
         putenv('AIF_SALESFORCE_URL=' . self::SALESFORCE_URL);
 
-        $GLOBALS['__phpunit_updated_signature_statuses'] = [];
-        $GLOBALS['__phpunit_local_users_by_email'] = [
-            'ada@example.test' => (object) ['id' => 456],
-            'grace@example.test' => (object) ['id' => 457],
+        $updated_signature_statuses = [];
+        $local_users = [
+            'ada@example.test' => 456,
+            'grace@example.test' => 457,
         ];
         $GLOBALS['__phpunit_acf_field_values'] = [
             123 => ['uidsf' => 'UID-123'],
@@ -117,6 +98,8 @@ final class SyncSignaturesToSalesforceTest extends TestCase
 
     public function testSyncSignaturesToSalesforceRunsFullBulkJobAndUpdatesLocalStatuses(): void
     {
+        global $updated_signature_statuses;
+
         $signatures = [
             [
                 'petition_id' => 123,
@@ -194,7 +177,7 @@ final class SyncSignaturesToSalesforceTest extends TestCase
         self::assertStringEndsWith('/failedResults', $failed_call['url']);
         self::assertStringEndsWith('/unprocessedrecords', $unprocessed_call['url']);
 
-        $statuses = $GLOBALS['__phpunit_updated_signature_statuses'];
+        $statuses = $updated_signature_statuses;
         self::assertCount(4, $statuses);
 
         // Signatures are first marked pending as soon as the job is launched.

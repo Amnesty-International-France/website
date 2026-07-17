@@ -4,28 +4,15 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-$updated_signature_statuses = [];
-$local_users = [];
-
 // post_salesforce_data() is stubbed once for the whole suite in tests/bootstrap.php
 // (shared across domains that call it, e.g. petitions and users) - see setUp()
 // below for how this test seeds/reads its calls and canned response.
 
-function update_signature_status($petition_id, $user_id, $pending, $is_synched, $last_sync, $increment_nb_try = false): void
-{
-    global $updated_signature_statuses;
-
-    $updated_signature_statuses[] = compact('petition_id', 'user_id', 'pending', 'is_synched', 'last_sync', 'increment_nb_try');
-}
-
-function get_local_user(string $email): object
-{
-    global $local_users;
-
-    return (object) [
-        'id' => $local_users[strtolower($email)] ?? 0,
-    ];
-}
+// get_local_user()/update_signature_status() are shared with
+// tests/SalesforceSync/SyncSignaturesToSalesforceTest.php via a single
+// require_once'd file rather than each declaring its own copy - see that
+// file's comment for why two separate copies is a silent-collision trap.
+require_once dirname(__DIR__) . '/support/local-user-stubs.php';
 
 // require_once: other testsuites (e.g. Petitions) also depend on this real
 // file for its thin Salesforce-petition-object wrappers; require_once avoids

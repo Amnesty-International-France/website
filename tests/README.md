@@ -94,11 +94,24 @@ vérification, donc ce coût est payé une seule fois (~30s) - c'est pourquoi ce
 test vit dans son propre testsuite (`SalesforceSync`), séparé des autres
 suites Salesforce qui restent rapides.
 
-Comme `SalesforcePetitionBulkCsvTest.php`, ce fichier définit ses propres
-stubs locaux pour `get_local_user()`/`update_signature_status()` (pas
-partagés dans `bootstrap.php`, pour la même raison : la vraie implémentation
-dans `petitions/tables.php` est testée directement par
-`tests/Petitions/PetitionsTablesTest.php`).
+Ce fichier partage ses stubs de `get_local_user()`/`update_signature_status()`
+avec `SalesforcePetitionBulkCsvTest.php` via `tests/support/local-user-stubs.php`
+(`require_once`), plutôt que d'en déclarer chacun sa propre copie. Ce n'est
+pas juste une question de style : deux copies distinctes, même identiques en
+apparence, sont un piège de collision silencieuse. PHP ne garde que la
+première déclaration chargée dans un process donné ; si les deux testsuites
+se retrouvent un jour chargées dans le même process (ex.
+`phpunit --testsuite Salesforce,SalesforceSync`), la seconde copie voit sa
+fonction déjà définie (via son propre `function_exists()`) et n'installe
+jamais la sienne - le test utilise alors silencieusement les globales de
+l'*autre* fichier, sans fatal, juste un résultat faux. Un seul fichier
+`require_once`-é par les deux évite ce problème par construction : quel que
+soit l'ordre de chargement, les deux utilisent toujours la même définition.
+Ce fichier partagé n'est volontairement pas dans `bootstrap.php` (toujours
+chargé) pour la même raison que d'habitude : la vraie implémentation dans
+`petitions/tables.php` est testée directement par
+`tests/Petitions/PetitionsTablesTest.php`, et un stub partagé dans
+`bootstrap.php` la masquerait en permanence.
 
 ## Tests JS unitaires (Vitest)
 
