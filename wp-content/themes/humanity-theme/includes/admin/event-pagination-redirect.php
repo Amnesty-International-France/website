@@ -14,7 +14,7 @@ add_action(
 
         $path = wp_parse_url($request_uri, PHP_URL_PATH);
 
-        if (preg_match('#^/evenements/liste/page/(\d+)/?$#', $path, $matches)) {
+        if (is_string($path) && preg_match('#^/evenements/liste/page/(\d+)/?$#', $path, $matches)) {
             $page        = $matches[1];
             $redirect_to = home_url("/evenements/page/$page");
 
