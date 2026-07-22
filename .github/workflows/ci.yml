@@ -78,7 +78,8 @@ jobs:
         continue-on-error: true
         working-directory: private
         run: |
-          export CHROME_PATH="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
+          CHROME_PATH="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
+          export CHROME_PATH
           yarn test:lighthouse
       - name: Upload Lighthouse reports
         uses: actions/upload-artifact@v7
@@ -87,6 +88,7 @@ jobs:
         with:
           name: lighthouse-reports
           path: private/.lighthouseci/
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14
       - name: Run deterministic Playwright tests
