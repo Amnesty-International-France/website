@@ -74,6 +74,21 @@ jobs:
       - name: Seed WordPress E2E content
         working-directory: private
         run: ./tests/e2e/support/seed-wordpress.sh
+      - name: Run Lighthouse audits
+        continue-on-error: true
+        working-directory: private
+        run: |
+          export CHROME_PATH="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
+          yarn test:lighthouse
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v7
+        continue-on-error: true
+        if: ${{ always() }}
+        with:
+          name: lighthouse-reports
+          path: private/.lighthouseci/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Run deterministic Playwright tests
         working-directory: private
         run: yarn test:e2e --grep-invert @cloudflare-smoke
