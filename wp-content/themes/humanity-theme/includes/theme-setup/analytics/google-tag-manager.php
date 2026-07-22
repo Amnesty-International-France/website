@@ -23,6 +23,7 @@ if (! function_exists('amnesty_output_gtm')) {
         }
 
         wp_enqueue_script('gtm', sprintf('https://www.googletagmanager.com/gtm.js?id=%s', esc_attr($gtm)), [], '1.0.0', false);
+        wp_script_add_data('gtm', 'strategy', 'async');
         wp_add_inline_script('gtm', 'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};', 'before');
 
         $consent = amnesty_get_option('gtm_consent_mode', 'amnesty_analytics_options_page');
