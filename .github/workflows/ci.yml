@@ -78,9 +78,20 @@ jobs:
         continue-on-error: true
         working-directory: private
         run: |
+          mkdir -p .lighthouseci
           CHROME_PATH="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
           export CHROME_PATH
-          yarn test:lighthouse
+          set +e
+          yarn test:lighthouse > .lighthouseci/lhci-output.log 2>&1
+          status="$?"
+          set -e
+          cat .lighthouseci/lhci-output.log
+          exit "$status"
+      - name: Summarize Lighthouse reports
+        continue-on-error: true
+        if: ${{ always() }}
+        working-directory: private
+        run: node bin/summarize-lighthouse.mjs
       - name: Upload Lighthouse reports
         uses: actions/upload-artifact@v7
         continue-on-error: true
