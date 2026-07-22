@@ -23,8 +23,8 @@ jobs:
         run: composer validate
       - name: Install dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
-      - name: Run Salesforce PHP tests
-        run: composer run test:salesforce
+      - name: Run PHP tests
+        run: composer run test
       - name: Run PHP-CS-Fixer
         run: composer run cs
       - name: Run PHPStan
@@ -55,9 +55,9 @@ jobs:
       - name: Install frontend dependencies
         working-directory: private
         run: yarn install --immutable
-      - name: Build Turnstile asset
+      - name: Build frontend assets
         working-directory: private
-        run: yarn build:prod --env entry=turnstile
+        run: yarn build
       - name: Run frontend unit tests
         working-directory: private
         run: yarn test
