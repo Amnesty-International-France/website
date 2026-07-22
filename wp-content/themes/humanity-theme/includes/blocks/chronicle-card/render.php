@@ -19,7 +19,7 @@ if (!function_exists('render_chronicle_card_block')) {
 
         if ($cover_image && is_array($cover_image)) {
             $cover = sprintf(
-                '<img src="%s" alt="%s" class="chronicle__image" />',
+                '<img src="%s" alt="%s" class="chronicle__image" loading="lazy" decoding="async" />',
                 esc_url($cover_image['sizes']['medium']),
                 esc_attr($cover_image['alt']),
             );

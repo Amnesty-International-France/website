@@ -24,7 +24,7 @@ $avatar = get_the_author_meta('authoravatar_id');
 <div class="wp-block-group biography-container u-cf">
 	<?php if ($avatar) : ?>
 	<!-- wp:image {"id":<?php echo absint($avatar); ?>,"aspectRatio":"1","scale":"cover","sizeSlug":"thumbnail","linkDestination":"none","align":"left","hideImageCopyright":true} -->
-	<figure class="wp-block-image alignleft size-thumbnail"><img src="<?php echo esc_url(wp_get_attachment_image_src(absint($avatar))[0]); ?>" alt="" class="wp-image-<?php echo absint($avatar); ?>" style="aspect-ratio:1;object-fit:cover"/></figure>
+	<figure class="wp-block-image alignleft size-thumbnail"><img src="<?php echo esc_url(wp_get_attachment_image_src(absint($avatar))[0]); ?>" alt="" class="wp-image-<?php echo absint($avatar); ?>" style="aspect-ratio:1;object-fit:cover" loading="lazy" decoding="async"/></figure>
 	<!-- /wp:image -->
 	<?php endif; ?>
 	<!-- wp:group {"tagName":"div","className":"author-biography"} -->

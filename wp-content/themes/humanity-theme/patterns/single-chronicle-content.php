@@ -39,7 +39,7 @@ if ($is_promo_context) {
 	<div class="chronicle-promo-container">
 		<div class="chronicle-promo__open-magazine">
 			<figure class="open-magazine">
-				<img src="<?php echo esc_url($open_cover_image['sizes']['medium_large']); ?>" alt="<?php echo esc_attr($open_cover_image['alt']); ?>">
+				<img src="<?php echo esc_url($open_cover_image['sizes']['medium_large']); ?>" alt="<?php echo esc_attr($open_cover_image['alt']); ?>" loading="lazy" decoding="async">
 			</figure>
 		</div>
 	</div>
@@ -54,6 +54,7 @@ if ($is_promo_context) {
 		<figure class="cover-image">
 			<img src="<?php echo esc_url($cover_image['sizes']['medium_large']); ?>"
 				 alt="<?php echo esc_attr($cover_image['alt']); ?>"
+				 loading="lazy" decoding="async"
 			/>
 		</figure>
 		<?php endif; ?>

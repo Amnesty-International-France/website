@@ -46,7 +46,7 @@ if (!function_exists('render_actions_homepage_block')) {
                             <div class="item">
                                 <div class="image-wrapper">
                                     <?php if (!empty($imageUrl)) : ?>
-                                        <img class="image" src="<?php echo esc_url($imageUrl); ?>" alt="<?php echo esc_attr($itemTitle); ?>" />
+                                        <img class="image" src="<?php echo esc_url($imageUrl); ?>" alt="<?php echo esc_attr($itemTitle); ?>" loading="lazy" decoding="async" />
                                     <?php else : ?>
                                         <div class="no-image">
                                             <span><?php echo esc_html__('Sélectionnez une image', 'amnesty'); ?></span>

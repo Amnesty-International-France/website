@@ -19,13 +19,13 @@ $icon_phone_url = get_template_directory_uri() . '/assets/images/icon-phone.svg'
         <div class="form-container">
             <div class="officers">
                 <div class="officers-image-container">
-                    <img class="officers-image" src="<?php echo esc_url($image_url); ?>" alt=""/>
+                    <img class="officers-image" src="<?php echo esc_url($image_url); ?>" alt="" loading="lazy" decoding="async"/>
                 </div>
                 <p class="officers-names">Sophie ROUPPERT et Lisa LACOSTE</p>
                 <p class="officers-job">Chargées de relations testateurs</p>
                 <div class="phone-container">
                     <div class="icon-container">
-                        <img src="<?php echo esc_url($icon_phone_url); ?>" alt=""/>
+                        <img src="<?php echo esc_url($icon_phone_url); ?>" alt="" loading="lazy" decoding="async"/>
                     </div>
                     <p class="phone">01 53 38 66 24</p>
                 </div>
