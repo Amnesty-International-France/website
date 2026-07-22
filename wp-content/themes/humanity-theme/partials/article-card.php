@@ -30,7 +30,7 @@ if (!$post_object instanceof WP_Post || $custom) {
 
     if ('press-release' === get_post_type($post_object) && !$thumbnail) {
         $default_image_url = get_template_directory_uri() . '/assets/images/default-press-release-small.png';
-        $thumbnail = '<img src="' . esc_url($default_image_url) . '" alt="' . esc_attr($title) . '" class="article-image">';
+        $thumbnail = '<img src="' . esc_url($default_image_url) . '" alt="' . esc_attr($title) . '" class="article-image" loading="lazy" decoding="async">';
     }
 
     $main_category = amnesty_get_a_post_term($post_id);
