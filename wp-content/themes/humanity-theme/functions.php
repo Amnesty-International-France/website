@@ -484,8 +484,6 @@ add_filter(
     2
 );
 
-add_filter('big_image_size_threshold', '__return_false');
-
 add_filter('block_editor_settings_all', function ($settings, $context) {
     if (current_user_can('edit_theme_options')) {
         return $settings;
