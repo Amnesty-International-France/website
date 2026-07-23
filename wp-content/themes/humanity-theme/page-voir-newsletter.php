@@ -56,6 +56,7 @@ $url_adherent_base = 'https://soutenir.amnesty.fr/b?cid=228&lang=fr_FR&reserved_
 
 $url_non_adherent_final = add_query_arg($utm_params, $url_non_adherent_base);
 $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
+$oswald_font_url = esc_url(get_template_directory_uri() . '/assets/fonts/oswald/oswald-latin-400-600.woff2');
 ?>
 <html xmlns="http://www.w.org/1999/xhtml">
 <head>
@@ -64,13 +65,26 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title><?php echo esc_html($post_title); ?></title>
-    <style type="text/css">@import url(https://fonts.googleapis.com/css?family=Oswald:400,600);
+    <style type="text/css">
+        @font-face {
+            font-family: 'Oswald';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('<?php echo $oswald_font_url; ?>') format('woff2');
+        }
+        @font-face {
+            font-family: 'Oswald';
+            font-style: normal;
+            font-weight: 600;
+            font-display: swap;
+            src: url('<?php echo $oswald_font_url; ?>') format('woff2');
+        }
         body { background: #fff; }
         table { font-family: sans-serif; }
         .button { cursor: pointer; font-size:20px; background: transparent; border: 2px solid #000; font-family: Oswald, Arial, sans-serif; font-style: normal; text-transform: uppercase; padding: 5px 15px; }
         .button:hover { border-color: #ef8200; color: #ef8200; }
     </style>
-    <link href="https://fonts.googleapis.com/css?family=Oswald:400,600" rel="stylesheet"/>
     <img src="https://click.email.amnesty.fr/open.aspx?ffcb10-fe9216747c65017575-fe2d117574640d7f751078-fe8c13727763027972-ff6515717d-fe27107775650d74751076-ff311170756d&d=70247&bmt=0" width="1" height="1" alt="">
     <custom name="opencounter" type="tracking"/>
 </head>
