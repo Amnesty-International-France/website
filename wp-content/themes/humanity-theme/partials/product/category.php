@@ -27,7 +27,7 @@ $aria_label = sprintf( /* translators: [front] ARIA Donate %s: the product categ
 <article class="post postImage--small" role="listitem" aria-label="<?php echo esc_attr($aria_label); ?>">
 	<figure class="post-figure">
 		<a href="<?php echo esc_url($category_link); ?>">
-			<img src="<?php echo esc_url($featured_image); ?>" alt="">
+			<img src="<?php echo esc_url($featured_image); ?>" alt="" loading="lazy" decoding="async">
 		</a>
 	</figure>
 	<div class="post-content">

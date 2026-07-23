@@ -15,7 +15,7 @@ $icon_phone_url = get_template_directory_uri() . '/assets/images/icon-phone.svg'
 <aside class="page-legs-aside">
   <div class="sticky-card">
     <div class="sticky-card-image-container">
-      <img class="sticky-card-image" src="<?php echo esc_url($image_url); ?>" alt="" />
+      <img class="sticky-card-image" src="<?php echo esc_url($image_url); ?>" alt="" loading="lazy" decoding="async" />
     </div>
     <div class="sticky-card-content">
       <div class="officers">
@@ -24,7 +24,7 @@ $icon_phone_url = get_template_directory_uri() . '/assets/images/icon-phone.svg'
       </div>
       <div class="phone-container">
         <div class="icon-container">
-          <img src="<?php echo esc_url($icon_phone_url); ?>" alt=""/>
+          <img src="<?php echo esc_url($icon_phone_url); ?>" alt="" loading="lazy" decoding="async"/>
         </div>
         <p class="phone">01 53 38 66 24</p>
       </div>

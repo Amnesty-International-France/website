@@ -35,7 +35,7 @@ if (!function_exists('render_carousel_block')) {
                         ?>
                         <div class="swiper-slide">
                             <div class="carousel-image">
-                                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($alt); ?>" loading="lazy" />
+                                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($alt); ?>" loading="lazy" decoding="async" />
                                 <?php if (!empty($caption)) : ?>
                                     <div class="carousel-caption">
                                         <span class="carousel-caption-text"><?php echo wp_kses_post($caption); ?></span>

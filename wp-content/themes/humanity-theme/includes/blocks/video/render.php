@@ -99,7 +99,7 @@ if (!function_exists('render_video_block')) {
         <div class="video-block">
             <div class="video-wrapper">
 				<div class="warning">
-					<img src="<?= $image_broken ?>" alt="warning">
+					<img src="<?= $image_broken ?>" alt="warning" loading="lazy" decoding="async">
 					<p>
 						Le visionnage de cette vidéo entraîne un dépôt de cookies de la part de YouTube. Si vous
 						souhaitez lire la vidéo, vous devez consentir aux cookies pour une publicité ciblée en

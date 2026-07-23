@@ -189,7 +189,7 @@ if ($random_petition->have_posts()) :
                 <div class="random-petition">
                     <?php if ($featured_image_url) : ?>
                         <div class="random-petition-image-container">
-                            <img class="random-petition-image" src="<?php echo esc_url($featured_image_url); ?>" alt="<?php echo esc_attr($random_title); ?>">
+                            <img class="random-petition-image" src="<?php echo esc_url($featured_image_url); ?>" alt="<?php echo esc_attr($random_title); ?>" loading="lazy" decoding="async">
                         </div>
                     <?php endif; ?>
                     <div class="random-petition-meta">

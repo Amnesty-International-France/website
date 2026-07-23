@@ -80,7 +80,7 @@ if ($all_countries->have_posts()) {
         <h3 class="subtitle">UN BILAN DE LA SITUATION DES DROITS HUMAINS DANS 144 PAYS EN 2025</h3>
         <div class="download">
             <div class="icon-container">
-                <img src="<?php echo esc_url(amnesty_asset_uri('images')); ?>/icon-download-arrow-dark.svg" alt="Download Icon" />
+                <img src="<?php echo esc_url(amnesty_asset_uri('images')); ?>/icon-download-arrow-dark.svg" alt="Download Icon" loading="lazy" decoding="async" />
             </div>
             <p class="label">
                 <?php if ($doc_url) : ?>

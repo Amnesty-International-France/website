@@ -107,7 +107,7 @@ if (!function_exists('render_agenda_homepage_block')) {
                 <div class="chronicle-card">
                     <div class="chronicle-card-image-container">
                         <?php if (!empty($chronicle_image_url)) : ?>
-                            <img src="<?php echo esc_url($chronicle_image_url); ?>" class="chronicle-card-image" alt="<?php esc_attr_e('Image de La Chronique', 'amnesty-core'); ?>" />
+                            <img src="<?php echo esc_url($chronicle_image_url); ?>" class="chronicle-card-image" alt="<?php esc_attr_e('Image de La Chronique', 'amnesty-core'); ?>" loading="lazy" decoding="async" />
                         <?php endif; ?>
                     </div>
                     <div class="chronicle-card-content">
