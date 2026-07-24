@@ -23,8 +23,8 @@ if (!function_exists('render_image_block')) {
         $alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
 
         $image_post = get_post($image_id);
-        $caption = $image_post->post_excerpt;
-        $description = $image_post->post_content;
+        $caption = $image_post?->post_excerpt;
+        $description = $image_post?->post_content;
 
         $full_width = $attributes['fullWidth'] ?? false;
         $classes = $attributes['className'];
