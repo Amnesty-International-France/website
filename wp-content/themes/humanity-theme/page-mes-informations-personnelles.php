@@ -59,7 +59,9 @@ $countries = [
 $actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
 $next_payement = '';
 
-if ($sf_member->hasMandatActif) {
+$has_valid_mandate = $sf_member->hasMandatActif && null !== $actifMandate;
+
+if ($has_valid_mandate) {
     $day_of_payment = date('d', strtotime($actifMandate->Date_paiement_Avenir__c));
     $ibanBlocks = str_split($actifMandate->Tech_Iban__c, 4);
     $last4IBANDigit = substr($actifMandate->Tech_Iban__c, -4);
@@ -118,7 +120,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             }
 ?>
 			<h2>Mes informations personnelles</h2>
-			<?php if ($sf_member->hasMandatActif) : ?>
+			<?php if ($has_valid_mandate) : ?>
 				<p>Vous êtes <span class='aif-text-bold aif-uppercase'> <?php echo esc_html($user_status); ?> </span> d’Amnesty International France sous le numéro : <?php echo esc_html($sf_user->Identifiant_contact__c); ?> en prélèvement automatique avec une périodicité <span class='aif-lowercase'> <?php echo esc_html($actifMandate->Periodicite__c) ?> </span> d'un montant de <?php echo esc_html($actifMandate->Montant__c); ?> €. Votre prochain prélèvement sera effectué le <?php echo esc_html($next_payement); ?>.</p>
 			<?php else : ?>
 				<p>Vous êtes <span class='aif-text-bold aif-uppercase'> <?php echo esc_html($user_status); ?> </span> d’Amnesty International France sous le numéro : <?php echo esc_html($sf_user->Identifiant_contact__c); ?></p>
@@ -245,7 +247,7 @@ aif_include_partial('info-message', [
 			</form>
 		</section>
 
-		<?php if ($sf_member->hasMandatActif) :  ?>
+		<?php if ($has_valid_mandate) :  ?>
 
 		<section class="aif-container--form">
 			<h2>Mes informations bancaires</h2>
