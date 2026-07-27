@@ -98,6 +98,9 @@ $url_adherent_final = add_query_arg($utm_params, $url_adherent_base);
                     <td>
                         <?php foreach ($articles as $article):
                             $post = $article['internal_link'];
+                            if (!$post) {
+                                continue;
+                            }
                             setup_postdata($post);
                             $external_link = $article['external_link'];
                             $link_type = $article['link_type'];
