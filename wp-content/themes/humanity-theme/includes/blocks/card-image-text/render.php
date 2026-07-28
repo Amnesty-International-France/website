@@ -104,7 +104,7 @@ if (!function_exists('render_card_image_text_block')) {
                 <<?= $editor ? 'div' : 'a' ?> href="<?php echo esc_url($permalink); ?>" class="card-image-text-block-link"<?php echo $link_extra_attrs; ?>>
                     <div class="card-image-text-thumbnail-wrapper">
                         <?php if (!empty($thumbnail_url)) : ?>
-                            <img class="card-image-text-thumbnail" src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($title); ?>" />
+                            <img class="card-image-text-thumbnail" src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy" decoding="async" />
                         <?php endif; ?>
                     </div>
                     <div class="card-image-text-content-container">

@@ -23,7 +23,11 @@
     "analyse": "phpstan analyze",
     "cs": "php-cs-fixer fix --config=.php-cs-fixer.php --diff --dry-run",
     "lint": "./vendor/bin/phpcs wp-content/themes/humanity-theme",
+    "test": "phpunit",
     "test:salesforce": "phpunit --testsuite Salesforce",
+    "test:donor-space": "phpunit --testsuite DonorSpace",
+    "test:petitions": "phpunit --testsuite Petitions",
+    "test:salesforce-sync": "phpunit --testsuite SalesforceSync",
     "makePot": "wp i18n make-pot wp-content/themes/humanity-theme wp-content/themes/humanity-theme/languages/amnesty.pot --domain=amnesty --exclude=private",
     "updatePoMo": [
       "wp i18n update-po wp-content/themes/humanity-theme/languages/amnesty.pot",
@@ -35,7 +39,11 @@
     "analyse": "Runs PHPStan static analysis",
     "cs": "Runs PHP-CS-Fixer checks",
     "lint": "Runs PHP coding standard checks",
+    "test": "Runs all PHP tests",
     "test:salesforce": "Runs focused Salesforce PHP tests",
+    "test:donor-space": "Runs donor/member space PHP tests",
+    "test:petitions": "Runs petitions and urgent action PHP tests",
+    "test:salesforce-sync": "Runs the CLI signature bulk-sync integration test (~30s, real sleep() in poll_job_state())",
     "makePot": "Re-generates the POT language file",
     "updatePoMo": "Updates PO, MO, and JSON translation files"
   },

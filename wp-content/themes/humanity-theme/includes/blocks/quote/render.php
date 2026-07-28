@@ -25,7 +25,7 @@ if (!function_exists('render_quote_block')) {
 		<div class="wp-block-amnesty-core-quote-block quote-block">
             <?php if ($show_image && $image_url): ?>
                 <div class="quote-image">
-                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php esc_attr_e('Image de la citation', 'amnesty'); ?>" />
+                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php esc_attr_e('Image de la citation', 'amnesty'); ?>" loading="lazy" decoding="async" />
                 </div>
             <?php endif; ?>
 

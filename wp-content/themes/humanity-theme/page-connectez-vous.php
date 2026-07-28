@@ -44,8 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 if (!is_wp_error($user)) {
                     wp_set_current_user($user->ID);
                     $verification_url = get_permalink(get_page_by_path('mon-espace'));
-                    $urlToRedirectAfterLogin = $_GET['redirect_to'];
-                    wp_redirect($urlToRedirectAfterLogin ?: $verification_url);
+                    wp_redirect($_GET['redirect_to'] ?? $verification_url);
                     exit;
                 } else {
                     $error_message = 'Mauvais email ou mot de passe';

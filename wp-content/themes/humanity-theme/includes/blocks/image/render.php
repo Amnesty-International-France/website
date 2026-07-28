@@ -23,8 +23,8 @@ if (!function_exists('render_image_block')) {
         $alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
 
         $image_post = get_post($image_id);
-        $caption = $image_post->post_excerpt;
-        $description = $image_post->post_content;
+        $caption = $image_post?->post_excerpt;
+        $description = $image_post?->post_content;
 
         $full_width = $attributes['fullWidth'] ?? false;
         $classes = $attributes['className'];
@@ -38,7 +38,7 @@ if (!function_exists('render_image_block')) {
 
         <div class="image-block <?php echo esc_attr($classes) ?> <?php ?>">
             <div class="image-wrapper">
-                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($alt); ?>" />
+                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($alt); ?>" loading="lazy" decoding="async" />
                 <?php if (!empty($caption)) : ?>
                     <p class="image-caption"><?php echo esc_html($caption); ?></p>
                 <?php endif; ?>

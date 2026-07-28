@@ -4,69 +4,31 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-class WP_CLI
-{
-    public static function log(string $message): void
-    {
-    }
+// post_salesforce_data() is stubbed once for the whole suite in
+// tests/bootstrap.php - see setUp() below for how this test seeds/reads its
+// calls and canned response.
 
-    public static function error(string $message): void
-    {
-    }
-}
+// Use the real persistence functions with the in-memory wpdb double instead
+// of declaring test-only global functions that collide during discovery.
+require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/tables.php';
 
-$posted_salesforce_data = [];
-$updated_signature_statuses = [];
-$local_users = [];
-
-function post_salesforce_data(string $url, array $params = []): array
-{
-    global $posted_salesforce_data;
-
-    $posted_salesforce_data[] = [
-        'url' => $url,
-        'params' => $params,
-    ];
-
-    return [
-        'id' => '750-job-id',
-        'contentUrl' => 'services/data/v57.0/jobs/ingest/750-job-id/batches',
-    ];
-}
-
-function get_field(string $name, int $post_id): string
-{
-    return "UID-{$post_id}";
-}
-
-function update_signature_status($petition_id, $user_id, $pending, $is_synched, $last_sync, $increment_nb_try = false): void
-{
-    global $updated_signature_statuses;
-
-    $updated_signature_statuses[] = compact('petition_id', 'user_id', 'pending', 'is_synched', 'last_sync', 'increment_nb_try');
-}
-
-function get_local_user(string $email): object
-{
-    global $local_users;
-
-    return (object) [
-        'id' => $local_users[strtolower($email)] ?? 0,
-    ];
-}
-
-require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
+// require_once: Petitions also depends on this real file; require_once avoids
+// a "cannot redeclare" fatal if both get loaded in the same PHP process.
+require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
 
 final class SalesforcePetitionBulkCsvTest extends TestCase
 {
     protected function setUp(): void
     {
-        global $posted_salesforce_data, $updated_signature_statuses, $local_users;
-
-        $posted_salesforce_data = [];
-        $updated_signature_statuses = [];
-        $local_users = [
-            'processed@example.test' => 456,
+        $GLOBALS['wpdb'] = new wpdb();
+        $GLOBALS['__phpunit_acf_field_values'] = [
+            123 => ['uidsf' => 'UID-123'],
+            789 => ['uidsf' => 'UID-789'],
+        ];
+        $GLOBALS['__phpunit_salesforce_data_calls'] = [];
+        $GLOBALS['__phpunit_salesforce_data_response'] = [
+            'id' => '750-job-id',
+            'contentUrl' => 'services/data/v57.0/jobs/ingest/750-job-id/batches',
         ];
     }
 
@@ -115,19 +77,18 @@ final class SalesforcePetitionBulkCsvTest extends TestCase
 
     public function testBulkIngestJobDeclaresCsvContentAndLineEndings(): void
     {
-        global $posted_salesforce_data;
-
         create_bulk_job_signatures();
 
-        self::assertSame('services/data/v57.0/jobs/ingest', $posted_salesforce_data[0]['url']);
-        self::assertSame('CSV', $posted_salesforce_data[0]['params']['contentType']);
-        self::assertSame('CRLF', $posted_salesforce_data[0]['params']['lineEnding']);
+        $call = $GLOBALS['__phpunit_salesforce_data_calls'][0];
+
+        self::assertSame('services/data/v57.0/jobs/ingest', $call['url']);
+        self::assertSame('CSV', $call['params']['contentType']);
+        self::assertSame('CRLF', $call['params']['lineEnding']);
     }
 
     public function testBulkResultRowsUpdateLocalSignatureAndReturnProcessedKeys(): void
     {
-        global $updated_signature_statuses;
-
+        $GLOBALS['wpdb']->row_result = (object) ['id' => 456];
         $processed_signatures = [];
 
         process_bulk_result_rows(
@@ -144,18 +105,24 @@ final class SalesforcePetitionBulkCsvTest extends TestCase
         );
 
         self::assertSame([get_signature_sync_key(123, 'processed@example.test')], $processed_signatures);
-        self::assertCount(1, $updated_signature_statuses);
-        self::assertSame(123, $updated_signature_statuses[0]['petition_id']);
-        self::assertSame(456, $updated_signature_statuses[0]['user_id']);
-        self::assertSame(0, $updated_signature_statuses[0]['pending']);
-        self::assertSame(1, $updated_signature_statuses[0]['is_synched']);
-        self::assertTrue($updated_signature_statuses[0]['increment_nb_try']);
+        self::assertCount(2, $GLOBALS['wpdb']->calls);
+        self::assertSame([
+            'method' => 'get_row',
+            'query' => "SELECT * FROM `wp_aif_users` WHERE email = 'Processed@Example.Test'",
+        ], $GLOBALS['wpdb']->calls[0]);
+        self::assertSame('query', $GLOBALS['wpdb']->calls[1]['method']);
+        self::assertStringContainsString(
+            'SET pending = 0, nb_try = nb_try + 1, is_synched = 1',
+            $GLOBALS['wpdb']->calls[1]['query']
+        );
+        self::assertStringEndsWith(
+            'WHERE petition_id = 123 AND user_id = 456',
+            $GLOBALS['wpdb']->calls[1]['query']
+        );
     }
 
     public function testFailedBatchMarksOnlyUnprocessedSignaturesAsRetryable(): void
     {
-        global $updated_signature_statuses;
-
         mark_unprocessed_signatures_batch_as_failed(
             [
                 [
@@ -174,12 +141,16 @@ final class SalesforcePetitionBulkCsvTest extends TestCase
             ]
         );
 
-        self::assertCount(1, $updated_signature_statuses);
-        self::assertSame(789, $updated_signature_statuses[0]['petition_id']);
-        self::assertSame(101, $updated_signature_statuses[0]['user_id']);
-        self::assertSame(0, $updated_signature_statuses[0]['pending']);
-        self::assertSame(0, $updated_signature_statuses[0]['is_synched']);
-        self::assertTrue($updated_signature_statuses[0]['increment_nb_try']);
+        self::assertCount(1, $GLOBALS['wpdb']->calls);
+        self::assertSame('query', $GLOBALS['wpdb']->calls[0]['method']);
+        self::assertStringContainsString(
+            'SET pending = 0, nb_try = nb_try + 1, is_synched = 0',
+            $GLOBALS['wpdb']->calls[0]['query']
+        );
+        self::assertStringEndsWith(
+            'WHERE petition_id = 789 AND user_id = 101',
+            $GLOBALS['wpdb']->calls[0]['query']
+        );
     }
 
     public function testBulkJobHasNoProcessedRecordsOnlyWhenSalesforceCountersAreEmpty(): void
