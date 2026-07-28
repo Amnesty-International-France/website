@@ -19,7 +19,10 @@ if (!empty($pdf_id)) {
 }
 
 $post_id = get_the_ID();
-$current_signatures = amnesty_get_petition_signature_count($post_id);
+$uidsf = get_field('uidsf', $post_id);
+$current_signatures = $uidsf ?
+    absint(get_salesforce_petition_counter($uidsf)['records'][0]['Nb_signatures_total__c']) :
+    amnesty_get_petition_signature_count($post_id);
 
 $is_thank_you_page = get_query_var('thanks');
 
