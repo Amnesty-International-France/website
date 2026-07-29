@@ -23,6 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sign_urgent_action'])
             exit;
         }
 
+        $gtm_name = match ($type) {
+            'Sms' => 'SMS',
+            'Email' => 'Email',
+            'Militant' => 'Militant',
+        };
+
         $email = sanitize_email($_POST['email'] ?? '');
         if (! is_email($email)) {
             wp_safe_redirect(home_url($GLOBALS['wp']->request));
@@ -49,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sign_urgent_action'])
                 add_query_arg([
                     'success' => 'true',
                     'gtm_type' => 'action',
-                    'gtm_name' => $action_type ?? '',
+                    'gtm_name' => $gtm_name,
                 ], home_url($GLOBALS['wp']->request))
             );
             exit;
@@ -79,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sign_urgent_action'])
             add_query_arg([
                 'success' => 'true',
                 'gtm_type' => 'action',
-                'gtm_name' => $action_type ?? '',
+                'gtm_name' => $gtm_name,
             ], home_url($GLOBALS['wp']->request))
         );
         exit;
