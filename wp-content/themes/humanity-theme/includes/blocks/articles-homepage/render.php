@@ -260,7 +260,7 @@ if (!function_exists('render_articles_homepage_block')) {
 										<?php
                                         echo wp_get_attachment_image(
                                             $image_id,
-                                            'full',
+                                            '2048x2048',
                                             false,
                                             [
                                                 'class' => 'article-image',
@@ -327,7 +327,7 @@ if (!function_exists('render_articles_homepage_block')) {
 											<?php
                                             echo wp_get_attachment_image(
                                                 $image_id,
-                                                'full',
+                                                '2048x2048',
                                                 false,
                                                 [
                                                     'class' => 'article-main-mobile-image',
@@ -409,7 +409,7 @@ if (!function_exists('render_articles_homepage_block')) {
 													<?php
 							                        echo wp_get_attachment_image(
 							                            $image_id,
-							                            'full',
+							                            '2048x2048',
 							                            false,
 							                            [
 							                                'class' => 'article-side-image',
