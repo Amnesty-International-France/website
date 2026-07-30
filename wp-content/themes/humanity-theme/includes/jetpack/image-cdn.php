@@ -3,12 +3,24 @@
 /**
  * Widest srcset candidate we ever want to advertise.
  *
- * Matches both the widest size the theme registers (`hero-lg`, 2560px) and the
- * `big_image_size_threshold` ceiling applied at upload, so nothing we
- * deliberately generate is discarded — only the oversized candidates Photon
- * derives from the untouched original.
+ * Derived from `big_image_size_threshold`, the ceiling the upload pipeline
+ * applies to every original (`includes/theme-setup/media.php`), so the cap
+ * tracks that value instead of drifting from it: everything the theme
+ * deliberately generates survives the pruning, and only the oversized
+ * candidates Photon derives from pre-threshold originals are dropped.
+ *
+ * Resolved at runtime rather than as a constant because the threshold is
+ * defined in another include and load order between the two is not guaranteed.
+ * 2560 is the WordPress core default, used if the theme constant is absent.
  */
-const AMNESTY_IMAGE_CDN_MAX_SRCSET_WIDTH = 2560;
+function amnesty_image_cdn_max_srcset_width(): int
+{
+    $max = defined('AMNESTY_BIG_IMAGE_SIZE_THRESHOLD')
+        ? (int) AMNESTY_BIG_IMAGE_SIZE_THRESHOLD
+        : 2560;
+
+    return (int) apply_filters('amnesty_image_cdn_max_srcset_width', $max);
+}
 
 /**
  * Quality that forces the CDN off its lossless WebP path.
@@ -79,8 +91,19 @@ function amnesty_image_cdn_url_matches(string $image_url, array $paths): bool
 /**
  * Force lossy encoding on the uploads the CDN would otherwise send losslessly.
  */
-add_filter('jetpack_photon_pre_args', function ($args, string $image_url) {
-    if (!is_array($args) || !amnesty_image_cdn_url_matches($image_url, amnesty_image_cdn_lossless_paths())) {
+add_filter('jetpack_photon_pre_args', function ($args, $image_url) {
+    if (!amnesty_image_cdn_url_matches((string) $image_url, amnesty_image_cdn_lossless_paths())) {
+        return $args;
+    }
+
+    // The hook documents `array|string $args` and `cdn_url()` accepts both, so
+    // skipping the string form would silently leave those call sites lossless.
+    if (is_string($args)) {
+        wp_parse_str($args, $parsed);
+        $args = $parsed;
+    }
+
+    if (!is_array($args)) {
         return $args;
     }
 
@@ -92,12 +115,15 @@ add_filter('jetpack_photon_pre_args', function ($args, string $image_url) {
 /**
  * Keep the listed uploads off the Jetpack image CDN.
  */
-add_filter('jetpack_photon_skip_for_url', function (bool $skip, string $image_url): bool {
-    if ($skip) {
-        return true;
+add_filter('jetpack_photon_skip_for_url', function ($skip, $image_url) {
+    // Jetpack skips the CDN on any value that is not strictly false, so an
+    // earlier filter's decision has to pass through verbatim — coercing it to a
+    // boolean would re-enable the CDN for an image someone excluded on purpose.
+    if (false !== $skip) {
+        return $skip;
     }
 
-    return amnesty_image_cdn_url_matches($image_url, amnesty_image_cdn_excluded_paths());
+    return amnesty_image_cdn_url_matches((string) $image_url, amnesty_image_cdn_excluded_paths());
 }, 10, 2);
 
 /**
@@ -109,21 +135,28 @@ add_filter('jetpack_photon_skip_for_url', function (bool $skip, string $image_ur
  * is offered 3000w and 4000w variants no layout ever needs. Running at 20 puts
  * this after Photon so those additions are pruned too.
  *
- * At least one candidate is always kept: stripping every source would leave an
- * empty srcset and lose the resolution switching entirely.
+ * Pruning is abandoned rather than applied partially when it would leave fewer
+ * than two candidates: core drops the whole srcset below that count
+ * (`wp-includes/media.php:1534`), which would push the oversized `src` onto
+ * every visitor — the exact regression this filter exists to prevent.
+ *
+ * `$sources` is left untyped because core tolerates a non-array here and
+ * `add_filter('wp_calculate_image_srcset', '__return_false')` is the documented
+ * way to switch responsive images off; a typed parameter would turn that into a
+ * fatal TypeError.
  */
-add_filter('wp_calculate_image_srcset', function (array $sources): array {
+add_filter('wp_calculate_image_srcset', function ($sources) {
+    if (!is_array($sources)) {
+        return $sources;
+    }
+
+    $max = amnesty_image_cdn_max_srcset_width();
+
     $kept = array_filter(
         $sources,
-        fn ($width): bool => (int) $width <= AMNESTY_IMAGE_CDN_MAX_SRCSET_WIDTH,
+        fn ($width): bool => (int) $width <= $max,
         ARRAY_FILTER_USE_KEY
     );
 
-    if (!$kept && $sources) {
-        $widths = array_map('intval', array_keys($sources));
-
-        return [min($widths) => $sources[min($widths)]];
-    }
-
-    return $kept;
+    return count($kept) < 2 ? $sources : $kept;
 }, 20, 1);
