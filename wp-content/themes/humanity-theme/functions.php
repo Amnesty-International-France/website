@@ -97,6 +97,7 @@ require_once realpath(__DIR__ . '/includes/helpers/localisation.php');
 require_once realpath(__DIR__ . '/includes/helpers/post-single.php');
 require_once realpath(__DIR__ . '/includes/helpers/metadata.php');
 require_once realpath(__DIR__ . '/includes/helpers/media.php');
+require_once realpath(__DIR__ . '/includes/helpers/modern-images.php');
 require_once realpath(__DIR__ . '/includes/helpers/pagination.php');
 require_once realpath(__DIR__ . '/includes/helpers/archive.php');
 require_once realpath(__DIR__ . '/includes/helpers/chronicle-helper.php');
@@ -106,6 +107,13 @@ require_once realpath(__DIR__ . '/includes/helpers/reading-time.php');
 require_once realpath(__DIR__ . '/includes/helpers/page-the-chronicle-promo-helpers.php');
 require_once realpath(__DIR__ . '/includes/helpers/actualites-archive-helper.php');
 // endregion helpers
+
+/**
+ * Theme command includes
+ */
+// region commands
+require_once realpath(__DIR__ . '/includes/commands/modern-images.php');
+// endregion commands
 
 /**
  * Theme multisite includes
