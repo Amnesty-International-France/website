@@ -75,11 +75,6 @@ if (!function_exists('render_card_image_text_block')) {
             $text = $attributes['text'] ?? '';
         }
 
-        $thumbnail_url = '';
-        if ($thumbnail_id) {
-            $thumbnail_url = wp_get_attachment_image_url($thumbnail_id, 'large');
-        }
-
         $link_extra_attrs = '';
         if ($newTab) {
             $link_extra_attrs = ' target="_blank" rel="noopener noreferrer"';
@@ -103,8 +98,8 @@ if (!function_exists('render_card_image_text_block')) {
             <div class="card-content-wrapper">
                 <<?= $editor ? 'div' : 'a' ?> href="<?php echo esc_url($permalink); ?>" class="card-image-text-block-link"<?php echo $link_extra_attrs; ?>>
                     <div class="card-image-text-thumbnail-wrapper">
-                        <?php if (!empty($thumbnail_url)) : ?>
-                            <img class="card-image-text-thumbnail" src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy" decoding="async" />
+                        <?php if (!empty($thumbnail_id)) : ?>
+                            <?php echo amnesty_get_attachment_picture((int) $thumbnail_id, 'large', [ 'class' => 'card-image-text-thumbnail', 'alt' => $title, 'loading' => 'lazy', 'decoding' => 'async' ]); ?>
                         <?php endif; ?>
                     </div>
                     <div class="card-image-text-content-container">
