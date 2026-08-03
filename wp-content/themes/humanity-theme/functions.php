@@ -72,6 +72,7 @@ require_once realpath(__DIR__ . '/includes/root/caching.php');
 require_once realpath(__DIR__ . '/includes/root/localisation.php');
 require_once realpath(__DIR__ . '/includes/root/accessibility.php');
 require_once realpath(__DIR__ . '/includes/root/permalinks.php');
+require_once realpath(__DIR__ . '/includes/root/section-redirects.php');
 // endregion helpers
 
 /**
