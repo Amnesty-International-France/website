@@ -9,7 +9,7 @@
 declare(strict_types=1);
 
 if (! defined('ABSPATH')) {
-	exit;
+    exit;
 }
 
 /**
@@ -21,19 +21,25 @@ if (! defined('ABSPATH')) {
  */
 function aif_riposte_yoast_breadcrumb_links(array $links): array
 {
-	if (! is_post_type_archive('riposte_victory')) {
-		return $links;
-	}
+    if (! is_post_type_archive('riposte_victory')) {
+        return $links;
+    }
 
-	$parent = [
-		'text' => __('S’informer', 'aif-riposte'),
-		'url'  => '#',
-	];
+    $page_slug = 'sinformer';
 
-	$last_position = max(count($links) - 1, 1);
+    $page = get_page_by_path($page_slug);
 
-	array_splice($links, $last_position, 0, [ $parent ]);
+    if ($page instanceof WP_Post) {
+        $parent = [
+            'text' => $page->post_title,
+            'url'  => get_permalink($page),
+        ];
 
-	return $links;
+        $last_position = max(count($links) - 1, 1);
+
+        array_splice($links, $last_position, 0, [ $parent ]);
+    }
+
+    return $links;
 }
 add_filter('wpseo_breadcrumb_links', 'aif_riposte_yoast_breadcrumb_links');

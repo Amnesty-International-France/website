@@ -9,7 +9,7 @@
 declare(strict_types=1);
 
 if (! defined('ABSPATH')) {
-	exit;
+    exit;
 }
 
 /**
@@ -21,15 +21,15 @@ if (! defined('ABSPATH')) {
  */
 function aif_riposte_ordering_columns(array $columns): array
 {
-	$new_columns = [];
+    $new_columns = [];
 
-	$new_columns['aif_riposte_order'] = '';
+    $new_columns['aif_riposte_order'] = '';
 
-	foreach ($columns as $key => $label) {
-		$new_columns[ $key ] = $label;
-	}
+    foreach ($columns as $key => $label) {
+        $new_columns[ $key ] = $label;
+    }
 
-	return $new_columns;
+    return $new_columns;
 }
 add_filter('manage_riposte_victory_posts_columns', 'aif_riposte_ordering_columns');
 
@@ -43,14 +43,18 @@ add_filter('manage_riposte_victory_posts_columns', 'aif_riposte_ordering_columns
  */
 function aif_riposte_ordering_column_content(string $column, int $post_id): void
 {
-	if ('aif_riposte_order' !== $column) {
-		return;
-	}
+    if ('aif_riposte_order' !== $column) {
+        return;
+    }
 
-	printf(
-		'<span class="aif-riposte-sort-handle" aria-hidden="true" data-post-id="%d">↕</span>',
-		absint($post_id)
-	);
+    if (! current_user_can('edit_others_posts') || ! current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    printf(
+        '<span class="aif-riposte-sort-handle" aria-hidden="true" data-post-id="%d">↕</span>',
+        absint($post_id)
+    );
 }
 add_action('manage_riposte_victory_posts_custom_column', 'aif_riposte_ordering_column_content', 10, 2);
 
@@ -62,50 +66,65 @@ add_action('manage_riposte_victory_posts_custom_column', 'aif_riposte_ordering_c
  */
 function aif_riposte_save_ordering(): void
 {
-	check_ajax_referer('aif_riposte_ordering', 'nonce');
+    check_ajax_referer('aif_riposte_ordering', 'nonce');
 
-	if (! current_user_can('edit_posts')) {
-		wp_send_json_error(
-			[
-				'message' => __('Vous n’avez pas les droits suffisants.', 'aif-riposte'),
-			],
-			403
-		);
-	}
+    if (! current_user_can('edit_others_posts')) {
+        wp_send_json_error(
+            [
+                'message' => __('Vous n’avez pas les droits suffisants.', 'aif-riposte'),
+            ],
+            403
+        );
+    }
 
-	$ordered_ids = isset($_POST['order']) && is_array($_POST['order'])
-		? array_map('absint', wp_unslash($_POST['order']))
-		: [];
+    $ordered_ids = isset($_POST['order']) && is_array($_POST['order'])
+        ? array_map('absint', wp_unslash($_POST['order']))
+        : [];
 
-	$ordered_ids = array_filter($ordered_ids);
+    $ordered_ids = array_filter($ordered_ids);
 
-	if (empty($ordered_ids)) {
-		wp_send_json_error(
-			[
-				'message' => __('Aucun ordre reçu.', 'aif-riposte'),
-			],
-			400
-		);
-	}
+    if (empty($ordered_ids)) {
+        wp_send_json_error(
+            [
+                'message' => __('Aucun ordre reçu.', 'aif-riposte'),
+            ],
+            400
+        );
+    }
 
-	foreach ($ordered_ids as $index => $post_id) {
-		if ('riposte_victory' !== get_post_type($post_id)) {
-			continue;
-		}
+    foreach ($ordered_ids as $index => $post_id) {
+        if ('riposte_victory' !== get_post_type($post_id)) {
+            continue;
+        }
 
-		wp_update_post(
-			[
-				'ID'         => $post_id,
-				'menu_order' => $index,
-			]
-		);
-	}
+        if (! current_user_can('edit_post', $post_id)) {
+            continue;
+        }
 
-	wp_send_json_success(
-		[
-			'message' => __('Ordre enregistré.', 'aif-riposte'),
-		]
-	);
+        $result = wp_update_post(
+            [
+                'ID'         => $post_id,
+                'menu_order' => $index,
+            ],
+            true
+        );
+
+        if (is_wp_error($result)) {
+            wp_send_json_error(
+                [
+                    'message' => __('Une erreur est survenue pendant l’enregistrement de l’ordre.', 'aif-riposte'),
+                ],
+                500
+            );
+        }
+
+    }
+
+    wp_send_json_success(
+        [
+            'message' => __('Ordre enregistré.', 'aif-riposte'),
+        ]
+    );
 }
 add_action('wp_ajax_aif_riposte_save_ordering', 'aif_riposte_save_ordering');
 
@@ -118,26 +137,26 @@ add_action('wp_ajax_aif_riposte_save_ordering', 'aif_riposte_save_ordering');
  */
 function aif_riposte_admin_ordering_query(WP_Query $query): void
 {
-	if (! is_admin() || ! $query->is_main_query()) {
-		return;
-	}
+    if (! is_admin() || ! $query->is_main_query()) {
+        return;
+    }
 
-	$screen = get_current_screen();
+    $screen = get_current_screen();
 
-	if (! $screen || 'riposte_victory' !== $screen->post_type) {
-		return;
-	}
+    if (! $screen || 'riposte_victory' !== $screen->post_type) {
+        return;
+    }
 
-	if (! empty($_GET['orderby']) ) {
-		return;
-	}
+    if (! empty($_GET['orderby'])) {
+        return;
+    }
 
-	$query->set(
-		'orderby',
-		[
-			'menu_order' => 'ASC',
-			'date'       => 'DESC',
-		]
-	);
+    $query->set(
+        'orderby',
+        [
+            'menu_order' => 'ASC',
+            'date'       => 'DESC',
+        ]
+    );
 }
 add_action('pre_get_posts', 'aif_riposte_admin_ordering_query');

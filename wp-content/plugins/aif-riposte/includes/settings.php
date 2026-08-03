@@ -9,7 +9,7 @@
 declare(strict_types=1);
 
 if (! defined('ABSPATH')) {
-	exit;
+    exit;
 }
 
 add_action('admin_menu', 'aif_riposte_add_settings_page');
@@ -21,14 +21,14 @@ add_action('admin_menu', 'aif_riposte_add_settings_page');
  */
 function aif_riposte_add_settings_page(): void
 {
-	add_submenu_page(
-		'edit.php?post_type=riposte_victory',
-		__('Réglages', 'aif-riposte'),
-		__('Réglages', 'aif-riposte'),
-		'manage_options',
-		'aif_riposte_settings',
-		'aif_riposte_settings_page_callback'
-	);
+    add_submenu_page(
+        'edit.php?post_type=riposte_victory',
+        __('Réglages', 'aif-riposte'),
+        __('Réglages', 'aif-riposte'),
+        'manage_options',
+        'aif_riposte_settings',
+        'aif_riposte_settings_page_callback'
+    );
 }
 
 /**
@@ -38,19 +38,19 @@ function aif_riposte_add_settings_page(): void
  */
 function aif_riposte_settings_page_callback(): void
 {
-	if (
-		isset($_POST['aif_riposte_settings_nonce'])
-		&& wp_verify_nonce(
-			sanitize_text_field(wp_unslash($_POST['aif_riposte_settings_nonce'])),
-			'save_aif_riposte_settings'
-		)
-	) {
-		aif_riposte_save_settings();
-	}
+    if (
+        isset($_POST['aif_riposte_settings_nonce'])
+        && wp_verify_nonce(
+            sanitize_text_field(wp_unslash($_POST['aif_riposte_settings_nonce'])),
+            'save_aif_riposte_settings'
+        )
+    ) {
+        aif_riposte_save_settings();
+    }
 
-	$chapo = (string) get_option('aif_riposte_archive_chapo', '');
+    $chapo = (string) get_option('aif_riposte_archive_chapo', '');
 
-	?>
+    ?>
 	<div class="wrap">
 		<h1><?php esc_html_e('Réglages des Ripostes', 'aif-riposte'); ?></h1>
 
@@ -94,14 +94,14 @@ function aif_riposte_settings_page_callback(): void
  */
 function aif_riposte_save_settings(): void
 {
-	if (! current_user_can('manage_options')) {
-		return;
-	}
+    if (! current_user_can('manage_options')) {
+        return;
+    }
 
-	update_option(
-		'aif_riposte_archive_chapo',
-		wp_kses_post(
-			wp_unslash($_POST['aif_riposte_archive_chapo'] ?? '')
-		)
-	);
+    update_option(
+        'aif_riposte_archive_chapo',
+        wp_kses_post(
+            wp_unslash($_POST['aif_riposte_archive_chapo'] ?? '')
+        )
+    );
 }

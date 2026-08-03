@@ -42,11 +42,11 @@
 						return !previousTerms[taxonomy].includes(termId);
 					}) || terms[terms.length - 1];
 
+				previousTerms[taxonomy] = [lastSelected];
+
 				dispatcher.editPost({
 					[taxonomy]: [lastSelected],
 				});
-
-				previousTerms[taxonomy] = [lastSelected];
 			});
 		});
 	});

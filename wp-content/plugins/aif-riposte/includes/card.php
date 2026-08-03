@@ -9,19 +9,19 @@
 declare(strict_types=1);
 
 if (! defined('ABSPATH')) {
-	exit;
+    exit;
 }
 
 function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
 {
-	$post = $post ?: get_post();
+    $post = $post ?: get_post();
 
-	if (! $post instanceof WP_Post || 'riposte_victory' !== $post->post_type) {
-		return;
-	}
+    if (! $post instanceof WP_Post || 'riposte_victory' !== $post->post_type) {
+        return;
+    }
 
-	$post_id   = $post->ID;
-	$title     = get_the_title($post);
+    $post_id   = $post->ID;
+    $title     = get_the_title($post);
     $date_meta = get_post_meta($post_id, 'aif_riposte_date', true);
     if ($date_meta && function_exists('amnesty_locale_date')) {
         $date = amnesty_locale_date(strtotime($date_meta));
@@ -33,14 +33,14 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
             : get_the_date('', $post);
     }
     $datetime = $date_meta ?: get_the_date('Y-m-d', $post);
-	$thumbnail = get_the_post_thumbnail($post_id, 'medium_large', [ 'class' => 'aif-riposte-card__image' ]);
-	$locations = get_the_terms($post_id, 'location');
-	$themes    = get_the_terms($post_id, 'riposte_theme');
+    $thumbnail = get_the_post_thumbnail($post_id, 'medium_large', [ 'class' => 'aif-riposte-card__image' ]);
+    $locations = get_the_terms($post_id, 'location');
+    $themes    = get_the_terms($post_id, 'riposte_theme');
     $tags = get_the_terms($post_id, 'riposte_tag');
-	$post_content   = get_the_content(null, false, $post);
+    $post_content   = get_the_content(null, false, $post);
     $external_url = get_post_meta($post_id, 'aif_riposte_external_url', true);
     $external_url = $external_url ? esc_url($external_url) : '';
-	?>
+    ?>
 
 	<article class="<?php echo esc_attr(aif_riposte_get_card_layout_classes($index)); ?> <?php if ($external_url) : ?>aif-riposte-card__with-link<?php endif; ?>">
         <?php if ($external_url) : ?>
@@ -55,7 +55,7 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
         <div class="aif-riposte-card__top">
             <?php if ($thumbnail) : ?>
                 <div class="aif-riposte-card__media">
-                    <?php echo $thumbnail; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                    <?php echo $thumbnail; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>
                     <?php if ($external_url) : ?>
                         <div class="aif-riposte-card__overlay" aria-hidden="true">
                             <div class="aif-riposte-card__overlay-icon">
@@ -93,7 +93,8 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
 
                     <?php if ($post_content) : ?>
                         <div class="aif-riposte-card__excerpt">
-                            <?php echo apply_filters('the_content', $post_content);; ?>
+                            <?php echo apply_filters('the_content', $post_content);
+                        ; ?>
                         </div>
                     <?php endif; ?>
                     <?php if ($external_url) : ?>
@@ -140,25 +141,25 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
 }
 function aif_riposte_get_card_layout_classes(int $index): string
 {
-	$desktop_position = $index % 10;
-	$tablet_position  = $index % 8;
+    $desktop_position = $index % 10;
+    $tablet_position  = $index % 8;
 
-	$classes = [
-		'aif-riposte-card',
-		'aif-riposte-card--color-' . (($desktop_position % 5) + 1),
-	];
+    $classes = [
+        'aif-riposte-card',
+        'aif-riposte-card--color-' . (($desktop_position % 5) + 1),
+    ];
 
-	if (3 === $desktop_position) {
-		$classes[] = 'aif-riposte-card--xlarge';
-	} elseif (8 === $desktop_position || 9 === $desktop_position) {
-		$classes[] = 'aif-riposte-card--medium';
-	} else {
-		$classes[] = 'aif-riposte-card--small';
-	}
+    if (3 === $desktop_position) {
+        $classes[] = 'aif-riposte-card--xlarge';
+    } elseif (8 === $desktop_position || 9 === $desktop_position) {
+        $classes[] = 'aif-riposte-card--medium';
+    } else {
+        $classes[] = 'aif-riposte-card--small';
+    }
 
-	if (in_array($tablet_position, [2, 7], true)) {
-		$classes[] = 'aif-riposte-card--tablet-full';
-	}
+    if (in_array($tablet_position, [2, 7], true)) {
+        $classes[] = 'aif-riposte-card--tablet-full';
+    }
 
-	return implode(' ', $classes);
+    return implode(' ', $classes);
 }

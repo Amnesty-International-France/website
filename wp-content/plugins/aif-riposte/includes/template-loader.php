@@ -9,7 +9,7 @@
 declare(strict_types=1);
 
 if (! defined('ABSPATH')) {
-	exit;
+    exit;
 }
 
 /**
@@ -21,17 +21,17 @@ if (! defined('ABSPATH')) {
  */
 function aif_riposte_archive_template(string $template): string
 {
-	if (! is_post_type_archive('riposte_victory')) {
-		return $template;
-	}
+    if (! is_post_type_archive('riposte_victory')) {
+        return $template;
+    }
 
-	$plugin_template = AIF_RIPOSTE_PATH . 'templates/archive-riposte-victory.php';
+    $plugin_template = AIF_RIPOSTE_PATH . 'templates/archive-riposte-victory.php';
 
-	if (file_exists($plugin_template)) {
-		return $plugin_template;
-	}
+    if (file_exists($plugin_template)) {
+        return $plugin_template;
+    }
 
-	return $template;
+    return $template;
 }
 add_filter('template_include', 'aif_riposte_archive_template');
 
@@ -41,11 +41,11 @@ add_filter('template_include', 'aif_riposte_archive_template');
  */
 function aif_riposte_disable_single(): void
 {
-	if (! is_singular('riposte_victory')) {
-		return;
-	}
+    if (! is_singular('riposte_victory')) {
+        return;
+    }
 
-	wp_safe_redirect(get_post_type_archive_link('riposte_victory'), 301);
-	exit;
+    wp_safe_redirect(get_post_type_archive_link('riposte_victory'), 301);
+    exit;
 }
 add_action('template_redirect', 'aif_riposte_disable_single');

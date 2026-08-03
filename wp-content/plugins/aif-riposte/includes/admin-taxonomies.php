@@ -9,38 +9,86 @@
 declare(strict_types=1);
 
 if (! defined('ABSPATH')) {
-	exit;
+    exit;
 }
 
-function aif_riposte_limit_single_taxonomy_terms(int $post_id): void
-{
-	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-		return;
-	}
+/**
+ * Limit selected terms to the last submitted term.
+ *
+ * @param int                $object_id            Post ID.
+ * @param string|int|array   $terms                Submitted terms.
+ * @param array<int>         $term_taxonomy_ids    Assigned term taxonomy IDs.
+ * @param string             $taxonomy             Taxonomy name.
+ * @param bool               $append               Whether terms are appended.
+ * @param array<int>         $old_term_taxonomy_ids Previously assigned term taxonomy IDs.
+ *
+ * @return void
+ */
+function aif_riposte_limit_single_taxonomy_term(
+    int $object_id,
+    $terms,
+    array $term_taxonomy_ids,
+    string $taxonomy,
+    bool $append,
+    array $old_term_taxonomy_ids
+): void {
+    unset($terms, $append, $old_term_taxonomy_ids);
 
-	if (! current_user_can('edit_post', $post_id)) {
-		return;
-	}
+    static $is_updating = false;
 
-	foreach ([ 'riposte_theme', 'riposte_tag', 'location' ] as $taxonomy) {
-		$terms = wp_get_object_terms(
-			$post_id,
-			$taxonomy,
-			[
-				'fields' => 'ids',
-			]
-		);
+    if ($is_updating) {
+        return;
+    }
 
-		if (is_wp_error($terms) || count($terms) <= 1) {
-			continue;
-		}
+    if ('riposte_victory' !== get_post_type($object_id)) {
+        return;
+    }
 
-		wp_set_object_terms(
-			$post_id,
-			[ (int) $terms[0] ],
-			$taxonomy,
-			false
-		);
-	}
+    $limited_taxonomies = [
+        'riposte_theme',
+        'riposte_tag',
+        'location',
+    ];
+
+    if (! in_array($taxonomy, $limited_taxonomies, true)) {
+        return;
+    }
+
+    if (count($term_taxonomy_ids) <= 1) {
+        return;
+    }
+
+    if (! current_user_can('edit_post', $object_id)) {
+        return;
+    }
+
+    $last_term_taxonomy_id = (int) end($term_taxonomy_ids);
+
+    $term = get_term_by(
+        'term_taxonomy_id',
+        $last_term_taxonomy_id,
+        $taxonomy
+    );
+
+    if (! $term instanceof WP_Term) {
+        return;
+    }
+
+    $is_updating = true;
+
+    wp_set_object_terms(
+        $object_id,
+        [ $term->term_id ],
+        $taxonomy,
+        false
+    );
+
+    $is_updating = false;
 }
-add_action('save_post_riposte_victory', 'aif_riposte_limit_single_taxonomy_terms', 20);
+
+add_action(
+    'set_object_terms',
+    'aif_riposte_limit_single_taxonomy_term',
+    20,
+    6
+);

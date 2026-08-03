@@ -9,7 +9,7 @@
 declare(strict_types=1);
 
 if (! defined('ABSPATH')) {
-	exit;
+    exit;
 }
 
 $available = get_object_taxonomies('riposte_victory', 'objects');
@@ -17,19 +17,19 @@ $available = get_object_taxonomies('riposte_victory', 'objects');
 $taxonomies = [];
 
 foreach (['location', 'riposte_theme'] as $taxonomy) {
-	if (isset($available[$taxonomy])) {
-		$taxonomies[$taxonomy] = $available[$taxonomy];
-	}
+    if (isset($available[$taxonomy])) {
+        $taxonomies[$taxonomy] = $available[$taxonomy];
+    }
 }
 
 if (empty($taxonomies)) {
-	return;
+    return;
 }
 
 $form_url = get_post_type_archive_link('riposte_victory');
 
 if (! $form_url) {
-	return;
+    return;
 }
 ?>
 
