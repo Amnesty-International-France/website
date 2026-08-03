@@ -72,6 +72,7 @@ aif-riposte/
 │   ├── assets.php
 │   ├── breadcrumb.php
 │   ├── card.php
+│   ├── filters.php
 │   ├── metaboxes.php
 │   ├── post-type.php
 │   ├── seo.php
@@ -103,6 +104,12 @@ includes/archive.php
 ```
 
 Configure la requête principale de l’archive : nombre d’éléments, ordre, filtres de taxonomies.
+
+```text
+includes/filters.php
+```
+
+Centralise la liste des taxonomies filtrables, la normalisation des identifiants de termes et la construction de la tax_query partagée entre l’archive initiale et le chargement AJAX.
 
 ```text
 includes/template-loader.php
@@ -235,19 +242,26 @@ Paramètres utilisés :
 ?qriposte_theme=...
 ```
 
-La requête est ensuite filtrée dans :
+La logique commune des filtres est centralisée dans :
+
+```text
+includes/filters.php
+```
+
+Ce fichier contient :
+
+* la liste des taxonomies filtrables ;
+* la normalisation des identifiants de termes ;
+* la construction de la `tax_query`.
+
+Les fichiers suivants récupèrent uniquement les valeurs propres à leur contexte avant d’appeler cette logique partagée :
 
 ```text
 includes/archive.php
-```
-
-et dans :
-
-```text
 includes/ajax-load-more.php
 ```
 
-pour conserver le même comportement lors du chargement AJAX.
+Cela garantit un comportement identique entre le rendu initial et le chargement AJAX.
 
 ---
 
@@ -325,7 +339,7 @@ includes/admin-taxonomies.php
 La sélection unique est assurée à deux niveaux :
 
 * `assets/js/admin-theme.js` limite immédiatement la sélection dans l’éditeur Gutenberg.
-* `includes/admin-taxonomies.php` contrôle à nouveau les termes lors de l’enregistrement du contenu.
+* `includes/admin-taxonomies.php` contrôle à nouveau les termes au moment de leur affectation et conserve le dernier terme transmis, comme l’interface Gutenberg.
 
 La validation PHP garantit que la règle reste respectée même si le JavaScript ne s’exécute pas ou si le contenu est enregistré par une autre interface.
 
@@ -410,6 +424,8 @@ menu_order
 
 Les contenus sont réordonnables en drag & drop dans la liste d’administration du CPT.
 
+Le tri modifiant un ordre global, il est réservé aux utilisateurs disposant de la capacité `edit_others_posts`. Une vérification `edit_post` est également réalisée pour chaque contenu traité.
+
 Fichiers concernés :
 
 ```text
@@ -439,6 +455,8 @@ assets/js/load-more.js
 ```
 
 Le chargement repose sur une logique d’offset, et non sur une pagination classique. Cela permet de conserver le bon pattern de grille même lorsque le nombre d’éléments chargés varie selon le viewport.
+
+La présence d’éléments supplémentaires est calculée à partir du nombre réel de contenus renvoyés par la requête, afin d’éviter un dernier chargement vide ou l’affichage inutile du bouton.
 
 Le JavaScript transmet aussi les filtres actifs :
 
@@ -602,6 +620,18 @@ assets/css/aif-riposte.css
 
 ---
 
+## Visibilité publique et recherche
+
+L’archive `/ripostes/` reste publiquement accessible.
+
+Les contenus individuels ne sont pas destinés à être consultés :
+
+* les pages single sont redirigées en 301 vers l’archive ;
+* les Ripostes sont exclues de la recherche générale WordPress avec `exclude_from_search` ;
+* `publicly_queryable` reste activé afin de conserver l’accès à l’archive.
+
+---
+
 ## SEO
 
 Le plugin ajoute des ajustements SEO spécifiques à l’archive des Ripostes.
@@ -625,11 +655,12 @@ Le fil d’Ariane est géré séparément dans :
 includes/breadcrumb.php
 ```
 
-Le fil d’Ariane attendu est :
+Lorsque la page `S’informer` existe avec le slug `sinformer`, le fil d’Ariane attendu est :
 
 ```text
 Accueil > S’informer > Ripostes
 ```
+Si cette page n’existe pas, le niveau parent n’est pas ajouté.
 
 ---
 
@@ -763,13 +794,19 @@ location
 riposte_theme
 ```
 
-Si une nouvelle taxonomie doit être ajoutée, elle doit aussi être prise en compte dans :
+La liste des taxonomies filtrables et la construction de la `tax_query` sont centralisées dans :
 
 ```text
-includes/archive.php
-includes/ajax-load-more.php
+includes/filters.php
+```
+
+Si une nouvelle taxonomie doit devenir filtrable, elle doit être ajoutée dans ce fichier, puis transmise par :
+
+```text
 assets/js/load-more.js
 ```
+
+Le rendu initial et le chargement AJAX réutiliseront ensuite automatiquement la même logique.
 
 ---
 
@@ -804,15 +841,107 @@ includes/breadcrumb.php
 
 ---
 
-# English
+## Mise en production
 
-## Overview
+Après le déploiement du plugin en production, effectuer les opérations suivantes.
+
+### 1. Activer le plugin
+
+Dans l’administration WordPress, activer :
+
+```text
+AIF Riposte
+```
+
+### 2. Actualiser les règles de réécriture
+
+Le plugin actualise les règles de réécriture lors de son activation.
+
+En cas de page `/ripostes/` inaccessible ou de réponse 404 après le déploiement, aller dans :
+
+```text
+Réglages > Permaliens
+```
+
+puis cliquer sur **Enregistrer les modifications** sans modifier les réglages.
+
+### 3. Créer les termes nécessaires
+
+Créer les termes qui seront utilisés par les contenus :
+
+```text
+Ripostes > Thématiques
+Ripostes > Mots clés
+```
+
+Vérifier également que les pays nécessaires existent déjà dans la taxonomie `location` fournie par le thème Humanity.
+
+### 4. Configurer le chapo de l’archive
+
+Aller dans :
+
+```text
+Ripostes > Réglages
+```
+
+et renseigner le texte d’introduction affiché sous le hero de l’archive.
+
+### 5. Créer et ordonner les Ripostes
+
+Pour chaque Riposte, renseigner :
+
+* le titre ;
+* le contenu ;
+* l’image mise en avant ;
+* la date affichée sur la carte ;
+* le lien externe, lorsqu’il existe ;
+* un seul pays ;
+* une seule thématique ;
+* un seul mot clé.
+
+Réordonner ensuite les contenus par drag & drop depuis la liste d’administration si nécessaire.
+
+### 6. Ajouter l’archive à la navigation
+
+Ajouter la page d’archive au menu ou aux liens du site si elle doit être accessible depuis la navigation principale :
+
+```text
+/ripostes/
+```
+
+Aucune page WordPress distincte nommée « Ripostes » ne doit être créée : l’URL est fournie par l’archive du Custom Post Type.
+
+### 7. Vérifier la page en production
+
+Contrôler notamment :
+
+* l’accès à `/ripostes/` ;
+* l’affichage du hero et du chapo ;
+* l’ordre des filtres **Pays**, puis **Thématique** ;
+* le fonctionnement de chaque filtre ;
+* le bouton « Charger plus » sur mobile, tablette et desktop ;
+* la continuité du pattern de grille et des couleurs après un chargement AJAX ;
+* les liens externes et leurs effets interactifs ;
+* la redirection des URLs single vers l’archive ;
+* l’absence des Ripostes dans la recherche générale du site ;
+* le fil d’Ariane ;
+* le titre SEO, les métadonnées sociales et l’URL canonique.
+
+### 8. Purger les caches
+
+Après validation, purger les éventuels caches applicatifs, serveur, CDN et navigateur afin de prendre en compte les nouveaux templates et assets.
+
+---
+
+## English
+
+### Overview
 
 AIF Riposte is a WordPress plugin developed for the Amnesty International France website.
 
-It adds a custom post type named **Riposte**, allowing editors to publish and display victories or significant progress achieved through Amnesty's campaigns.
+It adds a **Riposte** custom post type used to publish and display victories or progress achieved through campaigns led by Amnesty.
 
-The plugin has been specifically designed to work with the **Humanity** theme and reuses several of its existing components.
+The plugin is designed to work with the **Humanity** theme and reuses several existing components provided by the theme.
 
 ---
 
@@ -820,16 +949,16 @@ The plugin has been specifically designed to work with the **Humanity** theme an
 
 ### Custom Post Type
 
-The plugin registers the following custom post type:
+The plugin adds the following CPT:
 
 ```text
 riposte_victory
 ```
 
-Features:
+Characteristics:
 
 * Public archive
-* No accessible single pages
+* No usable single page
 * Manual drag & drop ordering
 * Featured image
 * Title
@@ -837,11 +966,11 @@ Features:
 * Custom date
 * Optional external link
 * Taxonomies:
-  * `location`: existing site taxonomy used as the **Country** filter
-  * `riposte_theme`: plugin taxonomy used as the **Theme** filter
-  * `riposte_tag`: plugin taxonomy used as the **Keyword** indicator
+  * `location`: existing site taxonomy, used as the **Country** filter
+  * `riposte_theme`: taxonomy provided by the plugin, used as the **Theme** filter
+  * `riposte_tag`: taxonomy provided by the plugin, used as the **Keyword** indicator
 
-Single pages are not intended to be viewed. Any attempt to access a Riposte single page is automatically redirected to the archive.
+Single pages are not intended to be accessed directly. Any attempt to access a Riposte single page is redirected to the archive.
 
 ---
 
@@ -854,8 +983,19 @@ aif-riposte/
 │
 ├── assets/
 │   ├── css/
+│   │   └── aif-riposte.css
 │   ├── fonts/
+│   │   ├── AgencyFB-Bold.woff
+│   │   ├── AgencyFB-Bold.woff2
+│   │   ├── AgencyFB-Reg.woff
+│   │   ├── AgencyFB-Reg.woff2
+│   │   ├── URWDIN-Regular.woff
+│   │   └── URWDIN-Regular.woff2
 │   └── js/
+│       ├── admin-ordering.js
+│       ├── admin-theme.js
+│       ├── editor.js
+│       └── load-more.js
 │
 ├── includes/
 │   ├── admin-ordering.php
@@ -865,6 +1005,7 @@ aif-riposte/
 │   ├── assets.php
 │   ├── breadcrumb.php
 │   ├── card.php
+│   ├── filters.php
 │   ├── metaboxes.php
 │   ├── post-type.php
 │   ├── seo.php
@@ -877,112 +1018,122 @@ aif-riposte/
         └── archive-filters.php
 ```
 
----
-
-## Main Files
-
-### `aif-riposte.php`
-
-Main plugin bootstrap file.
-
-Loads all plugin components, defines constants and handles plugin activation/deactivation.
-
-### `includes/post-type.php`
-
-Registers:
-
-* `riposte_victory`
-* `riposte_theme`
-* `riposte_tag`
-
-and associates them with the existing `location` taxonomy.
-
-### `includes/archive.php`
-
-Configures the main archive query:
-
-* ordering
-* number of posts
-* taxonomy filters
-
-### `includes/template-loader.php`
-
-Loads the archive template supplied by the plugin.
-
-### `templates/archive-riposte-victory.php`
-
-Main archive template.
-
-### `templates/partials/archive-filters.php`
-
-Plugin-specific filter partial forcing the filter order:
+### Main files
 
 ```text
-Country
-Theme
+aif-riposte.php
 ```
 
-while reusing Humanity's existing filter component.
-
-### `includes/card.php`
-
-Generates the HTML markup for Riposte cards and computes their layout and color classes.
-
-### `includes/ajax-load-more.php`
-
-Handles AJAX loading for the **Load more** button.
-
-### `includes/admin-ordering.php`
-
-Implements drag & drop ordering in the WordPress administration.
-
-### `includes/metaboxes.php`
-### `assets/js/editor.js`
-
-Manage the Gutenberg sidebar fields:
-
-* custom date
-* external URL
-
-### `includes/settings.php`
-
-Registers the archive introduction ("chapo") settings page.
-
-### `includes/assets.php`
-
-Centralizes CSS and JavaScript loading.
-
-### `includes/breadcrumb.php`
-
-Customizes the archive breadcrumb.
-
-### `includes/seo.php`
-
-Adds SEO customizations for the archive.
-
----
-
-## Archive
-
-The archive is available at:
+Main plugin file. It defines the plugin constants, loads the required files, and handles plugin activation and deactivation.
 
 ```text
-/ripostes/
+includes/post-type.php
 ```
 
-It is rendered by:
+Registers the `riposte_victory` custom post type, registers the dedicated `riposte_theme` and `riposte_tag` taxonomies, then associates the CPT with the `location`, `riposte_tag`, and `riposte_theme` taxonomies.
+
+```text
+includes/archive.php
+```
+
+Configures the main archive query: number of posts, ordering, and taxonomy filters.
+
+```text
+includes/filters.php
+```
+
+Centralizes the list of filterable taxonomies, term identifier normalization, and the shared `tax_query` generation used by both the initial archive rendering and AJAX loading.
+
+```text
+includes/template-loader.php
+```
+
+Loads the archive template provided by the plugin.
 
 ```text
 templates/archive-riposte-victory.php
 ```
 
-The template reuses several Humanity components:
+Frontend archive template for Ripostes.
 
-* archive hero
-* theme footer
-* existing archive filter styles and scripts
+```text
+templates/partials/archive-filters.php
+```
 
-The archive introduction is managed through a dedicated plugin option.
+Plugin-specific partial used to display the archive filters in the desired order: **Country** followed by **Theme**.
+
+```text
+includes/card.php
+```
+
+Handles the HTML rendering of cards as well as the grid and color classes computed according to each card's position.
+
+```text
+includes/ajax-load-more.php
+```
+
+Handles the AJAX "Load more" functionality.
+
+```text
+includes/admin-ordering.php
+```
+
+Handles drag & drop ordering within the WordPress administration area.
+
+```text
+includes/metaboxes.php
+assets/js/editor.js
+```
+
+Manage the Gutenberg custom fields: custom date and external link.
+
+```text
+includes/settings.php
+```
+
+Adds the archive introduction settings page.
+
+```text
+includes/assets.php
+```
+
+Loads the plugin CSS and JavaScript assets.
+
+```text
+includes/breadcrumb.php
+```
+
+Customizes the archive breadcrumb.
+
+```text
+includes/seo.php
+```
+
+Customizes the archive SEO metadata.
+
+---
+
+## Archive
+
+The archive is available through the CPT URL:
+
+```text
+/ripostes/
+```
+
+It is handled by:
+
+```text
+templates/archive-riposte-victory.php
+```
+
+The template reuses several components from the Humanity theme:
+
+* Archive hero
+* Theme footer
+* Existing filter styles and scripts
+
+The archive introduction is managed by the plugin through a dedicated option.
 
 ---
 
@@ -990,16 +1141,18 @@ The archive introduction is managed through a dedicated plugin option.
 
 Ripostes can be filtered by:
 
-* `location` (Country)
-* `riposte_theme` (Theme)
+* `location`: Country
+* `riposte_theme`: Theme
 
-The filters are rendered through:
+The `riposte_theme` taxonomy is created by the plugin.
+
+Filters are rendered through the plugin partial:
 
 ```text
 templates/partials/archive-filters.php
 ```
 
-which internally reuses Humanity's:
+This partial reuses the theme partial:
 
 ```text
 partials/forms/taxonomy-filters.php
@@ -1007,99 +1160,144 @@ partials/forms/taxonomy-filters.php
 
 This preserves:
 
-* Humanity markup
-* custom select components
-* existing styles
-* existing JavaScript
+* the Humanity filter markup;
+* the theme's custom select elements;
+* the existing styles;
+* the theme JavaScript.
 
-Filter parameters:
+The plugin partial also enforces the display order:
 
 ```text
-?qlocation=
-?qriposte_theme=
+Country
+Theme
 ```
 
-Filtering is applied both in:
+Query parameters used:
+
+```text
+?qlocation=...
+?qriposte_theme=...
+```
+
+The shared filtering logic is centralized in:
+
+```text
+includes/filters.php
+```
+
+This file contains:
+
+* the list of filterable taxonomies;
+* term identifier normalization;
+* `tax_query` generation.
+
+The following files only retrieve the values specific to their own context before calling this shared logic:
 
 ```text
 includes/archive.php
 includes/ajax-load-more.php
 ```
 
-ensuring identical behaviour during AJAX loading.
+This guarantees identical behavior between the initial page rendering and AJAX loading.
 
 ---
 
 ## Theme Taxonomy
 
-The plugin registers:
+The plugin adds a dedicated taxonomy:
 
 ```text
 riposte_theme
 ```
 
-Features:
+It is attached exclusively to the following CPT:
 
-* front-end private
-* no public archive
-* no URL rewrite
-* visible in WordPress administration
-* available through the REST API
-* available in Gutenberg
+```text
+riposte_victory
+```
+
+It is registered in:
+
+```text
+includes/post-type.php
+```
+
+Characteristics:
+
+* not publicly available on the frontend;
+* no dedicated public archive;
+* no URL rewrite;
+* visible in the WordPress administration;
+* available in Gutenberg through the REST API.
 
 ---
 
 ## Keyword Taxonomy
 
-The plugin registers:
+The plugin adds a dedicated taxonomy:
 
 ```text
 riposte_tag
 ```
 
-Features:
+It is attached exclusively to:
 
-* front-end private
-* no public archive
-* no URL rewrite
-* visible in WordPress administration
-* available through the REST API
-* available in Gutenberg
+```text
+riposte_victory
+```
+
+It is registered in:
+
+```text
+includes/post-type.php
+```
+
+Characteristics:
+
+* not publicly available on the frontend;
+* no dedicated public archive;
+* no URL rewrite;
+* visible in the WordPress administration;
+* available in Gutenberg through the REST API.
 
 ---
 
-## Single Taxonomy Selection
+## Restricting the location, riposte_theme and riposte_tag taxonomies
 
-The following taxonomies are limited to **one selected term**:
+The one-term limitation is handled by:
 
-* location
-* riposte_theme
-* riposte_tag
+```text
+assets/js/admin-theme.js
+```
 
-This behaviour is enforced at two levels:
+```text
+includes/admin-taxonomies.php
+```
 
-* `assets/js/admin-theme.js` immediately limits the selection inside Gutenberg.
-* `includes/admin-taxonomies.php` validates the selection again during save.
+Single-term selection is enforced at two levels:
 
-The PHP validation guarantees data consistency even if JavaScript is unavailable.
+* `assets/js/admin-theme.js` immediately limits the selection within the Gutenberg editor.
+* `includes/admin-taxonomies.php` validates the assigned terms again when they are saved and keeps only the last submitted term, matching Gutenberg's behavior.
+
+The PHP validation guarantees that this rule is still enforced even if JavaScript is disabled or the content is saved through another interface.
 
 ---
 
 ## Archive Introduction
 
-A settings page is available:
+A settings page is available in the WordPress administration:
 
 ```text
-Ripostes → Settings
+Ripostes > Settings
 ```
 
-Stored option:
+Option used:
 
 ```text
 aif_riposte_archive_chapo
 ```
 
-The content is displayed below the archive hero.
+The content is displayed in the archive template, directly below the hero section.
 
 ---
 
@@ -1107,17 +1305,27 @@ The content is displayed below the archive hero.
 
 ### Custom Date
 
+Each Riposte can have its own custom date.
+
 Meta key:
 
 ```text
 aif_riposte_date
 ```
 
-Registered through the REST API and editable directly from Gutenberg.
+This meta field is registered through the REST API so it can be edited directly in Gutenberg.
 
-The displayed format reuses Humanity's date helper whenever available.
+The date is displayed in:
+
+```text
+includes/card.php
+```
+
+Formatting relies on the Humanity theme helper whenever it is available, ensuring consistent behavior with the site's news posts.
 
 ### External Link
+
+Each Riposte may also include an optional external link.
 
 Meta key:
 
@@ -1125,44 +1333,72 @@ Meta key:
 aif_riposte_external_url
 ```
 
-When defined:
+When this link is provided:
 
-* the entire card becomes clickable
-* the link opens in a new tab
-* a "Learn more" label is displayed
-* three animated chevrons reinforce the clickable behaviour
-* the animation respects `prefers-reduced-motion`
+* the entire card becomes clickable;
+* the link opens in a new browser tab;
+* the clickable overlay is handled by the `aif-riposte-card__link` class;
+* a "Learn more" label is displayed together with three animated chevrons;
+* the animation creates a progressive movement toward the right to indicate that the card is interactive;
+* the animation is disabled whenever the user requests reduced motion through `prefers-reduced-motion`.
+
+Related files:
+
+```text
+includes/metaboxes.php
+assets/js/editor.js
+includes/card.php
+```
 
 ---
 
 ## Content Ordering
 
-Ordering relies on WordPress native:
+The display order relies on the native WordPress field:
 
 ```text
 menu_order
 ```
 
-Editors can reorder Ripostes via drag & drop in the administration.
+Content can be reordered via drag & drop from the CPT administration list.
 
-The same ordering is preserved on the archive and during AJAX loading.
+Since this modifies the global display order, the feature is restricted to users with the `edit_others_posts` capability. An additional `edit_post` permission check is also performed for each processed post.
+
+Related files:
+
+```text
+includes/admin-ordering.php
+assets/js/admin-ordering.js
+```
+
+The order is respected both on the frontend and during AJAX loading.
 
 ---
 
 ## AJAX Loading
 
-The archive uses a **Load more** button.
+The archive uses a:
 
-Files involved:
+```text
+Load more
+```
+
+button.
+
+The button loads the next set of items via AJAX.
+
+Related files:
 
 ```text
 includes/ajax-load-more.php
 assets/js/load-more.js
 ```
 
-The plugin uses an **offset-based** loading strategy rather than classic pagination, ensuring the editorial grid remains consistent regardless of viewport size.
+Loading is based on an offset system rather than traditional pagination. This ensures that the grid layout remains consistent regardless of the number of items loaded for each viewport size.
 
-Current filters are also transmitted:
+The presence of additional content is calculated from the actual number of posts returned by the query, preventing unnecessary empty requests and avoiding the display of the button when no more content is available.
+
+The JavaScript also sends the currently active filters:
 
 ```text
 qlocation
@@ -1173,218 +1409,58 @@ qriposte_theme
 
 ## Grid System
 
-Cards follow an editorial layout that changes depending on screen size.
+Cards are displayed using an editorial grid whose layout varies depending on the screen size.
 
 ### Mobile
 
-One card per row.
+One card per row:
+
+```text
+100%
+100%
+100%
+```
 
 ### Tablet
 
-8-card repeating cycle.
+8-card cycle:
+
+```text
+Row 1: 2 cards at 50%
+Row 2: 1 card at 100%
+Row 3: 2 cards at 50%
+Row 4: 2 cards at 50%
+Row 5: 1 card at 100%
+```
+
+The cycle then repeats.
+
+Full-width cards receive the following class:
+
+```text
+aif-riposte-card--tablet-full
+```
+
+and use a layout similar to large cards, with the image on the left and the content on the right.
 
 ### Desktop
 
-10-card repeating cycle.
-
-The layout relies on:
-
-* a 6-column CSS grid
-* dynamically computed layout classes
-* automatic color assignment
-
-Main function:
-
-```php
-aif_riposte_get_card_layout_classes()
-```
-
-The grid logic, CSS classes and AJAX loading are tightly coupled.
-
-Any layout modification generally requires updating:
-
-* `includes/card.php`
-* `assets/css/aif-riposte.css`
-* `assets/js/load-more.js`
-
----
-
-## Card Content
-
-Cards are rendered entirely from:
+10-card cycle:
 
 ```text
-includes/card.php
+Row 1: 3 cards at 33%
+Row 2: 1 extra-wide card at 67% + 1 small card at 33%
+Row 3: 3 cards at 33%
+Row 4: 2 medium cards at 50%
 ```
 
-Cards may display:
+The cycle then repeats.
 
-* country (`location`)
-* custom date
-* editorial content
-* optional external link
-* "Learn more" CTA
-* theme (`riposte_theme`)
-* keyword (`riposte_tag`)
+The grid is based on:
 
-Images are forced to a square ratio through CSS.
-
-Desktop layout:
-
-* small cards: image above
-* medium & large cards: image left / content right
-* taxonomy chips displayed below the separator
-
----
-
-## Fonts
-
-Fonts are bundled with the plugin:
-
-```text
-assets/fonts/
-```
-
-Used fonts:
-
-* Agency FB
-* URW DIN
-
-Font declarations are located in:
-
-```text
-assets/css/aif-riposte.css
-```
-
----
-
-## Colors
-
-Card colors are **not** determined by content or taxonomy.
-
-They depend solely on the card position inside the editorial grid.
-
-Generated classes:
-
-```text
-aif-riposte-card--color-1
-...
-aif-riposte-card--color-5
-```
-
-Each variant defines:
-
-* card background
-* tag background
-* country badge
-* CTA accent color
-
----
-
-## SEO
-
-SEO customizations are implemented in:
-
-```text
-includes/seo.php
-```
-
-including:
-
-* canonical URL
-* SEO title
-* Open Graph title
-* Twitter title
-
-Breadcrumb customization is handled separately by:
-
-```text
-includes/breadcrumb.php
-```
-
-Expected breadcrumb:
-
-```text
-Home > Get informed > Ripostes
-```
-
----
-
-## Assets
-
-Assets are loaded centrally through:
-
-```text
-includes/assets.php
-```
-
-and include:
-
-* CSS
-* JavaScript
-* Fonts
-
----
-
-## Dependencies
-
-The plugin depends on several Humanity theme components:
-
-* `location` taxonomy
-* `amnesty/archive-hero` pattern
-* footer template part
-* Humanity archive filters
-* existing filter styles and scripts
-* WordPress CSS variables provided by the theme
-* Humanity date helper (when available)
-
----
-
-## Development
-
-### Adding a New Field
-
-1. Register the meta in:
-
-```text
-includes/metaboxes.php
-```
-
-2. Add the Gutenberg UI:
-
-```text
-assets/js/editor.js
-```
-
-3. Render the value:
-
-```text
-includes/card.php
-```
-
-### Updating the Card Layout
-
-Modify:
-
-```text
-includes/card.php
-```
-
-for:
-
-* HTML structure
-* displayed data
-* CSS classes
-* layout pattern
-* color logic
-
-### Updating the Grid
-
-Main logic:
-
-```php
-aif_riposte_get_card_layout_classes()
-```
+* a 6-column CSS Grid;
+* classes calculated from each card's position;
+* automatically assigned color variants.
 
 Related files:
 
@@ -1394,31 +1470,406 @@ assets/css/aif-riposte.css
 assets/js/load-more.js
 ```
 
-### Updating Filters
+Main function:
 
-Files to maintain together:
-
-```text
-templates/partials/archive-filters.php
-includes/archive.php
-includes/ajax-load-more.php
-assets/js/load-more.js
+```php
+aif_riposte_get_card_layout_classes()
 ```
 
-### Updating AJAX Loading
+**Important:** the grid system, card classes and AJAX loading are tightly coupled. Any change to the layout pattern will generally require coordinated updates in `includes/card.php`, `assets/css/aif-riposte.css`, and `assets/js/load-more.js`.
 
-Files:
+---
+
+## Card Content
+
+The HTML rendering of cards is centralized in:
 
 ```text
-assets/js/load-more.js
-includes/ajax-load-more.php
+includes/card.php
 ```
 
-### Updating SEO
+Cards may display:
 
-Files:
+* the main country from the `location` taxonomy;
+* the custom date;
+* the editorial content;
+* an optional external link;
+* the **Learn more** label when an external link is provided;
+* themes from the `riposte_theme` taxonomy;
+* the keyword from the `riposte_tag` taxonomy.
+
+Images are forced to a square format through CSS.
+
+On desktop:
+
+* small cards display the image above the content;
+* medium and extra-wide cards display the image on the left and the content on the right;
+* the theme and keyword are displayed below the separator when available.
+
+---
+
+## Fonts
+
+The plugin loads its own fonts from:
+
+```text
+assets/fonts/
+```
+
+Fonts used:
+
+* `Agency FB` for card headings;
+* `URW DIN` for card body content and excerpts.
+
+The `@font-face` declarations are located in:
+
+```text
+assets/css/aif-riposte.css
+```
+
+---
+
+## Colors
+
+Colors are not configured at the content or taxonomy level.
+
+They depend solely on the card's position within the grid.
+
+Generated classes:
+
+```text
+aif-riposte-card--color-1
+aif-riposte-card--color-2
+aif-riposte-card--color-3
+aif-riposte-card--color-4
+aif-riposte-card--color-5
+```
+
+Each color may also define variants for:
+
+* the card background;
+* tags;
+* the country label;
+* the **Learn more** link.
+
+Colors are defined in:
+
+```text
+assets/css/aif-riposte.css
+```
+
+---
+
+## Public Visibility and Search
+
+The `/ripostes/` archive remains publicly accessible.
+
+Individual posts are not intended to be viewed directly:
+
+* single pages are permanently redirected (301) to the archive;
+* Ripostes are excluded from the default WordPress search using `exclude_from_search`;
+* `publicly_queryable` remains enabled so the archive itself stays accessible.
+
+---
+
+## SEO
+
+The plugin provides SEO customizations specifically for the Riposte archive.
+
+Related file:
 
 ```text
 includes/seo.php
+```
+
+This file manages:
+
+* the archive canonical URL;
+* the SEO title;
+* the Open Graph title;
+* the Twitter title.
+
+The breadcrumb is handled separately in:
+
+```text
 includes/breadcrumb.php
 ```
+
+When the **S’informer** page exists with the slug `sinformer`, the expected breadcrumb is:
+
+```text
+Home > S’informer > Ripostes
+```
+
+If this page does not exist, the parent level is simply omitted.
+
+---
+
+## Assets
+
+The plugin assets are organized as follows:
+
+```text
+assets/css/aif-riposte.css
+assets/js/admin-ordering.js
+assets/js/admin-theme.js
+assets/js/editor.js
+assets/js/load-more.js
+assets/fonts/
+```
+
+Their loading is centralized in:
+
+```text
+includes/assets.php
+```
+
+---
+
+## Translation
+
+The plugin is not intended to be translated.
+
+All labels are designed specifically for the Amnesty International France website.
+
+---
+
+## Dependencies
+
+The plugin depends on several components provided by the Humanity theme:
+
+* the `location` taxonomy;
+* the `amnesty/archive-hero` pattern;
+* the `footer` template part;
+* the `partials/forms/taxonomy-filters.php` partial;
+* the filter styles and scripts;
+* several WordPress CSS variables defined by the theme;
+* the theme date formatting helper, when available.
+
+---
+
+## Development
+
+### Adding a New Custom Field
+
+1. Register the meta field in:
+
+```text
+includes/metaboxes.php
+```
+
+2. Add the Gutenberg interface in:
+
+```text
+assets/js/editor.js
+```
+
+3. Display the data in:
+
+```text
+includes/card.php
+```
+
+---
+
+### Modifying a Card
+
+The HTML rendering of a card is centralized in:
+
+```text
+includes/card.php
+```
+
+This is the file to modify when changing:
+
+* the HTML markup;
+* the displayed data;
+* the CSS classes;
+* the grid layout;
+* the color assignment logic.
+
+---
+
+### Modifying the Grid
+
+The main layout logic is located in:
+
+```php
+aif_riposte_get_card_layout_classes()
+```
+
+File:
+
+```text
+includes/card.php
+```
+
+Styles:
+
+```text
+assets/css/aif-riposte.css
+```
+
+If the layout pattern changes, also verify:
+
+```text
+assets/js/load-more.js
+```
+
+since the number of items loaded depends on the grid pattern.
+
+---
+
+### Modifying the Filters
+
+Archive filters are managed by:
+
+```text
+templates/partials/archive-filters.php
+```
+
+The partial currently enforces the following order:
+
+```text
+location
+riposte_theme
+```
+
+The list of filterable taxonomies and the `tax_query` generation are centralized in:
+
+```text
+includes/filters.php
+```
+
+If a new taxonomy needs to become filterable, it must first be added to this file, then passed through:
+
+```text
+assets/js/load-more.js
+```
+
+The initial page rendering and AJAX loading will then automatically reuse the same filtering logic.
+
+---
+
+### Modifying AJAX Loading
+
+The following files must always be maintained together:
+
+```text
+assets/js/load-more.js
+includes/ajax-load-more.php
+```
+
+The JavaScript calculates how many items should be loaded depending on the current viewport and grid pattern.
+
+PHP retrieves the corresponding posts from the transmitted offset.
+
+---
+
+### Modifying SEO
+
+SEO customizations are located in:
+
+```text
+includes/seo.php
+```
+
+The breadcrumb is handled in:
+
+```text
+includes/breadcrumb.php
+```
+
+---
+
+## Production Deployment
+
+After deploying the plugin to production, perform the following steps.
+
+### 1. Activate the Plugin
+
+From the WordPress administration area, activate:
+
+```text
+AIF Riposte
+```
+
+### 2. Refresh Rewrite Rules
+
+The plugin automatically refreshes rewrite rules upon activation.
+
+If the `/ripostes/` archive returns a 404 error or is inaccessible after deployment, go to:
+
+```text
+Settings > Permalinks
+```
+
+and click **Save Changes** without modifying any settings.
+
+### 3. Create the Required Terms
+
+Create the taxonomy terms that will be used by the content:
+
+```text
+Ripostes > Themes
+Ripostes > Keywords
+```
+
+Also verify that all required countries already exist in the `location` taxonomy provided by the Humanity theme.
+
+### 4. Configure the Archive Introduction
+
+Go to:
+
+```text
+Ripostes > Settings
+```
+
+and enter the introduction text displayed below the archive hero.
+
+### 5. Create and Order Ripostes
+
+For each Riposte, provide:
+
+* the title;
+* the content;
+* the featured image;
+* the date displayed on the card;
+* the external link, when applicable;
+* one country only;
+* one theme only;
+* one keyword only.
+
+If necessary, reorder the content via drag & drop from the administration list.
+
+### 6. Add the Archive to the Navigation
+
+Add the archive URL to the site's navigation menu or links if it should be accessible from the main navigation:
+
+```text
+/ripostes/
+```
+
+Do **not** create a separate WordPress page named **Ripostes**. The URL is automatically provided by the Custom Post Type archive.
+
+### 7. Verify the Production Page
+
+Check in particular:
+
+* access to `/ripostes/`;
+* the display of the hero and archive introduction;
+* the filter order (**Country** followed by **Theme**);
+* each filter's behavior;
+* the **Load more** button on mobile, tablet and desktop;
+* the continuity of the grid pattern and color sequence after AJAX loading;
+* external links and their interactive behavior;
+* the redirection of single URLs to the archive;
+* the absence of Ripostes from the site's global search;
+* the breadcrumb;
+* the SEO title, social metadata and canonical URL.
+
+### 8. Clear All Caches
+
+After validation, clear any application, server, CDN and browser caches to ensure that the new templates and assets are properly loaded.
+
+---
