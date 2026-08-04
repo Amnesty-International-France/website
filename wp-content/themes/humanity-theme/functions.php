@@ -599,6 +599,7 @@ function turnstile_friendly_error(string $error): string
 if (defined('WP_CLI') && WP_CLI) {
     require_once __DIR__ . '/commands/duplicate-country-pages.php';
     require_once __DIR__ . '/commands/upgrade-country-pages.php';
+    require_once __DIR__ . '/commands/fix-canonical-urls.php';
 }
 
 add_filter('render_block', function ($block_content, $block) {

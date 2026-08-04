@@ -208,6 +208,40 @@ if (!function_exists('add_action')) {
     }
 }
 
+if (!function_exists('add_filter')) {
+    $GLOBALS['__phpunit_registered_filters'] = [];
+
+    /**
+     * No-op recorder for add_filter(), mirroring the add_action() stub above:
+     * requiring a file which registers filters at the top level must not fatal,
+     * and tests call the filtered function directly.
+     */
+    function add_filter(string $hook, callable $callback, int $priority = 10, int $accepted_args = 1): void
+    {
+        $GLOBALS['__phpunit_registered_filters'][$hook][] = $callback;
+    }
+}
+
+if (!function_exists('wp_parse_url')) {
+    /**
+     * Stub for WP's wp_parse_url(), which is a thin wrapper around parse_url().
+     */
+    function wp_parse_url(string $url, int $component = -1): mixed
+    {
+        return parse_url($url, $component);
+    }
+}
+
+if (!function_exists('absint')) {
+    /**
+     * Stub for WP's absint().
+     */
+    function absint(mixed $value): int
+    {
+        return abs((int) $value);
+    }
+}
+
 if (!class_exists('WP_Error')) {
     class WP_Error
     {

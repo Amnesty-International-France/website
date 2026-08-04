@@ -217,13 +217,22 @@ if (! function_exists('query_string_to_array')) {
      */
     function query_string_to_array(string $query): array
     {
-        $query = rawurldecode((string) $query);
-        $query = explode('&', $query);
-        $query = array_map(fn (string $arg) => explode('=', $arg), $query);
-        $query = array_map(fn (array $arg) => [ $arg[0] => $arg[1] ?? '' ], $query);
-        $query = array_merge(...$query);
+        $query = trim(rawurldecode($query), " \t\n\r\0\x0B?&");
 
-        return (array) $query;
+        if ('' === $query) {
+            return [];
+        }
+
+        $pairs = array_filter(explode('&', $query), fn (string $arg) => '' !== $arg);
+
+        if (! $pairs) {
+            return [];
+        }
+
+        $pairs = array_map(fn (string $arg) => explode('=', $arg, 2), $pairs);
+        $pairs = array_map(fn (array $arg) => [ $arg[0] => $arg[1] ?? '' ], $pairs);
+
+        return array_merge(...$pairs);
     }
 }
 
