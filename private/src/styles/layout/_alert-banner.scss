@@ -11,8 +11,12 @@
     position: absolute;
     top: 15px;
     right: 15px;
-    color: var(--wp--preset--color--black);
+    color: var(--wp--preset--color--white);
     cursor: pointer;
+
+    path {
+      stroke: currentColor;
+    }
   }
 
   > .alert-banner-body {
