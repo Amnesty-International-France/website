@@ -1,5 +1,5 @@
 .alert-banner {
-  background-color: var(--wp--preset--color--primary);
+  background-color: var(--wp--preset--color--pink);
   padding: 30px 25px;
   position: relative;
 
@@ -11,14 +11,19 @@
     position: absolute;
     top: 15px;
     right: 15px;
-    color: var(--wp--preset--color--black);
+    color: var(--wp--preset--color--white);
     cursor: pointer;
+
+    path {
+      stroke: currentColor;
+    }
   }
 
   > .alert-banner-body {
     max-width: $container-md;
     margin: 0 auto;
     width: 100%;
+    color: var(--wp--preset--color--white);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,9 +52,11 @@
       .alert-body-text {
         display: flex;
         flex-direction: column;
+        color: inherit;
 
         > .title {
           margin-bottom: 10px;
+          color: inherit;
           line-height: 100%;
           font-size: 32px;
           font-weight: bold;
@@ -59,10 +66,15 @@
         }
 
         > .description {
+          color: inherit;
           font-size: 18px;
           letter-spacing: 0;
           font-family: var(--wp--preset--font-family--primary);
           text-transform: none;
+
+          * {
+            color: inherit;
+          }
         }
       }
     }
@@ -70,16 +82,16 @@
     > .cta {
       padding: 6px 30px;
       background: transparent;
-      color: var(--wp--preset--color--black);
-      border: 2px solid var(--wp--preset--color--black);
+      color: inherit;
+      border: 2px solid var(--wp--preset--color--white);
       font-weight: bold;
       text-transform: uppercase;
       text-decoration: none;
-      transition: all ease 0.4s;
+      transition: all ease 0.3s;
 
       &:hover {
-        background: rgba(0, 0, 0, 0.2);
-        color: var(--wp--preset--color--grey-darkest);
+        background-color: var(--wp--preset--color--light-pink);
+        color: inherit;
       }
     }
   }

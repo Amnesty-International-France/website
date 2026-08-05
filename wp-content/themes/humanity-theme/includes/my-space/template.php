@@ -56,6 +56,17 @@ function auth_my_space()
 
 add_action('template_redirect', 'aif_restrict_my_space_access');
 
+add_filter('logout_redirect', 'aif_my_space_logout_redirect', 10, 2);
+
+function aif_my_space_logout_redirect($redirect_to, $requested_redirect_to)
+{
+    if (!empty($requested_redirect_to)) {
+        return $redirect_to;
+    }
+
+    return home_url('/');
+}
+
 function aif_restrict_my_space_access()
 {
     $my_space_parent_slug = 'mon-espace';

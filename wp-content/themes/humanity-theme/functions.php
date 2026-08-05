@@ -97,6 +97,7 @@ require_once realpath(__DIR__ . '/includes/helpers/localisation.php');
 require_once realpath(__DIR__ . '/includes/helpers/post-single.php');
 require_once realpath(__DIR__ . '/includes/helpers/metadata.php');
 require_once realpath(__DIR__ . '/includes/helpers/media.php');
+require_once realpath(__DIR__ . '/includes/helpers/modern-images.php');
 require_once realpath(__DIR__ . '/includes/helpers/pagination.php');
 require_once realpath(__DIR__ . '/includes/helpers/archive.php');
 require_once realpath(__DIR__ . '/includes/helpers/chronicle-helper.php');
@@ -106,6 +107,13 @@ require_once realpath(__DIR__ . '/includes/helpers/reading-time.php');
 require_once realpath(__DIR__ . '/includes/helpers/page-the-chronicle-promo-helpers.php');
 require_once realpath(__DIR__ . '/includes/helpers/actualites-archive-helper.php');
 // endregion helpers
+
+/**
+ * Theme command includes
+ */
+// region commands
+require_once realpath(__DIR__ . '/includes/commands/modern-images.php');
+// endregion commands
 
 /**
  * Theme multisite includes
@@ -375,6 +383,7 @@ require_once realpath(__DIR__ . '/includes/seo/language.php');
 require_once realpath(__DIR__ . '/includes/seo/opengraph.php');
 require_once realpath(__DIR__ . '/includes/seo/primary-term.php');
 require_once realpath(__DIR__ . '/includes/seo/schema-author.php');
+require_once realpath(__DIR__ . '/includes/seo/breadcrumbs.php');
 require_once realpath(__DIR__ . '/includes/seo/schema-breadcrumbs.php');
 require_once realpath(__DIR__ . '/includes/seo/sitemap.php');
 require_once realpath(__DIR__ . '/includes/seo/news-sitemap.php');
@@ -483,8 +492,6 @@ add_filter(
     10,
     2
 );
-
-add_filter('big_image_size_threshold', '__return_false');
 
 add_filter('block_editor_settings_all', function ($settings, $context) {
     if (current_user_can('edit_theme_options')) {

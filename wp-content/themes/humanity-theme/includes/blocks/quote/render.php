@@ -18,14 +18,13 @@ if (!function_exists('render_quote_block')) {
         $bg_color   = $attributes['bgColor'] ?? 'black';
         $size       = $attributes['size'] ?? 'medium';
         $image_id = $attributes['imageId'] ?? null;
-        $image_url = $image_id ? wp_get_attachment_image_url((int) $image_id, 'large') : '';
 
         ob_start();
         ?>
 		<div class="wp-block-amnesty-core-quote-block quote-block">
-            <?php if ($show_image && $image_url): ?>
+            <?php if ($show_image && $image_id): ?>
                 <div class="quote-image">
-                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php esc_attr_e('Image de la citation', 'amnesty'); ?>" loading="lazy" decoding="async" />
+                    <?php echo amnesty_get_attachment_picture((int) $image_id, 'large', [ 'alt' => esc_attr__('Image de la citation', 'amnesty'), 'loading' => 'lazy', 'decoding' => 'async' ]); ?>
                 </div>
             <?php endif; ?>
 
