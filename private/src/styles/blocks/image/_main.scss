@@ -6,6 +6,7 @@
     max-width: 100% !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
+    width: 100%;
   }
 
   .image-wrapper {
@@ -13,6 +14,22 @@
     width: 100%;
     overflow: hidden;
     border-bottom: 8px solid var(--wp--preset--color--primary);
+
+    &.image-device-desktop {
+      display: none;
+
+      @media (min-width: $container-sm) {
+        display: block;
+      }
+    }
+
+    &.image-device-mobile {
+      display: block;
+
+      @media (min-width: $container-sm) {
+        display: none;
+      }
+    }
 
     img {
       width: 100%;
@@ -32,11 +49,31 @@
     }
   }
 
+  &.is-style-simple .image-wrapper {
+    border-bottom: 0;
+  }
+
   .image-description {
     margin: 0;
     padding-top: 8px;
     color: var(--wp--preset--color--grey-dark);
     font-size: 12px;
     line-height: 14px;
+  }
+}
+
+.amnesty-image-compare-desktop {
+  display: none;
+
+  @media (min-width: $container-sm) {
+    display: block;
+  }
+}
+
+.amnesty-image-compare-mobile {
+  display: block;
+
+  @media (min-width: $container-sm) {
+    display: none;
   }
 }

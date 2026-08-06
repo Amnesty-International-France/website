@@ -3,12 +3,15 @@ import EditComponent from './EditComponent.jsx';
 const { registerBlockType } = wp.blocks;
 
 registerBlockType('amnesty-core/image', {
-  title: 'Image + Légende',
-  description: 'Block Image',
+  title: 'Image',
+  description: 'Bloc Image',
   category: 'amnesty-core',
   icon: 'format-image',
   attributes: {
     mediaId: {
+      type: 'number',
+    },
+    mediaMobileId: {
       type: 'number',
     },
     className: {
