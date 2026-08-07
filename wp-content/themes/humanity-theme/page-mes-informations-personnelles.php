@@ -59,7 +59,8 @@ $countries = [
 $actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
 $next_payement = '';
 
-$has_valid_mandate = $sf_member->hasMandatActif && null !== $actifMandate;
+$has_member_data = null !== $sf_member;
+$has_valid_mandate = $has_member_data && $sf_member->hasMandatActif && null !== $actifMandate;
 
 if ($has_valid_mandate) {
     $day_of_payment = date('d', strtotime($actifMandate->Date_paiement_Avenir__c));
@@ -68,7 +69,7 @@ if ($has_valid_mandate) {
     $next_payement = date_format(date_create($actifMandate->Date_paiement_Avenir__c), 'd/m/Y');
 }
 
-$user_status = aif_get_user_status($sf_member);
+$user_status = $has_member_data ? aif_get_user_status($sf_member) : '';
 
 function checkKeys($requiredFields, $array_to_check)
 {
