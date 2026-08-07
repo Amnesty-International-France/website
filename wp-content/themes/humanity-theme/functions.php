@@ -407,7 +407,6 @@ require_once realpath(__DIR__ . '/includes/users/emails.php');
 require_once realpath(__DIR__. '/includes/jetpack/jetpack-modules.php');
 require_once realpath(__DIR__ . '/includes/jetpack/contact-form.php');
 require_once realpath(__DIR__ . '/includes/jetpack/go-back-message.php');
-require_once realpath(__DIR__ . '/includes/jetpack/sitemap.php');
 require_once realpath(__DIR__ . '/includes/jetpack/search-redirect.php');
 // endregion jetpack
 
