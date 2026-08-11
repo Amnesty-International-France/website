@@ -1,13 +1,14 @@
 <?php
 
+require_once __DIR__ . '/errors.php';
 
 function post_salesforce_data_donor_space($url, $params = [])
 {
+    $started_at = microtime(true);
     $access_token = get_salesforce_access_token_donor_space_donor_space();
 
     if (is_wp_error($access_token)) {
-        echo 'Erreur : ' . $access_token->get_error_message();
-        exit;
+        return $access_token;
     }
 
     $aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
@@ -21,22 +22,16 @@ function post_salesforce_data_donor_space($url, $params = [])
         ],
     ]);
 
-    if (is_wp_error($response)) {
-        echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
-        return false;
-    } else {
-        $data = wp_remote_retrieve_body($response);
-        return json_decode($data);
-    }
+    return aif_parse_salesforce_response($response, 'POST', $url, $started_at);
 }
 
 function patch_salesforce_data_donor_space($url, $params = [])
 {
+    $started_at = microtime(true);
     $access_token = get_salesforce_access_token_donor_space_donor_space();
 
     if (is_wp_error($access_token)) {
-        echo 'Erreur : ' . $access_token->get_error_message();
-        exit;
+        return $access_token;
     }
 
     $aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
@@ -50,23 +45,17 @@ function patch_salesforce_data_donor_space($url, $params = [])
         ],
     ]);
 
-    if (is_wp_error($response)) {
-        echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
-        return false;
-    } else {
-        $data = wp_remote_retrieve_body($response);
-        return json_decode($data);
-    }
+    return aif_parse_salesforce_response($response, 'PATCH', $url, $started_at, true);
 }
 
 
 function get_salesforce_data_donor_space($url)
 {
+    $started_at = microtime(true);
     $access_token = get_salesforce_access_token_donor_space_donor_space();
 
     if (is_wp_error($access_token)) {
-        echo 'Erreur : ' . $access_token->get_error_message();
-        exit;
+        return $access_token;
     }
 
     $aif_salesforce_base_url = defined('AIF_SALESFORCE_URL') ? AIF_SALESFORCE_URL : getenv('AIF_SALESFORCE_URL');
@@ -77,12 +66,7 @@ function get_salesforce_data_donor_space($url)
         'timeout' => 30,
     ]);
 
-    if (is_wp_error($response)) {
-        echo 'Erreur de requête Salesforce : ' . $response->get_error_message();
-    } else {
-        $data = wp_remote_retrieve_body($response);
-        return json_decode($data);
-    }
+    return aif_parse_salesforce_response($response, 'GET', $url, $started_at);
 }
 
 
@@ -94,12 +78,20 @@ function get_salesforce_member_data($email)
 
 function get_salesforce_user_data($ID)
 {
+    if (empty($ID)) {
+        return aif_create_salesforce_missing_identifier_error('GET', 'contact');
+    }
+
     $url = 'services/data/v57.0/sobjects/Contact/' . $ID;
     return get_salesforce_data_donor_space($url);
 }
 
 function patch_salesforce_user_data($userData, $ID)
 {
+    if (empty($ID)) {
+        return aif_create_salesforce_missing_identifier_error('PATCH', 'contact');
+    }
+
     $url = 'services/data/v57.0/sobjects/Contact/' . $ID;
     return patch_salesforce_data_donor_space($url, $userData);
 }
@@ -108,16 +100,28 @@ function patch_salesforce_user_data($userData, $ID)
 
 function has_access_to_donation_space($sf_user)
 {
-    return $sf_user->isDonateur || $sf_user->isMembre;
+    if (is_wp_error($sf_user) || !is_object($sf_user)) {
+        return false;
+    }
+
+    return !empty($sf_user->isDonateur) || !empty($sf_user->isMembre);
 }
 function get_salesforce_user_tax_reciept($ID)
 {
+    if (empty($ID)) {
+        return aif_create_salesforce_missing_identifier_error('GET', 'tax_receipts');
+    }
+
     $url = '/services/apexrest/retrieve/v1/RecuFiscaux/?idContact='.$ID;
     return get_salesforce_data_donor_space($url);
 }
 
 function get_salesforce_user_SEPA_mandate($ID)
 {
+    if (empty($ID)) {
+        return aif_create_salesforce_missing_identifier_error('GET', 'sepa_mandates');
+    }
+
     $url = 'services/data/v57.0/sobjects/Contact/'.$ID.'/Mandats_SEPA__r?fields=Id,Name,RUM__c,Montant__c,Statut__c,Periodicite__c,Date_paiement_Avenir__c,Tech_Iban__c';
     return get_salesforce_data_donor_space($url);
 }
@@ -151,19 +155,24 @@ function get_email_token($user_id)
 
 function aif_get_user_status($sf_user)
 {
-
-    if ($sf_user->isMembre == true) {
+    if (true === $sf_user->isMembre) {
         return 'membre';
     }
 
-    if ($sf_user->isDonateur == true) {
+    if (true === $sf_user->isDonateur) {
         return 'donateur';
     }
+
+    return '';
 }
 
 
 function get_salesforce_user_demands($ID)
 {
+    if (empty($ID)) {
+        return aif_create_salesforce_missing_identifier_error('GET', 'demands');
+    }
+
     $url = '/services/apexrest/retrieve/v1/Demandes/?idContact=' . $ID;
     return get_salesforce_data_donor_space($url);
 }

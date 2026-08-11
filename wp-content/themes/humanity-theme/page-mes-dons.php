@@ -1,8 +1,8 @@
 <?php
 
 $current_user = wp_get_current_user();
-$sf_member = get_salesforce_member_data($current_user->user_email);
-$sf_user = get_salesforce_user_data($sf_member->Id);
+$sf_member = aif_get_request_salesforce_member();
+$sf_user = aif_require_salesforce_object(get_salesforce_user_data($sf_member->Id), 'contact', 'Id');
 $user_status =  aif_get_user_status($sf_member);
 
 ?>

@@ -1,66 +1,108 @@
 <?php
 
-$error_message = '';
-$error_no_access_to_donor_space = false;
+function aif_account_creation_result($error_message = '', $no_access = false)
+{
+    return [
+        'error_message' => $error_message,
+        'no_access' => $no_access,
+    ];
+}
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+function aif_account_creation_salesforce_error_result(WP_Error $error)
+{
+    aif_log_salesforce_error($error);
+
+    return aif_account_creation_result(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE);
+}
+
+function aif_handle_account_creation_request()
+{
+    if ('POST' !== $_SERVER['REQUEST_METHOD']) {
+        return aif_account_creation_result();
+    }
 
     $turnstile_error = verify_turnstile();
-    if ($turnstile_error !== null) {
-        $error_message = turnstile_friendly_error($turnstile_error);
-    } else {
-        $email = sanitize_email($_POST['email']);
-        $password = sanitize_text_field($_POST['password']);
-        $confirm_password = sanitize_text_field($_POST['confirm-password']);
-
-        if (empty($email) || empty($password)) {
-            $error_message = 'Veuillez renseigner le mot de passe et votre email';
-        } elseif (!is_email($email)) {
-            $error_message = "L'email renseigné est invalide";
-
-        } elseif ($password !== $confirm_password) {
-            $error_message = 'Les mots de passe ne correspondent pas';
-        } else {
-
-            $sf_member = get_salesforce_member_data($email);
-
-            if (has_access_to_donation_space($sf_member)) {
-                $user = get_salesforce_user_data($sf_member->Id);
-
-                $userdata = [
-                    'user_login' => $email,
-                    'user_email' => $email,
-                    'user_pass' => $password,
-                    'first_name' => $user->FirstName,
-                    'last_name' => $user->LastName,
-                    'nickname' => $user->FirstName . ' ' . $user->LastName,
-                    'role' => 'subscriber'];
-
-                $user_id = wp_insert_user($userdata);
-
-                if (!is_wp_error($user_id)) {
-                    $code = generate_2fa_code();
-                    store_2fa_code($user_id, $code);
-
-                    $verification_url = add_query_arg([
-                        'user' => $email,
-                    ], get_permalink(get_page_by_path('verifier-votre-email')));
-
-                    if (send_2fa_code($email, $code)) {
-                        wp_redirect($verification_url);
-                        exit;
-                    }
-                } else {
-                    $url = get_permalink(get_page_by_path('connectez-vous'));
-                    $error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>.";
-                }
-
-            } else {
-                $error_no_access_to_donor_space = true;
-            }
-        }
+    if (null !== $turnstile_error) {
+        return aif_account_creation_result(turnstile_friendly_error($turnstile_error));
     }
+
+    $email = sanitize_email($_POST['email'] ?? '');
+    $password = sanitize_text_field($_POST['password'] ?? '');
+    $confirm_password = sanitize_text_field($_POST['confirm-password'] ?? '');
+
+    if (empty($email) || empty($password)) {
+        return aif_account_creation_result('Veuillez renseigner le mot de passe et votre email');
+    }
+
+    if (!is_email($email)) {
+        return aif_account_creation_result("L'email renseigné est invalide");
+    }
+
+    if ($password !== $confirm_password) {
+        return aif_account_creation_result('Les mots de passe ne correspondent pas');
+    }
+
+    $sf_member = aif_validate_salesforce_member(get_salesforce_member_data($email));
+
+    if (is_wp_error($sf_member)) {
+        return aif_account_creation_salesforce_error_result($sf_member);
+    }
+
+    if (aif_is_salesforce_contact_absent($sf_member) || !has_access_to_donation_space($sf_member)) {
+        return aif_account_creation_result(no_access: true);
+    }
+
+    $user = get_salesforce_user_data($sf_member->Id);
+
+    if (is_wp_error($user)) {
+        return aif_account_creation_salesforce_error_result($user);
+    }
+
+    if (!is_object($user)) {
+        return aif_account_creation_salesforce_error_result(
+            aif_create_salesforce_invalid_response_error('GET', 'contact')
+        );
+    }
+
+    $first_name = $user->FirstName ?? '';
+    $last_name = $user->LastName ?? '';
+    $userdata = [
+        'user_login' => $email,
+        'user_email' => $email,
+        'user_pass' => $password,
+        'first_name' => $first_name,
+        'last_name' => $last_name,
+        'nickname' => trim($first_name . ' ' . $last_name),
+        'role' => 'subscriber',
+    ];
+
+    $user_id = wp_insert_user($userdata);
+
+    if (is_wp_error($user_id)) {
+        $url = get_permalink(get_page_by_path('connectez-vous'));
+        return aif_account_creation_result(
+            "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>."
+        );
+    }
+
+    $code = generate_2fa_code();
+    store_2fa_code($user_id, $code);
+
+    $verification_url = add_query_arg([
+        'user' => $email,
+    ], get_permalink(get_page_by_path('verifier-votre-email')));
+
+    if (send_2fa_code($email, $code)) {
+        wp_redirect($verification_url);
+        exit;
+    }
+
+    return aif_account_creation_result();
 }
+
+$account_creation_result = aif_handle_account_creation_request();
+$error_message = $account_creation_result['error_message'];
+$error_no_access_to_donor_space = $account_creation_result['no_access'];
 
 ?>
 

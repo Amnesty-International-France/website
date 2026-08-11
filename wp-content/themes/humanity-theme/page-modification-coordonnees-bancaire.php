@@ -1,11 +1,13 @@
 <?php
 
-$current_user = wp_get_current_user();
-$sf_user_ID = get_SF_user_ID($current_user->ID);
+$SF_membre_data = aif_get_request_salesforce_member();
+$sf_user_ID = $SF_membre_data->Id;
 
-$SF_User = get_salesforce_user_data($sf_user_ID);
-$SF_membre_data = get_salesforce_member_data($current_user->user_email);
-$SEPA_mandates = get_salesforce_user_SEPA_mandate($sf_user_ID);
+$SF_User = aif_require_salesforce_object(get_salesforce_user_data($sf_user_ID), 'contact', 'Id');
+$SEPA_mandates = aif_require_salesforce_records(
+    get_salesforce_user_SEPA_mandate($sf_user_ID),
+    'sepa_mandates'
+);
 
 $actifMandate  = null;
 $day_of_payment = null;
@@ -36,7 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
     $ibandirty = $_POST['iban'];
     $newIban = str_replace(' ', '', $ibandirty);
 
-    if (create_duplicate_update_IBAN_request($sf_user_ID, $newIban)) {
+    $request_result = create_duplicate_update_IBAN_request($sf_user_ID, $newIban);
+
+    if (is_wp_error($request_result)) {
+        aif_salesforce_service_unavailable($request_result);
+    }
+
+    if (is_object($request_result) && !empty($request_result->success)) {
         $success_message_title = 'Votre demande de modification a bien été prise en compte';
 
         $url = get_permalink(get_page_by_path('mes-demandes'));
