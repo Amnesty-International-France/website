@@ -56,13 +56,13 @@ function auth_my_space()
         return;
     }
 
+    if (is_preview() && current_user_can('edit_post', $current_page->ID)) {
+        return;
+    }
+
     $sf_member = check_user_page_access();
 
     set_query_var('aif_salesforce_member', $sf_member);
-
-    if (is_preview()) {
-        return;
-    }
 
     aif_restrict_my_space_access($sf_member, $current_page, $parent_page);
 }

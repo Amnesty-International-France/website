@@ -94,6 +94,18 @@ final class SalesforceMemberDataTest extends TestCase
             }
         }
 
+        if (!function_exists('amnesty_logo')) {
+            function amnesty_logo(string $url): void
+            {
+            }
+        }
+
+        if (!function_exists('amnesty_nav')) {
+            function amnesty_nav(string $location): void
+            {
+            }
+        }
+
         if (!function_exists('is_page')) {
             function is_page(): bool
             {
@@ -120,9 +132,9 @@ final class SalesforceMemberDataTest extends TestCase
                 return $GLOBALS['__phpunit_post_ancestors'];
             }
 
-            function current_user_can(string $capability): bool
+            function current_user_can(string $capability, mixed ...$args): bool
             {
-                return false;
+                return ($GLOBALS['__phpunit_user_capabilities'][$capability] ?? null) === $args;
             }
         }
 
@@ -149,6 +161,7 @@ final class SalesforceMemberDataTest extends TestCase
         $GLOBALS['__phpunit_singular_post_types'] = [];
         $GLOBALS['__phpunit_queried_object'] = (object) ['ID' => 42, 'post_name' => 'content'];
         $GLOBALS['__phpunit_post_ancestors'] = [];
+        $GLOBALS['__phpunit_user_capabilities'] = [];
         $GLOBALS['wp'] = (object) ['request' => 'mon-espace/mes-dons'];
     }
 
@@ -410,20 +423,26 @@ final class SalesforceMemberDataTest extends TestCase
         self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
-    public function testPreviewPreparesMemberContextWithoutApplyingAccessRestriction(): void
+    public function testEditorPreviewSkipsSalesforceAccessCheck(): void
     {
         $GLOBALS['__phpunit_is_page'] = true;
         $GLOBALS['__phpunit_is_preview'] = true;
         $GLOBALS['__phpunit_post_ancestors'] = [1];
-        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(
-            200,
-            '{"Id":"contact-id","isDonateur":true,"isMembre":false,"hasMandatActif":false}'
-        );
+        $GLOBALS['__phpunit_user_capabilities'] = ['edit_post' => [42]];
+        $GLOBALS['__phpunit_wp_remote_response'] = new WP_Error('http_request_failed', 'Must not be called');
 
         auth_my_space();
 
-        self::assertSame('contact-id', aif_get_request_salesforce_member()->Id);
-        self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
+        self::assertArrayNotHasKey('aif_salesforce_member', $GLOBALS['__phpunit_query_vars']);
+        self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
+
+        ob_start();
+        require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/patterns/my-space-sidebar.php';
+        $sidebar = ob_get_clean();
+
+        self::assertIsString($sidebar);
+        self::assertStringContainsString('id="my-space-sidebar"', $sidebar);
+        self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
     #[DataProvider('mySpaceSingleProvider')]

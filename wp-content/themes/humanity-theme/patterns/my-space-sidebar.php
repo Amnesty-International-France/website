@@ -31,12 +31,10 @@
     $is_member = false;
 
 if (is_user_logged_in()) {
-    if (function_exists('aif_get_request_salesforce_member')) {
-        $sf_member = aif_get_request_salesforce_member();
+    $sf_member = get_query_var('aif_salesforce_member', null);
 
-        if (is_object($sf_member) && !empty($sf_member->isMembre)) {
-            $is_member = true;
-        }
+    if (is_object($sf_member) && !empty($sf_member->isMembre)) {
+        $is_member = true;
     }
 }
 

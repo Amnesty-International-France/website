@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/sales-force/errors.php';
+
 function aif_salesforce_service_unavailable($error)
 {
     aif_log_salesforce_error($error);
