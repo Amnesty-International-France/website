@@ -12,14 +12,18 @@ if (! function_exists('amnesty_get_section_page_redirects')) {
      *
      * @package Amnesty\Permalinks
      *
-     * @return array<string,string> Parent page slug => target page path.
+     * `expects_page` marks targets that must resolve to a published page. When such a
+     * target is missing or unpublished we bail rather than emitting a cacheable 301 to a
+     * URL that may 404. Non-page targets (e.g. an archive route) keep the path fallback.
+     *
+     * @return array<string,array{path:string,expects_page:bool}> Parent slug => target.
      */
     function amnesty_get_section_page_redirects(): array
     {
         return [
-            'sinformer'      => 'sinformer/articles',
-            'agir-avec-nous' => 'agir-avec-nous/comment-agir',
-            'nous-soutenir'  => 'nous-soutenir/don',
+            'sinformer'      => ['path' => 'sinformer/articles', 'expects_page' => false],
+            'agir-avec-nous' => ['path' => 'agir-avec-nous/comment-agir', 'expects_page' => true],
+            'nous-soutenir'  => ['path' => 'nous-soutenir/don', 'expects_page' => true],
         ];
     }
 }
@@ -60,11 +64,19 @@ if (! function_exists('amnesty_redirect_empty_section_pages')) {
             return;
         }
 
-        $target_path = $redirects[ $page->post_name ];
-        $target_page = get_page_by_path($target_path);
-        $target_url  = $target_page && 'publish' === get_post_status($target_page)
-            ? get_permalink($target_page)
-            : home_url('/' . trailingslashit($target_path));
+        $target_path  = $redirects[ $page->post_name ]['path'];
+        $expects_page = $redirects[ $page->post_name ]['expects_page'];
+        $target_page  = get_page_by_path($target_path);
+        $is_published = $target_page && 'publish' === get_post_status($target_page);
+
+        if ($is_published) {
+            $target_url = get_permalink($target_page);
+        } elseif ($expects_page) {
+            // expected page is missing/unpublished: don't emit a cacheable 301 toward a 404.
+            return;
+        } else {
+            $target_url = home_url('/' . trailingslashit($target_path));
+        }
 
         if (! $target_url) {
             return;
@@ -79,6 +91,15 @@ if (! function_exists('amnesty_redirect_empty_section_pages')) {
             && amnesty_url_paths_match($target_url, $current_url)
         ) {
             return;
+        }
+
+        // preserve the original query string (e.g. UTM params) so campaign attribution survives.
+        if (! empty($_SERVER['QUERY_STRING'])) {
+            wp_parse_str(wp_unslash($_SERVER['QUERY_STRING']), $query_args);
+
+            if (! empty($query_args)) {
+                $target_url = add_query_arg($query_args, $target_url);
+            }
         }
 
         wp_safe_redirect($target_url, 301);
