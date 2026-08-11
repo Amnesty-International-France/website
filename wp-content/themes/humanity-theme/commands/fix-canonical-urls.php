@@ -15,9 +15,39 @@ declare(strict_types=1);
  *   wp amnesty fix-canonical-urls
  */
 
+if (! function_exists('amnesty_canonical_host_is_faulty')) {
+    /**
+     * Whether a host is a known preview/staging host that leaked into stored
+     * canonicals and must be rewritten onto production.
+     *
+     * @param string $host the URL host
+     *
+     * @return bool
+     */
+    function amnesty_canonical_host_is_faulty(string $host): bool
+    {
+        // Editing on the Infomaniak preview environment stored its host in
+        // `rel=canonical`. Extend this list if other preview hosts surface.
+        $needles = [ 'infomaniak' ];
+
+        foreach ($needles as $needle) {
+            if (false !== stripos($host, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
 if (! function_exists('amnesty_canonical_needs_cleanup')) {
     /**
-     * Whether a stored URL differs from its normalised form.
+     * Whether a stored URL should be rewritten in the database.
+     *
+     * Unlike the runtime `wpseo_canonical` filter, this migration is
+     * destructive, so it stays conservative: only known faulty hosts and dirty
+     * paths on the production host are touched. An intentional external
+     * canonical (e.g. www.amnesty.org) keeps its host untouched.
      *
      * @param string $url the stored URL
      *
@@ -29,6 +59,27 @@ if (! function_exists('amnesty_canonical_needs_cleanup')) {
             return false;
         }
 
+        $host = wp_parse_url($url, PHP_URL_HOST);
+
+        // Relative URLs carry no host and are left untouched by the normaliser.
+        if (! $host) {
+            return false;
+        }
+
+        // A known preview/staging host is always forced back to production.
+        if (amnesty_canonical_host_is_faulty((string) $host)) {
+            return true;
+        }
+
+        $home_host = wp_parse_url(home_url(), PHP_URL_HOST);
+
+        // Any other foreign host may be a deliberate external canonical -
+        // never overwrite it during a DB migration.
+        if ($home_host && $host !== $home_host) {
+            return false;
+        }
+
+        // Same host: clean up only when the path/query normalisation changes it.
         return amnesty_normalise_canonical_host($url) !== $url;
     }
 }
@@ -139,6 +190,12 @@ if (! function_exists('amnesty_fix_canonical_indexables')) {
 
             if (! $update) {
                 continue;
+            }
+
+            // Yoast indexes lookups by permalink_hash (strlen:md5 of the
+            // permalink). Recompute it or those lookups miss the fixed rows.
+            if (isset($update['permalink'])) {
+                $update['permalink_hash'] = strlen($update['permalink']) . ':' . md5($update['permalink']);
             }
 
             if (! $dry_run) {
