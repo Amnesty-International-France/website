@@ -31,12 +31,10 @@
     $is_member = false;
 
 if (is_user_logged_in()) {
-    $current_user = wp_get_current_user();
+    if (function_exists('aif_get_request_salesforce_member')) {
+        $sf_member = aif_get_request_salesforce_member();
 
-    if (function_exists('get_salesforce_member_data')) {
-        $sf_member = get_salesforce_member_data($current_user->user_email);
-
-        if (isset($sf_member) && !empty($sf_member->isMembre)) {
+        if (is_object($sf_member) && !empty($sf_member->isMembre)) {
             $is_member = true;
         }
     }

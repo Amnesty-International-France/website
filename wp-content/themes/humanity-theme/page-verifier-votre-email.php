@@ -53,9 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
     if ($turnstile_error !== null) {
         $send_code_error_message = turnstile_friendly_error($turnstile_error);
     } else {
-        $sf_user = get_salesforce_member_data($email);
+        $sf_user = aif_validate_salesforce_member(get_salesforce_member_data($email));
 
-        if ($sf_user && has_access_to_donation_space($sf_user)) {
+        if (is_wp_error($sf_user)) {
+            aif_log_salesforce_error($sf_user);
+            $send_code_error_message = AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE;
+        } elseif (has_access_to_donation_space($sf_user)) {
             $stored_user = get_user_by('email', $email);
 
             if (!$stored_user) {

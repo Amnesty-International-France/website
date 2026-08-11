@@ -227,6 +227,11 @@ if (!class_exists('WP_Error')) {
         {
             return $this->message;
         }
+
+        public function get_error_data(): mixed
+        {
+            return $this->data;
+        }
     }
 }
 

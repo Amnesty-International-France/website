@@ -23,8 +23,13 @@ function handle_duplicate_tax_receipt_request(WP_REST_Request $request)
 
     $result = create_duplicate_taxt_receipt_request($SF_ID, $taxt_receipt_reference);
 
-    if (!$result->success) {
-        return new WP_REST_Response(['message' => 'demand failed', 'result' => $result], status: 400);
+    if (is_wp_error($result)) {
+        aif_log_salesforce_error($result);
+        return new WP_REST_Response(['message' => 'service temporarily unavailable'], status: 503);
+    }
+
+    if (!is_object($result) || empty($result->success)) {
+        return new WP_REST_Response(['message' => 'demand failed'], status: 400);
     }
 
     $response = [
