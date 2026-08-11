@@ -124,7 +124,7 @@ test('shows a failure message when Turnstile reports an error and does not submi
   expect(posts).toHaveLength(0);
 });
 
-test('shows a failure message when Turnstile never creates a token', async ({
+test('keeps waiting while Turnstile has not reported success or failure', async ({
   page,
   gotoWithoutCookieOverlay,
 }) => {
@@ -136,9 +136,8 @@ test('shows a failure message when Turnstile never creates a token', async ({
   await page.locator('#submit-btn').click();
 
   await expect(page.getByRole('alert')).toContainText('La vérification de sécurité est en cours');
-  await expect(page.getByRole('alert')).toContainText(
-    'La vérification de sécurité n’a pas pu être effectuée',
-    { timeout: 5000 },
-  );
+  await page.waitForTimeout(3500);
+  await expect(page.getByRole('alert')).toContainText('La vérification de sécurité est en cours');
+  await expect(page.locator('#submit-btn')).toBeDisabled();
   expect(posts).toHaveLength(0);
 });

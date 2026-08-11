@@ -55,9 +55,14 @@ const mockScript = ({ mode, delay, token, trigger }) => `
           return;
         }
 
-        form.addEventListener('submit', () => {
+        const onSubmit = (event) => {
+          if (event.target !== form) return;
+
+          document.removeEventListener('submit', onSubmit, true);
           window.setTimeout(() => resolve(widget), delay);
-        }, { capture: true, once: true });
+        };
+
+        document.addEventListener('submit', onSubmit, true);
         return;
       }
 

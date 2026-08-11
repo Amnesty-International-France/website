@@ -758,6 +758,12 @@ function amnesty_handle_petition_skip(): void
         wp_die('Action non autorisée.', '', ['response' => 403]);
     }
 
+    $turnstile_error = verify_turnstile();
+    if ($turnstile_error !== null) {
+        wp_redirect(add_query_arg('signature_status', 'turnstile', amnesty_get_clh_petition_tunnel_url()));
+        exit;
+    }
+
     $petition_id = absint($_POST['petition_id']);
     if (!$petition_id) {
         wp_redirect(amnesty_get_clh_petition_tunnel_url());
