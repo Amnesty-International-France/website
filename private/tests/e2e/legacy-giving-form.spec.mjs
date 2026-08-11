@@ -1,4 +1,5 @@
 import { expect, test } from './support/fixtures';
+import { mockSuccessfulTurnstile, setServerSideTurnstileResult } from './support/turnstile';
 
 const LEGS_PATH = '/legs/';
 
@@ -23,6 +24,9 @@ const fillRequiredFields = async (form) => {
 };
 
 test.describe('legacy giving (legs) brochure request', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockSuccessfulTurnstile(page);
+  });
   test('reveals the brochure request form from the sticky call-to-action', async ({
     page,
     gotoWithoutCookieOverlay,
@@ -69,6 +73,9 @@ test.describe('legacy giving (legs) brochure request', () => {
 
     const form = page.locator('#legs-form');
     await fillRequiredFields(form);
+    await setServerSideTurnstileResult(page, '#legs-form form', {
+      success: true,
+    });
 
     await form.getByRole('button', { name: 'Envoyer' }).click();
 

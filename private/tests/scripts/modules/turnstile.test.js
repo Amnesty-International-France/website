@@ -52,12 +52,23 @@ describe('turnstile form guard', () => {
     vi.restoreAllMocks();
   });
 
-  it('waits for a Turnstile response before submitting and ignores stale polling ticks', () => {
+  it('waits beyond three seconds for a Turnstile response and ignores stale polling ticks', () => {
     const { form, button } = buildForm();
+    const downstreamSubmit = vi.fn();
+    form.addEventListener('submit', downstreamSubmit);
 
     const event = dispatchSubmit(form, button);
 
     expect(event.defaultPrevented).toBe(true);
+    expect(downstreamSubmit).not.toHaveBeenCalled();
+    expect(button.disabled).toBe(true);
+    expect(form.querySelector('[data-turnstile-client-error]')?.textContent).toContain(
+      'vérification de sécurité est en cours',
+    );
+
+    vi.advanceTimersByTime(3500);
+
+    expect(form.requestSubmit).not.toHaveBeenCalled();
     expect(button.disabled).toBe(true);
     expect(form.querySelector('[data-turnstile-client-error]')?.textContent).toContain(
       'vérification de sécurité est en cours',

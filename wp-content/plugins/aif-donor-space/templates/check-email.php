@@ -7,24 +7,26 @@ $success_message = '';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
-
-    $email = sanitize_email($_POST['email']);
-
-    if (has_access_to_donation_space($email)) {
-
-        $user = get_user_by('email', $email);
-
-        if ($user) {
-            wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
-            exit;
-        } else {
-            wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
-            exit;
-        }
+    $turnstile_error = verify_turnstile();
+    if ($turnstile_error !== null) {
+        $error_message = turnstile_friendly_error($turnstile_error);
     } else {
-        $error_message = "Vous n'avez pas accès à l'espace don";
-    }
+        $email = sanitize_email($_POST['email']);
 
+        if (has_access_to_donation_space($email)) {
+            $user = get_user_by('email', $email);
+
+            if ($user) {
+                wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
+                exit;
+            } else {
+                wp_redirect(get_permalink(get_page_by_path('connectez-vous')));
+                exit;
+            }
+        } else {
+            $error_message = "Vous n'avez pas accès à l'espace don";
+        }
+    }
 }
 ?>
 
@@ -46,6 +48,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         <p>Nous avons besoin de votre email pour déterminer si vous êtes déja connu</p>
 
         <form class="aif-form-container" role="form" method="POST" action="">
+            <div
+                class="cf-turnstile"
+                data-callback="aifTurnstileSuccess"
+                data-error-callback="aifTurnstileFailure"
+                data-appearance="interaction-only"
+                data-expired-callback="aifTurnstileFailure"
+                data-timeout-callback="aifTurnstileFailure"
+                data-unsupported-callback="aifTurnstileFailure"
+                data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"
+            ></div>
             <label>Votre adresse email</label>
             <div>
                 <input placeholder="adresse@mail.fr" value="" type="email" name="email" required="true">
