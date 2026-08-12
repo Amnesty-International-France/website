@@ -336,6 +336,16 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 							</div>
 							<form id="<?php echo esc_attr($skip_form_id); ?>" class="tunnel-clh-skip-form" method="post"
 							      action="">
+								<div
+									class="cf-turnstile"
+									data-callback="aifTurnstileSuccess"
+									data-error-callback="aifTurnstileFailure"
+									data-appearance="interaction-only"
+									data-expired-callback="aifTurnstileFailure"
+									data-timeout-callback="aifTurnstileFailure"
+									data-unsupported-callback="aifTurnstileFailure"
+									data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"
+								></div>
 								<?php wp_nonce_field('clh_skip_petition', 'clh_skip_nonce'); ?>
 								<input type="hidden" name="petition_id"
 								       value="<?= esc_attr((string)$next_petition['id']); ?>">

@@ -1,4 +1,10 @@
 import { expect, test } from './support/fixtures';
+import {
+  TEST_SITE_KEY,
+  mockSuccessfulTurnstile,
+  setServerSideTurnstileResult,
+} from './support/turnstile';
+import { getJetpackEffects, resetJetpackEffects } from './support/jetpack-effects';
 
 const FONDATION_PATH = '/fondation/';
 
@@ -11,9 +17,15 @@ test.describe('foundation contact form', () => {
     page,
     gotoWithoutCookieOverlay,
   }) => {
+    await mockSuccessfulTurnstile(page);
     await gotoWithoutCookieOverlay(FONDATION_PATH);
 
     const form = page.locator('div[data-test="contact-form"]');
+    await expect(form.locator('.cf-turnstile')).toHaveAttribute('data-sitekey', TEST_SITE_KEY);
+    await expect(form.locator('.cf-turnstile')).toHaveAttribute(
+      'data-appearance',
+      'interaction-only',
+    );
     await expect(form.getByLabel(/^Nom/)).toBeVisible();
     await expect(form.getByLabel('Prénom')).toBeVisible();
     await expect(form.getByLabel('E-mail')).toBeVisible();
@@ -26,9 +38,13 @@ test.describe('foundation contact form', () => {
     page,
     gotoWithoutCookieOverlay,
   }) => {
+    await mockSuccessfulTurnstile(page);
     await gotoWithoutCookieOverlay(FONDATION_PATH);
 
     const form = page.locator('div[data-test="contact-form"]');
+    await setServerSideTurnstileResult(page, 'div[data-test="contact-form"] form', {
+      success: true,
+    });
     await form.getByLabel('Monsieur', { exact: true }).check();
     await form.getByLabel(/^Nom/).fill('Turing');
     await form.getByLabel('Prénom').fill('Alan');
@@ -45,11 +61,18 @@ test.describe('foundation contact form', () => {
 
   test('submits with only the required fields and shows the real Jetpack success message', async ({
     page,
+    request,
+    salesforceTestId: e2eTestId,
     gotoWithoutCookieOverlay,
   }) => {
+    await mockSuccessfulTurnstile(page);
+    await resetJetpackEffects(request, e2eTestId);
     await gotoWithoutCookieOverlay(FONDATION_PATH);
 
     const form = page.locator('div[data-test="contact-form"]');
+    await setServerSideTurnstileResult(page, 'div[data-test="contact-form"] form', {
+      success: true,
+    });
     await form.getByLabel(/^Nom/).fill('Turing');
     await form.getByLabel('Prénom').fill('Alan');
     await form.getByLabel('E-mail').fill('alan@example.test');
@@ -57,5 +80,83 @@ test.describe('foundation contact form', () => {
     await form.getByRole('button', { name: 'Envoyer' }).click();
 
     await expect(page.getByText('Merci pour votre réponse')).toBeVisible();
+    await expect
+      .poll(() => getJetpackEffects(request, e2eTestId))
+      .toEqual({
+        feedback_count: 1,
+        mail_count: 1,
+      });
+  });
+
+  test('waits for an interaction-only Turnstile token before submitting', async ({
+    page,
+    gotoWithoutCookieOverlay,
+  }) => {
+    const jetpackPosts = [];
+    page.on('request', (request) => {
+      const url = new URL(request.url());
+
+      if (
+        request.method() === 'POST' &&
+        url.pathname.endsWith('/wp-admin/admin-ajax.php') &&
+        url.searchParams.get('action') === 'grunion-contact-form'
+      ) {
+        jetpackPosts.push(request);
+      }
+    });
+    await mockSuccessfulTurnstile(page, {
+      delay: 5000,
+      token: 'mock-jetpack-interaction-token',
+      trigger: 'submit',
+    });
+    await gotoWithoutCookieOverlay(FONDATION_PATH);
+
+    const form = page.locator('div[data-test="contact-form"]');
+    await setServerSideTurnstileResult(page, 'div[data-test="contact-form"] form', {
+      success: true,
+    });
+    await form.getByLabel(/^Nom/).fill('Turing');
+    await form.getByLabel('Prénom').fill('Alan');
+    await form.getByLabel('E-mail').fill('alan@example.test');
+
+    const submitter = form.getByRole('button', { name: 'Envoyer' });
+    await submitter.click();
+
+    await expect(form.locator('[data-turnstile-client-error]')).toContainText(
+      'vérification de sécurité est en cours',
+    );
+    await expect(submitter).toBeDisabled();
+    await expect(submitter).toHaveAttribute('aria-busy', 'true');
+    await page.waitForTimeout(1000);
+    expect(jetpackPosts).toHaveLength(0);
+
+    await expect(page.getByText('Merci pour votre réponse')).toBeVisible();
+    expect(jetpackPosts).toHaveLength(1);
+  });
+
+  test('does not save feedback, send mail, or confirm a submission rejected by server-side Turnstile', async ({
+    page,
+    request,
+    salesforceTestId: e2eTestId,
+    gotoWithoutCookieOverlay,
+  }) => {
+    await mockSuccessfulTurnstile(page);
+    await resetJetpackEffects(request, e2eTestId);
+    const effectsBeforeSubmission = await getJetpackEffects(request, e2eTestId);
+    await gotoWithoutCookieOverlay(FONDATION_PATH);
+
+    const form = page.locator('div[data-test="contact-form"]');
+    await setServerSideTurnstileResult(page, 'div[data-test="contact-form"] form', {
+      success: false,
+    });
+    await form.getByLabel(/^Nom/).fill('Turing');
+    await form.getByLabel('Prénom').fill('Alan');
+    await form.getByLabel('E-mail').fill('alan@example.test');
+
+    await form.getByRole('button', { name: 'Envoyer' }).click();
+
+    await expect(page.getByText(/La vérification de sécurité a échoué/)).toBeVisible();
+    await expect(page.getByText('Merci pour votre réponse')).not.toBeVisible();
+    await expect.poll(() => getJetpackEffects(request, e2eTestId)).toEqual(effectsBeforeSubmission);
   });
 });
