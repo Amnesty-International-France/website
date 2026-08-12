@@ -8,14 +8,9 @@ const normaliseMedia = (media) => ({
   ...media,
   source_url: media.source_url || media.url || media.sizes?.full?.url || '',
   alt_text: media.alt_text || media.alt || '',
-  caption:
-    typeof media.caption === 'string'
-      ? { raw: media.caption }
-      : media.caption,
+  caption: typeof media.caption === 'string' ? { raw: media.caption } : media.caption,
   description:
-    typeof media.description === 'string'
-      ? { raw: media.description }
-      : media.description,
+    typeof media.description === 'string' ? { raw: media.description } : media.description,
 });
 
 const EditComponent = (props) => {
@@ -35,9 +30,12 @@ const EditComponent = (props) => {
     [mediaMobileId],
   );
 
-  const desktopMedia = selectedMediaOverride?.id === mediaId ? selectedMediaOverride : selectedMedia;
+  const desktopMedia =
+    selectedMediaOverride?.id === mediaId ? selectedMediaOverride : selectedMedia;
   const mobileMedia =
-    selectedMobileMediaOverride?.id === mediaMobileId ? selectedMobileMediaOverride : selectedMobileMedia;
+    selectedMobileMediaOverride?.id === mediaMobileId
+      ? selectedMobileMediaOverride
+      : selectedMobileMedia;
   const previewMedia = desktopMedia || mobileMedia;
   const previewCaption = desktopMedia?.caption?.raw || mobileMedia?.caption?.raw;
   const previewDescription =
@@ -46,7 +44,7 @@ const EditComponent = (props) => {
     mobileMedia?.description?.raw ||
     mobileMedia?.description?.rendered;
   const blockProps = useBlockProps({
-    className: `image-block ${className} ${fullWidth ? 'image-fullwidth' : ''}`,
+    className: ['image-block', fullWidth ? 'image-fullwidth' : ''].filter(Boolean).join(' '),
   });
 
   const onSelectImage = (attribute, setOverride) => (newMedia) => {
@@ -89,7 +87,10 @@ const EditComponent = (props) => {
       <div className="image-editor-preview">
         <p className="image-editor-preview-label">{label}</p>
         <div className="image-wrapper">
-          <img src={media.source_url || media.url || media.sizes?.full?.url || ''} alt={media.alt_text || media.alt || ''} />
+          <img
+            src={media.source_url || media.url || media.sizes?.full?.url || ''}
+            alt={media.alt_text || media.alt || ''}
+          />
           {showMetadata && previewCaption && <p className="image-caption">{previewCaption}</p>}
         </div>
       </div>
