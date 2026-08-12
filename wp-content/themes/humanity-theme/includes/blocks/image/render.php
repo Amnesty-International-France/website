@@ -168,7 +168,7 @@ if (!function_exists('render_image_block')) {
                 echo $image_id && $mobile_image_id
                     ? amnesty_image_block_responsive_picture($image_id, $mobile_image_id, 'full', [ 'alt' => $mobile_image_alt ?: $image_alt, 'loading' => 'lazy', 'decoding' => 'async' ])
                     : amnesty_get_attachment_picture($fallback_image_id, 'full', [ 'alt' => $image_alt ?: $mobile_image_alt, 'loading' => 'lazy', 'decoding' => 'async' ]);
-                ?>
+        ?>
                 <?php if ($show_metadata && !empty($caption)) : ?>
                     <p class="image-caption"><?php echo esc_html($caption); ?></p>
                 <?php endif; ?>
