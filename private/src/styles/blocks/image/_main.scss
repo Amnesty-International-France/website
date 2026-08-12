@@ -15,20 +15,8 @@
     overflow: hidden;
     border-bottom: 8px solid var(--wp--preset--color--primary);
 
-    &.image-device-desktop {
-      display: none;
-
-      @media (min-width: $container-sm) {
-        display: block;
-      }
-    }
-
-    &.image-device-mobile {
+    picture {
       display: block;
-
-      @media (min-width: $container-sm) {
-        display: none;
-      }
     }
 
     img {
