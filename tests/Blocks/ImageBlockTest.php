@@ -64,8 +64,14 @@ if (!function_exists('amnesty_get_attachment_picture')) {
 }
 
 if (!function_exists('wp_get_attachment_image_src')) {
+    $GLOBALS['__phpunit_attachment_image_sources'] = [];
+
     function wp_get_attachment_image_src(int $attachment_id, string|array $size = 'thumbnail'): array|false
     {
+        if (isset($GLOBALS['__phpunit_attachment_image_sources'][$attachment_id])) {
+            return $GLOBALS['__phpunit_attachment_image_sources'][$attachment_id];
+        }
+
         return [
             sprintf('image-%d.jpg', $attachment_id),
             1000,
@@ -98,6 +104,7 @@ final class ImageBlockTest extends TestCase
             20 => [ '_wp_attachment_image_alt' => 'Mobile alt' ],
         ];
 
+        $GLOBALS['__phpunit_attachment_image_sources'] = [];
         $GLOBALS['__phpunit_rendered_attachment_pictures'] = [];
     }
 
@@ -131,12 +138,29 @@ final class ImageBlockTest extends TestCase
 
         self::assertStringContainsString('image-fullwidth', $html);
         self::assertSame(1, substr_count($html, 'class="image-wrapper"'));
-        self::assertSame(1, substr_count($html, '<picture>'));
+        self::assertSame(1, substr_count($html, '<picture'));
         self::assertStringContainsString('<source media="(min-width: 640px)" srcset="image-10.jpg" />', $html);
-        self::assertStringContainsString('<img src="image-20.jpg" width="1000" height="700" alt="Mobile alt" loading="lazy" decoding="async" />', $html);
+        self::assertStringContainsString('<img src="image-20.jpg" width="1000" height="700" alt="Desktop alt" loading="lazy" decoding="async" />', $html);
         self::assertStringNotContainsString('image-device-desktop', $html);
         self::assertStringNotContainsString('image-device-mobile', $html);
         self::assertSame(1, substr_count($html, '<p class="image-caption">Desktop caption</p>'));
+    }
+
+    public function testResponsivePictureSetsDeviceAspectRatios(): void
+    {
+        $GLOBALS['__phpunit_attachment_image_sources'] = [
+            10 => [ 'desktop-wide.jpg', 1200, 600 ],
+            20 => [ 'mobile-tall.jpg', 400, 500 ],
+        ];
+
+        $html = render_image_block([ 'mediaId' => 10, 'mediaMobileId' => 20 ]);
+
+        self::assertStringContainsString(
+            '<picture style="--image-mobile-aspect-ratio: 400 / 500; --image-desktop-aspect-ratio: 1200 / 600;">',
+            $html
+        );
+        self::assertStringContainsString('<source media="(min-width: 640px)" srcset="desktop-wide.jpg" />', $html);
+        self::assertStringContainsString('<img src="mobile-tall.jpg" width="400" height="500"', $html);
     }
 
     public function testSimpleStyleKeepsImageAndSuppressesMetadata(): void
