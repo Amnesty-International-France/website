@@ -88,7 +88,7 @@ if (!get_page_by_path('aif-e2e-petition', OBJECT, 'petition')) {
     ]);
 
     update_post_meta($petition_id, 'type', 'petition');
-    update_post_meta($petition_id, 'date_de_fin', date('Y-m-d', strtotime('+1 year')));
+    update_post_meta($petition_id, 'date_de_fin', gmdate('Y-m-d', strtotime('+1 year')));
     update_post_meta($petition_id, 'objectif_signatures', 1000);
 }
 
