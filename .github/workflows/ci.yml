@@ -66,7 +66,7 @@ jobs:
         run: yarn typecheck:turnstile
       - name: Install Playwright browser
         working-directory: private
-        run: yarn playwright install --with-deps chromium
+        run: yarn playwright install --with-deps --no-shell chromium
       - name: Start WordPress E2E environment
         id: e2e-start
         working-directory: private

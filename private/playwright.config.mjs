@@ -14,6 +14,7 @@ export default defineConfig({
     : [['list'], ['html', { open: 'on-failure', outputFolder: 'playwright-report' }]],
   use: {
     baseURL,
+    channel: 'chromium',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
