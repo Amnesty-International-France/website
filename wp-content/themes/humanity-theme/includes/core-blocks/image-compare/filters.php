@@ -54,7 +54,7 @@ if (! function_exists('amnesty_image_compare_set_image_attributes')) {
             $tags->remove_attribute('id');
         }
 
-        $tags->set_attribute('src', (string) $image['url']);
+        $tags->set_attribute('src', esc_url((string) $image['url']));
         $tags->set_attribute('alt', (string) ($image['alt'] ?? ''));
         amnesty_image_compare_set_image_class($tags, $attachment_id);
 
@@ -271,7 +271,11 @@ if (! function_exists('amnesty_image_compare_render_image')) {
         $html_attributes = '';
 
         foreach ($attributes as $name => $value) {
-            $html_attributes .= sprintf(' %s="%s"', $name, esc_attr($value));
+            $html_attributes .= sprintf(
+                ' %s="%s"',
+                esc_attr($name),
+                'src' === $name ? esc_url($value) : esc_attr($value)
+            );
         }
 
         return sprintf('<img%s />', $html_attributes);
@@ -331,6 +335,28 @@ if (! function_exists('amnesty_image_compare_has_two_images')) {
     }
 }
 
+if (! function_exists('amnesty_image_compare_images_match')) {
+    /**
+     * Check whether two image attributes point to the same media.
+     *
+     * @param array<string,mixed> $first  First image.
+     * @param array<string,mixed> $second Second image.
+     *
+     * @return bool
+     */
+    function amnesty_image_compare_images_match(array $first, array $second): bool
+    {
+        $first_id = ! empty($first['id']) ? absint($first['id']) : 0;
+        $second_id = ! empty($second['id']) ? absint($second['id']) : 0;
+
+        if ($first_id && $second_id) {
+            return $first_id === $second_id;
+        }
+
+        return (string) ($first['url'] ?? '') === (string) ($second['url'] ?? '');
+    }
+}
+
 if (! function_exists('amnesty_add_mobile_images_to_image_compare_block')) {
     /**
      * Add mobile variants to the Jetpack Image Compare block rendering.
@@ -371,11 +397,17 @@ if (! function_exists('amnesty_add_mobile_images_to_image_compare_block')) {
                 : amnesty_image_compare_render_fallback($mobile_before, $mobile_after, $attributes, $content);
         }
 
-        $mobile_content = amnesty_image_compare_content_with_images(
-            $content,
-            amnesty_image_compare_has_image($mobile_before) ? $mobile_before : $desktop_before,
-            amnesty_image_compare_has_image($mobile_after) ? $mobile_after : $desktop_after
-        );
+        $resolved_mobile_before = amnesty_image_compare_has_image($mobile_before) ? $mobile_before : $desktop_before;
+        $resolved_mobile_after = amnesty_image_compare_has_image($mobile_after) ? $mobile_after : $desktop_after;
+
+        if (
+            amnesty_image_compare_images_match($desktop_before, $resolved_mobile_before)
+            && amnesty_image_compare_images_match($desktop_after, $resolved_mobile_after)
+        ) {
+            return $content;
+        }
+
+        $mobile_content = amnesty_image_compare_content_with_images($content, $resolved_mobile_before, $resolved_mobile_after);
         $root = amnesty_image_compare_root_context($content, $attributes);
         $root['class'] = amnesty_image_compare_classes($root['class'], 'amnesty-image-compare-responsive');
         $style = '' !== $root['style'] ? sprintf(' style="%s"', esc_attr($root['style'])) : '';

@@ -41,6 +41,71 @@ if (!function_exists('amnesty_image_block_source')) {
     }
 }
 
+if (!function_exists('amnesty_image_block_attachment_src')) {
+    /**
+     * Read attachment source data for the responsive Image block.
+     *
+     * @param int          $attachment_id Attachment ID.
+     * @param string|array $size          Image size.
+     *
+     * @return array{url:string,width:int,height:int}
+     */
+    function amnesty_image_block_attachment_src(int $attachment_id, string|array $size): array
+    {
+        if (! function_exists('wp_get_attachment_image_src')) {
+            return [
+                'url' => '',
+                'width' => 0,
+                'height' => 0,
+            ];
+        }
+
+        $src = wp_get_attachment_image_src($attachment_id, $size);
+
+        if (! is_array($src) || empty($src[0])) {
+            return [
+                'url' => '',
+                'width' => 0,
+                'height' => 0,
+            ];
+        }
+
+        return [
+            'url' => (string) $src[0],
+            'width' => (int) ($src[1] ?? 0),
+            'height' => (int) ($src[2] ?? 0),
+        ];
+    }
+}
+
+if (!function_exists('amnesty_image_block_responsive_picture_style')) {
+    /**
+     * Build the responsive aspect-ratio style for the picture wrapper.
+     *
+     * @param int          $desktop_image_id Desktop attachment ID.
+     * @param int          $mobile_image_id  Mobile attachment ID.
+     * @param string|array $size             Image size.
+     *
+     * @return string
+     */
+    function amnesty_image_block_responsive_picture_style(int $desktop_image_id, int $mobile_image_id, string|array $size): string
+    {
+        $mobile_src = amnesty_image_block_attachment_src($mobile_image_id, $size);
+        $desktop_src = amnesty_image_block_attachment_src($desktop_image_id, $size);
+        $styles = [];
+
+        if ($mobile_src['width'] > 0 && $mobile_src['height'] > 0) {
+            $styles[] = sprintf('--image-mobile-aspect-ratio: %d / %d;', $mobile_src['width'], $mobile_src['height']);
+        }
+
+        if ($desktop_src['width'] > 0 && $desktop_src['height'] > 0) {
+            $styles[] = sprintf('--image-desktop-aspect-ratio: %d / %d;', $desktop_src['width'], $desktop_src['height']);
+        }
+
+        return $styles ? sprintf(' style="%s"', esc_attr(implode(' ', $styles))) : '';
+    }
+}
+
 if (!function_exists('amnesty_image_block_img')) {
     /**
      * Render the fallback img for the responsive Image block picture.
@@ -57,17 +122,17 @@ if (!function_exists('amnesty_image_block_img')) {
             return amnesty_get_attachment_picture($attachment_id, $size, $attr);
         }
 
-        $src = wp_get_attachment_image_src($attachment_id, $size);
+        $src = amnesty_image_block_attachment_src($attachment_id, $size);
 
-        if (! is_array($src) || empty($src[0])) {
+        if ('' === $src['url']) {
             return amnesty_get_attachment_picture($attachment_id, $size, $attr);
         }
 
         $attr = array_merge(
             [
-                'src' => (string) $src[0],
-                'width' => (string) ($src[1] ?? ''),
-                'height' => (string) ($src[2] ?? ''),
+                'src' => $src['url'],
+                'width' => (string) $src['width'],
+                'height' => (string) $src['height'],
             ],
             $attr
         );
@@ -116,7 +181,8 @@ if (!function_exists('amnesty_image_block_responsive_picture')) {
     function amnesty_image_block_responsive_picture(int $desktop_image_id, int $mobile_image_id, string|array $size, array $attr = []): string
     {
         return sprintf(
-            '<picture>%s%s</picture>',
+            '<picture%s>%s%s</picture>',
+            amnesty_image_block_responsive_picture_style($desktop_image_id, $mobile_image_id, $size),
             amnesty_image_block_source($desktop_image_id, $size, '(min-width: 640px)'),
             amnesty_image_block_img($mobile_image_id, $size, $attr)
         );
@@ -166,7 +232,7 @@ if (!function_exists('render_image_block')) {
             <div class="image-wrapper">
                 <?php
                 echo $image_id && $mobile_image_id
-                    ? amnesty_image_block_responsive_picture($image_id, $mobile_image_id, 'full', [ 'alt' => $mobile_image_alt ?: $image_alt, 'loading' => 'lazy', 'decoding' => 'async' ])
+                    ? amnesty_image_block_responsive_picture($image_id, $mobile_image_id, 'full', [ 'alt' => $image_alt ?: $mobile_image_alt, 'loading' => 'lazy', 'decoding' => 'async' ])
                     : amnesty_get_attachment_picture($fallback_image_id, 'full', [ 'alt' => $image_alt ?: $mobile_image_alt, 'loading' => 'lazy', 'decoding' => 'async' ]);
         ?>
                 <?php if ($show_metadata && !empty($caption)) : ?>

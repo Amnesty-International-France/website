@@ -34,6 +34,10 @@ if (! function_exists('esc_attr')) {
 if (! function_exists('esc_url')) {
     function esc_url(mixed $url): string
     {
+        if (preg_match('/^\s*javascript:/i', (string) $url)) {
+            return '';
+        }
+
         return esc_attr($url);
     }
 }
@@ -250,6 +254,48 @@ final class ImageCompareBlockTest extends TestCase
         self::assertStringContainsString('<figcaption>A mobile-only comparison</figcaption>', $html);
         self::assertStringNotContainsString('amnesty-image-compare-desktop', $html);
         self::assertStringNotContainsString('amnesty-image-compare-mobile', $html);
+    }
+
+    public function testIdenticalMobileCompareImagesKeepOriginalMarkup(): void
+    {
+        $content = $this->renderedCompareContent();
+
+        $html = amnesty_add_mobile_images_to_image_compare_block($content, [
+            'blockName' => 'jetpack/image-compare',
+            'attrs' => [
+                'imageBefore' => $this->image(10, 'desktop-before.jpg'),
+                'imageAfter' => $this->image(11, 'desktop-after.jpg'),
+                'imageBeforeMobile' => $this->image(10, 'desktop-before.jpg'),
+                'imageAfterMobile' => $this->image(11, 'desktop-after.jpg'),
+            ],
+        ]);
+
+        self::assertSame($content, $html);
+    }
+
+    public function testImageCompareSrcUrlsAreEscaped(): void
+    {
+        $html = amnesty_image_compare_render_fallback(
+            $this->image(10, 'javascript:alert(1)'),
+            $this->image(11, 'after.jpg'),
+            [],
+            ''
+        );
+
+        self::assertStringContainsString('src=""', $html);
+        self::assertStringNotContainsString('javascript:alert(1)', $html);
+    }
+
+    public function testUpdatedImageCompareSrcUrlsAreEscaped(): void
+    {
+        $html = amnesty_image_compare_content_with_images(
+            $this->renderedCompareContent(),
+            $this->image(10, 'javascript:alert(1)'),
+            $this->image(11, 'after.jpg')
+        );
+
+        self::assertStringContainsString('src=""', $html);
+        self::assertStringNotContainsString('javascript:alert(1)', $html);
     }
 
     /**
