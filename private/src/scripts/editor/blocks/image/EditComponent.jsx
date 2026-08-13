@@ -44,7 +44,9 @@ const EditComponent = (props) => {
     mobileMedia?.description?.raw ||
     mobileMedia?.description?.rendered;
   const blockProps = useBlockProps({
-    className: ['image-block', fullWidth ? 'image-fullwidth' : ''].filter(Boolean).join(' '),
+    className: ['image-block', className, fullWidth ? 'image-fullwidth' : '']
+      .filter(Boolean)
+      .join(' '),
   });
 
   const onSelectImage = (attribute, setOverride) => (newMedia) => {
