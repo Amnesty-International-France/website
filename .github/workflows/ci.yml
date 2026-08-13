@@ -75,27 +75,19 @@ jobs:
         working-directory: private
         run: ./tests/e2e/support/seed-wordpress.sh
       - name: Run Lighthouse audits
+        id: lighthouse
         continue-on-error: true
         working-directory: private
-        run: |
-          mkdir -p .lighthouseci
-          CHROME_PATH="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
-          export CHROME_PATH
-          set +e
-          yarn test:lighthouse > .lighthouseci/lhci-output.log 2>&1
-          status="$?"
-          set -e
-          cat .lighthouseci/lhci-output.log
-          exit "$status"
+        run: yarn test:lighthouse
       - name: Summarize Lighthouse reports
         continue-on-error: true
-        if: ${{ always() }}
+        if: ${{ !cancelled() && steps.lighthouse.outcome != 'skipped' }}
         working-directory: private
         run: node bin/summarize-lighthouse.mjs
       - name: Upload Lighthouse reports
         uses: actions/upload-artifact@v7
         continue-on-error: true
-        if: ${{ always() }}
+        if: ${{ !cancelled() && steps.lighthouse.outcome != 'skipped' }}
         with:
           name: lighthouse-reports
           path: private/.lighthouseci/
