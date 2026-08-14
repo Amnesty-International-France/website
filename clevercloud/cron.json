@@ -1,6 +1,7 @@
 [
   "0 0 * * * $ROOT/infogerance/backup-wp.sh",
   "0 0 * * * wp sync compteurs",
+  "*/5 * * * * wp amnesty media process-modern-queue --limit=20 --time-limit=45",
   "*/15 * * * * wp sync signatures",
   "30 23 * * * wp sync signatures_failed"
 ]

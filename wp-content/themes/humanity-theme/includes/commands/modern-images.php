@@ -10,7 +10,7 @@ if (! class_exists('Amnesty_Modern_Images_Command')) {
     class Amnesty_Modern_Images_Command
     {
         /**
-         * Generate missing AVIF/WebP variants for existing media.
+         * Queue missing AVIF/WebP variants for existing media.
          *
          * ## OPTIONS
          *
@@ -40,9 +40,8 @@ if (! class_exists('Amnesty_Modern_Images_Command')) {
             $ids = $this->get_attachment_ids($assoc_args, $batch_size);
 
             $processed = 0;
-            $updated = 0;
+            $queued = 0;
             $skipped = 0;
-            $saved_bytes = 0;
 
             foreach ($ids as $attachment_id) {
                 $processed++;
@@ -54,33 +53,72 @@ if (! class_exists('Amnesty_Modern_Images_Command')) {
                     continue;
                 }
 
-                $before = $metadata[AMNESTY_MODERN_IMAGE_METADATA_KEY] ?? [];
-                $next_metadata = $dry_run ? $metadata : amnesty_generate_modern_image_variants($attachment_id, $metadata, $force);
-                $after = $next_metadata[AMNESTY_MODERN_IMAGE_METADATA_KEY] ?? [];
-
-                if ($dry_run) {
-                    WP_CLI::log(sprintf('%d would be processed', $attachment_id));
+                $attached_file = get_attached_file($attachment_id);
+                if (! is_string($attached_file) || '' === $attached_file) {
+                    $skipped++;
+                    WP_CLI::log(sprintf('%d skipped: no attached file', $attachment_id));
                     continue;
                 }
 
-                if ($before === $after) {
+                $tasks = amnesty_modern_image_tasks($metadata, $attached_file, $force);
+
+                if ($dry_run) {
+                    WP_CLI::log(sprintf('%d would queue %d modern variant task(s)', $attachment_id, count($tasks)));
+                    continue;
+                }
+
+                if ($tasks === []) {
                     $skipped++;
                     continue;
                 }
 
-                wp_update_attachment_metadata($attachment_id, $next_metadata);
-                $updated++;
-                $saved_bytes += $this->saved_bytes($metadata, $next_metadata);
-                WP_CLI::log(sprintf('%d modern variants updated', $attachment_id));
+                $queued += amnesty_enqueue_modern_image_variants($attachment_id, $metadata, $force);
+                WP_CLI::log(sprintf('%d modern variant task(s) queued for attachment %d', count($tasks), $attachment_id));
             }
 
             WP_CLI::success(
                 sprintf(
-                    'Processed %d attachment(s), updated %d, skipped %d, generated about %s of transfer savings.',
+                    'Processed %d attachment(s), queued %d task(s), skipped %d.',
                     $processed,
-                    $updated,
-                    $skipped,
-                    size_format($saved_bytes)
+                    $queued,
+                    $skipped
+                )
+            );
+        }
+
+        /**
+         * Process queued AVIF/WebP variant tasks.
+         *
+         * ## OPTIONS
+         *
+         * [--limit=<number>]
+         * : Maximum number of variant tasks to process. Default: 20.
+         *
+         * [--time-limit=<seconds>]
+         * : Maximum runtime budget. Default: 45.
+         *
+         * [--max-attempts=<number>]
+         * : Number of conversion attempts before a task is marked failed. Default: 3.
+         *
+         * @param array<int,string> $args
+         * @param array<string,mixed> $assoc_args
+         */
+        public function process_modern_queue(array $args, array $assoc_args): void
+        {
+            $stats = amnesty_process_modern_image_queue(
+                max(1, (int) ($assoc_args['limit'] ?? 20)),
+                max(1, (int) ($assoc_args['time-limit'] ?? 45)),
+                max(1, (int) ($assoc_args['max-attempts'] ?? 3))
+            );
+
+            WP_CLI::success(
+                sprintf(
+                    'Processed %d task(s), updated %d, failed %d, skipped %d, locked %d.',
+                    $stats['processed'],
+                    $stats['updated'],
+                    $stats['failed'],
+                    $stats['skipped'],
+                    $stats['locked']
                 )
             );
         }
@@ -122,64 +160,6 @@ if (! class_exists('Amnesty_Modern_Images_Command')) {
             return $ids;
         }
 
-        /**
-         * @param array<string,mixed> $before
-         * @param array<string,mixed> $after
-         */
-        private function saved_bytes(array $before, array $after): int
-        {
-            $saved = 0;
-            $formats = $after[AMNESTY_MODERN_IMAGE_METADATA_KEY] ?? [];
-
-            if (! is_array($formats)) {
-                return 0;
-            }
-
-            foreach ($formats as $relative_file => $variants) {
-                if (! is_array($variants)) {
-                    continue;
-                }
-
-                $source_size = $this->source_filesize($relative_file, $before);
-                if ($source_size < 1) {
-                    continue;
-                }
-
-                foreach ($variants as $variant) {
-                    if (! is_array($variant) || empty($variant['filesize'])) {
-                        continue;
-                    }
-
-                    $saved += max(0, $source_size - (int) $variant['filesize']);
-                }
-            }
-
-            return $saved;
-        }
-
-        /**
-         * @param array<string,mixed> $metadata
-         */
-        private function source_filesize(string $relative_file, array $metadata): int
-        {
-            if (($metadata['file'] ?? '') === $relative_file && ! empty($metadata['filesize'])) {
-                return (int) $metadata['filesize'];
-            }
-
-            $dirname = amnesty_modern_image_relative_dir($metadata);
-            foreach (($metadata['sizes'] ?? []) as $size) {
-                if (! is_array($size) || empty($size['file'])) {
-                    continue;
-                }
-
-                $size_relative = ltrim(($dirname ? $dirname . '/' : '') . $size['file'], '/');
-                if ($size_relative === $relative_file && ! empty($size['filesize'])) {
-                    return (int) $size['filesize'];
-                }
-            }
-
-            return 0;
-        }
     }
 }
 

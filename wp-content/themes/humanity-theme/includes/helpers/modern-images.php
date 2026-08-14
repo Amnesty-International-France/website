@@ -6,6 +6,22 @@ if (! defined('AMNESTY_MODERN_IMAGE_METADATA_KEY')) {
     define('AMNESTY_MODERN_IMAGE_METADATA_KEY', 'amnesty_modern_formats');
 }
 
+if (! defined('AMNESTY_MODERN_IMAGE_QUEUE_META_KEY')) {
+    define('AMNESTY_MODERN_IMAGE_QUEUE_META_KEY', '_amnesty_modern_image_queue');
+}
+
+if (! defined('AMNESTY_MODERN_IMAGE_QUEUE_STATUS_META_KEY')) {
+    define('AMNESTY_MODERN_IMAGE_QUEUE_STATUS_META_KEY', '_amnesty_modern_image_queue_status');
+}
+
+if (! defined('AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY')) {
+    define('AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY', '_amnesty_modern_image_queue_lock_until');
+}
+
+if (! defined('AMNESTY_MODERN_IMAGE_FAILED_TASKS_META_KEY')) {
+    define('AMNESTY_MODERN_IMAGE_FAILED_TASKS_META_KEY', '_amnesty_modern_image_failed_tasks');
+}
+
 if (! function_exists('amnesty_modern_image_formats')) {
     /**
      * @return array<string,array{extension:string,quality:int}>
@@ -86,6 +102,13 @@ if (! function_exists('amnesty_modern_image_candidates')) {
     }
 }
 
+if (! function_exists('amnesty_modern_image_task_key')) {
+    function amnesty_modern_image_task_key(string $relative_file, string $mime_type): string
+    {
+        return md5($relative_file . '|' . $mime_type);
+    }
+}
+
 if (! function_exists('amnesty_save_modern_image_with_gd')) {
     function amnesty_save_modern_image_with_gd(string $source_file, string $destination_file, string $mime_type, int $quality): bool
     {
@@ -113,6 +136,181 @@ if (! function_exists('amnesty_save_modern_image_with_gd')) {
         };
 
         return $saved;
+    }
+}
+
+if (! function_exists('amnesty_modern_image_tasks')) {
+    /**
+     * Build one conversion task per source image and target format.
+     *
+     * @param array<string,mixed> $metadata
+     * @return array<string,array{relative_file:string,mime_type:string,attempts:int,force:bool}>
+     */
+    function amnesty_modern_image_tasks(array $metadata, string $attached_file, bool $force = false): array
+    {
+        $tasks = [];
+        $modern_formats = is_array($metadata[AMNESTY_MODERN_IMAGE_METADATA_KEY] ?? null)
+            ? $metadata[AMNESTY_MODERN_IMAGE_METADATA_KEY]
+            : [];
+
+        foreach (amnesty_modern_image_candidates($metadata, $attached_file) as $relative_file => $_source_file) {
+            foreach (amnesty_modern_image_formats() as $mime_type => $_format) {
+                if (! $force && ! empty($modern_formats[$relative_file][$mime_type]['file'])) {
+                    continue;
+                }
+
+                $tasks[amnesty_modern_image_task_key($relative_file, $mime_type)] = [
+                    'relative_file' => $relative_file,
+                    'mime_type'     => $mime_type,
+                    'attempts'      => 0,
+                    'force'         => $force,
+                ];
+            }
+        }
+
+        return $tasks;
+    }
+}
+
+if (! function_exists('amnesty_normalize_modern_image_queue')) {
+    /**
+     * @return array<string,array{relative_file:string,mime_type:string,attempts:int,force:bool}>
+     */
+    function amnesty_normalize_modern_image_queue(mixed $queue): array
+    {
+        if (! is_array($queue)) {
+            return [];
+        }
+
+        $normalized = [];
+        foreach ($queue as $task) {
+            if (! is_array($task) || empty($task['relative_file']) || empty($task['mime_type'])) {
+                continue;
+            }
+
+            $relative_file = (string) $task['relative_file'];
+            $mime_type = (string) $task['mime_type'];
+            if (! isset(amnesty_modern_image_formats()[$mime_type])) {
+                continue;
+            }
+
+            $normalized[amnesty_modern_image_task_key($relative_file, $mime_type)] = [
+                'relative_file' => $relative_file,
+                'mime_type'     => $mime_type,
+                'attempts'      => max(0, (int) ($task['attempts'] ?? 0)),
+                'force'         => ! empty($task['force']),
+            ];
+        }
+
+        return $normalized;
+    }
+}
+
+if (! function_exists('amnesty_get_modern_image_queue')) {
+    /**
+     * @return array<string,array{relative_file:string,mime_type:string,attempts:int,force:bool}>
+     */
+    function amnesty_get_modern_image_queue(int $attachment_id): array
+    {
+        if (! function_exists('get_post_meta')) {
+            return [];
+        }
+
+        return amnesty_normalize_modern_image_queue(get_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_META_KEY, true));
+    }
+}
+
+if (! function_exists('amnesty_get_modern_image_failed_tasks')) {
+    /**
+     * @return array<string,array<string,mixed>>
+     */
+    function amnesty_get_modern_image_failed_tasks(int $attachment_id): array
+    {
+        if (! function_exists('get_post_meta')) {
+            return [];
+        }
+
+        $failed_tasks = get_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_FAILED_TASKS_META_KEY, true);
+
+        return is_array($failed_tasks) ? $failed_tasks : [];
+    }
+}
+
+if (! function_exists('amnesty_update_modern_image_queue_status')) {
+    /**
+     * @param array<string,array{relative_file:string,mime_type:string,attempts:int,force:bool}> $queue
+     */
+    function amnesty_update_modern_image_queue_status(int $attachment_id, array $queue): void
+    {
+        if (! function_exists('update_post_meta') || ! function_exists('delete_post_meta')) {
+            return;
+        }
+
+        if ($queue !== []) {
+            update_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_STATUS_META_KEY, 'pending');
+            return;
+        }
+
+        delete_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_META_KEY);
+        $failed_tasks = amnesty_get_modern_image_failed_tasks($attachment_id);
+        update_post_meta(
+            $attachment_id,
+            AMNESTY_MODERN_IMAGE_QUEUE_STATUS_META_KEY,
+            $failed_tasks === [] ? 'complete' : 'failed'
+        );
+    }
+}
+
+if (! function_exists('amnesty_save_modern_image_queue')) {
+    /**
+     * @param array<string,array{relative_file:string,mime_type:string,attempts:int,force:bool}> $queue
+     */
+    function amnesty_save_modern_image_queue(int $attachment_id, array $queue): void
+    {
+        if (! function_exists('update_post_meta')) {
+            return;
+        }
+
+        if ($queue !== []) {
+            update_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_META_KEY, $queue);
+        }
+
+        amnesty_update_modern_image_queue_status($attachment_id, $queue);
+    }
+}
+
+if (! function_exists('amnesty_enqueue_modern_image_variants')) {
+    /**
+     * Queue missing modern variants without converting during the upload request.
+     *
+     * @param array<string,mixed> $metadata
+     */
+    function amnesty_enqueue_modern_image_variants(int $attachment_id, array $metadata, bool $force = false): int
+    {
+        if (! function_exists('get_attached_file')) {
+            return 0;
+        }
+
+        $attached_file = get_attached_file($attachment_id);
+        if (! is_string($attached_file) || '' === $attached_file) {
+            return 0;
+        }
+
+        $next_queue = amnesty_modern_image_tasks($metadata, $attached_file, $force);
+        if ($next_queue === []) {
+            amnesty_save_modern_image_queue($attachment_id, []);
+            return 0;
+        }
+
+        $queue = $force ? [] : amnesty_get_modern_image_queue($attachment_id);
+        $queue = array_replace($queue, $next_queue);
+        amnesty_save_modern_image_queue($attachment_id, $queue);
+
+        if ($force && function_exists('delete_post_meta')) {
+            delete_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_FAILED_TASKS_META_KEY);
+        }
+
+        return count($next_queue);
     }
 }
 
@@ -247,7 +445,222 @@ if (! function_exists('amnesty_generate_modern_image_variants')) {
 if (! function_exists('amnesty_generate_modern_image_variants_on_metadata_update')) {
     function amnesty_generate_modern_image_variants_on_metadata_update(array $metadata, int $attachment_id): array
     {
-        return amnesty_generate_modern_image_variants($attachment_id, $metadata);
+        amnesty_enqueue_modern_image_variants($attachment_id, $metadata);
+
+        return $metadata;
+    }
+}
+
+if (! function_exists('amnesty_modern_image_source_for_task')) {
+    /**
+     * @param array<string,mixed> $metadata
+     */
+    function amnesty_modern_image_source_for_task(array $metadata, string $attached_file, string $relative_file): string
+    {
+        $candidates = amnesty_modern_image_candidates($metadata, $attached_file);
+
+        return $candidates[$relative_file] ?? '';
+    }
+}
+
+if (! function_exists('amnesty_mark_modern_image_task_failed')) {
+    /**
+     * @param array{relative_file:string,mime_type:string,attempts:int,force:bool} $task
+     */
+    function amnesty_mark_modern_image_task_failed(int $attachment_id, string $task_key, array $task): void
+    {
+        if (! function_exists('update_post_meta')) {
+            return;
+        }
+
+        $failed_tasks = amnesty_get_modern_image_failed_tasks($attachment_id);
+        $failed_tasks[$task_key] = [
+            ...$task,
+            'failed_at' => time(),
+        ];
+
+        update_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_FAILED_TASKS_META_KEY, $failed_tasks);
+    }
+}
+
+if (! function_exists('amnesty_process_modern_image_queue_for_attachment')) {
+    /**
+     * Process at most one queued variant for an attachment.
+     *
+     * @return array{processed:int,updated:int,failed:int,skipped:int,locked:int}
+     */
+    function amnesty_process_modern_image_queue_for_attachment(int $attachment_id, int $max_attempts = 3, int $lock_ttl = 300): array
+    {
+        $stats = [
+            'processed' => 0,
+            'updated'   => 0,
+            'failed'    => 0,
+            'skipped'   => 0,
+            'locked'    => 0,
+        ];
+
+        if (! function_exists('get_post_meta') || ! function_exists('update_post_meta') || ! function_exists('delete_post_meta')) {
+            $stats['skipped']++;
+            return $stats;
+        }
+
+        $now = time();
+        $lock_until = (int) get_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY, true);
+        if ($lock_until > $now) {
+            $stats['locked']++;
+            return $stats;
+        }
+
+        $queue = amnesty_get_modern_image_queue($attachment_id);
+        if ($queue === []) {
+            delete_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY);
+            amnesty_update_modern_image_queue_status($attachment_id, []);
+            $stats['skipped']++;
+            return $stats;
+        }
+
+        update_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY, $now + max(60, $lock_ttl));
+        update_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_STATUS_META_KEY, 'processing');
+
+        $task_key = (string) array_key_first($queue);
+        $task = $queue[$task_key];
+
+        $metadata = function_exists('wp_get_attachment_metadata') ? wp_get_attachment_metadata($attachment_id) : false;
+        $attached_file = function_exists('get_attached_file') ? get_attached_file($attachment_id) : false;
+
+        if (! is_array($metadata) || ! is_string($attached_file) || '' === $attached_file) {
+            unset($queue[$task_key]);
+            amnesty_mark_modern_image_task_failed($attachment_id, $task_key, [ ...$task, 'attempts' => $task['attempts'] + 1 ]);
+            amnesty_save_modern_image_queue($attachment_id, $queue);
+            delete_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY);
+            $stats['processed']++;
+            $stats['failed']++;
+            return $stats;
+        }
+
+        $source_file = amnesty_modern_image_source_for_task($metadata, $attached_file, $task['relative_file']);
+        $format = amnesty_modern_image_formats()[$task['mime_type']] ?? null;
+        $variant = is_array($format)
+            ? amnesty_generate_modern_image_variant($source_file, $task['relative_file'], $task['mime_type'], $format, $task['force'])
+            : null;
+
+        $stats['processed']++;
+
+        if (null === $variant) {
+            $task['attempts']++;
+            if ($task['attempts'] >= max(1, $max_attempts)) {
+                unset($queue[$task_key]);
+                amnesty_mark_modern_image_task_failed($attachment_id, $task_key, $task);
+                $stats['failed']++;
+            } else {
+                $queue[$task_key] = $task;
+            }
+
+            amnesty_save_modern_image_queue($attachment_id, $queue);
+            delete_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY);
+            return $stats;
+        }
+
+        $modern_formats = is_array($metadata[AMNESTY_MODERN_IMAGE_METADATA_KEY] ?? null)
+            ? $metadata[AMNESTY_MODERN_IMAGE_METADATA_KEY]
+            : [];
+        $modern_formats[$task['relative_file']][$task['mime_type']] = $variant;
+        $metadata[AMNESTY_MODERN_IMAGE_METADATA_KEY] = $modern_formats;
+
+        $updated = function_exists('wp_update_attachment_metadata')
+            ? wp_update_attachment_metadata($attachment_id, $metadata)
+            : false;
+
+        if (false === $updated) {
+            $task['attempts']++;
+            $queue[$task_key] = $task;
+            amnesty_save_modern_image_queue($attachment_id, $queue);
+            delete_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY);
+            return $stats;
+        }
+
+        unset($queue[$task_key]);
+        amnesty_save_modern_image_queue($attachment_id, $queue);
+        delete_post_meta($attachment_id, AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY);
+        $stats['updated']++;
+
+        return $stats;
+    }
+}
+
+if (! function_exists('amnesty_get_queued_modern_image_attachment_ids')) {
+    /**
+     * @return array<int,int>
+     */
+    function amnesty_get_queued_modern_image_attachment_ids(int $limit = 20): array
+    {
+        if (! function_exists('get_posts')) {
+            return [];
+        }
+
+        return array_map(
+            'absint',
+            get_posts([
+                'post_type'      => 'attachment',
+                'post_mime_type' => [ 'image/jpeg', 'image/png' ],
+                'post_status'    => 'inherit',
+                'posts_per_page' => max(1, $limit),
+                'fields'         => 'ids',
+                'orderby'        => 'ID',
+                'order'          => 'ASC',
+                'meta_query'     => [
+                    [
+                        'key'     => AMNESTY_MODERN_IMAGE_QUEUE_META_KEY,
+                        'compare' => 'EXISTS',
+                    ],
+                ],
+            ])
+        );
+    }
+}
+
+if (! function_exists('amnesty_process_modern_image_queue')) {
+    /**
+     * @return array{processed:int,updated:int,failed:int,skipped:int,locked:int}
+     */
+    function amnesty_process_modern_image_queue(int $limit = 20, int $time_limit = 45, int $max_attempts = 3): array
+    {
+        $stats = [
+            'processed' => 0,
+            'updated'   => 0,
+            'failed'    => 0,
+            'skipped'   => 0,
+            'locked'    => 0,
+        ];
+        $started_at = time();
+        $deadline = $started_at + max(1, $time_limit);
+        $lock_ttl = max(60, $time_limit + 60);
+        $limit = max(1, $limit);
+
+        while ($stats['processed'] < $limit && time() < $deadline) {
+            $ids = amnesty_get_queued_modern_image_attachment_ids($limit);
+            if ($ids === []) {
+                break;
+            }
+
+            $processed_before = $stats['processed'];
+            foreach ($ids as $attachment_id) {
+                if ($stats['processed'] >= $limit || time() >= $deadline) {
+                    break;
+                }
+
+                $attachment_stats = amnesty_process_modern_image_queue_for_attachment($attachment_id, $max_attempts, $lock_ttl);
+                foreach ($stats as $key => $_value) {
+                    $stats[$key] += $attachment_stats[$key];
+                }
+            }
+
+            if ($stats['processed'] === $processed_before) {
+                break;
+            }
+        }
+
+        return $stats;
     }
 }
 

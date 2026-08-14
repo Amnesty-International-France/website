@@ -39,10 +39,54 @@ if (!function_exists('wp_get_attachment_metadata')) {
     }
 }
 
+if (!function_exists('wp_update_attachment_metadata')) {
+    function wp_update_attachment_metadata(int $attachment_id, array $metadata): bool
+    {
+        if (!empty($GLOBALS['__phpunit_fail_attachment_metadata_update'])) {
+            return false;
+        }
+
+        $GLOBALS['__phpunit_attachment_metadata'][$attachment_id] = $metadata;
+
+        return true;
+    }
+}
+
 if (!function_exists('wp_get_upload_dir')) {
     function wp_get_upload_dir(): array
     {
         return $GLOBALS['__phpunit_upload_dir'];
+    }
+}
+
+if (!function_exists('get_post_meta')) {
+    function get_post_meta(int $post_id, string $key = '', bool $single = false): mixed
+    {
+        if ('' === $key) {
+            return $GLOBALS['__phpunit_post_meta'][$post_id] ?? [];
+        }
+
+        $value = $GLOBALS['__phpunit_post_meta'][$post_id][$key] ?? '';
+
+        return $single ? $value : [$value];
+    }
+}
+
+if (!function_exists('update_post_meta')) {
+    function update_post_meta(int $post_id, string $key, mixed $value): bool
+    {
+        $GLOBALS['__phpunit_post_meta'][$post_id][$key] = $value;
+
+        return true;
+    }
+}
+
+if (!function_exists('delete_post_meta')) {
+    function delete_post_meta(int $post_id, string $key): bool
+    {
+        unset($GLOBALS['__phpunit_post_meta'][$post_id][$key]);
+
+        return true;
     }
 }
 
@@ -63,6 +107,8 @@ final class ModernImagesTest extends TestCase
 
         $GLOBALS['__phpunit_attached_files'] = [];
         $GLOBALS['__phpunit_attachment_metadata'] = [];
+        $GLOBALS['__phpunit_post_meta'] = [];
+        $GLOBALS['__phpunit_fail_attachment_metadata_update'] = false;
         $GLOBALS['__phpunit_upload_dir'] = [
             'basedir' => $this->tmpDir,
             'baseurl' => 'https://example.test/wp-content/uploads',
@@ -147,6 +193,166 @@ final class ModernImagesTest extends TestCase
             strpos($picture, 'type="image/webp"'),
             strpos($picture, 'type="image/avif"')
         );
+    }
+
+    public function testMetadataUpdateQueuesModernImageTasksWithoutConvertingDuringUpload(): void
+    {
+        $source = $this->createJpeg('2026/07/source.jpg', 800, 500);
+        $this->createJpeg('2026/07/source-400x250.jpg', 400, 250);
+
+        $metadata = [
+            'file' => '2026/07/source.jpg',
+            'width' => 800,
+            'height' => 500,
+            'sizes' => [
+                'medium' => [
+                    'file' => 'source-400x250.jpg',
+                    'width' => 400,
+                    'height' => 250,
+                ],
+            ],
+        ];
+
+        $GLOBALS['__phpunit_attached_files'][30] = $source;
+
+        $result = amnesty_generate_modern_image_variants_on_metadata_update($metadata, 30);
+        $queue = get_post_meta(30, AMNESTY_MODERN_IMAGE_QUEUE_META_KEY, true);
+
+        self::assertSame($metadata, $result);
+        self::assertCount(4, $queue);
+        self::assertFileDoesNotExist($this->tmpDir . '/2026/07/source.avif');
+        self::assertFileDoesNotExist($this->tmpDir . '/2026/07/source.webp');
+    }
+
+    public function testWorkerProcessesOneTaskAndUpdatesMetadataBeforeRemovingIt(): void
+    {
+        $source = $this->createJpeg('2026/07/source.jpg', 800, 500);
+        $metadata = [
+            'file' => '2026/07/source.jpg',
+            'width' => 800,
+            'height' => 500,
+            'sizes' => [],
+        ];
+
+        $GLOBALS['__phpunit_attached_files'][31] = $source;
+        $GLOBALS['__phpunit_attachment_metadata'][31] = $metadata;
+
+        amnesty_enqueue_modern_image_variants(31, $metadata);
+        $stats = amnesty_process_modern_image_queue_for_attachment(31);
+
+        $stored = wp_get_attachment_metadata(31);
+        $queue = get_post_meta(31, AMNESTY_MODERN_IMAGE_QUEUE_META_KEY, true);
+
+        self::assertSame(1, $stats['processed']);
+        self::assertSame(1, $stats['updated']);
+        self::assertIsArray($stored);
+        self::assertCount(1, $stored[AMNESTY_MODERN_IMAGE_METADATA_KEY]['2026/07/source.jpg']);
+        self::assertCount(1, $queue);
+    }
+
+    public function testWorkerRegistersExistingSmallerVariantFromDiskWithoutRewritingIt(): void
+    {
+        $source = $this->createJpeg('2026/07/source.jpg', 800, 500);
+        $metadata = [
+            'file' => '2026/07/source.jpg',
+            'width' => 800,
+            'height' => 500,
+            'sizes' => [],
+        ];
+
+        $GLOBALS['__phpunit_attached_files'][32] = $source;
+        $GLOBALS['__phpunit_attachment_metadata'][32] = $metadata;
+
+        $webp = amnesty_generate_modern_image_variant(
+            $source,
+            '2026/07/source.jpg',
+            'image/webp',
+            [ 'extension' => 'webp', 'quality' => 82 ],
+            true
+        );
+
+        self::assertNotNull($webp);
+        $webpFile = $this->tmpDir . '/2026/07/source.webp';
+        touch($webpFile, time() - 100);
+        $mtime = filemtime($webpFile);
+
+        $taskKey = amnesty_modern_image_task_key('2026/07/source.jpg', 'image/webp');
+        update_post_meta(32, AMNESTY_MODERN_IMAGE_QUEUE_META_KEY, [
+            $taskKey => [
+                'relative_file' => '2026/07/source.jpg',
+                'mime_type' => 'image/webp',
+                'attempts' => 0,
+                'force' => false,
+            ],
+        ]);
+
+        $stats = amnesty_process_modern_image_queue_for_attachment(32);
+        $stored = wp_get_attachment_metadata(32);
+
+        self::assertSame(1, $stats['processed']);
+        self::assertSame(1, $stats['updated']);
+        self::assertSame($mtime, filemtime($webpFile));
+        self::assertIsArray($stored);
+        self::assertSame($webp['file'], $stored[AMNESTY_MODERN_IMAGE_METADATA_KEY]['2026/07/source.jpg']['image/webp']['file']);
+    }
+
+    public function testWorkerRespectsActiveLockAndResumesExpiredLock(): void
+    {
+        $source = $this->createJpeg('2026/07/source.jpg', 800, 500);
+        $metadata = [
+            'file' => '2026/07/source.jpg',
+            'width' => 800,
+            'height' => 500,
+            'sizes' => [],
+        ];
+
+        $GLOBALS['__phpunit_attached_files'][33] = $source;
+        $GLOBALS['__phpunit_attachment_metadata'][33] = $metadata;
+
+        amnesty_enqueue_modern_image_variants(33, $metadata);
+        update_post_meta(33, AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY, time() + 300);
+
+        $locked = amnesty_process_modern_image_queue_for_attachment(33);
+        self::assertSame(1, $locked['locked']);
+        self::assertCount(2, get_post_meta(33, AMNESTY_MODERN_IMAGE_QUEUE_META_KEY, true));
+
+        update_post_meta(33, AMNESTY_MODERN_IMAGE_QUEUE_LOCK_META_KEY, time() - 1);
+
+        $resumed = amnesty_process_modern_image_queue_for_attachment(33);
+        self::assertSame(1, $resumed['processed']);
+        self::assertSame(1, $resumed['updated']);
+    }
+
+    public function testWorkerMovesTaskToFailedAfterMaxAttempts(): void
+    {
+        $source = $this->createJpeg('2026/07/source.jpg', 800, 500);
+        $metadata = [
+            'file' => '2026/07/source.jpg',
+            'width' => 800,
+            'height' => 500,
+            'sizes' => [],
+        ];
+        $taskKey = amnesty_modern_image_task_key('2026/07/missing.jpg', 'image/webp');
+
+        $GLOBALS['__phpunit_attached_files'][34] = $source;
+        $GLOBALS['__phpunit_attachment_metadata'][34] = $metadata;
+        update_post_meta(34, AMNESTY_MODERN_IMAGE_QUEUE_META_KEY, [
+            $taskKey => [
+                'relative_file' => '2026/07/missing.jpg',
+                'mime_type' => 'image/webp',
+                'attempts' => 0,
+                'force' => false,
+            ],
+        ]);
+
+        $stats = amnesty_process_modern_image_queue_for_attachment(34, 1);
+        $failedTasks = get_post_meta(34, AMNESTY_MODERN_IMAGE_FAILED_TASKS_META_KEY, true);
+
+        self::assertSame(1, $stats['processed']);
+        self::assertSame(1, $stats['failed']);
+        self::assertSame('', get_post_meta(34, AMNESTY_MODERN_IMAGE_QUEUE_META_KEY, true));
+        self::assertArrayHasKey($taskKey, $failedTasks);
+        self::assertSame('failed', get_post_meta(34, AMNESTY_MODERN_IMAGE_QUEUE_STATUS_META_KEY, true));
     }
 
     private function createJpeg(string $relative, int $width, int $height): string
