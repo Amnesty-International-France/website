@@ -47,7 +47,7 @@
     "property-no-vendor-prefix": [
       true,
       {
-        "ignoreProperties": ["appearance", "text-size-adjust", "box-orient", "line-clamp"]
+        "ignoreProperties": ["/^-[a-z]+-(appearance|text-size-adjust|box-orient|line-clamp)$/"]
       }
     ],
     "rule-empty-line-before": [
