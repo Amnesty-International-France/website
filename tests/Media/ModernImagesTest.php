@@ -274,6 +274,7 @@ final class ModernImagesTest extends TestCase
         self::assertNotNull($webp);
         $webpFile = $this->tmpDir . '/2026/07/source.webp';
         touch($webpFile, time() - 100);
+        clearstatcache(true, $webpFile);
         $mtime = filemtime($webpFile);
 
         $taskKey = amnesty_modern_image_task_key('2026/07/source.jpg', 'image/webp');
@@ -288,6 +289,7 @@ final class ModernImagesTest extends TestCase
 
         $stats = amnesty_process_modern_image_queue_for_attachment(32);
         $stored = wp_get_attachment_metadata(32);
+        clearstatcache(true, $webpFile);
 
         self::assertSame(1, $stats['processed']);
         self::assertSame(1, $stats['updated']);
