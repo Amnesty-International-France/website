@@ -6,126 +6,13 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
-if (!function_exists('esc_html__')) {
-    function esc_html__(string $text, string $domain = 'default'): string
-    {
-        return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    }
-}
-
-if (!function_exists('esc_html')) {
-    function esc_html(string $text): string
-    {
-        return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    }
-}
-
-if (!function_exists('esc_attr')) {
-    function esc_attr(string $text): string
-    {
-        return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    }
-}
-
-if (!function_exists('esc_url')) {
-    function esc_url(string $text): string
-    {
-        return str_starts_with($text, 'javascript:') ? '' : htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    }
-}
-
-if (!function_exists('wp_kses_post')) {
-    function wp_kses_post(string $text): string
-    {
-        return $text;
-    }
-}
-
-if (!function_exists('get_post_meta')) {
-    $GLOBALS['__phpunit_post_meta'] = [];
-
-    function get_post_meta(int $post_id, string $key = '', bool $single = false): mixed
-    {
-        $value = $GLOBALS['__phpunit_post_meta'][$post_id][$key] ?? '';
-
-        return $single ? $value : [$value];
-    }
-}
-
-if (!function_exists('amnesty_get_attachment_picture')) {
-    $GLOBALS['__phpunit_rendered_attachment_pictures'] = [];
-    $GLOBALS['__phpunit_modern_picture_sources'] = [];
-
-    function amnesty_get_attachment_picture(int $attachment_id, string $size = 'thumbnail', array $attr = []): string
-    {
-        $GLOBALS['__phpunit_rendered_attachment_pictures'][] = [
-            'attachment_id' => $attachment_id,
-            'size' => $size,
-            'attr' => $attr,
-        ];
-
-        $src = function_exists('wp_get_attachment_image_src') ? wp_get_attachment_image_src($attachment_id, $size) : false;
-        $attributes = [
-            'src' => is_array($src) ? (string) ($src[0] ?? '') : '',
-            'alt' => (string) ($attr['alt'] ?? ''),
-        ];
-
-        if (is_array($src) && (int) ($src[1] ?? 0) > 0) {
-            $attributes['width'] = (string) $src[1];
-        }
-
-        if (is_array($src) && (int) ($src[2] ?? 0) > 0) {
-            $attributes['height'] = (string) $src[2];
-        }
-
-        $attributes = array_merge($attributes, $attr);
-        $html_attributes = '';
-
-        foreach ($attributes as $name => $value) {
-            if ('alt' !== $name && '' === (string) $value) {
-                continue;
-            }
-
-            $html_attributes .= sprintf(
-                ' %s="%s"',
-                esc_attr((string) $name),
-                'src' === $name ? esc_url((string) $value) : esc_attr((string) $value)
-            );
-        }
-
-        return sprintf(
-            '<picture data-attachment-id="%d" data-size="%s">%s<img%s></picture>',
-            $attachment_id,
-            esc_attr($size),
-            $GLOBALS['__phpunit_modern_picture_sources'][$attachment_id] ?? '',
-            $html_attributes
-        );
-    }
-}
-
-if (!function_exists('wp_get_attachment_image_src')) {
-    $GLOBALS['__phpunit_attachment_image_sources'] = [];
-
-    function wp_get_attachment_image_src(int $attachment_id, string|array $size = 'thumbnail'): array|false
-    {
-        if (isset($GLOBALS['__phpunit_attachment_image_sources'][$attachment_id])) {
-            return $GLOBALS['__phpunit_attachment_image_sources'][$attachment_id];
-        }
-
-        return [
-            sprintf('image-%d.jpg', $attachment_id),
-            1000,
-            700,
-        ];
-    }
-}
-
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState(false)]
 final class ImageBlockTest extends TestCase
 {
     protected function setUp(): void
     {
+        $this->installWordPressStubs();
         require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/blocks/image/render.php';
 
         $GLOBALS['__phpunit_posts'] = [
@@ -149,6 +36,123 @@ final class ImageBlockTest extends TestCase
         $GLOBALS['__phpunit_attachment_image_sources'] = [];
         $GLOBALS['__phpunit_rendered_attachment_pictures'] = [];
         $GLOBALS['__phpunit_modern_picture_sources'] = [];
+    }
+
+    private function installWordPressStubs(): void
+    {
+        if (!function_exists('esc_html__')) {
+            function esc_html__(string $text, string $domain = 'default'): string
+            {
+                return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            }
+        }
+
+        if (!function_exists('esc_html')) {
+            function esc_html(string $text): string
+            {
+                return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            }
+        }
+
+        if (!function_exists('esc_attr')) {
+            function esc_attr(string $text): string
+            {
+                return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            }
+        }
+
+        if (!function_exists('esc_url')) {
+            function esc_url(string $text): string
+            {
+                return str_starts_with($text, 'javascript:') ? '' : htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            }
+        }
+
+        if (!function_exists('wp_kses_post')) {
+            function wp_kses_post(string $text): string
+            {
+                return $text;
+            }
+        }
+
+        if (!function_exists('get_post_meta')) {
+            $GLOBALS['__phpunit_post_meta'] = [];
+
+            function get_post_meta(int $post_id, string $key = '', bool $single = false): mixed
+            {
+                $value = $GLOBALS['__phpunit_post_meta'][$post_id][$key] ?? '';
+
+                return $single ? $value : [$value];
+            }
+        }
+
+        if (!function_exists('amnesty_get_attachment_picture')) {
+            $GLOBALS['__phpunit_rendered_attachment_pictures'] = [];
+            $GLOBALS['__phpunit_modern_picture_sources'] = [];
+
+            function amnesty_get_attachment_picture(int $attachment_id, string $size = 'thumbnail', array $attr = []): string
+            {
+                $GLOBALS['__phpunit_rendered_attachment_pictures'][] = [
+                    'attachment_id' => $attachment_id,
+                    'size' => $size,
+                    'attr' => $attr,
+                ];
+
+                $src = function_exists('wp_get_attachment_image_src') ? wp_get_attachment_image_src($attachment_id, $size) : false;
+                $attributes = [
+                    'src' => is_array($src) ? (string) ($src[0] ?? '') : '',
+                    'alt' => (string) ($attr['alt'] ?? ''),
+                ];
+
+                if (is_array($src) && (int) ($src[1] ?? 0) > 0) {
+                    $attributes['width'] = (string) $src[1];
+                }
+
+                if (is_array($src) && (int) ($src[2] ?? 0) > 0) {
+                    $attributes['height'] = (string) $src[2];
+                }
+
+                $attributes = array_merge($attributes, $attr);
+                $html_attributes = '';
+
+                foreach ($attributes as $name => $value) {
+                    if ('alt' !== $name && '' === (string) $value) {
+                        continue;
+                    }
+
+                    $html_attributes .= sprintf(
+                        ' %s="%s"',
+                        esc_attr((string) $name),
+                        'src' === $name ? esc_url((string) $value) : esc_attr((string) $value)
+                    );
+                }
+
+                return sprintf(
+                    '<picture data-attachment-id="%d" data-size="%s">%s<img%s></picture>',
+                    $attachment_id,
+                    esc_attr($size),
+                    $GLOBALS['__phpunit_modern_picture_sources'][$attachment_id] ?? '',
+                    $html_attributes
+                );
+            }
+        }
+
+        if (!function_exists('wp_get_attachment_image_src')) {
+            $GLOBALS['__phpunit_attachment_image_sources'] = [];
+
+            function wp_get_attachment_image_src(int $attachment_id, string|array $size = 'thumbnail'): array|false
+            {
+                if (isset($GLOBALS['__phpunit_attachment_image_sources'][$attachment_id])) {
+                    return $GLOBALS['__phpunit_attachment_image_sources'][$attachment_id];
+                }
+
+                return [
+                    sprintf('image-%d.jpg', $attachment_id),
+                    1000,
+                    700,
+                ];
+            }
+        }
     }
 
     public function testRendersLegacyDesktopImageBlockWithCaptionAndDescription(): void

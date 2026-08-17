@@ -3,71 +3,8 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-
-if (! function_exists('__')) {
-    function __(string $text, string $domain = 'default'): string
-    {
-        return $text;
-    }
-}
-
-if (! function_exists('_doing_it_wrong')) {
-    function _doing_it_wrong(string $function_name, string $message, string $version): void
-    {
-    }
-}
-
-if (! function_exists('absint')) {
-    function absint(mixed $value): int
-    {
-        return abs((int) $value);
-    }
-}
-
-if (! function_exists('esc_attr')) {
-    function esc_attr(mixed $text): string
-    {
-        return htmlspecialchars((string) $text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    }
-}
-
-if (! function_exists('esc_url')) {
-    function esc_url(mixed $url): string
-    {
-        if (preg_match('/^\s*javascript:/i', (string) $url)) {
-            return '';
-        }
-
-        return esc_attr($url);
-    }
-}
-
-if (! function_exists('wp_kses_post')) {
-    function wp_kses_post(string $text): string
-    {
-        return $text;
-    }
-}
-
-if (! function_exists('wp_has_noncharacters')) {
-    function wp_has_noncharacters(string $text): bool
-    {
-        return false;
-    }
-}
-
-if (! function_exists('wp_kses_uri_attributes')) {
-    function wp_kses_uri_attributes(): array
-    {
-        return [ 'action', 'archive', 'background', 'cite', 'classid', 'codebase', 'data', 'formaction', 'href', 'icon', 'longdesc', 'manifest', 'poster', 'profile', 'src', 'usemap', 'xmlns' ];
-    }
-}
-
-if (! function_exists('add_filter')) {
-    function add_filter(string $hook_name, callable|string $callback, int $priority = 10, int $accepted_args = 1): void
-    {
-    }
-}
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 if (! class_exists('WP_HTML_Tag_Processor')) {
     class WP_HTML_Tag_Processor
@@ -189,10 +126,84 @@ if (! class_exists('WP_HTML_Tag_Processor')) {
     }
 }
 
-require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/core-blocks/image-compare/filters.php';
-
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 final class ImageCompareBlockTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        $this->installWordPressStubs();
+        require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/core-blocks/image-compare/filters.php';
+    }
+
+    private function installWordPressStubs(): void
+    {
+        if (! function_exists('__')) {
+            function __(string $text, string $domain = 'default'): string
+            {
+                return $text;
+            }
+        }
+
+        if (! function_exists('_doing_it_wrong')) {
+            function _doing_it_wrong(string $function_name, string $message, string $version): void
+            {
+            }
+        }
+
+        if (! function_exists('absint')) {
+            function absint(mixed $value): int
+            {
+                return abs((int) $value);
+            }
+        }
+
+        if (! function_exists('esc_attr')) {
+            function esc_attr(mixed $text): string
+            {
+                return htmlspecialchars((string) $text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            }
+        }
+
+        if (! function_exists('esc_url')) {
+            function esc_url(mixed $url): string
+            {
+                if (preg_match('/^\s*javascript:/i', (string) $url)) {
+                    return '';
+                }
+
+                return esc_attr($url);
+            }
+        }
+
+        if (! function_exists('wp_kses_post')) {
+            function wp_kses_post(string $text): string
+            {
+                return $text;
+            }
+        }
+
+        if (! function_exists('wp_has_noncharacters')) {
+            function wp_has_noncharacters(string $text): bool
+            {
+                return false;
+            }
+        }
+
+        if (! function_exists('wp_kses_uri_attributes')) {
+            function wp_kses_uri_attributes(): array
+            {
+                return [ 'action', 'archive', 'background', 'cite', 'classid', 'codebase', 'data', 'formaction', 'href', 'icon', 'longdesc', 'manifest', 'poster', 'profile', 'src', 'usemap', 'xmlns' ];
+            }
+        }
+
+        if (! function_exists('add_filter')) {
+            function add_filter(string $hook_name, callable|string $callback, int $priority = 10, int $accepted_args = 1): void
+            {
+            }
+        }
+    }
+
     public function testMobileCloneUsesMobileImageAttributesOnly(): void
     {
         $html = amnesty_add_mobile_images_to_image_compare_block($this->renderedCompareContent(), [
