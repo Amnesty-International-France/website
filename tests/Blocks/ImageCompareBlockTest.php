@@ -211,6 +211,8 @@ final class ImageCompareBlockTest extends TestCase
         self::assertStringContainsString('width="400"', $mobile_html);
         self::assertStringContainsString('height="300"', $mobile_html);
         self::assertStringContainsString('wp-image-20', $mobile_html);
+        self::assertStringNotContainsString('id="20"', $mobile_html);
+        self::assertStringNotContainsString('id="21"', $mobile_html);
         self::assertStringNotContainsString('wp-image-10', $mobile_html);
         self::assertStringNotContainsString('desktop-before-2x.jpg', $mobile_html);
         self::assertStringNotContainsString('sizes="100vw"', $mobile_html);

@@ -37,7 +37,6 @@ const EditComponent = (props) => {
       ? selectedMobileMediaOverride
       : selectedMobileMedia;
   const previewMedia = desktopMedia || mobileMedia;
-  const previewCaption = desktopMedia?.caption?.raw || mobileMedia?.caption?.raw;
   const previewDescription =
     desktopMedia?.description?.raw ||
     desktopMedia?.description?.rendered ||
@@ -93,7 +92,9 @@ const EditComponent = (props) => {
             src={media.source_url || media.url || media.sizes?.full?.url || ''}
             alt={media.alt_text || media.alt || ''}
           />
-          {showMetadata && previewCaption && <p className="image-caption">{previewCaption}</p>}
+          {showMetadata && media?.caption?.raw && (
+            <p className="image-caption">{media.caption.raw}</p>
+          )}
         </div>
       </div>
     );

@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 if (!function_exists('esc_html__')) {
     function esc_html__(string $text, string $domain = 'default'): string
@@ -22,6 +24,13 @@ if (!function_exists('esc_attr')) {
     function esc_attr(string $text): string
     {
         return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+}
+
+if (!function_exists('esc_url')) {
+    function esc_url(string $text): string
+    {
+        return str_starts_with($text, 'javascript:') ? '' : htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 }
 
@@ -45,6 +54,7 @@ if (!function_exists('get_post_meta')) {
 
 if (!function_exists('amnesty_get_attachment_picture')) {
     $GLOBALS['__phpunit_rendered_attachment_pictures'] = [];
+    $GLOBALS['__phpunit_modern_picture_sources'] = [];
 
     function amnesty_get_attachment_picture(int $attachment_id, string $size = 'thumbnail', array $attr = []): string
     {
@@ -54,11 +64,41 @@ if (!function_exists('amnesty_get_attachment_picture')) {
             'attr' => $attr,
         ];
 
+        $src = function_exists('wp_get_attachment_image_src') ? wp_get_attachment_image_src($attachment_id, $size) : false;
+        $attributes = [
+            'src' => is_array($src) ? (string) ($src[0] ?? '') : '',
+            'alt' => (string) ($attr['alt'] ?? ''),
+        ];
+
+        if (is_array($src) && (int) ($src[1] ?? 0) > 0) {
+            $attributes['width'] = (string) $src[1];
+        }
+
+        if (is_array($src) && (int) ($src[2] ?? 0) > 0) {
+            $attributes['height'] = (string) $src[2];
+        }
+
+        $attributes = array_merge($attributes, $attr);
+        $html_attributes = '';
+
+        foreach ($attributes as $name => $value) {
+            if ('alt' !== $name && '' === (string) $value) {
+                continue;
+            }
+
+            $html_attributes .= sprintf(
+                ' %s="%s"',
+                esc_attr((string) $name),
+                'src' === $name ? esc_url((string) $value) : esc_attr((string) $value)
+            );
+        }
+
         return sprintf(
-            '<picture data-attachment-id="%d" data-size="%s"><img alt="%s"></picture>',
+            '<picture data-attachment-id="%d" data-size="%s">%s<img%s></picture>',
             $attachment_id,
             esc_attr($size),
-            esc_attr((string) ($attr['alt'] ?? ''))
+            $GLOBALS['__phpunit_modern_picture_sources'][$attachment_id] ?? '',
+            $html_attributes
         );
     }
 }
@@ -80,12 +120,14 @@ if (!function_exists('wp_get_attachment_image_src')) {
     }
 }
 
-require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/blocks/image/render.php';
-
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 final class ImageBlockTest extends TestCase
 {
     protected function setUp(): void
     {
+        require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/blocks/image/render.php';
+
         $GLOBALS['__phpunit_posts'] = [
             10 => (object) [
                 'ID' => 10,
@@ -106,6 +148,7 @@ final class ImageBlockTest extends TestCase
 
         $GLOBALS['__phpunit_attachment_image_sources'] = [];
         $GLOBALS['__phpunit_rendered_attachment_pictures'] = [];
+        $GLOBALS['__phpunit_modern_picture_sources'] = [];
     }
 
     public function testRendersLegacyDesktopImageBlockWithCaptionAndDescription(): void
@@ -140,10 +183,49 @@ final class ImageBlockTest extends TestCase
         self::assertSame(1, substr_count($html, 'class="image-wrapper"'));
         self::assertSame(1, substr_count($html, '<picture'));
         self::assertStringContainsString('<source media="(min-width: 640px)" srcset="image-10.jpg" />', $html);
-        self::assertStringContainsString('<img src="image-20.jpg" width="1000" height="700" alt="Desktop alt" loading="lazy" decoding="async" />', $html);
+        self::assertStringContainsString('<img src="image-20.jpg"', $html);
+        self::assertStringContainsString('alt="Desktop alt"', $html);
+        self::assertStringContainsString('width="1000"', $html);
+        self::assertStringContainsString('height="700"', $html);
         self::assertStringNotContainsString('image-device-desktop', $html);
         self::assertStringNotContainsString('image-device-mobile', $html);
         self::assertSame(1, substr_count($html, '<p class="image-caption">Desktop caption</p>'));
+    }
+
+    public function testResponsivePictureKeepsModernImageSources(): void
+    {
+        $GLOBALS['__phpunit_modern_picture_sources'] = [
+            10 => '<source type="image/avif" srcset="desktop.avif" /><source type="image/webp" srcset="desktop.webp" />',
+            20 => '<source type="image/avif" srcset="mobile.avif" /><source type="image/webp" srcset="mobile.webp" />',
+        ];
+
+        $html = render_image_block([ 'mediaId' => 10, 'mediaMobileId' => 20 ]);
+
+        self::assertStringContainsString('<source media="(min-width: 640px)" type="image/avif" srcset="desktop.avif" />', $html);
+        self::assertStringContainsString('<source media="(min-width: 640px)" type="image/webp" srcset="desktop.webp" />', $html);
+        self::assertStringContainsString('<source media="(min-width: 640px)" srcset="image-10.jpg" />', $html);
+        self::assertStringContainsString('<source type="image/avif" srcset="mobile.avif" />', $html);
+        self::assertStringContainsString('<source type="image/webp" srcset="mobile.webp" />', $html);
+    }
+
+    public function testResponsivePictureKeepsEmptyAltAndOmitsInvalidDimensions(): void
+    {
+        $GLOBALS['__phpunit_post_meta'] = [
+            10 => [ '_wp_attachment_image_alt' => '' ],
+            20 => [ '_wp_attachment_image_alt' => '' ],
+        ];
+        $GLOBALS['__phpunit_attachment_image_sources'] = [
+            10 => [ 'desktop.svg', 0, 0 ],
+            20 => [ 'mobile.svg', 0, 0 ],
+        ];
+
+        $html = render_image_block([ 'mediaId' => 10, 'mediaMobileId' => 20 ]);
+
+        self::assertStringContainsString('<picture>', $html);
+        self::assertStringContainsString('<img src="mobile.svg" alt="" loading="lazy" decoding="async">', $html);
+        self::assertStringNotContainsString('width="0"', $html);
+        self::assertStringNotContainsString('height="0"', $html);
+        self::assertStringNotContainsString('aspect-ratio:', $html);
     }
 
     public function testResponsivePictureSetsDeviceAspectRatios(): void
@@ -160,7 +242,9 @@ final class ImageBlockTest extends TestCase
             $html
         );
         self::assertStringContainsString('<source media="(min-width: 640px)" srcset="desktop-wide.jpg" />', $html);
-        self::assertStringContainsString('<img src="mobile-tall.jpg" width="400" height="500"', $html);
+        self::assertStringContainsString('<img src="mobile-tall.jpg"', $html);
+        self::assertStringContainsString('width="400"', $html);
+        self::assertStringContainsString('height="500"', $html);
     }
 
     public function testSimpleStyleKeepsImageAndSuppressesMetadata(): void
