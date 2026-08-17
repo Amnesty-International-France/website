@@ -41,6 +41,121 @@ if (!function_exists('amnesty_image_block_source')) {
     }
 }
 
+if (!function_exists('amnesty_image_block_tag_attribute')) {
+    /**
+     * Read an attribute from a single HTML tag.
+     *
+     * @param string $tag       HTML tag.
+     * @param string $attribute Attribute name.
+     *
+     * @return string
+     */
+    function amnesty_image_block_tag_attribute(string $tag, string $attribute): string
+    {
+        if (preg_match('/\s' . preg_quote($attribute, '/') . '\s*=\s*(["\'])(.*?)\1/i', $tag, $matches)) {
+            return html_entity_decode($matches[2], ENT_QUOTES);
+        }
+
+        return '';
+    }
+}
+
+if (!function_exists('amnesty_image_block_attachment_picture_parts')) {
+    /**
+     * Render an attachment through the normal picture pipeline and split it into reusable parts.
+     *
+     * @param int                  $attachment_id Attachment ID.
+     * @param string|array         $size          Image size.
+     * @param array<string, mixed> $attr          Image attributes.
+     *
+     * @return array{sources:array<int,string>,img:string}
+     */
+    function amnesty_image_block_attachment_picture_parts(int $attachment_id, string|array $size, array $attr = []): array
+    {
+        $html = amnesty_get_attachment_picture($attachment_id, $size, $attr);
+        $sources = [];
+        $img = '';
+
+        if (preg_match_all('/<source\b[^>]*>/i', $html, $matches)) {
+            $sources = $matches[0];
+        }
+
+        if (preg_match('/<img\b[^>]*>/i', $html, $match)) {
+            $img = $match[0];
+        }
+
+        if ('' === $img) {
+            $img = amnesty_image_block_img($attachment_id, $size, $attr);
+        }
+
+        return [
+            'sources' => $sources,
+            'img' => $img,
+        ];
+    }
+}
+
+if (!function_exists('amnesty_image_block_source_with_media')) {
+    /**
+     * Add a media query to a source tag.
+     *
+     * @param string $source Source tag.
+     * @param string $media  Media query.
+     *
+     * @return string
+     */
+    function amnesty_image_block_source_with_media(string $source, string $media): string
+    {
+        if ('' === trim($source)) {
+            return '';
+        }
+
+        if (class_exists('WP_HTML_Tag_Processor')) {
+            $tags = new WP_HTML_Tag_Processor($source);
+
+            if ($tags->next_tag('source')) {
+                $tags->set_attribute('media', $media);
+                return $tags->get_updated_html();
+            }
+        }
+
+        if (preg_match('/\smedia\s*=/i', $source)) {
+            return preg_replace('/\smedia\s*=\s*(["\']).*?\1/i', ' media="' . esc_attr($media) . '"', $source, 1) ?: $source;
+        }
+
+        return preg_replace('/<source\b/i', '<source media="' . esc_attr($media) . '"', $source, 1) ?: $source;
+    }
+}
+
+if (!function_exists('amnesty_image_block_source_from_img')) {
+    /**
+     * Build a desktop media source from the img emitted by WordPress.
+     *
+     * @param string $img   Image tag.
+     * @param string $media Media query.
+     *
+     * @return string
+     */
+    function amnesty_image_block_source_from_img(string $img, string $media): string
+    {
+        $srcset = amnesty_image_block_tag_attribute($img, 'srcset') ?: amnesty_image_block_tag_attribute($img, 'src');
+
+        if ('' === $srcset) {
+            return '';
+        }
+
+        $sizes = amnesty_image_block_tag_attribute($img, 'sizes');
+        $sizes_attribute = '' !== $sizes ? sprintf(' sizes="%s"', esc_attr($sizes)) : '';
+
+        return sprintf(
+            '<source media="%s" srcset="%s"%s />',
+            esc_attr($media),
+            esc_attr($srcset),
+            $sizes_attribute
+        );
+    }
+}
+
 if (!function_exists('amnesty_image_block_attachment_src')) {
     /**
      * Read attachment source data for the responsive Image block.
@@ -128,14 +243,19 @@ if (!function_exists('amnesty_image_block_img')) {
             return amnesty_get_attachment_picture($attachment_id, $size, $attr);
         }
 
-        $attr = array_merge(
-            [
-                'src' => $src['url'],
-                'width' => (string) $src['width'],
-                'height' => (string) $src['height'],
-            ],
-            $attr
-        );
+        $default_attr = [
+            'src' => $src['url'],
+        ];
+
+        if ($src['width'] > 0) {
+            $default_attr['width'] = (string) $src['width'];
+        }
+
+        if ($src['height'] > 0) {
+            $default_attr['height'] = (string) $src['height'];
+        }
+
+        $attr = array_merge($default_attr, $attr);
 
         $srcset = function_exists('wp_get_attachment_image_srcset')
             ? (string) wp_get_attachment_image_srcset($attachment_id, $size)
@@ -156,11 +276,15 @@ if (!function_exists('amnesty_image_block_img')) {
         $html_attributes = '';
 
         foreach ($attr as $name => $value) {
-            if ('' === (string) $value) {
+            if ('alt' !== $name && '' === (string) $value) {
                 continue;
             }
 
-            $html_attributes .= sprintf(' %s="%s"', esc_attr((string) $name), esc_attr((string) $value));
+            $html_attributes .= sprintf(
+                ' %s="%s"',
+                esc_attr((string) $name),
+                'src' === $name ? esc_url((string) $value) : esc_attr((string) $value)
+            );
         }
 
         return sprintf('<img%s />', $html_attributes);
@@ -180,11 +304,20 @@ if (!function_exists('amnesty_image_block_responsive_picture')) {
      */
     function amnesty_image_block_responsive_picture(int $desktop_image_id, int $mobile_image_id, string|array $size, array $attr = []): string
     {
+        $media = '(min-width: 640px)';
+        $desktop = amnesty_image_block_attachment_picture_parts($desktop_image_id, $size);
+        $mobile = amnesty_image_block_attachment_picture_parts($mobile_image_id, $size, $attr);
+        $desktop_sources = implode('', array_map(
+            static fn (string $source): string => amnesty_image_block_source_with_media($source, $media),
+            $desktop['sources']
+        ));
+        $mobile_sources = implode('', $mobile['sources']);
+
         return sprintf(
             '<picture%s>%s%s</picture>',
             amnesty_image_block_responsive_picture_style($desktop_image_id, $mobile_image_id, $size),
-            amnesty_image_block_source($desktop_image_id, $size, '(min-width: 640px)'),
-            amnesty_image_block_img($mobile_image_id, $size, $attr)
+            $desktop_sources . amnesty_image_block_source_from_img($desktop['img'], $media) . $mobile_sources,
+            $mobile['img']
         );
     }
 }

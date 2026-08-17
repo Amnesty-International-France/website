@@ -20,12 +20,13 @@ if (! function_exists('amnesty_image_compare_set_image_attributes')) {
     /**
      * Apply image attributes to the next image tag in a tag processor.
      *
-     * @param WP_HTML_Tag_Processor $tags  HTML tag processor.
-     * @param array<string,mixed>   $image Image data.
+     * @param WP_HTML_Tag_Processor $tags    HTML tag processor.
+     * @param array<string,mixed>   $image   Image data.
+     * @param bool                  $emit_id Whether to keep an HTML id attribute.
      *
      * @return void
      */
-    function amnesty_image_compare_set_image_attributes(WP_HTML_Tag_Processor $tags, array $image): void
+    function amnesty_image_compare_set_image_attributes(WP_HTML_Tag_Processor $tags, array $image, bool $emit_id = true): void
     {
         $attachment_id = ! empty($image['id']) ? absint($image['id']) : 0;
 
@@ -33,7 +34,11 @@ if (! function_exists('amnesty_image_compare_set_image_attributes')) {
         $tags->remove_attribute('sizes');
 
         if ($attachment_id) {
-            $tags->set_attribute('id', (string) $attachment_id);
+            if ($emit_id) {
+                $tags->set_attribute('id', (string) $attachment_id);
+            } else {
+                $tags->remove_attribute('id');
+            }
 
             if (function_exists('wp_get_attachment_image_srcset')) {
                 $srcset = wp_get_attachment_image_srcset($attachment_id, 'full');
@@ -109,20 +114,21 @@ if (! function_exists('amnesty_image_compare_content_with_images')) {
     /**
      * Replace the before/after image tags inside Jetpack Image Compare content.
      *
-     * @param string              $content HTML content.
-     * @param array<string,mixed> $before  Before image.
-     * @param array<string,mixed> $after   After image.
+     * @param string              $content  HTML content.
+     * @param array<string,mixed> $before   Before image.
+     * @param array<string,mixed> $after    After image.
+     * @param bool                $emit_ids Whether to keep HTML id attributes.
      *
      * @return string
      */
-    function amnesty_image_compare_content_with_images(string $content, array $before, array $after): string
+    function amnesty_image_compare_content_with_images(string $content, array $before, array $after, bool $emit_ids = true): string
     {
         $tags = new WP_HTML_Tag_Processor($content);
         $images = [$before, $after];
         $index = 0;
 
         while ($index < 2 && $tags->next_tag('img')) {
-            amnesty_image_compare_set_image_attributes($tags, $images[$index]);
+            amnesty_image_compare_set_image_attributes($tags, $images[$index], $emit_ids);
             ++$index;
         }
 
@@ -407,7 +413,7 @@ if (! function_exists('amnesty_add_mobile_images_to_image_compare_block')) {
             return $content;
         }
 
-        $mobile_content = amnesty_image_compare_content_with_images($content, $resolved_mobile_before, $resolved_mobile_after);
+        $mobile_content = amnesty_image_compare_content_with_images($content, $resolved_mobile_before, $resolved_mobile_after, false);
         $root = amnesty_image_compare_root_context($content, $attributes);
         $root['class'] = amnesty_image_compare_classes($root['class'], 'amnesty-image-compare-responsive');
         $style = '' !== $root['style'] ? sprintf(' style="%s"', esc_attr($root['style'])) : '';
