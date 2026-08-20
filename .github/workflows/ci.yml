@@ -38,7 +38,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version-file: private/.nvmrc
       - name: Enable Corepack
         run: corepack enable
       - name: Get Yarn cache directory
