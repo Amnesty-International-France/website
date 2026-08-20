@@ -5,15 +5,22 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 $posted_salesforce_data_donor_space = [];
+$post_salesforce_data_donor_space_response = (object) ['success' => true];
 $sf_user_ids = [];
+$logged_salesforce_errors = [];
 
-function post_salesforce_data_donor_space(string $url, array $params = []): object
+function post_salesforce_data_donor_space(string $url, array $params = []): mixed
 {
-    global $posted_salesforce_data_donor_space;
+    global $posted_salesforce_data_donor_space, $post_salesforce_data_donor_space_response;
 
     $posted_salesforce_data_donor_space[] = ['url' => $url, 'params' => $params];
 
-    return (object) ['success' => true];
+    return $post_salesforce_data_donor_space_response;
+}
+
+function aif_log_salesforce_error(WP_Error $error): void
+{
+    $GLOBALS['logged_salesforce_errors'][] = $error;
 }
 
 function get_SF_user_ID(int $user_id): string|false
@@ -30,10 +37,12 @@ final class TaxReceiptTest extends TestCase
 {
     protected function setUp(): void
     {
-        global $posted_salesforce_data_donor_space, $sf_user_ids;
+        global $posted_salesforce_data_donor_space, $post_salesforce_data_donor_space_response, $sf_user_ids;
 
         $posted_salesforce_data_donor_space = [];
+        $post_salesforce_data_donor_space_response = (object) ['success' => true];
         $sf_user_ids = [];
+        $GLOBALS['logged_salesforce_errors'] = [];
         $GLOBALS['__phpunit_current_user_id'] = 0;
         $GLOBALS['__phpunit_valid_nonces'] = [];
     }
@@ -124,6 +133,22 @@ final class TaxReceiptTest extends TestCase
 
         self::assertSame(200, $response->get_status());
         self::assertSame('demand succeed', $response->get_data()['message']);
+    }
+
+    public function testHandleRequestReturns503WhenSalesforceFails(): void
+    {
+        global $post_salesforce_data_donor_space_response, $sf_user_ids;
+
+        $error = new WP_Error('salesforce_transport_error', 'Request failed');
+        $post_salesforce_data_donor_space_response = $error;
+        $sf_user_ids[42] = '003-contact-id';
+        $GLOBALS['__phpunit_current_user_id'] = 42;
+
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+
+        self::assertSame(503, $response->get_status());
+        self::assertSame('service temporarily unavailable', $response->get_data()['message']);
+        self::assertSame([$error], $GLOBALS['logged_salesforce_errors']);
     }
 
     public function testCheckNonceRejectsAnInvalidNonce(): void

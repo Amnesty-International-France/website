@@ -1,11 +1,11 @@
 <?php
 
 $email = '';
+$title = 'Une erreur est survenue';
 
 $reset_email_url = '';
 
 if (!isset($_GET['user'])) {
-    $error_title = 'Une erreur est survenue';
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 
 } else {
@@ -37,17 +37,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                     'remember' => true,
                 ];
 
-                $sf_member = get_salesforce_member_data($email);
-                store_SF_user_ID($stored_user->ID, $sf_member->Id);
-                $user = wp_signon($creds, true);
-
-                if (!is_wp_error($user)) {
-                    wp_set_current_user($user->ID);
-                    $verification_url = get_permalink(get_page_by_path('mon-espace'));
-                    wp_redirect($_GET['redirect_to'] ?? $verification_url);
-                    exit;
+                $sf_member = aif_validate_salesforce_member(get_salesforce_member_data($email));
+                if (is_wp_error($sf_member)) {
+                    aif_log_salesforce_error($sf_member);
+                    $error_message = AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE;
+                } elseif (aif_is_salesforce_contact_absent($sf_member) || !has_access_to_donation_space($sf_member)) {
+                    $error_message = "L'adresse email renseignée ne trouve pas de correspondance dans notre système";
                 } else {
-                    $error_message = 'Mauvais email ou mot de passe';
+                    store_SF_user_ID($stored_user->ID, $sf_member->Id);
+                    $user = wp_signon($creds, true);
+
+                    if (!is_wp_error($user)) {
+                        wp_set_current_user($user->ID);
+                        $verification_url = get_permalink(get_page_by_path('mon-espace'));
+                        wp_redirect($_GET['redirect_to'] ?? $verification_url);
+                        exit;
+                    } else {
+                        $error_message = 'Mauvais email ou mot de passe';
+                    }
                 }
 
             } else {

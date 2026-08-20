@@ -133,6 +133,8 @@ if (!defined('AMNESTY_SITEMAP_ACCOUNT_PAGE_SLUGS')) {
  *    - Drop training posts where the ACF field 'members_only' is true.
  *    - Drop any URL whose path starts with /mon-espace/ (auth-gated area).
  *    - Drop the top-level account pages, which live outside /mon-espace/.
+ *    - Drop the contentless section pages that answer with a 301 (MAINT-290);
+ *      a redirecting URL in a sitemap is reported as a soft error by Search Console.
  */
 add_filter('wpseo_sitemap_entry', function (mixed $url, string $_post_type, object $post): mixed {
     if (empty($url) || !isset($post->ID)) {
@@ -158,6 +160,17 @@ add_filter('wpseo_sitemap_entry', function (mixed $url, string $_post_type, obje
     $path = wp_parse_url($url['loc'] ?? '', PHP_URL_PATH);
     if ($path && str_starts_with($path, '/mon-espace/')) {
         return false;
+    }
+
+    if ($path && function_exists('amnesty_get_section_page_redirects')) {
+        $redirected_paths = array_map(
+            fn (string $slug): string => '/' . $slug,
+            array_keys(amnesty_get_section_page_redirects())
+        );
+
+        if (in_array(untrailingslashit($path), $redirected_paths, true)) {
+            return false;
+        }
     }
 
     $post_object = get_post($post->ID);

@@ -1,11 +1,14 @@
 <?php
 
 $current_user = wp_get_current_user();
-$sf_user_ID = get_SF_user_ID($current_user->ID);
+$sf_member = aif_get_request_salesforce_member();
+$sf_user_ID = $sf_member->Id;
 
-$sf_user = get_salesforce_user_data($sf_user_ID);
-$sf_member = get_salesforce_member_data($current_user->user_email);
-$SEPA_mandates = get_salesforce_user_SEPA_mandate($sf_user_ID);
+$sf_user = aif_require_salesforce_object(get_salesforce_user_data($sf_user_ID), 'contact', 'Id');
+$SEPA_mandates = aif_require_salesforce_records(
+    get_salesforce_user_SEPA_mandate($sf_user_ID),
+    'sepa_mandates'
+);
 
 $actifMandate  = null;
 $day_of_payment = null;
@@ -94,8 +97,13 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
     ];
 
     $data  = array_merge($_POST, $partial_data);
-    patch_salesforce_user_data($data, $sf_user_ID);
-    $sf_user = get_salesforce_user_data($sf_user_ID);
+    $patch_result = patch_salesforce_user_data($data, $sf_user_ID);
+
+    if (is_wp_error($patch_result)) {
+        aif_salesforce_service_unavailable($patch_result);
+    }
+
+    $sf_user = aif_require_salesforce_object(get_salesforce_user_data($sf_user_ID), 'contact', 'Id');
     $action_succeed = true;
 }
 

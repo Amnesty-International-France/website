@@ -72,6 +72,7 @@ require_once realpath(__DIR__ . '/includes/root/caching.php');
 require_once realpath(__DIR__ . '/includes/root/localisation.php');
 require_once realpath(__DIR__ . '/includes/root/accessibility.php');
 require_once realpath(__DIR__ . '/includes/root/permalinks.php');
+require_once realpath(__DIR__ . '/includes/root/section-redirects.php');
 // endregion helpers
 
 /**
@@ -230,6 +231,7 @@ require_once realpath(__DIR__ . '/includes/full-site-editing/blocks/register.php
  */
 // region coreblocks
 require_once realpath(__DIR__ . '/includes/core-blocks/image/filters.php');
+require_once realpath(__DIR__ . '/includes/core-blocks/image-compare/filters.php');
 require_once realpath(__DIR__ . '/includes/core-blocks/button/styles.php');
 require_once realpath(__DIR__ . '/includes/core-blocks/post-content/render.php');
 require_once realpath(__DIR__ . '/includes/core-blocks/query/pagination/next.php');
