@@ -407,8 +407,8 @@ require_once realpath(__DIR__ . '/includes/users/emails.php');
 require_once realpath(__DIR__. '/includes/jetpack/jetpack-modules.php');
 require_once realpath(__DIR__ . '/includes/jetpack/contact-form.php');
 require_once realpath(__DIR__ . '/includes/jetpack/go-back-message.php');
-require_once realpath(__DIR__ . '/includes/jetpack/sitemap.php');
 require_once realpath(__DIR__ . '/includes/jetpack/search-redirect.php');
+require_once realpath(__DIR__ . '/includes/jetpack/image-cdn.php');
 // endregion jetpack
 
 /**
@@ -599,6 +599,7 @@ function turnstile_friendly_error(string $error): string
 if (defined('WP_CLI') && WP_CLI) {
     require_once __DIR__ . '/commands/duplicate-country-pages.php';
     require_once __DIR__ . '/commands/upgrade-country-pages.php';
+    require_once __DIR__ . '/commands/fix-canonical-urls.php';
 }
 
 add_filter('render_block', function ($block_content, $block) {
