@@ -2,6 +2,50 @@
 
 declare(strict_types=1);
 
+if (! function_exists('amnesty_normalise_url_path')) {
+    /**
+     * Resolve dot segments and duplicate slashes out of a URL path.
+     *
+     * Some stored canonicals carry a `/./` segment, which Google treats as a
+     * distinct URL from the clean one. Rebuild the path from its meaningful
+     * segments, keeping the trailing slash when there was one.
+     *
+     * @param string $path The URL path to normalise.
+     *
+     * @return string The normalised, absolute path.
+     */
+    function amnesty_normalise_url_path(string $path): string
+    {
+        if ('' === $path) {
+            return '/';
+        }
+
+        $segments = [];
+
+        foreach (explode('/', $path) as $segment) {
+            if ('' === $segment || '.' === $segment) {
+                continue;
+            }
+
+            if ('..' === $segment) {
+                array_pop($segments);
+
+                continue;
+            }
+
+            $segments[] = $segment;
+        }
+
+        $normalised = '/' . implode('/', $segments);
+
+        if ('/' !== $normalised && str_ends_with($path, '/')) {
+            $normalised .= '/';
+        }
+
+        return $normalised;
+    }
+}
+
 if (! function_exists('amnesty_normalise_canonical_host')) {
     /**
      * Force a canonical URL onto the production host.
@@ -10,6 +54,10 @@ if (! function_exists('amnesty_normalise_canonical_host')) {
      * environment, leaving the wrong (and inaccessible) host in `rel=canonical`.
      * This rewrites the scheme + host to the official site URL while keeping the
      * path and query intact, so pages stay self-canonical on www.amnesty.fr.
+     *
+     * The path is normalised in every case, including when the host is already
+     * the right one: a canonical such as `https://www.amnesty.fr/./actualites/`
+     * has a valid host but still points at a URL Google sees as a duplicate.
      *
      * @param string|null $canonical The canonical URL to normalise.
      *
@@ -21,17 +69,29 @@ if (! function_exists('amnesty_normalise_canonical_host')) {
             return '';
         }
 
-        $home_host      = wp_parse_url(home_url(), PHP_URL_HOST);
         $canonical_host = wp_parse_url($canonical, PHP_URL_HOST);
 
-        if (! $home_host || ! $canonical_host || $canonical_host === $home_host) {
+        // Relative URLs carry no host to rewrite - leave them untouched.
+        if (! $canonical_host) {
             return $canonical;
         }
 
-        $path  = (string) (wp_parse_url($canonical, PHP_URL_PATH) ?: '/');
-        $query = wp_parse_url($canonical, PHP_URL_QUERY);
+        $home_host = wp_parse_url(home_url(), PHP_URL_HOST);
+        $path      = amnesty_normalise_url_path((string) (wp_parse_url($canonical, PHP_URL_PATH) ?: '/'));
+        $query     = wp_parse_url($canonical, PHP_URL_QUERY);
+        $fragment  = wp_parse_url($canonical, PHP_URL_FRAGMENT);
 
-        return home_url($path . ($query ? '?' . $query : ''));
+        // Yoast schema @id nodes are URLs with a fragment (#webpage, #organization).
+        $suffix = $path . ($query ? '?' . $query : '') . ($fragment ? '#' . $fragment : '');
+
+        if ($home_host && $canonical_host !== $home_host) {
+            return home_url($suffix);
+        }
+
+        $scheme = wp_parse_url($canonical, PHP_URL_SCHEME) ?: 'https';
+        $port   = wp_parse_url($canonical, PHP_URL_PORT);
+
+        return sprintf('%s://%s%s%s', $scheme, $canonical_host, $port ? ':' . $port : '', $suffix);
     }
 }
 
@@ -85,35 +145,13 @@ if (! function_exists('amnesty_filter_schema_graph')) {
 
 add_filter('wpseo_schema_graph', 'amnesty_filter_schema_graph');
 
-if (! function_exists('amnesty_render_canonical')) {
-    /**
-     * Render the canonical href on posts
-     *
-     * @return void
-     */
-    function amnesty_render_canonical(): void
-    {
-        if (is_admin() || ! is_single()) {
-            return;
-        }
-
-        $canonical = get_post_meta(get_the_ID(), '_yoast_wpseo_canonical', true);
-
-        if (! $canonical) {
-            return;
-        }
-
-        $canonical = amnesty_normalise_canonical_host((string) $canonical);
-
-        printf('<link rel="canonical" href="%s">', esc_url($canonical));
-    }
-}
-
-add_action('wp_head', 'amnesty_render_canonical');
-
 if (! function_exists('amnesty_wpseo_canonical_filter')) {
     /**
      * Remove erroneous canonicals from search results/filters
+     *
+     * Only the search page itself may end up without a canonical: everything
+     * else - including post type archives, whose queried object ID is 0 like an
+     * unset `amnesty_search_page` option - stays self-canonical.
      *
      * @package Amnesty
      *
@@ -123,7 +161,9 @@ if (! function_exists('amnesty_wpseo_canonical_filter')) {
      */
     function amnesty_wpseo_canonical_filter(?string $canonical = ''): string
     {
-        if (get_queried_object_id() !== absint(get_option('amnesty_search_page'))) {
+        $search_page = absint(get_option('amnesty_search_page'));
+
+        if (0 === $search_page || get_queried_object_id() !== $search_page) {
             return amnesty_normalise_canonical_host($canonical);
         }
 
