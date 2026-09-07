@@ -38,10 +38,10 @@ if (!function_exists('render_hero_homepage_block')) {
 				<div class="hero-wrapper">
 					<?php if ($media_id || $mobile_media_id): ?>
 						<div class="hero-image-wrapper">
-							<?php echo amnesty_get_attachment_picture($media_id ?: $mobile_media_id, 'full', [ 'class' => 'hero-image', 'alt' => $image_alt ?? $mobile_image_alt ?? '' ]); ?>
+							<?php echo wp_get_attachment_image($media_id ?: $mobile_media_id, 'full', false, [ 'class' => 'hero-image', 'alt' => $image_alt ?? $mobile_image_alt ?? '' ]); ?>
 						</div>
 						<div class="hero-image-mobile-wrapper">
-							<?php echo amnesty_get_attachment_picture($mobile_media_id ?: $media_id, 'full', [ 'class' => 'hero-image', 'alt' => $mobile_image_alt ?? $image_alt ?? '' ]); ?>
+							<?php echo wp_get_attachment_image($mobile_media_id ?: $media_id, 'full', false, [ 'class' => 'hero-image', 'alt' => $mobile_image_alt ?? $image_alt ?? '' ]); ?>
 						</div>
 						<div class="hero-content-wrapper">
 							<h1 class="hero-title">

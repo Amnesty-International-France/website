@@ -54,6 +54,51 @@ if (! function_exists('amnesty_big_image_size_threshold')) {
     }
 }
 
+if (! defined('AMNESTY_PHOTON_DELIVERY_QUALITY')) {
+    define('AMNESTY_PHOTON_DELIVERY_QUALITY', 80);
+}
+
+if (! function_exists('amnesty_photon_delivery_args')) {
+    /**
+     * Pin the quality Photon encodes JPEG sources with.
+     *
+     * Photon mirrors the quality of the source file, and `amnesty_image_quality`
+     * above deliberately keeps originals at 100. At that value libwebp switches
+     * to lossless, so Photon was serving WebP several times heavier than the
+     * JPEG it replaced. Asking for an explicit quality keeps it on the lossy
+     * encoder without touching the archived originals.
+     *
+     * Only JPEG sources are pinned. Photon already serves PNG sources as
+     * lossless WebP, which is what logos and line art need: forcing them
+     * through the lossy encoder adds visible ringing around text and often
+     * produces a larger file than the lossless one.
+     *
+     * @package Amnesty\ThemeSetup
+     *
+     * @param array<string,mixed>|string $args      existing Photon arguments
+     * @param string                     $image_url url of the image being served
+     *
+     * @return array<string,mixed>|string
+     */
+    function amnesty_photon_delivery_args(array|string $args, string $image_url = ''): array|string
+    {
+        if (! is_array($args)) {
+            return $args;
+        }
+
+        $path = (string) wp_parse_url($image_url, PHP_URL_PATH);
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        if (! in_array($extension, [ 'jpg', 'jpeg', 'jfif' ], true)) {
+            return $args;
+        }
+
+        $args['quality'] = $args['quality'] ?? AMNESTY_PHOTON_DELIVERY_QUALITY;
+
+        return $args;
+    }
+}
+
 if (! function_exists('amnesty_remove_gutenberg_media_options')) {
     /**
      * Remove entries from the "Media" tab in the Gutenberg inserter
@@ -79,6 +124,8 @@ remove_filter('the_content', 'prepend_attachment');
 
 add_action('after_setup_theme', 'amnesty_theme_image_sizes');
 add_filter('image_size_names_choose', 'amnesty_custom_image_sizes');
+
+add_filter('jetpack_photon_pre_args', 'amnesty_photon_delivery_args', 10, 2);
 
 add_filter('mime_types', 'amnesty_add_jfif_support');
 

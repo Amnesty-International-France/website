@@ -34,7 +34,7 @@ if (!function_exists('render_carousel_block')) {
                         ?>
                         <div class="swiper-slide">
                             <div class="carousel-image">
-                                <?php echo amnesty_get_attachment_picture((int) $image_id, 'large', [ 'alt' => $alt, 'loading' => 'lazy', 'decoding' => 'async' ]); ?>
+                                <?php echo wp_get_attachment_image((int) $image_id, 'large', false, [ 'alt' => $alt, 'loading' => 'lazy', 'decoding' => 'async' ]); ?>
                                 <?php if (!empty($caption)) : ?>
                                     <div class="carousel-caption">
                                         <span class="carousel-caption-text"><?php echo wp_kses_post($caption); ?></span>
