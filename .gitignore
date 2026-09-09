@@ -66,8 +66,6 @@ license.txt
 .php-cs-fixer.cache
 .phpunit.cache/
 .ddev
-clever.json
-.clever.json
 vendor/
 composer*
 
