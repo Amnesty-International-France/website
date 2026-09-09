@@ -264,7 +264,9 @@ même.
 
 1. Si le parcours nécessite une page ou un contenu qui n'existe pas par
    défaut, l'ajouter dans `support/seed-wordpress.php` (voir les points
-   d'attention ci-dessus).
+   d'attention ci-dessus, et les commentaires du fichier : ils documentent les
+   pièges du seed, comme le slug `formulaire-foundation` en orthographe
+   anglaise ou la `fiche_pays` requise par le `<select>` pays de la pétition).
 2. Écrire le fichier `<parcours>.spec.mjs` dans `private/tests/e2e/`, en
    important `{ expect, test }` depuis `./support/fixtures` (pas directement
    `@playwright/test`) pour bénéficier de `gotoWithoutCookieOverlay`, qui

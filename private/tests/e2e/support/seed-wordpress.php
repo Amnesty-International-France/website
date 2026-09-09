@@ -34,7 +34,13 @@ function aif_e2e_insert_post(array $overrides): int
         'comment_count' => 0,
     ];
 
-    $wpdb->insert($wpdb->posts, array_merge($defaults, $overrides));
+    if (false === $wpdb->insert($wpdb->posts, array_merge($defaults, $overrides))) {
+        WP_CLI::error(sprintf(
+            'Seed insert failed for %s: %s',
+            $overrides['post_name'] ?? '?',
+            $wpdb->last_error
+        ));
+    }
 
     $post_id = (int) $wpdb->insert_id;
     clean_post_cache($post_id);
@@ -92,6 +98,11 @@ if (!get_page_by_path('aif-e2e-petition', OBJECT, 'petition')) {
     update_post_meta($petition_id, 'objectif_signatures', 1000);
 }
 
+// The petition signature form's required country <select> gets its options
+// exclusively from published fiche_pays posts (cached for an hour in the
+// amnesty_fiche_pays_list transient). With none seeded, the form has no valid
+// option, HTML5 validation blocks every submit and the spec times out with no
+// clue. Do not drop this block.
 delete_transient('amnesty_fiche_pays_list');
 if (!get_page_by_path('france-e2e', OBJECT, 'fiche_pays')) {
     aif_e2e_insert_post([
@@ -106,6 +117,9 @@ $menu_name = 'Main Menu (e2e)';
 $menu = wp_get_nav_menu_object($menu_name);
 if (!$menu) {
     $menu_id = wp_create_nav_menu($menu_name);
+    if (is_wp_error($menu_id)) {
+        WP_CLI::error('Seed nav menu failed: ' . $menu_id->get_error_message());
+    }
 
     wp_update_nav_menu_item($menu_id, 0, [
         'menu-item-title' => 'Accueil',
@@ -155,6 +169,9 @@ if (!get_page_by_path('formulaire-legs')) {
         '[contact-field label="E-mail" type="email" required="1"]',
         '[contact-field label="Téléphone" type="telephone" required="1"]',
         '[contact-field label="Je souhaite recevoir la brochure" type="checkbox-multiple" options="Par courrier postal,Par email"]',
+        // consentType="explicit" renders a real, checkable checkbox. Without it,
+        // Jetpack defaults to a hidden, pre-checked "implicit" consent input that
+        // always fails client-side validation on submit.
         '[contact-field label="J\'accepte que mes données soient traitées par Amnesty International France" type="consent" consentType="explicit" required="1"]',
         '[/contact-form]',
     ]);
@@ -176,6 +193,9 @@ if (!get_page_by_path('fondation')) {
     update_post_meta($foundation_page_id, '_wp_page_template', 'page-fondation');
 }
 
+// Note the English spelling: patterns/form-foundation.php looks the page up with
+// get_page_by_path('formulaire-foundation'). Renaming it to
+// 'formulaire-fondation' empties the form silently and the spec times out.
 if (!get_page_by_path('formulaire-foundation')) {
     $foundation_form = implode('', [
         '[contact-form to="e2e@example.test" subject="Contact fondation (e2e)"]',
