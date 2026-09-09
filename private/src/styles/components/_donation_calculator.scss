@@ -58,26 +58,35 @@
 
   .donation-tabs {
     display: flex;
+    gap: 0;
     cursor: pointer;
 
     > .punctual,
     > .monthly {
-      flex: 1 1;
+      display: flex;
+      flex: 1 1 50%;
+      align-items: center;
+      justify-content: center;
       width: 50%;
-      padding: 15px 0;
-      text-transform: uppercase;
-      font-weight: bold;
-      font-size: 20px;
-      text-align: center;
-      white-space: nowrap;
-      background-color: var(--wp--preset--color--grey-light);
-      color: var(--wp--preset--color--grey-dark);
-      user-select: none;
+      min-height: 48px;
+      padding: 10px 16px;
+      border-bottom: 2px solid transparent;
+      background-color: var(--wp--preset--color--white);
+      color: var(--wp--preset--color--black);
       font-family: var(--wp--preset--font-family--secondary);
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.2;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: background-color 0.2s ease, border-bottom-color 0.2s ease;
+      user-select: none;
 
+      &:hover,
       &.active {
-        background-color: var(--wp--preset--color--white);
-        color: var(--wp--preset--color--black);
+        border-bottom: 5px solid var(--wp--preset--color--primary-dark);
+        background-color: var(--wp--preset--color--grey-lighter);
       }
     }
   }

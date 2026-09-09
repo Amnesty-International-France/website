@@ -1,31 +1,8 @@
 import { expect, test } from './support/fixtures';
-import { mockSuccessfulTurnstile } from './support/turnstile';
+import { mockSuccessfulTurnstile, setServerSideTurnstileResult } from './support/turnstile';
 
 const FORGOT_PASSWORD_PATH = '/mot-de-passe-oublie/';
-
-const setServerSideTurnstileResult = async (
-  page,
-  { success, error = 'invalid-input-response' },
-) => {
-  await page.locator('form.aif-form-container').evaluate(
-    (form, options) => {
-      const appendHiddenInput = (name, value) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = name;
-        input.value = value;
-        form.appendChild(input);
-      };
-
-      appendHiddenInput('aif_e2e_turnstile_verify_success', options.success ? '1' : '0');
-
-      if (!options.success) {
-        appendHiddenInput('aif_e2e_turnstile_verify_error', options.error);
-      }
-    },
-    { success, error },
-  );
-};
+const FORGOT_PASSWORD_FORM = 'form.aif-form-container';
 
 const submitForgotPasswordForm = async (page, email = 'unknown@example.org') => {
   await page.getByLabel('Votre email (obligatoire) :').fill(email);
@@ -40,7 +17,7 @@ test.describe('forgot password Turnstile server-side flow', () => {
     await mockSuccessfulTurnstile(page, { token: 'mock-server-accepted-token' });
 
     await gotoWithoutCookieOverlay(FORGOT_PASSWORD_PATH);
-    await setServerSideTurnstileResult(page, { success: true });
+    await setServerSideTurnstileResult(page, FORGOT_PASSWORD_FORM, { success: true });
     await submitForgotPasswordForm(page);
 
     await expect(page.getByText('Votre utilisateur nous est inconnu')).toBeVisible();
@@ -54,7 +31,7 @@ test.describe('forgot password Turnstile server-side flow', () => {
     await mockSuccessfulTurnstile(page, { token: 'mock-server-rejected-token' });
 
     await gotoWithoutCookieOverlay(FORGOT_PASSWORD_PATH);
-    await setServerSideTurnstileResult(page, {
+    await setServerSideTurnstileResult(page, FORGOT_PASSWORD_FORM, {
       success: false,
       error: 'invalid-input-response',
     });

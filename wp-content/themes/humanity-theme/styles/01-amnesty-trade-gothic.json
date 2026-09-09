@@ -16,10 +16,8 @@
               "fontWeight": 300,
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Light.eot",
                 "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Light.woff2",
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Light.woff",
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Light.ttf"
+                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Light.woff"
               ]
             },
             {
@@ -28,10 +26,8 @@
               "fontWeight": 300,
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-LightObl.eot",
                 "file:./assets/fonts/trade-gothic/TradeGothicLTW05-LightObl.woff2",
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-LightObl.woff",
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-LightObl.ttf"
+                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-LightObl.woff"
               ]
             },
             {
@@ -40,10 +36,8 @@
               "fontWeight": "normal",
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Roman.eot",
                 "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Roman.woff2",
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Roman.woff",
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Roman.ttf"
+                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Roman.woff"
               ]
             },
             {
@@ -52,10 +46,8 @@
               "fontWeight": "normal",
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Oblique.eot",
                 "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Oblique.woff2",
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Oblique.woff",
-                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Oblique.ttf"
+                "file:./assets/fonts/trade-gothic/TradeGothicLTW05-Oblique.woff"
               ]
             }
           ]
@@ -71,10 +63,8 @@
               "fontWeight": "normal",
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic-condensed/TradeGothicLTW05-CnNo.18Obl.eot",
                 "file:./assets/fonts/trade-gothic-condensed/TradeGothicLTW05-CnNo.18Obl.woff2",
-                "file:./assets/fonts/trade-gothic-condensed/TradeGothicLTW05-CnNo.18Obl.woff",
-                "file:./assets/fonts/trade-gothic-condensed/TradeGothicLTW05-CnNo.18Obl.ttf"
+                "file:./assets/fonts/trade-gothic-condensed/TradeGothicLTW05-CnNo.18Obl.woff"
               ]
             },
             {
@@ -83,10 +73,8 @@
               "fontWeight": "bold",
               "fontDisplay": "swap",
               "src": [
-                "file:./assets/fonts/trade-gothic-condensed/TradeGothicLTW05-BdCnNo.20.eot",
                 "file:./assets/fonts/trade-gothic-condensed/TradeGothicLTW05-BdCnNo.20.woff2",
-                "file:./assets/fonts/trade-gothic-condensed/TradeGothicLTW05-BdCnNo.20.woff",
-                "file:./assets/fonts/trade-gothic-condensed/TradeGothicLTW05-BdCnNo.20.ttf"
+                "file:./assets/fonts/trade-gothic-condensed/TradeGothicLTW05-BdCnNo.20.woff"
               ]
             }
           ]

@@ -10,83 +10,13 @@ add_filter('get_the_terms', 'amnesty_limit_post_terms_results_for_archive');
 
 global $wpdb;
 $paged = get_query_var('paged') ? get_query_var('paged') : 1;
-$posts_per_page = 18;
+$posts_per_page = AIF_TRAININGS_PER_PAGE;
 $offset = ($paged - 1) * $posts_per_page;
 
-$filter = '';
-$filter_values = [];
-$get_training_filter = static function ($key) {
-    if (!isset($_GET[$key])) {
-        return null;
-    }
+[$query, $query_args] = aif_get_trainings_session_query();
+$max_num_page = aif_get_trainings_max_num_pages($posts_per_page);
 
-    $value = wp_unslash($_GET[$key]);
-    if (!is_scalar($value)) {
-        return null;
-    }
-
-    return sanitize_text_field((string) $value);
-};
-$periode_filter = $get_training_filter('qperiod');
-if ($periode_filter) {
-    $periodes = array_filter(array_map(static function ($periode) {
-        return str_replace('-', '', trim($periode));
-    }, explode(',', $periode_filter)));
-
-    if (\count($periodes) > 1) {
-        $filter .= ' AND (' . implode(' OR ', array_fill(0, \count($periodes), 'm.meta_value LIKE %s')) . ')';
-        foreach ($periodes as $periode) {
-            $filter_values[] = $wpdb->esc_like($periode) . '%';
-        }
-    } elseif (\count($periodes) === 1) {
-        $filter .= ' AND m.meta_value LIKE %s';
-        $filter_values[] = $wpdb->esc_like(reset($periodes)) . '%';
-    }
-}
-
-$lieu_filter = $get_training_filter('qlieu');
-if ($lieu_filter) {
-    $lieux = array_filter(array_map('trim', explode(',', $lieu_filter)));
-    if (\count($lieux) > 1) {
-        $filter .= ' AND m2.meta_value IN (' . implode(', ', array_fill(0, \count($lieux), '%s')) . ')';
-        $filter_values = array_merge($filter_values, $lieux);
-    } elseif (\count($lieux) === 1) {
-        $filter .= ' AND m2.meta_value = %s';
-        $filter_values[] = reset($lieux);
-    }
-}
-
-$categories_filter = $get_training_filter('qcategories');
-if ($categories_filter) {
-    $categories = array_filter(array_map('trim', explode(',', $categories_filter)));
-    if (\count($categories) > 1) {
-        $filter .= ' AND m3.meta_value IN (' . implode(', ', array_fill(0, \count($categories), '%s')) . ')';
-        $filter_values = array_merge($filter_values, $categories);
-    } elseif (\count($categories) === 1) {
-        $filter .= ' AND m3.meta_value = %s';
-        $filter_values[] = reset($categories);
-    }
-}
-
-$query = "SELECT p.ID as post_id, m.meta_key, m.meta_value, m2.meta_value AS lieu, m3.meta_value AS categorie
-    FROM {$wpdb->posts} p
-    JOIN {$wpdb->postmeta} m2 ON p.ID = m2.post_id AND m2.meta_key = 'lieu'
-    JOIN {$wpdb->postmeta} m3 ON p.ID = m3.post_id AND m3.meta_key = 'categories'
-    LEFT JOIN {$wpdb->postmeta} m ON p.ID = m.post_id AND m.meta_key LIKE %s AND m.meta_value != '' AND m.meta_value NOT LIKE %s
-    WHERE p.post_type = 'training'
-    AND p.post_status = 'publish'
-    {$filter}
-    ORDER BY CAST(m.meta_value AS DATE) ASC";
-$meta_key_filter = '%session%date%de%debut';
-$meta_value_filter = '%field%';
-
-$total_query = "SELECT COUNT(1) AS count FROM ({$query}) AS combined_table";
-$total_result = $wpdb->prepare($total_query, array_merge([$meta_key_filter, $meta_value_filter], $filter_values));
-$total = $wpdb->get_results($total_result)[0]->count;
-$max_num_page = ceil($total / $posts_per_page);
-$wpdb->max_num_pages = $max_num_page;
-
-$session_query = $wpdb->prepare(sprintf('%s LIMIT %d, %d', $query, $offset, $posts_per_page), array_merge([$meta_key_filter, $meta_value_filter], $filter_values));
+$session_query = $wpdb->prepare(sprintf('%s LIMIT %d, %d', $query, $offset, $posts_per_page), $query_args);
 $raw_sessions = $wpdb->get_results($session_query);
 $sessions = [];
 foreach ($raw_sessions as $raw_session) {

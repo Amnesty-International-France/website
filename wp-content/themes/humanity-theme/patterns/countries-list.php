@@ -18,6 +18,8 @@ $all_countries = new WP_Query($args);
 $doc_id = get_option('countries_global_document_id');
 $doc_url = $doc_id ? wp_get_attachment_url($doc_id) : '';
 
+$chapo_text = get_option('countries_global_chapo', '');
+
 $countries_by_letter = [];
 
 if ($all_countries->have_posts()) {
@@ -39,6 +41,12 @@ if ($all_countries->have_posts()) {
 }
 
 ?>
+
+<?php if (!empty($chapo_text)) : ?>
+    <div class="chapo">
+        <p class="text"><?php echo wp_kses_post(nl2br(stripslashes($chapo_text))); ?></p>
+    </div>
+<?php endif; ?>
 
 <div class="az-filter">
     <h2 class="title">Pays de A à Z</h2>
@@ -72,7 +80,7 @@ if ($all_countries->have_posts()) {
         <h3 class="subtitle">UN BILAN DE LA SITUATION DES DROITS HUMAINS DANS 144 PAYS EN 2025</h3>
         <div class="download">
             <div class="icon-container">
-                <img src="<?php echo esc_url(amnesty_asset_uri('images')); ?>/icon-download-arrow-dark.svg" alt="Download Icon" />
+                <img src="<?php echo esc_url(amnesty_asset_uri('images')); ?>/icon-download-arrow-dark.svg" alt="Download Icon" loading="lazy" decoding="async" />
             </div>
             <p class="label">
                 <?php if ($doc_url) : ?>

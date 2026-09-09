@@ -30,6 +30,25 @@ if (!function_exists('render_video_block')) {
     }
 
     /**
+     * Detect a self-hosted video file (mp4, webm, ...) from its URL.
+     *
+     * @param string $url The video URL.
+     * @return bool
+     */
+    function is_self_hosted_video(string $url): bool
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+
+        if (!is_string($path)) {
+            return false;
+        }
+
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return in_array($extension, ['mp4', 'webm', 'ogv', 'ogg', 'mov', 'm4v'], true);
+    }
+
+    /**
      * Render the Amnesty Video block
      *
      * @param array<string, mixed> $attributes Block attributes
@@ -43,6 +62,27 @@ if (!function_exists('render_video_block')) {
 
         if (empty($video_url)) {
             return '<p>' . esc_html__('Aucune vidéo sélectionnée', 'amnesty') . '</p>';
+        }
+
+        if (is_self_hosted_video($video_url)) {
+            ob_start();
+            ?>
+
+            <div class="video-block">
+                <div class="video-wrapper">
+                    <video width="100%" controls preload="metadata" src="<?php echo esc_url($video_url); ?>">
+                        <?php echo esc_html__('Votre navigateur ne peut pas lire cette vidéo.', 'amnesty'); ?>
+                    </video>
+                </div>
+                <?php if (!empty($video_title)): ?>
+                    <p class="video-title">
+                        <span class="video-label">Vidéo : </span><?php echo esc_html($video_title); ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <?php
+            return ob_get_clean();
         }
 
         $video_id = extract_youtube_id($video_url);
@@ -59,7 +99,7 @@ if (!function_exists('render_video_block')) {
         <div class="video-block">
             <div class="video-wrapper">
 				<div class="warning">
-					<img src="<?= $image_broken ?>" alt="warning">
+					<img src="<?= $image_broken ?>" alt="warning" loading="lazy" decoding="async">
 					<p>
 						Le visionnage de cette vidéo entraîne un dépôt de cookies de la part de YouTube. Si vous
 						souhaitez lire la vidéo, vous devez consentir aux cookies pour une publicité ciblée en

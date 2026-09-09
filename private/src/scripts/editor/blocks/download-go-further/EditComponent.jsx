@@ -1,7 +1,7 @@
 const { __ } = wp.i18n;
 const { useSelect } = wp.data;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
-const { PanelBody, Button, TextControl } = wp.components;
+const { PanelBody, Button, ButtonGroup, TextControl } = wp.components;
 
 const EditComponent = ({ attributes, setAttributes }) => {
   const { title, fileIds = [] } = attributes;
@@ -110,6 +110,19 @@ const EditComponent = ({ attributes, setAttributes }) => {
     setAttributes({ fileIds: newIds });
   };
 
+  const moveFile = (index, direction) => {
+    const nextIndex = index + direction;
+
+    if (nextIndex < 0 || nextIndex >= fileIds.length) {
+      return;
+    }
+
+    const newIds = [...fileIds];
+    [newIds[index], newIds[nextIndex]] = [newIds[nextIndex], newIds[index]];
+
+    setAttributes({ fileIds: newIds });
+  };
+
   const formatFileSize = (file) => {
     const size = file?.media_details?.filesize || 0;
     return `${(size / 1024).toFixed(2)} kb`;
@@ -136,18 +149,34 @@ const EditComponent = ({ attributes, setAttributes }) => {
               )}
             />
           </MediaUploadCheck>
-          <ul>
+          <ul className="download-go-further-files-control">
             {files.map(
-              (file) =>
+              (file, index) =>
                 file && (
-                  <li key={file.id}>
-                    <span>
+                  <li key={file.id} className="download-go-further-files-control__item">
+                    <span className="download-go-further-files-control__label">
                       {file.title?.rendered || file.slug} (
                       {getHumanReadableFileType(file.mime_type)}, {formatFileSize(file)})
                     </span>
-                    <Button onClick={() => removeFile(file.id)} isSecondary>
-                      {__('Supprimer', 'amnesty')}
-                    </Button>
+                    <ButtonGroup className="download-go-further-files-control__actions">
+                      <Button
+                        icon="arrow-up-alt2"
+                        label={__('Monter le fichier', 'amnesty')}
+                        onClick={() => moveFile(index, -1)}
+                        disabled={index === 0}
+                        variant="secondary"
+                      />
+                      <Button
+                        icon="arrow-down-alt2"
+                        label={__('Descendre le fichier', 'amnesty')}
+                        onClick={() => moveFile(index, 1)}
+                        disabled={index === fileIds.length - 1}
+                        variant="secondary"
+                      />
+                      <Button onClick={() => removeFile(file.id)} isSecondary>
+                        {__('Supprimer', 'amnesty')}
+                      </Button>
+                    </ButtonGroup>
                   </li>
                 ),
             )}

@@ -64,6 +64,7 @@ license.txt
 .env.local
 .castor.stub.php
 .php-cs-fixer.cache
+.phpunit.cache/
 .ddev
 clever.json
 .clever.json

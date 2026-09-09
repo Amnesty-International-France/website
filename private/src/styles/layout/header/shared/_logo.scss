@@ -16,6 +16,12 @@
   content: attr(aria-label);
 }
 
+@media (max-width: 374px) {
+  .main-header-mobile > .logo:empty::after {
+    width: 120px;
+  }
+}
+
 .rtl .logo:empty::after {
   border-right: none;
   border-left: 1px solid var(--wp--preset--color--grey-lighter);

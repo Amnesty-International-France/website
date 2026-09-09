@@ -3,6 +3,35 @@
 @import 'admin/localisation-options';
 @import 'admin/icon-picker-control';
 
+.amnesty-acf-character-count-wrapper {
+  display: block;
+  position: relative;
+  width: 100%;
+
+  textarea {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding-bottom: 28px;
+  }
+}
+
+.amnesty-acf-character-count {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 2px 4px;
+  background-color: #fff;
+  color: #646970;
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+.amnesty-acf-character-count-current.is-over-limit {
+  color: #d63638;
+}
+
 :root {
   --ms-base: 16;
   --ms-ratio: 1.2;

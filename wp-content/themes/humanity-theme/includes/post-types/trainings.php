@@ -154,8 +154,162 @@ function aif_formation_archive_query($query)
     if (!is_admin() && $query->is_main_query() && $query->is_post_type_archive('training')) {
         $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
         $query->set('paged', $paged);
-        $query->set('posts_per_page', 3);
-        $query->set('found_posts', 99999);
+        $query->set('posts_per_page', AIF_TRAININGS_PER_PAGE);
     }
 }
 add_action('pre_get_posts', 'aif_formation_archive_query');
+
+/**
+ * Number of trainings displayed per archive page.
+ *
+ * Must stay in sync with the archive-loop-trainings pattern, which renders the
+ * sessions with its own custom query.
+ */
+const AIF_TRAININGS_PER_PAGE = 18;
+
+/**
+ * Build the SQL query (and its prepared arguments) listing the training sessions
+ * matching the current request filters (qperiod / qlieu / qcategories).
+ *
+ * Shared between the archive loop pattern (to fetch a page of sessions) and the
+ * pagination fix below (to count the total), so both always agree.
+ *
+ * @return array{0: string, 1: array<int, string>} The SQL query and its prepared arguments.
+ */
+function aif_get_trainings_session_query(): array
+{
+    global $wpdb;
+
+    $get_training_filter = static function ($key) {
+        if (!isset($_GET[$key])) {
+            return null;
+        }
+
+        $value = wp_unslash($_GET[$key]);
+        if (!is_scalar($value)) {
+            return null;
+        }
+
+        return sanitize_text_field((string) $value);
+    };
+
+    $filter        = '';
+    $filter_values = [];
+
+    $periode_filter = $get_training_filter('qperiod');
+    if ($periode_filter) {
+        $periodes = array_filter(array_map(static function ($periode) {
+            return str_replace('-', '', trim($periode));
+        }, explode(',', $periode_filter)));
+
+        if (\count($periodes) > 1) {
+            $filter .= ' AND (' . implode(' OR ', array_fill(0, \count($periodes), 'm.meta_value LIKE %s')) . ')';
+            foreach ($periodes as $periode) {
+                $filter_values[] = $wpdb->esc_like($periode) . '%';
+            }
+        } elseif (\count($periodes) === 1) {
+            $filter .= ' AND m.meta_value LIKE %s';
+            $filter_values[] = $wpdb->esc_like(reset($periodes)) . '%';
+        }
+    }
+
+    $lieu_filter = $get_training_filter('qlieu');
+    if ($lieu_filter) {
+        $lieux = array_filter(array_map('trim', explode(',', $lieu_filter)));
+        if (\count($lieux) > 1) {
+            $filter .= ' AND m2.meta_value IN (' . implode(', ', array_fill(0, \count($lieux), '%s')) . ')';
+            $filter_values = array_merge($filter_values, $lieux);
+        } elseif (\count($lieux) === 1) {
+            $filter .= ' AND m2.meta_value = %s';
+            $filter_values[] = reset($lieux);
+        }
+    }
+
+    $categories_filter = $get_training_filter('qcategories');
+    if ($categories_filter) {
+        $categories = array_filter(array_map('trim', explode(',', $categories_filter)));
+        if (\count($categories) > 1) {
+            $filter .= ' AND m3.meta_value IN (' . implode(', ', array_fill(0, \count($categories), '%s')) . ')';
+            $filter_values = array_merge($filter_values, $categories);
+        } elseif (\count($categories) === 1) {
+            $filter .= ' AND m3.meta_value = %s';
+            $filter_values[] = reset($categories);
+        }
+    }
+
+    $query = "SELECT p.ID as post_id, m.meta_key, m.meta_value, m2.meta_value AS lieu, m3.meta_value AS categorie
+        FROM {$wpdb->posts} p
+        JOIN {$wpdb->postmeta} m2 ON p.ID = m2.post_id AND m2.meta_key = 'lieu'
+        JOIN {$wpdb->postmeta} m3 ON p.ID = m3.post_id AND m3.meta_key = 'categories'
+        LEFT JOIN {$wpdb->postmeta} m ON p.ID = m.post_id AND m.meta_key LIKE %s AND m.meta_value != '' AND m.meta_value NOT LIKE %s
+        WHERE p.post_type = 'training'
+        AND p.post_status = 'publish'
+        {$filter}
+        ORDER BY CAST(m.meta_value AS DATE) ASC";
+
+    $meta_key_filter   = '%session%date%de%debut';
+    $meta_value_filter = '%field%';
+
+    return [$query, array_merge([$meta_key_filter, $meta_value_filter], $filter_values)];
+}
+
+/**
+ * Compute the number of pages for the trainings archive, based on the same query
+ * used to render the sessions.
+ */
+function aif_get_trainings_max_num_pages(int $posts_per_page = AIF_TRAININGS_PER_PAGE): int
+{
+    global $wpdb;
+
+    [$query, $query_args] = aif_get_trainings_session_query();
+
+    $total_query = "SELECT COUNT(1) AS count FROM ({$query}) AS combined_table";
+    $total       = (int) $wpdb->get_results($wpdb->prepare($total_query, $query_args))[0]->count;
+
+    if ($posts_per_page < 1) {
+        return 0;
+    }
+
+    return (int) ceil($total / $posts_per_page);
+}
+
+/**
+ * Align the trainings archive pagination with the sessions actually displayed.
+ *
+ * The archive is rendered by a custom sessions query (see the
+ * archive-loop-trainings pattern), so WordPress' main query reports the wrong
+ * number of pages. This both feeds Yoast's "Page X of Y" title and, worse, makes
+ * WP::handle_404() serve valid deep pages as 404 as soon as the main query runs
+ * out of training posts (handle_404() 404s a paged request whose $wp_query->posts
+ * is empty), even though sessions still exist for that page.
+ *
+ * Hooking on `pre_handle_404` — fired at the very start of WP::handle_404(), i.e.
+ * before the 404 decision *and* before wp_head/Yoast — lets us fix max_num_pages
+ * and short-circuit the spurious 404 in one place. Hooking later (e.g. on `wp`)
+ * would correct the title but leave those pages served as 404.
+ *
+ * @param bool      $preempt  Short-circuit value for handle_404().
+ * @param \WP_Query $wp_query The query object (the main query at this point).
+ *
+ * @return bool True to mark the request as handled (HTTP 200) when the requested
+ *              page is within the sessions range; otherwise $preempt unchanged.
+ */
+function aif_formation_archive_fix_pagination($preempt, $wp_query)
+{
+    if (is_admin() || !$wp_query->is_main_query() || !$wp_query->is_post_type_archive('training')) {
+        return $preempt;
+    }
+
+    $wp_query->max_num_pages = aif_get_trainings_max_num_pages();
+
+    $paged = max(1, (int) $wp_query->get('paged'));
+
+    // Page backed by existing sessions: prevent handle_404() from 404ing it just
+    // because the main query exhausted its (unused) training posts.
+    if ($paged <= $wp_query->max_num_pages) {
+        return true;
+    }
+
+    return $preempt;
+}
+add_filter('pre_handle_404', 'aif_formation_archive_fix_pagination', 10, 2);

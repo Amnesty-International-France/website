@@ -44,7 +44,7 @@ add_filter('the_posts', function ($posts, $query) {
             $term = get_queried_object();
             if ($term) {
                 $pays_post = get_page_by_path($term->slug, OBJECT, 'fiche_pays');
-                if ($pays_post) {
+                if ($pays_post && 'publish' === $pays_post->post_status) {
                     array_unshift($posts, $pays_post);
                     $query->_fiche_pays_injectee = true;
                 }
@@ -55,7 +55,7 @@ add_filter('the_posts', function ($posts, $query) {
             $term = get_queried_object();
             if ($term) {
                 $combat_page = get_page_by_path('nous-connaitre/nos-combats/' . $term->slug);
-                if ($combat_page) {
+                if ($combat_page && 'publish' === $combat_page->post_status) {
                     array_unshift($posts, $combat_page);
                     $query->_fiche_combat_injectee = true;
                 }

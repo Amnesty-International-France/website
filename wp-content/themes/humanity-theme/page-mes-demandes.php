@@ -1,8 +1,8 @@
 <?php
 
-$current_user = wp_get_current_user();
-$sf_user_ID = get_SF_user_ID($current_user->ID);
-$demands =  get_salesforce_user_demands($sf_user_ID);
+$sf_member = aif_get_request_salesforce_member();
+$sf_user_ID = $sf_member->Id;
+$demands = aif_require_salesforce_array(get_salesforce_user_demands($sf_user_ID), 'demands');
 $sortedDemands = sortByDateProp($demands, 'Date_de_la_demande__c');
 
 function aif_format_date($date)
@@ -91,4 +91,3 @@ function aif_format_date($date)
 </div>
 
 <?php get_footer(); ?>
-

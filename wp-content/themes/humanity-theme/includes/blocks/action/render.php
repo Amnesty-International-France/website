@@ -77,7 +77,7 @@ if (!function_exists('render_action_block')) {
                 </div>
                 <?php if (!empty($final_image_url)) : ?>
                     <div class="container-image">
-                        <img class="action-image" src="<?php echo esc_url($final_image_url); ?>" alt="" />
+                        <img class="action-image" src="<?php echo esc_url($final_image_url); ?>" alt="" loading="lazy" decoding="async" />
                     </div>
                 <?php endif; ?>
                 <?php if (!empty($sur_title)) : ?>

@@ -26,19 +26,17 @@ const handleClose = () => {
 };
 
 export const closeAlertBanner = () => {
-  document.addEventListener('DOMContentLoaded', () => {
-    const { banner, close, cta, id } = getElements();
+  const { banner, close, cta, id } = getElements();
 
-    if (!banner) return;
+  if (!banner) return;
 
-    const userIdDone = sessionStorage.getItem(`${SELECTORS.session_base_name}_${id}`);
+  const userIsDone = sessionStorage.getItem(`${SELECTORS.session_base_name}_${id}`);
 
-    if (userIdDone === 'true') {
-      banner.classList.add('hidden');
-    }
+  if (userIsDone === 'true') {
+    banner.classList.add('hidden');
+  }
 
-    [close, cta].forEach((el) => el?.addEventListener('click', handleClose));
-  });
+  [close, cta].forEach((el) => el?.addEventListener('click', handleClose));
 };
 
 export default { closeAlertBanner };

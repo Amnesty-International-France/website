@@ -60,7 +60,7 @@ $svg = file_get_contents($template_directory . '/assets/images/icon-cross.svg');
 			<?php endif; ?>
 			<div class="alert-body-text">
 				<p class="title"><?php echo esc_html(get_the_title($alert_banner->ID)); ?></p>
-				<p class="description"><?php echo esc_html($alert_banner_description); ?></p>
+				<div class="description"><?php echo wp_kses_post($alert_banner_description); ?></div>
 			</div>
 		</div>
 		<a class="cta" href="<?php echo esc_url($alert_banner_url); ?>" target="_blank"
@@ -68,7 +68,7 @@ $svg = file_get_contents($template_directory . '/assets/images/icon-cross.svg');
 	</div>
 </div>
 <?php
+printf('<script data-cfasync="false">%s</script>', amnesty_alert_banner_inline_script()); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 wp_reset_postdata();
 ?>
-
 

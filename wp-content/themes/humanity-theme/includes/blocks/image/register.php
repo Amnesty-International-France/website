@@ -20,6 +20,9 @@ if (!function_exists('register_image_block')) {
                     'mediaId'   => [
                         'type' => 'number',
                     ],
+                    'mediaMobileId' => [
+                        'type' => 'number',
+                    ],
                     'className' => [
                         'type'    => 'string',
                         'default' => '',

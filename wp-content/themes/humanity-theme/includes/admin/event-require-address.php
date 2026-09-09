@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @var string[]
  */
 const AIF_REQUIRED_VENUE_ADDRESS_FIELDS = [
-    '_VenueAddress',
     '_VenueCity',
     // '_VenueZip', // code postal non requis : souvent absent (intégré à l'adresse).
 ];
@@ -61,7 +60,7 @@ function enforce_event_address(int $post_id): void
         return;
     }
 
-    if (get_post_meta($post_id, 'event_national', true)) {
+    if (get_field('_EventNational', $post_id)) {
         return;
     }
 
@@ -126,7 +125,7 @@ function show_event_address_error_notice(): void
     printf(
         '<div class="notice notice-error is-dismissible"><p>%s</p></div>',
         esc_html__(
-            'L\'adresse du lieu (rue et ville) est obligatoire pour publier un évènement. L\'évènement a été enregistré en brouillon.',
+            'La ville du lieu est obligatoire pour publier un évènement. L\'évènement a été enregistré en brouillon.',
             'humanity'
         )
     );

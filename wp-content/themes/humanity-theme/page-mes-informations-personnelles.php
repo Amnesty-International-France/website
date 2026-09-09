@@ -1,11 +1,14 @@
 <?php
 
 $current_user = wp_get_current_user();
-$sf_user_ID = get_SF_user_ID($current_user->ID);
+$sf_member = aif_get_request_salesforce_member();
+$sf_user_ID = $sf_member->Id;
 
-$sf_user = get_salesforce_user_data($sf_user_ID);
-$sf_member = get_salesforce_member_data($current_user->user_email);
-$SEPA_mandates = get_salesforce_user_SEPA_mandate($sf_user_ID);
+$sf_user = aif_require_salesforce_object(get_salesforce_user_data($sf_user_ID), 'contact', 'Id');
+$SEPA_mandates = aif_require_salesforce_records(
+    get_salesforce_user_SEPA_mandate($sf_user_ID),
+    'sepa_mandates'
+);
 
 $actifMandate  = null;
 $day_of_payment = null;
@@ -59,14 +62,17 @@ $countries = [
 $actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
 $next_payement = '';
 
-if ($sf_member->hasMandatActif) {
+$has_member_data = null !== $sf_member;
+$has_valid_mandate = $has_member_data && $sf_member->hasMandatActif && null !== $actifMandate;
+
+if ($has_valid_mandate) {
     $day_of_payment = date('d', strtotime($actifMandate->Date_paiement_Avenir__c));
     $ibanBlocks = str_split($actifMandate->Tech_Iban__c, 4);
     $last4IBANDigit = substr($actifMandate->Tech_Iban__c, -4);
     $next_payement = date_format(date_create($actifMandate->Date_paiement_Avenir__c), 'd/m/Y');
 }
 
-$user_status = aif_get_user_status($sf_member);
+$user_status = $has_member_data ? aif_get_user_status($sf_member) : '';
 
 function checkKeys($requiredFields, $array_to_check)
 {
@@ -91,8 +97,13 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
     ];
 
     $data  = array_merge($_POST, $partial_data);
-    patch_salesforce_user_data($data, $sf_user_ID);
-    $sf_user = get_salesforce_user_data($sf_user_ID);
+    $patch_result = patch_salesforce_user_data($data, $sf_user_ID);
+
+    if (is_wp_error($patch_result)) {
+        aif_salesforce_service_unavailable($patch_result);
+    }
+
+    $sf_user = aif_require_salesforce_object(get_salesforce_user_data($sf_user_ID), 'contact', 'Id');
     $action_succeed = true;
 }
 
@@ -118,7 +129,7 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
             }
 ?>
 			<h2>Mes informations personnelles</h2>
-			<?php if ($sf_member->hasMandatActif) : ?>
+			<?php if ($has_valid_mandate) : ?>
 				<p>Vous êtes <span class='aif-text-bold aif-uppercase'> <?php echo esc_html($user_status); ?> </span> d’Amnesty International France sous le numéro : <?php echo esc_html($sf_user->Identifiant_contact__c); ?> en prélèvement automatique avec une périodicité <span class='aif-lowercase'> <?php echo esc_html($actifMandate->Periodicite__c) ?> </span> d'un montant de <?php echo esc_html($actifMandate->Montant__c); ?> €. Votre prochain prélèvement sera effectué le <?php echo esc_html($next_payement); ?>.</p>
 			<?php else : ?>
 				<p>Vous êtes <span class='aif-text-bold aif-uppercase'> <?php echo esc_html($user_status); ?> </span> d’Amnesty International France sous le numéro : <?php echo esc_html($sf_user->Identifiant_contact__c); ?></p>
@@ -245,7 +256,7 @@ aif_include_partial('info-message', [
 			</form>
 		</section>
 
-		<?php if ($sf_member->hasMandatActif) :  ?>
+		<?php if ($has_valid_mandate) :  ?>
 
 		<section class="aif-container--form">
 			<h2>Mes informations bancaires</h2>

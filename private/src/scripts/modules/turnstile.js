@@ -184,14 +184,15 @@ const resubmit = (form, submitter) => {
 };
 
 /**
- * Polls briefly for Cloudflare's hidden response input after a user submits early.
+ * Polls for Cloudflare's hidden response input after a user submits early.
+ * Turnstile's callbacks own success and failure; the client must not guess that
+ * a visitor interaction failed after an arbitrary short delay.
  *
  * @param {HTMLFormElement} form Pending form.
  * @param {Submitter|null} submitter Submitter to preserve on resubmit.
- * @param {number} attempts Remaining polling attempts.
  * @returns {void}
  */
-const waitForResponse = (form, submitter, attempts) => {
+const waitForResponse = (form, submitter) => {
   if (!pendingForms.has(form)) return;
 
   if (getResponse(form)) {
@@ -199,15 +200,8 @@ const waitForResponse = (form, submitter, attempts) => {
     return;
   }
 
-  if (attempts <= 0) {
-    pendingForms.delete(form);
-    setSubmitting(submitter, false);
-    showMessage(form, FAILURE_MESSAGE);
-    return;
-  }
-
   window.setTimeout(() => {
-    waitForResponse(form, submitter, attempts - 1);
+    waitForResponse(form, submitter);
   }, 250);
 };
 
@@ -225,6 +219,7 @@ const submitWhenVerified = (event) => {
   }
 
   event.preventDefault();
+  event.stopPropagation();
 
   if (pendingForms.has(form)) return;
 
@@ -236,7 +231,7 @@ const submitWhenVerified = (event) => {
   pendingForms.add(form);
   setSubmitting(submitter, true);
   showMessage(form, VERIFYING_MESSAGE);
-  waitForResponse(form, submitter, 12);
+  waitForResponse(form, submitter);
 };
 
 /**

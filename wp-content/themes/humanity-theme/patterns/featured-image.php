@@ -24,6 +24,7 @@ if (get_post_meta($post_id_to_use, '_hide_featured_image', true)) {
 }
 
 $image_id = get_post_thumbnail_id($post_id_to_use);
+$alt = amnesty_get_image_alt_text((int) $image_id);
 
 if (! $image_id) {
     if ('press-release' === get_post_type()) {
@@ -83,7 +84,10 @@ $template = get_page_template_slug($post_ID);
 			</div>
 		<?php endif; ?>
 
-		<img src="<?php echo esc_url(amnesty_get_attachment_image_src($image_id, 'hero-md')); ?>" alt="" class="wp-image-<?php echo absint($image_id); ?>"/>
+		<img src="<?php echo esc_url(amnesty_get_attachment_image_src($image_id, 'hero-md')); ?>"
+			 alt="<?php echo esc_attr($alt); ?>"
+			 class="wp-image-<?php echo absint($image_id); ?>"
+		/>
 
 		<?php if (($is_page || $template === 'page-fondation' || get_post_type() === 'fiche_pays') && ($credit || $caption)) : ?>
 			<figcaption class="feature-image-caption-overlay">

@@ -21,7 +21,7 @@ function amnesty_register_countries_cpt()
                 'not_found_in_trash' => 'Aucun Pays dans la corbeille',
             ],
             'public'       => true,
-            'has_archive'  => true,
+            'has_archive'  => false,
             'rewrite'      => [ 'slug' => 'pays' ],
             'supports'     => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
             'menu_icon'    => 'dashicons-flag',

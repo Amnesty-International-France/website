@@ -204,3 +204,16 @@
     max-width: $container-md;
   }
 }
+
+.page-standard.page-pays {
+  .page-hero-block.no-featured-image .page-hero-title-wrapper .container {
+    justify-content: flex-start;
+    padding-left: 24px;
+    padding-right: 24px;
+
+    @media (min-width: $container-hg) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}

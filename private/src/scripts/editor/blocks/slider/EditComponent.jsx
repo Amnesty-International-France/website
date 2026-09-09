@@ -11,6 +11,7 @@ const seeAll = (categorySlug) => {
       return 'Voir toutes les actualités';
     case 'campagnes':
       return 'Voir toutes les campagnes';
+    case 'chronique':
     case 'chroniques':
       return 'Voir tous les articles la chronique';
     case 'dossiers':

@@ -37,47 +37,57 @@ function auth_my_space()
 {
     $slug_parent_page = 'mon-espace';
 
-    if (is_page() && ! is_preview()) {
-        $current_page = get_queried_object();
+    $current_page = get_queried_object();
+    $parent_page = get_page_by_path($slug_parent_page);
 
-        $parent_page = get_page_by_path($slug_parent_page);
-
-        if ($parent_page) {
-            $id_parent_page = $parent_page->ID;
-
-            $ancestors = get_post_ancestors($current_page->ID);
-
-            if ($current_page->ID === $id_parent_page || in_array($id_parent_page, $ancestors)) {
-                check_user_page_access();
-            }
-        }
+    if (!$current_page || !$parent_page) {
+        return;
     }
+
+    $is_my_space_page = false;
+
+    if (is_page()) {
+        $ancestors = get_post_ancestors($current_page->ID);
+        $is_my_space_page = $current_page->ID === $parent_page->ID
+            || in_array($parent_page->ID, $ancestors, true);
+    }
+
+    if (!$is_my_space_page && !aif_is_my_space_single()) {
+        return;
+    }
+
+    if (is_preview() && current_user_can('edit_post', $current_page->ID)) {
+        return;
+    }
+
+    $sf_member = check_user_page_access();
+
+    set_query_var('aif_salesforce_member', $sf_member);
+
+    aif_restrict_my_space_access($sf_member, $current_page, $parent_page);
 }
 
-add_action('template_redirect', 'aif_restrict_my_space_access');
-
-function aif_restrict_my_space_access()
+function aif_is_my_space_single()
 {
-    $my_space_parent_slug = 'mon-espace';
+    return is_singular('actualities-my-space')
+        || (is_singular('training') && get_query_var('is_my_space_training'))
+        || (is_singular('petition') && get_query_var('is_my_space_petition'));
+}
 
-    if (!is_page()) {
-        return;
+add_filter('logout_redirect', 'aif_my_space_logout_redirect', 10, 2);
+
+function aif_my_space_logout_redirect($redirect_to, $requested_redirect_to)
+{
+    if (!empty($requested_redirect_to)) {
+        return $redirect_to;
     }
 
-    $parent_page = get_page_by_path($my_space_parent_slug);
+    return home_url('/');
+}
 
-    if (!$parent_page) {
-        return;
-    }
-
-    global $post;
-    $ancestors = get_post_ancestors($post);
-
-    if ($post->ID !== $parent_page->ID && !in_array($parent_page->ID, $ancestors)) {
-        return;
-    }
-
-    if (!is_user_logged_in() || current_user_can('manage_options')) {
+function aif_restrict_my_space_access($sf_member, $current_page, $parent_page)
+{
+    if (current_user_can('manage_options')) {
         return;
     }
 
@@ -91,30 +101,18 @@ function aif_restrict_my_space_access()
         'se-deconnecter',
     ];
 
-    $is_member = false;
-    $current_user = wp_get_current_user();
-
-    if (function_exists('get_salesforce_member_data')) {
-        $sf_member = get_salesforce_member_data($current_user->user_email);
-
-        if (isset($sf_member) && !empty($sf_member->isMembre)) {
-            $is_member = true;
-        }
-    }
-
-    if ($is_member) {
+    if (!empty($sf_member->isMembre)) {
         return;
     }
 
-    $non_member_homepage = home_url('/' . $my_space_parent_slug . '/' . $allowed_for_non_members[0] . '/');
+    $non_member_homepage = home_url('/mon-espace/' . $allowed_for_non_members[0] . '/');
 
-    if (is_page($my_space_parent_slug)) {
+    if ($current_page->ID === $parent_page->ID) {
         wp_redirect($non_member_homepage);
         exit;
     }
 
-    $current_page_slug = get_post()->post_name;
-    if (!in_array($current_page_slug, $allowed_for_non_members)) {
+    if (!in_array($current_page->post_name, $allowed_for_non_members)) {
         wp_redirect($non_member_homepage);
         exit;
     }

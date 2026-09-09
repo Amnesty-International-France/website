@@ -1,8 +1,8 @@
 <?php
 
-$current_user = wp_get_current_user();
-$sf_user_ID = get_SF_user_ID($current_user->ID);
-$tax_reciept = get_salesforce_user_tax_reciept($sf_user_ID);
+$sf_member = aif_get_request_salesforce_member();
+$sf_user_ID = $sf_member->Id;
+$tax_reciept = aif_require_salesforce_array(get_salesforce_user_tax_reciept($sf_user_ID), 'tax_receipts');
 
 $sorted = [];
 $groupped = [];

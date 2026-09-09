@@ -197,6 +197,10 @@
     flex-wrap: wrap;
     gap: 2px;
 
+    @media (max-width: $container-lg) {
+      justify-content: center;
+    }
+
     .az-letter {
       width: 75px;
       height: 75px;

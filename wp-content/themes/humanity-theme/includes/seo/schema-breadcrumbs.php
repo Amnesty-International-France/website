@@ -31,21 +31,47 @@ if (! function_exists('amnesty_yoast_fix_post_breadcrumb_schema')) {
             return $piece;
         }
 
-        $bits  = explode('/', trim(str_replace($home, '', $link), '/'));
-        $base  = $home;
-        $items = [];
+        $bits                       = explode('/', trim(str_replace($home, '', $link), '/'));
+        $base                       = $home;
+        $items                      = [];
+        $chronicle_category         = false;
+        $chronicle_articles_url     = '';
+        $articles_archive_url       = '';
+        $has_chronicle_schema_patch = function_exists('amnesty_is_chronicle_article')
+            && amnesty_is_chronicle_article()
+            && function_exists('amnesty_get_chronicle_articles_category')
+            && function_exists('amnesty_get_chronicle_articles_url')
+            && function_exists('amnesty_get_articles_archive_url')
+            && function_exists('amnesty_url_paths_match');
+
+        if ($has_chronicle_schema_patch) {
+            $chronicle_category     = amnesty_get_chronicle_articles_category();
+            $chronicle_articles_url = amnesty_get_chronicle_articles_url();
+            $articles_archive_url   = amnesty_get_articles_archive_url();
+        }
 
         foreach ($bits as $bit) {
             $base .= trailingslashit($bit);
+            $item_url = $base;
+            $item_name = ucwords(str_replace('-', ' ', $bit));
+
+            if (
+                $chronicle_category
+                && $articles_archive_url
+                && amnesty_url_paths_match($item_url, $articles_archive_url)
+            ) {
+                $item_url  = $chronicle_articles_url;
+                $item_name = $chronicle_category->name;
+            }
 
             $items[] = [
                 '@type'    => 'ListItem',
                 'position' => count($items) + 1,
                 'item'     => [
                     '@type' => 'WebPage',
-                    '@id'   => $base,
-                    'url'   => $base,
-                    'name'  => ucwords(str_replace('-', ' ', $bit)),
+                    '@id'   => $item_url,
+                    'url'   => $item_url,
+                    'name'  => $item_name,
                 ],
             ];
         }

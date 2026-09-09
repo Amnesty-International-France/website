@@ -72,6 +72,7 @@ require_once realpath(__DIR__ . '/includes/root/caching.php');
 require_once realpath(__DIR__ . '/includes/root/localisation.php');
 require_once realpath(__DIR__ . '/includes/root/accessibility.php');
 require_once realpath(__DIR__ . '/includes/root/permalinks.php');
+require_once realpath(__DIR__ . '/includes/root/section-redirects.php');
 // endregion helpers
 
 /**
@@ -181,6 +182,7 @@ require_once realpath(__DIR__ . '/includes/theme-setup/navigation.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/scripts-and-styles.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/google-tag-manager.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/google-analytics.php');
+require_once realpath(__DIR__ . '/includes/theme-setup/analytics/my-space-login.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/hotjar.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/vwo.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/meta-tags.php');
@@ -221,6 +223,7 @@ require_once realpath(__DIR__ . '/includes/full-site-editing/blocks/register.php
  */
 // region coreblocks
 require_once realpath(__DIR__ . '/includes/core-blocks/image/filters.php');
+require_once realpath(__DIR__ . '/includes/core-blocks/image-compare/filters.php');
 require_once realpath(__DIR__ . '/includes/core-blocks/button/styles.php');
 require_once realpath(__DIR__ . '/includes/core-blocks/post-content/render.php');
 require_once realpath(__DIR__ . '/includes/core-blocks/query/pagination/next.php');
@@ -258,6 +261,7 @@ require_once realpath(__DIR__ . '/includes/post-types/edh.php');
 require_once realpath(__DIR__ . '/includes/post-types/chronicle.php');
 require_once realpath(__DIR__ . '/includes/post-types/actualities-my-space.php');
 require_once realpath(__DIR__ . '/includes/post-types/alert-banner.php');
+require_once realpath(__DIR__ . '/includes/post-types/clh.php');
 // endregion post types
 
 /**
@@ -373,8 +377,11 @@ require_once realpath(__DIR__ . '/includes/seo/canonical.php');
 require_once realpath(__DIR__ . '/includes/seo/language.php');
 require_once realpath(__DIR__ . '/includes/seo/opengraph.php');
 require_once realpath(__DIR__ . '/includes/seo/primary-term.php');
+require_once realpath(__DIR__ . '/includes/seo/schema-author.php');
+require_once realpath(__DIR__ . '/includes/seo/breadcrumbs.php');
 require_once realpath(__DIR__ . '/includes/seo/schema-breadcrumbs.php');
 require_once realpath(__DIR__ . '/includes/seo/sitemap.php');
+require_once realpath(__DIR__ . '/includes/seo/news-sitemap.php');
 // endregion seo
 
 /**
@@ -384,16 +391,18 @@ require_once realpath(__DIR__ . '/includes/seo/sitemap.php');
 require_once realpath(__DIR__ . '/includes/users/class-users-controller.php');
 require_once realpath(__DIR__ . '/includes/users/contact-methods.php');
 require_once realpath(__DIR__ . '/includes/users/meta.php');
+require_once realpath(__DIR__ . '/includes/users/emails.php');
 // endregion users
 
 /**
  * Theme Jetpack includes
  */
 // region jetpack
+require_once realpath(__DIR__. '/includes/jetpack/jetpack-modules.php');
 require_once realpath(__DIR__ . '/includes/jetpack/contact-form.php');
 require_once realpath(__DIR__ . '/includes/jetpack/go-back-message.php');
-require_once realpath(__DIR__ . '/includes/jetpack/sitemap.php');
 require_once realpath(__DIR__ . '/includes/jetpack/search-redirect.php');
+require_once realpath(__DIR__ . '/includes/jetpack/image-cdn.php');
 // endregion jetpack
 
 /**
@@ -478,8 +487,6 @@ add_filter(
     10,
     2
 );
-
-add_filter('big_image_size_threshold', '__return_false');
 
 add_filter('block_editor_settings_all', function ($settings, $context) {
     if (current_user_can('edit_theme_options')) {
@@ -586,6 +593,7 @@ function turnstile_friendly_error(string $error): string
 if (defined('WP_CLI') && WP_CLI) {
     require_once __DIR__ . '/commands/duplicate-country-pages.php';
     require_once __DIR__ . '/commands/upgrade-country-pages.php';
+    require_once __DIR__ . '/commands/fix-canonical-urls.php';
 }
 
 add_filter('render_block', function ($block_content, $block) {
@@ -617,5 +625,12 @@ add_filter('render_block', function ($block_content, $block) {
     return $block_content;
 
 }, 10, 2);
+
+// sentry
+// par défaut le plugin sentry-for-wordpress expose la version de Wordpress dans le js public, donc on le supprime
+add_filter('wp_sentry_public_context', function (array $context): array {
+    unset($context['tags']['wordpress']);
+    return $context;
+});
 
 // phpcs:enable Squiz.Commenting.InlineComment.WrongStyle,PEAR.Commenting.InlineComment.WrongStyle

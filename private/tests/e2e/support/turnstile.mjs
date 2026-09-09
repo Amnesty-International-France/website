@@ -55,9 +55,14 @@ const mockScript = ({ mode, delay, token, trigger }) => `
           return;
         }
 
-        form.addEventListener('submit', () => {
+        const onSubmit = (event) => {
+          if (event.target !== form) return;
+
+          document.removeEventListener('submit', onSubmit, true);
           window.setTimeout(() => resolve(widget), delay);
-        }, { capture: true, once: true });
+        };
+
+        document.addEventListener('submit', onSubmit, true);
         return;
       }
 
@@ -120,4 +125,33 @@ export const expectWidgetSiteKey = async (page, expect, expectedSiteKey = TEST_S
   const widgets = page.locator('.cf-turnstile');
 
   await expect(widgets.first()).toHaveAttribute('data-sitekey', expectedSiteKey);
+};
+
+// Simulates aif-e2e-support.php's server-side Turnstile verification result
+// (see its pre_http_request mock for challenges.cloudflare.com/.../siteverify)
+// by appending the hidden inputs it reads from $_REQUEST, directly on the
+// form being tested - regardless of which spec/form it's called from.
+export const setServerSideTurnstileResult = async (
+  page,
+  formSelector,
+  { success, error = 'invalid-input-response' },
+) => {
+  await page.locator(formSelector).evaluate(
+    (form, options) => {
+      const appendHiddenInput = (name, value) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      };
+
+      appendHiddenInput('aif_e2e_turnstile_verify_success', options.success ? '1' : '0');
+
+      if (!options.success) {
+        appendHiddenInput('aif_e2e_turnstile_verify_error', options.error);
+      }
+    },
+    { success, error },
+  );
 };

@@ -21,7 +21,10 @@ $end_date = get_field('date_de_fin');
 $signatures_target = get_field('objectif_signatures');
 
 $post_id = get_the_ID();
-$current_signatures = amnesty_get_petition_signature_count($post_id);
+$uidsf = get_field('uidsf', $post_id);
+$current_signatures = $uidsf ?
+    absint(get_salesforce_petition_counter($uidsf)['records'][0]['Nb_signatures_total__c']) :
+    amnesty_get_petition_signature_count($post_id);
 
 if (! empty($end_date)) {
     $date_object = DateTime::createFromFormat('Y-m-d', $end_date);
@@ -189,7 +192,7 @@ if ($random_petition->have_posts()) :
                 <div class="random-petition">
                     <?php if ($featured_image_url) : ?>
                         <div class="random-petition-image-container">
-                            <img class="random-petition-image" src="<?php echo esc_url($featured_image_url); ?>" alt="<?php echo esc_attr($random_title); ?>">
+                            <img class="random-petition-image" src="<?php echo esc_url($featured_image_url); ?>" alt="<?php echo esc_attr($random_title); ?>" loading="lazy" decoding="async">
                         </div>
                     <?php endif; ?>
                     <div class="random-petition-meta">

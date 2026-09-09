@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         bootstrap="tests/bootstrap.php">
+    <testsuites>
+        <testsuite name="Salesforce">
+            <directory>tests/Salesforce</directory>
+        </testsuite>
+        <testsuite name="DonorSpace">
+            <directory>tests/DonorSpace</directory>
+        </testsuite>
+        <testsuite name="Petitions">
+            <directory>tests/Petitions</directory>
+        </testsuite>
+        <testsuite name="Blocks">
+            <directory>tests/Blocks</directory>
+        </testsuite>
+        <testsuite name="Media">
+            <directory>tests/Media</directory>
+        </testsuite>
+        <testsuite name="SalesforceSync">
+            <directory>tests/SalesforceSync</directory>
+        </testsuite>
+        <testsuite name="Seo">
+            <directory>tests/Seo</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

@@ -13,7 +13,7 @@ jobs:
     name: PHP Checks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -23,6 +23,8 @@ jobs:
         run: composer validate
       - name: Install dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Run PHP tests
+        run: composer run test
       - name: Run PHP-CS-Fixer
         run: composer run cs
       - name: Run PHPStan
@@ -32,11 +34,11 @@ jobs:
     name: Frontend Checks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version-file: private/.nvmrc
       - name: Enable Corepack
         run: corepack enable
       - name: Get Yarn cache directory
@@ -44,7 +46,7 @@ jobs:
         working-directory: private
         run: echo "dir=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
       - name: Cache Yarn
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ steps.yarn-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('private/yarn.lock') }}
@@ -53,9 +55,9 @@ jobs:
       - name: Install frontend dependencies
         working-directory: private
         run: yarn install --immutable
-      - name: Build Turnstile asset
+      - name: Build frontend assets
         working-directory: private
-        run: yarn build:prod --env entry=turnstile
+        run: yarn build
       - name: Run frontend unit tests
         working-directory: private
         run: yarn test
@@ -72,6 +74,34 @@ jobs:
       - name: Seed WordPress E2E content
         working-directory: private
         run: ./tests/e2e/support/seed-wordpress.sh
+      - name: Run Lighthouse audits
+        continue-on-error: true
+        working-directory: private
+        run: |
+          mkdir -p .lighthouseci
+          CHROME_PATH="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
+          export CHROME_PATH
+          set +e
+          yarn test:lighthouse > .lighthouseci/lhci-output.log 2>&1
+          status="$?"
+          set -e
+          cat .lighthouseci/lhci-output.log
+          exit "$status"
+      - name: Summarize Lighthouse reports
+        continue-on-error: true
+        if: ${{ always() }}
+        working-directory: private
+        run: node bin/summarize-lighthouse.mjs
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v7
+        continue-on-error: true
+        if: ${{ always() }}
+        with:
+          name: lighthouse-reports
+          path: private/.lighthouseci/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
       - name: Run deterministic Playwright tests
         working-directory: private
         run: yarn test:e2e --grep-invert @cloudflare-smoke
@@ -80,7 +110,7 @@ jobs:
         working-directory: private
         run: yarn env:e2e:stop
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
@@ -91,6 +121,6 @@ jobs:
     name: GitHub Actions Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run ActionLint
         uses: docker://rhysd/actionlint:latest

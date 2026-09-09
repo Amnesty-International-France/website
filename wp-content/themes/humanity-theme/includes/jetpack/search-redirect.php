@@ -3,42 +3,20 @@
 declare(strict_types=1);
 
 /**
- * Fix JetPack Search back-navigation.
+ * Keep Jetpack searches on /?s=<term> instead of redirecting to /search/<term>/.
  *
- * JetPack Search calls history.pushState('/search/<term>') as the user types.
- * Pressing Back then reloads that URL server-side, which does not exist.
+ * The theme's Search_Filters::prettify_search() 302-redirects every request
+ * carrying an `s` query var to the pretty /search/<term>/ URL. AIF has no
+ * /search page and does not want one: Jetpack Instant Search runs on the
+ * homepage and reopens its overlay from the `s` query param.
  *
- * Fix: patch History.prototype so every pushState/replaceState call converts
- * /search/<term> to /?s=<term> before it reaches the history stack.
- * The Back button then restores /?s=<term>, which JetPack detects and
- * re-opens the search overlay automatically.
+ * That redirect broke Back-navigation after a search — pressing Back restored a
+ * /?s=<term> history entry, which the server then 302-redirected to
+ * /search/<term>/ (MAINT-143). Returning false to this filter short-circuits the
+ * redirect (and the Yoast JSON-LD search URL rewrite in permalink.php), so
+ * searches stay on /?s=<term> and Back returns to the homepage with the overlay.
  *
+ * @see \Amnesty\Search_Filters::prettify_search()
  * @package Amnesty\Jetpack
  */
-add_action(
-    'wp_head',
-    function () {
-        ?>
-<script>
-(function () {
-    function rewriteSearchUrl(url) {
-        const match = String(url).match(/\/search\/([^/?#]+)/);
-        return match ? '/?s=' + encodeURIComponent(decodeURIComponent(match[1])) : url;
-    }
-
-    const origPush    = History.prototype.pushState;
-    const origReplace = History.prototype.replaceState;
-
-    History.prototype.pushState = function (state, title, url) {
-        return Reflect.apply(origPush, this, [state, title, rewriteSearchUrl(url)]);
-    };
-
-    History.prototype.replaceState = function (state, title, url) {
-        return Reflect.apply(origReplace, this, [state, title, rewriteSearchUrl(url)]);
-    };
-}());
-</script>
-        <?php
-    },
-    1
-);
+add_filter('amnesty_prettify_search_url', '__return_false');

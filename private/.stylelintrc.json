@@ -26,8 +26,16 @@
       }
     ],
     "comment-whitespace-inside": "always",
-    "declaration-block-no-duplicate-properties": true,
+    "declaration-block-no-duplicate-properties": [
+      true,
+      {
+        "ignore": ["consecutive-duplicates-with-different-values"]
+      }
+    ],
     "declaration-block-no-shorthand-property-overrides": true,
+    "declaration-property-value-keyword-no-deprecated": null,
+    "property-no-deprecated": null,
+    "nesting-selector-no-missing-scoping-root": null,
     "declaration-block-single-line-max-declarations": 1,
     "font-family-name-quotes": "always-where-recommended",
     "font-weight-notation": "named-where-possible",
@@ -39,7 +47,7 @@
     "property-no-vendor-prefix": [
       true,
       {
-        "ignoreProperties": ["appearance", "text-size-adjust", "box-orient", "line-clamp"]
+        "ignoreProperties": ["/^-[a-z]+-(appearance|text-size-adjust|box-orient|line-clamp)$/"]
       }
     ],
     "rule-empty-line-before": [

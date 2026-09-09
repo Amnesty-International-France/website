@@ -11,16 +11,30 @@ if (!function_exists('render_slider_changez_leur_histoire_block')) {
      */
     function render_slider_changez_leur_histoire_block(array $attributes): string
     {
-        $selected_posts = $attributes['selectedPosts'] ?? [];
+        $page_id         = get_the_ID();
+        $active_campaign = amnesty_get_active_clh_campaign_for_page($page_id);
+        $selected_posts  = [];
+
+        if ($active_campaign) {
+            $petitions_list_clh = amnesty_get_clh_campaign_petitions();
+
+            foreach (array_filter($petitions_list_clh, fn ($p) => amnesty_is_petition_not_expired($p->ID)) as $petition) {
+                $selected_posts[] = ['id' => $petition->ID];
+            }
+        } else {
+            $selected_posts = $attributes['selectedPosts'] ?? [];
+        }
 
         if (empty($selected_posts)) {
             return '';
         }
 
+
+
         $post_ids = array_filter(array_map('absint', wp_list_pluck($selected_posts, 'id')));
         $post_ids = array_values(array_unique($post_ids));
 
-        if (count($post_ids) < 4 || count($post_ids) > 20) {
+        if (count($post_ids) < 4 || (!$active_campaign && count($post_ids) > 20)) {
             return '';
         }
 

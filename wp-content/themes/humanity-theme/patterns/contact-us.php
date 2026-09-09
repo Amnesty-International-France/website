@@ -12,10 +12,10 @@ if (!headers_sent()) {
     header('Pragma: no-cache');
 }
 
-$current_user = wp_get_current_user();
-$sf_user_ID = get_SF_user_ID($current_user->ID);
+$sf_member = aif_get_request_salesforce_member();
+$sf_user_ID = $sf_member->Id;
 
-$SF_User = get_salesforce_user_data($sf_user_ID);
+$SF_User = aif_require_salesforce_object(get_salesforce_user_data($sf_user_ID), 'contact', 'Id');
 
 $subject = '';
 
@@ -31,7 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['subject']) && isset(
     $message = sanitize_text_field($_POST['message']);
     $subject = sanitize_text_field($_POST['subject']);
 
-    if (create_contact_request($sf_user_ID, $message, $subject, $SF_User->Tech_Lien_Mandat_Actif__c)) {
+    $request_result = create_contact_request($sf_user_ID, $message, $subject, $SF_User->Tech_Lien_Mandat_Actif__c);
+
+    if (is_wp_error($request_result)) {
+        aif_salesforce_service_unavailable($request_result);
+    }
+
+    if (is_object($request_result) && !empty($request_result->success)) {
         $success_message_title = 'Votre demande de contact à bien été prise en compte';
         $url = get_permalink(get_page_by_path('mes-demandes'));
         $success_message = "Vous pouvez voir le suivi du traitement de vos demandes sur la page  <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
