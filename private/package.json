@@ -64,7 +64,7 @@
     "mini-css-extract-plugin": "^2.9.2",
     "node-normalize-scss": "^8.1.2",
     "oxfmt": "0.54.0",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.23",
     "postcss-banner": "^4.0.1",
     "postcss-loader": "^8.1.1",
     "postcss-pxtorem": "^6.1.0",
