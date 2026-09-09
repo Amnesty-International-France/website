@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Amnesty E2E Support
  * Description: Minimal local-only stubs required by Playwright wp-env tests.
@@ -16,8 +17,8 @@ if (!defined('AIF_E2E_ACF_SELECT_FIELDS')) {
 if (!function_exists('get_field')) {
     /**
      * Real ACF isn't installed here, so this falls back to reading the raw
-     * postmeta ACF would otherwise store under the same key - seed values via
-     * `wp post meta set` in seed-wordpress.sh. AIF_E2E_ACF_SELECT_FIELDS lists
+     * postmeta ACF would otherwise store under the same key. The E2E seed
+     * writes these values in seed-wordpress.php. AIF_E2E_ACF_SELECT_FIELDS lists
      * the "select" fields business code reads as ['value' => ..., 'label' =>
      * ...] (e.g. `get_field('type')['value']`); everything else returns the
      * raw string.

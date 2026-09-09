@@ -1,13 +1,25 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/wp-env.json",
+  "core": "https://wordpress.org/wordpress-7.0.3.zip",
+  "phpVersion": "8.2",
   "themes": ["../wp-content/themes/humanity-theme"],
   "plugins": [
-    "CMB2/CMB2",
-    "CMB2/cmb2-attached-posts",
-    "amnestywebsite/cmb2-message-field",
-    "amnestywebsite/cmb2-password-field",
-    "jaymcp/cmb2-field-order",
+    "https://downloads.wordpress.org/plugin/advanced-custom-fields.6.8.7.zip",
+    "CMB2/CMB2#v2.12.0",
+    "CMB2/cmb2-attached-posts#v1.2.7",
+    "amnestywebsite/cmb2-message-field#v1.0.0",
+    "amnestywebsite/cmb2-password-field#v1.0.0",
+    "jaymcp/cmb2-field-order#v1.0.1",
+    "https://downloads.wordpress.org/plugin/the-events-calendar.6.17.2.zip",
+    "https://downloads.wordpress.org/plugin/wordpress-seo.28.2.zip",
+    "../wp-content/plugins/aif-donor-space",
+    "../wp-content/plugins/interactive-map",
     "./wp-env/dev-turnstile"
   ],
+  "config": {
+    "WP_AUTO_UPDATE_CORE": false
+  },
+  "testsEnvironment": false,
   "lifecycleScripts": {
     "afterStart": "yarn env run cli wp plugin activate dev-turnstile && yarn env run cli wp theme activate humanity-theme"
   }
