@@ -11,7 +11,7 @@ module.exports = {
       ],
       numberOfRuns: 3,
       settings: {
-        blockedUrlPatterns: ['http://i.realytics.io/*'],
+        blockedUrlPatterns: ['*realytics.io*'],
         chromeFlags: '--no-sandbox',
       },
     },
