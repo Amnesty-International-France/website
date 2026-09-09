@@ -21,6 +21,6 @@
   },
   "testsEnvironment": false,
   "lifecycleScripts": {
-    "afterStart": "yarn env run cli wp theme activate humanity-theme"
+    "afterStart": "yarn env run cli wp plugin activate dev-turnstile && yarn env run cli wp theme activate humanity-theme"
   }
 }
