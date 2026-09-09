@@ -1,7 +1,7 @@
 # MAINT-229 — Runbook SRE : correction des liens cassés (404)
 
-> Document d'exécution destiné à l'équipe SRE. Cible : environnements Clever Cloud
-> **staging** (`fairness-dev`) puis **production** (`main`).
+> Document d'exécution destiné à l'équipe SRE. Cible : environnements Infomaniak
+> **staging** (`main`) puis **production** (`prod`).
 > Script concerné : `fix-broken-links-maint-229.php` (racine du repo, branche `feature/maint-229`).
 
 ---
@@ -43,7 +43,7 @@ Caractéristiques importantes :
 - **Dry-run par défaut** : sans argument, le script n'écrit **rien**, il ne fait que
   produire un rapport. L'écriture n'a lieu qu'avec l'argument explicite `live`.
 - **Agnostique au scheme/host** : le matching porte sur le *chemin* de l'URL ; le
-  domaine (amnesty.fr, cleverapps.io, localhost…) est préservé tel quel.
+  domaine (amnesty.fr, localhost…) est préservé tel quel.
 - **Idempotent** : ré-exécuter le script ne produit aucun changement supplémentaire.
 - **Journalisation** : écrit un log détaillé `fixed_links_maint229.txt` (un ligne par
   post/terme modifié, avec compteurs par catégorie, + résumé final).
@@ -83,8 +83,9 @@ Caractéristiques importantes :
 ## 4. Pré-requis & précautions
 
 - Exécuter **staging d'abord**, valider, puis production.
-- **Sauvegarde** : Clever Cloud effectue un backup quotidien de la base. Pour un filet
-  supplémentaire, faire un dump ciblé des deux tables avant le `live` (voir §5.2).
+- **Sauvegarde** : une sauvegarde quotidienne de la base est assurée par l'hébergeur.
+  Pour un filet supplémentaire, faire un dump ciblé des deux tables avant le `live`
+  (voir §5.2).
 - Le script écrit son log dans le **répertoire courant** : se placer dans un dossier
   **inscriptible** (`$HOME` ou `/tmp`) avant de lancer, et référencer le script par son
   chemin absolu.
@@ -97,42 +98,41 @@ Caractéristiques importantes :
 
 ### 5.1 Connexion à l'environnement
 
+Se connecter en SSH au serveur (identifiants dans l'environnement GitHub `RELEASE`
+pour le staging, `PROD` pour la production), puis charger l'environnement :
+
 ```bash
-clever applications list
-clever link <application_id> --alias aif-wp-staging   # puis aif-wp-prod
-clever ssh --alias aif-wp-staging
+ssh <user>@<host>
+source $HOME/initenv.sh   # expose $DOCUMENT_ROOT
 ```
 
-Une fois dans le conteneur, se placer à la racine de l'application (là où est déployé le
-repo, contenant `fix-broken-links-maint-229.php`) et vérifier WP-CLI :
+Vérifier la racine WordPress et la présence du script :
 
 ```bash
-cd /www                 # webroot Clever Cloud (CC_WEBROOT=/www) ; sinon $APP_HOME
-wp --info               # si 'wp' introuvable : ~/.local/bin/wp (installé par castor)
+cd "$DOCUMENT_ROOT"
+wp --info
 ls fix-broken-links-maint-229.php
 ```
 
 > Travailler depuis un dossier inscriptible pour le log :
 > ```bash
 > cd "$HOME"
-> WP="wp --path=/www"          # adapter --path à la racine WordPress
+> WP="wp --path=$DOCUMENT_ROOT"
 > ```
 
 ### 5.2 Sauvegarde ciblée (optionnelle, avant le live)
 
 ```bash
-mysqldump -h "$MYSQL_ADDON_HOST" -P "$MYSQL_ADDON_PORT" \
-  -u "$MYSQL_ADDON_USER" -p"$MYSQL_ADDON_PASSWORD" \
-  --single-transaction --no-tablespaces \
-  "$MYSQL_ADDON_DB" wp_posts wp_term_taxonomy \
-  > "$HOME/backup-maint229-$(date +%F).sql"
+$WP db export "$HOME/backup-maint229-$(date +%F).sql" \
+  --tables=wp_posts,wp_term_taxonomy \
+  --single-transaction --no-tablespaces
 ```
 
 ### 5.3 Dry-run (aucune écriture)
 
 ```bash
 cd "$HOME"
-$WP eval-file /www/fix-broken-links-maint-229.php
+$WP eval-file "$DOCUMENT_ROOT/fix-broken-links-maint-229.php"
 ```
 
 Vérifier dans la sortie et dans `fixed_links_maint229.txt` :
@@ -144,13 +144,13 @@ Vérifier dans la sortie et dans `fixed_links_maint229.txt` :
 ### 5.4 Exécution réelle
 
 ```bash
-$WP eval-file /www/fix-broken-links-maint-229.php live
+$WP eval-file "$DOCUMENT_ROOT/fix-broken-links-maint-229.php" live
 ```
 
 ### 5.5 Contrôle d'idempotence (immédiatement après le live)
 
 ```bash
-$WP eval-file /www/fix-broken-links-maint-229.php      # dry-run : doit afficher CAT1=0
+$WP eval-file "$DOCUMENT_ROOT/fix-broken-links-maint-229.php"      # dry-run : doit afficher CAT1=0
 ```
 
 Sortie attendue : `… 0 contenant des liens à corriger.` et `CAT1 : 0 | CAT2 : 0 | CAT3 : 0`.
@@ -186,11 +186,9 @@ l'absence de 404 sur les liens concernés → clôture des deux critères d'acce
 
 - **Filet immédiat** : restaurer le dump ciblé du §5.2 :
   ```bash
-  mysql -h "$MYSQL_ADDON_HOST" -P "$MYSQL_ADDON_PORT" \
-    -u "$MYSQL_ADDON_USER" -p"$MYSQL_ADDON_PASSWORD" \
-    "$MYSQL_ADDON_DB" < "$HOME/backup-maint229-<date>.sql"
+  $WP db import "$HOME/backup-maint229-<date>.sql"
   ```
-- **Sinon** : restauration via le backup quotidien Clever Cloud.
+- **Sinon** : restauration via la sauvegarde quotidienne de l'hébergeur.
 - Le script étant idempotent et ciblé (remplacement d'URL connues), le risque de
   régression est faible ; le rollback ne concerne que `wp_posts` / `wp_term_taxonomy`.
 
