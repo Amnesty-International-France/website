@@ -45,29 +45,42 @@ Example with all arguments : `castor install --path .` (or even `castor install 
 
 It will install the environment with the [humanity theme](https://github.com/amnestywebsite/humanity-theme) and its required plugins.
 
-## Clever Cloud hosting
+## Hosting
 
-on clever cloud hooks in the `clevercloud` directory will be executed at build time and script `infogerance/aif-clever-cloud.php` will replace `wp-config.php`
+The site is hosted on Infomaniak. `wp-config.php` lives on the server, outside the
+repository, and reads its configuration from the `.env` file at the document root.
 
-These environment variables must be defined :
+Deployment is triggered over SSH by the GitHub Actions workflows. Each server exposes
+two scripts in the deploy user's home:
 
-^ name ^ purpose ^
-| WP_HOME | base URL of the WP admin |
-| WP_SITEURL | base URL of the website |
-| MYSQL_ADDON_HOST | host name of the database (should be automatically set) |
-| MYSQL_ADDON_PORT | port number of the database (should be automatically set) |
-| DB_NAME | database name (should be automatically set) |
-| DB_USER | database user name (should be automatically set) |
-| DB_PASSWORD | database password (should be automatically set) |
-| WP_AUTH_KEY | random string |
-| WP_AUTH_SALT | random string |
-| WP_CACHE_KEY_SALT | random string |
-| WP_LOGGED_IN_KEY | random string |
-| WP_LOGGED_IN_SALT | random string |
-| WP_NONCE_KEY | random string |
-| WP_NONCE_SALT | random string |
-| WP_SECURE_AUTH_KEY | random string |
-| WP_SECURE_AUTH_SALT | random string |
+- `$HOME/deploy.sh [branch]` — pulls the code, installs dependencies, builds assets
+- `$HOME/initenv.sh` — exports the server environment, notably `$DOCUMENT_ROOT`
+
+Variables read from `$DOCUMENT_ROOT/.env` :
+
+| name                | purpose                                      |
+| ------------------- | -------------------------------------------- |
+| DB_HOST             | database host                                |
+| DB_NAME             | database name                                |
+| DB_USER             | database user name                           |
+| DB_PASSWORD         | database password                            |
+| DB_PREFIX           | table prefix (`wp_`)                         |
+| WP_ENVIRONMENT_TYPE | `production`, `staging` or `development`     |
+| SENTRY_RELEASE      | set by the deploy workflow to the commit sha |
+
+The WordPress salts (`AUTH_KEY`, `SECURE_AUTH_KEY`, `LOGGED_IN_KEY`, `NONCE_KEY`,
+`AUTH_SALT`, `SECURE_AUTH_SALT`, `LOGGED_IN_SALT`, `NONCE_SALT`, `WP_CACHE_KEY_SALT`)
+and the Salesforce / MailGun credentials are also defined there.
+
+### Scheduled tasks
+
+These WP-CLI commands are scheduled on the server :
+
+| schedule       | command                     |
+| -------------- | --------------------------- |
+| `0 0 * * *`    | `wp sync compteurs`         |
+| `*/15 * * * *` | `wp sync signatures`        |
+| `30 23 * * *`  | `wp sync signatures_failed` |
 
 ## Update plugins from Github repositories
 
@@ -94,9 +107,14 @@ You may need to execute `corepack enable` before (use `sudo corepack enable` if 
 
 ## CI/CD
 
-pushing on branch `main` deploys on http://app-dadec8ba-25dc-44d7-b10d-6dd400a829fd.cleverapps.io
+| branch     | GitHub environment | workflow             |
+| ---------- | ------------------ | -------------------- |
+| `prod`     | `PROD`             | `deploy-prod.yaml`   |
+| `main`     | `RELEASE`          | `deploy-release.yml` |
+| `sprint/*` | `SPRINT`           | `deploy-sprint.yml`  |
 
-pushing on branch `fairness-dev` deploys on http://app-0feb7822-eaf8-4f15-ba3d-d5d66aca81f2.cleverapps.io
+Each environment holds the SSH secrets (`*_SSH_USER`, `*_SSH_KEY`, `*_SSH_HOST`) used
+to reach the Infomaniak server.
 
 ## Custom Plugins
 
