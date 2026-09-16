@@ -5,6 +5,9 @@
 
   @media (min-width: $container-sm) {
     padding: 0;
+    max-width: min(1040px, 90%) !important;
+    margin-left: auto !important ;
+    margin-right: auto !important ;
   }
 }
 
