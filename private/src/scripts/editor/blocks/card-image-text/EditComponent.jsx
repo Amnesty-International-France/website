@@ -17,7 +17,7 @@ const getCategoryLink = (slug) => {
 };
 
 const EditComponent = ({ attributes, setAttributes }) => {
-  const { custom, newTab, direction, title, subtitle, category, permalink, thumbnail, text } =
+  const { custom, newTab, direction, title, surtitle, category, permalink, linkTitle, thumbnail, text } =
     attributes;
 
   const allowedTypesForThisBlock = ['post', 'pages', 'landmark', 'document'];
@@ -32,18 +32,20 @@ const EditComponent = ({ attributes, setAttributes }) => {
       setAttributes({
         postId: null,
         title: '',
-        subtitle: '',
+        surtitle: '',
         category: '',
         permalink: '',
+        linkTitle: '',
         thumbnail: null,
         text: '',
       });
     } else {
       setAttributes({
         title: '',
-        subtitle: '',
+        surtitle: '',
         category: '',
         permalink: '',
+        linkTitle: '',
         thumbnail: null,
         text: '',
       });
@@ -62,8 +64,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
     setAttributes({ title: newTitle });
   };
 
-  const updateSubtitle = (newSubtitle) => {
-    setAttributes({ subtitle: newSubtitle });
+  const updateSurtitle = (newSurtitle) => {
+    setAttributes({ surtitle: newSurtitle });
   };
 
   const updateCategory = (newCategory) => {
@@ -74,6 +76,10 @@ const EditComponent = ({ attributes, setAttributes }) => {
     setAttributes({ permalink: newPermalink });
   };
 
+  const updateLinkTitle = (newLinkTitle) => {
+    setAttributes({ linkTitle: newLinkTitle});
+  }
+
   const updateText = (newText) => {
     setAttributes({ text: newText });
   };
@@ -83,8 +89,9 @@ const EditComponent = ({ attributes, setAttributes }) => {
       setAttributes({
         postId: null,
         title: '',
-        subtitle: '',
+        surtitle: '',
         permalink: '',
+        linkTitle: '',
         thumbnail: null,
         text: '',
         category: '',
@@ -102,9 +109,10 @@ const EditComponent = ({ attributes, setAttributes }) => {
         postId: id,
         category: docCategory || 'Document',
         title: post.title.rendered,
-        subtitle: '',
+        surtitle: '',
         text: excerpt?.rendered || '',
         permalink: acf?.upload_du_document?.url || '',
+        linkTitle: '',
         thumbnail: post.featured_media !== 0 ? post.featured_media : null,
       });
     } else {
@@ -125,9 +133,10 @@ const EditComponent = ({ attributes, setAttributes }) => {
       setAttributes({
         postId: id,
         title: post.title.rendered,
-        subtitle: '',
+        surtitle: '',
         category: postCategoryName,
         permalink: `${getCategoryLink(type)}/${slug}`,
+        linkTitle: '',
         thumbnail: _embedded?.['wp:featuredmedia']?.[0]?.id || null,
         text: excerpt?.rendered || '',
       });
@@ -211,16 +220,22 @@ const EditComponent = ({ attributes, setAttributes }) => {
                 placeholder={__('Entrez un titre…', 'amnesty')}
               />
               <TextControl
-                label={__('Sous-titre', 'amnesty')}
-                value={subtitle}
-                onChange={updateSubtitle}
-                placeholder={__('Entrez un sous-titre…', 'amnesty')}
+                label={__('Surtitre', 'amnesty')}
+                value={surtitle}
+                onChange={updateSurtitle}
+                placeholder={__('Entrez un surtitre…', 'amnesty')}
               />
               <TextControl
                 label={__('Lien', 'amnesty')}
                 value={permalink}
                 onChange={updatePermalink}
                 placeholder={__('Lien', 'amnesty')}
+              />
+              <TextControl
+                label={__('Intitulé du lien', 'amnesty')}
+                value={linkTitle}
+                onChange={updateLinkTitle}
+                placeholder={__('Voir la suite', 'amnesty')}
               />
               <TextareaControl
                 __nextHasNoMarginBottom

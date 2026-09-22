@@ -36,9 +36,9 @@ if (!function_exists('register_card_image_text_block')) {
                     'type' => 'string',
                     'default' => 'Titre par défaut',
                 ],
-                'subtitle' => [
+                'surtitle' => [
                     'type' => 'string',
-                    'default' => 'Sous-titre par défaut',
+                    'default' => 'Surtitre par défaut',
                 ],
                 'category' => [
                     'type' => 'string',
@@ -47,6 +47,10 @@ if (!function_exists('register_card_image_text_block')) {
                 'permalink' => [
                     'type' => 'string',
                     'default' => '#',
+                ],
+                'linkTitle' => [
+                    'type' => 'string',
+                    'default' => 'Voir la suite',
                 ],
                 'thumbnail' => [
                     'type' => ['integer', 'null', 'string'],
