@@ -1,9 +1,17 @@
+const { chromium } = require('@playwright/test');
+
 module.exports = {
   ci: {
     collect: {
-      url: ['http://localhost:8898/', 'http://localhost:8898/newsletter/', 'http://localhost:8898/mot-de-passe-oublie/'],
+      chromePath: chromium.executablePath(),
+      url: [
+        'http://localhost:8898/',
+        'http://localhost:8898/newsletter/',
+        'http://localhost:8898/mot-de-passe-oublie/',
+      ],
       numberOfRuns: 3,
       settings: {
+        blockedUrlPatterns: ['*realytics.io*'],
         chromeFlags: '--no-sandbox',
       },
     },

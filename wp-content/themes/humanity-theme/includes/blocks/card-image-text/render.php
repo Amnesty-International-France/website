@@ -99,7 +99,7 @@ if (!function_exists('render_card_image_text_block')) {
                 <<?= $editor ? 'div' : 'a' ?> href="<?php echo esc_url($permalink); ?>" class="card-image-text-block-link"<?php echo $link_extra_attrs; ?>>
                     <div class="card-image-text-thumbnail-wrapper">
                         <?php if (!empty($thumbnail_id)) : ?>
-                            <?php echo amnesty_get_attachment_picture((int) $thumbnail_id, 'large', [ 'class' => 'card-image-text-thumbnail', 'alt' => $title, 'loading' => 'lazy', 'decoding' => 'async' ]); ?>
+                            <?php echo wp_get_attachment_image((int) $thumbnail_id, 'large', false, [ 'class' => 'card-image-text-thumbnail', 'alt' => $title, 'loading' => 'lazy', 'decoding' => 'async' ]); ?>
                         <?php endif; ?>
                     </div>
                     <div class="card-image-text-content-container">

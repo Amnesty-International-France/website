@@ -34,8 +34,7 @@ final class ImageBlockTest extends TestCase
         ];
 
         $GLOBALS['__phpunit_attachment_image_sources'] = [];
-        $GLOBALS['__phpunit_rendered_attachment_pictures'] = [];
-        $GLOBALS['__phpunit_modern_picture_sources'] = [];
+        $GLOBALS['__phpunit_rendered_attachment_images'] = [];
     }
 
     private function installWordPressStubs(): void
@@ -86,13 +85,12 @@ final class ImageBlockTest extends TestCase
             }
         }
 
-        if (!function_exists('amnesty_get_attachment_picture')) {
-            $GLOBALS['__phpunit_rendered_attachment_pictures'] = [];
-            $GLOBALS['__phpunit_modern_picture_sources'] = [];
+        if (!function_exists('wp_get_attachment_image')) {
+            $GLOBALS['__phpunit_rendered_attachment_images'] = [];
 
-            function amnesty_get_attachment_picture(int $attachment_id, string $size = 'thumbnail', array $attr = []): string
+            function wp_get_attachment_image(int $attachment_id, string|array $size = 'thumbnail', bool $icon = false, array $attr = []): string
             {
-                $GLOBALS['__phpunit_rendered_attachment_pictures'][] = [
+                $GLOBALS['__phpunit_rendered_attachment_images'][] = [
                     'attachment_id' => $attachment_id,
                     'size' => $size,
                     'attr' => $attr,
@@ -127,13 +125,7 @@ final class ImageBlockTest extends TestCase
                     );
                 }
 
-                return sprintf(
-                    '<picture data-attachment-id="%d" data-size="%s">%s<img%s></picture>',
-                    $attachment_id,
-                    esc_attr($size),
-                    $GLOBALS['__phpunit_modern_picture_sources'][$attachment_id] ?? '',
-                    $html_attributes
-                );
+                return sprintf('<img%s>', $html_attributes);
             }
         }
 
@@ -160,7 +152,7 @@ final class ImageBlockTest extends TestCase
         $html = render_image_block([ 'mediaId' => 10 ]);
 
         self::assertStringContainsString('class="image-block ', $html);
-        self::assertStringContainsString('data-attachment-id="10"', $html);
+        self::assertStringContainsString('src="image-10.jpg"', $html);
         self::assertStringContainsString('alt="Desktop alt"', $html);
         self::assertStringContainsString('<p class="image-caption">Desktop caption</p>', $html);
         self::assertStringContainsString('<p class="image-description"><strong>Desktop credit</strong></p>', $html);
@@ -170,7 +162,7 @@ final class ImageBlockTest extends TestCase
     {
         $html = render_image_block([ 'mediaMobileId' => 20 ]);
 
-        self::assertStringContainsString('data-attachment-id="20"', $html);
+        self::assertStringContainsString('src="image-20.jpg"', $html);
         self::assertStringContainsString('alt="Mobile alt"', $html);
         self::assertSame(1, substr_count($html, 'class="image-wrapper"'));
         self::assertStringNotContainsString('image-device-desktop', $html);
@@ -194,22 +186,6 @@ final class ImageBlockTest extends TestCase
         self::assertStringNotContainsString('image-device-desktop', $html);
         self::assertStringNotContainsString('image-device-mobile', $html);
         self::assertSame(1, substr_count($html, '<p class="image-caption">Desktop caption</p>'));
-    }
-
-    public function testResponsivePictureKeepsModernImageSources(): void
-    {
-        $GLOBALS['__phpunit_modern_picture_sources'] = [
-            10 => '<source type="image/avif" srcset="desktop.avif" /><source type="image/webp" srcset="desktop.webp" />',
-            20 => '<source type="image/avif" srcset="mobile.avif" /><source type="image/webp" srcset="mobile.webp" />',
-        ];
-
-        $html = render_image_block([ 'mediaId' => 10, 'mediaMobileId' => 20 ]);
-
-        self::assertStringContainsString('<source media="(min-width: 640px)" type="image/avif" srcset="desktop.avif" />', $html);
-        self::assertStringContainsString('<source media="(min-width: 640px)" type="image/webp" srcset="desktop.webp" />', $html);
-        self::assertStringContainsString('<source media="(min-width: 640px)" srcset="image-10.jpg" />', $html);
-        self::assertStringContainsString('<source type="image/avif" srcset="mobile.avif" />', $html);
-        self::assertStringContainsString('<source type="image/webp" srcset="mobile.webp" />', $html);
     }
 
     public function testResponsivePictureKeepsEmptyAltAndOmitsInvalidDimensions(): void
@@ -255,7 +231,7 @@ final class ImageBlockTest extends TestCase
     {
         $html = render_image_block([ 'mediaId' => 10, 'className' => 'is-style-simple' ]);
 
-        self::assertStringContainsString('data-attachment-id="10"', $html);
+        self::assertStringContainsString('src="image-10.jpg"', $html);
         self::assertStringNotContainsString('image-caption', $html);
         self::assertStringNotContainsString('image-description', $html);
     }

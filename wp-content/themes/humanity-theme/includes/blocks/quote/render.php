@@ -24,7 +24,7 @@ if (!function_exists('render_quote_block')) {
 		<div class="wp-block-amnesty-core-quote-block quote-block">
             <?php if ($show_image && $image_id): ?>
                 <div class="quote-image">
-                    <?php echo amnesty_get_attachment_picture((int) $image_id, 'large', [ 'alt' => esc_attr__('Image de la citation', 'amnesty'), 'loading' => 'lazy', 'decoding' => 'async' ]); ?>
+                    <?php echo wp_get_attachment_image((int) $image_id, 'large', false, [ 'alt' => esc_attr__('Image de la citation', 'amnesty'), 'loading' => 'lazy', 'decoding' => 'async' ]); ?>
                 </div>
             <?php endif; ?>
 

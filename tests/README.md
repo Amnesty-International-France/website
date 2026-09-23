@@ -155,16 +155,18 @@ yarn test:e2e --grep-invert @cloudflare-smoke    # suite déterministe (= CI)
 yarn env:e2e:stop                                # coupe l'environnement
 ```
 
-- `seed-wordpress.sh` est idempotent (vérifie l'existence avant de créer),
-  mais `wp-env` persiste son volume Docker entre deux `env:e2e:start` : en cas
-  de doute sur l'état de la base (contenu d'un ancien run qui traîne), repartir
-  d'un environnement propre avec `yarn env:e2e:destroy` puis `env:e2e:start`.
+- Le seed est idempotent : `seed-wordpress.php` vérifie l'existence des
+  contenus avant de les créer, tandis que `seed-wordpress.sh` orchestre les
+  traductions, l'exécution PHP et les règles de réécriture. `wp-env` persiste
+  toutefois son volume Docker entre deux `env:e2e:start` : en cas de doute sur
+  l'état de la base (contenu d'un ancien run qui traîne), repartir d'un
+  environnement propre avec `yarn env:e2e:destroy` puis `env:e2e:start`.
 - Le tag `@cloudflare-smoke` (`turnstile-cloudflare-dummy.spec.mjs`) fait un
   vrai appel réseau vers l'infrastructure de test Cloudflare ; il est exclu du
   run déterministe (local comme CI) et ne se lance qu'explicitement
   (`RUN_CLOUDFLARE_SMOKE=1`).
-- Une nouvelle page/contenu nécessaire à un test se seed dans
-  `seed-wordpress.sh` via `$wpdb->insert()` direct plutôt que
+- Une nouvelle page ou un nouveau contenu nécessaire à un test se définit dans
+  `seed-wordpress.php` via `$wpdb->insert()` direct plutôt que
   `wp_insert_post()`/`wp post create` : plusieurs hooks `save_post`/
   `acf/save_post` du thème déclenchent de vrais appels à l'API Salesforce
   (ex. `create_petition()`), qu'on ne veut surtout pas exécuter pendant le
@@ -260,8 +262,11 @@ même.
 
 ### Ajouter un nouveau test e2e
 
-1. Si le parcours nécessite une page/un contenu qui n'existe pas par défaut,
-   l'ajouter dans `seed-wordpress.sh` (voir les points d'attention ci-dessus).
+1. Si le parcours nécessite une page ou un contenu qui n'existe pas par
+   défaut, l'ajouter dans `support/seed-wordpress.php` (voir les points
+   d'attention ci-dessus, et les commentaires du fichier : ils documentent les
+   pièges du seed, comme le slug `formulaire-foundation` en orthographe
+   anglaise ou la `fiche_pays` requise par le `<select>` pays de la pétition).
 2. Écrire le fichier `<parcours>.spec.mjs` dans `private/tests/e2e/`, en
    important `{ expect, test }` depuis `./support/fixtures` (pas directement
    `@playwright/test`) pour bénéficier de `gotoWithoutCookieOverlay`, qui

@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const config = require('../lighthouserc.cjs');
 
 const lighthouseDir = path.resolve(process.cwd(), '.lighthouseci');
-const outputPath = path.resolve(process.cwd(), '.lighthouseci/lhci-output.log');
+const linksPath = path.join(lighthouseDir, 'links.json');
 const summaryPath = process.env.GITHUB_STEP_SUMMARY;
 const auditUrls = config.ci?.collect?.url ?? [];
 const scoreCategories = [
@@ -15,13 +15,9 @@ const scoreCategories = [
   ['seo', 'SEO'],
 ];
 
-const output = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : '';
-const reportLinks = new Map(
-  [...output.matchAll(/Uploading median LHR of (https?:\/\/\S+)\.\.\.success!\nOpen the report at (https?:\/\/\S+)/g)].map((match) => [
-    match[1],
-    match[2],
-  ]),
-);
+const reportLinks = fs.existsSync(linksPath)
+  ? new Map(Object.entries(JSON.parse(fs.readFileSync(linksPath, 'utf8'))))
+  : new Map();
 const lhrs = fs.existsSync(lighthouseDir)
   ? fs
       .readdirSync(lighthouseDir)
@@ -79,7 +75,9 @@ if (lhrsByUrl.size > 0) {
     const scores = scoreCategories.map(([key]) =>
       formatScore(median(reports.map((report) => report.categories?.[key]?.score))),
     );
-    const reportLink = reportLinks.get(url) ? `[Open report](${reportLinks.get(url)})` : 'See artifact';
+    const reportLink = reportLinks.get(url)
+      ? `[Open report](${reportLinks.get(url)})`
+      : 'See artifact';
     const rawReportLink = reportLinks.get(url) ?? 'See artifact';
 
     lines.push(`| ${[url, ...scores, reportLink].join(' | ')} |`);
@@ -91,8 +89,12 @@ if (lhrsByUrl.size > 0) {
     );
   });
 } else {
-  lines.push('No Lighthouse scores were found. Check the workflow logs and lighthouse-reports artifact.');
-  logLines.push('No Lighthouse scores were found. Check the workflow logs and lighthouse-reports artifact.');
+  lines.push(
+    'No Lighthouse scores were found. Check the workflow logs and lighthouse-reports artifact.',
+  );
+  logLines.push(
+    'No Lighthouse scores were found. Check the workflow logs and lighthouse-reports artifact.',
+  );
 }
 
 lines.push('');

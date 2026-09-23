@@ -12,8 +12,18 @@ $paged = get_query_var('paged') ? get_query_var('paged') : 1;
 $args = [
     'post_type' => 'petition',
     'posts_per_page' => 18,
-    'orderby' => 'date',
-    'order' => 'DESC',
+    'meta_query' => [
+        [
+            'key' => 'date_de_fin',
+            'value' => current_time('Y-m-d'),
+            'compare' => '>=',
+            'type' => 'DATE',
+        ],
+    ],
+    'meta_key' => 'date_de_fin',
+    'meta_type' => 'DATE',
+    'orderby' => 'meta_value',
+    'order' => 'ASC',
     'paged' => $paged,
 ];
 

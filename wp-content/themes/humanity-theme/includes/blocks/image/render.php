@@ -60,70 +60,25 @@ if (!function_exists('amnesty_image_block_tag_attribute')) {
     }
 }
 
-if (!function_exists('amnesty_image_block_attachment_picture_parts')) {
+if (!function_exists('amnesty_image_block_attachment_img')) {
     /**
-     * Render an attachment through the normal picture pipeline and split it into reusable parts.
+     * Render an attachment through WordPress and return its img tag.
      *
      * @param int                  $attachment_id Attachment ID.
      * @param string|array         $size          Image size.
      * @param array<string, mixed> $attr          Image attributes.
      *
-     * @return array{sources:array<int,string>,img:string}
-     */
-    function amnesty_image_block_attachment_picture_parts(int $attachment_id, string|array $size, array $attr = []): array
-    {
-        $html = amnesty_get_attachment_picture($attachment_id, $size, $attr);
-        $sources = [];
-        $img = '';
-
-        if (preg_match_all('/<source\b[^>]*>/i', $html, $matches)) {
-            $sources = $matches[0];
-        }
-
-        if (preg_match('/<img\b[^>]*>/i', $html, $match)) {
-            $img = $match[0];
-        }
-
-        if ('' === $img) {
-            $img = amnesty_image_block_img($attachment_id, $size, $attr);
-        }
-
-        return [
-            'sources' => $sources,
-            'img' => $img,
-        ];
-    }
-}
-
-if (!function_exists('amnesty_image_block_source_with_media')) {
-    /**
-     * Add a media query to a source tag.
-     *
-     * @param string $source Source tag.
-     * @param string $media  Media query.
-     *
      * @return string
      */
-    function amnesty_image_block_source_with_media(string $source, string $media): string
+    function amnesty_image_block_attachment_img(int $attachment_id, string|array $size, array $attr = []): string
     {
-        if ('' === trim($source)) {
-            return '';
+        $html = wp_get_attachment_image($attachment_id, $size, false, $attr);
+
+        if (preg_match('/<img\b[^>]*>/i', $html, $match)) {
+            return $match[0];
         }
 
-        if (class_exists('WP_HTML_Tag_Processor')) {
-            $tags = new WP_HTML_Tag_Processor($source);
-
-            if ($tags->next_tag('source')) {
-                $tags->set_attribute('media', $media);
-                return $tags->get_updated_html();
-            }
-        }
-
-        if (preg_match('/\smedia\s*=/i', $source)) {
-            return preg_replace('/\smedia\s*=\s*(["\']).*?\1/i', ' media="' . esc_attr($media) . '"', $source, 1) ?: $source;
-        }
-
-        return preg_replace('/<source\b/i', '<source media="' . esc_attr($media) . '"', $source, 1) ?: $source;
+        return amnesty_image_block_img($attachment_id, $size, $attr);
     }
 }
 
@@ -234,13 +189,13 @@ if (!function_exists('amnesty_image_block_img')) {
     function amnesty_image_block_img(int $attachment_id, string|array $size, array $attr = []): string
     {
         if (! function_exists('wp_get_attachment_image_src')) {
-            return amnesty_get_attachment_picture($attachment_id, $size, $attr);
+            return wp_get_attachment_image($attachment_id, $size, false, $attr);
         }
 
         $src = amnesty_image_block_attachment_src($attachment_id, $size);
 
         if ('' === $src['url']) {
-            return amnesty_get_attachment_picture($attachment_id, $size, $attr);
+            return wp_get_attachment_image($attachment_id, $size, false, $attr);
         }
 
         $default_attr = [
@@ -305,19 +260,14 @@ if (!function_exists('amnesty_image_block_responsive_picture')) {
     function amnesty_image_block_responsive_picture(int $desktop_image_id, int $mobile_image_id, string|array $size, array $attr = []): string
     {
         $media = '(min-width: 640px)';
-        $desktop = amnesty_image_block_attachment_picture_parts($desktop_image_id, $size);
-        $mobile = amnesty_image_block_attachment_picture_parts($mobile_image_id, $size, $attr);
-        $desktop_sources = implode('', array_map(
-            static fn (string $source): string => amnesty_image_block_source_with_media($source, $media),
-            $desktop['sources']
-        ));
-        $mobile_sources = implode('', $mobile['sources']);
+        $desktop_img = amnesty_image_block_attachment_img($desktop_image_id, $size);
+        $mobile_img = amnesty_image_block_attachment_img($mobile_image_id, $size, $attr);
 
         return sprintf(
             '<picture%s>%s%s</picture>',
             amnesty_image_block_responsive_picture_style($desktop_image_id, $mobile_image_id, $size),
-            $desktop_sources . amnesty_image_block_source_from_img($desktop['img'], $media) . $mobile_sources,
-            $mobile['img']
+            amnesty_image_block_source_from_img($desktop_img, $media),
+            $mobile_img
         );
     }
 }
@@ -366,7 +316,7 @@ if (!function_exists('render_image_block')) {
                 <?php
                 echo $image_id && $mobile_image_id
                     ? amnesty_image_block_responsive_picture($image_id, $mobile_image_id, 'full', [ 'alt' => $image_alt ?: $mobile_image_alt, 'loading' => 'lazy', 'decoding' => 'async' ])
-                    : amnesty_get_attachment_picture($fallback_image_id, 'full', [ 'alt' => $image_alt ?: $mobile_image_alt, 'loading' => 'lazy', 'decoding' => 'async' ]);
+                    : wp_get_attachment_image($fallback_image_id, 'full', false, [ 'alt' => $image_alt ?: $mobile_image_alt, 'loading' => 'lazy', 'decoding' => 'async' ]);
         ?>
                 <?php if ($show_metadata && !empty($caption)) : ?>
                     <p class="image-caption"><?php echo esc_html($caption); ?></p>
