@@ -168,25 +168,6 @@ add_action('pre_get_posts', 'aif_formation_archive_query');
 const AIF_TRAININGS_PER_PAGE = 18;
 
 /**
- * Number of session groups (session_1 … session_N) defined on trainings in ACF.
- *
- * Must stay in sync with includes/theme-setup/acf.php.
- */
-const AIF_TRAININGS_SESSIONS_COUNT = 10;
-
-/**
- * Meta keys holding the start date of each training session.
- *
- * @return array<int, string>
- */
-function aif_get_trainings_session_start_meta_keys(): array
-{
-    return array_map(static function (int $index): string {
-        return "session_{$index}_date_de_debut";
-    }, range(1, AIF_TRAININGS_SESSIONS_COUNT));
-}
-
-/**
  * Build the SQL query (and its prepared arguments) listing the training sessions
  * matching the current request filters (qperiod / qlieu / qcategories).
  *
