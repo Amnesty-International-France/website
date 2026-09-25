@@ -82,6 +82,14 @@ These WP-CLI commands are scheduled on the server :
 | `*/15 * * * *` | `wp sync signatures`        |
 | `30 23 * * *`  | `wp sync signatures_failed` |
 
+### Manual commands
+
+`wp sync create_missing_petitions [<id>...] [--since=<YYYY-MM-DD>] [--dry-run]` creates in
+Salesforce the published petitions that have no Salesforce ID yet. It requires petition IDs
+or `--since`, since petitions imported from Prismic may have no Salesforce ID on purpose.
+Run it with `--dry-run` first: a listed petition already created by hand in Salesforce must
+get its Salesforce ID in WordPress beforehand, otherwise it would be created twice.
+
 ## Update plugins from Github repositories
 
 To update plugins from GitHub repositories, you can use the following script :

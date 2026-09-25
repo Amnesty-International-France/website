@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 // need a WP_Query fake and several more Salesforce/table dependencies; out of
 // scope for this pass since we never invoke them (requiring this file just
 // defines the class and these two standalone functions).
-require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/syncs.php';
+require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/syncs.php';
 
 final class SyncsHelpersTest extends TestCase
 {

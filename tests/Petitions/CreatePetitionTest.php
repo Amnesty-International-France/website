@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-// require_once avoids a "cannot redeclare" collision with
-// tests/Salesforce/SalesforcePetitionBulkCsvTest.php, which also requires
-// this same file for its own scenario.
+// require_once avoids "cannot redeclare" collisions with the other suites that
+// require these same files (SalesforcePetitionBulkCsvTest,
+// CreateMissingPetitionsCommandTest).
 require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
-require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/create-petition.php';
+require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/create-petition.php';
 
 final class CreatePetitionTest extends TestCase
 {
@@ -61,14 +62,51 @@ final class CreatePetitionTest extends TestCase
         self::assertSame([], self::salesforceCalls());
     }
 
-    public function testDoesNothingWhenPostIsNotPublished(): void
+    public function testDoesNothingWhenPostDoesNotExist(): void
+    {
+        create_petition(self::POST_ID);
+
+        self::assertSame([], self::salesforceCalls());
+    }
+
+    #[DataProvider('unpublishedStatusProvider')]
+    public function testDoesNothingWhenPostIsNotPublished(string $status): void
     {
         self::publishedPetitionPost();
-        $GLOBALS['__phpunit_posts'][self::POST_ID]->post_status = 'draft';
+        $GLOBALS['__phpunit_posts'][self::POST_ID]->post_status = $status;
 
         create_petition(self::POST_ID);
 
         self::assertSame([], self::salesforceCalls());
+    }
+
+    public static function unpublishedStatusProvider(): iterable
+    {
+        yield 'draft' => ['draft'];
+        yield 'still scheduled' => ['future'];
+    }
+
+    public function testCreatesAScheduledPetitionOnceWpCronPublishesIt(): void
+    {
+        // Scheduling it saves the ACF form while the post is still "future"...
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_posts'][self::POST_ID]->post_status = 'future';
+        create_petition(self::POST_ID);
+        self::assertSame([], self::salesforceCalls());
+
+        // ...then WP-Cron publishes it through wp_publish_post(), with no ACF save.
+        $GLOBALS['__phpunit_posts'][self::POST_ID]->post_status = 'publish';
+        $GLOBALS['__phpunit_salesforce_data_response_queue'] = [
+            ['success' => true, 'id' => 'sf-000123'],
+            ['Ext_ID_Petition__c' => 'ext-999', 'Code_defaut__c' => 'WEB'],
+        ];
+        foreach ($GLOBALS['__phpunit_registered_actions']['publish_future_post'] ?? [] as $callback) {
+            $callback(self::POST_ID);
+        }
+
+        self::assertSame('sf-000123', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['sfid'] ?? null);
+        self::assertSame('ext-999', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf'] ?? null);
+        self::assertSame('WEB', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine'] ?? null);
     }
 
     public function testDoesNothingWhenAlreadySyncedToSalesforce(): void
@@ -178,6 +216,63 @@ final class CreatePetitionTest extends TestCase
         create_petition(self::POST_ID);
 
         self::assertSame('', self::salesforceCalls()[0]['params']['Combats__c']);
+    }
+
+    /**
+     * Mimics ACF saving the editor's form on acf/save_post (priority 10):
+     * each value goes through the acf/update_value/name={name} filters.
+     *
+     * @param array<string,mixed> $values
+     */
+    private static function saveAcfForm(array $values): void
+    {
+        foreach ($values as $name => $value) {
+            foreach ($GLOBALS['__phpunit_registered_filters']["acf/update_value/name={$name}"] ?? [] as $callback) {
+                $value = $callback($value, self::POST_ID, ['name' => $name]);
+            }
+            update_field($name, $value, self::POST_ID);
+        }
+    }
+
+    public function testSavingAStaleEditorFormDoesNotCreateThePetitionAgain(): void
+    {
+        // Linked when published (or by WP-Cron), while the editor still shows
+        // the empty values it was loaded with.
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] += [
+            'sfid' => 'sf-000123',
+            'uidsf' => 'ext-999',
+            'code_origine' => 'WEB',
+        ];
+
+        self::saveAcfForm(['uidsf' => '', 'code_origine' => '']);
+        create_petition(self::POST_ID);
+
+        self::assertSame([], self::salesforceCalls());
+        self::assertSame('ext-999', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf']);
+        self::assertSame('WEB', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine']);
+    }
+
+    public function testASalesforceLinkTypedInTheEditorReplacesTheStoredOne(): void
+    {
+        // e.g. the petition was created by hand in Salesforce.
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] += ['uidsf' => 'ext-999', 'code_origine' => 'WEB'];
+
+        self::saveAcfForm(['uidsf' => 'ext-manual', 'code_origine' => 'MANUAL']);
+
+        self::assertSame('ext-manual', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf']);
+        self::assertSame('MANUAL', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine']);
+    }
+
+    public function testAnEmptySalesforceLinkStaysEmptyUntilThePetitionIsCreated(): void
+    {
+        self::publishedPetitionPost();
+
+        self::saveAcfForm(['uidsf' => '', 'code_origine' => '']);
+
+        self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf']);
+        self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine']);
     }
 
     public function testUpdatePetitionEndDateDoesNothingWhenPostTypeIsNotPetition(): void

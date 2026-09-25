@@ -102,6 +102,113 @@ class Sync_Command
 
         sync_signatures_to_salesforce($signatures_to_sync);
     }
+
+    /**
+     * Creates in Salesforce the published petitions without Salesforce ID.
+     *
+     * Catches up on the scheduled petitions published by WP-Cron before
+     * create_petition() was hooked on publish_future_post.
+     *
+     * ## OPTIONS
+     *
+     * [<id>...]
+     * : Only these petitions.
+     *
+     * [--since=<date>]
+     * : Only the petitions published on or after this date (YYYY-MM-DD).
+     *
+     * [--dry-run]
+     * : List the petitions without creating them in Salesforce.
+     *
+     * ## EXAMPLES
+     *
+     *     wp sync create_missing_petitions --since=2026-07-01 --dry-run
+     *     wp sync create_missing_petitions 159460
+     */
+    public function create_missing_petitions(array $args, array $assoc_args)
+    {
+        $since = $assoc_args['since'] ?? '';
+        $dry_run = ! empty($assoc_args['dry-run']);
+
+        // Petitions imported from Prismic may have no Salesforce ID on purpose,
+        // so never target every published petition.
+        if (empty($args) && $since === '') {
+            WP_CLI::error('Pass petition IDs or --since=<date>');
+            return;
+        }
+
+        // WP_Date_Query ignores an invalid date, which would widen the scope to
+        // every petition.
+        $since_date = DateTime::createFromFormat('Y-m-d', $since);
+        if ($since !== '' && (! $since_date || $since_date->format('Y-m-d') !== $since)) {
+            WP_CLI::error("Invalid --since date, expected YYYY-MM-DD: {$since}");
+            return;
+        }
+
+        $query = [
+            'post_type' => 'petition',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'post__in' => array_map('absint', $args),
+            'meta_query' => [
+                'relation' => 'OR',
+                ['key' => 'uidsf', 'compare' => 'NOT EXISTS'],
+                ['key' => 'uidsf', 'value' => ''],
+            ],
+        ];
+
+        if ($since !== '') {
+            $query['date_query'] = [['after' => $since, 'inclusive' => true]];
+        }
+
+        $post_ids = get_posts($query);
+
+        if (empty($post_ids)) {
+            WP_CLI::success('No published petition without Salesforce ID');
+            return;
+        }
+
+        $failures = 0;
+
+        foreach ($post_ids as $post_id) {
+            $post = get_post($post_id);
+            $label = "#{$post_id} \"{$post->post_title}\" (published {$post->post_date})";
+
+            // The record was created but its Ext ID couldn't be read back:
+            // creating the petition again would duplicate it in Salesforce.
+            $sfid = get_field('sfid', $post_id);
+            if ($sfid) {
+                WP_CLI::warning("{$label}: skipped, Salesforce record {$sfid} exists but its Ext ID is missing");
+                $failures++;
+                continue;
+            }
+
+            if ($dry_run) {
+                WP_CLI::log("{$label}: to create");
+                continue;
+            }
+
+            create_petition($post_id);
+
+            $uidsf = get_field('uidsf', $post_id);
+            if (! $uidsf) {
+                WP_CLI::warning("{$label}: could not be linked to Salesforce");
+                $failures++;
+                continue;
+            }
+
+            WP_CLI::log("{$label}: created, Ext ID {$uidsf}, code origine " . get_field('code_origine', $post_id));
+        }
+
+        if ($failures > 0) {
+            WP_CLI::error("{$failures} petition(s) need a manual check in Salesforce");
+            return;
+        }
+
+        $count = count($post_ids);
+        WP_CLI::success($dry_run ? "{$count} petition(s) to create" : "{$count} petition(s) created");
+    }
 }
 
 function insert_users_records($response)
