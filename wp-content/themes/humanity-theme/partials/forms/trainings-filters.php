@@ -22,7 +22,20 @@ if ($lieu_field_obj && isset($lieu_field_obj['choices'])) {
 }
 
 $active_period = isset($_GET['qperiod']) ? sanitize_text_field($_GET['qperiod']) : '';
-$periods_query = $wpdb->get_col("SELECT DISTINCT DATE_FORMAT(meta_value, '%Y-%m') FROM {$wpdb->postmeta} WHERE meta_key LIKE '%session%date%de%debut' AND meta_value IS NOT NULL AND meta_value != '' ORDER BY meta_value ASC");
+// A fixed prefix (session_N_date_de_debut) lets MySQL use the meta_key index instead of scanning the whole postmeta table.
+$session_start_key_pattern = $wpdb->esc_like('session_') . '%' . $wpdb->esc_like('_date_de_debut');
+$periods_query = $wpdb->get_col($wpdb->prepare(
+    "SELECT DISTINCT DATE_FORMAT(pm.meta_value, '%%Y-%%m')
+    FROM {$wpdb->postmeta} pm
+    INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+    WHERE p.post_type = 'training'
+    AND p.post_status = 'publish'
+    AND pm.meta_key LIKE %s
+    AND pm.meta_value IS NOT NULL
+    AND pm.meta_value != ''
+    ORDER BY pm.meta_value ASC",
+    $session_start_key_pattern
+));
 $period_options = ['' => 'Toutes les périodes'];
 if (!empty($periods_query)) {
     foreach ($periods_query as $period) {
