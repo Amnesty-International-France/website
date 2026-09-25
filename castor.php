@@ -28,7 +28,7 @@ const PUBLIC_PLUGINS = [
         "zip_url" => "https://github.com/jaymcp/cmb2-field-order/archive/refs/tags/%version%.zip"
     ],
     "wp-sentry-integration" => [
-        "repo_url" => "https://github.com/stayallive/wp-sentry",
+        "repo_url" => "https://github.com/stayallive/wp-sentry/",
         "zip_url" => "https://github.com/stayallive/wp-sentry/releases/download/%version%/wp-sentry-integration-plugin-%version%.zip"
     ]
 ];
