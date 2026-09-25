@@ -10,6 +10,8 @@ use function Castor\io;
 use function Castor\load_dot_env;
 use function Castor\run;
 
+defined('CASTOR_USE_CHDIR') || define('CASTOR_USE_CHDIR', true);
+
 const PUBLIC_PLUGINS = [
     "cmb2-attached-posts" => [
         "repo_url" => "https://github.com/CMB2/cmb2-attached-posts/",
