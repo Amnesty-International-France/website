@@ -180,6 +180,63 @@ final class CreatePetitionTest extends TestCase
         self::assertSame('', self::salesforceCalls()[0]['params']['Combats__c']);
     }
 
+    /**
+     * Mimics ACF saving the editor's form on acf/save_post (priority 10):
+     * each value goes through the acf/update_value/name={name} filters.
+     *
+     * @param array<string,mixed> $values
+     */
+    private static function saveAcfForm(array $values): void
+    {
+        foreach ($values as $name => $value) {
+            foreach ($GLOBALS['__phpunit_registered_filters']["acf/update_value/name={$name}"] ?? [] as $callback) {
+                $value = $callback($value, self::POST_ID, ['name' => $name]);
+            }
+            update_field($name, $value, self::POST_ID);
+        }
+    }
+
+    public function testSavingAStaleEditorFormDoesNotCreateThePetitionAgain(): void
+    {
+        // Linked when published (or by WP-Cron), while the editor still shows
+        // the empty values it was loaded with.
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] += [
+            'sfid' => 'sf-000123',
+            'uidsf' => 'ext-999',
+            'code_origine' => 'WEB',
+        ];
+
+        self::saveAcfForm(['uidsf' => '', 'code_origine' => '']);
+        create_petition(self::POST_ID);
+
+        self::assertSame([], self::salesforceCalls());
+        self::assertSame('ext-999', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf']);
+        self::assertSame('WEB', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine']);
+    }
+
+    public function testASalesforceLinkTypedInTheEditorReplacesTheStoredOne(): void
+    {
+        // e.g. the petition was created by hand in Salesforce.
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] += ['uidsf' => 'ext-999', 'code_origine' => 'WEB'];
+
+        self::saveAcfForm(['uidsf' => 'ext-manual', 'code_origine' => 'MANUAL']);
+
+        self::assertSame('ext-manual', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf']);
+        self::assertSame('MANUAL', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine']);
+    }
+
+    public function testAnEmptySalesforceLinkStaysEmptyUntilThePetitionIsCreated(): void
+    {
+        self::publishedPetitionPost();
+
+        self::saveAcfForm(['uidsf' => '', 'code_origine' => '']);
+
+        self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf']);
+        self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine']);
+    }
+
     public function testUpdatePetitionEndDateDoesNothingWhenPostTypeIsNotPetition(): void
     {
         $GLOBALS['__phpunit_posts'][self::POST_ID] = (object) [
