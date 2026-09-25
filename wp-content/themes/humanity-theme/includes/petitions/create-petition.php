@@ -4,7 +4,7 @@ function create_petition(int $post_id)
 {
     $post = get_post($post_id);
 
-    if ($post->post_type !== 'petition') {
+    if (! $post || $post->post_type !== 'petition') {
         return;
     }
 
@@ -45,6 +45,8 @@ function create_petition(int $post_id)
 }
 
 add_action('acf/save_post', 'create_petition', 20);
+
+add_action('publish_future_post', 'create_petition', 20);
 
 function update_petition_end_date($post_id)
 {
