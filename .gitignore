@@ -82,3 +82,5 @@ cleaned_posts.txt
 /private/.lighthouseci/
 /private/playwright-report/
 /private/test-results/
+
+/llms.txt
