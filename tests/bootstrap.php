@@ -14,18 +14,33 @@ declare(strict_types=1);
  */
 
 if (!class_exists('WP_CLI')) {
+    $GLOBALS['__phpunit_wp_cli_messages'] = [];
+
+    /**
+     * Records every message as [type, message] in
+     * $GLOBALS['__phpunit_wp_cli_messages'] instead of printing it. Unlike the
+     * real WP_CLI::error(), error() never exits.
+     */
     class WP_CLI
     {
         public static function log(string $message): void
         {
+            $GLOBALS['__phpunit_wp_cli_messages'][] = ['log', $message];
+        }
+
+        public static function warning(string $message): void
+        {
+            $GLOBALS['__phpunit_wp_cli_messages'][] = ['warning', $message];
         }
 
         public static function error(string $message): void
         {
+            $GLOBALS['__phpunit_wp_cli_messages'][] = ['error', $message];
         }
 
         public static function success(string $message): void
         {
+            $GLOBALS['__phpunit_wp_cli_messages'][] = ['success', $message];
         }
 
         public static function add_command(string $name, callable|object $callable): void
