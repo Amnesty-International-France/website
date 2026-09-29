@@ -186,6 +186,7 @@ require_once realpath(__DIR__ . '/includes/theme-setup/analytics/my-space-login.
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/hotjar.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/vwo.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/meta-tags.php');
+require_once realpath(__DIR__ . '/includes/theme-setup/prevent-direct-access-fix.php');
 // endregion theme setup
 
 /**
