@@ -2,67 +2,77 @@ import EditComponent from './EditComponent.jsx';
 
 const { registerBlockType } = wp.blocks;
 
-registerBlockType('amnesty-core/card-image-text', {
-  title: 'Carte image / texte',
-  description: 'Block carte avec image + texte',
-  category: 'amnesty-core',
-  icon: 'id-alt',
+registerBlockType("amnesty-core/card-image-text", {
+  title: "Carte image / texte",
+  description: "Block carte avec image + texte",
+  category: "amnesty-core",
+  icon: "id-alt",
   attributes: {
     editor: {
-      type: 'boolean',
+      type: "boolean",
       default: false,
     },
     custom: {
-      type: 'boolean',
+      type: "boolean",
       default: false,
     },
     direction: {
-      type: 'string',
-      default: 'vertical',
+      type: "string",
+      default: "vertical",
+    },
+    textDisplay: {
+      type: "string",
+      default: "",
     },
     postId: {
-      type: 'integer',
+      type: "integer",
       default: null,
     },
     title: {
-      type: 'string',
-      default: 'Titre par défaut',
+      type: "string",
+      default: "Titre par défaut",
     },
-    subtitle: {
-      type: 'string',
-      default: 'Sous-titre par défaut',
+    surtitle: {
+      type: "string",
+      default: "Sous-titre par défaut",
     },
     category: {
-      type: 'string',
-      default: 'Categorie',
+      type: "string",
+      default: "Categorie",
     },
     permalink: {
-      type: 'string',
-      default: '#',
+      type: "string",
+      default: "#",
+    },
+    linkTitle: {
+      type: "string",
+      default: "Voir la suite",
     },
     thumbnail: {
-      type: 'integer',
+      type: "integer",
       default: null,
     },
     text: {
-      type: 'string',
-      default: 'Texte par défaut',
+      type: "string",
+      default: "Texte par défaut",
     },
     newTab: {
-      type: 'boolean',
+      type: "boolean",
       default: false,
     },
   },
   example: {
     attributes: {
       custom: true,
-      direction: 'vertical',
+      direction: "vertical",
+      textDisplay: "rollOver",
       title: "Le Droit à l'Information : Un Pilier de la Démocratie",
-      subtitle: "Notre dernier rapport d'enquête",
-      category: 'Actualités',
-      permalink: '#',
+      surtitle: "Notre dernier rapport d'enquête",
+      category: "Actualités",
+      permalink: "#",
+      linkTitle: "Voir la suite",
       text: "<p>Découvrez notre analyse approfondie sur les défis que rencontrent les journalistes et les défenseurs des droits humains pour accéder à l'information et la diffuser librement.</p>",
-      thumbnail: '4',
+      thumbnail: "4",
     },
   },
   edit: EditComponent,

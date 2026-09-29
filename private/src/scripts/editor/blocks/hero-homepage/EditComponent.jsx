@@ -95,8 +95,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
               <TextControl
                 label={__('Sous titre', 'amnesty')}
-                value={item.subtitle}
-                onChange={(value) => updateItem(index, 'subtitle', value)}
+                value={item.subhead}
+                onChange={(value) => updateItem(index, 'subhead', value)}
               />
 
               <TextControl
@@ -131,7 +131,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
                   <br />
                   on gagne ensemble.
                 </h1>
-                {visibleItem.subtitle && <h3 className="hero-subtitle">{visibleItem.subtitle}</h3>}
+                {visibleItem.subhead && <h3 className="hero-subhead">{visibleItem.subhead}</h3>}
                 {visibleItem.buttonUrl && visibleItem.buttonLabel && (
                   <CustomButton
                     icon="arrow-right"
