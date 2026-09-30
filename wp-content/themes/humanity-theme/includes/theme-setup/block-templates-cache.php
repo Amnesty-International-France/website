@@ -16,14 +16,19 @@ declare(strict_types=1);
 (static function (): void {
     $block_templates_cache = [];
 
+    $cache_key = static function (array $query, string $template_type): string {
+        unset($query['slug__not_in']);
+        return md5(serialize([$query, $template_type]));
+    };
+
     add_filter(
         'pre_get_block_templates',
-        static function ($templates, array $query, string $template_type) use (&$block_templates_cache) {
+        static function ($templates, array $query, string $template_type) use (&$block_templates_cache, $cache_key) {
             if (null !== $templates) {
                 return $templates;
             }
 
-            $key = md5(serialize([$query, $template_type]));
+            $key = $cache_key($query, $template_type);
 
             if (!isset($block_templates_cache[$key])) {
                 return null;
@@ -40,12 +45,12 @@ declare(strict_types=1);
 
     add_filter(
         'get_block_templates',
-        static function ($templates, array $query, string $template_type) use (&$block_templates_cache) {
+        static function ($templates, array $query, string $template_type) use (&$block_templates_cache, $cache_key) {
             if (!is_array($templates)) {
                 return $templates;
             }
 
-            $key = md5(serialize([$query, $template_type]));
+            $key = $cache_key($query, $template_type);
             $block_templates_cache[$key] = $templates;
 
             return $templates;
