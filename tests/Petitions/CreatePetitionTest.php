@@ -5,11 +5,11 @@ declare(strict_types=1);
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-// require_once avoids "cannot redeclare" collisions with the other suites that
-// require these same files (SalesforcePetitionBulkCsvTest,
-// CreateMissingPetitionsCommandTest).
+// require_once avoids a "cannot redeclare" collision with
+// tests/Salesforce/SalesforcePetitionBulkCsvTest.php, which also requires
+// this same file for its own scenario.
 require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/salesforce/petition.php';
-require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/create-petition.php';
+require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/create-petition.php';
 
 final class CreatePetitionTest extends TestCase
 {
