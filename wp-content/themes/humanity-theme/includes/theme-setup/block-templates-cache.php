@@ -2,6 +2,17 @@
 
 declare(strict_types=1);
 
+/**
+ * Request-scoped in-memory cache for block templates.
+ *
+ * `get_block_templates()` re-reads the `wp_template` posts on every call, which happens
+ * dozens of times per admin page load.
+ *
+ * Note: on a cache hit, the `get_block_templates` filter is skipped. A filter that depends
+ * on runtime state (current user, post, locale) will keep its first result for the request.
+ *
+ * @package Amnesty\ThemeSetup
+ */
 (static function (): void {
     $block_templates_cache = [];
 
@@ -13,7 +24,15 @@ declare(strict_types=1);
             }
 
             $key = md5(serialize([$query, $template_type]));
-            return $block_templates_cache[$key] ?? null;
+
+            if (!isset($block_templates_cache[$key])) {
+                return null;
+            }
+
+            return array_map(
+                static fn (WP_Block_Template $template): WP_Block_Template => clone $template,
+                $block_templates_cache[$key]
+            );
         },
         PHP_INT_MAX,
         3
@@ -21,7 +40,11 @@ declare(strict_types=1);
 
     add_filter(
         'get_block_templates',
-        static function (array $templates, array $query, string $template_type) use (&$block_templates_cache): array {
+        static function ($templates, array $query, string $template_type) use (&$block_templates_cache) {
+            if (!is_array($templates)) {
+                return $templates;
+            }
+
             $key = md5(serialize([$query, $template_type]));
             $block_templates_cache[$key] = $templates;
 
