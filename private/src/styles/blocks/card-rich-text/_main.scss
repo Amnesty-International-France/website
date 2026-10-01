@@ -114,8 +114,13 @@
         font-weight: bold;
       }
 
+      // Overrides the theme.json link styles (bigger, bold, condensed font) to keep the text rhythm.
       a {
         color: var(--wp--preset--color--black);
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        line-height: inherit;
         text-decoration: underline;
       }
     }

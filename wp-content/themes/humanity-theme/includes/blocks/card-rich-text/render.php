@@ -7,8 +7,6 @@ if (!function_exists('render_card_rich_text_block')) {
      * Render the "Card Rich Text" block
      *
      * The description is made of inner blocks (paragraphs and lists), received in $content.
-     * Unlike the "Card Image Text" block, the whole card is not a link, because
-     * the description can contain links of its own.
      *
      * @param array<string, mixed> $attributes Block attributes
      * @param string $content Inner blocks HTML
@@ -22,6 +20,9 @@ if (!function_exists('render_card_rich_text_block')) {
         $permalink = $attributes['permalink'] ?? '';
         $linkTitle = $attributes['linkTitle'] ?? '';
         $newTab = $attributes['newTab'] ?? false;
+
+        // Drop the empty paragraphs left in the description (e.g. the default one of the template).
+        $content = (string) preg_replace('#<p[^>]*>(?:\s|&nbsp;|<br\s*/?>)*</p>#i', '', $content);
 
         $link_extra_attrs = '';
         if ($newTab) {
