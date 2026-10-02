@@ -47,7 +47,7 @@ function aif_riposte_ordering_column_content(string $column, int $post_id): void
         return;
     }
 
-    if (! current_user_can('edit_others_posts') || ! current_user_can('edit_post', $post_id)) {
+    if (! current_user_can('edit_others_ripostes') || ! current_user_can('edit_post', $post_id)) {
         return;
     }
 
@@ -68,7 +68,7 @@ function aif_riposte_save_ordering(): void
 {
     check_ajax_referer('aif_riposte_ordering', 'nonce');
 
-    if (! current_user_can('edit_others_posts')) {
+    if (! current_user_can('edit_others_ripostes')) {
         wp_send_json_error(
             [
                 'message' => __('Vous n’avez pas les droits suffisants.', 'aif-riposte'),

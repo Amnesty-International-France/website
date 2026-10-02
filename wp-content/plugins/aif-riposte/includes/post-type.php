@@ -48,6 +48,9 @@ function aif_riposte_register_theme_taxonomy(): void
             'show_in_rest'      => true,
             'query_var'         => true,
             'rewrite'           => false,
+            'capabilities'      => [
+                'assign_terms' => 'edit_ripostes',
+            ],
         ]
     );
 }
@@ -87,6 +90,9 @@ function aif_riposte_register_tag_taxonomy(): void
             'show_in_rest'      => true,
             'hierarchical'      => false,
             'rewrite'           => false,
+            'capabilities'      => [
+                'assign_terms' => 'edit_ripostes',
+            ],
         ]
     );
 }
@@ -151,7 +157,7 @@ function aif_riposte_register_post_type(): void
             'show_in_rest'        => true,
             'publicly_queryable'  => true,
             'exclude_from_search' => true,
-            'capability_type'     => 'post',
+            'capability_type'     => [ 'riposte', 'ripostes' ],
             'map_meta_cap'        => true,
         ]
     );
