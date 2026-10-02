@@ -76,6 +76,7 @@ composer*
 !/wp-content/plugins/interactive-map/
 !/wp-content/plugins/aif-donor-space/
 !/wp-content/plugins/aif-rss-importer/
+!/wp-content/plugins/aif-riposte/
 
 docker-compose.yml
 cleaned_posts.txt
