@@ -26,5 +26,8 @@
         <testsuite name="Seo">
             <directory>tests/Seo</directory>
         </testsuite>
+        <testsuite name="Riposte">
+            <directory>tests/Riposte</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

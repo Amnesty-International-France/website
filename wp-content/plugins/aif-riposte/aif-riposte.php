@@ -25,6 +25,7 @@ define('AIF_RIPOSTE_POSTS_PER_PAGE', 5);
 /**
  * Plugin includes
  */
+require_once AIF_RIPOSTE_PATH . 'includes/capabilities.php';
 require_once AIF_RIPOSTE_PATH . 'includes/post-type.php';
 require_once AIF_RIPOSTE_PATH . 'includes/filters.php';
 require_once AIF_RIPOSTE_PATH . 'includes/archive.php';
