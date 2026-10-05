@@ -23,8 +23,8 @@ function aif_riposte_register_meta(): void
             'single'            => true,
             'show_in_rest'      => true,
             'sanitize_callback' => 'aif_riposte_sanitize_date_meta',
-            'auth_callback'     => static function (): bool {
-                return current_user_can('edit_posts');
+            'auth_callback'     => static function (bool $allowed, string $meta_key, int $post_id): bool {
+                return current_user_can('edit_post', $post_id);
             },
         ]
     );
@@ -36,8 +36,8 @@ function aif_riposte_register_meta(): void
             'single'            => true,
             'show_in_rest'      => true,
             'sanitize_callback' => 'esc_url_raw',
-            'auth_callback'     => static function (): bool {
-                return current_user_can('edit_posts');
+            'auth_callback'     => static function (bool $allowed, string $meta_key, int $post_id): bool {
+                return current_user_can('edit_post', $post_id);
             },
         ]
     );

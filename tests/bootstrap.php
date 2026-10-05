@@ -13,6 +13,11 @@ declare(strict_types=1);
  * suite's own test file instead.
  */
 
+if (!defined('ABSPATH')) {
+    // Plugin files exit early when loaded outside WordPress.
+    define('ABSPATH', dirname(__DIR__) . '/');
+}
+
 if (!class_exists('WP_CLI')) {
     class WP_CLI
     {
@@ -265,6 +270,21 @@ if (!class_exists('WP_Error')) {
         public function get_error_data(): mixed
         {
             return $this->data;
+        }
+    }
+}
+
+if (!class_exists('WP_User')) {
+    /**
+     * Stand-in for WP_User, carrying only the role slugs a test assigns.
+     */
+    class WP_User
+    {
+        /**
+         * @param array<int,string> $roles
+         */
+        public function __construct(public array $roles = [])
+        {
         }
     }
 }

@@ -111,7 +111,7 @@ function aif_riposte_editor_assets(): void
  */
 function aif_riposte_enqueue_admin_ordering_assets(): void
 {
-    if (! current_user_can('edit_others_posts')) {
+    if (! current_user_can('edit_others_ripostes')) {
         return;
     }
 
