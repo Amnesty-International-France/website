@@ -23,7 +23,9 @@ export class MapController {
     });
 
     this.tileLayer = L.tileLayer(this.tileLayerUrl, {
-      attribution: '&copy; OpenStreetMap contributors',
+      attribution: this.tileLayerUrl.includes('basemaps.cartocdn.com')
+        ? '&copy; OpenStreetMap contributors, &copy; CARTO'
+        : '&copy; OpenStreetMap contributors',
       subdomains: 'abc',
       maxZoom: 20,
     });
