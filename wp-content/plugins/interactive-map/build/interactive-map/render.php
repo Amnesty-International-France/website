@@ -16,6 +16,14 @@ if (!empty($attributes['geoJsonUrl'])) {
     }
 }
 
+// CARTO basemaps require an API key since September 2026, otherwise tiles are watermarked.
+$tile_layer_url = $attributes['tileLayerUrl'];
+$carto_basemaps_key = (string) getenv('CARTO_BASEMAPS_KEY');
+
+if ('' !== $carto_basemaps_key && str_ends_with((string) parse_url($tile_layer_url, PHP_URL_HOST), 'basemaps.cartocdn.com')) {
+    $tile_layer_url .= (str_contains($tile_layer_url, '?') ? '&' : '?') . 'key=' . rawurlencode($carto_basemaps_key);
+}
+
 // TODO: move this code outside plugin
 $custom_local_structures_api_endpoint = rest_url('amnesty/v1/local-structures-search');
 $geocode_proxy_api_endpoint = rest_url('amnesty/v1/geocode-proxy');
@@ -25,7 +33,7 @@ $geocode_proxy_api_endpoint = rest_url('amnesty/v1/geocode-proxy');
 <div
     <?php echo get_block_wrapper_attributes(['class' => 'interactive-map']); ?>
     data-geojson-url="<?php echo esc_url($full_geojson_url); ?>"
-    data-tile-layer-url="<?php echo esc_attr($attributes['tileLayerUrl']); ?>"
+    data-tile-layer-url="<?php echo esc_attr($tile_layer_url); ?>"
     data-api-endpoint="<?php echo esc_url($custom_local_structures_api_endpoint); ?>" data-geocode-proxy-endpoint="<?php echo esc_url($geocode_proxy_api_endpoint); ?>" data-show-vignettes="<?php echo esc_attr($attributes['showVignettes'] ? 'true' : 'false'); ?>"
     data-map-center-lat="<?php echo esc_attr($attributes['mapCenterLat']); ?>"
     data-map-center-lng="<?php echo esc_attr($attributes['mapCenterLng']); ?>"
