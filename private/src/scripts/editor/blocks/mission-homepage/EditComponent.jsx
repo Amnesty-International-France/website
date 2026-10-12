@@ -33,7 +33,7 @@ const EditComponent = () => {
     <section {...blockProps} className="mission-homepage">
       <div className="mission-homepage-wrapper">
         <h2 className="title">Notre mission</h2>
-        <h3 className="subtitle">On se bat ensemble, on gagne ensemble.</h3>
+        <h3 className="subhead">On se bat ensemble, on gagne ensemble.</h3>
         <p className="chapo">Notre combat pour les droits humains repose sur 3 piliers :</p>
         <div className="items">
           {missionItems.map((item) => (

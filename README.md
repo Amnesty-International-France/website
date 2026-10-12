@@ -7,8 +7,9 @@ This is the repository for the redesign of the Amnesty International France webs
 ## Requirements
 
 - Ask for the `.env` file
-- PHP 8.0 or higher
+- PHP 8.0 or higher, with the `mysqli` extension (Debian/Ubuntu : `php8.4-mysql`, matching your PHP version)
 - MySQL version 8.0 or higher or MariaDB version 10.5 or higher
+- The `mysql` and `mysqlcheck` command-line clients, used by `wp db` commands (Debian/Ubuntu : `mariadb-client-compat`)
 - [Castor](https://github.com/jolicode/castor)
 
 Note : The database can be dockerized as follows :

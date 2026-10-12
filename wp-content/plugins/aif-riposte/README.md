@@ -71,6 +71,7 @@ aif-riposte/
 │   ├── archive.php
 │   ├── assets.php
 │   ├── breadcrumb.php
+│   ├── capabilities.php
 │   ├── card.php
 │   ├── filters.php
 │   ├── metaboxes.php
@@ -98,6 +99,12 @@ includes/post-type.php
 ```
 
 Déclare le CPT `riposte_victory`, déclare les taxonomies dédiées `riposte_theme` et `riposte_tag`, puis associe le CPT aux taxonomies `location`, `riposte_tag` et `riposte_theme`.
+
+```text
+includes/capabilities.php
+```
+
+Attribue les capacités dédiées aux Ripostes selon le rôle de l’utilisateur. Voir la section « Rôles et permissions ».
 
 ```text
 includes/archive.php
@@ -414,6 +421,42 @@ includes/card.php
 
 ---
 
+## Rôles et permissions
+
+Les Ripostes utilisent leurs propres capacités (`capability_type` `riposte` / `ripostes`), attribuées par :
+
+```text
+includes/capabilities.php
+```
+
+Chaque rôle conserve sur les Ripostes les droits qu’il a sur les articles : `edit_posts` donne `edit_ripostes`, `edit_others_posts` donne `edit_others_ripostes`, etc. La correspondance complète est dans `aif_riposte_get_capability_map()`.
+
+Les rôles gestionnaires reçoivent toutes les capacités du plugin, quels que soient leurs droits sur les articles :
+
+* Administrateur/administratrice (`administrator`) ;
+* Éditeur/éditrice (`editor`) ;
+* Rédactrices web (`redac`) : ce rôle n’existe que dans la base de production, il faut le créer pour le tester en local.
+
+Ils reçoivent aussi `manage_categories`, nécessaire au menu **Pays** : il modifie la taxonomie `location` du thème, partagée avec les autres contenus du site.
+
+Capacités vérifiées :
+
+| Écran ou action | Capacité |
+| --- | --- |
+| Toutes les ripostes, Ajouter une riposte | `edit_ripostes` |
+| Modifier ou supprimer la Riposte d’un autre auteur | `edit_others_ripostes`, `delete_others_ripostes` |
+| Thématiques, Mots clés, Pays | `manage_categories` |
+| Réglages | `manage_riposte_settings`, donnée aussi aux rôles ayant `manage_options` |
+| Tri drag & drop | `edit_others_ripostes` |
+| Affecter une thématique ou un mot clé | `edit_ripostes` |
+| Affecter un pays | `edit_posts`, comme pour les autres contenus du site |
+
+Pour donner l’accès complet à un autre rôle, ajouter son slug dans `aif_riposte_get_manager_roles()`. Le slug apparaît dans le paramètre `role` de l’URL lorsque la liste des utilisateurs est filtrée sur ce rôle.
+
+Les capacités sont calculées à chaque vérification (filtre `user_has_cap`) : elles ne sont pas enregistrées dans les rôles en base et n’apparaissent donc pas dans un éditeur de rôles.
+
+---
+
 ## Tri des contenus
 
 L’ordre d’affichage repose sur le champ WordPress natif :
@@ -424,7 +467,7 @@ menu_order
 
 Les contenus sont réordonnables en drag & drop dans la liste d’administration du CPT.
 
-Le tri modifiant un ordre global, il est réservé aux utilisateurs disposant de la capacité `edit_others_posts`. Une vérification `edit_post` est également réalisée pour chaque contenu traité.
+Le tri modifiant un ordre global, il est réservé aux utilisateurs disposant de la capacité `edit_others_ripostes`. Une vérification `edit_post` est également réalisée pour chaque contenu traité.
 
 Fichiers concernés :
 
@@ -1004,6 +1047,7 @@ aif-riposte/
 │   ├── archive.php
 │   ├── assets.php
 │   ├── breadcrumb.php
+│   ├── capabilities.php
 │   ├── card.php
 │   ├── filters.php
 │   ├── metaboxes.php
@@ -1031,6 +1075,12 @@ includes/post-type.php
 ```
 
 Registers the `riposte_victory` custom post type, registers the dedicated `riposte_theme` and `riposte_tag` taxonomies, then associates the CPT with the `location`, `riposte_tag`, and `riposte_theme` taxonomies.
+
+```text
+includes/capabilities.php
+```
+
+Grants the dedicated Riposte capabilities according to the user's role. See the "Roles and Permissions" section.
 
 ```text
 includes/archive.php
@@ -1352,6 +1402,42 @@ includes/card.php
 
 ---
 
+## Roles and Permissions
+
+Ripostes use their own capabilities (`capability_type` `riposte` / `ripostes`), granted by:
+
+```text
+includes/capabilities.php
+```
+
+Every role keeps on Ripostes the rights it has on posts: `edit_posts` grants `edit_ripostes`, `edit_others_posts` grants `edit_others_ripostes`, and so on. The full mapping lives in `aif_riposte_get_capability_map()`.
+
+Manager roles get every capability of the plugin, whatever their rights on posts:
+
+* Administrator (`administrator`);
+* Editor (`editor`);
+* Rédactrices web (`redac`): this role only exists in the production database, create it to test locally.
+
+They also get `manage_categories`, required by the **Pays** menu: it edits the theme `location` taxonomy, shared with the other content types of the site.
+
+Checked capabilities:
+
+| Screen or action | Capability |
+| --- | --- |
+| All ripostes, Add a riposte | `edit_ripostes` |
+| Edit or delete another author's Riposte | `edit_others_ripostes`, `delete_others_ripostes` |
+| Thématiques, Mots clés, Pays | `manage_categories` |
+| Réglages | `manage_riposte_settings`, also granted to roles with `manage_options` |
+| Drag & drop ordering | `edit_others_ripostes` |
+| Assign a theme or a keyword | `edit_ripostes` |
+| Assign a country | `edit_posts`, as for the other content types of the site |
+
+To give full access to another role, add its slug to `aif_riposte_get_manager_roles()`. The slug shows in the `role` URL parameter when the user list is filtered on that role.
+
+Capabilities are computed on each check (`user_has_cap` filter): they are not stored in the roles in database, so role editor plugins do not list them.
+
+---
+
 ## Content Ordering
 
 The display order relies on the native WordPress field:
@@ -1362,7 +1448,7 @@ menu_order
 
 Content can be reordered via drag & drop from the CPT administration list.
 
-Since this modifies the global display order, the feature is restricted to users with the `edit_others_posts` capability. An additional `edit_post` permission check is also performed for each processed post.
+Since this modifies the global display order, the feature is restricted to users with the `edit_others_ripostes` capability. An additional `edit_post` permission check is also performed for each processed post.
 
 Related files:
 

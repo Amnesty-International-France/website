@@ -10,6 +10,8 @@ use function Castor\io;
 use function Castor\load_dot_env;
 use function Castor\run;
 
+defined('CASTOR_USE_CHDIR') || define('CASTOR_USE_CHDIR', true);
+
 const PUBLIC_PLUGINS = [
     "cmb2-attached-posts" => [
         "repo_url" => "https://github.com/CMB2/cmb2-attached-posts/",
@@ -28,7 +30,7 @@ const PUBLIC_PLUGINS = [
         "zip_url" => "https://github.com/jaymcp/cmb2-field-order/archive/refs/tags/%version%.zip"
     ],
     "wp-sentry-integration" => [
-        "repo_url" => "https://github.com/stayallive/wp-sentry",
+        "repo_url" => "https://github.com/stayallive/wp-sentry/",
         "zip_url" => "https://github.com/stayallive/wp-sentry/releases/download/%version%/wp-sentry-integration-plugin-%version%.zip"
     ]
 ];

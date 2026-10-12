@@ -40,14 +40,34 @@ if (! function_exists('amnesty_reorganise_admin_menu')) {
 
         global $menu;
 
-        // move media menu item
-        add_menu_separator(30);
-        // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $menu[31] = $menu[10];
-        add_menu_separator(32);
+        // look items up by slug, their position depends on what is registered
+        $media = null;
+        foreach ($menu as $key => $item) {
+            $slug = $item[2] ?? '';
 
-        // remove comments, original media item
-        unset($menu[25], $menu[10]);
+            if ('upload.php' === $slug) {
+                $media = $item;
+            }
+
+            // remove comments, original media item
+            if ('upload.php' === $slug || 'edit-comments.php' === $slug) {
+                unset($menu[ $key ]);
+            }
+        }
+
+        // move media menu item to the first free slot after the custom post types
+        if (null !== $media) {
+            add_menu_separator(30);
+
+            $position = 31;
+            while (isset($menu[ $position ])) {
+                ++$position;
+            }
+
+            // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+            $menu[ $position ] = $media;
+            add_menu_separator($position + 1);
+        }
 
         add_menu_separator(40);
     }

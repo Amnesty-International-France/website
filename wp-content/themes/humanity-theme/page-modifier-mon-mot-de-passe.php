@@ -17,10 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
         $user = get_user_by('email', $email);
 
         if ($user) {
-            $stored_token = get_email_token($user->ID);
-            if ($token === $stored_token) {
+            if (is_email_token_valid($user->ID, $token)) {
 
                 if ($password == $_POST['confirm-password']) {
+                    delete_email_token($user->ID);
                     $userdata = [
                         'ID' => $user->ID,
                         'user_pass' => $password,

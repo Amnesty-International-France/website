@@ -139,15 +139,37 @@ function get_SF_user_ID($user_id)
     return get_user_meta($user_id, 'user_SF_ID', true);
 }
 
+const AIF_EMAIL_TOKEN_TTL = 3600;
+
 function store_email_token($user_id, $token)
 {
-    update_user_meta($user_id, 'user_email_token', $token);
+    // Legacy plaintext token, without expiry.
+    delete_user_meta($user_id, 'user_email_token');
+    update_user_meta($user_id, 'user_email_token_hash', hash('sha256', $token));
+    update_user_meta($user_id, 'user_email_token_expires', time() + AIF_EMAIL_TOKEN_TTL);
 }
 
-
-function get_email_token($user_id)
+function is_email_token_valid($user_id, $token)
 {
-    return get_user_meta($user_id, 'user_email_token', true);
+    if (!is_string($token) || $token === '') {
+        return false;
+    }
+
+    $stored_hash = get_user_meta($user_id, 'user_email_token_hash', true);
+    $expires = (int) get_user_meta($user_id, 'user_email_token_expires', true);
+
+    if (!is_string($stored_hash) || $stored_hash === '' || $expires < time()) {
+        return false;
+    }
+
+    return hash_equals($stored_hash, hash('sha256', $token));
+}
+
+function delete_email_token($user_id)
+{
+    delete_user_meta($user_id, 'user_email_token');
+    delete_user_meta($user_id, 'user_email_token_hash');
+    delete_user_meta($user_id, 'user_email_token_expires');
 }
 
 
