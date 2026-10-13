@@ -313,6 +313,13 @@ if (!function_exists('amnesty_get_active_clh_campaign_for_page')) {
 if (!function_exists('amnesty_is_clh_petition_tunnel_active')) {
     function amnesty_is_clh_petition_tunnel_active(): bool
     {
+        // TODO CLH-29: remove with the temporary ?clh_state= testing toggle.
+        $state_override = amnesty_get_clh_state_override();
+
+        if ($state_override !== null) {
+            return $state_override;
+        }
+
         $clh_page = amnesty_get_clh_petition_campaign_page();
 
         return $clh_page !== null && amnesty_get_active_clh_campaign_for_page($clh_page->ID) !== null;
