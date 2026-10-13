@@ -66,6 +66,48 @@ if (!function_exists('update_field')) {
     }
 }
 
+if (!function_exists('__')) {
+    /**
+     * Stub for __(): returns the text untranslated.
+     */
+    function __(string $text, string $domain = 'default'): string
+    {
+        return $text;
+    }
+}
+
+if (!function_exists('wp_date')) {
+    /**
+     * Stub for wp_date(): formats in the PHP default timezone instead of the
+     * site's.
+     */
+    function wp_date(string $format, ?int $timestamp = null): string
+    {
+        return date($format, $timestamp ?? time());
+    }
+}
+
+if (!function_exists('wp_unslash')) {
+    /**
+     * Stub for wp_unslash(): strips the slashes WordPress adds to request data.
+     */
+    function wp_unslash(mixed $value): mixed
+    {
+        return is_string($value) ? stripslashes($value) : $value;
+    }
+}
+
+if (!function_exists('sanitize_text_field')) {
+    /**
+     * Stub for sanitize_text_field(): strips tags and trims, enough for
+     * values that only need to survive sanitization unchanged.
+     */
+    function sanitize_text_field(string $str): string
+    {
+        return trim(strip_tags($str));
+    }
+}
+
 if (!function_exists('is_wp_error')) {
     function is_wp_error(mixed $thing): bool
     {

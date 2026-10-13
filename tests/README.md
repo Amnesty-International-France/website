@@ -66,6 +66,34 @@ processus. Les fichiers de test qui partagent une fonction de production la
 chargent donc avec `require_once`, et isolent leurs données en recréant leurs
 doubles dans `setUp()` plutôt qu'en redéclarant des fonctions globales.
 
+### DataProvider
+
+Regrouper dans un seul test `#[DataProvider]` les tests qui partagent la même
+logique et ne diffèrent que par leurs entrées ou leur résultat attendu.
+Nommer chaque cas avec `yield 'libellé' => [...]`, pour qu'un échec indique
+le cas concerné.
+
+```php
+#[DataProvider('digitsCases')]
+public function testIsDigits(mixed $value, bool $expected): void
+{
+    self::assertSame($expected, amnesty_clh_is_digits($value));
+}
+
+/**
+ * @return iterable<string, array{mixed, bool}>
+ */
+public static function digitsCases(): iterable
+{
+    yield 'digits' => ['2024', true];
+    yield 'decimal' => ['2024.5', false];
+    yield 'thousands separator' => ['2 024', false];
+}
+```
+
+Voir `tests/Clh/ClhCampaignFinalResultsTest.php` et
+`tests/Clh/ClhFieldsValidationTest.php`.
+
 ### Test d'intégration de la sync CLI Salesforce (`test:salesforce-sync`)
 
 La signature d'une pétition (`amnesty_handle_petition_signature()`) n'appelle

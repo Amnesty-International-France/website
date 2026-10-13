@@ -27,7 +27,9 @@ All the code lives in the theme, `wp-content/themes/humanity-theme`.
 - **Campaign page**: the `changez-leur-histoire` page carries the campaign settings as
   ACF fields (group "Highlight", `includes/post-types/clh.php`):
   - `highlight_clh`: the "Temps fort" switch, which turns the campaign on;
-  - `start_date_highligth_clh` and `end_date_highlight_clh`: the campaign window.
+  - `start_date_highligth_clh` and `end_date_highlight_clh`: the campaign window;
+  - `final_signatures_clh` and `campaign_year_clh`: the results shown once the campaign
+    has ended.
   The page is found with `amnesty_get_clh_petition_campaign_page()`.
 - **Campaign petitions**: a petition belongs to the campaign when its ACF field
   `clh_petition` is checked. Each petition has a signature count
@@ -115,11 +117,11 @@ Donation link of the page, carrying the page's own origin code (CLH-23, CLH-35).
 
 ### `amnesty_get_clh_campaign_final_results(): ?array`
 
-Status: not available yet (CLH-29).
+Status: implemented.
 
 End-of-campaign results entered in the back-office, for the indicator of an ended
-campaign (CLH-29, CLH-1). `null` when there is no campaign page or when one of the two
-values is missing.
+campaign (CLH-29, CLH-1). `null` when there is no campaign page, or when one of the two
+values is missing or not a whole number.
 
 | Key | Type | Meaning |
 |---|---|---|
@@ -128,13 +130,11 @@ values is missing.
 
 ## Testing the page
 
-Two temporary URL parameters, without any access check, force the page into a given
-situation. They combine: `?clh_state=ended&clh_scenario=no_petitions`.
+The campaign state follows the page settings: switch "Temps fort" off, or move the end
+date into the past, to see the ended campaign.
 
-- `clh_state` forces the campaign state, site-wide (it is read by
-  `amnesty_is_clh_petition_tunnel_active()`, so it also opens or closes the tunnel):
-  `in_progress` or `ended`.
-- `clh_scenario` picks the data returned by the hard-coded helpers:
+A temporary URL parameter, without any access check, `clh_scenario`, picks the data
+returned by the hard-coded helpers (e.g. `?clh_scenario=no_petitions`):
 
 | Scenario | Effect |
 |---|---|
