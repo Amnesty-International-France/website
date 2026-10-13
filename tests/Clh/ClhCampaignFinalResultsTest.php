@@ -6,17 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/clh/helpers.php';
-
-if (!function_exists('amnesty_get_clh_petition_campaign_page')) {
-    /**
-     * Stand-in for the lookup of includes/post-types/petitions.php, which caches its result for
-     * the whole run: returns the page seeded in $GLOBALS['__phpunit_clh_campaign_page'].
-     */
-    function amnesty_get_clh_petition_campaign_page(): ?object
-    {
-        return $GLOBALS['__phpunit_clh_campaign_page'] ?? null;
-    }
-}
+require_once __DIR__ . '/petitions-stand-ins.php';
 
 final class ClhCampaignFinalResultsTest extends TestCase
 {

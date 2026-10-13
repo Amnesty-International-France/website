@@ -38,7 +38,7 @@ if (!function_exists('amnesty_get_clh_scenario')) {
     /**
      * Data scenario of the hard-coded helpers, chosen through the URL (?clh_scenario=).
      *
-     * TODO CLH-28: temporary, remove it with the last hard-coded helper.
+     * TODO CLH-31 / CLH-34: temporary, remove it with the last hard-coded helper.
      *
      * @return string the scenario name, "default" when none is given
      */
@@ -54,31 +54,72 @@ if (!function_exists('amnesty_get_clh_scenario')) {
     }
 }
 
+if (!defined('AMNESTY_CLH_DEFAULT_PETITION_TARGET')) {
+    // Signature target of a petition whose own target is empty, as on the petition cards and in the tunnel.
+    define('AMNESTY_CLH_DEFAULT_PETITION_TARGET', 200_000);
+}
+
+if (!function_exists('amnesty_get_clh_campaign_timestamps')) {
+    /**
+     * Start and end of the campaign window set on the campaign page.
+     *
+     * @param int $page_id the campaign page ID
+     *
+     * @return array{start: int, end: int} Unix timestamps, 0 when a date is missing or invalid
+     */
+    function amnesty_get_clh_campaign_timestamps(int $page_id): array
+    {
+        $start_date = get_field('start_date_highligth_clh', $page_id);
+        $end_date = get_field('end_date_highlight_clh', $page_id);
+
+        return [
+            'start' => $start_date ? (int) strtotime((string) $start_date) : 0,
+            'end' => $end_date ? (int) strtotime((string) $end_date) : 0,
+        ];
+    }
+}
+
 if (!function_exists('amnesty_get_clh_campaign_figures')) {
     /**
      * Figures of the current campaign, for the banner and the progress indicator.
      *
-     * TODO CLH-28 / CLH-1: hard-coded; compute them from the campaign page and its petitions.
+     * Days are rounded up, so the last day counts as 1. The remaining time is 0 when the
+     * campaign is not in progress; the totals are computed in every state.
      *
      * @return array{days_remaining: int, seconds_remaining: int, span_days: int, signatures: int, target: int, percentage: int}
+     *         all 0 when there is no campaign page; percentage is capped at 100
      */
     function amnesty_get_clh_campaign_figures(): array
     {
-        [$days_remaining, $signatures, $target] = match (amnesty_get_clh_scenario()) {
-            'no_petitions' => [12, 0, 0],
-            'last_day' => [1, 1_843_250, 2_000_000],
-            'goal_exceeded' => [12, 2_150_000, 2_000_000],
-            default => [12, 1_243_567, 2_000_000],
-        };
+        $figures = array_fill_keys(['days_remaining', 'seconds_remaining', 'span_days', 'signatures', 'target', 'percentage'], 0);
+        $clh_page = amnesty_get_clh_petition_campaign_page();
 
-        return [
-            'days_remaining' => $days_remaining,
-            'seconds_remaining' => $days_remaining * 86_400 - 3_600,
-            'span_days' => 45,
-            'signatures' => $signatures,
-            'target' => $target,
-            'percentage' => $target > 0 ? (int) min(100, floor($signatures / $target * 100)) : 0,
-        ];
+        if ($clh_page === null) {
+            return $figures;
+        }
+
+        ['start' => $start, 'end' => $end] = amnesty_get_clh_campaign_timestamps((int) $clh_page->ID);
+
+        if (amnesty_is_clh_petition_tunnel_active()) {
+            $figures['seconds_remaining'] = max(0, $end - time());
+            $figures['days_remaining'] = (int) ceil($figures['seconds_remaining'] / DAY_IN_SECONDS);
+        }
+
+        if ($start > 0 && $end > $start) {
+            $figures['span_days'] = (int) ceil(($end - $start) / DAY_IN_SECONDS);
+        }
+
+        foreach (amnesty_get_clh_campaign_petitions() as $petition) {
+            $figures['signatures'] += amnesty_get_petition_signature_count($petition->ID);
+            $figures['target'] += (int) get_field('objectif_signatures', $petition->ID) ?: AMNESTY_CLH_DEFAULT_PETITION_TARGET;
+        }
+
+        if ($figures['target'] > 0) {
+            // Integer division: a float ratio such as 0.29 floors to 28.
+            $figures['percentage'] = min(100, intdiv($figures['signatures'] * 100, $figures['target']));
+        }
+
+        return $figures;
     }
 }
 

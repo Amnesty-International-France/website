@@ -59,19 +59,21 @@ the hard-coded bodies without changing them. Each hard-coded body is marked with
 
 ### `amnesty_get_clh_campaign_figures(): array`
 
-Status: hard-coded (TODO CLH-28, CLH-1).
+Status: implemented.
 
 Figures of the current campaign, for the banner and the progress indicator (CLH-28,
-CLH-1).
+CLH-1). All the values are 0 when there is no campaign page.
 
 | Key | Type | Meaning |
 |---|---|---|
-| `days_remaining` | `int` | Days left before the end date; 1 on the last day. |
-| `seconds_remaining` | `int` | Seconds left before the end date, for a live countdown. |
-| `span_days` | `int` | Length of the campaign in days, from start to end date. |
+| `days_remaining` | `int` | Days left before the end date, rounded up: 1 on the last day; 0 when the campaign is not in progress. |
+| `seconds_remaining` | `int` | Seconds left before the end date, for a live countdown; 0 when the campaign is not in progress. |
+| `span_days` | `int` | Length of the campaign in days, from start to end date, rounded up; 0 when a date is missing or the end is not after the start. |
 | `signatures` | `int` | Signatures of all the campaign petitions. |
-| `target` | `int` | Sum of the targets of all the campaign petitions; 0 without petitions. |
-| `percentage` | `int` | `signatures` / `target`, from 0 to 100; capped at 100, 0 when `target` is 0. |
+| `target` | `int` | Sum of the targets of all the campaign petitions, a petition without target counting 200,000; 0 without petitions. |
+| `percentage` | `int` | `signatures` / `target`, rounded down, from 0 to 100; capped at 100, 0 when `target` is 0. |
+
+`signatures`, `target` and `percentage` are computed in both states.
 
 ### `amnesty_get_clh_grid_petitions(): array`
 
@@ -128,6 +130,16 @@ values is missing or not a whole number.
 | `signatures` | `int` | Final signature count; 0 is a valid value. |
 | `year` | `int` | Campaign year. |
 
+## Progress indicator
+
+The sticky "Temps fort" indicator (CLH-1) reads existing helpers only:
+
+- state: `amnesty_is_clh_petition_tunnel_active()`;
+- in progress: `amnesty_get_clh_campaign_figures()` (`days_remaining`, `signatures`,
+  `target`, `percentage`); the "Je signe" button links to
+  `amnesty_get_clh_petition_tunnel_url()`, and the tunnel picks the petition;
+- ended: `amnesty_get_clh_campaign_final_results()`; `null` means no indicator at all.
+
 ## Testing the page
 
 The campaign state follows the page settings: switch "Temps fort" off, or move the end
@@ -138,11 +150,9 @@ returned by the hard-coded helpers (e.g. `?clh_scenario=no_petitions`):
 
 | Scenario | Effect |
 |---|---|
-| `no_petitions` | No petition: empty grid, figures at 0. |
+| `no_petitions` | Empty grid. |
 | `few_petitions` | 6 petitions in the grid. |
 | `no_photo` | One petition and one testimonial without photo. |
-| `last_day` | 1 day remaining. |
-| `goal_exceeded` | More signatures than the target. |
 | `no_testimonials` | No testimonial. |
 | `single_testimonial` | One testimonial only. |
 

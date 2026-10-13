@@ -60,46 +60,6 @@ final class ClhHelpersTest extends TestCase
         self::assertSame('no_petitions', amnesty_get_clh_scenario());
     }
 
-    public function testCampaignFiguresShape(): void
-    {
-        $figures = amnesty_get_clh_campaign_figures();
-
-        self::assertSame(
-            ['days_remaining', 'seconds_remaining', 'span_days', 'signatures', 'target', 'percentage'],
-            array_keys($figures),
-        );
-        self::assertContainsOnlyInt($figures);
-        self::assertSame((int) min(100, floor($figures['signatures'] / $figures['target'] * 100)), $figures['percentage']);
-    }
-
-    public function testCampaignFiguresWithoutPetitionsAreZero(): void
-    {
-        $_GET['clh_scenario'] = 'no_petitions';
-
-        $figures = amnesty_get_clh_campaign_figures();
-
-        self::assertSame(0, $figures['signatures']);
-        self::assertSame(0, $figures['target']);
-        self::assertSame(0, $figures['percentage']);
-    }
-
-    public function testCampaignFiguresOnLastDay(): void
-    {
-        $_GET['clh_scenario'] = 'last_day';
-
-        self::assertSame(1, amnesty_get_clh_campaign_figures()['days_remaining']);
-    }
-
-    public function testCampaignFiguresCapPercentageWhenGoalExceeded(): void
-    {
-        $_GET['clh_scenario'] = 'goal_exceeded';
-
-        $figures = amnesty_get_clh_campaign_figures();
-
-        self::assertGreaterThan($figures['target'], $figures['signatures']);
-        self::assertSame(100, $figures['percentage']);
-    }
-
     public function testGridPetitionsShape(): void
     {
         $petitions = amnesty_get_clh_grid_petitions();
