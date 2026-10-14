@@ -54,8 +54,9 @@ helpers below are in `includes/clh/helpers.php`.
 ## Page helpers
 
 Their names and return shapes are the ones the page can rely on: the real logic replaces
-the hard-coded bodies without changing them. Each hard-coded body is marked with a
-`TODO CLH-` comment.
+the hard-coded bodies without changing them, except `amnesty_get_clh_testimonials()`,
+which takes the block attributes. Each hard-coded body is marked with a `TODO CLH-`
+comment.
 
 ### `amnesty_get_clh_campaign_figures(): array`
 
@@ -94,13 +95,24 @@ empty list when the campaign has no petitions.
 | `url` | `string` | Petition page ("Voir la pétition"). |
 | `sign_url` | `string` | Entry into the signature tunnel on this petition ("Signer la pétition"). |
 
-### `amnesty_get_clh_testimonials(): array`
+### `amnesty_get_clh_testimonials(array $attributes): array`
 
-Status: hard-coded (TODO CLH-34).
+Status: implemented; not called by a block yet.
 
-Testimonials of the "Ils vous disent merci" block (CLH-33, CLH-34), grouped by year:
-`array<int $year, list<testimonial>>`, oldest year first. An empty array without
-testimonials. Each testimonial:
+Testimonials of the "Ils vous disent merci" block (CLH-33, CLH-34), read from the
+`testimonials` attribute of the `amnesty-core/clh-testimonials` block. Each entry of that
+attribute holds `year` (digit string as the editor stores it, or int), `name`, `country`,
+`activity`, `quote`, `description` (strings) and `imageId` (attachment ID); the editor
+requires them all and validates them
+(`private/src/scripts/editor/clh/testimonial-validation.js`).
+
+Returns `array<int $year, list<testimonial>>`, one key per year from the oldest
+testimonial's year to the current year, oldest first; a year without testimonial maps to
+`[]`. Testimonials keep their entry order within a year. Testimonials whose year is not
+written with digits, or falls outside `amnesty_get_clh_campaign_year_range()` (from
+`AMNESTY_CLH_FIRST_CAMPAIGN_YEAR` to the current year), are ignored. An empty array
+without testimonials. A missing value, which the editor prevents, becomes `''` or 0. Texts are
+returned as entered, unescaped: escape them on output (`esc_html()`). Each testimonial:
 
 | Key | Type |
 |---|---|
@@ -109,7 +121,7 @@ testimonials. Each testimonial:
 | `activity` | `string` |
 | `quote` | `string` |
 | `description` | `string` |
-| `image_id` | `int`, 0 without photo |
+| `image_id` | `int`, attachment ID of the photo |
 
 ### `amnesty_get_clh_donation_url(): string`
 
@@ -152,9 +164,7 @@ returned by the hard-coded helpers (e.g. `?clh_scenario=no_petitions`):
 |---|---|
 | `no_petitions` | Empty grid. |
 | `few_petitions` | 6 petitions in the grid. |
-| `no_photo` | One petition and one testimonial without photo. |
-| `no_testimonials` | No testimonial. |
-| `single_testimonial` | One testimonial only. |
+| `no_photo` | One petition without photo. |
 
-The hard-coded petitions and testimonials show the latest image of the media library;
-without any image in the library, they have no photo.
+The hard-coded petitions show the latest image of the media library; without any image in
+the library, they have no photo.

@@ -26,6 +26,7 @@ import './editor/blocks/card-image-text/index.jsx';
 import './editor/blocks/carousel/index.jsx';
 import './editor/blocks/change-their-history-toc/index.jsx';
 import './editor/blocks/chapo/index.jsx';
+import './editor/blocks/clh-testimonials/index.jsx';
 import './editor/blocks/content-callout/index.jsx';
 import './editor/blocks/core-mods';
 import './editor/blocks/download-go-further/index.jsx';
