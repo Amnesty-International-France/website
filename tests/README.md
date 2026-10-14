@@ -6,7 +6,7 @@ autres :
 | Couche | Outil | Où | Lancer |
 |---|---|---|---|
 | PHP unitaire | PHPUnit | `tests/<Domaine>/` | `composer run test:<domaine>` |
-| JS unitaire | Vitest | `private/tests/scripts/modules/` | `cd private && yarn test` |
+| JS unitaire | Vitest | `private/tests/scripts/` | `cd private && yarn test` |
 | End-to-end | Playwright | `private/tests/e2e/` | voir [section dédiée](#tests-e2e-playwright) |
 
 Tout tourne aussi en CI (`.github/workflows/ci.yml`, jobs `php-checks` et
@@ -136,9 +136,9 @@ la découverte agrégée de PHPUnit et des IDE.
 
 ### Où et comment
 
-Les tests vivent dans `private/tests/scripts/modules/`, un fichier
-`<module>.test.js` par module de `private/src/scripts/modules/<module>.js`.
-Environnement `jsdom` (voir `private/vitest.config.js`).
+Un test reprend le chemin de son fichier source sous `private/src/scripts/` :
+`private/tests/scripts/modules/<module>.test.js` pour
+`private/src/scripts/modules/<module>.js`. Environnement `jsdom` (voir `private/vitest.config.js`).
 
 ```
 cd private
