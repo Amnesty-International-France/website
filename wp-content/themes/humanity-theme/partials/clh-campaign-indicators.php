@@ -11,7 +11,7 @@ $goal       = max( 0, (int) ( $args['goal'] ?? 0 ) );
 $sign_url   = (string) ( $args['sign_url'] ?? '' );
 $countdown  = (bool) ( $args['show_countdown'] ?? true );
 $button     = (string) ( $args['button_variant'] ?? 'bg-yellow' );
-$percentage = $goal > 0 ? (int) min( round( $collected / $goal * 100 ), 100 ) : 0;
+$percentage = max( 0, min( 100, (int) ( $args['percentage'] ?? 0 ) ) );
 $goal_met   = $goal > 0 && $collected >= $goal;
 
 // L'anneau se vide au fil de la campagne : plein au premier jour, vide à la date de fin.

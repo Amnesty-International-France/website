@@ -1,61 +1,43 @@
 <?php
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
-// Bandeau jaune des signatures, en campagne, ou du total de l'année une fois la campagne terminée.
-// `sign_button` affiche « Je signe » en campagne : le bandeau du haut s'en passe, celui du bas le
-// garde.
-$sign_button = (bool) ( $args['sign_button'] ?? true );
+$variant         = $args['variant'] ?? 'banner';
+$is_sticky       = 'sticky' === $variant;
+$active_campaign = amnesty_is_clh_petition_tunnel_active();
+$final_results   = $active_campaign ? null : amnesty_get_clh_campaign_final_results();
 
-$page_id         = (int) get_the_ID();
-$active_campaign = amnesty_get_active_clh_campaign_for_page( $page_id );
-
-$petitions = amnesty_get_clh_campaign_petitions();
-$collected = 0;
-$goal      = 0;
-
-foreach ( $petitions as $petition ) {
-	$goal      += (int) get_post_meta( $petition->ID, 'objectif_signatures', true );
-	$collected += amnesty_get_petition_signature_count( $petition->ID );
+// Une campagne sans bilan complet n'affiche aucun bandeau, même en sticky.
+if (! $active_campaign && null === $final_results) {
+    return;
 }
 
-$start_date = (string) get_field( 'start_date_highligth_clh', $page_id );
-$end_date   = (string) get_field( 'end_date_highlight_clh', $page_id );
-
-// Hors campagne, le total de l'année prend la place du compteur.
-if ( ! $active_campaign ) {
-	get_template_part(
-		'partials/clh-closed-band',
-		null,
-		[
-			'year'       => $end_date ? (int) wp_date( 'Y', strtotime( $end_date ) ) : (int) wp_date( 'Y' ),
-			'signatures' => amnesty_get_clh_final_signatures( $page_id, $collected ),
-		]
-	);
-
-	return;
-}
-
-$remaining = max( 0, strtotime( $end_date ) - time() );
-$sign_url  = function_exists( 'amnesty_get_clh_petition_tunnel_url' ) ? amnesty_get_clh_petition_tunnel_url() : '';
+$figures = $active_campaign ? amnesty_get_clh_campaign_figures() : [];
 
 ?>
 
-<div class="clh-band" data-clh-reveal>
-	<?php
-	get_template_part(
-		'partials/clh-campaign-indicators',
-		null,
-		[
-			'variant'        => 'banner',
-			'button_variant' => 'outline-black',
-			'days'           => (int) ceil( $remaining / DAY_IN_SECONDS ),
-			'span'           => $start_date ? (int) ceil( ( strtotime( $end_date ) - strtotime( $start_date ) ) / DAY_IN_SECONDS ) : 0,
-			'seconds'        => $remaining,
-			'collected'      => $collected,
-			'goal'           => $goal,
-			'sign_url'       => $sign_button ? $sign_url : '',
-		]
-	);
-	?>
+<div class="<?php echo $is_sticky ? 'clh-sticky-bar' : 'clh-band'; ?>" <?php echo $is_sticky ? 'data-clh-sticky-bar hidden' : 'data-clh-reveal'; ?>>
+	<?php if ($active_campaign) : ?>
+		<div class="<?php echo $is_sticky ? 'clh-sticky-bar-inner' : 'clh-band-inner'; ?>">
+			<?php
+            get_template_part(
+                'partials/clh-campaign-indicators',
+                null,
+                [
+                    'variant'        => $variant,
+                    'button_variant' => $is_sticky ? 'bg-black' : 'outline-black',
+                    'days'           => $figures['days_remaining'],
+                    'span'           => $figures['span_days'],
+                    'seconds'        => $figures['seconds_remaining'],
+                    'collected'      => $figures['signatures'],
+                    'goal'           => $figures['target'],
+                    'percentage'     => $figures['percentage'],
+                    'sign_url'       => amnesty_get_clh_petition_tunnel_url(),
+                ]
+            );
+	    ?>
+		</div>
+	<?php else : ?>
+		<?php get_template_part('partials/clh-closed-band', null, $final_results); ?>
+	<?php endif; ?>
 </div>

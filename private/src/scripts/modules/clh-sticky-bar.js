@@ -1,38 +1,54 @@
 const StickyBar = () => {
   const bar = document.querySelector('[data-clh-sticky-bar]');
-  // La barre ne sert que dans l'intervalle : elle prend le relais du bandeau de la
-  // bannière, et se retire dès qu'un bandeau, le plateau de la frise ou le bloc de don
-  // entre à l'écran. La frise se parcourt année par année, la barre recouvrirait le
-  // panneau ouvert. Sur un téléphone le bloc de don remplit l'écran à lui seul, sans que
-  // le bandeau au-dessus ne soit encore visible.
-  const anchors = document.querySelectorAll('.clh-band, .clh-timeline-dial, .clh-donation');
-  if (!bar || !anchors.length) return;
+  const page = document.querySelector('.page-change-their-history');
+  const banner = page?.querySelector('.clh-band');
+  // Sans témoignage, le don (ou le partage) devient le point d'arrêt.
+  const stop =
+    page?.querySelector('.clh-timeline') ??
+    page?.querySelector('.clh-donation') ??
+    page?.querySelector('.clh-share');
+  if (!bar || !banner || !stop) return;
 
-  // L'attribut couvre le cas sans JS. La transition d'entrée demande que l'élément soit
-  // rendu, c'est la classe qui le montre ensuite.
+  const header = document.querySelector('.page-header');
+  const adminBar = document.querySelector('#wpadminbar');
   bar.hidden = false;
+  stop.classList.add('has-clh-sticky-stop');
 
-  const visible = new Set();
+  const update = () => {
+    // L'en-tête revient lorsqu'on remonte : le bandeau se place alors en dessous.
+    const offset = Math.max(
+      0,
+      header?.getBoundingClientRect().bottom ?? 0,
+      adminBar?.getBoundingClientRect().bottom ?? 0,
+    );
+    const height = bar.getBoundingClientRect().height;
+    stop.style.setProperty('--clh-sticky-height', `${height}px`);
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          visible.add(entry.target);
-        } else {
-          visible.delete(entry.target);
-        }
-      });
+    // À l'arrivée de la frise en haut, le bandeau suit son bord supérieur et sort
+    // de l'écran avec elle. Il ne réapparaît donc ni au don, ni au pied de page.
+    const top = Math.min(offset, stop.getBoundingClientRect().top);
+    const shown = banner.getBoundingClientRect().bottom <= offset && top + height > offset;
+    bar.style.top = `${top}px`;
+    bar.classList.toggle('is-in', shown);
+    bar.inert = !shown;
+  };
 
-      const shown = visible.size === 0;
+  let scheduled = false;
+  const schedule = () => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      update();
+    });
+  };
 
-      bar.classList.toggle('is-in', shown);
-      document.body.classList.toggle('has-clh-sticky-bar', shown);
-    },
-    { threshold: 0 },
-  );
-
-  anchors.forEach((anchor) => observer.observe(anchor));
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  const resize = new ResizeObserver(schedule);
+  [bar, page, header, adminBar].filter(Boolean).forEach((element) => resize.observe(element));
+  if (header) new MutationObserver(schedule).observe(header, { attributes: true });
+  update();
 };
 
 export default StickyBar;
