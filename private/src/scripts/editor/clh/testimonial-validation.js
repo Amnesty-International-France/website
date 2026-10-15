@@ -75,3 +75,27 @@ export const validateTestimonial = (testimonial, currentYear) => {
 
   return errors;
 };
+
+export const TESTIMONIALS_BLOCK_NAME = 'amnesty-core/clh-testimonials';
+
+const isInvalidTestimonial = (testimonial, currentYear) =>
+  typeof testimonial !== 'object' ||
+  testimonial === null ||
+  Object.keys(validateTestimonial(testimonial, currentYear)).length > 0;
+
+/**
+ * @param {Object[]} blocks blocks as the editor stores or parse() return them, inner blocks included
+ * @param {number} currentYear the latest year allowed
+ *
+ * @return {boolean} whether a testimonials block, at any depth, holds an invalid testimonial
+ */
+export const hasInvalidTestimonials = (blocks, currentYear) =>
+  blocks.some(
+    (block) =>
+      (block.name === TESTIMONIALS_BLOCK_NAME &&
+        Array.isArray(block.attributes?.testimonials) &&
+        block.attributes.testimonials.some((testimonial) =>
+          isInvalidTestimonial(testimonial, currentYear),
+        )) ||
+      hasInvalidTestimonials(block.innerBlocks ?? [], currentYear),
+  );

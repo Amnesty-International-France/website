@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   FIRST_TESTIMONIAL_YEAR,
   TESTIMONIAL_MAX_LENGTHS,
+  TESTIMONIALS_BLOCK_NAME,
+  hasInvalidTestimonials,
   remainingCharacters,
   validateTestimonial,
 } from '../../../../src/scripts/editor/clh/testimonial-validation';
@@ -123,5 +125,52 @@ describe('validateTestimonial', () => {
       'quote',
       'year',
     ]);
+  });
+});
+
+describe('hasInvalidTestimonials', () => {
+  const testimonialsBlock = (testimonials) => ({
+    name: TESTIMONIALS_BLOCK_NAME,
+    attributes: { testimonials },
+    innerBlocks: [],
+  });
+  const group = (innerBlocks) => ({ name: 'core/group', attributes: {}, innerBlocks });
+  const invalidTestimonial = () => ({ ...validTestimonial(), name: '' });
+
+  it('is false without any testimonials block', () => {
+    expect(hasInvalidTestimonials([group([])], FIXED_CURRENT_YEAR)).toBe(false);
+  });
+
+  it('is false when every testimonial is valid', () => {
+    const blocks = [testimonialsBlock([validTestimonial()]), testimonialsBlock([])];
+
+    expect(hasInvalidTestimonials(blocks, FIXED_CURRENT_YEAR)).toBe(false);
+  });
+
+  it('is true when a testimonial is invalid', () => {
+    const blocks = [testimonialsBlock([validTestimonial(), invalidTestimonial()])];
+
+    expect(hasInvalidTestimonials(blocks, FIXED_CURRENT_YEAR)).toBe(true);
+  });
+
+  it('finds an invalid testimonial in a nested block', () => {
+    const blocks = [group([group([testimonialsBlock([invalidTestimonial()])])])];
+
+    expect(hasInvalidTestimonials(blocks, FIXED_CURRENT_YEAR)).toBe(true);
+  });
+
+  it('ignores the testimonials attribute of other blocks', () => {
+    const blocks = [{ ...testimonialsBlock([invalidTestimonial()]), name: 'core/group' }];
+
+    expect(hasInvalidTestimonials(blocks, FIXED_CURRENT_YEAR)).toBe(false);
+  });
+
+  it.each([
+    ['null', null],
+    ['a string', 'testimonial'],
+  ])('treats a testimonial that is %s as invalid', (label, testimonial) => {
+    expect(hasInvalidTestimonials([testimonialsBlock([testimonial])], FIXED_CURRENT_YEAR)).toBe(
+      true,
+    );
   });
 });

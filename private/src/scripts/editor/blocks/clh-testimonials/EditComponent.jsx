@@ -7,8 +7,7 @@ import {
 const { __, _n, sprintf } = wp.i18n;
 const { useBlockProps, MediaUpload, MediaUploadCheck } = wp.blockEditor;
 const { Button, Card, CardBody, CardHeader, TextControl, TextareaControl } = wp.components;
-const { useDispatch, useSelect } = wp.data;
-const { useEffect } = wp.element;
+const { useSelect } = wp.data;
 
 const EMPTY_TESTIMONIAL = {
   year: '',
@@ -74,38 +73,12 @@ const PhotoPicker = ({ imageId, error, onChange }) => {
   );
 };
 
-const EditComponent = ({ attributes, setAttributes, clientId }) => {
+const EditComponent = ({ attributes, setAttributes }) => {
   const { testimonials = [] } = attributes;
   const currentYear = new Date().getFullYear();
   const errors = testimonials.map((testimonial) => validateTestimonial(testimonial, currentYear));
+  // The saving locks live in the clh-testimonials-validation editor plugin.
   const isInvalid = errors.some((testimonialErrors) => Object.keys(testimonialErrors).length > 0);
-  const { lockPostSaving, unlockPostSaving, lockPostAutosaving, unlockPostAutosaving } =
-    useDispatch('core/editor');
-  const lockName = `clh-testimonials-${clientId}`;
-
-  // The saving lock does not stop autosaves, which overwrite a draft for its author.
-  useEffect(() => {
-    const unlock = () => {
-      unlockPostSaving(lockName);
-      unlockPostAutosaving(lockName);
-    };
-
-    if (isInvalid) {
-      lockPostSaving(lockName);
-      lockPostAutosaving(lockName);
-    } else {
-      unlock();
-    }
-
-    return unlock;
-  }, [
-    isInvalid,
-    lockName,
-    lockPostSaving,
-    unlockPostSaving,
-    lockPostAutosaving,
-    unlockPostAutosaving,
-  ]);
 
   const updateTestimonial = (index, key, value) => {
     setAttributes({
