@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 $variant         = $args['variant'] ?? 'banner';
 $is_sticky       = 'sticky' === $variant;
+$is_reminder     = 'reminder' === $variant;
 $active_campaign = amnesty_is_clh_petition_tunnel_active();
 $final_results   = $active_campaign ? null : amnesty_get_clh_campaign_final_results();
 
@@ -16,7 +17,7 @@ $figures = $active_campaign ? amnesty_get_clh_campaign_figures() : [];
 
 ?>
 
-<div class="<?php echo $is_sticky ? 'clh-sticky-bar' : 'clh-band'; ?>" <?php echo $is_sticky ? 'data-clh-sticky-bar hidden' : 'data-clh-reveal'; ?>>
+<div class="<?php echo $is_sticky ? 'clh-sticky-bar' : 'clh-band'; ?>" <?php echo $is_sticky ? 'data-clh-sticky-bar hidden' : ($is_reminder ? 'data-clh-reminder' : 'data-clh-reveal'); ?>>
 	<?php if ($active_campaign) : ?>
 		<div class="<?php echo $is_sticky ? 'clh-sticky-bar-inner' : 'clh-band-inner'; ?>">
 			<?php
@@ -28,7 +29,6 @@ $figures = $active_campaign ? amnesty_get_clh_campaign_figures() : [];
                     'button_variant' => $is_sticky ? 'bg-black' : 'outline-black',
                     'days'           => $figures['days_remaining'],
                     'span'           => $figures['span_days'],
-                    'seconds'        => $figures['seconds_remaining'],
                     'collected'      => $figures['signatures'],
                     'goal'           => $figures['target'],
                     'percentage'     => $figures['percentage'],

@@ -63,6 +63,51 @@ afterEach(() => {
 });
 
 describe('CLH sticky indicator', () => {
+  it('hands over to the in-flow reminder without overlap, then returns on upward scroll', () => {
+    const reminder = document.createElement('div');
+    reminder.setAttribute('data-clh-reminder', '');
+    document.querySelector('.clh-timeline').before(reminder);
+    reminder.getBoundingClientRect = () => ({ top: stopTop });
+    bannerBottom = -100;
+    StickyBar();
+
+    stopTop = 181;
+    scroll();
+    expect(bar.classList.contains('is-in')).toBe(true);
+    expect(bar.style.top).toBe('80px');
+    stopTop = 180;
+    scroll();
+    expect(bar.classList.contains('is-in')).toBe(false);
+    expect(bar.inert).toBe(true);
+    expect(reminder.hidden).toBe(false);
+    expect(reminder.inert).not.toBe(true);
+    expect(document.querySelector('.has-clh-sticky-stop')).toBeNull();
+
+    stopTop = -2000;
+    scroll();
+    expect(bar.classList.contains('is-in')).toBe(false);
+    stopTop = 300;
+    scroll();
+    expect(bar.classList.contains('is-in')).toBe(true);
+    expect(bar.inert).toBe(false);
+  });
+
+  it('recomputes the handover when the header or sticky height changes', () => {
+    const reminder = document.createElement('div');
+    reminder.setAttribute('data-clh-reminder', '');
+    document.querySelector('.clh-timeline').before(reminder);
+    reminder.getBoundingClientRect = () => ({ top: 220 });
+    bannerBottom = -100;
+    StickyBar();
+    expect(bar.classList.contains('is-in')).toBe(true);
+    headerBottom = 112;
+    bar.getBoundingClientRect = () => ({ height: 120 });
+    resize();
+    vi.advanceTimersByTime(20);
+    expect(bar.classList.contains('is-in')).toBe(false);
+    expect(reminder.style.getPropertyValue('--clh-sticky-height')).toBe('');
+  });
+
   it('takes over below the header only after the banner leaves, then returns to the banner', () => {
     StickyBar();
     expect(bar.classList.contains('is-in')).toBe(false);
@@ -126,5 +171,35 @@ describe('CLH sticky indicator', () => {
     bar.remove();
     expect(() => StickyBar()).not.toThrow();
     expect(document.querySelector('.has-clh-sticky-stop')).toBeNull();
+  });
+
+  it('stays below the admin bar when the site header scrolls out', () => {
+    const adminBar = document.createElement('div');
+    adminBar.id = 'wpadminbar';
+    adminBar.getBoundingClientRect = () => ({ bottom: 32 });
+    document.body.prepend(adminBar);
+    bannerBottom = -100;
+    headerBottom = -80;
+    StickyBar();
+    expect(bar.style.top).toBe('32px');
+    expect(bar.inert).toBe(false);
+    headerBottom = 112;
+    scroll();
+    expect(bar.style.top).toBe('112px');
+  });
+
+  it('stops at sharing when testimonials and donation are absent', () => {
+    document.querySelector('.clh-timeline').remove();
+    document.querySelector('.clh-donation').remove();
+    const share = document.querySelector('.clh-share');
+    share.getBoundingClientRect = () => ({ top: stopTop });
+    bannerBottom = -100;
+    StickyBar();
+    expect(share.classList.contains('has-clh-sticky-stop')).toBe(true);
+    expect(bar.classList.contains('is-in')).toBe(true);
+    stopTop = -200;
+    scroll();
+    expect(bar.classList.contains('is-in')).toBe(false);
+    expect(bar.inert).toBe(true);
   });
 });

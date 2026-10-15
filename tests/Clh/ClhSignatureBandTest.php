@@ -34,6 +34,9 @@ final class ClhSignatureBandTest extends TestCase
         self::assertStringContainsString('aria-valuenow="99"', $html);
         self::assertStringContainsString('aria-valuemax="100"', $html);
         self::assertStringContainsString('Je signe', $html);
+        self::assertStringContainsString('href="/changez-leur-histoire/campagne/"', $html);
+        self::assertStringContainsString('sur un objectif de 200 000 signatures', $html);
+        self::assertStringContainsString('99 %', $html);
     }
 
     #[DataProvider('variants')]
@@ -46,6 +49,8 @@ final class ClhSignatureBandTest extends TestCase
         self::assertStringContainsString('250 000', $html);
         self::assertStringContainsString('aria-valuenow="100"', $html);
         self::assertStringContainsString('aria-valuemax="100"', $html);
+        self::assertStringContainsString('100 %', $html);
+        self::assertStringNotContainsString('Objectif atteint', $html);
     }
 
     #[DataProvider('variants')]
@@ -56,6 +61,25 @@ final class ClhSignatureBandTest extends TestCase
         $html = $this->render($variant);
         self::assertStringContainsString('aria-valuenow="0"', $html);
         self::assertStringContainsString('aria-valuemax="100"', $html);
+        self::assertStringContainsString('sur un objectif de 0 signatures', $html);
+        self::assertStringContainsString('0 %', $html);
+    }
+
+    #[DataProvider('dayCounts')]
+    public function testDayLabelAndRingUseTheProvidedFigures(int $days, string $label): void
+    {
+        ob_start();
+        get_template_part('partials/clh-campaign-indicators', null, ['days' => $days, 'span' => 20]);
+        $html = ob_get_clean();
+        self::assertStringContainsString($label, $html);
+        self::assertStringContainsString('--clh-ring: ' . ($days / 20), $html);
+        self::assertStringNotContainsString('data-countdown', $html);
+    }
+
+    public static function dayCounts(): iterable
+    {
+        yield 'last day' => [1, '1 jour restant'];
+        yield 'several days' => [10, '10 jours restants'];
     }
 
     #[DataProvider('variants')]
@@ -68,7 +92,7 @@ final class ClhSignatureBandTest extends TestCase
         self::assertStringNotContainsString('2026', $html);
         self::assertStringNotContainsString('progressbar', $html);
         self::assertStringNotContainsString('Je signe', $html);
-        self::assertStringNotContainsString('data-clh-countdown', $html);
+        self::assertStringNotContainsString('clh-countdown', $html);
         if ('sticky' === $variant) {
             self::assertStringContainsString('data-clh-sticky-bar', $html);
         }
@@ -98,15 +122,27 @@ final class ClhSignatureBandTest extends TestCase
         self::assertSame('field_6a4d2c8e1b7f1', array_values($fields)[0]['key']);
     }
 
+    public function testReminderIsVisibleWithoutJavaScriptOrRevealAnimation(): void
+    {
+        $GLOBALS['__phpunit_clh_tunnel_active'] = true;
+        $html = $this->render('reminder');
+        self::assertStringContainsString('class="clh-band" data-clh-reminder', $html);
+        self::assertStringNotContainsString('data-clh-sticky-bar', $html);
+        self::assertStringNotContainsString('data-clh-reveal', $html);
+        self::assertStringNotContainsString(' hidden', $html);
+        self::assertStringContainsString('href="/changez-leur-histoire/campagne/"', $html);
+    }
+
     public static function variants(): iterable
     {
         yield 'banner' => ['banner'];
         yield 'sticky' => ['sticky'];
+        yield 'reminder' => ['reminder'];
     }
 
     public static function incompleteResults(): iterable
     {
-        foreach (['banner', 'sticky'] as $variant) {
+        foreach (['banner', 'sticky', 'reminder'] as $variant) {
             foreach (['final_signatures_clh', 'campaign_year_clh'] as $missing) {
                 yield "$variant without $missing" => [$variant, $missing];
             }

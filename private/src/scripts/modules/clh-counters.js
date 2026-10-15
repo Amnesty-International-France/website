@@ -141,6 +141,10 @@ const glide = (element, from, target, duration, render) => {
 // Le nombre d'arrivée est celui que PHP a rendu : on le lit dans le DOM plutôt que de
 // reformater côté JS, sinon le séparateur de milliers change au dernier cadre.
 const count = (element) => {
+  // Un compteur masqué par le responsive garde son texte : mesurer sa largeur à zéro
+  // pour l'animation décalerait ses chiffres lorsqu'il redevient visible.
+  if (element.getBoundingClientRect().width === 0) return;
+
   const parts = element.textContent.trim().match(NUMBER);
 
   if (!parts) return;
