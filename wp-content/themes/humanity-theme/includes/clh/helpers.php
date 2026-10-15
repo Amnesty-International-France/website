@@ -34,24 +34,6 @@ if (!function_exists('amnesty_get_clh_placeholder_image_id')) {
     }
 }
 
-if (!function_exists('amnesty_get_clh_state_override')) {
-    /**
-     * Campaign state forced through the URL, to test both states of the page.
-     *
-     * TODO CLH-29: temporary testing toggle (?clh_state=in_progress|ended), no guard; remove it.
-     *
-     * @return bool|null true for in progress, false for ended, null when not forced
-     */
-    function amnesty_get_clh_state_override(): ?bool
-    {
-        return match ($_GET['clh_state'] ?? null) {
-            'in_progress' => true,
-            'ended' => false,
-            default => null,
-        };
-    }
-}
-
 if (!function_exists('amnesty_get_clh_scenario')) {
     /**
      * Data scenario of the hard-coded helpers, chosen through the URL (?clh_scenario=).
@@ -96,6 +78,52 @@ if (!function_exists('amnesty_get_clh_campaign_figures')) {
             'signatures' => $signatures,
             'target' => $target,
             'percentage' => $target > 0 ? (int) min(100, floor($signatures / $target * 100)) : 0,
+        ];
+    }
+}
+
+if (!function_exists('amnesty_clh_is_digits')) {
+    /**
+     * Whether a value is a whole number written with digits only
+     * (no sign, separator or decimal).
+     *
+     * @param mixed $value the value to check
+     *
+     * @return bool
+     */
+    function amnesty_clh_is_digits(mixed $value): bool
+    {
+        return (is_int($value) && $value >= 0) || (is_string($value) && ctype_digit($value));
+    }
+}
+
+if (!function_exists('amnesty_get_clh_campaign_final_results')) {
+    /**
+     * End-of-campaign results entered in the page settings, for the indicator
+     * of the ended campaign.
+     *
+     * @return array{signatures: int, year: int}|null null when there is no
+     *         campaign page, or when one value is missing or not a whole
+     *         number
+     */
+    function amnesty_get_clh_campaign_final_results(): ?array
+    {
+        $clh_page = amnesty_get_clh_petition_campaign_page();
+
+        if ($clh_page === null) {
+            return null;
+        }
+
+        $signatures = get_field('final_signatures_clh', $clh_page->ID);
+        $year = get_field('campaign_year_clh', $clh_page->ID);
+
+        if (!amnesty_clh_is_digits($signatures) || !amnesty_clh_is_digits($year)) {
+            return null;
+        }
+
+        return [
+            'signatures' => (int) $signatures,
+            'year' => (int) $year,
         ];
     }
 }

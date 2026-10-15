@@ -2,6 +2,18 @@
 
 declare(strict_types=1);
 
+if (!defined('AMNESTY_CLH_START_DATE_FIELD_KEY')) {
+    define('AMNESTY_CLH_START_DATE_FIELD_KEY', 'field_6a159135fec38');
+}
+
+if (!defined('AMNESTY_CLH_FINAL_SIGNATURES_MAX')) {
+    define('AMNESTY_CLH_FINAL_SIGNATURES_MAX', 99_999_999);
+}
+
+if (!defined('AMNESTY_CLH_FIRST_CAMPAIGN_YEAR')) {
+    define('AMNESTY_CLH_FIRST_CAMPAIGN_YEAR', 2001);
+}
+
 add_action('acf/include_fields', function () {
     if (!function_exists('acf_add_local_field_group')) {
         return;
@@ -29,7 +41,7 @@ add_action('acf/include_fields', function () {
                 'ui_off_text' => '',
             ],
             [
-                'key' => 'field_6a159135fec38',
+                'key' => AMNESTY_CLH_START_DATE_FIELD_KEY,
                 'label' => 'Date de début',
                 'name' => 'start_date_highligth_clh',
                 'aria-label' => '',
@@ -172,6 +184,42 @@ add_action('acf/include_fields', function () {
                 'rows' => '',
                 'placeholder' => '',
                 'new_lines' => '',
+            ],
+            [
+                'key' => 'field_6a4d2c8e1b7f1',
+                'label' => 'Nombre de signatures final',
+                'name' => 'final_signatures_clh',
+                'aria-label' => '',
+                // A text input, not a number one: browsers send an empty value for "1 000" in a number
+                // input, so the server-side check could not reject it.
+                'type' => 'text',
+                'instructions' => 'Affiché quand la campagne est terminée. Chiffres uniquement, sans espace (ex. : 1250000). L\'indicateur reste masqué tant que le nombre de signatures et l\'année ne sont pas tous deux renseignés.',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => ['width' => '', 'class' => '', 'id' => ''],
+                'default_value' => '',
+                'maxlength' => '',
+                'allow_in_bindings' => 0,
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+            ],
+            [
+                'key' => 'field_6a4d2c8e1b7f2',
+                'label' => 'Année de la campagne',
+                'name' => 'campaign_year_clh',
+                'aria-label' => '',
+                'type' => 'text',
+                'instructions' => 'Affichée quand la campagne est terminée. L\'indicateur reste masqué tant que le nombre de signatures et l\'année ne sont pas tous deux renseignés.',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => ['width' => '', 'class' => '', 'id' => ''],
+                'default_value' => '',
+                'maxlength' => '',
+                'allow_in_bindings' => 0,
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
             ],
         ],
         'location' => [

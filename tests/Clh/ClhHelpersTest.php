@@ -48,32 +48,6 @@ final class ClhHelpersTest extends TestCase
         self::assertSame([self::LATEST_IMAGE_ID], array_values(array_unique(array_column(amnesty_get_clh_grid_petitions(), 'image_id'))));
     }
 
-    public function testStateOverrideIsNullWithoutParameter(): void
-    {
-        self::assertNull(amnesty_get_clh_state_override());
-    }
-
-    public function testStateOverrideForcesInProgress(): void
-    {
-        $_GET['clh_state'] = 'in_progress';
-
-        self::assertTrue(amnesty_get_clh_state_override());
-    }
-
-    public function testStateOverrideForcesEnded(): void
-    {
-        $_GET['clh_state'] = 'ended';
-
-        self::assertFalse(amnesty_get_clh_state_override());
-    }
-
-    public function testStateOverrideIgnoresUnknownValue(): void
-    {
-        $_GET['clh_state'] = 'paused';
-
-        self::assertNull(amnesty_get_clh_state_override());
-    }
-
     public function testScenarioIsDefaultWithoutParameter(): void
     {
         self::assertSame('default', amnesty_get_clh_scenario());

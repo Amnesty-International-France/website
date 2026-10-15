@@ -265,6 +265,7 @@ require_once realpath(__DIR__ . '/includes/post-types/actualities-my-space.php')
 require_once realpath(__DIR__ . '/includes/post-types/alert-banner.php');
 require_once realpath(__DIR__ . '/includes/post-types/clh.php');
 require_once realpath(__DIR__ . '/includes/clh/helpers.php');
+require_once realpath(__DIR__ . '/includes/clh/fields.php');
 // endregion post types
 
 /**
