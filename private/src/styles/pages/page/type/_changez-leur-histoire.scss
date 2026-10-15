@@ -480,41 +480,36 @@
 // Elle reprend le bandeau de la bannière, même jaune, même noir, même hiérarchie, d'un
 // cran plus petit : c'est le même objet qui suit la lecture, pas un second dispositif.
 
-body.has-clh-sticky-bar .page-change-their-history {
-  padding-bottom: 128px;
-}
-
 .clh-sticky-bar {
   position: fixed;
   inset-inline: 0;
-  bottom: 0;
+  top: 0;
   z-index: 30;
   background-color: var(--wp--preset--color--primary);
   color: var(--wp--preset--color--black);
-  border-top: 4px solid var(--wp--preset--color--black);
-
-  // La barre glisse depuis le bas quand elle prend le relais du bandeau. `visibility`
-  // attend la fin de la sortie, et la retire du parcours clavier le reste du temps.
-  transform: translateY(100%);
+  border-bottom: 4px solid var(--wp--preset--color--black);
   visibility: hidden;
-  transition:
-    transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 0s 280ms;
 
-  // Sans JS l'attribut reste posé et la barre ne s'affiche jamais.
   &[hidden] {
     display: none;
   }
 
   &.is-in {
-    transform: none;
     visibility: visible;
-    transition-delay: 0s;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
+  .clh-band-closed-inner {
+    padding-block: 20px;
   }
+
+  .clh-band-closed-number {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+}
+
+// Réserve la place du bandeau lorsqu'il rejoint la frise et défile avec elle.
+.page-change-their-history .has-clh-sticky-stop {
+  padding-top: calc(var(--clh-section-gap) + var(--clh-sticky-height));
 }
 
 .clh-sticky-bar-inner {
@@ -601,19 +596,16 @@ body.has-clh-sticky-bar .page-change-their-history {
     background-color: var(--wp--preset--color--black);
   }
 
-  // Sur un téléphone la colonne du milieu passe sur trois lignes, dans l'ordre de lecture : le
-  // compteur, son objectif, puis la barre et son pourcentage. Les jours et le bouton en prennent
-  // toute la hauteur.
-  @media (max-width: $container-sm) {
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
+  // Les jours restent dans la bannière ; sur mobile le sticky n'a pas de bouton.
+  @media (max-width: 767px) {
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-rows: auto auto auto;
     column-gap: 12px;
     row-gap: 2px;
 
-    --clh-ring-size: 60px;
-
-    .clh-countdown {
-      grid-row: 1 / -1;
+    .clh-countdown,
+    .clh-indicators-action {
+      display: none;
     }
 
     .clh-signatures-count {
@@ -621,20 +613,20 @@ body.has-clh-sticky-bar .page-change-their-history {
     }
 
     .clh-signatures-collected {
-      grid-column: 2 / 4;
+      grid-column: 1 / -1;
       grid-row: 1;
       font-size: 1.375rem;
     }
 
     .clh-signatures-goal {
-      grid-column: 2 / 4;
+      grid-column: 1 / -1;
       grid-row: 2;
       font-size: 0.75rem;
       line-height: 1.2;
     }
 
     .progress-bar-container {
-      grid-column: 2;
+      grid-column: 1;
       grid-row: 3;
       height: 14px;
       margin-top: 8px;
@@ -642,22 +634,17 @@ body.has-clh-sticky-bar .page-change-their-history {
     }
 
     .clh-signatures-percent {
-      grid-column: 3;
+      grid-column: 2;
       grid-row: 3;
       margin-top: 8px;
       font-size: 1.125rem;
     }
+  }
+}
 
-    .clh-indicators-action {
-      grid-row: 1 / -1;
-      align-self: stretch;
-      display: flex;
-    }
-
-    .custom-button .content.medium {
-      font-size: 15px;
-      padding: 10px 16px;
-    }
+@media (max-width: 767px) {
+  .clh-band .clh-indicators-action {
+    display: none;
   }
 }
 

@@ -263,15 +263,6 @@ if (!function_exists('amnesty_get_clh_petition_campaign_page')) {
     }
 }
 
-if (!function_exists('amnesty_get_clh_final_signatures')) {
-    function amnesty_get_clh_final_signatures(int $page_id, int $counted): int
-    {
-        $final = (int) get_field('final_signatures_clh', $page_id);
-
-        return $final > 0 ? $final : $counted;
-    }
-}
-
 if (!function_exists('amnesty_get_active_clh_campaign_for_page')) {
     function amnesty_get_active_clh_campaign_for_page(int $page_id): ?WP_Post
     {

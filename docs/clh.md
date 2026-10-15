@@ -140,6 +140,23 @@ The sticky "Temps fort" indicator (CLH-1) reads existing helpers only:
   `amnesty_get_clh_petition_tunnel_url()`, and the tunnel picks the petition;
 - ended: `amnesty_get_clh_campaign_final_results()`; `null` means no indicator at all.
 
+The banner and its sticky version share `partials/clh-signature-band.php`, which
+passes the helpers' values to the presentation partials without recalculating targets
+or percentages. A final result of 0 is valid; either missing value suppresses both
+versions. The ACF field `final_signatures_clh` is registered once, with key
+`field_6a4d2c8e1b7f1`.
+
+The sticky indicator takes over once the banner has scrolled above the visible site
+header. It sits below that header (and the WordPress admin bar), then scrolls out with
+the top of `.clh-timeline`. Without that section, it stops at `.clh-donation`, or
+`.clh-share` if the donation section is absent. Below 768 px, the sticky version hides
+the day counter and sign button; the day counter remains in the banner. Without JS,
+the regular banner remains available.
+
+The editorial placeholders in `clh-good-news.php`, `clh-victories-timeline.php` and
+the testimonial helper still need to be replaced through CLH-32 / CLH-34 and removed
+under CLH-39; the campaign figures and final results integration does not replace them.
+
 ## Testing the page
 
 The campaign state follows the page settings: switch "Temps fort" off, or move the end
