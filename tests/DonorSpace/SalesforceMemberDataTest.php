@@ -81,13 +81,6 @@ final class SalesforceMemberDataTest extends TestCase
             }
         }
 
-        if (!function_exists('get_permalink')) {
-            function get_permalink(object|int $post): string
-            {
-                return 'https://wordpress.example.test/connectez-vous/';
-            }
-        }
-
         if (!function_exists('add_filter')) {
             function add_filter(string $hook, callable $callback, int $priority = 10, int $accepted_args = 1): void
             {
@@ -162,7 +155,8 @@ final class SalesforceMemberDataTest extends TestCase
         $GLOBALS['__phpunit_queried_object'] = (object) ['ID' => 42, 'post_name' => 'content'];
         $GLOBALS['__phpunit_post_ancestors'] = [];
         $GLOBALS['__phpunit_user_capabilities'] = [];
-        $GLOBALS['wp'] = (object) ['request' => 'mon-espace/mes-dons'];
+        $GLOBALS['__phpunit_post_permalinks'] = [1 => 'https://wordpress.example.test/connectez-vous/'];
+        $GLOBALS['wp'] =(object) ['request' => 'mon-espace/mes-dons'];
     }
 
     public function testTransportErrorIsReturnedWithoutOutput(): void

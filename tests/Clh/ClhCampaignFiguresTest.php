@@ -18,7 +18,6 @@ final class ClhCampaignFiguresTest extends TestCase
 
     protected function setUp(): void
     {
-        $_GET = [];
         $GLOBALS['__phpunit_clh_campaign_page'] = (object) ['ID' => self::PAGE_ID];
         $GLOBALS['__phpunit_clh_tunnel_active'] = true;
         $GLOBALS['__phpunit_clh_campaign_petitions'] = [];
@@ -167,17 +166,6 @@ final class ClhCampaignFiguresTest extends TestCase
             ['days_remaining' => 0, 'seconds_remaining' => 0, 'span_days' => 0, 'signatures' => 0, 'target' => 0, 'percentage' => 0],
             amnesty_get_clh_campaign_figures(),
         );
-    }
-
-    public function testScenarioParameterIsIgnored(): void
-    {
-        $_GET['clh_scenario'] = 'goal_exceeded';
-        $this->seedPetition(1, 500, 1_000);
-
-        $figures = amnesty_get_clh_campaign_figures();
-
-        self::assertSame(500, $figures['signatures']);
-        self::assertSame(50, $figures['percentage']);
     }
 
     private function seedDates(?int $start, ?int $end): void

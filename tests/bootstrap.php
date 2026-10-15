@@ -164,6 +164,35 @@ if (!function_exists('get_post_permalink')) {
     }
 }
 
+if (!function_exists('get_permalink')) {
+    /**
+     * Stub for get_permalink(), reading the same seeds as get_post_permalink()
+     * (above): $GLOBALS['__phpunit_post_permalinks'][$post_id].
+     */
+    function get_permalink(object|int $post = 0): string|false
+    {
+        $post_id = is_object($post) ? $post->ID : $post;
+
+        return $GLOBALS['__phpunit_post_permalinks'][$post_id] ?? false;
+    }
+}
+
+if (!function_exists('get_post_thumbnail_id')) {
+    $GLOBALS['__phpunit_post_thumbnail_ids'] = [];
+
+    /**
+     * Stub for get_post_thumbnail_id(). Tests seed an attachment ID via
+     * $GLOBALS['__phpunit_post_thumbnail_ids'][$post_id]; anything not seeded
+     * resolves to 0 (matching WordPress when the post has no thumbnail).
+     */
+    function get_post_thumbnail_id(object|int|null $post = null): int|false
+    {
+        $post_id = is_object($post) ? $post->ID : (int) $post;
+
+        return $GLOBALS['__phpunit_post_thumbnail_ids'][$post_id] ?? 0;
+    }
+}
+
 if (!function_exists('sanitize_email')) {
     /**
      * Simplified stand-in for WordPress's sanitize_email() (which strips
