@@ -153,9 +153,15 @@ the top of `.clh-timeline`. Without that section, it stops at `.clh-donation`, o
 the day counter and sign button; the day counter remains in the banner. Without JS,
 the regular banner remains available.
 
-The editorial placeholders in `clh-good-news.php`, `clh-victories-timeline.php` and
-the testimonial helper still need to be replaced through CLH-32 / CLH-34 and removed
-under CLH-39; the campaign figures and final results integration does not replace them.
+The editorial placeholders in `clh-good-news.php` and `clh-victories-timeline.php`
+still need to be removed under CLH-39. On `sprint/page-clh`, #1199 (CLH-34) already
+implements `amnesty_get_clh_testimonials(array $attributes)` from the
+`amnesty-core/clh-testimonials` block settings; that helper no longer needs replacing.
+After integrating #1199, CLH-33 must render the timeline from that block through the
+helper, keep `.clh-timeline` as the sticky stop, and remove the template's provisional
+timeline pattern to avoid rendering both versions. CLH-32 must use the editable key
+figures block for the good news section, so removing it leaves no empty section.
+The campaign figures and final results integration does not replace this work.
 
 ## Testing the page
 

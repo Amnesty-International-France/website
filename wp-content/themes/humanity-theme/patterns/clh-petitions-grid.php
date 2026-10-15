@@ -20,6 +20,11 @@ if ( ! $petitions ) {
 $end_date     = (string) get_field( 'end_date_highlight_clh', $page_id );
 $edition_year = $end_date ? (int) wp_date( 'Y', strtotime( $end_date ) ) : (int) wp_date( 'Y' );
 
+if ( ! $active_campaign ) {
+	$final_results = amnesty_get_clh_campaign_final_results();
+	$edition_year  = $final_results['year'] ?? $edition_year;
+}
+
 $heading = $active_campaign
 	? sprintf(
 		/* translators: %s: année de la campagne. */
