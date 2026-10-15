@@ -105,6 +105,7 @@
       height: 100%;
       background-color: var(--wp--preset--color--black);
       transition: width 0.5s ease-in-out;
+      transform-origin: left center;
     }
 
     .supports {

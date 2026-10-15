@@ -56,6 +56,9 @@ import { emptyInputNewsletterLead, handleNewsletterSubmission } from './modules/
 import GoPetitionsForm from './modules/Form/go-petition-form';
 import { closeAlertBanner } from './modules/alert-banner';
 import Countdown from './modules/countdown-clh';
+import StickyBar from './modules/clh-sticky-bar';
+import Counters from './modules/clh-counters';
+import Timeline from './modules/clh-timeline';
 
 const App = () => {
   browserDetector();
@@ -111,6 +114,9 @@ const App = () => {
   GoPetitionsForm();
   closeAlertBanner();
   Countdown();
+  StickyBar();
+  Counters();
+  Timeline();
   getPetitionIdForCLH();
   stepperTunnelClh();
 
