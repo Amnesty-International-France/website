@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/clh/helpers.php';
 
 /**
- * The CLH helpers still return hard-coded data: these tests pin their return
- * shapes, so the front-end can rely on them until the real logic lands.
+ * Return shapes of the CLH page helpers, which the front-end relies on, and the
+ * normalisation of the testimonials entered in the block.
  */
 final class ClhHelpersTest extends TestCase
 {
-    private const TESTIMONIAL_KEYS = ['name', 'country', 'activity', 'quote', 'description', 'image_id'];
-
     private const GRID_PETITION_KEYS = ['id', 'title', 'short_title', 'image_id', 'signatures', 'target', 'percentage', 'url', 'sign_url'];
 
     private const LATEST_IMAGE_ID = 42;
@@ -103,58 +102,147 @@ final class ClhHelpersTest extends TestCase
         self::assertContains(0, array_column(amnesty_get_clh_grid_petitions(), 'image_id'));
     }
 
-    public function testTestimonialsShape(): void
+    public function testTestimonialsAreGroupedByYearFromTheOldestToTheCurrentYear(): void
     {
-        $testimonials = amnesty_get_clh_testimonials();
+        $current_year = (int) date('Y');
 
-        self::assertNotEmpty($testimonials);
+        $testimonials = amnesty_get_clh_testimonials(['testimonials' => [
+            self::testimonial(2022, 'Personne A'),
+            self::testimonial(2020, 'Personne B'),
+        ]]);
 
-        $years = array_keys($testimonials);
-        self::assertContainsOnlyInt($years);
-        $sorted = $years;
-        sort($sorted);
-        self::assertSame($sorted, $years);
-
-        foreach ($testimonials as $year_testimonials) {
-            self::assertTrue(array_is_list($year_testimonials));
-
-            foreach ($year_testimonials as $testimonial) {
-                self::assertSame(self::TESTIMONIAL_KEYS, array_keys($testimonial));
-                self::assertIsInt($testimonial['image_id']);
-                self::assertNotSame(0, $testimonial['image_id']);
-            }
-        }
+        self::assertSame(range(2020, $current_year), array_keys($testimonials));
+        self::assertSame(['Personne B'], array_column($testimonials[2020], 'name'));
+        self::assertSame([], $testimonials[2021]);
+        self::assertSame(['Personne A'], array_column($testimonials[2022], 'name'));
     }
 
-    public function testTestimonialsHaveAYearWithSeveralTestimonials(): void
+    public function testTestimonialsKeepTheFirstCampaignYearAndTheCurrentYear(): void
     {
-        self::assertGreaterThan(1, max(array_map('count', amnesty_get_clh_testimonials())));
+        $current_year = (int) date('Y');
+
+        $testimonials = amnesty_get_clh_testimonials(['testimonials' => [
+            self::testimonial($current_year, 'Personne A'),
+            self::testimonial(2001, 'Personne B'),
+        ]]);
+
+        self::assertSame(range(2001, $current_year), array_keys($testimonials));
+        self::assertSame(['Personne B'], array_column($testimonials[2001], 'name'));
+        self::assertSame(['Personne A'], array_column($testimonials[$current_year], 'name'));
     }
 
-    public function testTestimonialsWithoutTestimonialsIsEmpty(): void
+    public function testTestimonialsOfTheSameYearKeepTheirEntryOrder(): void
     {
-        $_GET['clh_scenario'] = 'no_testimonials';
+        $testimonials = amnesty_get_clh_testimonials(['testimonials' => [
+            self::testimonial(2023, 'Personne B'),
+            self::testimonial(2023, 'Personne A'),
+        ]]);
 
-        self::assertSame([], amnesty_get_clh_testimonials());
+        self::assertSame(['Personne B', 'Personne A'], array_column($testimonials[2023], 'name'));
     }
 
-    public function testTestimonialsWithSingleTestimonial(): void
+    /**
+     * @param array<string, mixed> $entry
+     * @param array<string, int|string> $expected
+     */
+    #[DataProvider('outputOfATestimonialCases')]
+    public function testTestimonialOutput(array $entry, array $expected): void
     {
-        $_GET['clh_scenario'] = 'single_testimonial';
+        $testimonials = amnesty_get_clh_testimonials(['testimonials' => [$entry]]);
 
-        $testimonials = amnesty_get_clh_testimonials();
-
-        self::assertCount(1, $testimonials);
-        self::assertCount(1, reset($testimonials));
+        self::assertArrayHasKey(2023, $testimonials);
+        self::assertSame([$expected], $testimonials[2023]);
     }
 
-    public function testTestimonialsWithoutPhoto(): void
+    /**
+     * @return iterable<string, array{array<string, mixed>, array<string, int|string>}>
+     */
+    public static function outputOfATestimonialCases(): iterable
     {
-        $_GET['clh_scenario'] = 'no_photo';
+        yield 'complete testimonial' => [
+            [
+                'year' => 2023,
+                'name' => 'Personne A',
+                'country' => 'Pays A',
+                'activity' => 'Journaliste',
+                'quote' => 'Merci.',
+                'description' => 'Libérée en 2023.',
+                'imageId' => 7,
+            ],
+            [
+                'name' => 'Personne A',
+                'country' => 'Pays A',
+                'activity' => 'Journaliste',
+                'quote' => 'Merci.',
+                'description' => 'Libérée en 2023.',
+                'image_id' => 7,
+            ],
+        ];
+        yield 'missing keys' => [
+            ['year' => '2023'],
+            [
+                'name' => '',
+                'country' => '',
+                'activity' => '',
+                'quote' => '',
+                'description' => '',
+                'image_id' => 0,
+            ],
+        ];
+        yield 'non-scalar text' => [
+            [...self::testimonial(2023, 'Personne A'), 'name' => ['Personne A']],
+            [
+                'name' => '',
+                'country' => 'Pays',
+                'activity' => 'Défenseure des droits humains',
+                'quote' => 'Merci.',
+                'description' => 'Libérée après une mobilisation internationale.',
+                'image_id' => 7,
+            ],
+        ];
+    }
 
-        $image_ids = array_column(array_merge(...array_values(amnesty_get_clh_testimonials())), 'image_id');
+    #[DataProvider('ignoredTestimonialCases')]
+    public function testTestimonialIsIgnored(mixed $ignored): void
+    {
+        $testimonials = amnesty_get_clh_testimonials(['testimonials' => [
+            $ignored,
+            self::testimonial(2010, 'Personne A'),
+        ]]);
 
-        self::assertContains(0, $image_ids);
+        self::assertSame(range(2010, (int) date('Y')), array_keys($testimonials));
+        self::assertSame(['Personne A'], array_column(array_merge(...array_values($testimonials)), 'name'));
+    }
+
+    /**
+     * @return iterable<string, array{mixed}>
+     */
+    public static function ignoredTestimonialCases(): iterable
+    {
+        yield 'year before the first campaign' => [self::testimonial(2000, 'Personne B')];
+        yield 'year after the current year' => [self::testimonial((int) date('Y') + 1, 'Personne B')];
+        yield 'year not a number' => [self::testimonial('abcd', 'Personne B')];
+        yield 'year followed by letters' => [self::testimonial('2020abc', 'Personne B')];
+        yield 'year with a leading space' => [self::testimonial(' 2020', 'Personne B')];
+        yield 'year with decimals' => [self::testimonial('2020.5', 'Personne B')];
+        yield 'missing year' => [['name' => 'Personne B']];
+        yield 'not an array' => ['Personne B'];
+    }
+
+    #[DataProvider('noTestimonialCases')]
+    public function testTestimonialsAreEmptyWithoutTestimonial(array $attributes): void
+    {
+        self::assertSame([], amnesty_get_clh_testimonials($attributes));
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>}>
+     */
+    public static function noTestimonialCases(): iterable
+    {
+        yield 'missing attribute' => [[]];
+        yield 'empty list' => [['testimonials' => []]];
+        yield 'only ignored testimonials' => [['testimonials' => [self::testimonial(2000, 'Personne A')]]];
     }
 
     public function testDonationUrlPointsToTheDonationSiteWithAnOriginCode(): void
@@ -163,5 +251,23 @@ final class ClhHelpersTest extends TestCase
 
         self::assertStringStartsWith('https://soutenir.amnesty.fr/', $url);
         self::assertStringContainsString('reserved_originecode=', $url);
+    }
+
+    /**
+     * A testimonial as the block attribute stores it.
+     *
+     * @return array<string, int|string>
+     */
+    private static function testimonial(int|string $year, string $name): array
+    {
+        return [
+            'year' => $year,
+            'name' => $name,
+            'country' => 'Pays',
+            'activity' => 'Défenseure des droits humains',
+            'quote' => 'Merci.',
+            'description' => 'Libérée après une mobilisation internationale.',
+            'imageId' => 7,
+        ];
     }
 }

@@ -106,7 +106,7 @@ if (!function_exists('amnesty_clh_validate_campaign_year')) {
      */
     function amnesty_clh_validate_campaign_year(bool|string $valid, mixed $value): bool|string
     {
-        return amnesty_clh_validate_integer_between($valid, $value, AMNESTY_CLH_FIRST_CAMPAIGN_YEAR, (int) wp_date('Y'));
+        return amnesty_clh_validate_integer_between($valid, $value, ...amnesty_get_clh_campaign_year_range());
     }
 }
 

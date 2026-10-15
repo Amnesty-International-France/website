@@ -10,9 +10,11 @@ declare(strict_types=1);
  * remain when sprint/page-clh merges into main. See docs/clh.md.
  */
 
+require_once dirname(__DIR__) . '/post-types/clh.php';
+
 if (!function_exists('amnesty_get_clh_placeholder_image_id')) {
     /**
-     * Photo of the hard-coded petitions and testimonials: the latest image of the media library.
+     * Photo of the hard-coded petitions: the latest image of the media library.
      *
      * TODO CLH-31: remove it with the last hard-coded helper.
      *
@@ -38,7 +40,7 @@ if (!function_exists('amnesty_get_clh_scenario')) {
     /**
      * Data scenario of the hard-coded helpers, chosen through the URL (?clh_scenario=).
      *
-     * TODO CLH-31 / CLH-34: temporary, remove it with the last hard-coded helper.
+     * TODO CLH-31: temporary, remove it with the last hard-coded helper.
      *
      * @return string the scenario name, "default" when none is given
      */
@@ -138,6 +140,18 @@ if (!function_exists('amnesty_clh_is_digits')) {
     }
 }
 
+if (!function_exists('amnesty_get_clh_campaign_year_range')) {
+    /**
+     * Years a campaign can be dated with: from the first campaign to the current year.
+     *
+     * @return array{int, int} the first and the last accepted year
+     */
+    function amnesty_get_clh_campaign_year_range(): array
+    {
+        return [AMNESTY_CLH_FIRST_CAMPAIGN_YEAR, (int) wp_date('Y')];
+    }
+}
+
 if (!function_exists('amnesty_get_clh_campaign_final_results')) {
     /**
      * End-of-campaign results entered in the page settings, for the indicator
@@ -214,40 +228,55 @@ if (!function_exists('amnesty_get_clh_grid_petitions')) {
 
 if (!function_exists('amnesty_get_clh_testimonials')) {
     /**
-     * Testimonials of the "Ils vous disent merci" block, grouped by year (oldest first).
+     * Testimonials of the "Ils vous disent merci" block, grouped by year, from the
+     * oldest testimonial's year to the current year.
      *
-     * TODO CLH-34: hard-coded; read them from the block settings.
+     * The editor validates the testimonials; this helper only normalises their shape,
+     * and ignores those whose year is not a campaign year (see
+     * amnesty_get_clh_campaign_year_range()). Texts are returned as entered, unescaped:
+     * escape them on output.
+     *
+     * @param array<string, mixed> $attributes the block attributes; testimonials are
+     *                                         read from "testimonials"
      *
      * @return array<int, list<array{name: string, country: string, activity: string, quote: string, description: string, image_id: int}>>
-     *         image_id is 0 when the testimonial has no photo
+     *         a year without testimonial maps to an empty list; empty when there is
+     *         no testimonial; a missing or non-scalar text is '', a missing photo is 0
      */
-    function amnesty_get_clh_testimonials(): array
+    function amnesty_get_clh_testimonials(array $attributes): array
     {
-        $scenario = amnesty_get_clh_scenario();
-        $image_id = amnesty_get_clh_placeholder_image_id();
+        [$first_year, $current_year] = amnesty_get_clh_campaign_year_range();
+        $text = static fn (mixed $value): string => is_scalar($value) ? (string) $value : '';
+        $by_year = [];
 
-        $testimonial = static fn (string $name, string $country, bool $has_photo = true): array => [
-            'name' => $name,
-            'country' => $country,
-            'activity' => 'Défenseure des droits humains',
-            'quote' => 'Vos lettres m\'ont donné la force de tenir. Merci à chacune et chacun d\'entre vous.',
-            'description' => 'Emprisonnée pour son engagement, elle a été libérée après une mobilisation internationale.',
-            'image_id' => $has_photo ? $image_id : 0,
-        ];
+        foreach ((array) ($attributes['testimonials'] ?? []) as $testimonial) {
+            if (!is_array($testimonial) || !amnesty_clh_is_digits($testimonial['year'] ?? null)) {
+                continue;
+            }
 
-        return match ($scenario) {
-            'no_testimonials' => [],
-            'single_testimonial' => [2024 => [$testimonial('Personne A', 'Pays A')]],
-            default => [
-                2016 => [$testimonial('Personne A', 'Pays A')],
-                2019 => [$testimonial('Personne B', 'Pays B')],
-                2022 => [$testimonial('Personne C', 'Pays C', $scenario !== 'no_photo')],
-                2024 => [
-                    $testimonial('Personne D', 'Pays D'),
-                    $testimonial('Personne E', 'Pays E'),
-                ],
-            ],
-        };
+            $year = (int) $testimonial['year'];
+
+            if ($year < $first_year || $year > $current_year) {
+                continue;
+            }
+
+            $by_year[$year][] = [
+                'name' => $text($testimonial['name'] ?? ''),
+                'country' => $text($testimonial['country'] ?? ''),
+                'activity' => $text($testimonial['activity'] ?? ''),
+                'quote' => $text($testimonial['quote'] ?? ''),
+                'description' => $text($testimonial['description'] ?? ''),
+                'image_id' => (int) ($testimonial['imageId'] ?? 0),
+            ];
+        }
+
+        if ($by_year === []) {
+            return [];
+        }
+
+        $timeline = array_fill_keys(range(min(array_keys($by_year)), $current_year), []);
+
+        return array_replace($timeline, $by_year);
     }
 }
 

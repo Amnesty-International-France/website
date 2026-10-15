@@ -37,6 +37,7 @@ require_once __DIR__ . '/change-their-history-toc/render.php';
 require_once __DIR__ . '/chapo/register.php';
 require_once __DIR__ . '/chip-category/register.php';
 require_once __DIR__ . '/chip-category/render.php';
+require_once __DIR__ . '/clh-testimonials/register.php';
 require_once __DIR__ . '/collapsable/register.php';
 require_once __DIR__ . '/collapsable/render.php';
 require_once __DIR__ . '/content-callout/register.php';
@@ -128,6 +129,7 @@ if (! function_exists('amnesty_register_php_rendered_blocks')) {
         register_card_image_text_block();
         register_chapo_block();
         register_chip_category_block();
+        register_clh_testimonials_block();
         register_collapsable_block();
         register_content_callout_block();
         register_document_card_block();

@@ -11,6 +11,7 @@ if (!defined('AMNESTY_CLH_FINAL_SIGNATURES_MAX')) {
 }
 
 if (!defined('AMNESTY_CLH_FIRST_CAMPAIGN_YEAR')) {
+    // Same bound as FIRST_TESTIMONIAL_YEAR in private/src/scripts/editor/clh/testimonial-validation.js.
     define('AMNESTY_CLH_FIRST_CAMPAIGN_YEAR', 2001);
 }
 
