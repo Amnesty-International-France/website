@@ -1,134 +1,1799 @@
 .page-change-their-history {
+  --clh-grey: #1e282c;
+  --clh-gutter: 24px;
+  --clh-max: 1440px;
+  --clh-section-gap: 72px;
+
   overflow-x: hidden;
+  background-color: var(--wp--preset--color--white);
 
-  & > .page-hero-block {
-    & > .wp-block-group.is-layout-flow.wp-block-group-is-layout-flow {
-      & > .wp-block-image.container--full-width.page-figure.is-stretched {
-        & > img {
-          object-position: center top;
-        }
-      }
-    }
+  @media (max-width: $container-md) {
+    --clh-section-gap: 56px;
   }
+}
 
-  .page-change-their-history-layout {
-    display: flex;
-    gap: 24px;
-    max-width: $container-hg;
+.page-change-their-history ~ .amnesty-footer-template-part .over-footer {
+  display: none;
+}
+
+.clh-section {
+  max-width: var(--clh-max);
+  margin-inline: auto;
+  padding-inline: var(--clh-gutter);
+  padding-block: var(--clh-section-gap);
+}
+
+.clh-section-title {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  text-wrap: balance;
+  margin: 0 0 24px;
+
+  &::after {
+    content: '';
+    display: block;
+    width: 72px;
+    height: 8px;
+    margin-top: 16px;
+    background-color: var(--wp--preset--color--primary);
+  }
+}
+
+// Bannière.
+// Basse, pour que les pétitions entrent dans le premier écran : le titre à gauche, le chapô à
+// droite, sur le gris de la campagne. Le compte à rebours est passé dans le bandeau.
+
+.clh-hero {
+  position: relative;
+  background-color: var(--clh-grey);
+  color: var(--wp--preset--color--white);
+  --clh-hero-pad: clamp(40px, 6vh, 64px);
+
+  padding-block: var(--clh-hero-pad) 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.clh-hero-inner {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: var(--clh-max);
+  margin-inline: auto;
+  padding-block-end: var(--clh-hero-pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+// Le bandeau est soudé au bas de la bannière, pleine largeur, jaune : c'est la seule
+// zone de la page où l'appel à signer est posé sur la couleur de marque.
+.clh-band {
+  position: relative;
+  z-index: 1;
+  background-color: var(--wp--preset--color--primary);
+  color: var(--wp--preset--color--black);
+
+  // `display: contents` sur le bloc signatures hisse ses enfants dans la grille du
+  // bandeau : la barre peut alors courir sous le bouton au lieu de s'arrêter avant lui.
+  .clh-indicators {
+    --clh-ring-size: 116px;
+
+    max-width: var(--clh-max);
     margin-inline: auto;
+    padding: clamp(32px, 5vh, 56px) var(--clh-gutter);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 32px;
+    row-gap: 12px;
+  }
 
-    @media (max-width: $container-lg) {
-      flex-direction: column;
+  .clh-countdown {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+
+  .clh-signatures {
+    display: contents;
+  }
+
+  .clh-signatures-count {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .clh-signatures-percent {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    color: var(--wp--preset--color--black);
+    font-size: clamp(2rem, 3.4vw, 3rem);
+    line-height: 0.88;
+  }
+
+  // Le bouton occupe les deux rangées, à côté de la barre de progression et non au-dessus :
+  // c'est l'appel principal de la page, il ne se lit pas comme une ligne parmi d'autres. Il
+  // garde sa hauteur propre plutôt que de s'étirer, et se pose sur la même ligne basse que
+  // la barre de progression.
+  .clh-indicators-action {
+    grid-column: 4;
+    grid-row: 1 / -1;
+    align-self: end;
+    margin-left: 0;
+  }
+
+  .clh-indicators .progress-bar-container {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    height: 32px;
+    border: 3px solid var(--wp--preset--color--black);
+  }
+
+  .clh-indicators .progress-bar {
+    background-color: var(--wp--preset--color--black);
+  }
+
+  .clh-signatures-collected {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 0.88;
+  }
+
+  .clh-signatures-goal {
+    font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 1;
+  }
+
+  .custom-button:focus-visible {
+    outline-color: var(--wp--preset--color--black);
+  }
+
+  // Le contour a l'épaisseur du cadre de la barre de progression.
+  .custom-button .content.outline-black::before {
+    border-width: 3px;
+  }
+}
+
+// Les deux appels de la page, signer et donner, portent le même bouton : le `medium` du
+// thème fait 18 px, perdu à côté d'un « 67 % » à 48 px.
+.clh-band .custom-button .content.medium,
+.clh-donation .custom-button .content.medium {
+  font-size: 22px;
+  padding: 20px 56px;
+}
+
+.clh-hero-stage {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 3vh, 36px);
+  padding-inline: var(--clh-gutter);
+}
+
+// Le titre est dimensionné sur sa colonne, pas sur la fenêtre : la colonne ne grandit plus
+// une fois le conteneur à 1440 px.
+// Le chapô finit sur la ligne de base d'« Histoire ». Sous 1024 px il passe sous le titre.
+.clh-hero-statement {
+  container-type: inline-size;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: end;
+  gap: 24px clamp(40px, 5vw, 80px);
+
+  @media (max-width: $container-lg) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// La roue du compte à rebours : une colonne par chiffre, la bande des chiffres descend
+// d'un cran par jour. Le chiffre rendu par PHP reste du texte simple tant que le script
+// n'a pas pris la main.
+// Le chiffre passe en boîtes alignées le temps de la roue : une colonne inline ferait
+// dépendre la position du chiffre de l'alignement sur la ligne de base, et la roue
+// décalerait ce qui est en dessous d'elle.
+.is-rolling {
+  display: flex;
+  align-items: flex-start;
+}
+
+.is-rolling .clh-roll {
+  flex: 0 0 auto;
+}
+
+.clh-roll {
+  display: block;
+  overflow: hidden;
+  height: 0.96em;
+}
+
+.clh-roll-strip {
+  display: block;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.clh-roll-digit {
+  display: block;
+  height: 0.96em;
+  line-height: 0.96em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clh-roll-strip {
+    transition: none;
+  }
+}
+
+// Le titre est en Bely, la police de la campagne, en capitales. Le dernier mot porte le titre,
+// en grand sur l'aplat jaune ; les premiers passent au-dessus, à 40 % et interlettrés.
+.clh-hero-title {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: 0.08em;
+  font-family: bely-display, serif;
+  font-weight: normal;
+  text-transform: uppercase;
+  font-size: clamp(3.5rem, 9cqi, 8rem);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  color: var(--wp--preset--color--primary);
+
+  @media (max-width: $container-lg) {
+    font-size: clamp(2.5rem, 15cqi, 6rem);
+  }
+}
+
+.clh-hero-title-line {
+  white-space: nowrap;
+
+  &:first-child:not(.is-marked) {
+    padding-left: 0.04em;
+    font-size: 0.4em;
+    letter-spacing: 0.08em;
+  }
+
+  &.is-marked {
+    padding: 0.06em 0.16em 0.04em;
+    background-color: var(--wp--preset--color--primary);
+    color: var(--clh-grey);
+    box-decoration-break: clone;
+  }
+}
+
+// Sous 640 px le bandeau passe sur deux colonnes : le compteur en tête, la barre et le
+// pourcentage à sa droite, puis le bouton en pleine largeur.
+@media (max-width: $container-sm) {
+  .clh-band .clh-indicators {
+    --clh-ring-size: 88px;
+
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    column-gap: 16px;
+  }
+
+  .clh-band .clh-signatures-count {
+    grid-column: 2 / -1;
+  }
+
+  .clh-band .clh-signatures-goal {
+    line-height: 1.2;
+  }
+
+  .clh-band .clh-indicators .progress-bar-container {
+    grid-column: 2;
+    grid-row: 2;
+    height: 20px;
+  }
+
+  .clh-band .clh-signatures-percent {
+    grid-column: 3;
+    grid-row: 2;
+  }
+
+  // Sur un téléphone le bandeau ne garde que le compteur : la barre collante porte l'appel à
+  // signer dès qu'il sort de l'écran.
+  .clh-band .clh-indicators-action {
+    display: none;
+  }
+
+  .clh-donation .custom-button {
+    flex: 1;
+  }
+
+  .clh-donation .custom-button .content.medium {
+    width: 100%;
+    justify-content: center;
+    font-size: 18px;
+    padding: 16px 28px;
+  }
+}
+
+.clh-hero-standfirst {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
+  line-height: 1.4;
+  text-wrap: pretty;
+  max-width: 40ch;
+  margin: 0;
+  padding-bottom: 0.2em;
+}
+
+// Indicateurs
+
+.clh-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 40px;
+}
+
+// Les jours qui restent, dans un anneau qui se vide au fil de la campagne : plein au premier
+// jour, vide à la date de fin. Le nombre est en Bely, au centre, son unité dessous.
+.clh-countdown {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--clh-ring-size, 116px);
+  aspect-ratio: 1;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--wp--preset--color--black);
+}
+
+.clh-countdown-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+.clh-countdown-track,
+.clh-countdown-arc {
+  fill: none;
+  stroke-width: 9;
+}
+
+.clh-countdown-track {
+  stroke: rgb(0 0 0 / 16%);
+}
+
+.clh-countdown-arc {
+  stroke: currentcolor;
+  stroke-dasharray: var(--clh-ring) 1;
+}
+
+.clh-countdown-value {
+  position: relative;
+  font-family: bely-display, serif;
+  font-weight: normal;
+  font-size: calc(var(--clh-ring-size, 116px) * 0.36);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.clh-countdown-label {
+  position: relative;
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: max(0.625rem, calc(var(--clh-ring-size, 116px) * 0.11));
+  font-weight: bold;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  margin-top: 2px;
+}
+
+.clh-signatures {
+  flex: 1 1 320px;
+  min-width: 260px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: 24px;
+  row-gap: 8px;
+}
+
+.clh-signatures-count {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--wp--preset--font-family--secondary);
+}
+
+.clh-signatures-collected {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: bold;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.clh-signatures-goal {
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+.clh-signatures-percent {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  justify-self: end;
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--wp--preset--color--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.clh-indicators .progress-bar-container {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 18px;
+  border: 2px solid var(--wp--preset--color--white);
+  background-color: transparent;
+  overflow: hidden;
+}
+
+.clh-indicators .progress-bar {
+  height: 100%;
+  background-color: var(--wp--preset--color--primary);
+
+  // La barre se remplit par `scaleX` depuis la gauche, animée en JS : sa largeur reste
+  // celle du pourcentage, rien n'est caché quand le script ne tourne pas.
+  transform-origin: left center;
+}
+
+.clh-hero .custom-button:focus-visible,
+.clh-sticky-bar .custom-button:focus-visible {
+  outline: 3px solid var(--wp--preset--color--white);
+  outline-offset: 2px;
+}
+
+.clh-indicators-action {
+  flex-shrink: 0;
+  margin-left: auto;
+
+  .custom-button-block {
+    padding: 0;
+    width: auto;
+  }
+}
+
+// Le bandeau du haut est soudé au bas de la bannière : il en est la dernière ligne, et se
+// serre. Celui de fin est un bloc à part entière entre deux sections, il respire.
+.clh-sticky-bar + .clh-band .clh-indicators {
+  padding-block: clamp(16px, 2vh, 24px);
+}
+
+// Barre collante.
+// Elle reprend le bandeau de la bannière, même jaune, même noir, même hiérarchie, d'un
+// cran plus petit : c'est le même objet qui suit la lecture, pas un second dispositif.
+
+body.has-clh-sticky-bar .page-change-their-history {
+  padding-bottom: 128px;
+}
+
+.clh-sticky-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 30;
+  background-color: var(--wp--preset--color--primary);
+  color: var(--wp--preset--color--black);
+  border-top: 4px solid var(--wp--preset--color--black);
+
+  // La barre glisse depuis le bas quand elle prend le relais du bandeau. `visibility`
+  // attend la fin de la sortie, et la retire du parcours clavier le reste du temps.
+  transform: translateY(100%);
+  visibility: hidden;
+  transition:
+    transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s 280ms;
+
+  // Sans JS l'attribut reste posé et la barre ne s'affiche jamais.
+  &[hidden] {
+    display: none;
+  }
+
+  &.is-in {
+    transform: none;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.clh-sticky-bar-inner {
+  max-width: var(--clh-max);
+  margin-inline: auto;
+  padding: 14px var(--clh-gutter) 16px;
+}
+
+.clh-indicators--sticky {
+  display: grid;
+  --clh-ring-size: 76px;
+
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 28px;
+  row-gap: 12px;
+
+  // Le même anneau que le bandeau, d'un cran plus petit.
+  .clh-countdown {
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+
+  .clh-signatures {
+    display: contents;
+  }
+
+  .clh-signatures-count {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .clh-signatures-collected {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1;
+  }
+
+  .clh-signatures-goal {
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 1;
+  }
+
+  .clh-signatures-percent {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    line-height: 1;
+    color: var(--wp--preset--color--black);
+  }
+
+  .clh-indicators-action {
+    grid-column: 4;
+    grid-row: 1 / -1;
+    align-self: end;
+    margin-left: 0;
+  }
+
+  .custom-button .content.medium {
+    font-size: 18px;
+    padding: 16px 44px;
+  }
+
+  .custom-button:focus-visible {
+    outline-color: var(--wp--preset--color--black);
+  }
+
+  .progress-bar-container {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    width: 100%;
+    height: 20px;
+    border: 3px solid var(--wp--preset--color--black);
+    background-color: transparent;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background-color: var(--wp--preset--color--black);
+  }
+
+  // Sur un téléphone la colonne du milieu passe sur trois lignes, dans l'ordre de lecture : le
+  // compteur, son objectif, puis la barre et son pourcentage. Les jours et le bouton en prennent
+  // toute la hauteur.
+  @media (max-width: $container-sm) {
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-rows: auto auto auto;
+    column-gap: 12px;
+    row-gap: 2px;
+
+    --clh-ring-size: 60px;
+
+    .clh-countdown {
+      grid-row: 1 / -1;
     }
 
-    @media (min-width: $container-lg) {
-      gap: 100px;
+    .clh-signatures-count {
+      display: contents;
     }
 
-    .page-content {
-      padding-top: 0;
+    .clh-signatures-collected {
+      grid-column: 2 / 4;
+      grid-row: 1;
+      font-size: 1.375rem;
+    }
 
-      &.no-chapo {
-        > :first-child {
-          margin-top: 24px;
+    .clh-signatures-goal {
+      grid-column: 2 / 4;
+      grid-row: 2;
+      font-size: 0.75rem;
+      line-height: 1.2;
+    }
 
-          .wp-block-heading {
-            margin-top: 0;
-          }
-        }
-      }
+    .progress-bar-container {
+      grid-column: 2;
+      grid-row: 3;
+      height: 14px;
+      margin-top: 8px;
+      border-width: 2px;
+    }
 
-      .download-go-further-block,
-      .get-informed-block,
-      .read-also-block,
-      p:not(
-        .wp-block-amnesty-core-chapo p,
-        .wp-block-amnesty-core-section.small p,
-        .wp-block-amnesty-core-section.large p,
-        .download-go-further-block p,
-        .call-to-action-block p,
-        .wp-block-amnesty-core-section-home p,
-        .interactive-map p,
-        .wp-block-amnesty-core-card-image-text p,
-        .petition-card-change-their-history p
-      ),
-      .wp-block-columns,
-      .wp-block-details,
-      .wp-block-heading,
-      .wp-block-list,
-      .wp-block-amnesty-core-action,
-      .wp-block-amnesty-core-quote-block,
-      .wp-block-amnesty-core-image,
-      .wp-block-amnesty-core-section.small,
-      .wp-block-html,
-      .video-block,
-      .card-image-text-block,
-      .read-more-block,
-      .slider-block,
-      div[data-test='contact-form'] p,
-      div[data-test='contact-form'] {
-        max-width: $container-md;
-        margin-left: auto;
-        margin-right: auto;
-      }
+    .clh-signatures-percent {
+      grid-column: 3;
+      grid-row: 3;
+      margin-top: 8px;
+      font-size: 1.125rem;
+    }
 
-      .wp-block-image,
-      .image-block {
-        max-width: $container-lg;
-        margin-left: auto;
-        margin-right: auto;
-      }
+    .clh-indicators-action {
+      grid-row: 1 / -1;
+      align-self: stretch;
+      display: flex;
+    }
 
-      .custom-button-block {
-        max-width: $container-md;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 0;
-      }
+    .custom-button .content.medium {
+      font-size: 15px;
+      padding: 10px 16px;
+    }
+  }
+}
 
-      .call-to-action-block {
-        max-width: $container-lg;
-        margin-left: auto;
-        margin-right: auto;
-      }
+// Hors campagne, le bandeau jaune porte le total des signatures de l'année à la place du
+// compteur : aux deux places, le nombre et son libellé sur une ligne, centrés. Pas de
+// « terminée », qui laisserait croire que les pétitions sont fermées.
+.clh-band-closed-inner {
+  max-width: var(--clh-max);
+  margin-inline: auto;
+  padding: clamp(28px, 4vh, 48px) var(--clh-gutter);
+}
 
-      .wp-block-amnesty-core-chapo {
-        .text {
-          @media (min-width: $container-lg) {
-            width: 50%;
-            margin-left: 20%;
-          }
-        }
-      }
+.clh-band-closed-figure {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 4px 16px;
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: clamp(0.9375rem, 1.4vw, 1.25rem);
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
 
-      .interactive-map {
-        max-width: $container-hg;
-        margin-left: auto;
-        margin-right: auto;
-      }
+// Le défilement fige la largeur du nombre sur sa valeur d'arrivée : centré, un nombre plus
+// étroit ne glisse pas pendant qu'il monte.
+.clh-band-closed-number {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 0.9;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
 
-      .carousel-block {
-        width: 100vw;
-        margin-left: calc(50% - 50vw);
-        margin-right: calc(50% - 50vw);
+// La grille suit le bandeau jaune, qui sépare déjà : son entrée n'a pas besoin du
+// rythme complet, et le haut des cartes doit entrer dans le premier écran.
+.clh-petitions {
+  padding-block-start: 40px;
+}
 
-        .swiper-slide {
-          max-width: none;
-        }
-      }
+// Le partage ferme la page, sous l'appel au don.
+.clh-share {
+  max-width: var(--clh-max);
+  margin-inline: auto;
+  padding: 0 var(--clh-gutter) var(--clh-section-gap);
+
+  .article-share {
+    justify-content: center;
+    margin: 0;
+  }
+}
+
+// Grille des pétitions
+
+.clh-petitions-grid {
+  counter-reset: clh-case;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 20px;
+
+  @media (max-width: $container-hg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (max-width: 1023px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 767px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.clh-petitions-grid-item {
+  display: flex;
+  counter-increment: clh-case;
+
+  .petition-thumbnail:empty {
+    display: grid;
+    place-items: center;
+    background-color: var(--wp--preset--color--primary);
+
+    &::before {
+      content: counter(clh-case, decimal-leading-zero);
+      font-family: bely-display, serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1;
+      color: var(--clh-grey);
+    }
+
+    &::after {
+      content: none;
     }
   }
 
-  .page-hero-block {
-    .page-hero-title-wrapper {
-      .container {
-        max-width: $container-hg;
+  .petition-card-change-their-history {
+    margin-bottom: 0;
+  }
 
-        .page-hero-title {
-          color: var(--wp--preset--color--black);
-          background-color: var(--wp--preset--color--primary);
-        }
+  .petition-card-change-their-history.card-portrait {
+    max-width: none;
+    min-height: 0;
+  }
+
+  .petition-thumbnail {
+    min-height: 0;
+  }
+
+  .petition-content {
+    padding: 18px 18px 28px;
+    gap: 14px;
+  }
+
+  .petition-title a {
+    display: inline-block;
+    min-height: 44px;
+    font-size: 1.0625rem;
+    line-height: 1.25;
+  }
+
+  .petition-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .custom-button-block .content.small {
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+
+  // Le titre prend la hauteur qui reste : le pays, la barre, le compte et le bouton tombent à
+  // la même hauteur d'une carte à l'autre. Sans ça, un titre de trois lignes descend tout ce
+  // qui le suit, et la ligne de cartes se lit en dents de scie. Le seul bord irrégulier qui
+  // reste est le bas du titre, et c'est le texte lui-même.
+  .petition-title {
+    flex-grow: 1;
+  }
+
+  .petition-sign-button {
+    margin-top: 0;
+  }
+}
+
+// Les photos des situations s'affichent telles qu'Amnesty les fournit : le détourage et le
+// fond sont faits en interne, la page n'y ajoute aucun filtre.
+
+.page-change-their-history .petition-thumbnail {
+  background-color: var(--clh-grey);
+}
+
+// Une situation sans photo — le dixième cas avant son annonce, ou une personne dont le
+// visage ne peut pas être publié — garde la même emprise et affiche son rang.
+// Zone éditable
+
+.clh-editable .page-content > * {
+  max-width: none;
+  margin-inline: 0;
+}
+
+// `.page-content` porte son propre padding dans le thème, en plus de celui de la section.
+.clh-editable .page-content {
+  padding: 0;
+}
+
+.clh-editable .wp-block-post-content > .wp-block-columns {
+  gap: 64px;
+  margin-block: 0;
+  padding: 0;
+
+  > .wp-block-column > :last-child {
+    margin-bottom: 0;
+  }
+
+  // Empilées, les deux cellules d'une ligne se lisent d'une traite.
+  @media (max-width: 1023px) {
+    flex-direction: column;
+    gap: 24px;
+
+    > .wp-block-column {
+      flex-basis: 100% !important;
+    }
+  }
+
+  // Chaque ligne se lit comme une section : même écart qu'entre deux `.clh-section`, dont les
+  // paddings s'additionnent.
+  & + .wp-block-columns {
+    margin-top: calc(2 * var(--clh-section-gap));
+  }
+}
+
+// Une cellule sans titre posée à côté d'une cellule titrée commence à la hauteur du texte
+// voisin, pas à celle du titre.
+@media (min-width: 1024px) {
+  .clh-editable
+    .wp-block-post-content
+    > .wp-block-columns:has(> .wp-block-column > h2:first-child)
+    > .wp-block-column
+    > p:first-child {
+    margin-top: calc(clamp(2rem, 4vw, 3rem) * 1.05 + 48px);
+  }
+}
+
+.clh-editable .page-content h2 {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  text-wrap: balance;
+  margin: 0 0 24px;
+  // Le thème ajoute 24 px de padding horizontal aux titres en mobile.
+  padding-inline: 0;
+
+  &::after {
+    content: '';
+    display: block;
+    width: 72px;
+    height: 8px;
+    margin-top: 16px;
+    background-color: var(--wp--preset--color--primary);
+  }
+}
+
+.clh-editable .page-content p,
+.clh-editable .page-content li {
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+// Une cellule seule sur sa ligne est centrée, titre et filet compris.
+.clh-editable .wp-block-post-content > .wp-block-columns > .wp-block-column:only-child {
+  max-width: 68ch;
+  margin-inline: auto;
+  text-align: center;
+
+  h2::after {
+    margin-inline: auto;
+  }
+}
+
+.clh-editable .clh-situations .wp-block-image {
+  margin: 0;
+
+  img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+}
+
+// Les quatre pictogrammes de la page Write for Rights du Secrétariat international, de front
+// comme sur celle-ci. Leur taille est réglée pour que la cellule ne dépasse pas la hauteur du
+// texte d'à côté ; sous 1024 px ils passent en deux rangées de deux.
+.clh-editable .clh-pictos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px 24px;
+  margin: 0;
+  padding: 0;
+
+  @media (max-width: 1023px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  > .wp-block-column {
+    margin: 0;
+    text-align: center;
+  }
+
+  .wp-block-image {
+    margin: 0 0 16px;
+  }
+
+  .wp-block-image img {
+    width: clamp(64px, 6vw, 88px);
+    height: clamp(64px, 6vw, 88px);
+    object-fit: contain;
+  }
+
+  p {
+    max-width: 30ch;
+    margin: 0 auto;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+}
+
+// Les pictos sont plus courts que le texte d'à côté : sous leur titre, ils se centrent dans la
+// hauteur de la ligne au lieu de laisser un vide en bas.
+@media (min-width: 1024px) {
+  .clh-editable .wp-block-post-content > .wp-block-columns > .wp-block-column:has(> .clh-pictos) {
+    display: flex;
+    flex-direction: column;
+
+    > .clh-pictos {
+      margin-block: auto;
+    }
+  }
+}
+
+// Bonnes nouvelles
+
+.clh-good-news-standfirst {
+  max-width: 68ch;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+  margin-top: 0;
+  margin-bottom: 40px;
+}
+
+.clh-good-news-figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+
+  @media (max-width: $container-sm) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .key-figure {
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  // Les chiffres montent à l'arrivée à l'écran, comme les compteurs de la campagne.
+  .key-figure .title {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// Frise des victoires.
+// La section rejoue la grammaire de la bannière à l'autre bout de la page : un chiffre Bely
+// jaune posé en très grand sur le gris de campagne, un libellé en petites capitales dessous,
+// un nom estampé sur un aplat jaune. Ici le chiffre est l'année de la victoire.
+// L'axe est fait des années elles-mêmes, quatorze colonnes égales en haut du plateau : la
+// frise entière se voit et se parcourt d'un coup d'œil, sans rien faire défiler.
+// `display: contents` sur l'année range les repères en première rangée et empile les sept
+// panneaux dans la seconde, tous dans la même case : la hauteur ne bouge pas d'une victoire à
+// l'autre, et aucun JavaScript n'est nécessaire, la navigation est celle d'un groupe radio.
+
+// La section entière est le plateau, en-tête compris : un titre sur fond blanc laissait une bande
+// vide au-dessus de la frise. Le fond sort du rail de 1440 px par une ombre pleine, découpée
+// sur la hauteur de la section.
+// Le plateau de la frise commence à son bord : le blanc qui la précède n'est que le padding
+// de la section d'avant, qui prend donc les deux paddings d'un écart ordinaire.
+.clh-section:has(+ .clh-timeline) {
+  padding-bottom: calc(2 * var(--clh-section-gap));
+}
+
+.clh-timeline {
+  padding-top: clamp(32px, 3.5vw, 48px);
+  padding-bottom: 0;
+  color: var(--wp--preset--color--white);
+  background-color: var(--clh-grey);
+  box-shadow: 0 0 0 100vmax var(--clh-grey);
+  clip-path: inset(0 -100vmax);
+}
+
+.clh-timeline-head {
+  text-align: center;
+
+  .clh-section-title {
+    margin-bottom: 24px;
+
+    &::after {
+      margin-inline: auto;
+    }
+  }
+}
+
+.clh-timeline-intro {
+  max-width: 52ch;
+  margin: 0 auto;
+  font-size: clamp(1.125rem, 1.6vw, 1.5rem);
+  line-height: 1.35;
+  text-wrap: pretty;
+  color: rgb(255 255 255 / 80%);
+}
+
+// Arrivée confiante et départ bref, sur la courbe de la roue de la bannière. Le plateau se vide
+// avant que le panneau suivant ne se pose : la roue de l'année tourne seule un instant.
+$clh-timeline-ease: cubic-bezier(0.22, 1, 0.36, 1);
+$clh-timeline-exit: 180ms;
+
+.clh-timeline-dial {
+  --clh-timeline-foot: clamp(40px, 5vw, 72px);
+
+  position: relative;
+  color: var(--wp--preset--color--white);
+  // Le plateau et le rail vont d'un bord à l'autre de l'écran ; seul le panneau revient sur le
+  // rail de 1440 px du reste de la page. `overflow-x: hidden` sur la page évite la barre de
+  // défilement que `100vw` provoque sinon.
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding: clamp(48px, 5vw, 72px) 0 var(--clh-timeline-foot);
+  background-color: var(--clh-grey);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(var(--clh-timeline-years, 14), minmax(0, 1fr));
+  grid-template-rows: auto auto;
+
+  // Un seul filet sous les repères, et sa part jaune s'étire jusqu'au milieu de la case de
+  // l'année ouverte : il glisse d'une année à l'autre au lieu de sauter.
+  &::before,
+  &::after {
+    content: '';
+    grid-row: 1;
+    grid-column: 1 / -1;
+    align-self: end;
+    position: relative;
+    z-index: 1;
+    height: 2px;
+    margin-bottom: 14px;
+  }
+
+  &::before {
+    background-color: rgb(255 255 255 / 25%);
+  }
+
+  &::after {
+    background-color: var(--wp--preset--color--primary);
+    transform-origin: left;
+    transform: scaleX(
+      calc(
+        var(--clh-timeline-shown, 1) * (var(--clh-timeline-cursor, 0) + 0.5) /
+          var(--clh-timeline-years, 14)
+      )
+    );
+    transition: transform 700ms $clh-timeline-ease;
+  }
+}
+
+// Rang de l'année ouverte dans la frise. Il pilote à la fois le filet et la roue de l'année,
+// sans JavaScript ; trente rangs couvrent les éditions jusqu'en 2042.
+@for $rank from 1 through 30 {
+  .clh-timeline-dial:has(.clh-timeline-year:nth-child(#{$rank}) .clh-timeline-input:checked) {
+    --clh-timeline-cursor: #{$rank - 1};
+  }
+}
+
+.clh-timeline-years,
+.clh-timeline-year {
+  display: contents;
+}
+
+// Le bouton radio est dans son repère, pas à côté : posé en frère il se positionnait sur le
+// plateau, et le navigateur ramenait la page en haut à chaque clic pour l'amener à l'écran.
+// Le sélecteur passe par le repère parce que `input[type='radio']` de `form/_input.scss` est
+// plus spécifique qu'une classe seule : sans ça le bouton restait en flux, large de 24 px, et
+// décalait l'année de douze pixels à droite de sa pastille.
+.clh-timeline-mark .clh-timeline-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+
+  &::after {
+    content: none;
+  }
+}
+
+// Colonnes égales, aucune gouttière. Chaque repère a sa colonne en dur : le filet occupe toute
+// la rangée, et le placement automatique rejetterait les repères hors de la grille.
+.clh-timeline-mark {
+  grid-row: 1;
+  grid-column: var(--clh-timeline-column, auto);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 34px;
+  font-family: bely-display, serif;
+  font-size: clamp(1rem, 1.5vw, 1.5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: rgb(255 255 255 / 55%);
+  transition: color 200ms ease-out;
+}
+
+// Une année sans victoire n'a pas de pastille : rien n'appelle le clic là où rien ne s'ouvre.
+.clh-timeline-year.has-victory .clh-timeline-mark {
+  cursor: pointer;
+  color: var(--wp--preset--color--white);
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 9px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--clh-grey);
+    box-shadow: inset 0 0 0 2px var(--wp--preset--color--white);
+    transition: all 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &:hover {
+    color: var(--wp--preset--color--primary);
+  }
+}
+
+.clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-mark {
+  color: var(--wp--preset--color--primary);
+
+  &::after {
+    bottom: 5px;
+    width: 20px;
+    height: 20px;
+    background-color: var(--wp--preset--color--primary);
+    box-shadow: none;
+  }
+}
+
+.clh-timeline-year:has(.clh-timeline-input:focus-visible) .clh-timeline-mark {
+  outline: 3px solid var(--wp--preset--color--white);
+  outline-offset: 4px;
+}
+
+// Une année qui porte plusieurs victoires a sa pastille doublée : une seconde case, décalée
+// derrière la première vers le bas et la gauche, à l'écart de l'année.
+.clh-timeline-year.has-victories .clh-timeline-mark::after {
+  box-shadow:
+    inset 0 0 0 2px var(--wp--preset--color--white),
+    -4px 4px 0 0 var(--clh-grey),
+    -4px 4px 0 2px rgb(255 255 255 / 55%);
+}
+
+.clh-timeline-year.has-victories:has(.clh-timeline-input:checked) .clh-timeline-mark::after {
+  box-shadow: -5px 5px 0 0 rgb(255 255 0 / 45%);
+}
+
+// Les panneaux des années occupent la même case : la rangée prend la hauteur du plus long et ne
+// bouge plus d'une année à l'autre. Dans un panneau, les victoires d'une même année s'empilent
+// de même dans une seule case, sous leurs onglets.
+.clh-timeline-panel {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--clh-max);
+  margin-inline: auto;
+  padding: clamp(48px, 5vw, 72px) var(--clh-gutter) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  visibility: hidden;
+  transition: visibility 0s linear $clh-timeline-exit;
+}
+
+.clh-timeline-slide {
+  grid-row: 2;
+  grid-column: 1;
+  display: grid;
+  grid-template-columns: clamp(240px, 24vw, 360px) minmax(0, 1fr);
+  column-gap: clamp(40px, 5vw, 96px);
+  align-items: stretch;
+}
+
+// Les onglets se posent près du filet : l'écart ordinaire du panneau les détachait de l'année.
+.clh-timeline-panel:has(.clh-timeline-picks) {
+  padding-top: 24px;
+}
+
+// Les onglets reprennent l'aplat du nom : celui de la victoire ouverte est jaune, les autres
+// sont détourés.
+.clh-timeline-picks {
+  grid-row: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+
+.clh-timeline-pick {
+  position: relative;
+  padding: 10px 18px;
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 55%);
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: clamp(0.875rem, 1.1vw, 1.0625rem);
+  font-weight: bold;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease-out,
+    color 200ms ease-out;
+
+  &:hover {
+    color: var(--wp--preset--color--primary);
+  }
+
+  &:has(.clh-timeline-pick-input:checked) {
+    background-color: var(--wp--preset--color--primary);
+    box-shadow: none;
+    color: var(--clh-grey);
+  }
+
+  &:has(.clh-timeline-pick-input:focus-visible) {
+    outline: 3px solid var(--wp--preset--color--white);
+    outline-offset: 3px;
+  }
+
+  .clh-timeline-pick-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    border: 0;
+    border-radius: 0;
+    cursor: pointer;
+
+    &::after {
+      content: none;
+    }
+  }
+}
+
+.clh-timeline-panel:has(.clh-timeline-picks) .clh-timeline-slide {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity $clh-timeline-exit ease-in,
+    visibility 0s linear $clh-timeline-exit;
+}
+
+@for $rank from 1 through 4 {
+  .clh-timeline-panel:has(.clh-timeline-pick:nth-child(#{$rank}) .clh-timeline-pick-input:checked)
+    .clh-timeline-slide:nth-of-type(#{$rank}) {
+    visibility: inherit;
+    opacity: 1;
+    transition: opacity 400ms $clh-timeline-ease;
+  }
+}
+
+.clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-panel {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+// Le panneau sortant s'efface d'un bloc ; l'entrant se compose dans l'ordre de lecture, le
+// portrait d'abord, le tampon « Victoire » en dernier, comme un cachet posé sur la photo.
+.clh-timeline-panel-photo,
+.clh-timeline-panel-stamp,
+.clh-timeline-panel-body > *,
+.clh-timeline-panel-place {
+  opacity: 0;
+  transition:
+    opacity $clh-timeline-exit ease-in,
+    transform $clh-timeline-exit ease-in,
+    clip-path 0s linear $clh-timeline-exit;
+}
+
+.clh-timeline-panel-body > *,
+.clh-timeline-panel-place {
+  transform: translateY(16px);
+}
+
+.clh-timeline-year:has(.clh-timeline-input:checked) {
+  .clh-timeline-panel-photo,
+  .clh-timeline-panel-stamp,
+  .clh-timeline-panel-body > *,
+  .clh-timeline-panel-place {
+    --clh-timeline-delay: calc(
+      var(--clh-timeline-lead, #{$clh-timeline-exit}) + var(--clh-timeline-step, 0) * 70ms
+    );
+
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0);
+    transition:
+      opacity 560ms $clh-timeline-ease var(--clh-timeline-delay),
+      transform 560ms $clh-timeline-ease var(--clh-timeline-delay),
+      clip-path 700ms $clh-timeline-ease var(--clh-timeline-delay);
+  }
+}
+
+.clh-timeline-panel-figure {
+  grid-column: 1;
+  grid-row: 1;
+  position: relative;
+  margin: 0;
+}
+
+// L'année est un filigrane commun aux sept panneaux, monté comme le compte à rebours de la
+// bannière : une colonne par chiffre, et chaque bande porte une case par année de la frise.
+// Changer d'année fait défiler les années qui séparent les deux victoires ; les deux premiers
+// chiffres tournent aussi, mais sur des cases identiques, et ne bougent donc pas à l'œil.
+// Elle se pose en bas à droite du panneau, son jaune assez rentré pour que le blanc du
+// témoignage reste lisible par-dessus.
+.clh-timeline-watermark {
+  position: absolute;
+  z-index: 0;
+  right: calc(max(0px, (100% - var(--clh-max)) / 2) + var(--clh-gutter));
+  // Pose la base des chiffres sur le bord bas de la photo : dans leur case de 0.96em, les
+  // chiffres de Bely s'arrêtent 0.015em au-dessus du bas.
+  bottom: calc(var(--clh-timeline-foot) - 0.015em);
+  display: flex;
+  margin: 0;
+  font-family: bely-display, serif;
+  // Dimensionnée sur ce qui reste à droite de la photo plutôt que sur le panneau entier :
+  // plus large, son premier chiffre passait sous la photo et l'année se lisait « 024 ».
+  font-size: clamp(3.5rem, 18vw, 16rem);
+  color: rgb(255 255 0 / 16%);
+  pointer-events: none;
+
+  // Bely n'a pas de chiffres tabulaires : `1111` fait 359 px quand `0000` en fait 550, et
+  // `font-variant-numeric` ne change rien faute de jeu `tnum` dans la police. À cette échelle
+  // l'écart se voit, chaque colonne reçoit donc sa chasse.
+  .clh-roll {
+    width: 0.72em;
+    text-align: center;
+  }
+
+  // Le pas est la hauteur d'une case, que `.clh-roll-digit` fixe à 0.96em. Le trajet est plus
+  // long que le cran quotidien du compte à rebours, la durée aussi.
+  .clh-roll-strip {
+    transform: translateY(
+      calc(var(--clh-timeline-shown, 1) * var(--clh-timeline-cursor, 0) * -0.96em)
+    );
+    transition-duration: 700ms;
+  }
+}
+
+// Le pays suit le nom, avant la qualification : il se lit avec la personne.
+.clh-timeline-panel-place {
+  --clh-timeline-step: 1;
+
+  margin: 0 0 12px;
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: clamp(1rem, 1.3vw, 1.25rem);
+  font-weight: bold;
+  line-height: 1.6;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--primary);
+}
+
+.clh-timeline-panel-photo {
+  clip-path: inset(100% 0 0);
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+// Cinq victoires sur sept n'ont pas d'image chez Amnesty : la case le dit au lieu de
+// disparaître. Le texte se cale en haut, la pastille occupe déjà le bas.
+.clh-timeline-panel-photo.is-missing {
+  display: flex;
+  align-items: flex-start;
+  padding: 20px;
+  background-color: rgb(255 255 255 / 7%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 22%);
+  color: rgb(255 255 255 / 70%);
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 0.875rem;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+// La pastille déborde de la photo : c'est le geste qu'Amnesty pose sur ses visuels de victoire.
+.clh-timeline-panel-stamp {
+  --clh-timeline-step: 6;
+
+  transform: scale(1.3);
+  position: absolute;
+  left: -14px;
+  bottom: 32px;
+  padding: 8px 20px;
+  background-color: var(--wp--preset--color--primary);
+  color: var(--wp--preset--color--black);
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 1.125rem;
+  font-weight: bold;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.clh-timeline-panel-body {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+// Le nom est estampé sur un aplat, comme le dernier mot du titre de la bannière.
+.clh-timeline-panel-name {
+  --clh-timeline-step: 1;
+
+  margin: 0 0 32px;
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: clamp(1.5rem, 2.8vw, 3rem);
+  line-height: 1.24;
+  text-transform: uppercase;
+  text-wrap: balance;
+
+  span {
+    padding: 0.06em 0.18em 0.1em 0.14em;
+    background-color: var(--wp--preset--color--primary);
+    color: var(--clh-grey);
+    box-decoration-break: clone;
+  }
+}
+
+.clh-timeline-panel-name:has(+ .clh-timeline-panel-role),
+.clh-timeline-panel-name:has(+ .clh-timeline-panel-place) {
+  margin-bottom: 12px;
+}
+
+.clh-timeline-panel-role {
+  --clh-timeline-step: 2;
+
+  margin: 0 0 32px;
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: clamp(1.0625rem, 1.3vw, 1.3125rem);
+  line-height: 1.3;
+  text-wrap: balance;
+  max-width: 44ch;
+  color: rgb(255 255 255 / 85%);
+}
+
+.clh-timeline-panel-quote {
+  --clh-timeline-step: 3;
+
+  margin: 0 0 36px;
+  padding: 0;
+  border: 0;
+
+  p {
+    margin: 0;
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: clamp(1.375rem, 2.3vw, 2.375rem);
+    line-height: 1.22;
+    text-wrap: pretty;
+    max-width: 42ch;
+  }
+
+  &.is-long p {
+    font-size: clamp(1.1875rem, 1.6vw, 1.625rem);
+    line-height: 1.3;
+    max-width: 46ch;
+  }
+}
+
+.clh-timeline-panel-text {
+  --clh-timeline-step: 4;
+
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+  max-width: 68ch;
+  margin: 0;
+  color: rgb(255 255 255 / 80%);
+}
+
+// Entrée de la frise. Tant qu'elle n'est pas à l'écran, le filet et le filigrane sont posés
+// sur la première édition, les repères éteints, le panneau ouvert vide. À l'arrivée le filet
+// parcourt les années au pas régulier d'une édition, chaque repère s'allume quand il l'atteint,
+// l'année du filigrane défile avec lui, puis le panneau se compose. `is-entering` ne dure
+// qu'une image : les délais s'appliquent aux transitions qu'elle lance, pas aux clics suivants.
+$clh-timeline-pace: 70ms;
+
+.clh-timeline-dial.is-waiting {
+  --clh-timeline-shown: 0;
+
+  .clh-timeline-year .clh-timeline-mark {
+    color: rgb(255 255 255 / 20%);
+  }
+
+  .clh-timeline-year.has-victory .clh-timeline-mark::after {
+    transform: scale(0);
+  }
+
+  .clh-timeline-year:has(.clh-timeline-input:checked) {
+    .clh-timeline-picks,
+    .clh-timeline-panel-photo,
+    .clh-timeline-panel-stamp,
+    .clh-timeline-panel-body > *,
+    .clh-timeline-panel-place {
+      opacity: 0;
+      transition: none;
+    }
+
+    .clh-timeline-panel-photo {
+      clip-path: inset(100% 0 0);
+    }
+
+    .clh-timeline-panel-stamp {
+      transform: scale(1.3);
+    }
+
+    .clh-timeline-panel-body > *,
+    .clh-timeline-panel-place {
+      transform: translateY(16px);
+    }
+  }
+}
+
+.clh-timeline-dial.is-entering {
+  --clh-timeline-lead: calc((var(--clh-timeline-cursor, 0) + 0.5) * #{$clh-timeline-pace});
+
+  &::after {
+    transition: transform var(--clh-timeline-lead) linear;
+  }
+
+  .clh-timeline-watermark .clh-roll-strip {
+    transition: transform calc(var(--clh-timeline-cursor, 0) * #{$clh-timeline-pace}) linear
+      calc(#{$clh-timeline-pace} / 2);
+  }
+
+  .clh-timeline-picks {
+    transition: opacity 400ms $clh-timeline-ease var(--clh-timeline-lead);
+  }
+
+  .clh-timeline-year .clh-timeline-mark,
+  .clh-timeline-year .clh-timeline-mark::after {
+    transition-delay: calc((var(--clh-timeline-column, 1) - 0.5) * #{$clh-timeline-pace});
+  }
+}
+
+// Frise, écrans étroits.
+// Sous 1280 px quatorze années ne tiennent plus sur une ligne : le plateau défile à
+// l'horizontale, les colonnes gardent une largeur minimale, et le filet comme la part jaune
+// suivent la grille du plateau large. Le panneau et le filigrane restent collés au bord gauche
+// de l'écran pendant que les années défilent.
+
+@media (max-width: $container-hg) {
+  .clh-timeline-dial {
+    grid-template-columns: repeat(var(--clh-timeline-years, 14), minmax(88px, 1fr));
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--wp--preset--color--primary) transparent;
+  }
+
+  .clh-timeline-watermark {
+    position: sticky;
+    left: 0;
+    right: auto;
+    bottom: auto;
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: start;
+    align-self: end;
+    width: 100vw;
+    justify-content: flex-end;
+    padding-right: var(--clh-gutter);
+    margin-bottom: -0.015em;
+  }
+
+  .clh-timeline-panel {
+    position: sticky;
+    left: 0;
+    justify-self: start;
+    width: 100vw;
+    margin-inline: 0;
+  }
+
+  .clh-timeline-slide {
+    grid-template-columns: clamp(220px, 32vw, 320px) minmax(0, 1fr);
+  }
+
+  // Les panneaux fermés ne réservent pas la hauteur du plus long : sur une colonne, l'écart
+  // entre deux témoignages laisserait un grand vide sous le plus court.
+  .clh-timeline-year:not(:has(.clh-timeline-input:checked)) .clh-timeline-panel {
+    display: none;
+  }
+
+  // Un panneau qui sort de `display: none` n'a pas d'état de départ d'où partir.
+  @starting-style {
+    .clh-timeline-year:has(.clh-timeline-input:checked) {
+      .clh-timeline-panel-photo,
+      .clh-timeline-panel-stamp,
+      .clh-timeline-panel-body > *,
+      .clh-timeline-panel-place {
+        opacity: 0;
+      }
+
+      .clh-timeline-panel-body > *,
+      .clh-timeline-panel-place {
+        transform: translateY(16px);
+      }
+
+      .clh-timeline-panel-photo {
+        clip-path: inset(100% 0 0);
+      }
+
+      .clh-timeline-panel-stamp {
+        transform: scale(1.3);
       }
     }
   }
+}
+
+@media (max-width: $container-md) {
+  .clh-timeline-dial {
+    padding-top: 32px;
+  }
+
+  .clh-timeline-slide {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+
+  .clh-timeline-panel-figure {
+    max-width: 260px;
+  }
+
+  .clh-timeline-panel-body {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .clh-timeline-watermark {
+    font-size: 26vw;
+  }
+}
+
+// Sans mouvement, rien ne se déplace ni ne tourne : l'année se pose d'un coup, le panneau
+// suivant apparaît en fondu.
+@media (prefers-reduced-motion: reduce) {
+  .clh-timeline-mark,
+  .clh-timeline-mark::after,
+  .clh-timeline-dial::after,
+  .clh-timeline-watermark .clh-roll-strip {
+    transition: none;
+  }
+
+  .clh-timeline-panel-photo,
+  .clh-timeline-panel-stamp,
+  .clh-timeline-panel-body > *,
+  .clh-timeline-panel-place,
+  .clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-panel-photo,
+  .clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-panel-stamp,
+  .clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-panel-body > *,
+  .clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-panel-place {
+    transform: none;
+    clip-path: none;
+    transition: opacity 200ms ease-out;
+  }
+}
+
+// CTA de fin
+
+// Le don ferme la page sur le jaune de marque, après l'aplat sombre de la frise.
+// Le don est détaché de la frise : sur le blanc de la page, centré, avec le bouton jaune des
+// appels au don du site.
+.clh-donation {
+  color: var(--wp--preset--color--black);
+  max-width: none;
+
+  .button-label {
+    text-transform: uppercase;
+  }
+
+  .custom-button:focus-visible {
+    outline: 3px solid var(--wp--preset--color--black);
+    outline-offset: 2px;
+  }
+
+  // Le bouton arrive réduit à son filet du bas, puis se déplie vers le haut. La découpe
+  // déborde de 12 px sur les côtés et en bas pour ne pas rogner le contour de focus.
+  .custom-button {
+    clip-path: inset(-12px);
+    transition: clip-path 640ms cubic-bezier(0.16, 1, 0.3, 1) 160ms;
+  }
+
+  .is-waiting .custom-button {
+    clip-path: inset(calc(100% - 3px) -12px -12px);
+    transition: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .custom-button {
+      clip-path: none;
+      transition: none;
+    }
+  }
+}
+
+// La section porte déjà la gouttière : le conteneur intérieur retire sa largeur du maximum,
+// sinon le bloc de don déborde de 24 px de chaque côté par rapport au reste de la page.
+.clh-donation-inner {
+  max-width: calc(var(--clh-max) - 2 * var(--clh-gutter));
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  text-align: center;
+
+  .custom-button-block {
+    padding: 0;
+    width: auto;
+  }
+
+  // Sous 640 px le bouton passe sous le texte, en pleine largeur comme celui du bandeau.
+  @media (max-width: $container-sm) {
+    .custom-button-block {
+      width: 100%;
+    }
+  }
+}
+
+.clh-donation-title {
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  text-wrap: balance;
+  margin: 0 0 12px;
+}
+
+.clh-donation-text p {
+  margin: 0 auto;
+  max-width: 60ch;
+  text-wrap: pretty;
 }

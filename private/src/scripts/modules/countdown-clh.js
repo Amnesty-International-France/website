@@ -1,33 +1,30 @@
+const DAY = 86400000;
+const MINUTE = 60000;
+
 const Countdown = () => {
-  const container = document.getElementById('countdown');
-  if (!container) return;
+  document.querySelectorAll('[data-clh-countdown]').forEach((container) => {
+    const seconds = parseInt(container.getAttribute('data-countdown'), 10);
+    const output = container.querySelector('[data-clh-countdown-days]');
+    if (!seconds || seconds <= 0 || !output) return;
 
-  const seconds = parseInt(container.getAttribute('data-countdown'), 10);
-  if (!seconds || seconds <= 0) return;
+    const endTime = Date.now() + seconds * 1000;
+    let shown = Math.max(0, Math.ceil((seconds * 1000) / DAY));
 
-  const endTime = Date.now() + seconds * 1000;
-  const span = container.querySelector('span');
-  if (!span) return;
+    const tick = () => {
+      const days = Math.max(0, Math.ceil((endTime - Date.now()) / DAY));
 
-  const pad = (n) => String(n).padStart(2, '0');
+      if (days !== shown) {
+        shown = days;
+        output.textContent = String(days);
+      }
 
-  const tick = () => {
-    const remaining = Math.max(0, endTime - Date.now());
-    const total = Math.floor(remaining / 1000);
+      if (days > 0) setTimeout(tick, MINUTE);
+    };
 
-    const days = Math.floor(total / 86400);
-    const hours = Math.floor((total % 86400) / 3600);
-    const minutes = Math.floor((total % 3600) / 60);
-    const secs = total % 60;
-
-    span.textContent = `${days}j ${pad(hours)}h ${pad(minutes)}m ${pad(secs)}s`;
-
-    if (remaining > 0) {
-      setTimeout(tick, 1000);
-    }
-  };
-
-  tick();
+    // La valeur rendue par PHP est déjà la bonne, et le chiffre du bandeau est monté en
+    // roue : on n'écrit que quand le jour change vraiment, une fois par jour au plus.
+    setTimeout(tick, MINUTE);
+  });
 };
 
 export default Countdown;
