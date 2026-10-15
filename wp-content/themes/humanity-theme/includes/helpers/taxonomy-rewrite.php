@@ -77,4 +77,6 @@ if (! function_exists('amnesty_reset_location_indexables')) {
     }
 }
 
-add_action('init', 'amnesty_reset_location_indexables', 20);
+add_action('init', function (): void {
+    amnesty_reset_location_indexables();
+}, 20);
