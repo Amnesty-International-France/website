@@ -31,7 +31,31 @@ final class ClhSignatureBandTest extends TestCase
         $html = $this->render($variant);
         self::assertStringContainsString('200 000', $html);
         self::assertStringContainsString('width: 99%;', $html);
+        self::assertStringContainsString('aria-valuenow="99"', $html);
+        self::assertStringContainsString('aria-valuemax="100"', $html);
         self::assertStringContainsString('Je signe', $html);
+    }
+
+    #[DataProvider('variants')]
+    public function testExceededTargetKeepsProgressWithinAriaRange(string $variant): void
+    {
+        $GLOBALS['__phpunit_clh_tunnel_active'] = true;
+        $GLOBALS['__phpunit_clh_campaign_petitions'] = [(object) ['ID' => 1]];
+        $GLOBALS['__phpunit_clh_signature_counts'] = [1 => 250000];
+        $html = $this->render($variant);
+        self::assertStringContainsString('250 000', $html);
+        self::assertStringContainsString('aria-valuenow="100"', $html);
+        self::assertStringContainsString('aria-valuemax="100"', $html);
+    }
+
+    #[DataProvider('variants')]
+    public function testNoPetitionsKeepsANonzeroAriaRange(string $variant): void
+    {
+        $GLOBALS['__phpunit_clh_tunnel_active'] = true;
+        $GLOBALS['__phpunit_clh_campaign_petitions'] = [];
+        $html = $this->render($variant);
+        self::assertStringContainsString('aria-valuenow="0"', $html);
+        self::assertStringContainsString('aria-valuemax="100"', $html);
     }
 
     #[DataProvider('variants')]

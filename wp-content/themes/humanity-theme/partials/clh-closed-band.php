@@ -8,8 +8,8 @@
 
 declare(strict_types=1);
 
-$campaign_year = (int) ($args['year'] ?? wp_date('Y'));
-$signatures    = (int) ($args['signatures'] ?? 0);
+$campaign_year = (int) $args['year'];
+$signatures    = (int) $args['signatures'];
 $label         = sprintf(
     /* translators: %s: année de la campagne. */
     _n('signature recueillie en %s', 'signatures recueillies en %s', $signatures, 'amnesty'),

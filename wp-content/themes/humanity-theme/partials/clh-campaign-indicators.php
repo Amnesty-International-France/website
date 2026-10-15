@@ -63,9 +63,9 @@ $ring = $span > 0 ? min( $days / $span, 1 ) : 1;
 		<div
 			class="progress-bar-container"
 			role="progressbar"
-			aria-valuenow="<?php echo esc_attr( (string) $collected ); ?>"
+			aria-valuenow="<?php echo esc_attr( (string) $percentage ); ?>"
 			aria-valuemin="0"
-			aria-valuemax="<?php echo esc_attr( (string) $goal ); ?>"
+			aria-valuemax="100"
 			aria-label="<?php esc_attr_e( 'Signatures recueillies sur l\'objectif de la campagne', 'amnesty' ); ?>"
 		>
 			<div class="progress-bar" style="width: <?php echo esc_attr( (string) $percentage ); ?>%;"></div>

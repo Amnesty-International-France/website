@@ -146,6 +146,10 @@ const count = (element) => {
   if (!parts) return;
 
   const [, prefix, body, suffix] = parts;
+  // Seuls les entiers, éventuellement groupés par espaces, sont animés. Les nombres
+  // décimaux ou ambigus gardent leur texte d'origine (par exemple « 1,5 M »).
+  if (!/^(?:\d+|\d{1,3}(?:[ \u00a0\u202f]\d{3})+)$/.test(body)) return;
+
   const target = parseInt(body.replace(/\D/g, ''), 10);
   const separator = (body.match(/\D/) || [''])[0];
   const from = parseInt(element.getAttribute('data-clh-count-from'), 10) || 0;
