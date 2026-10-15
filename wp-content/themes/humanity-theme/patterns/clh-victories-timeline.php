@@ -17,7 +17,7 @@ $last_year = (int) wp_date( 'Y' );
 // exemples mot pour mot ; les autres sont des textes de maquette, résumés des faits publiés sur
 // https://www.amnesty.org/en/get-involved/write-for-rights/, et leurs citations sont rédigées
 // pour tenir la volumétrie : Amnesty doit les remplacer avant toute mise en ligne.
-// `photo` est le nom du fichier dans `assets/images/clh-victories/` : sans photo, la case le dit.
+// Les photos seront renseignées dans le bloc de témoignages via la médiathèque.
 $victories = [
 	2016 => [
 		[
@@ -62,7 +62,6 @@ $victories = [
 			'country'     => 'Soudan du Sud',
 			'description' => 'À 15 ans, Magai a été condamné à mort par pendaison au Soudan du Sud après avoir assuré seul sa défense. Il a passé quatre ans dans le couloir de la mort. A nos côtés, plus de 765 000 personnes - dont plus de 70 000 en France – ont résisté et dit « non » à ce châtiment cruel, finalement levé en avril 2020.',
 			'quote'       => 'Merci de m’avoir sauvé la vie',
-			'photo'       => '2020-magai-matiop-ngong.jpg',
 		],
 	],
 	2021 => [
@@ -90,7 +89,6 @@ $victories = [
 			'country'     => 'Russie',
 			'description' => 'Artiste à Saint-Pétersbourg, elle remplace en 2022 des étiquettes de prix d\'un supermarché par des messages contre la guerre en Ukraine. Condamnée à sept ans de colonie pénitentiaire, elle est libérée en août 2024.',
 			'quote'       => 'Sept ans pour cinq petits papiers. Chaque carte reçue me disait que ce que j\'avais fait comptait, et que je n\'étais pas seule.',
-			'photo'       => '2024-aleksandra-skotchilenko.jpg',
 		],
 		[
 			'name'        => 'Rita Karasartova',
@@ -182,21 +180,9 @@ $last_year_digits = strlen( (string) $last_year );
 						<?php foreach ( $year_victories as $victory ) : ?>
 							<article class="clh-timeline-slide">
 								<figure class="clh-timeline-panel-figure">
-									<?php if ( ! empty( $victory['photo'] ) ) : ?>
-										<img
-											class="clh-timeline-panel-photo"
-											src="<?php echo esc_url( get_theme_file_uri( 'assets/images/clh-victories/' . $victory['photo'] ) ); ?>"
-											alt="<?php echo esc_attr( $victory['name'] ); ?>"
-											width="560"
-											height="700"
-											loading="lazy"
-											decoding="async"
-										>
-									<?php else : ?>
-										<span class="clh-timeline-panel-photo is-missing">
-											<?php esc_html_e( 'Photo à fournir par Amnesty', 'amnesty' ); ?>
-										</span>
-									<?php endif; ?>
+									<span class="clh-timeline-panel-photo is-missing">
+										<?php esc_html_e( 'Photo à fournir par Amnesty', 'amnesty' ); ?>
+									</span>
 									<figcaption class="clh-timeline-panel-stamp"><?php esc_html_e( 'Victoire', 'amnesty' ); ?></figcaption>
 								</figure>
 
