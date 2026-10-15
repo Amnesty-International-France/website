@@ -5,60 +5,78 @@ declare(strict_types=1);
 /**
  * Data helpers of the "Changez leur histoire" (CLH) campaign page.
  *
- * Most helpers still return hard-coded data, so the front-end can be built before the
+ * Some helpers still return hard-coded data, so the front-end can be built before the
  * logic lands. Each hard-coded body is marked with a "TODO CLH-" comment; none may
  * remain when sprint/page-clh merges into main. See docs/clh.md.
  */
 
 require_once dirname(__DIR__) . '/post-types/clh.php';
 
-if (!function_exists('amnesty_get_clh_placeholder_image_id')) {
-    /**
-     * Photo of the hard-coded petitions: the latest image of the media library.
-     *
-     * TODO CLH-31: remove it with the last hard-coded helper.
-     *
-     * @return int the attachment ID, 0 when the media library has no image
-     */
-    function amnesty_get_clh_placeholder_image_id(): int
-    {
-        $image_ids = get_posts([
-            'post_type' => 'attachment',
-            'post_mime_type' => 'image',
-            'post_status' => 'inherit',
-            'numberposts' => 1,
-            'orderby' => 'date',
-            'order' => 'DESC',
-            'fields' => 'ids',
-        ]);
-
-        return (int) ($image_ids[0] ?? 0);
-    }
-}
-
-if (!function_exists('amnesty_get_clh_scenario')) {
-    /**
-     * Data scenario of the hard-coded helpers, chosen through the URL (?clh_scenario=).
-     *
-     * TODO CLH-31: temporary, remove it with the last hard-coded helper.
-     *
-     * @return string the scenario name, "default" when none is given
-     */
-    function amnesty_get_clh_scenario(): string
-    {
-        $scenario = $_GET['clh_scenario'] ?? '';
-
-        if (!is_string($scenario) || !preg_match('/^[a-z_]+$/', $scenario)) {
-            return 'default';
-        }
-
-        return $scenario;
-    }
-}
-
 if (!defined('AMNESTY_CLH_DEFAULT_PETITION_TARGET')) {
     // Signature target of a petition whose own target is empty, as on the petition cards and in the tunnel.
     define('AMNESTY_CLH_DEFAULT_PETITION_TARGET', 200_000);
+}
+
+if (!defined('AMNESTY_CLH_GRID_MAX_PETITIONS')) {
+    // Cards of the campaign grid: two rows of five on desktop.
+    define('AMNESTY_CLH_GRID_MAX_PETITIONS', 10);
+}
+
+if (!function_exists('amnesty_get_clh_petition_target')) {
+    /**
+     * Signature target of a petition, AMNESTY_CLH_DEFAULT_PETITION_TARGET when empty.
+     *
+     * @param int $petition_id the petition ID
+     *
+     * @return int
+     */
+    function amnesty_get_clh_petition_target(int $petition_id): int
+    {
+        return (int) get_field('objectif_signatures', $petition_id) ?: AMNESTY_CLH_DEFAULT_PETITION_TARGET;
+    }
+}
+
+if (!function_exists('amnesty_clh_percentage')) {
+    /**
+     * Signatures out of a target, as a percentage rounded down and capped at 100.
+     *
+     * @param int $signatures the signature count
+     * @param int $target     the signature target
+     *
+     * @return int from 0 to 100; 0 when the target is not positive
+     */
+    function amnesty_clh_percentage(int $signatures, int $target): int
+    {
+        if ($target <= 0) {
+            return 0;
+        }
+
+        // Integer division: a float ratio such as 0.29 would floor to 28.
+        return min(100, intdiv($signatures * 100, $target));
+    }
+}
+
+if (!function_exists('amnesty_get_clh_petition_end_timestamp')) {
+    /**
+     * End date of a petition, from its ACF field "date_de_fin" (returned as d.m.Y), to
+     * order petitions by end date.
+     *
+     * @param int $petition_id the petition ID
+     *
+     * @return int|null Unix timestamp of the start of that day, in PHP's default timezone;
+     *                  null when the date is empty or invalid (e.g. 31.02.2026)
+     */
+    function amnesty_get_clh_petition_end_timestamp(int $petition_id): ?int
+    {
+        $end_date = DateTimeImmutable::createFromFormat('!d.m.Y', (string) get_field('date_de_fin', $petition_id));
+
+        // createFromFormat() rolls an impossible day over to the next month, with a warning.
+        if ($end_date === false || (DateTimeImmutable::getLastErrors()['warning_count'] ?? 0) > 0) {
+            return null;
+        }
+
+        return $end_date->getTimestamp();
+    }
 }
 
 if (!function_exists('amnesty_get_clh_campaign_timestamps')) {
@@ -113,13 +131,10 @@ if (!function_exists('amnesty_get_clh_campaign_figures')) {
 
         foreach (amnesty_get_clh_campaign_petitions() as $petition) {
             $figures['signatures'] += amnesty_get_petition_signature_count($petition->ID);
-            $figures['target'] += (int) get_field('objectif_signatures', $petition->ID) ?: AMNESTY_CLH_DEFAULT_PETITION_TARGET;
+            $figures['target'] += amnesty_get_clh_petition_target((int) $petition->ID);
         }
 
-        if ($figures['target'] > 0) {
-            // Integer division: a float ratio such as 0.29 floors to 28.
-            $figures['percentage'] = min(100, intdiv($figures['signatures'] * 100, $figures['target']));
-        }
+        $figures['percentage'] = amnesty_clh_percentage($figures['signatures'], $figures['target']);
 
         return $figures;
     }
@@ -185,44 +200,76 @@ if (!function_exists('amnesty_get_clh_campaign_final_results')) {
 
 if (!function_exists('amnesty_get_clh_grid_petitions')) {
     /**
-     * Petitions of the campaign grid, by end date (closest first), at most 10.
+     * Petitions of the campaign grid: the petitions tagged CLH, at most 10. Active
+     * petitions come first, closest end date first; then closed ones, most recently
+     * closed first; then those without a valid end date. A petition keeps its tag once
+     * closed, so the closed ones of past campaigns are the first left out.
      *
-     * TODO CLH-31: hard-coded; query the petitions tagged CLH.
+     * Petitions with the same end date keep the order of amnesty_get_clh_campaign_petitions().
+     * Titles are returned as entered, unescaped: escape them on output.
      *
      * @return list<array{id: int, title: string, short_title: string, image_id: int, signatures: int, target: int, percentage: int, url: string, sign_url: string}>
-     *         image_id is 0 when the petition has no photo
+     *         image_id is 0 when the petition has no photo; url is '' when the
+     *         permalink cannot be built
      */
     function amnesty_get_clh_grid_petitions(): array
     {
-        $scenario = amnesty_get_clh_scenario();
-        $image_id = amnesty_get_clh_placeholder_image_id();
+        $petitions = amnesty_get_clh_campaign_petitions();
+        $now = time();
+        $sort_keys = array_map(
+            static function ($petition) use ($now): array {
+                $end = amnesty_get_clh_petition_end_timestamp((int) $petition->ID);
 
-        $count = match ($scenario) {
-            'no_petitions' => 0,
-            'few_petitions' => 6,
-            default => 10,
-        };
+                return match (true) {
+                    $end === null => [2, 0],
+                    // Closed as in amnesty_is_petition_not_expired(): the end date is past.
+                    $end <= $now => [1, -$end],
+                    default => [0, $end],
+                };
+            },
+            $petitions,
+        );
 
-        $petitions = [];
+        // usort() is stable: petitions with the same end date keep the query order.
+        $order = array_keys($petitions);
+        usort($order, static fn (int $a, int $b): int => $sort_keys[$a] <=> $sort_keys[$b]);
 
-        for ($i = 1; $i <= $count; $i++) {
-            $signatures = 40_000 + $i * 17_500;
-            $target = 200_000;
+        $sign_url = amnesty_get_clh_petition_tunnel_url();
 
-            $petitions[] = [
-                'id' => $i,
-                'title' => sprintf('Libérez la personne n° %d, emprisonnée pour avoir défendu les droits humains', $i),
-                'short_title' => sprintf('Personne n° %d', $i),
-                'image_id' => $scenario === 'no_photo' && $i === 2 ? 0 : $image_id,
-                'signatures' => $signatures,
-                'target' => $target,
-                'percentage' => (int) min(100, floor($signatures / $target * 100)),
-                'url' => '#',
-                'sign_url' => '#',
-            ];
-        }
+        return array_map(
+            static fn (int $index): array => amnesty_get_clh_grid_card($petitions[$index], $sign_url),
+            array_slice($order, 0, AMNESTY_CLH_GRID_MAX_PETITIONS),
+        );
+    }
+}
 
-        return $petitions;
+if (!function_exists('amnesty_get_clh_grid_card')) {
+    /**
+     * Card of a petition in the campaign grid; see amnesty_get_clh_grid_petitions().
+     *
+     * @param object $petition the petition post
+     * @param string $sign_url entry into the signature tunnel
+     *
+     * @return array{id: int, title: string, short_title: string, image_id: int, signatures: int, target: int, percentage: int, url: string, sign_url: string}
+     */
+    function amnesty_get_clh_grid_card(object $petition, string $sign_url): array
+    {
+        $id = (int) $petition->ID;
+        $title = (string) $petition->post_title;
+        $signatures = amnesty_get_petition_signature_count($id);
+        $target = amnesty_get_clh_petition_target($id);
+
+        return [
+            'id' => $id,
+            'title' => $title,
+            'short_title' => trim((string) get_field('short_title', $id)) ?: $title,
+            'image_id' => (int) get_post_thumbnail_id($id),
+            'signatures' => $signatures,
+            'target' => $target,
+            'percentage' => amnesty_clh_percentage($signatures, $target),
+            'url' => (string) get_permalink($id),
+            'sign_url' => $sign_url,
+        ];
     }
 }
 

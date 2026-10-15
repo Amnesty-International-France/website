@@ -78,10 +78,15 @@ CLH-1). All the values are 0 when there is no campaign page.
 
 ### `amnesty_get_clh_grid_petitions(): array`
 
-Status: hard-coded (TODO CLH-31).
+Status: implemented; not called by a template yet.
 
-Petitions of the grid, ordered by end date (closest first), at most 10 (CLH-31). An
-empty list when the campaign has no petitions.
+Petitions of the grid (CLH-31): the campaign petitions, active or closed, in both states
+of the page, at most 10. Ordered by end date (`date_de_fin`): active petitions first,
+closest end date first; then closed ones, most recently closed first; then those without
+a valid end date. A petition keeps its tag once closed, so the closed petitions of past
+campaigns are the first left out. Petitions with the same end date keep the order of
+`amnesty_get_clh_campaign_petitions()`. An empty list when the campaign has no petitions.
+Titles are returned as entered, unescaped: escape them on output (`esc_html()`).
 
 | Key | Type | Meaning |
 |---|---|---|
@@ -90,10 +95,10 @@ empty list when the campaign has no petitions.
 | `short_title` | `string` | Short title, for mobile; falls back to `title`. |
 | `image_id` | `int` | Attachment ID of the photo; 0 without photo. |
 | `signatures` | `int` | Signatures of the petition. |
-| `target` | `int` | Signature target of the petition. |
-| `percentage` | `int` | `signatures` / `target`, from 0 to 100. |
-| `url` | `string` | Petition page ("Voir la pétition"). |
-| `sign_url` | `string` | Entry into the signature tunnel on this petition ("Signer la pétition"). |
+| `target` | `int` | Signature target of the petition; 200,000 when empty. |
+| `percentage` | `int` | `signatures` / `target`, rounded down, from 0 to 100. |
+| `url` | `string` | Petition page ("Voir la pétition"); `''` when the permalink cannot be built. |
+| `sign_url` | `string` | Signature tunnel ("Signer la pétition"). The tunnel does not open on a chosen petition yet: it picks one. |
 
 ### `amnesty_get_clh_testimonials(array $attributes): array`
 
@@ -157,14 +162,5 @@ The sticky "Temps fort" indicator (CLH-1) reads existing helpers only:
 The campaign state follows the page settings: switch "Temps fort" off, or move the end
 date into the past, to see the ended campaign.
 
-A temporary URL parameter, without any access check, `clh_scenario`, picks the data
-returned by the hard-coded helpers (e.g. `?clh_scenario=no_petitions`):
-
-| Scenario | Effect |
-|---|---|
-| `no_petitions` | Empty grid. |
-| `few_petitions` | 6 petitions in the grid. |
-| `no_photo` | One petition without photo. |
-
-The hard-coded petitions show the latest image of the media library; without any image in
-the library, they have no photo.
+The grid shows the published petitions whose "CLH" field is checked: tag or untag
+petitions, or change their end date or photo, to see its other cases.

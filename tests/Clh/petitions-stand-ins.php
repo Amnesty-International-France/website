@@ -30,6 +30,13 @@ if (!function_exists('amnesty_get_clh_campaign_petitions')) {
     }
 }
 
+if (!function_exists('amnesty_get_clh_petition_tunnel_url')) {
+    function amnesty_get_clh_petition_tunnel_url(): string
+    {
+        return $GLOBALS['__phpunit_clh_tunnel_url'] ?? '';
+    }
+}
+
 if (!function_exists('amnesty_get_petition_signature_count')) {
     function amnesty_get_petition_signature_count($post_id): int
     {
