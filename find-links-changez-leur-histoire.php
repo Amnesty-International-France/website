@@ -36,6 +36,20 @@ define( 'CLH_OUTPUT', get_temp_dir() . 'liens_changez_leur_histoire.csv' );
 const CLH_ID_KEYS = [ 'postId', 'postIds', 'selectedPostId', 'id', 'ID' ];
 
 /**
+ * Indique si une clé (attribut de bloc ou meta_key) contient une référence à un post par son ID.
+ *
+ * Couvre les attributs de blocs (CLH_ID_KEYS) et les champs ACF qui stockent des IDs en meta :
+ * « internal_link » des newsletters (post_object, rangé dans les groupes « 1 », « 2 »… donc
+ * stocké sous « 1_internal_link », « 2_internal_link »…) et « _related_posts_selected »
+ * (relationship, tableau sérialisé d'IDs).
+ */
+function clh_is_id_key( string $key ): bool {
+	return in_array( $key, CLH_ID_KEYS, true )
+		|| '_related_posts_selected' === $key
+		|| 1 === preg_match( '/^\d+_internal_link$/', $key );
+}
+
+/**
  * Indique si une URL trouvée dans le contenu pointe vers la page cible.
  *
  * @param string $url         URL telle que trouvée en base (absolue, relative, avec ancre…).
@@ -105,7 +119,7 @@ function clh_scan_value( $value, string $path, string $key, int $target_id, stri
 		return;
 	}
 
-	if ( in_array( $key, CLH_ID_KEYS, true ) && is_numeric( $value ) && (int) $value === $target_id ) {
+	if ( clh_is_id_key( $key ) && is_numeric( $value ) && (int) $value === $target_id ) {
 		$hits[] = "$path = $value (ID)";
 		return;
 	}
@@ -238,7 +252,7 @@ $post_types = array_values(
 	array_diff(
 		array_merge(
 			get_post_types( [ 'public' => true ] ),
-			[ 'wp_block', 'wp_template', 'wp_template_part', 'wp_navigation' ]
+			[ 'wp_block', 'wp_template', 'wp_template_part', 'wp_navigation', 'newsletter' ]
 		),
 		[ 'attachment' ]
 	)
@@ -317,10 +331,11 @@ $metas = $wpdb->get_results(
 		INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
 		WHERE p.ID <> %d AND p.post_type IN ($types_sql) AND p.post_status IN ($statuses_sql)
 		AND pm.meta_key NOT LIKE %s
-		AND pm.meta_value LIKE %s",
+		AND ( pm.meta_value LIKE %s OR pm.meta_value LIKE %s )",
 		$target_id,
 		$wpdb->esc_like( '_oembed_' ) . '%',
-		$like_slug
+		$like_slug,
+		$like_id
 	)
 );
 
