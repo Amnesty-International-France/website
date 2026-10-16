@@ -58,6 +58,7 @@ import { closeAlertBanner } from './modules/alert-banner';
 import StickyBar from './modules/clh-sticky-bar';
 import Counters from './modules/clh-counters';
 import Timeline from './modules/clh-timeline';
+import Presentation from './modules/clh-presentation';
 
 const App = () => {
   browserDetector();
@@ -115,6 +116,7 @@ const App = () => {
   StickyBar();
   Counters();
   Timeline();
+  Presentation();
   getPetitionIdForCLH();
   stepperTunnelClh();
 

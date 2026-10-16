@@ -238,9 +238,40 @@ implements `amnesty_get_clh_testimonials(array $attributes)` from the
 After integrating #1199, CLH-33 must render the timeline from that block through the
 helper, keep the reminder immediately before the actual timeline and `.clh-timeline` as the
 legacy sticky stop, and remove the template's provisional
-timeline pattern to avoid rendering both versions. CLH-32 must use the editable key
-figures block for the good news section, so removing it leaves no empty section.
+timeline pattern to avoid rendering both versions. CLH-32 uses the editable key
+figures blocks for the good news section; the template no longer inserts its static pattern.
 The campaign figures and final results integration does not replace this work.
+
+## Campaign presentation (CLH-32)
+
+The four sections live in the page content and use existing Gutenberg blocks.
+They are identical during and after the campaign. The local page already contains
+this composition; reproduce it in the existing page when deploying, since database
+content is not included in Git:
+
+1. A `core/columns` row with class `clh-situations`: heading and two paragraphs on
+   the left, a `core/image` on the right. Empty columns (including empty paragraphs
+   or an unselected image) are omitted at render time, centering the remaining
+   column without JavaScript. Saved blocks remain available in the editor.
+2. A two-column row: “Changez leur histoire”, with its two paragraphs, and
+   “Votre signature a du pouvoir”. The latter contains four image/paragraph
+   columns in a nested `core/columns` block with class `clh-pictos`.
+   Keep the four existing PNG illustrations (`lettres`, `gouvernement`, `soutien`,
+   `chaine`) from the theme's `assets/images/clh-pictos/` directory, as agreed for
+   CLH-32. Use the target site's URL when inserting them, never a localhost URL.
+   Their phrases are editable French paragraphs; decorative images have empty alt
+   text. JavaScript hides a failed illustration and keeps its phrase visible.
+3. A `core/group` section with class `clh-good-news`, containing a heading with
+   class `clh-section-title`, an introduction with class `clh-good-news-standfirst`,
+   and a group with class `clh-good-news-figures`. Insert four existing
+   `amnesty-core/key-figure` blocks in that group. Both number (including units or
+   percentages) and label are editable. Remove the whole section group to remove
+   the section and its spacing.
+
+Below 1024 px the presentation columns stack and illustrations form a 2 × 2 grid.
+Key figures use a single column on small screens. Text links use standard WordPress
+paragraph links. Sample copy remains editable pending Amnesty's final content;
+removing the unused static pattern file belongs to CLH-39.
 
 ## Testing the page
 
