@@ -28,10 +28,6 @@ if (!function_exists('register_card_image_text_block')) {
                     'type' => 'string',
                     'default' => 'vertical',
                 ],
-                'textDisplay' => [
-                    'type' => 'string',
-                    'default' => 'rollOver',
-                ],
                 'postId' => [
                     'type' => ['integer', 'null', 'string'],
                     'default' => null,
@@ -40,9 +36,9 @@ if (!function_exists('register_card_image_text_block')) {
                     'type' => 'string',
                     'default' => 'Titre par défaut',
                 ],
-                'surtitle' => [
+                'subtitle' => [
                     'type' => 'string',
-                    'default' => 'Surtitre par défaut',
+                    'default' => 'Sous-titre par défaut',
                 ],
                 'category' => [
                     'type' => 'string',
@@ -51,10 +47,6 @@ if (!function_exists('register_card_image_text_block')) {
                 'permalink' => [
                     'type' => 'string',
                     'default' => '#',
-                ],
-                'linkTitle' => [
-                    'type' => 'string',
-                    'default' => 'Voir la suite',
                 ],
                 'thumbnail' => [
                     'type' => ['integer', 'null', 'string'],
