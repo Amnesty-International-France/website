@@ -15,13 +15,12 @@ if (!function_exists('render_card_image_text_block')) {
         $custom = $attributes['custom'] ?? false;
         $postId = $attributes['postId'] ?? null;
         $direction = $attributes['direction'] ?? 'horizontal';
-        $textDisplay = $attributes['textDisplay'] ?? 'rollOver';
         $newTab = $attributes['newTab'] ?? false;
 
         if (! $custom && $postId && is_numeric($postId)) {
             $post = get_post($postId);
             $title = $post->post_title ?? '';
-            $surtitle = get_the_date('d F, Y', $postId) ?? '';
+            $subtitle = get_the_date('d F, Y', $postId) ?? '';
             $permalink = get_permalink($postId);
             $thumbnail_id = get_post_thumbnail_id($postId);
             $text = $post->post_excerpt ?? '';
@@ -69,10 +68,9 @@ if (!function_exists('render_card_image_text_block')) {
             }
         } else {
             $title = $attributes['title'] ?? '';
-            $surtitle = $attributes['surtitle'] ?? '';
+            $subtitle = $attributes['subtitle'] ?? '';
             $category = $attributes['category'] ?? '';
             $permalink = $attributes['permalink'] ?? '#';
-            $linkTitle = $attributes['linkTitle'] ?? 'Voir la suite';
             $thumbnail_id = $attributes['thumbnail'] ?? null;
             $text = $attributes['text'] ?? '';
         }
@@ -84,7 +82,7 @@ if (!function_exists('render_card_image_text_block')) {
 
         ob_start();
 
-        $wrapper_classes = ['card-image-text-block', $direction, $textDisplay];
+        $wrapper_classes = ['card-image-text-block', $direction];
         ?>
         <div <?php echo get_block_wrapper_attributes(['class' => implode(' ', $wrapper_classes)]); ?>>
             <?php if (!empty($category)) : ?>
@@ -106,8 +104,8 @@ if (!function_exists('render_card_image_text_block')) {
                     </div>
                     <div class="card-image-text-content-container">
                         <div class="card-image-text-content">
-                            <?php if (!empty($surtitle)) : ?>
-                                <p class="card-image-text-content-surtitle"><?php echo esc_html($surtitle); ?></p>
+                            <?php if (!empty($subtitle)) : ?>
+                                <p class="card-image-text-content-subtitle"><?php echo esc_html($subtitle); ?></p>
                             <?php endif; ?>
                             <?php if (!empty($title)) : ?>
                                 <p class="card-image-text-content-title"><?php echo esc_html($title); ?></p>
@@ -130,7 +128,7 @@ if (!function_exists('render_card_image_text_block')) {
                                         fill="black"
                                     />
                                 </svg>
-                                <p class="card-image-text-content-see-more-label"><?php echo esc_html($linkTitle); ?></p>
+                                <p class="card-image-text-content-see-more-label">Voir la suite</p>
                             </div>
                         </div>
                     </div>
