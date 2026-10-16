@@ -8,7 +8,6 @@ $span       = max(0, (int) ($args['span'] ?? 0));
 $collected  = max(0, (int) ($args['collected'] ?? 0));
 $goal       = max(0, (int) ($args['goal'] ?? 0));
 $sign_url   = (string) ($args['sign_url'] ?? '');
-$countdown  = (bool) ($args['show_countdown'] ?? true);
 $button     = (string) ($args['button_variant'] ?? 'bg-yellow');
 $percentage = max(0, min(100, (int) ($args['percentage'] ?? 0)));
 
@@ -18,7 +17,6 @@ $ring = $span > 0 ? min($days / $span, 1) : 1;
 ?>
 
 <div class="clh-indicators clh-indicators--<?php echo esc_attr($variant); ?>">
-	<?php if ($countdown) : ?>
 	<p
 		class="clh-countdown"
 		style="--clh-ring: <?php echo esc_attr((string) round($ring, 4)); ?>"
@@ -39,7 +37,6 @@ $ring = $span > 0 ? min($days / $span, 1) : 1;
 		<span class="clh-countdown-label" aria-hidden="true"><?php echo esc_html(_n('jour', 'jours', $days, 'amnesty')); ?></span>
 		<span class="screen-reader-text"><?php echo esc_html(sprintf( /* translators: %s: nombre de jours. */ _n('%s jour restant', '%s jours restants', $days, 'amnesty'), number_format_i18n($days))); ?></span>
 	</p>
-	<?php endif; ?>
 
 	<div class="clh-signatures">
 		<p class="clh-signatures-count">

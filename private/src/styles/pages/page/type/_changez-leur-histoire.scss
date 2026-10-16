@@ -531,11 +531,6 @@
   }
 }
 
-// Réserve la place du bandeau lorsqu'il rejoint la frise et défile avec elle.
-.page-change-their-history .has-clh-sticky-stop {
-  padding-top: calc(var(--clh-section-gap) + var(--clh-sticky-height));
-}
-
 .clh-sticky-bar-inner {
   max-width: var(--clh-max);
   margin-inline: auto;

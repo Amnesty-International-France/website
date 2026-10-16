@@ -184,16 +184,15 @@ The `amnesty/clh-signature-reminder` pattern renders a second full-width band in
 page flow, immediately before "Ils vous disent merci". It uses the same figures or
 final results as the first band and is visible without JavaScript. It has no reveal
 animation, so it is already readable when it takes over from the sticky indicator.
-When adding this pattern to an existing installation, clear WordPress's theme pattern
-cache with `wp eval 'wp_get_theme()->delete_pattern_cache();'` so it is discovered.
+Theme version 2.0.18 invalidates WordPress's theme pattern cache automatically so the
+new pattern is discovered on existing installations; no manual cache clearing is needed.
 
 The sticky indicator takes over once the initial band has scrolled above the visible
 site header. It sits below that header (and the WordPress admin bar). When the reminder's
 top reaches the sticky indicator's bottom, the sticky indicator becomes invisible and
 inert, leaving the reminder to scroll normally. Scrolling back up restores the sticky
 indicator when the reminder moves below it. No extra space is added above the timeline.
-Older templates without the reminder keep the previous stop at `.clh-timeline`, then
-`.clh-donation` or `.clh-share` if those sections are absent.
+The sticky indicator stays hidden if the initial band or the reminder is missing.
 
 Below 768 px, all three indicator variants hide the day counter and sign button; the
 day counter appears above the banner title. Without JS, the first band and the reminder
