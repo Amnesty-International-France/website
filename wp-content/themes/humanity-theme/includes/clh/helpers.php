@@ -268,7 +268,7 @@ if (!function_exists('amnesty_get_clh_grid_card')) {
             'target' => $target,
             'percentage' => amnesty_clh_percentage($signatures, $target),
             'url' => (string) get_permalink($id),
-            'sign_url' => $sign_url,
+            'sign_url' => add_query_arg('clh_petition', $id, $sign_url),
         ];
     }
 }

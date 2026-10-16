@@ -2,6 +2,21 @@
 
 declare(strict_types=1);
 
+if (!function_exists('add_query_arg')) {
+    /** Minimal URL query handling for tests, including existing queries and fragments. */
+    function add_query_arg(mixed ...$args): string
+    {
+        $values = is_array($args[0]) ? $args[0] : [$args[0] => $args[1]];
+        $url = (string) (is_array($args[0]) ? $args[1] : $args[2]);
+        [$url, $fragment] = array_pad(explode('#', $url, 2), 2, null);
+        [$base, $query] = array_pad(explode('?', $url, 2), 2, '');
+        parse_str($query, $params);
+        $query = http_build_query(array_filter(array_replace($params, $values), static fn ($value) => $value !== false));
+
+        return $base . ($query !== '' ? '?' . $query : '') . ($fragment !== null ? '#' . $fragment : '');
+    }
+}
+
 /**
  * Shared stubs for PHP unit tests.
  *

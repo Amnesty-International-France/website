@@ -16,6 +16,7 @@ final class ClhSignatureBandTest extends TestCase
         require_once __DIR__ . '/petitions-stand-ins.php';
         require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/clh/helpers.php';
         require_once __DIR__ . '/template-stand-ins.php';
+        $GLOBALS['__phpunit_clh_tunnel_url'] = '/changez-leur-histoire/campagne/';
         $GLOBALS['__phpunit_clh_campaign_page'] = (object) ['ID' => 2026];
         $GLOBALS['__phpunit_clh_tunnel_active'] = false;
         $GLOBALS['__phpunit_acf_field_values'] = [2026 => ['end_date_highlight_clh' => '2026-12-10 23:59:59']];

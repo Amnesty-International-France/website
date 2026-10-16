@@ -8,11 +8,6 @@ function get_template_part(string $slug, ?string $name = null, array $args = [])
     require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/' . $slug . '.php';
 }
 
-function amnesty_get_clh_petition_tunnel_url(): string
-{
-    return '/changez-leur-histoire/campagne/';
-}
-
 function esc_html(string $text): string
 {
     return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');

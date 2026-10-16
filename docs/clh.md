@@ -78,7 +78,7 @@ CLH-1). All the values are 0 when there is no campaign page.
 
 ### `amnesty_get_clh_grid_petitions(): array`
 
-Status: implemented; not called by a template yet.
+Status: implemented and used by `patterns/clh-petitions-grid.php`.
 
 Petitions of the grid (CLH-31): the campaign petitions, active or closed, in both states
 of the page, at most 10. Ordered by end date (`date_de_fin`): active petitions first,
@@ -98,7 +98,31 @@ Titles are returned as entered, unescaped: escape them on output (`esc_html()`).
 | `target` | `int` | Signature target of the petition; 200,000 when empty. |
 | `percentage` | `int` | `signatures` / `target`, rounded down, from 0 to 100. |
 | `url` | `string` | Petition page ("Voir la pétition"); `''` when the permalink cannot be built. |
-| `sign_url` | `string` | Signature tunnel ("Signer la pétition"). The tunnel does not open on a chosen petition yet: it picks one. |
+| `sign_url` | `string` | Signature tunnel ("Signer la pétition"), with `clh_petition=<id>` to select the first eligible petition. |
+
+### Grid display and targeted tunnel entry
+
+The grid renders the helper's ten cards at most, with five columns from 1024 px,
+two from 768 px and one below 768 px. Mobile uses `short_title` (falling back to the
+full title). The heading has a yellow line above it and can be entered separately
+for each campaign state in `petitions_heading_active_clh` and
+`petitions_heading_closed_clh`. Empty fields keep the automatic year/count headings.
+
+During the campaign, active petitions link to the tunnel with `clh_petition=<id>`.
+The tunnel context selects this ID only among eligible campaign petitions and is
+shared by the hero, redirects and content. Sign/skip redirects use the plain tunnel
+URL, so the following petition is random. Invalid IDs (including array parameters)
+cannot select a petition outside that eligible list.
+
+The agreed business rules are:
+
+- Keep the helper order: active petitions by nearest end date, then closed petitions
+  by most recent end date, then petitions without a valid end date.
+- Already signed, skipped or expired petitions remain excluded from tunnel selection;
+  a direct request for one falls back to another eligible petition, or the final screen.
+- A closed petition links to its page with “Voir la pétition”, even during a campaign.
+- The button labels remain fixed. After the campaign, every card links to its petition page.
+- Missing photos display the card number on a yellow background.
 
 ### `amnesty_get_clh_testimonials(array $attributes): array`
 
