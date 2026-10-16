@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__DIR__) . '/clh/tunnel-selection.php';
+
 function amnesty_register_petitions_cpt()
 {
     $labels = [
@@ -678,8 +680,8 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
     $next_petition = null;
 
     if ($signed_count < 10 && !empty($not_signed)) {
-        $random_key = array_rand($not_signed);
-        $next_petition = $not_signed[$random_key];
+        // Read-only choice, matched against eligible campaign petitions by the selector.
+        $next_petition = amnesty_select_clh_tunnel_petition($not_signed, $_GET['clh_petition'] ?? null);
     }
 
     $contexts[$post->ID] = [

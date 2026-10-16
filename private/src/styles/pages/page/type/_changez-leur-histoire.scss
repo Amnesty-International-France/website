@@ -687,6 +687,19 @@
 // rythme complet, et le haut des cartes doit entrer dans le premier écran.
 .clh-petitions {
   padding-block-start: 40px;
+
+  .clh-section-title::before {
+    content: '';
+    display: block;
+    width: 72px;
+    height: 8px;
+    margin-bottom: 16px;
+    background-color: var(--wp--preset--color--primary);
+  }
+
+  .clh-section-title::after {
+    content: none;
+  }
 }
 
 // Le partage ferme la page, sous l'appel au don.
@@ -712,10 +725,6 @@
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 20px;
 
-  @media (max-width: $container-hg) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   @media (max-width: 1023px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -728,6 +737,20 @@
 .clh-petitions-grid-item {
   display: flex;
   counter-increment: clh-case;
+
+  .clh-petition-title-mobile {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .clh-petition-title-desktop {
+      display: none;
+    }
+
+    .clh-petition-title-mobile {
+      display: inline;
+    }
+  }
 
   .petition-thumbnail:empty {
     display: grid;
@@ -781,7 +804,7 @@
     padding: 10px 16px;
   }
 
-  // Le titre prend la hauteur qui reste : le pays, la barre, le compte et le bouton tombent à
+  // Le titre prend la hauteur qui reste : la barre, le compte et le bouton tombent à
   // la même hauteur d'une carte à l'autre. Sans ça, un titre de trois lignes descend tout ce
   // qui le suit, et la ligne de cartes se lit en dents de scie. Le seul bord irrégulier qui
   // reste est le bas du titre, et c'est le texte lui-même.
@@ -801,8 +824,7 @@
   background-color: var(--clh-grey);
 }
 
-// Une situation sans photo — le dixième cas avant son annonce, ou une personne dont le
-// visage ne peut pas être publié — garde la même emprise et affiche son rang.
+// Une situation existante sans photo garde la même emprise et affiche son rang.
 // Zone éditable
 
 .clh-editable .page-content > * {

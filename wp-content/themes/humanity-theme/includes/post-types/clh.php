@@ -25,6 +25,24 @@ add_action('acf/include_fields', function () {
         'title' => 'Highlight',
         'fields' => [
             [
+                'key' => 'field_clh_petitions_heading_active',
+                'label' => 'Titre des situations — campagne en cours',
+                'name' => 'petitions_heading_active_clh',
+                'type' => 'text',
+                'instructions' => 'Laisser vide pour utiliser le titre automatique avec l’année de la campagne.',
+                'required' => 0,
+                'default_value' => '',
+            ],
+            [
+                'key' => 'field_clh_petitions_heading_closed',
+                'label' => 'Titre des situations — campagne terminée',
+                'name' => 'petitions_heading_closed_clh',
+                'type' => 'text',
+                'instructions' => 'Laisser vide pour utiliser le titre automatique avec le nombre de situations et l’année de la campagne.',
+                'required' => 0,
+                'default_value' => '',
+            ],
+            [
                 'key' => 'field_6a199c4b42f0a',
                 'label' => 'Passer en mode Temps fort',
                 'name' => 'highlight_clh',
