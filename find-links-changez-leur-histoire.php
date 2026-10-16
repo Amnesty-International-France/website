@@ -28,7 +28,7 @@ if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 }
 
 const CLH_TARGET_URL = 'https://www.amnesty.fr/nous-connaitre/nos-combats/changez-leur-histoire/';
-const CLH_OUTPUT     = 'liens_changez_leur_histoire.csv';
+define( 'CLH_OUTPUT', get_temp_dir() . 'liens_changez_leur_histoire.csv' );
 
 /**
  * Clés d'attributs de blocs qui référencent un post par son ID.
@@ -75,7 +75,7 @@ function clh_extract_urls( string $value ): array {
 		$urls[] = $trimmed;
 	}
 
-	return array_unique( array_map( 'html_entity_decode', $urls ) );
+	return array_unique( array_map( static fn( string $url ): string => rtrim( html_entity_decode( $url ), '.,;:!?)"\'' ), $urls ) );
 }
 
 /**
@@ -225,7 +225,7 @@ if ( ! $target_id || ! get_post( $target_id ) ) {
 	WP_CLI::error( 'Page cible introuvable. Relancer avec id=<ID de la page « Changez leur histoire »>.' );
 }
 
-$target_path = rtrim( (string) wp_parse_url( CLH_TARGET_URL, PHP_URL_PATH ), '/' );
+$target_path = rtrim( (string) wp_parse_url( get_permalink( $target_id ), PHP_URL_PATH ), '/' );
 $target_slug = basename( $target_path );
 
 WP_CLI::line( sprintf( 'Page cible : #%d « %s » (%s)', $target_id, get_the_title( $target_id ), get_permalink( $target_id ) ) );
@@ -243,7 +243,7 @@ $post_types = array_values(
 		[ 'attachment' ]
 	)
 );
-$statuses = [ 'publish', 'private' ];
+$statuses = [ 'publish', 'private', 'future' ];
 
 $types_sql    = "'" . implode( "','", array_map( 'esc_sql', $post_types ) ) . "'";
 $statuses_sql = "'" . implode( "','", $statuses ) . "'";
@@ -429,8 +429,9 @@ $yoast_table = $wpdb->prefix . 'yoast_seo_links';
 if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $yoast_table ) ) === $yoast_table ) {
 	$yoast_links = $wpdb->get_results(
 		$wpdb->prepare(
-			"SELECT post_id, target_post_id, url FROM {$yoast_table}
-			WHERE type = 'internal' AND post_id <> %d AND ( target_post_id = %d OR url LIKE %s )",
+			"SELECT l.post_id, l.target_post_id, l.url FROM {$yoast_table} l
+			INNER JOIN {$wpdb->prefix}yoast_indexable i ON i.id = l.indexable_id AND i.object_type = 'post'
+			WHERE l.type = 'internal' AND l.post_id <> %d AND ( l.target_post_id = %d OR l.url LIKE %s )",
 			$target_id,
 			$target_id,
 			$like_slug
@@ -458,8 +459,11 @@ if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $yoast_table ) ) ===
 	// ou statut non analysé (brouillon…). Remontés pour vérification manuelle.
 	$found_ids = array_map( 'intval', array_column( $rows, 'id' ) );
 	foreach ( array_diff( $yoast_sources, $found_ids ) as $orphan_id ) {
+		$key = "post:$orphan_id|yoast uniquement|à vérifier (index Yoast)";
 		clh_add_post_row( $rows, $orphan_id, 'yoast uniquement', 'à vérifier (index Yoast)', [] );
-		$rows[ "post:$orphan_id|yoast uniquement|à vérifier (index Yoast)" ]['yoast'] = 'oui';
+		if ( isset( $rows[ $key ] ) ) {
+			$rows[ $key ]['yoast'] = 'oui';
+		}
 	}
 
 	WP_CLI::line( sprintf( '6/6 Yoast : %d contenus sources dans l\'index.', count( $yoast_sources ) ) );
