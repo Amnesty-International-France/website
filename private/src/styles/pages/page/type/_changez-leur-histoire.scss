@@ -724,6 +724,17 @@
   .article-share {
     justify-content: center;
     margin: 0;
+
+    @media (max-width: 479px) {
+      display: grid;
+      grid-template-columns: repeat(5, 36px);
+
+      .title {
+        grid-column: 1 / -1;
+        padding-right: 0;
+        text-align: center;
+      }
+    }
   }
 }
 
