@@ -13,6 +13,8 @@ registerBlockType(TESTIMONIALS_BLOCK_NAME, {
   category: 'amnesty-core',
   icon: 'format-quote',
   attributes: {
+    title: { type: 'string', default: __('Ils vous disent merci', 'amnesty') },
+    subtitle: { type: 'string', default: '' },
     testimonials: {
       type: 'array',
       default: [],

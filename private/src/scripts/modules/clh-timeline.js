@@ -1,10 +1,7 @@
-const Timeline = () => {
-  const dial = document.querySelector('.clh-timeline-dial');
-  if (!dial) return;
+const initTimeline = (dial) => {
+  const years = [...dial.querySelectorAll('.clh-timeline-year')];
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  // Sur un écran étroit les années défilent. Le plateau s'ouvre sur l'année cochée, la
-  // dernière victoire, et recentre celle qu'on choisit : sans ça le panneau de 2024 s'afficherait
-  // sous les années 2013 à 2016.
   const center = (behavior) => {
     const mark = dial.querySelector('.clh-timeline-input:checked')?.closest('.clh-timeline-mark');
     if (!mark) return;
@@ -15,17 +12,37 @@ const Timeline = () => {
     });
   };
 
+  const selectPerson = (panel, rank) => {
+    panel.querySelectorAll('.clh-timeline-slide').forEach((slide, index) => {
+      slide.classList.toggle('is-active', index === rank);
+    });
+  };
+
+  dial.addEventListener('change', ({ target }) => {
+    if (target.matches('.clh-timeline-input')) {
+      const year = target.closest('.clh-timeline-year');
+      dial.style.setProperty('--clh-timeline-cursor', years.indexOf(year));
+      const panel = year.querySelector('.clh-timeline-panel');
+      const first = panel.querySelector('.clh-timeline-pick-input');
+      if (first) first.checked = true;
+      selectPerson(panel, 0);
+      center(reduced.matches ? 'instant' : 'smooth');
+    } else if (target.matches('.clh-timeline-pick-input')) {
+      selectPerson(target.closest('.clh-timeline-panel'), Number(target.value));
+    }
+  });
+
   center('instant');
+  window.addEventListener('resize', () => center('instant'));
 
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  dial.addEventListener('change', () => center(reduced.matches ? 'instant' : 'smooth'));
-
-  // L'entrée ne vaut que pour les transitions lancées à l'arrivée : deux images plus tard, la
-  // classe est retirée et un clic retrouve ses délais ordinaires.
   dial.addEventListener('clh:reveal', () => {
     dial.classList.add('is-entering');
     requestAnimationFrame(() => requestAnimationFrame(() => dial.classList.remove('is-entering')));
   });
+};
+
+const Timeline = () => {
+  document.querySelectorAll('.clh-timeline-dial').forEach(initTimeline);
 };
 
 export default Timeline;

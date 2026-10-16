@@ -74,7 +74,7 @@ const PhotoPicker = ({ imageId, error, onChange }) => {
 };
 
 const EditComponent = ({ attributes, setAttributes }) => {
-  const { testimonials = [] } = attributes;
+  const { testimonials = [], title, subtitle } = attributes;
   const currentYear = new Date().getFullYear();
   const errors = testimonials.map((testimonial) => validateTestimonial(testimonial, currentYear));
   // The saving locks live in the clh-testimonials-validation editor plugin.
@@ -98,7 +98,16 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
   return (
     <div {...useBlockProps({ className: 'clh-testimonials-editor' })}>
-      <h2>{__('Ils vous disent merci', 'amnesty')}</h2>
+      <TextControl
+        label={__('Titre', 'amnesty')}
+        value={title}
+        onChange={(value) => setAttributes({ title: value })}
+      />
+      <TextareaControl
+        label={__('Sous-titre', 'amnesty')}
+        value={subtitle}
+        onChange={(value) => setAttributes({ subtitle: value })}
+      />
       {isInvalid && (
         <p className="clh-testimonials-editor-error">
           {__('Corrigez les témoignages pour pouvoir enregistrer la page.', 'amnesty')}
