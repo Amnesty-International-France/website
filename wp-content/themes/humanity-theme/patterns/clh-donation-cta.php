@@ -7,20 +7,20 @@
  * Inserter: no
  */
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
 ?>
 
 <section class="clh-section clh-donation">
 	<div class="clh-donation-inner">
 		<div class="clh-donation-text">
-			<h2 class="clh-donation-title"><?php esc_html_e( 'Soutenez Changez leur histoire', 'amnesty' ); ?></h2>
-			<p><?php esc_html_e( 'Amnesty International France ne reçoit aucune subvention publique. La campagne vit des dons de ses soutiens : chaque don finance les enquêtes, les actions et les lettres qui portent la voix des personnes défendues par la campagne.', 'amnesty' ); ?></p>
+			<h2 class="clh-donation-title"><?php esc_html_e('SOUTENEZ NOS ACTIONS', 'amnesty'); ?></h2>
+			<p><?php esc_html_e("Face à l'injustice et à l'impunité, ces personnes refusent de se taire. Grâce à vous, nous avons les moyens de les défendre et d'agir à leurs côtés. Chaque don nous donne la force de résister en toute indépendance. Aidez-nous à changer leur histoire.", 'amnesty'); ?></p>
 		</div>
 		<div class="custom-button-block" data-clh-reveal="full">
-			<a href="<?php echo esc_url( home_url( '/faire-un-don/' ) ); ?>" class="custom-button">
+			<a href="<?php echo esc_url(amnesty_get_clh_donation_url()); ?>" class="custom-button" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e('JE FAIS UN DON (nouvel onglet)', 'amnesty'); ?>">
 				<div class="content bg-yellow medium">
-					<div class="button-label"><?php esc_html_e( 'Je donne', 'amnesty' ); ?></div>
+					<div class="button-label"><?php esc_html_e('JE FAIS UN DON', 'amnesty'); ?></div>
 				</div>
 			</a>
 		</div>

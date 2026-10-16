@@ -331,12 +331,13 @@ if (!function_exists('amnesty_get_clh_donation_url')) {
     /**
      * Donation link of the page, carrying the page's own origin code.
      *
-     * TODO CLH-23: provisional origin code, until Périscope provides the page's code.
+     * TODO CLH-23: replace CLH_PAGE_TEMP with the page's code from Périscope.
+     * Keep it distinct from the tunnel's WBF01W1012 origin code.
      *
      * @return string
      */
     function amnesty_get_clh_donation_url(): string
     {
-        return 'https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012';
+        return 'https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=CLH_PAGE_TEMP';
     }
 }

@@ -7,10 +7,10 @@
  * Inserter: no
  */
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
-if ( ! trim( (string) get_the_content() ) ) {
-	return;
+if (! trim((string) get_the_content())) {
+    return;
 }
 
 ?>
