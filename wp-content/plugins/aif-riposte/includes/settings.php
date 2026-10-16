@@ -25,7 +25,7 @@ function aif_riposte_add_settings_page(): void
         'edit.php?post_type=riposte_victory',
         __('Réglages', 'aif-riposte'),
         __('Réglages', 'aif-riposte'),
-        'manage_options',
+        'manage_riposte_settings',
         'aif_riposte_settings',
         'aif_riposte_settings_page_callback'
     );
@@ -94,7 +94,7 @@ function aif_riposte_settings_page_callback(): void
  */
 function aif_riposte_save_settings(): void
 {
-    if (! current_user_can('manage_options')) {
+    if (! current_user_can('manage_riposte_settings')) {
         return;
     }
 

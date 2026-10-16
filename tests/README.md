@@ -170,7 +170,9 @@ yarn env:e2e:stop                                # coupe l'environnement
   `wp_insert_post()`/`wp post create` : plusieurs hooks `save_post`/
   `acf/save_post` du thème déclenchent de vrais appels à l'API Salesforce
   (ex. `create_petition()`), qu'on ne veut surtout pas exécuter pendant le
-  seed.
+  seed. `create_petition()` est aussi branché sur `publish_future_post` : une
+  pétition planifiée (`future`) serait créée dans Salesforce au moment où
+  WP-Cron la publie.
 
 ### Jetpack est installé, mais seulement pour ce qui marche hors-ligne
 
