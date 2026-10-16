@@ -126,7 +126,7 @@ The agreed business rules are:
 
 ### `amnesty_get_clh_testimonials(array $attributes): array`
 
-Status: implemented; not called by a block yet.
+Status: implemented and rendered by the reusable `amnesty-core/clh-testimonials` block.
 
 Testimonials of the "Ils vous disent merci" block (CLH-33, CLH-34), read from the
 `testimonials` attribute of the `amnesty-core/clh-testimonials` block. Each entry of that
@@ -231,16 +231,30 @@ Below 768 px, all three indicator variants hide the day counter and sign button;
 day counter appears above the banner title. Without JS, the first band and the reminder
 remain available, while the sticky indicator stays hidden.
 
-The editorial placeholders in `clh-good-news.php` and `clh-victories-timeline.php`
-still need to be removed under CLH-39. On `sprint/page-clh`, #1199 (CLH-34) already
-implements `amnesty_get_clh_testimonials(array $attributes)` from the
-`amnesty-core/clh-testimonials` block settings; that helper no longer needs replacing.
-After integrating #1199, CLH-33 must render the timeline from that block through the
-helper, keep the reminder immediately before the actual timeline and `.clh-timeline` as the
-legacy sticky stop, and remove the template's provisional
-timeline pattern to avoid rendering both versions. CLH-32 must use the editable key
-figures block for the good news section, so removing it leaves no empty section.
-The campaign figures and final results integration does not replace this work.
+### Testimonials block (CLH-33)
+
+Insert “Ils vous disent merci (CLH)” in the page content and enter its title,
+subtitle and testimonials. Existing CLH-34 blocks keep their testimonials and get
+the default title; the subtitle is empty until entered. There are no sample
+victories in the front-end template anymore. The block is hidden when no valid
+testimonial exists. The template no longer inserts the good-news pattern after the page content.
+Place that section in the editable content before the testimonials, using the existing
+“Chiffre Clé” blocks inside a `clh-good-news-figures` group.
+
+The timeline spans the oldest entered year through the current year, opens on the
+latest victory, and leaves empty years non-interactive. Within a year, people keep
+entry order; selecting a year resets its selection to the first person. There is
+no limit of four people or thirty years in the display. On narrow screens, the
+year rail scrolls horizontally and recenters the selected year. Each instance has
+independent radio groups and IDs. Missing/deleted media leaves the text and the
+“Victoire” label visible without an image placeholder.
+
+On the CLH page only, the first nonempty block renders the signature reminder
+immediately before itself, so the existing sticky stop follows its editorial
+position. The template's old reminder and provisional timeline have been removed
+to prevent duplicates. Keep the block after the campaign presentation and good
+news in the editable content. Theme version 2.0.19 refreshes the pattern cache.
+On other pages, the block renders without a reminder or sticky interaction.
 
 ## Testing the page
 
@@ -249,3 +263,18 @@ date into the past, to see the ended campaign.
 
 The grid shows the published petitions whose "CLH" field is checked: tag or untag
 petitions, or change their end date or photo, to see its other cases.
+
+### Local page composition
+
+The local page at `/nous-connaitre/nos-combats/changez-leur-histoire/` uses:
+
+1. A `core/columns` row with class `clh-situations`: campaign text and image.
+2. A two-column row: campaign introduction and the four `clh-pictos` illustrations.
+3. A `core/group` section with class `clh-good-news`, its heading/standfirst and four
+   editable `amnesty-core/key-figure` blocks in a `clh-good-news-figures` group.
+4. The `amnesty-core/clh-testimonials` block, with its campaign reminder.
+
+The hero, petition grid, donation and share remain in the template. When deploying,
+update the existing page content as well: the database edit is not carried by Git.
+The previous slider, TOC, victory carousel, action cards and portrait cards are not
+part of this composition.

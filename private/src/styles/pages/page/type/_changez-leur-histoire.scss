@@ -1,15 +1,18 @@
-.page-change-their-history {
+.page-change-their-history,
+.clh-timeline {
   --clh-grey: #1e282c;
   --clh-gutter: 24px;
   --clh-max: 1440px;
   --clh-section-gap: 72px;
 
-  overflow-x: hidden;
-  background-color: var(--wp--preset--color--white);
-
   @media (max-width: $container-md) {
     --clh-section-gap: 56px;
   }
+}
+
+.page-change-their-history {
+  overflow-x: hidden;
+  background-color: var(--wp--preset--color--white);
 }
 
 .page-change-their-history ~ .amnesty-footer-template-part .over-footer {
@@ -862,6 +865,9 @@
 }
 
 .clh-editable .wp-block-post-content > .wp-block-columns {
+  width: 100%;
+  // Le style global des colonnes impose une largeur maximale avec !important.
+  max-width: none !important;
   gap: 64px;
   margin-block: 0;
   padding: 0;
@@ -899,7 +905,7 @@
   }
 }
 
-.clh-editable .page-content h2 {
+.clh-editable .page-content h2:not(.clh-timeline *) {
   font-family: var(--wp--preset--font-family--secondary);
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1.05;
@@ -919,8 +925,8 @@
   }
 }
 
-.clh-editable .page-content p,
-.clh-editable .page-content li {
+.clh-editable .page-content p:not(.clh-timeline *),
+.clh-editable .page-content li:not(.clh-timeline *) {
   max-width: 68ch;
   text-wrap: pretty;
 }
@@ -952,6 +958,7 @@
 // texte d'à côté ; sous 1024 px ils passent en deux rangées de deux.
 .clh-editable .clh-pictos {
   display: grid;
+  max-width: none !important;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 32px 24px;
   margin: 0;
@@ -996,6 +1003,29 @@
       margin-block: auto;
     }
   }
+}
+
+// La présentation, les chiffres clés et la frise sont désormais éditables dans la page.
+.clh-editable .clh-good-news {
+  margin-block: calc(2 * var(--clh-section-gap)) var(--clh-section-gap);
+
+  .clh-section-title {
+    padding-top: 0;
+
+    &::before {
+      content: none;
+    }
+  }
+}
+
+.clh-editable [data-clh-reminder] {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-block: 0;
+}
+
+.clh-editable:has(.wp-block-post-content > .clh-timeline:last-child) {
+  padding-bottom: 0;
 }
 
 // Bonnes nouvelles
@@ -1059,6 +1089,7 @@
 
 .clh-timeline-head {
   text-align: center;
+  overflow-wrap: anywhere;
 
   .clh-section-title {
     margin-bottom: 24px;
@@ -1128,14 +1159,6 @@ $clh-timeline-exit: 180ms;
       )
     );
     transition: transform 700ms $clh-timeline-ease;
-  }
-}
-
-// Rang de l'année ouverte dans la frise. Il pilote à la fois le filet et la roue de l'année,
-// sans JavaScript ; trente rangs couvrent les éditions jusqu'en 2042.
-@for $rank from 1 through 30 {
-  .clh-timeline-dial:has(.clh-timeline-year:nth-child(#{$rank}) .clh-timeline-input:checked) {
-    --clh-timeline-cursor: #{$rank - 1};
   }
 }
 
@@ -1332,13 +1355,10 @@ $clh-timeline-exit: 180ms;
     visibility 0s linear $clh-timeline-exit;
 }
 
-@for $rank from 1 through 4 {
-  .clh-timeline-panel:has(.clh-timeline-pick:nth-child(#{$rank}) .clh-timeline-pick-input:checked)
-    .clh-timeline-slide:nth-of-type(#{$rank}) {
-    visibility: inherit;
-    opacity: 1;
-    transition: opacity 400ms $clh-timeline-ease;
-  }
+.clh-timeline-panel:has(.clh-timeline-picks) .clh-timeline-slide.is-active {
+  visibility: inherit;
+  opacity: 1;
+  transition: opacity 400ms $clh-timeline-ease;
 }
 
 .clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-panel {
@@ -1453,20 +1473,19 @@ $clh-timeline-exit: 180ms;
   object-fit: cover;
 }
 
-// Cinq victoires sur sept n'ont pas d'image chez Amnesty : la case le dit au lieu de
-// disparaître. Le texte se cale en haut, la pastille occupe déjà le bas.
-.clh-timeline-panel-photo.is-missing {
-  display: flex;
-  align-items: flex-start;
-  padding: 20px;
-  background-color: rgb(255 255 255 / 7%);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 22%);
-  color: rgb(255 255 255 / 70%);
-  font-family: var(--wp--preset--font-family--secondary);
-  font-size: 0.875rem;
-  line-height: 1.3;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.clh-timeline-slide.has-no-photo {
+  grid-template-columns: minmax(0, 1fr);
+
+  .clh-timeline-panel-body {
+    grid-column: 1;
+  }
+
+  .clh-timeline-panel-stamp {
+    position: static;
+    align-self: flex-start;
+    justify-self: start;
+    margin-bottom: 24px;
+  }
 }
 
 // La pastille déborde de la photo : c'est le geste qu'Amnesty pose sur ses visuels de victoire.
@@ -1723,6 +1742,32 @@ $clh-timeline-pace: 70ms;
   .clh-timeline-panel-body {
     grid-column: 1;
     grid-row: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+    align-content: start;
+    column-gap: 16px;
+
+    > * {
+      grid-column: 1 / -1;
+    }
+
+    .clh-timeline-panel-name {
+      grid-column: 1;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      overflow-wrap: anywhere;
+    }
+
+    .clh-timeline-panel-place {
+      grid-column: 2;
+      max-width: 14ch;
+      letter-spacing: 0.08em;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .clh-timeline-slide.has-no-photo .clh-timeline-panel-body {
+    grid-row: 1;
   }
 
   .clh-timeline-watermark {
