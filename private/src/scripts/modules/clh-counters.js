@@ -8,8 +8,8 @@ const DURATION = 1800;
 const STEP_MIN = 90;
 const STEP_MAX = 700;
 
-// Préfixe, corps du nombre avec ses séparateurs, suffixe : « 12 345 », « 67 % ». Un libellé
-// sans chiffre, « Objectif atteint », ne correspond pas et reste tel quel.
+// Préfixe, corps du nombre avec ses séparateurs, suffixe : « 12 345 », « 67 % ».
+// Un libellé sans chiffre ne correspond pas et reste tel quel.
 const NUMBER = /^(\D*)(\d[\s\S]*\d|\d)(\D*)$/;
 
 const ease = (ratio) => 1 - (1 - ratio) ** 5;
@@ -141,6 +141,10 @@ const glide = (element, from, target, duration, render) => {
 // Le nombre d'arrivée est celui que PHP a rendu : on le lit dans le DOM plutôt que de
 // reformater côté JS, sinon le séparateur de milliers change au dernier cadre.
 const count = (element) => {
+  // Un compteur masqué par le responsive garde son texte : mesurer sa largeur à zéro
+  // pour l'animation décalerait ses chiffres lorsqu'il redevient visible.
+  if (element.getBoundingClientRect().width === 0) return;
+
   const parts = element.textContent.trim().match(NUMBER);
 
   if (!parts) return;

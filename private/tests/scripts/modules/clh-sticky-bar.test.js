@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import StickyBar from '../../../src/scripts/modules/clh-sticky-bar';
 
 let bar;
+let reminder;
 let bannerBottom;
 let stopTop;
 let headerBottom;
@@ -31,7 +32,8 @@ beforeEach(() => {
     <header class="page-header"></header>
     <main class="page-change-their-history">
       <div data-clh-sticky-bar hidden></div>
-      <div class="clh-band"></div>
+      <div class="clh-band" data-clh-reveal></div>
+      <div class="clh-band" data-clh-reminder></div>
       <section class="clh-timeline"></section>
       <section class="clh-donation"></section>
       <div class="clh-share"></div>
@@ -47,10 +49,8 @@ beforeEach(() => {
   document.querySelector('.clh-band').getBoundingClientRect = () => ({
     bottom: bannerBottom,
   });
-  document.querySelector('.clh-timeline').getBoundingClientRect = () => ({
-    top: stopTop,
-  });
-  document.querySelector('.clh-donation').getBoundingClientRect = () => ({
+  reminder = document.querySelector('[data-clh-reminder]');
+  reminder.getBoundingClientRect = () => ({
     top: stopTop,
   });
 });
@@ -63,6 +63,42 @@ afterEach(() => {
 });
 
 describe('CLH sticky indicator', () => {
+  it('hands over to the in-flow reminder without overlap, then returns on upward scroll', () => {
+    bannerBottom = -100;
+    StickyBar();
+
+    stopTop = 181;
+    scroll();
+    expect(bar.classList.contains('is-in')).toBe(true);
+    expect(bar.style.top).toBe('80px');
+    stopTop = 180;
+    scroll();
+    expect(bar.classList.contains('is-in')).toBe(false);
+    expect(bar.inert).toBe(true);
+    expect(reminder.hidden).toBe(false);
+    expect(reminder.inert).not.toBe(true);
+
+    stopTop = -2000;
+    scroll();
+    expect(bar.classList.contains('is-in')).toBe(false);
+    stopTop = 300;
+    scroll();
+    expect(bar.classList.contains('is-in')).toBe(true);
+    expect(bar.inert).toBe(false);
+  });
+
+  it('recomputes the handover when the header or sticky height changes', () => {
+    reminder.getBoundingClientRect = () => ({ top: 220 });
+    bannerBottom = -100;
+    StickyBar();
+    expect(bar.classList.contains('is-in')).toBe(true);
+    headerBottom = 112;
+    bar.getBoundingClientRect = () => ({ height: 120 });
+    resize();
+    vi.advanceTimersByTime(20);
+    expect(bar.classList.contains('is-in')).toBe(false);
+  });
+
   it('takes over below the header only after the banner leaves, then returns to the banner', () => {
     StickyBar();
     expect(bar.classList.contains('is-in')).toBe(false);
@@ -76,48 +112,28 @@ describe('CLH sticky indicator', () => {
     expect(bar.classList.contains('is-in')).toBe(false);
   });
 
-  it('stays sticky while the timeline enters the viewport, then scrolls out with its top', () => {
+  it('keeps the sticky hidden when the reminder is missing', () => {
+    reminder.remove();
     bannerBottom = -100;
     StickyBar();
-    stopTop = 300;
-    scroll();
-    expect(bar.style.top).toBe('80px');
-    expect(bar.classList.contains('is-in')).toBe(true);
-    stopTop = 40;
-    scroll();
-    expect(bar.style.top).toBe('40px');
-    stopTop = -200;
+    expect(bar.hidden).toBe(true);
     scroll();
     expect(bar.classList.contains('is-in')).toBe(false);
-    stopTop = -2000;
-    scroll();
-    expect(bar.classList.contains('is-in')).toBe(false);
-    stopTop = 500;
-    scroll();
+  });
+
+  it('does not mistake the reminder for a missing initial band', () => {
+    document.querySelector('[data-clh-reveal]').remove();
+    StickyBar();
+    expect(bar.hidden).toBe(true);
+  });
+
+  it('identifies the initial band even when the reminder comes first in the DOM', () => {
+    document.querySelector('[data-clh-reveal]').before(reminder);
+    reminder.getBoundingClientRect = () => ({ top: stopTop, bottom: stopTop + 100 });
+    bannerBottom = -100;
+    StickyBar();
     expect(bar.classList.contains('is-in')).toBe(true);
-  });
-
-  it('updates the header offset and reserved space after a resize', () => {
-    bannerBottom = -100;
-    StickyBar();
-    headerBottom = 108;
-    bar.getBoundingClientRect = () => ({ height: 160 });
-    resize();
-    vi.advanceTimersByTime(20);
-    expect(bar.style.top).toBe('108px');
-    expect(
-      document.querySelector('.clh-timeline').style.getPropertyValue('--clh-sticky-height'),
-    ).toBe('160px');
-  });
-
-  it('stops at the donation when there are no testimonials', () => {
-    document.querySelector('.clh-timeline').remove();
-    bannerBottom = -100;
-    StickyBar();
-    expect(document.querySelector('.clh-donation').classList.contains('has-clh-sticky-stop')).toBe(
-      true,
-    );
-    stopTop = -200;
+    stopTop = 180;
     scroll();
     expect(bar.classList.contains('is-in')).toBe(false);
   });
@@ -125,6 +141,20 @@ describe('CLH sticky indicator', () => {
   it('does nothing when incomplete final results leave no indicator', () => {
     bar.remove();
     expect(() => StickyBar()).not.toThrow();
-    expect(document.querySelector('.has-clh-sticky-stop')).toBeNull();
+  });
+
+  it('stays below the admin bar when the site header scrolls out', () => {
+    const adminBar = document.createElement('div');
+    adminBar.id = 'wpadminbar';
+    adminBar.getBoundingClientRect = () => ({ bottom: 32 });
+    document.body.prepend(adminBar);
+    bannerBottom = -100;
+    headerBottom = -80;
+    StickyBar();
+    expect(bar.style.top).toBe('32px');
+    expect(bar.inert).toBe(false);
+    headerBottom = 112;
+    scroll();
+    expect(bar.style.top).toBe('112px');
   });
 });

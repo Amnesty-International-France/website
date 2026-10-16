@@ -43,7 +43,7 @@
 
 // Bannière.
 // Basse, pour que les pétitions entrent dans le premier écran : le titre à gauche, le chapô à
-// droite, sur le gris de la campagne. Le compte à rebours est passé dans le bandeau.
+// droite, sur le gris de la campagne. Sur mobile, les jours précèdent le titre.
 
 .clh-hero {
   position: relative;
@@ -267,18 +267,42 @@
   }
 }
 
-// Sous 640 px le bandeau passe sur deux colonnes : le compteur en tête, la barre et le
-// pourcentage à sa droite, puis le bouton en pleine largeur.
-@media (max-width: $container-sm) {
-  .clh-band .clh-indicators {
-    --clh-ring-size: 88px;
+// Sous 768 px, les jours passent dans la bannière ; l'indicateur garde les signatures.
+.clh-hero-days {
+  display: none;
+  margin: 0;
+  color: var(--wp--preset--color--primary);
+  font-family: var(--wp--preset--font-family--secondary);
+  font-size: 1.125rem;
+  line-height: 1.2;
+}
 
-    grid-template-columns: auto minmax(0, 1fr) auto;
+.clh-hero-days-value {
+  font-family: bely-display, serif;
+  font-weight: normal;
+  font-size: 4rem;
+  line-height: 1;
+}
+
+@media (max-width: 767px) {
+  .clh-hero-days {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .clh-band .clh-indicators {
+    grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 16px;
   }
 
+  .clh-band .clh-countdown,
+  .clh-band .clh-indicators-action {
+    display: none;
+  }
+
   .clh-band .clh-signatures-count {
-    grid-column: 2 / -1;
+    grid-column: 1 / -1;
   }
 
   .clh-band .clh-signatures-goal {
@@ -286,22 +310,18 @@
   }
 
   .clh-band .clh-indicators .progress-bar-container {
-    grid-column: 2;
+    grid-column: 1;
     grid-row: 2;
     height: 20px;
   }
 
   .clh-band .clh-signatures-percent {
-    grid-column: 3;
+    grid-column: 2;
     grid-row: 2;
   }
+}
 
-  // Sur un téléphone le bandeau ne garde que le compteur : la barre collante porte l'appel à
-  // signer dès qu'il sort de l'écran.
-  .clh-band .clh-indicators-action {
-    display: none;
-  }
-
+@media (max-width: $container-sm) {
   .clh-donation .custom-button {
     flex: 1;
   }
@@ -489,6 +509,9 @@
   color: var(--wp--preset--color--black);
   border-bottom: 4px solid var(--wp--preset--color--black);
   visibility: hidden;
+  // Le bouton du thème anime sa visibilité : masquer le parent évite qu'il reste
+  // seul à l'écran un instant lorsque le sticky disparaît.
+  opacity: 0;
 
   &[hidden] {
     display: none;
@@ -496,6 +519,7 @@
 
   &.is-in {
     visibility: visible;
+    opacity: 1;
   }
 
   .clh-band-closed-inner {
@@ -505,11 +529,6 @@
   .clh-band-closed-number {
     font-size: clamp(2rem, 4vw, 3rem);
   }
-}
-
-// Réserve la place du bandeau lorsqu'il rejoint la frise et défile avec elle.
-.page-change-their-history .has-clh-sticky-stop {
-  padding-top: calc(var(--clh-section-gap) + var(--clh-sticky-height));
 }
 
 .clh-sticky-bar-inner {
@@ -639,12 +658,6 @@
       margin-top: 8px;
       font-size: 1.125rem;
     }
-  }
-}
-
-@media (max-width: 767px) {
-  .clh-band .clh-indicators-action {
-    display: none;
   }
 }
 

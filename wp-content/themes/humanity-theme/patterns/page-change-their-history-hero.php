@@ -9,32 +9,28 @@
 
 declare(strict_types=1);
 
-$page_id          = (int) get_the_ID();
-$hero_title       = get_field('change_their_history_hero_title', $page_id) ?: get_the_title();
-$hero_description = get_field('change_their_history_hero_description', $page_id);
-$active_campaign  = amnesty_get_active_clh_campaign_for_page($page_id);
-
-// Le dernier mot du titre passe sur l'aplat jaune : « changez » se lit sur le mot qui change.
-$title_words = preg_split('/\s+/u', trim($hero_title)) ?: [ $hero_title ];
-$title_last  = count($title_words) > 1 ? array_pop($title_words) : '';
-$title_head  = implode(' ', $title_words);
+$active_campaign = amnesty_is_clh_petition_tunnel_active();
+$figures = $active_campaign ? amnesty_get_clh_campaign_figures() : [];
 
 ?>
 
 <section class="clh-hero <?php echo $active_campaign ? 'is-running' : 'is-closed'; ?>">
 	<div class="clh-hero-inner">
 		<div class="clh-hero-stage">
+			<?php if ($active_campaign) : ?>
+				<p class="clh-hero-days" data-clh-reveal>
+					<span class="clh-hero-days-value" data-clh-count aria-hidden="true"><?php echo esc_html(number_format_i18n($figures['days_remaining'])); ?></span>
+					<span aria-hidden="true"><?php echo esc_html(_n('jour pour agir', 'jours pour agir', $figures['days_remaining'], 'amnesty')); ?></span>
+					<span class="screen-reader-text"><?php echo esc_html(sprintf(/* translators: %s: nombre de jours. */ _n('%s jour pour agir', '%s jours pour agir', $figures['days_remaining'], 'amnesty'), number_format_i18n($figures['days_remaining']))); ?></span>
+				</p>
+			<?php endif; ?>
 			<div class="clh-hero-statement">
 				<h1 class="clh-hero-title">
-					<span class="clh-hero-title-line"><?php echo esc_html($title_head); ?></span>
-					<?php if ($title_last) : ?>
-						<span class="clh-hero-title-line is-marked"><?php echo esc_html($title_last); ?></span>
-					<?php endif; ?>
+					<span class="clh-hero-title-line"><?php esc_html_e('Changez leur', 'amnesty'); ?></span>
+					<span class="clh-hero-title-line is-marked"><?php esc_html_e('histoire', 'amnesty'); ?></span>
 				</h1>
 
-				<?php if ($hero_description) : ?>
-					<p class="clh-hero-standfirst"><?php echo esc_html($hero_description); ?></p>
-				<?php endif; ?>
+				<p class="clh-hero-standfirst"><?php esc_html_e("Partout dans le monde, des personnes résistent à l'injustice et à l'impunité, souvent elles payent le prix de leur courage. Elles ne doivent pas résister seules. Avec votre signature, soutenez-les.", 'amnesty'); ?></p>
 			</div>
 		</div>
 	</div>
