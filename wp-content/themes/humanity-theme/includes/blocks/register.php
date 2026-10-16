@@ -38,6 +38,7 @@ require_once __DIR__ . '/chapo/register.php';
 require_once __DIR__ . '/chip-category/register.php';
 require_once __DIR__ . '/chip-category/render.php';
 require_once __DIR__ . '/clh-testimonials/register.php';
+require_once __DIR__ . '/clh-testimonials/render.php';
 require_once __DIR__ . '/collapsable/register.php';
 require_once __DIR__ . '/collapsable/render.php';
 require_once __DIR__ . '/content-callout/register.php';
