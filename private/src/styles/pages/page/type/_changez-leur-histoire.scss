@@ -862,6 +862,8 @@
 }
 
 .clh-editable .wp-block-post-content > .wp-block-columns {
+  width: 100%;
+  max-width: none !important;
   gap: 64px;
   margin-block: 0;
   padding: 0;
@@ -927,6 +929,8 @@
 
 // Une cellule seule sur sa ligne est centrée, titre et filet compris.
 .clh-editable .wp-block-post-content > .wp-block-columns > .wp-block-column:only-child {
+  width: 100%;
+  flex-basis: auto !important;
   max-width: 68ch;
   margin-inline: auto;
   text-align: center;
@@ -952,6 +956,7 @@
 // texte d'à côté ; sous 1024 px ils passent en deux rangées de deux.
 .clh-editable .clh-pictos {
   display: grid;
+  max-width: none !important;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 32px 24px;
   margin: 0;
@@ -968,6 +973,10 @@
 
   .wp-block-image {
     margin: 0 0 16px;
+
+    &[hidden] {
+      display: none;
+    }
   }
 
   .wp-block-image img {
@@ -1000,6 +1009,18 @@
 
 // Bonnes nouvelles
 
+.clh-editable .clh-good-news {
+  margin-block: calc(2 * var(--clh-section-gap)) var(--clh-section-gap);
+
+  .clh-section-title {
+    padding-top: 0;
+
+    &::before {
+      content: none;
+    }
+  }
+}
+
 .clh-good-news-standfirst {
   max-width: 68ch;
   font-size: 1.125rem;
@@ -1023,7 +1044,6 @@
     margin-bottom: 0;
   }
 
-  // Les chiffres montent à l'arrivée à l'écran, comme les compteurs de la campagne.
   .key-figure .title {
     font-variant-numeric: tabular-nums;
   }
