@@ -27,6 +27,15 @@ function amnesty_clh_presentation_has_content(array $block): bool
 }
 
 /**
+ * @param array<string, mixed> $block Parsed Gutenberg block.
+ */
+function amnesty_clh_is_situations_row(array $block): bool
+{
+    return ($block['blockName'] ?? '') === 'core/columns'
+        && in_array('clh-situations', preg_split('/\s+/', $block['attrs']['className'] ?? '') ?: [], true);
+}
+
+/**
  * Remove empty situations columns at render time, leaving the editor content intact.
  *
  * @param array<string, mixed> $block Parsed Gutenberg block.
@@ -34,8 +43,7 @@ function amnesty_clh_presentation_has_content(array $block): bool
  */
 function amnesty_clh_prepare_presentation(array $block): array
 {
-    if (($block['blockName'] ?? '') !== 'core/columns'
-        || !in_array('clh-situations', preg_split('/\s+/', $block['attrs']['className'] ?? '') ?: [], true)) {
+    if (!amnesty_clh_is_situations_row($block)) {
         return $block;
     }
 
@@ -58,4 +66,18 @@ function amnesty_clh_prepare_presentation(array $block): array
     return $block;
 }
 
+/**
+ * Drop the HTML of a situations row whose columns were all removed.
+ *
+ * Nested blocks ignore an emptied innerContent (WP_Block::refresh_parsed_block_dependents()
+ * only copies non-empty values), so the old columns would render without this.
+ *
+ * @param array<string, mixed> $block Parsed Gutenberg block, after render_block_data.
+ */
+function amnesty_clh_hide_empty_presentation(string $content, array $block): string
+{
+    return amnesty_clh_is_situations_row($block) && !($block['innerBlocks'] ?? []) ? '' : $content;
+}
+
 add_filter('render_block_data', 'amnesty_clh_prepare_presentation');
+add_filter('render_block', 'amnesty_clh_hide_empty_presentation', 10, 2);

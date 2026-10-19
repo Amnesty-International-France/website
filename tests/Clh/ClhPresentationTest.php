@@ -63,6 +63,23 @@ final class ClhPresentationTest extends TestCase
         self::assertSame('', $rendered['innerHTML']);
     }
 
+    public function testAnEmptySectionRendersNothingEvenWhenNestedInAnotherBlock(): void
+    {
+        // Nested blocks ignore the emptied innerContent, so the rendered HTML must be dropped too.
+        $rendered = amnesty_clh_prepare_presentation($this->row([$this->column(''), $this->column('')]));
+
+        self::assertSame('', amnesty_clh_hide_empty_presentation('<div class="wp-block-columns clh-situations">old columns</div>', $rendered));
+    }
+
+    public function testNonEmptySectionsAndOtherBlocksKeepTheirRenderedHtml(): void
+    {
+        $partial = amnesty_clh_prepare_presentation($this->row([$this->column('<p>Texte</p>'), $this->column('')]));
+        self::assertSame('<div>kept</div>', amnesty_clh_hide_empty_presentation('<div>kept</div>', $partial));
+
+        $other = ['blockName' => 'core/columns', 'attrs' => [], 'innerBlocks' => []];
+        self::assertSame('<div>other</div>', amnesty_clh_hide_empty_presentation('<div>other</div>', $other));
+    }
+
     public function testCompleteSectionsAndOtherColumnsAreUnchanged(): void
     {
         $complete = $this->row([$this->column('<p>Texte</p>'), $this->column('<img src="/photo.jpg">')]);
