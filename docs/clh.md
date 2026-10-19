@@ -213,12 +213,11 @@ All three indicator variants show "sur un objectif de X signatures" and the back
 percentage, including 100% when the target is met or exceeded. The circle represents
 remaining days divided by the campaign duration: it empties as the campaign progresses.
 
-The `amnesty/clh-signature-reminder` pattern renders a second full-width band in the
-page flow, immediately before "Ils vous disent merci". It uses the same figures or
-final results as the first band and is visible without JavaScript. It has no reveal
-animation, so it is already readable when it takes over from the sticky indicator.
-Theme version 2.0.18 invalidates WordPress's theme pattern cache automatically so the
-new pattern is discovered on existing installations; no manual cache clearing is needed.
+The testimonials block renders a second full-width band in the page flow,
+immediately before "Ils vous disent merci" (see "Testimonials block (CLH-33)").
+It uses the same figures or final results as the first band and is visible without
+JavaScript. It has no reveal animation, so it is already readable when it takes over
+from the sticky indicator.
 
 The sticky indicator takes over once the initial band has scrolled above the visible
 site header. It sits below that header (and the WordPress admin bar). When the reminder's
