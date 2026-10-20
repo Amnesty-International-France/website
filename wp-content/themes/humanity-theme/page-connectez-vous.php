@@ -8,11 +8,8 @@ $reset_email_url = '';
 if (!isset($_GET['user'])) {
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 
-} else {
-    $user = get_user_by('email', $_GET['user']);
-    if ($user) {
-        $email = $user->user_email;
-    }
+} elseif (is_string($_GET['user']) && is_email($_GET['user'])) {
+    $email = sanitize_email($_GET['user']);
 }
 
 $error_message = '';
@@ -28,7 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     } else {
         $stored_user = get_user_by('email', $email);
 
-        if ($stored_user) {
+        // Unknown address and wrong password get the same answer; account
+        // details are only shown once the password is known to be right.
+        // Hash the password even for an unknown address, so both cases take
+        // about the same time.
+        $password_hash = $stored_user ? $stored_user->user_pass : wp_hash_password('aif-unknown-account');
+        $password_matches = wp_check_password($password, $password_hash, $stored_user ? $stored_user->ID : '');
+        if (!$stored_user || !$password_matches) {
+            $error_message = 'Mauvais email ou mot de passe';
+        } else {
             if (get_email_is_verified(user_id: $stored_user->ID)) {
 
                 $creds = [
@@ -65,10 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 $title = 'Votre email ne semble pas encore vérifié';
                 $error_message = "Pour le faire veuillez vous rendre sur la page <a class='aif-link--primary' href='{$verification_url}'> Vérifier mon email</a>.";
             }
-        } else {
-            $url = get_permalink(get_page_by_path('creer-votre-compte'));
-            $title = "L'adresse email renseignée ne trouve pas de correspondance dans notre système";
-            $error_message = "Pour créer votre compte, veuillez vous rendre sur la page  <a class='aif-link--primary' href='{$url}'> Créer mon compte </a>.";
         }
     }
 }

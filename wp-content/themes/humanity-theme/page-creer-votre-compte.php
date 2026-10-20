@@ -48,8 +48,15 @@ function aif_handle_account_creation_request()
         return aif_account_creation_salesforce_error_result($sf_member);
     }
 
-    if (aif_is_salesforce_contact_absent($sf_member) || !has_access_to_donation_space($sf_member)) {
-        return aif_account_creation_result(no_access: true);
+    $verification_url = add_query_arg([
+        'user' => $email,
+    ], get_permalink(get_page_by_path('verifier-votre-email')));
+
+    // Addresses without donor space access and existing accounts get the same
+    // outcome as a successful creation, so the page reveals neither.
+    if (aif_is_salesforce_contact_absent($sf_member) || !has_access_to_donation_space($sf_member) || get_user_by('email', $email)) {
+        wp_redirect($verification_url);
+        exit;
     }
 
     $user = get_salesforce_user_data($sf_member->Id);
@@ -79,18 +86,12 @@ function aif_handle_account_creation_request()
     $user_id = wp_insert_user($userdata);
 
     if (is_wp_error($user_id)) {
-        $url = get_permalink(get_page_by_path('connectez-vous'));
-        return aif_account_creation_result(
-            "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>."
-        );
+        wp_redirect($verification_url);
+        exit;
     }
 
     $code = generate_2fa_code();
     store_2fa_code($user_id, $code);
-
-    $verification_url = add_query_arg([
-        'user' => $email,
-    ], get_permalink(get_page_by_path('verifier-votre-email')));
 
     if (send_2fa_code($email, $code)) {
         wp_redirect($verification_url);

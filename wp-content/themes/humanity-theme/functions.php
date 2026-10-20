@@ -325,7 +325,6 @@ require_once realpath(__DIR__ . '/includes/document/rest_endpoint.php');
  */
 require_once realpath(__DIR__ . '/includes/petitions/tables.php');
 require_once realpath(__DIR__ . '/includes/petitions/create-petition.php');
-require_once realpath(__DIR__ . '/includes/petitions/rest_endpoint.php');
 
 /**
  * Urgent Action module

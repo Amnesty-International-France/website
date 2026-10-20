@@ -21,7 +21,7 @@ test.describe('@cloudflare-smoke Turnstile dummy keys', () => {
     await page.getByLabel('Votre email (obligatoire) :').fill(UNKNOWN_EMAIL);
     await page.locator('#submit-btn').click();
 
-    await expect(page.getByText('Votre utilisateur nous est inconnu')).toBeVisible();
+    await expect(page.getByText('Votre demande à bien été prise en compte')).toBeVisible();
     await expect(page.getByText('La vérification de sécurité a échoué.')).toHaveCount(0);
   });
 
@@ -48,6 +48,6 @@ test.describe('@cloudflare-smoke Turnstile dummy keys', () => {
     await expect(
       page.getByText('La vérification de sécurité a échoué.', { exact: true }),
     ).toBeVisible();
-    await expect(page.getByText('Votre utilisateur nous est inconnu')).toHaveCount(0);
+    await expect(page.getByText('Votre demande à bien été prise en compte')).toHaveCount(0);
   });
 });

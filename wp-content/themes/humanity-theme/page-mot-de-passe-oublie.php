@@ -23,15 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ], get_permalink(get_page_by_path('modifier-mon-mot-de-passe')));
 
             send_reset_password_email($user->user_email, $url);
-
-            $success_title = 'Votre demande à bien été prise en compte';
-            $success_message = 'Si votre adresse est reconnue vous allez recevoir un email pour pouvoir réinitialiser votre mot de passe';
-            $display_form = false;
-        } else {
-            $url = get_permalink(get_page_by_path('creer-votre-compte'));
-            $error_title = 'Votre utilisateur nous est inconnu';
-            $error_message = "Vous pouvez créer votre compte en allant sur <a class='aif-link--primary' href='{$url}'> Créer mon compte </a>";
         }
+
+        $success_title = 'Votre demande à bien été prise en compte';
+        $success_message = 'Si votre adresse est reconnue vous allez recevoir un email pour pouvoir réinitialiser votre mot de passe';
+        $display_form = false;
     }
 }
 

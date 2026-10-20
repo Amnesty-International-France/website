@@ -43,9 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
                 $error_message = 'Les informations fournies sont erronnées';
             }
         } else {
-            $error_title = 'Votre utilisateur nous est inconnu';
-            $error_message = "Devenez donateur en <a>réalisant un don </a>ou <a
-                              class=\"aif-link--primary\" href=\"mailto:smd@amnesty.fr\">contacter le Service membres et donateurs</a> si vous pensez que c'est une erreur.";
+            // Same answer as an invalid link for a known account.
+            $error_title = 'Une erreur est survenue';
+            $error_message = 'Les informations fournies sont erronnées';
         }
     }
 }

@@ -71,7 +71,7 @@ if (isset($_POST['sign_discover_chronicle'])) {
             exit;
         }
 
-        wp_redirect(add_query_arg('inscription_chronique', 'already-sent', get_permalink()));
+        wp_redirect(add_query_arg('inscription_chronique', 'success', get_permalink()));
         exit;
     }
 }
