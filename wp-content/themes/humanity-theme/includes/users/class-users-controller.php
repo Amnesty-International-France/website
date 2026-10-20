@@ -105,6 +105,66 @@ class Users_Controller extends \WP_REST_Users_Controller
     }
 
     /**
+     * Checks whether a given request has permission to list users.
+     *
+     * The collection spans every network user, so it requires the users
+     * capability (see users_capability()) on top of core's check.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     *
+     * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+     */
+    public function get_items_permissions_check($request)
+    {
+        return $this->users_forbidden_error() ?? parent::get_items_permissions_check($request);
+    }
+
+    /**
+     * Checks whether a given request has permission to read a user.
+     *
+     * Requires the users capability on top of core's check, like the collection.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     *
+     * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+     */
+    public function get_item_permissions_check($request)
+    {
+        return $this->users_forbidden_error() ?? parent::get_item_permissions_check($request);
+    }
+
+    /**
+     * Returns the capability required to read users through this controller.
+     *
+     * The route is not scoped to a site, so on multisite a site-level
+     * list_users is not enough: only network user managers may read it.
+     *
+     * @return string The capability name.
+     */
+    private function users_capability(): string
+    {
+        return is_multisite() ? 'manage_network_users' : 'list_users';
+    }
+
+    /**
+     * Builds the error returned to callers lacking the users capability.
+     *
+     * @return WP_Error|null WP_Error object without the capability, null otherwise.
+     */
+    private function users_forbidden_error(): ?WP_Error
+    {
+        if (current_user_can($this->users_capability())) {
+            return null;
+        }
+
+        return new WP_Error(
+            'rest_forbidden',
+            __('Sorry, you are not allowed to do that.', 'amnesty'),
+            [ 'status' => rest_authorization_required_code() ]
+        );
+    }
+
+    /**
      * Retrieves all users.
      *
      * @param WP_REST_Request $request Full details about the request.
@@ -168,6 +228,9 @@ class Users_Controller extends \WP_REST_Users_Controller
         if (isset($registered['who']) && ! empty($request['who']) && 'authors' === $request['who']) {
             $prepared_args['who'] = 'authors';
         } elseif (! current_user_can('list_users')) {
+            // Kept for parity with core: the permission checks already
+            // reject callers without list_users (super admins hold every
+            // cap), and has_published_posts is ignored with blog_id 0.
             $prepared_args['has_published_posts'] = get_post_types([ 'show_in_rest' => true ], 'names');
         }
 
