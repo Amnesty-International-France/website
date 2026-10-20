@@ -19,18 +19,28 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('WP_CLI')) {
+    $GLOBALS['__phpunit_wp_cli_messages'] = [];
+
+    /**
+     * Records every message in $GLOBALS['__phpunit_wp_cli_messages'] as
+     * ['level' => ..., 'message' => ...] so tests can assert on CLI output.
+     * Unlike the real WP_CLI::error(), error() does not halt execution.
+     */
     class WP_CLI
     {
         public static function log(string $message): void
         {
+            $GLOBALS['__phpunit_wp_cli_messages'][] = ['level' => 'log', 'message' => $message];
         }
 
         public static function error(string $message): void
         {
+            $GLOBALS['__phpunit_wp_cli_messages'][] = ['level' => 'error', 'message' => $message];
         }
 
         public static function success(string $message): void
         {
+            $GLOBALS['__phpunit_wp_cli_messages'][] = ['level' => 'success', 'message' => $message];
         }
 
         public static function add_command(string $name, callable|object $callable): void
