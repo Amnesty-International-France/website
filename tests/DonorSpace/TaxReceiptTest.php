@@ -56,6 +56,7 @@ function get_SF_user_ID(int $user_id): string|false
 
 require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/index.php';
 require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/rest-controllers.php';
+require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
 
 final class TaxReceiptTest extends TestCase
 {
@@ -69,6 +70,7 @@ final class TaxReceiptTest extends TestCase
         $sf_user_ids = [];
         $tax_receipts_by_contact = [];
         $tax_receipt_fetches = [];
+        $GLOBALS['__phpunit_user_meta'] = [];
         $GLOBALS['logged_salesforce_errors'] = [];
         $GLOBALS['__phpunit_current_user_id'] = 0;
         $GLOBALS['__phpunit_valid_nonces'] = [];
@@ -275,9 +277,21 @@ final class TaxReceiptTest extends TestCase
     {
         $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
         $GLOBALS['__phpunit_current_user_id'] = 42;
+        store_email_is_verified(42);
 
         $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 
         self::assertTrue($result);
+    }
+
+    public function testCheckNonceRejectsALoggedInUserWithAnUnverifiedEmail(): void
+    {
+        $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
+        $GLOBALS['__phpunit_current_user_id'] = 43;
+
+        $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
+
+        self::assertInstanceOf(WP_Error::class, $result);
+        self::assertSame('Email not verified.', $result->get_error_message());
     }
 }

@@ -7,6 +7,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
+final class RedirectTestException extends RuntimeException
+{
+}
+
 final class SalesforceServiceUnavailableTestException extends RuntimeException
 {
     public function __construct(public readonly int $status)
@@ -84,7 +88,9 @@ final class SalesforceMemberDataTest extends TestCase
         if (!function_exists('get_permalink')) {
             function get_permalink(object|int $post): string
             {
-                return 'https://wordpress.example.test/connectez-vous/';
+                $slug = is_object($post) && isset($post->post_name) ? $post->post_name : 'connectez-vous';
+
+                return 'https://wordpress.example.test/' . $slug . '/';
             }
         }
 
@@ -138,6 +144,13 @@ final class SalesforceMemberDataTest extends TestCase
             }
         }
 
+        if (!function_exists('wp_redirect')) {
+            function wp_redirect(string $location, int $status = 302): never
+            {
+                throw new RedirectTestException($location);
+            }
+        }
+
         if (!function_exists('wp_die')) {
             function wp_die(mixed $message = '', mixed $title = '', array $args = []): never
             {
@@ -147,6 +160,7 @@ final class SalesforceMemberDataTest extends TestCase
 
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/sales-force/user-data.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/authorization.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
         require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/my-space/template.php';
 
         $GLOBALS['__phpunit_donor_space_access_token'] = 'access-token';
@@ -155,7 +169,9 @@ final class SalesforceMemberDataTest extends TestCase
         $GLOBALS['__phpunit_wp_remote_response'] = $this->response(200, '{}');
         $GLOBALS['__phpunit_query_vars'] = [];
         $GLOBALS['__phpunit_current_user_id'] = 1;
-        $GLOBALS['__phpunit_current_user'] = (object) ['user_email' => 'member@example.test'];
+        $GLOBALS['__phpunit_current_user'] = (object) ['ID' => 1, 'user_email' => 'member@example.test'];
+        $GLOBALS['__phpunit_user_meta'] = [];
+        store_email_is_verified(1);
         $GLOBALS['__phpunit_is_page'] = false;
         $GLOBALS['__phpunit_is_preview'] = false;
         $GLOBALS['__phpunit_singular_post_types'] = [];
@@ -378,6 +394,20 @@ final class SalesforceMemberDataTest extends TestCase
         self::assertSame($sf_member, aif_get_request_salesforce_member());
         self::assertSame('donateur', aif_get_user_status($sf_member));
         self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
+    }
+
+    public function testUnverifiedEmailIsSentToVerificationWithoutSalesforceCall(): void
+    {
+        $GLOBALS['__phpunit_user_meta'] = [];
+
+        try {
+            check_user_page_access();
+            self::fail('An unverified account must be redirected.');
+        } catch (RedirectTestException $redirect) {
+            self::assertStringContainsString('/verifier-votre-email/', $redirect->getMessage());
+        }
+
+        self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
     public function testEmptyObjectIsAValidAbsentContact(): void

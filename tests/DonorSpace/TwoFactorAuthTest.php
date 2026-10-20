@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
+require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
 
 final class TwoFactorAuthTest extends TestCase
 {
@@ -94,5 +94,94 @@ final class TwoFactorAuthTest extends TestCase
 
         self::assertSame(0, get_user_meta(self::USER_ID, 'login_attempts', true));
         self::assertSame('', get_login_blocked_until(self::USER_ID));
+    }
+
+    public function testGeneratedCodeHasSixDigits(): void
+    {
+        $code = generate_2fa_code();
+
+        self::assertGreaterThanOrEqual(100000, $code);
+        self::assertLessThanOrEqual(999999, $code);
+    }
+
+    public function testStoredCodeExpires(): void
+    {
+        store_2fa_code(self::USER_ID, 123456);
+
+        self::assertGreaterThan(time(), get_user_meta(self::USER_ID, '2fa_code_expires', true));
+        self::assertLessThanOrEqual(time() + AIF_2FA_CODE_TTL, get_user_meta(self::USER_ID, '2fa_code_expires', true));
+    }
+
+    public function testRightCodeIsAcceptedOnceAndResetsAttempts(): void
+    {
+        store_2fa_code(self::USER_ID, 123456);
+        update_user_meta(self::USER_ID, 'login_attempts', 3);
+
+        self::assertSame('valid', check_2fa_code(self::USER_ID, '123456'));
+        self::assertSame(0, get_user_meta(self::USER_ID, 'login_attempts', true));
+        self::assertNotSame('valid', check_2fa_code(self::USER_ID, '123456'));
+    }
+
+    public function testWrongCodeIsRejectedAndCounted(): void
+    {
+        store_2fa_code(self::USER_ID, 123456);
+
+        self::assertSame('invalid', check_2fa_code(self::USER_ID, '654321'));
+        self::assertSame(1, get_user_meta(self::USER_ID, 'login_attempts', true));
+    }
+
+    public function testExpiredCodeIsRejected(): void
+    {
+        store_2fa_code(self::USER_ID, 123456);
+        update_user_meta(self::USER_ID, '2fa_code_expires', time() - 1);
+
+        self::assertSame('invalid', check_2fa_code(self::USER_ID, '123456'));
+    }
+
+    public function testCodeWithoutExpiryIsRejected(): void
+    {
+        // Codes stored before expiry was introduced.
+        update_user_meta(self::USER_ID, '2fa_code', 123456);
+
+        self::assertSame('invalid', check_2fa_code(self::USER_ID, '123456'));
+    }
+
+    public function testEmptyOrNonStringCodeIsRejected(): void
+    {
+        self::assertSame('invalid', check_2fa_code(self::USER_ID, ''));
+
+        store_2fa_code(self::USER_ID, 123456);
+
+        self::assertSame('invalid', check_2fa_code(self::USER_ID, ['123456']));
+    }
+
+    public function testBlockedAccountRejectsEvenTheRightCode(): void
+    {
+        store_2fa_code(self::USER_ID, 123456);
+        update_user_meta(self::USER_ID, 'login_blocked_until', time() + 3600);
+
+        self::assertSame('blocked', check_2fa_code(self::USER_ID, '123456'));
+        self::assertSame('', get_email_is_verified(self::USER_ID));
+    }
+
+    public function testTenWrongCodesBlockTheAccount(): void
+    {
+        store_2fa_code(self::USER_ID, 123456);
+
+        for ($i = 1; $i <= 10; $i++) {
+            self::assertSame('invalid', check_2fa_code(self::USER_ID, '000000'), "Attempt {$i}");
+        }
+
+        self::assertSame('blocked', check_2fa_code(self::USER_ID, '000000'));
+        self::assertSame('blocked', check_2fa_code(self::USER_ID, '123456'));
+    }
+
+    public function testResendingACodeDoesNotResetAttempts(): void
+    {
+        store_2fa_code(self::USER_ID, 123456);
+        check_2fa_code(self::USER_ID, '000000');
+        store_2fa_code(self::USER_ID, 654321);
+
+        self::assertSame(1, get_user_meta(self::USER_ID, 'login_attempts', true));
     }
 }
