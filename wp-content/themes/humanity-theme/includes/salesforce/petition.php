@@ -122,7 +122,7 @@ function prepare_bulk_data($signatures)
     $csv_data = stream_get_contents($fp);
     fclose($fp);
 
-    WP_CLI::log("send data : {$csv_data}");
+    WP_CLI::log(sprintf('Prepared bulk CSV for %d signature(s)', count($signatures)));
 
     return $csv_data;
 }
@@ -152,7 +152,14 @@ function upload_bulk_data($url_upload, $data)
     }
 
     if (wp_remote_retrieve_response_code($response) >= 300) {
-        echo 'Erreur de requête Salesforce : HTTP ' . wp_remote_retrieve_response_code($response) . ' ' . wp_remote_retrieve_body($response) . PHP_EOL;
+        // Only log Salesforce error codes: the raw body may echo uploaded records.
+        $error_codes = [];
+        foreach ((array) json_decode(wp_remote_retrieve_body($response), true) as $error) {
+            if (is_array($error) && is_string($error['errorCode'] ?? null)) {
+                $error_codes[] = $error['errorCode'];
+            }
+        }
+        echo 'Erreur de requête Salesforce : HTTP ' . wp_remote_retrieve_response_code($response) . ($error_codes ? ' ' . implode(', ', $error_codes) : '') . PHP_EOL;
         return false;
     }
 
@@ -196,8 +203,10 @@ function poll_job_state($job_id)
         if (! is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
             $job_data = json_decode(wp_remote_retrieve_body($response), true);
             $state = $job_data['state'];
-            $job_data_export = var_export($job_data, true);
-            WP_CLI::log("Statut du job {$job_id} après {$ecoule}s : {$state}. Response data : {$job_data_export}");
+            $processed = (int) ($job_data['numberRecordsProcessed'] ?? 0);
+            $failed = (int) ($job_data['numberRecordsFailed'] ?? 0);
+            $error_message = is_string($job_data['errorMessage'] ?? null) && $job_data['errorMessage'] !== '' ? " Error: {$job_data['errorMessage']}" : '';
+            WP_CLI::log("Statut du job {$job_id} après {$ecoule}s : {$state}. Records processed: {$processed}, failed: {$failed}.{$error_message}");
         } else {
             WP_CLI::error('Error getting bulk job status');
             break;
