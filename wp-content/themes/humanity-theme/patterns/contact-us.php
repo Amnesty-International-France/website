@@ -19,8 +19,8 @@ $SF_User = aif_require_salesforce_object(get_salesforce_user_data($sf_user_ID), 
 
 $subject = '';
 
-if (isset($_GET['subject'])) {
-    $subject = $_GET['subject'];
+if (isset($_GET['subject']) && is_string($_GET['subject'])) {
+    $subject = sanitize_text_field(wp_unslash($_GET['subject']));
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  isset($_POST['subject']) && isset($_POST['message'])) {
@@ -79,7 +79,7 @@ if (!empty($success_message)) {
             <label for="subject">Objet de la demande (obligatoire)</label>
             <input placeholder="L'objet de votre demande" type="text" name="subject"
                 aria-labelledby="contact-subject-help-message"
-                value="<?= $subject ?>"
+                value="<?= esc_attr($subject) ?>"
                 class="aif-input <?= isset($has_error) && $has_error ? 'aif-input-error' : '' ?>"
                 required id="subject" maxlength="255"
             />
