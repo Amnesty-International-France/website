@@ -29,5 +29,8 @@
         <testsuite name="Riposte">
             <directory>tests/Riposte</directory>
         </testsuite>
+        <testsuite name="RestApi">
+            <directory>tests/RestApi</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
