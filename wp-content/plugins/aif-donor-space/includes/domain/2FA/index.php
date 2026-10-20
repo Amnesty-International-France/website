@@ -1,13 +1,46 @@
 <?php
 
+const AIF_2FA_CODE_TTL = 1800;
+
 function generate_2fa_code()
 {
-    return rand(100000, 999999);
+    return random_int(100000, 999999);
 }
 
 function store_2fa_code($user_id, $code)
 {
     update_user_meta($user_id, '2fa_code', $code);
+    update_user_meta($user_id, '2fa_code_expires', time() + AIF_2FA_CODE_TTL);
+}
+
+function delete_2fa_code($user_id)
+{
+    delete_user_meta($user_id, '2fa_code');
+    delete_user_meta($user_id, '2fa_code_expires');
+}
+
+/**
+ * Returns 'valid', 'invalid' or 'blocked'. The block is checked before the
+ * code, so a blocked account rejects even the right code. A code is single-use
+ * and expires after AIF_2FA_CODE_TTL seconds.
+ */
+function check_2fa_code($user_id, $code)
+{
+    if ((int) get_login_blocked_until($user_id) > time()) {
+        return 'blocked';
+    }
+
+    $stored_code = (string) get_2fa_code($user_id);
+    $expires = (int) get_user_meta($user_id, '2fa_code_expires', true);
+
+    if ($stored_code !== '' && is_string($code) && $expires >= time() && hash_equals($stored_code, $code)) {
+        delete_2fa_code($user_id);
+        reset_login_attempts($user_id);
+
+        return 'valid';
+    }
+
+    return limit_login_attempts($user_id) ? 'invalid' : 'blocked';
 }
 
 function store_email_is_verified($user_id)

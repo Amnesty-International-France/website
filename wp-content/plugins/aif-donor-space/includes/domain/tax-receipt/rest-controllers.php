@@ -54,6 +54,10 @@ function check_nonce(WP_REST_Request $request)
 
     }
 
+    if (!get_email_is_verified(get_current_user_id())) {
+        return new WP_Error('rest_forbidden', 'Email not verified.', ['status' => 403]);
+    }
+
 
     return true;
 }

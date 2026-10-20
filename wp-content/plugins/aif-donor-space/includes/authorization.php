@@ -102,6 +102,12 @@ function check_user_page_access()
     }
 
     $current_user = wp_get_current_user();
+
+    if (!get_email_is_verified($current_user->ID)) {
+        wp_redirect(add_query_arg('user', rawurlencode($current_user->user_email), get_permalink(get_page_by_path('verifier-votre-email'))));
+        exit;
+    }
+
     $sf_user = aif_validate_salesforce_member(get_salesforce_member_data($current_user->user_email));
 
     if (is_wp_error($sf_user)) {

@@ -22,10 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
     } else {
         $user = get_user_by('email', $email);
         if ($user) {
-            $stored_code = get_2fa_code($user->ID);
-            if ($stored_code && $stored_code === $code) {
+            $code_status = check_2fa_code($user->ID, $code);
+            if ($code_status === 'valid') {
                 store_email_is_verified($user->ID);
-                reset_login_attempts($user->ID);
 
                 $verification_url = add_query_arg([
                     'user' => $email,
@@ -33,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
                 wp_redirect($verification_url);
                 exit;
             } else {
-                if (limit_login_attempts($user->ID)) {
-                    $error_message = 'Le code fourni est incorrect. Veuillez réessayer';
+                if ($code_status === 'invalid') {
+                    $error_message = 'Le code fourni est incorrect ou a expiré. Veuillez réessayer';
                 } else {
                     $error_message = 'Une erreur est survenue. Veuillez réessayer plus tard.';
                 }
