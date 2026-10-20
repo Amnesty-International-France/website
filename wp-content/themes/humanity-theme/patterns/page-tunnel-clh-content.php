@@ -29,12 +29,13 @@ if (!$active_campaign) {
     exit();
 }
 
-$raw_email = $_SESSION['clh_last_signer_email'] ?? $_COOKIE['clh_user_email'] ?? null;
+// The signed state only reflects petitions signed from this browser: it is
+// never looked up from an email address the visitor can set.
+$raw_email = $_SESSION['clh_last_signer_email'] ?? null;
 
 $last_signer_email = ($raw_email && is_email($raw_email)) ? sanitize_email($raw_email) : null;
-$current_user = $last_signer_email ? get_local_user($last_signer_email) : false;
 
-$cookie_signed_ids = $last_signer_email ? [] : amnesty_get_clh_signed_petitions();
+$signed_ids = amnesty_get_clh_signed_petitions();
 $list_petitions_clh = amnesty_get_clh_campaign_petitions();
 
 if (empty($list_petitions_clh)) {
@@ -48,8 +49,7 @@ $skipped_petitions = amnesty_get_clh_skipped_petitions();
 foreach ($list_petitions_clh as $petition) {
     $goal = get_field('objectif_signatures', $petition->ID) ?: 200000;
     $current = amnesty_get_petition_signature_count($petition->ID) ?: 0;
-    $already_signed = ($last_signer_email && $current_user && have_signed($petition->ID, $current_user->id))
-        || in_array((int) $petition->ID, $cookie_signed_ids, true);
+    $already_signed = in_array((int) $petition->ID, $signed_ids, true);
 
     $selected_posts[] = [
         'id' => $petition->ID,
@@ -61,9 +61,7 @@ foreach ($list_petitions_clh as $petition) {
         'goal' => $goal,
         'current' => $current,
         'percentage' => ($goal > 0) ? min(($current / $goal) * 100, 100) : 0,
-        'already_signed' => $last_signer_email
-            ? ($current_user && have_signed($petition->ID, $current_user->id))
-            : in_array($petition->ID, $cookie_signed_ids, true),
+        'already_signed' => $already_signed,
         'active' => amnesty_is_petition_not_expired($petition->ID),
         'already_skipped' => in_array($petition->ID, $skipped_petitions, true),
     ];
