@@ -26,6 +26,9 @@
         <testsuite name="Seo">
             <directory>tests/Seo</directory>
         </testsuite>
+        <testsuite name="Patterns">
+            <directory>tests/Patterns</directory>
+        </testsuite>
         <testsuite name="Riposte">
             <directory>tests/Riposte</directory>
         </testsuite>

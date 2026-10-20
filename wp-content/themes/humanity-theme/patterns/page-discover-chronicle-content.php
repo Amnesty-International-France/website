@@ -21,6 +21,9 @@ $countries = get_posts(
 );
 
 $inscription_chronique_status = $_GET['inscription_chronique'] ?? '';
+if (!in_array($inscription_chronique_status, ['success', 'already-sent'], true)) {
+    $inscription_chronique_status = '';
+}
 $inscription_chronique_success = $inscription_chronique_status === 'success';
 
 if (isset($_POST['sign_discover_chronicle'])) {
@@ -84,7 +87,7 @@ if (isset($_POST['sign_discover_chronicle'])) {
 	<section class="wp-block-group page-content <?php echo esc_attr($hero_extra_class); ?> <?php print esc_attr($no_chapo ?? ''); ?>">
 		<?php if (! empty($inscription_chronique_status)): ?>
 		<div class="discover-chronicle-form-container">
-			<div class="discover-chronicle-popin <?php echo $inscription_chronique_status; ?>">
+			<div class="discover-chronicle-popin <?php echo esc_attr($inscription_chronique_status); ?>">
 				<?php
                 if ($inscription_chronique_success): ?>
 					<p>Votre demande a bien été prise en compte.</p>
