@@ -96,15 +96,12 @@ function check_user_page_access()
     $login_page_url = get_permalink(get_page_by_path('connectez-vous'));
     $redirect_url = add_query_arg('redirect_to', urlencode($current_url), $login_page_url);
 
-    if (!is_user_logged_in()) {
-        wp_redirect($redirect_url);
-        exit;
-    }
-
     $current_user = wp_get_current_user();
 
-    if (!get_email_is_verified($current_user->ID)) {
-        wp_redirect(add_query_arg('user', rawurlencode($current_user->user_email), get_permalink(get_page_by_path('verifier-votre-email'))));
+    // The Salesforce lookup below trusts user_email, so a self-registered
+    // account must have proven it owns that address.
+    if (!is_user_logged_in() || aif_is_unverified_subscriber($current_user)) {
+        wp_redirect($redirect_url);
         exit;
     }
 

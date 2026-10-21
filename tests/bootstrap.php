@@ -22,8 +22,7 @@ if (!class_exists('WP_CLI')) {
     $GLOBALS['__phpunit_wp_cli_messages'] = [];
 
     /**
-     * Records every message in $GLOBALS['__phpunit_wp_cli_messages'] as
-     * ['level' => ..., 'message' => ...] so tests can assert on CLI output.
+     * Records CLI output so tests can verify that logs contain no donor data.
      * Unlike the real WP_CLI::error(), error() does not halt execution.
      */
     class WP_CLI
@@ -297,22 +296,16 @@ if (!class_exists('WP_User')) {
             public array $roles = [],
             public int $ID = 0,
             public string $user_email = '',
+            public string $user_login = '',
+            public string $user_activation_key = '',
+            public string $user_pass = '',
         ) {
         }
     }
 }
 
-if (!function_exists('get_userdata')) {
-    $GLOBALS['__phpunit_users'] = [];
-
-    function get_userdata(int $user_id): WP_User|false
-    {
-        return $GLOBALS['__phpunit_users'][$user_id] ?? false;
-    }
-}
-
 if (!class_exists('WP_Session_Tokens')) {
-    class WP_Session_Tokens
+    final class WP_Session_Tokens
     {
         private function __construct(private readonly int $user_id)
         {
@@ -327,6 +320,15 @@ if (!class_exists('WP_Session_Tokens')) {
         {
             $GLOBALS['__phpunit_destroyed_sessions'][] = $this->user_id;
         }
+    }
+}
+
+if (!function_exists('get_userdata')) {
+    $GLOBALS['__phpunit_users'] = [];
+
+    function get_userdata(int $user_id): WP_User|false
+    {
+        return $GLOBALS['__phpunit_users'][$user_id] ?? false;
     }
 }
 

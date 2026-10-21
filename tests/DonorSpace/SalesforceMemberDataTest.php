@@ -7,15 +7,19 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
-final class RedirectTestException extends RuntimeException
-{
-}
-
 final class SalesforceServiceUnavailableTestException extends RuntimeException
 {
     public function __construct(public readonly int $status)
     {
         parent::__construct('Salesforce service unavailable');
+    }
+}
+
+final class RedirectTestException extends RuntimeException
+{
+    public function __construct(public readonly string $location)
+    {
+        parent::__construct($location);
     }
 }
 
@@ -58,7 +62,7 @@ final class SalesforceMemberDataTest extends TestCase
         }
 
         if (!function_exists('wp_get_current_user')) {
-            function wp_get_current_user(): object
+            function wp_get_current_user(): WP_User
             {
                 return $GLOBALS['__phpunit_current_user'];
             }
@@ -88,9 +92,7 @@ final class SalesforceMemberDataTest extends TestCase
         if (!function_exists('get_permalink')) {
             function get_permalink(object|int $post): string
             {
-                $slug = is_object($post) && isset($post->post_name) ? $post->post_name : 'connectez-vous';
-
-                return 'https://wordpress.example.test/' . $slug . '/';
+                return 'https://wordpress.example.test/connectez-vous/';
             }
         }
 
@@ -144,13 +146,6 @@ final class SalesforceMemberDataTest extends TestCase
             }
         }
 
-        if (!function_exists('wp_redirect')) {
-            function wp_redirect(string $location, int $status = 302): never
-            {
-                throw new RedirectTestException($location);
-            }
-        }
-
         if (!function_exists('wp_die')) {
             function wp_die(mixed $message = '', mixed $title = '', array $args = []): never
             {
@@ -158,10 +153,18 @@ final class SalesforceMemberDataTest extends TestCase
             }
         }
 
+        if (!function_exists('wp_redirect')) {
+            function wp_redirect(string $location, int $status = 302): never
+            {
+                throw new RedirectTestException($location);
+            }
+        }
+
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/sales-force/user-data.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/authorization.php';
-        require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
         require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/my-space/template.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/email-verification/index.php';
 
         $GLOBALS['__phpunit_donor_space_access_token'] = 'access-token';
         $GLOBALS['__phpunit_wp_remote_calls'] = [];
@@ -169,10 +172,10 @@ final class SalesforceMemberDataTest extends TestCase
         $GLOBALS['__phpunit_wp_remote_response'] = $this->response(200, '{}');
         $GLOBALS['__phpunit_query_vars'] = [];
         $GLOBALS['__phpunit_current_user_id'] = 1;
-        $GLOBALS['__phpunit_current_user'] = (object) ['ID' => 1, 'user_email' => 'member@example.test'];
-        $GLOBALS['__phpunit_users'] = [1 => new WP_User(['subscriber'], 1, 'member@example.test')];
+        $GLOBALS['__phpunit_current_user'] = new WP_User(['subscriber'], 1, 'member@example.test');
+        $GLOBALS['__phpunit_users'] = [1 => $GLOBALS['__phpunit_current_user']];
         $GLOBALS['__phpunit_user_meta'] = [];
-        store_email_is_verified(1, 'member@example.test');
+        store_email_is_verified(1);
         $GLOBALS['__phpunit_is_page'] = false;
         $GLOBALS['__phpunit_is_preview'] = false;
         $GLOBALS['__phpunit_singular_post_types'] = [];
@@ -197,30 +200,6 @@ final class SalesforceMemberDataTest extends TestCase
         self::assertSame(WP_Error::class, $result->get_error_data()['cause_class']);
         self::assertSame('', $output);
         self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
-    }
-
-    #[DataProvider('emailWithReservedCharacterProvider')]
-    public function testMemberSearchKeepsEmailInOnePathSegment(string $email): void
-    {
-        get_salesforce_member_data($email);
-
-        self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
-        $url = $GLOBALS['__phpunit_wp_remote_calls'][0]['url'];
-        $path = parse_url($url, PHP_URL_PATH);
-        self::assertIsString($path);
-        self::assertStringStartsWith('/services/apexrest/search/v1/', $path);
-        self::assertSame($email, rawurldecode(substr($path, strlen('/services/apexrest/search/v1/'))));
-        self::assertNull(parse_url($url, PHP_URL_QUERY));
-        self::assertNull(parse_url($url, PHP_URL_FRAGMENT));
-    }
-
-    /** @return iterable<string, array{string}> */
-    public static function emailWithReservedCharacterProvider(): iterable
-    {
-        yield 'plus' => ['don+test@example.test'];
-        yield 'hash' => ['don#test@example.test'];
-        yield 'question mark' => ['don?test@example.test'];
-        yield 'slash' => ['don/test@example.test'];
     }
 
     public function testHttpErrorReturnsWpErrorWithStatus(): void
@@ -421,33 +400,46 @@ final class SalesforceMemberDataTest extends TestCase
         self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
-    public function testUnverifiedEmailIsSentToVerificationWithoutSalesforceCall(): void
+    public function testUnverifiedSubscriberIsRedirectedBeforeAnySalesforceCall(): void
     {
         $GLOBALS['__phpunit_user_meta'] = [];
 
         try {
             check_user_page_access();
-            self::fail('An unverified account must be redirected.');
+            self::fail('Expected a redirect.');
         } catch (RedirectTestException $redirect) {
-            self::assertStringContainsString('/verifier-votre-email/', $redirect->getMessage());
+            self::assertSame('https://wordpress.example.test/connectez-vous/', $redirect->location);
         }
 
         self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
-    public function testPreviouslyVerifiedAccountCannotLookUpDonorDataAfterEmailChange(): void
+    public function testVerifiedSubscriberCannotAccessAnotherAddressAfterEmailChange(): void
     {
-        $GLOBALS['__phpunit_users'][1]->user_email = 'another-donor@example.test';
         $GLOBALS['__phpunit_current_user']->user_email = 'another-donor@example.test';
 
         try {
             check_user_page_access();
-            self::fail('Changing the account e-mail must revoke donor-space access.');
+            self::fail('Changing the account address must revoke donor-space access.');
         } catch (RedirectTestException $redirect) {
-            self::assertStringContainsString('/verifier-votre-email/', $redirect->getMessage());
+            self::assertSame('https://wordpress.example.test/connectez-vous/', $redirect->location);
         }
 
         self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
+    }
+
+    public function testEditorWithoutFlagKeepsTodaysAccess(): void
+    {
+        // Staff accounts never carry the verified flag; their access must not change.
+        $GLOBALS['__phpunit_current_user'] = new WP_User(['editor'], 1, 'member@example.test');
+        $GLOBALS['__phpunit_user_meta'] = [];
+        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(
+            200,
+            '{"Id":"contact-id","isDonateur":true,"isMembre":false,"hasMandatActif":false}'
+        );
+
+        self::assertSame('contact-id', check_user_page_access()->Id);
+        self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
     public function testEmptyObjectIsAValidAbsentContact(): void

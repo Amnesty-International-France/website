@@ -14,29 +14,31 @@ if (!isset($_GET['user'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_check') {
-    $code = sanitize_text_field($_POST['2FA-code']);
+    $code = sanitize_text_field(wp_unslash($_POST['2FA-code']));
 
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
         $error_message = turnstile_friendly_error($turnstile_error);
     } else {
         $user = get_user_by('email', $email);
-        if ($user) {
-            $code_status = check_2fa_code($user->ID, $code);
-            if ($code_status === 'valid') {
-                store_email_is_verified($user->ID, $user->user_email);
+        // Verification replaces the password, so it is limited to self-registered
+        // donor accounts; staff accounts are created by admins.
+        if ($user && aif_is_subscriber($user)) {
+            $code_status = aif_check_2fa_code($user->ID, $code);
 
-                $verification_url = add_query_arg([
-                    'user' => rawurlencode($email),
-                ], get_permalink(get_page_by_path('connectez-vous')));
-                wp_redirect($verification_url);
+            if ('valid' === $code_status) {
+                $token = aif_complete_email_verification($user->ID);
+
+                $password_url = add_query_arg([
+                    'user' => rawurlencode($user->user_email),
+                    'token' => $token,
+                ], get_permalink(get_page_by_path('modifier-mon-mot-de-passe')));
+                wp_redirect($password_url);
                 exit;
+            } elseif ('invalid' === $code_status) {
+                $error_message = 'Le code fourni est incorrect ou a expiré. Veuillez réessayer';
             } else {
-                if ($code_status === 'invalid') {
-                    $error_message = 'Le code fourni est incorrect ou a expiré. Veuillez réessayer';
-                } else {
-                    $error_message = 'Une erreur est survenue. Veuillez réessayer plus tard.';
-                }
+                $error_message = 'Une erreur est survenue. Veuillez réessayer plus tard.';
             }
         } else {
             $error_message = 'Utilisateur inconnu ou code invalide';
@@ -63,17 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
             if (!$stored_user) {
                 $url = '/creer-votre-compte';
                 $send_code_error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page <a class='aif-link--primary' href='{$url}'>Créer mon compte </a>.";
-            } else {
-                $code = generate_2fa_code();
-                $recipient = store_2fa_code($stored_user->ID, $code);
-
-                $verification_url = add_query_arg([
-                    'user' => rawurlencode($recipient),
-                ], '/verifier-votre-email');
-
-                if ($recipient && send_2fa_code($recipient, $code)) {
-                    $send_code_success_message = "Nous avons bien reçu votre demande de code. Il arrivera dans votre boîte email d'ici quelques minutes";
-                }
+            } elseif (!aif_is_subscriber($stored_user)) {
+                $url = get_permalink(get_page_by_path('connectez-vous'));
+                $send_code_error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>.";
+            } elseif (aif_send_verification_code($stored_user->ID)) {
+                $send_code_success_message = "Nous avons bien reçu votre demande de code. Il arrivera dans votre boîte email d'ici quelques minutes";
             }
         } else {
             $send_code_error_message = 'Utilisateur inconnu';

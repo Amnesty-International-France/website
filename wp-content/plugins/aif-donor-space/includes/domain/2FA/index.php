@@ -1,69 +1,56 @@
 <?php
 
-const AIF_2FA_CODE_TTL = 1800;
+require_once dirname(__DIR__) . '/expiring-secret.php';
+
+const AIF_2FA_CODE_TTL = 900;
 
 function generate_2fa_code()
 {
-    return random_int(100000, 999999);
+    return (string) random_int(100000, 999999);
 }
 
 function store_2fa_code($user_id, $code)
 {
-    $user = get_userdata($user_id);
+    aif_store_expiring_secret($user_id, '2fa_code', $code, AIF_2FA_CODE_TTL);
+}
 
-    if (!$user) {
-        delete_2fa_code($user_id);
-
-        return false;
-    }
-
-    $email = $user->user_email;
-    update_user_meta($user_id, '2fa_code', $code);
-    update_user_meta($user_id, '2fa_code_expires', time() + AIF_2FA_CODE_TTL);
-    update_user_meta($user_id, '2fa_code_email', $email);
-
-    return $email;
+function is_2fa_code_valid($user_id, $code)
+{
+    return aif_is_expiring_secret_valid($user_id, '2fa_code', $code);
 }
 
 function delete_2fa_code($user_id)
 {
-    delete_user_meta($user_id, '2fa_code');
-    delete_user_meta($user_id, '2fa_code_expires');
-    delete_user_meta($user_id, '2fa_code_email');
+    aif_delete_expiring_secret($user_id, '2fa_code');
+}
+
+function is_login_blocked($user_id)
+{
+    return (int) get_login_blocked_until($user_id) > time();
 }
 
 /**
- * Returns 'valid', 'invalid' or 'blocked'. The block is checked before the
- * code, so a blocked account rejects even the right code. A code is single-use
- * and expires after AIF_2FA_CODE_TTL seconds.
+ * Every submission counts as an attempt and the lockout is checked before
+ * the code, so at most 10 codes are compared per lockout window and a
+ * correct guess made while blocked is refused. Completing verification
+ * resets the counter.
  */
-function check_2fa_code($user_id, $code)
+function aif_check_2fa_code($user_id, $code)
 {
-    if ((int) get_login_blocked_until($user_id) > time()) {
+    if (is_login_blocked($user_id) || !limit_login_attempts($user_id)) {
         return 'blocked';
     }
 
-    $stored_code = (string) get_2fa_code($user_id);
-    $expires = (int) get_user_meta($user_id, '2fa_code_expires', true);
-    $sent_to = get_user_meta($user_id, '2fa_code_email', true);
-    $user = get_userdata($user_id);
-
-    if ($stored_code !== '' && is_string($code) && $expires >= time()
-        && is_string($sent_to) && $sent_to !== '' && $user
-        && 0 === strcasecmp($sent_to, $user->user_email)
-        && hash_equals($stored_code, $code)) {
-        delete_2fa_code($user_id);
-        reset_login_attempts($user_id);
-
-        return 'valid';
-    }
-
-    return limit_login_attempts($user_id) ? 'invalid' : 'blocked';
+    return is_2fa_code_valid($user_id, $code) ? 'valid' : 'invalid';
 }
 
-function store_email_is_verified($user_id, $verified_email)
+function store_email_is_verified($user_id)
 {
-    update_user_meta($user_id, 'email-verfied', strtolower($verified_email));
+    $user = get_userdata($user_id);
+
+    if ($user) {
+        update_user_meta($user_id, 'email-verfied', strtolower($user->user_email));
+    }
 }
 
 function get_email_is_verified($user_id)
@@ -71,34 +58,9 @@ function get_email_is_verified($user_id)
     $verified_email = get_user_meta($user_id, 'email-verfied', true);
     $user = get_userdata($user_id);
 
-    // Older boolean flags do not identify the address that was verified.
+    // A legacy boolean flag does not identify the address that was verified.
     return is_string($verified_email) && $verified_email !== '' && $user
         && 0 === strcasecmp($verified_email, $user->user_email);
-}
-
-function aif_reset_email_verification_on_email_change($user_id, $old_user_data)
-{
-    $user = get_userdata($user_id);
-
-    if (!$user || 0 === strcasecmp($old_user_data->user_email, $user->user_email)) {
-        return;
-    }
-
-    delete_user_meta($user_id, 'email-verfied');
-    delete_2fa_code($user_id);
-    delete_email_token($user_id);
-
-    if (in_array('subscriber', (array) $user->roles, true)) {
-        WP_Session_Tokens::get_instance($user_id)->destroy_all();
-    }
-}
-
-add_action('profile_update', 'aif_reset_email_verification_on_email_change', 10, 2);
-
-
-function get_2fa_code($user_id)
-{
-    return get_user_meta($user_id, '2fa_code', true);
 }
 
 

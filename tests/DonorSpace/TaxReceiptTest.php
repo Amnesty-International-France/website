@@ -278,7 +278,7 @@ final class TaxReceiptTest extends TestCase
     {
         $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
         $GLOBALS['__phpunit_current_user_id'] = 42;
-        store_email_is_verified(42, 'member@example.test');
+        store_email_is_verified(42);
 
         $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 

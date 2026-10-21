@@ -26,6 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
                         'user_pass' => $password,
                     ];
                     wp_update_user($userdata);
+                    // wp_update_user() keeps other sessions alive.
+                    aif_destroy_user_sessions($user->ID);
+                    aif_verify_email_on_password_reset($user);
 
                     $url = add_query_arg([
                         'user' => rawurlencode($user->user_email),

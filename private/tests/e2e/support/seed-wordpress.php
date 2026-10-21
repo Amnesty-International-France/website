@@ -216,3 +216,37 @@ if (!get_page_by_path('formulaire-foundation')) {
         'guid' => home_url('/formulaire-foundation/'),
     ]);
 }
+
+if (!get_page_by_path('modifier-mon-mot-de-passe')) {
+    aif_e2e_insert_post([
+        'post_title' => 'Modifier mon mot de passe',
+        'post_name' => 'modifier-mon-mot-de-passe',
+        'guid' => home_url('/modifier-mon-mot-de-passe/'),
+    ]);
+}
+
+// Donor-space accounts. No theme or plugin hook runs on user creation, so
+// wp_insert_user() is safe here (unlike wp_insert_post(), see above).
+$aif_e2e_donors = [
+    'e2e-unverified-donor@example.test' => ['password' => 'E2e-Unverified-1!', 'verified' => false],
+    'e2e-verified-donor@example.test' => ['password' => 'E2e-Verified-1!', 'verified' => true],
+];
+
+foreach ($aif_e2e_donors as $email => $donor) {
+    $user = get_user_by('email', $email);
+    $user_id = $user ? $user->ID : wp_insert_user([
+        'user_login' => $email,
+        'user_email' => $email,
+        'user_pass' => $donor['password'],
+        'role' => 'subscriber',
+    ]);
+
+    if (is_wp_error($user_id)) {
+        WP_CLI::error(sprintf('Seed user failed for %s: %s', $email, $user_id->get_error_message()));
+    }
+
+    // Verification belongs to the saved address, not to the account forever.
+    $donor['verified']
+        ? update_user_meta($user_id, 'email-verfied', strtolower(get_userdata($user_id)->user_email))
+        : delete_user_meta($user_id, 'email-verfied');
+}

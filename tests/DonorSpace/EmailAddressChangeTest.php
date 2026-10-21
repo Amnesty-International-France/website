@@ -16,6 +16,7 @@ final class EmailAddressChangeTest extends TestCase
     {
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/sales-force/user-data.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/email-verification/index.php';
 
         $GLOBALS['__phpunit_user_meta'] = [];
         $GLOBALS['__phpunit_users'] = [self::USER_ID => new WP_User(['subscriber'], self::USER_ID, 'old@example.test')];
@@ -24,8 +25,8 @@ final class EmailAddressChangeTest extends TestCase
 
     public function testEmailChangeRevokesVerificationCodeResetTokenAndSession(): void
     {
-        store_email_is_verified(self::USER_ID, 'old@example.test');
-        store_2fa_code(self::USER_ID, 123456);
+        store_email_is_verified(self::USER_ID);
+        store_2fa_code(self::USER_ID, '123456');
         store_email_token(self::USER_ID, 'reset-secret');
 
         $old_user = clone $GLOBALS['__phpunit_users'][self::USER_ID];
@@ -33,14 +34,14 @@ final class EmailAddressChangeTest extends TestCase
         aif_reset_email_verification_on_email_change(self::USER_ID, $old_user);
 
         self::assertFalse(get_email_is_verified(self::USER_ID));
-        self::assertSame('', get_2fa_code(self::USER_ID));
+        self::assertFalse(is_2fa_code_valid(self::USER_ID, '123456'));
         self::assertFalse(is_email_token_valid(self::USER_ID, 'reset-secret'));
         self::assertSame([self::USER_ID], $GLOBALS['__phpunit_destroyed_sessions']);
     }
 
     public function testCaseOnlyEmailChangeKeepsCurrentVerification(): void
     {
-        store_email_is_verified(self::USER_ID, 'old@example.test');
+        store_email_is_verified(self::USER_ID);
         $old_user = clone $GLOBALS['__phpunit_users'][self::USER_ID];
         $GLOBALS['__phpunit_users'][self::USER_ID]->user_email = 'OLD@example.test';
 

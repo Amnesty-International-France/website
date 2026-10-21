@@ -93,7 +93,7 @@ add_action('plugins_loaded', function () {
  * Salesforce): WordPress expects this exact array whenever a filter preempts
  * the real HTTP request, only the JSON-encoded body actually differs per mock.
  */
-function aif_e2e_fake_http_response(array $body): array
+function aif_e2e_fake_http_response(array|stdClass $body): array
 {
     return [
         'headers' => [],
@@ -365,6 +365,13 @@ add_filter('pre_http_request', function ($preempt, $args, $url) {
         $body = $found
             ? ['totalSize' => 1, 'records' => [['Id' => 'fake-sf-id-existing']]]
             : ['totalSize' => 0, 'records' => []];
+    } elseif (str_contains($path, 'apexrest/search/v1/')) {
+        // Donor-space member lookup by e-mail: seeded e2e-*@example.test
+        // addresses are members, any other address is an absent contact.
+        $email = urldecode((string) substr($path, strrpos($path, '/') + 1));
+        $body = str_starts_with($email, 'e2e-') && str_ends_with($email, '@example.test')
+            ? ['Id' => 'fake-sf-id-donor', 'isDonateur' => true, 'isMembre' => true, 'hasMandatActif' => false]
+            : new stdClass();
     } else {
         // Any create/update/delete call (Contact, Lead, Case, ...).
         $body = ['success' => true, 'id' => 'fake-sf-id-new'];
@@ -412,6 +419,30 @@ add_action('rest_api_init', function () {
         'methods' => 'POST',
         'callback' => function () {
             return new WP_REST_Response(aif_e2e_setup_business_form_fixtures(), 200);
+        },
+        'permission_callback' => '__return_true',
+    ]);
+
+    // A verified donor a spec may alter (e.g. change its e-mail): created or
+    // restored on every call, one per suffix so parallel projects don't share
+    // it. The flag is set after the e-mail reset, which drops it.
+    register_rest_route('aif-e2e/v1', '/verified-donor', [
+        'methods' => 'POST',
+        'callback' => function (WP_REST_Request $request) {
+            $email = sprintf('e2e-email-change-%s@example.test', sanitize_key((string) $request->get_param('suffix')));
+            $password = 'E2e-Email-Change-1!';
+            $user = get_user_by('login', $email);
+            $user_id = $user
+                ? wp_update_user(['ID' => $user->ID, 'user_email' => $email, 'user_pass' => $password, 'role' => 'subscriber'])
+                : wp_insert_user(['user_login' => $email, 'user_email' => $email, 'user_pass' => $password, 'role' => 'subscriber']);
+
+            if (is_wp_error($user_id)) {
+                return $user_id;
+            }
+
+            update_user_meta($user_id, 'email-verfied', strtolower(get_userdata($user_id)->user_email));
+
+            return new WP_REST_Response(['email' => $email, 'password' => $password], 200);
         },
         'permission_callback' => '__return_true',
     ]);
