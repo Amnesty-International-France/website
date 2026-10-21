@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
                 store_email_is_verified($user->ID, $user->user_email);
 
                 $verification_url = add_query_arg([
-                    'user' => $email,
+                    'user' => rawurlencode($email),
                 ], get_permalink(get_page_by_path('connectez-vous')));
                 wp_redirect($verification_url);
                 exit;
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
                 $recipient = store_2fa_code($stored_user->ID, $code);
 
                 $verification_url = add_query_arg([
-                    'user' => $recipient,
+                    'user' => rawurlencode($recipient),
                 ], '/verifier-votre-email');
 
                 if ($recipient && send_2fa_code($recipient, $code)) {

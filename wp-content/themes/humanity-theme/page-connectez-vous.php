@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
             } else {
                 $verification_url = add_query_arg([
-                    'user' => $email,
+                    'user' => rawurlencode($email),
                 ], get_permalink(get_page_by_path('verifier-votre-email')));
 
                 $title = 'Votre email ne semble pas encore vérifié';

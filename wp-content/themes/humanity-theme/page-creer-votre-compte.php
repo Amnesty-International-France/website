@@ -89,7 +89,7 @@ function aif_handle_account_creation_request()
     $recipient = store_2fa_code($user_id, $code);
 
     $verification_url = add_query_arg([
-        'user' => $recipient,
+        'user' => rawurlencode($recipient),
     ], get_permalink(get_page_by_path('verifier-votre-email')));
 
     if ($recipient && send_2fa_code($recipient, $code)) {
