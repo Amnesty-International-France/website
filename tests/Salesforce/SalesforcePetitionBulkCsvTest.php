@@ -135,10 +135,16 @@ final class SalesforcePetitionBulkCsvTest extends TestCase
         putenv('AIF_SALESFORCE_URL=https://fake-salesforce.phpunit.test/');
         $GLOBALS['__phpunit_wp_remote_response_queue'] = [
             [
-                'body' => json_encode([[
-                    'errorCode' => 'INVALID_FIELD',
-                    'message' => 'Invalid value ada@example.test for Lovelace',
-                ]]),
+                'body' => json_encode([
+                    [
+                        'errorCode' => 'INVALID_FIELD',
+                        'message' => 'Invalid value ada@example.test for Lovelace',
+                    ],
+                    [
+                        'errorCode' => "INVALID_FIELD\nada@example.test",
+                        'message' => 'Another rejected record',
+                    ],
+                ]),
                 'response' => ['code' => 400],
             ],
         ];

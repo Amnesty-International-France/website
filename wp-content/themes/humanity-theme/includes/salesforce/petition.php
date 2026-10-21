@@ -155,8 +155,9 @@ function upload_bulk_data($url_upload, $data)
         // Only log Salesforce error codes: the raw body may echo uploaded records.
         $error_codes = [];
         foreach ((array) json_decode(wp_remote_retrieve_body($response), true) as $error) {
-            if (is_array($error) && is_string($error['errorCode'] ?? null)) {
-                $error_codes[] = $error['errorCode'];
+            $error_code = is_array($error) ? ($error['errorCode'] ?? null) : null;
+            if (is_string($error_code) && preg_match('/\A[A-Z][A-Z0-9_]{0,63}\z/D', $error_code) === 1) {
+                $error_codes[] = $error_code;
             }
         }
         echo 'Erreur de requête Salesforce : HTTP ' . wp_remote_retrieve_response_code($response) . ($error_codes ? ' ' . implode(', ', $error_codes) : '') . PHP_EOL;
@@ -205,8 +206,8 @@ function poll_job_state($job_id)
             $state = $job_data['state'];
             $processed = (int) ($job_data['numberRecordsProcessed'] ?? 0);
             $failed = (int) ($job_data['numberRecordsFailed'] ?? 0);
-            $error_message = is_string($job_data['errorMessage'] ?? null) && $job_data['errorMessage'] !== '' ? " Error: {$job_data['errorMessage']}" : '';
-            WP_CLI::log("Statut du job {$job_id} après {$ecoule}s : {$state}. Records processed: {$processed}, failed: {$failed}.{$error_message}");
+            $error_reported = ! empty($job_data['errorMessage']) ? ' Salesforce reported a job error.' : '';
+            WP_CLI::log("Statut du job {$job_id} après {$ecoule}s : {$state}. Records processed: {$processed}, failed: {$failed}.{$error_reported}");
         } else {
             WP_CLI::error('Error getting bulk job status');
             break;

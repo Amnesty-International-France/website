@@ -64,6 +64,7 @@ final class SyncSignaturesToSalesforceTest extends TestCase
                     'state' => 'JobComplete',
                     'numberRecordsProcessed' => 2,
                     'numberRecordsFailed' => 0,
+                    'errorMessage' => 'Unexpected response contains ada@example.test and her signature',
                 ]),
                 'response' => ['code' => 200],
             ],
@@ -122,7 +123,7 @@ final class SyncSignaturesToSalesforceTest extends TestCase
         // identifiers and counters only, never signature data.
         self::assertSame([
             ['level' => 'log', 'message' => 'Prepared bulk CSV for 2 signature(s)'],
-            ['level' => 'log', 'message' => 'Statut du job ' . self::JOB_ID . ' après 30s : JobComplete. Records processed: 2, failed: 0.'],
+            ['level' => 'log', 'message' => 'Statut du job ' . self::JOB_ID . ' après 30s : JobComplete. Records processed: 2, failed: 0. Salesforce reported a job error.'],
         ], $GLOBALS['__phpunit_wp_cli_messages']);
         $cli_output = implode("\n", array_column($GLOBALS['__phpunit_wp_cli_messages'], 'message'));
         foreach (['ada@example.test', 'grace@example.test', 'Lovelace', 'Hopper', '0102030405', '75001', 'Mon message personnel', 'UID-123', 'Email__c'] as $signature_value) {
