@@ -138,6 +138,13 @@ if (!function_exists('sanitize_email')) {
     }
 }
 
+if (!function_exists('wp_unslash')) {
+    function wp_unslash(string $value): string
+    {
+        return stripslashes($value);
+    }
+}
+
 if (!function_exists('is_email')) {
     function is_email(string $email): string|false
     {

@@ -342,6 +342,55 @@ final class EmailVerificationTest extends TestCase
         self::assertTrue(get_email_is_verified(self::USER_ID));
     }
 
+    public function testProfileUpdateWithAnApostropheKeepsProofsAndTheNewNativeResetKey(): void
+    {
+        $user = $GLOBALS['__phpunit_users'][self::USER_ID];
+        $user->user_email = "o'connor@example.org";
+        store_email_is_verified(self::USER_ID);
+        store_2fa_code(self::USER_ID, '123456');
+        store_email_token(self::USER_ID, 'reset-secret');
+        aif_record_native_password_reset_email($user->user_login);
+
+        // wp_insert_user() slashes this field before firing profile_update,
+        // including when get_password_reset_key() saves a new activation key.
+        $old_user = clone $user;
+        $old_user->user_email = addslashes($old_user->user_email);
+        $user->user_activation_key = 'new-hashed-core-key';
+
+        aif_reset_email_verification_on_email_change(self::USER_ID, $old_user);
+
+        self::assertSame('new-hashed-core-key', $user->user_activation_key);
+        self::assertSame("o'connor@example.org", get_user_meta(self::USER_ID, 'aif_native_password_reset_email', true));
+        self::assertTrue(get_email_is_verified(self::USER_ID));
+        self::assertTrue(is_2fa_code_valid(self::USER_ID, '123456'));
+        self::assertTrue(is_email_token_valid(self::USER_ID, 'reset-secret'));
+        self::assertSame([], $GLOBALS['__phpunit_destroyed_sessions']);
+        self::assertSame([], $GLOBALS['__phpunit_user_updates']);
+    }
+
+    public function testRealEmailChangeFromAnApostropheAddressRevokesProofsAndNativeResetKey(): void
+    {
+        $user = $GLOBALS['__phpunit_users'][self::USER_ID];
+        $user->user_email = "o'connor@example.org";
+        store_email_is_verified(self::USER_ID);
+        store_2fa_code(self::USER_ID, '123456');
+        store_email_token(self::USER_ID, 'reset-secret');
+        aif_record_native_password_reset_email($user->user_login);
+        $user->user_activation_key = 'old-hashed-core-key';
+        $old_user = clone $user;
+        $old_user->user_email = addslashes($old_user->user_email);
+        $user->user_email = 'new@example.org';
+
+        aif_reset_email_verification_on_email_change(self::USER_ID, $old_user);
+
+        self::assertFalse(get_email_is_verified(self::USER_ID));
+        self::assertFalse(is_2fa_code_valid(self::USER_ID, '123456'));
+        self::assertFalse(is_email_token_valid(self::USER_ID, 'reset-secret'));
+        self::assertSame('', $user->user_activation_key);
+        self::assertSame('', get_user_meta(self::USER_ID, 'aif_native_password_reset_email', true));
+        self::assertSame([self::USER_ID], $GLOBALS['__phpunit_destroyed_sessions']);
+    }
+
     public function testDestroyUserSessions(): void
     {
         aif_destroy_user_sessions(self::USER_ID);

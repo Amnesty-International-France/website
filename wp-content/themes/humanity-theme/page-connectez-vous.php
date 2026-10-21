@@ -29,7 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         $stored_user = get_user_by('email', $email);
 
         if ($stored_user) {
-            if (get_email_is_verified(user_id: $stored_user->ID)) {
+            // Staff accounts are verified by administrators; only subscribers
+            // use the self-registration email verification flow.
+            if (!aif_is_unverified_subscriber($stored_user)) {
 
                 $creds = [
                     'user_login' => $email,

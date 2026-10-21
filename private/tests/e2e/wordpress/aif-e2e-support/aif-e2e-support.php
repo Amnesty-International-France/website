@@ -447,6 +447,36 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true',
     ]);
 
+    // Exercise core's real profile_update contract while issuing a reset key.
+    register_rest_route('aif-e2e/v1', '/native-password-reset', [
+        'methods' => 'POST',
+        'callback' => function (WP_REST_Request $request) {
+            $suffix = sanitize_key((string) $request->get_param('suffix'));
+            $login = 'e2e-native-reset-' . $suffix;
+            $email = sprintf("e2e-o'connor-%s@example.test", $suffix);
+            $user = get_user_by('login', $login);
+            $user_id = $user
+                ? wp_update_user(['ID' => $user->ID, 'user_email' => wp_slash($email)])
+                : wp_insert_user(['user_login' => $login, 'user_email' => wp_slash($email), 'user_pass' => wp_generate_password(), 'role' => 'subscriber']);
+
+            if (is_wp_error($user_id)) {
+                return $user_id;
+            }
+
+            $key = get_password_reset_key(get_userdata($user_id));
+            if (is_wp_error($key)) {
+                return $key;
+            }
+
+            return new WP_REST_Response(['url' => add_query_arg([
+                'action' => 'rp',
+                'key' => $key,
+                'login' => $login,
+            ], wp_login_url())], 200);
+        },
+        'permission_callback' => '__return_true',
+    ]);
+
     register_rest_route('aif-e2e/v1', '/clh-state', [
         'methods' => 'GET',
         'callback' => function () {

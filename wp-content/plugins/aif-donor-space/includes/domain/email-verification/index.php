@@ -91,7 +91,9 @@ function aif_reset_email_verification_on_email_change($user_id, $old_user_data)
 {
     $user = get_userdata($user_id);
 
-    if (!$user || 0 === strcasecmp($user->user_email, $old_user_data->user_email)) {
+    // wp_insert_user() slashes the old address before firing profile_update;
+    // get_userdata() returns the new address without those slashes.
+    if (!$user || 0 === strcasecmp($user->user_email, wp_unslash($old_user_data->user_email))) {
         return;
     }
 

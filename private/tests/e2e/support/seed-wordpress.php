@@ -230,6 +230,8 @@ if (!get_page_by_path('modifier-mon-mot-de-passe')) {
 $aif_e2e_donors = [
     'e2e-unverified-donor@example.test' => ['password' => 'E2e-Unverified-1!', 'verified' => false],
     'e2e-verified-donor@example.test' => ['password' => 'E2e-Verified-1!', 'verified' => true],
+    'e2e-legacy-editor-donor@example.test' => ['password' => 'E2e-Legacy-Editor-1!', 'verified' => false, 'role' => 'editor', 'legacy' => true],
+    'e2e-legacy-subscriber@example.test' => ['password' => 'E2e-Legacy-Subscriber-1!', 'verified' => false, 'legacy' => true],
 ];
 
 foreach ($aif_e2e_donors as $email => $donor) {
@@ -238,7 +240,7 @@ foreach ($aif_e2e_donors as $email => $donor) {
         'user_login' => $email,
         'user_email' => $email,
         'user_pass' => $donor['password'],
-        'role' => 'subscriber',
+        'role' => $donor['role'] ?? 'subscriber',
     ]);
 
     if (is_wp_error($user_id)) {
@@ -249,4 +251,8 @@ foreach ($aif_e2e_donors as $email => $donor) {
     $donor['verified']
         ? update_user_meta($user_id, 'email-verfied', strtolower(get_userdata($user_id)->user_email))
         : delete_user_meta($user_id, 'email-verfied');
+
+    if (!empty($donor['legacy'])) {
+        update_user_meta($user_id, 'email-verfied', '1');
+    }
 }
