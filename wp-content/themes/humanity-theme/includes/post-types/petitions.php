@@ -463,6 +463,23 @@ function amnesty_start_secure_session(): void
     session_start();
 }
 
+function amnesty_expire_clh_legacy_email_cookie(): void
+{
+    if (!isset($_COOKIE['clh_user_email'])) {
+        return;
+    }
+
+    setcookie('clh_user_email', '', [
+        'expires'  => time() - 3600,
+        'path'     => '/',
+        'secure'   => is_ssl(),
+        'httponly' => true,
+        'samesite' => 'Strict',
+    ]);
+    unset($_COOKIE['clh_user_email']);
+}
+add_action('init', 'amnesty_expire_clh_legacy_email_cookie');
+
 function amnesty_set_clh_signer_email(string $email): void
 {
     amnesty_start_secure_session();
@@ -528,29 +545,39 @@ function amnesty_set_clh_skipped_petition(int $petition_id): void
 
 function amnesty_get_clh_signed_petitions(): array
 {
-    $cookie_signed = [];
-    if (!empty($_COOKIE['clh_signed_petitions'])) {
-        $decoded = json_decode(stripslashes($_COOKIE['clh_signed_petitions']), true);
-        if (is_array($decoded)) {
-            $cookie_signed = array_map('intval', $decoded);
+    // Preserve progress recorded before signatures had individual cookies.
+    $signed = amnesty_get_clh_signed_petition_cookie_ids();
+
+    foreach ($_COOKIE as $name => $value) {
+        if (!str_starts_with($name, 'clh_signed_petition_') || $value !== '1') {
+            continue;
+        }
+
+        $petition_id = filter_var(substr($name, strlen('clh_signed_petition_')), FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
+        if ($petition_id !== false) {
+            $signed[] = $petition_id;
         }
     }
 
-    return array_unique($cookie_signed);
+    return array_values(array_unique($signed));
 }
 
 function amnesty_set_clh_signed_petition(int $petition_id): void
 {
-    $signed = amnesty_get_clh_signed_petitions();
-    $signed[] = $petition_id;
-    $signed = array_unique($signed);
+    // Parallel responses can safely write different cookies without losing either signature.
+    $cookie_name = 'clh_signed_petition_' . $petition_id;
 
-    setcookie('clh_signed_petitions', wp_json_encode($signed), [
+    setcookie($cookie_name, '1', [
         'expires'  => time() + 30 * DAY_IN_SECONDS,
         'path'     => '/',
         'secure'   => is_ssl(),
+        'httponly' => true,
         'samesite' => 'Strict',
     ]);
+
+    $_COOKIE[$cookie_name] = '1'; // Include this signature in the current request's count.
 }
 
 function amnesty_get_clh_tunnel_end_url(): string
@@ -581,6 +608,14 @@ function amnesty_get_clh_signed_petition_count_for_user(int $user_id, int $inclu
     }
 
     return count(array_unique($signed_petition_ids));
+}
+
+function amnesty_get_clh_signed_petition_count_for_browser(): int
+{
+    return count(array_intersect(
+        amnesty_get_active_clh_campaign_petition_ids(),
+        amnesty_get_clh_signed_petitions()
+    ));
 }
 
 function amnesty_is_clh_petition_tunnel_page(?WP_Post $post = null): bool
@@ -858,7 +893,7 @@ function amnesty_handle_petition_signature(): void
                 amnesty_set_clh_signed_petition($petition_id);
             }
 
-            $redirect_url = $is_clh_petition && amnesty_get_clh_signed_petition_count_for_user((int) $user_id, $petition_id) >= 10
+            $redirect_url = $is_clh_petition && amnesty_get_clh_signed_petition_count_for_browser() >= 10
                 ? amnesty_get_clh_petition_tunnel_thanks_url()
                 : amnesty_get_petition_signature_redirect_url(
                     $petition_id,
@@ -913,20 +948,9 @@ function amnesty_handle_petition_signature(): void
         amnesty_set_clh_signer_email($user_email);
 
         amnesty_set_clh_signed_petition($petition_id);
-
-        // Older versions stored the signer's email in this cookie.
-        if (isset($_COOKIE['clh_user_email'])) {
-            setcookie('clh_user_email', '', [
-                'expires'  => time() - 3600,
-                'path'     => '/',
-                'secure'   => is_ssl(),
-                'httponly' => true,
-                'samesite' => 'Strict',
-            ]);
-        }
     }
 
-    $redirect_url = $is_clh_petition && amnesty_get_clh_signed_petition_count_for_user((int) $user_id, $petition_id) >= 10
+    $redirect_url = $is_clh_petition && amnesty_get_clh_signed_petition_count_for_browser() >= 10
         ? add_query_arg(
             [
                 'gtm_type' => $gtm_type,
