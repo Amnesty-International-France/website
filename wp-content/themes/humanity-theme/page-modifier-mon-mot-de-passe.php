@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
         $error_title = 'La vérification de sécurité a échoué.';
         $error_message = turnstile_friendly_error($turnstile_error);
     } else {
-        $email = $_GET['user'];
+        $email = sanitize_email(wp_unslash($_GET['user']));
         $token = $_GET['token'];
         $password = $_POST['password'];
         $user = get_user_by('email', $email);

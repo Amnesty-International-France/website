@@ -10,7 +10,7 @@ if (!isset($_GET['user'])) {
     $error_title = 'Une erreur est survenue';
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 } else {
-    $email = $_GET['user'];
+    $email = sanitize_email(wp_unslash($_GET['user']));
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_check') {

@@ -72,7 +72,7 @@ function get_salesforce_data_donor_space($url)
 
 function get_salesforce_member_data($email)
 {
-    $url = 'services/apexrest/search/v1/' . $email;
+    $url = 'services/apexrest/search/v1/' . rawurlencode($email);
     return get_salesforce_data_donor_space($url);
 }
 

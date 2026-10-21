@@ -199,6 +199,30 @@ final class SalesforceMemberDataTest extends TestCase
         self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
+    #[DataProvider('emailWithReservedCharacterProvider')]
+    public function testMemberSearchKeepsEmailInOnePathSegment(string $email): void
+    {
+        get_salesforce_member_data($email);
+
+        self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
+        $url = $GLOBALS['__phpunit_wp_remote_calls'][0]['url'];
+        $path = parse_url($url, PHP_URL_PATH);
+        self::assertIsString($path);
+        self::assertStringStartsWith('/services/apexrest/search/v1/', $path);
+        self::assertSame($email, rawurldecode(substr($path, strlen('/services/apexrest/search/v1/'))));
+        self::assertNull(parse_url($url, PHP_URL_QUERY));
+        self::assertNull(parse_url($url, PHP_URL_FRAGMENT));
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function emailWithReservedCharacterProvider(): iterable
+    {
+        yield 'plus' => ['don+test@example.test'];
+        yield 'hash' => ['don#test@example.test'];
+        yield 'question mark' => ['don?test@example.test'];
+        yield 'slash' => ['don/test@example.test'];
+    }
+
     public function testHttpErrorReturnsWpErrorWithStatus(): void
     {
         $GLOBALS['__phpunit_wp_remote_response'] = $this->response(503, '{"message":"Unavailable"}');

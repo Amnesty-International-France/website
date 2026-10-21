@@ -9,7 +9,7 @@ if (!isset($_GET['user'])) {
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 
 } else {
-    $user = get_user_by('email', $_GET['user']);
+    $user = get_user_by('email', sanitize_email(wp_unslash($_GET['user'])));
     if ($user) {
         $email = $user->user_email;
     }
