@@ -9,14 +9,27 @@ function generate_2fa_code()
 
 function store_2fa_code($user_id, $code)
 {
+    $user = get_userdata($user_id);
+
+    if (!$user) {
+        delete_2fa_code($user_id);
+
+        return false;
+    }
+
+    $email = $user->user_email;
     update_user_meta($user_id, '2fa_code', $code);
     update_user_meta($user_id, '2fa_code_expires', time() + AIF_2FA_CODE_TTL);
+    update_user_meta($user_id, '2fa_code_email', $email);
+
+    return $email;
 }
 
 function delete_2fa_code($user_id)
 {
     delete_user_meta($user_id, '2fa_code');
     delete_user_meta($user_id, '2fa_code_expires');
+    delete_user_meta($user_id, '2fa_code_email');
 }
 
 /**
@@ -32,8 +45,13 @@ function check_2fa_code($user_id, $code)
 
     $stored_code = (string) get_2fa_code($user_id);
     $expires = (int) get_user_meta($user_id, '2fa_code_expires', true);
+    $sent_to = get_user_meta($user_id, '2fa_code_email', true);
+    $user = get_userdata($user_id);
 
-    if ($stored_code !== '' && is_string($code) && $expires >= time() && hash_equals($stored_code, $code)) {
+    if ($stored_code !== '' && is_string($code) && $expires >= time()
+        && is_string($sent_to) && $sent_to !== '' && $user
+        && 0 === strcasecmp($sent_to, $user->user_email)
+        && hash_equals($stored_code, $code)) {
         delete_2fa_code($user_id);
         reset_login_attempts($user_id);
 
@@ -43,15 +61,39 @@ function check_2fa_code($user_id, $code)
     return limit_login_attempts($user_id) ? 'invalid' : 'blocked';
 }
 
-function store_email_is_verified($user_id)
+function store_email_is_verified($user_id, $verified_email)
 {
-    update_user_meta($user_id, 'email-verfied', true);
+    update_user_meta($user_id, 'email-verfied', strtolower($verified_email));
 }
 
 function get_email_is_verified($user_id)
 {
-    return get_user_meta($user_id, 'email-verfied', true);
+    $verified_email = get_user_meta($user_id, 'email-verfied', true);
+    $user = get_userdata($user_id);
+
+    // Older boolean flags do not identify the address that was verified.
+    return is_string($verified_email) && $verified_email !== '' && $user
+        && 0 === strcasecmp($verified_email, $user->user_email);
 }
+
+function aif_reset_email_verification_on_email_change($user_id, $old_user_data)
+{
+    $user = get_userdata($user_id);
+
+    if (!$user || 0 === strcasecmp($old_user_data->user_email, $user->user_email)) {
+        return;
+    }
+
+    delete_user_meta($user_id, 'email-verfied');
+    delete_2fa_code($user_id);
+    delete_email_token($user_id);
+
+    if (in_array('subscriber', (array) $user->roles, true)) {
+        WP_Session_Tokens::get_instance($user_id)->destroy_all();
+    }
+}
+
+add_action('profile_update', 'aif_reset_email_verification_on_email_change', 10, 2);
 
 
 function get_2fa_code($user_id)

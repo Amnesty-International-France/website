@@ -276,15 +276,46 @@ if (!class_exists('WP_Error')) {
 
 if (!class_exists('WP_User')) {
     /**
-     * Stand-in for WP_User, carrying only the role slugs a test assigns.
+     * Stand-in for WP_User with the account fields used by donor-space tests.
      */
     class WP_User
     {
         /**
          * @param array<int,string> $roles
          */
-        public function __construct(public array $roles = [])
+        public function __construct(
+            public array $roles = [],
+            public int $ID = 0,
+            public string $user_email = '',
+        ) {
+        }
+    }
+}
+
+if (!function_exists('get_userdata')) {
+    $GLOBALS['__phpunit_users'] = [];
+
+    function get_userdata(int $user_id): WP_User|false
+    {
+        return $GLOBALS['__phpunit_users'][$user_id] ?? false;
+    }
+}
+
+if (!class_exists('WP_Session_Tokens')) {
+    class WP_Session_Tokens
+    {
+        private function __construct(private readonly int $user_id)
         {
+        }
+
+        public static function get_instance(int $user_id): self
+        {
+            return new self($user_id);
+        }
+
+        public function destroy_all(): void
+        {
+            $GLOBALS['__phpunit_destroyed_sessions'][] = $this->user_id;
         }
     }
 }

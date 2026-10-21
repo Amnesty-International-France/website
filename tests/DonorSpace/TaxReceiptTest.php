@@ -71,6 +71,7 @@ final class TaxReceiptTest extends TestCase
         $tax_receipts_by_contact = [];
         $tax_receipt_fetches = [];
         $GLOBALS['__phpunit_user_meta'] = [];
+        $GLOBALS['__phpunit_users'] = [42 => new WP_User(['subscriber'], 42, 'member@example.test')];
         $GLOBALS['logged_salesforce_errors'] = [];
         $GLOBALS['__phpunit_current_user_id'] = 0;
         $GLOBALS['__phpunit_valid_nonces'] = [];
@@ -277,7 +278,7 @@ final class TaxReceiptTest extends TestCase
     {
         $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
         $GLOBALS['__phpunit_current_user_id'] = 42;
-        store_email_is_verified(42);
+        store_email_is_verified(42, 'member@example.test');
 
         $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 

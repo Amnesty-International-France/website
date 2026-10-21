@@ -170,8 +170,9 @@ final class SalesforceMemberDataTest extends TestCase
         $GLOBALS['__phpunit_query_vars'] = [];
         $GLOBALS['__phpunit_current_user_id'] = 1;
         $GLOBALS['__phpunit_current_user'] = (object) ['ID' => 1, 'user_email' => 'member@example.test'];
+        $GLOBALS['__phpunit_users'] = [1 => new WP_User(['subscriber'], 1, 'member@example.test')];
         $GLOBALS['__phpunit_user_meta'] = [];
-        store_email_is_verified(1);
+        store_email_is_verified(1, 'member@example.test');
         $GLOBALS['__phpunit_is_page'] = false;
         $GLOBALS['__phpunit_is_preview'] = false;
         $GLOBALS['__phpunit_singular_post_types'] = [];
@@ -403,6 +404,21 @@ final class SalesforceMemberDataTest extends TestCase
         try {
             check_user_page_access();
             self::fail('An unverified account must be redirected.');
+        } catch (RedirectTestException $redirect) {
+            self::assertStringContainsString('/verifier-votre-email/', $redirect->getMessage());
+        }
+
+        self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
+    }
+
+    public function testPreviouslyVerifiedAccountCannotLookUpDonorDataAfterEmailChange(): void
+    {
+        $GLOBALS['__phpunit_users'][1]->user_email = 'another-donor@example.test';
+        $GLOBALS['__phpunit_current_user']->user_email = 'another-donor@example.test';
+
+        try {
+            check_user_page_access();
+            self::fail('Changing the account e-mail must revoke donor-space access.');
         } catch (RedirectTestException $redirect) {
             self::assertStringContainsString('/verifier-votre-email/', $redirect->getMessage());
         }

@@ -86,13 +86,13 @@ function aif_handle_account_creation_request()
     }
 
     $code = generate_2fa_code();
-    store_2fa_code($user_id, $code);
+    $recipient = store_2fa_code($user_id, $code);
 
     $verification_url = add_query_arg([
-        'user' => $email,
+        'user' => $recipient,
     ], get_permalink(get_page_by_path('verifier-votre-email')));
 
-    if (send_2fa_code($email, $code)) {
+    if ($recipient && send_2fa_code($recipient, $code)) {
         wp_redirect($verification_url);
         exit;
     }

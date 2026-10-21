@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
         if ($user) {
             $code_status = check_2fa_code($user->ID, $code);
             if ($code_status === 'valid') {
-                store_email_is_verified($user->ID);
+                store_email_is_verified($user->ID, $user->user_email);
 
                 $verification_url = add_query_arg([
                     'user' => $email,
@@ -65,13 +65,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
                 $send_code_error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page <a class='aif-link--primary' href='{$url}'>Créer mon compte </a>.";
             } else {
                 $code = generate_2fa_code();
-                store_2fa_code($stored_user->ID, $code);
+                $recipient = store_2fa_code($stored_user->ID, $code);
 
                 $verification_url = add_query_arg([
-                    'user' => $email,
+                    'user' => $recipient,
                 ], '/verifier-votre-email');
 
-                if (send_2fa_code($email, $code)) {
+                if ($recipient && send_2fa_code($recipient, $code)) {
                     $send_code_success_message = "Nous avons bien reçu votre demande de code. Il arrivera dans votre boîte email d'ici quelques minutes";
                 }
             }

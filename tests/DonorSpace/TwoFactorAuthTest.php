@@ -13,24 +13,45 @@ final class TwoFactorAuthTest extends TestCase
     protected function setUp(): void
     {
         $GLOBALS['__phpunit_user_meta'] = [];
+        $GLOBALS['__phpunit_users'] = [self::USER_ID => new WP_User(['subscriber'], self::USER_ID, 'old@example.test')];
+        $GLOBALS['__phpunit_destroyed_sessions'] = [];
     }
 
     public function testStoresAndRetrievesTheTwoFactorCode(): void
     {
-        store_2fa_code(self::USER_ID, 123456);
+        self::assertSame('old@example.test', store_2fa_code(self::USER_ID, 123456));
 
         self::assertSame(123456, get_2fa_code(self::USER_ID));
+        self::assertSame('old@example.test', get_user_meta(self::USER_ID, '2fa_code_email', true));
     }
 
     public function testStoresAndRetrievesEmailVerifiedFlag(): void
     {
-        // get_user_meta() defaults to '' (falsy) when nothing was stored yet -
-        // not a strict boolean false.
-        self::assertSame('', get_email_is_verified(self::USER_ID));
+        self::assertFalse(get_email_is_verified(self::USER_ID));
 
-        store_email_is_verified(self::USER_ID);
+        store_email_is_verified(self::USER_ID, 'old@example.test');
 
         self::assertTrue(get_email_is_verified(self::USER_ID));
+    }
+
+    public function testVerifiedAddressDoesNotAuthorizeAnotherAddress(): void
+    {
+        store_email_is_verified(self::USER_ID, 'old@example.test');
+
+        $GLOBALS['__phpunit_users'][self::USER_ID]->user_email = 'new@example.test';
+
+        self::assertFalse(get_email_is_verified(self::USER_ID));
+    }
+
+    public function testLegacyUnboundVerifiedFlagRequiresReverification(): void
+    {
+        update_user_meta(self::USER_ID, 'email-verfied', true);
+
+        self::assertFalse(get_email_is_verified(self::USER_ID));
+
+        update_user_meta(self::USER_ID, 'email-verfied', '1');
+
+        self::assertFalse(get_email_is_verified(self::USER_ID));
     }
 
     public function testCanCheckCodeIsFalseWhenNeverBlocked(): void
@@ -122,6 +143,26 @@ final class TwoFactorAuthTest extends TestCase
         self::assertNotSame('valid', check_2fa_code(self::USER_ID, '123456'));
     }
 
+    public function testCodeForPreviousAddressCannotVerifyNewAddress(): void
+    {
+        store_2fa_code(self::USER_ID, 123456);
+        $GLOBALS['__phpunit_users'][self::USER_ID]->user_email = 'new@example.test';
+
+        self::assertSame('invalid', check_2fa_code(self::USER_ID, '123456'));
+
+        store_2fa_code(self::USER_ID, 654321);
+
+        self::assertSame('valid', check_2fa_code(self::USER_ID, '654321'));
+    }
+
+    public function testLegacyCodeWithoutAddressBindingCannotVerify(): void
+    {
+        update_user_meta(self::USER_ID, '2fa_code', 123456);
+        update_user_meta(self::USER_ID, '2fa_code_expires', time() + 300);
+
+        self::assertSame('invalid', check_2fa_code(self::USER_ID, '123456'));
+    }
+
     public function testWrongCodeIsRejectedAndCounted(): void
     {
         store_2fa_code(self::USER_ID, 123456);
@@ -161,7 +202,7 @@ final class TwoFactorAuthTest extends TestCase
         update_user_meta(self::USER_ID, 'login_blocked_until', time() + 3600);
 
         self::assertSame('blocked', check_2fa_code(self::USER_ID, '123456'));
-        self::assertSame('', get_email_is_verified(self::USER_ID));
+        self::assertFalse(get_email_is_verified(self::USER_ID));
     }
 
     public function testTenWrongCodesBlockTheAccount(): void
