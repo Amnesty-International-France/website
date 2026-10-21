@@ -15,17 +15,27 @@ function handle_duplicate_tax_receipt_request(WP_REST_Request $request)
 
     $userID = get_current_user_id();
     $SF_ID = get_SF_user_ID($userID);
-    $taxt_receipt_reference = $params['taxReceiptReference'];
+    $taxt_receipt_reference = $params['taxReceiptReference'] ?? null;
 
-    if (!$SF_ID || !$taxt_receipt_reference) {
-        return new WP_REST_Response(['status' => 403,'message' => 'tax receipt ID not provided']);
+    if (!$SF_ID || !is_string($taxt_receipt_reference) || '' === trim($taxt_receipt_reference)) {
+        return new WP_REST_Response(['message' => 'tax receipt ID not provided'], status: 403);
+    }
+
+    $owns_receipt = aif_contact_owns_tax_receipt($SF_ID, $taxt_receipt_reference);
+
+    if (is_wp_error($owns_receipt)) {
+        return aif_salesforce_unavailable_response($owns_receipt);
+    }
+
+    // Same response whether the receipt belongs to another donor or does not exist.
+    if (!$owns_receipt) {
+        return new WP_REST_Response(['message' => 'tax receipt not found'], status: 403);
     }
 
     $result = create_duplicate_taxt_receipt_request($SF_ID, $taxt_receipt_reference);
 
     if (is_wp_error($result)) {
-        aif_log_salesforce_error($result);
-        return new WP_REST_Response(['message' => 'service temporarily unavailable'], status: 503);
+        return aif_salesforce_unavailable_response($result);
     }
 
     if (!is_object($result) || empty($result->success)) {
@@ -38,6 +48,13 @@ function handle_duplicate_tax_receipt_request(WP_REST_Request $request)
     ];
 
     return new WP_REST_Response($response, 200);
+}
+
+function aif_salesforce_unavailable_response(WP_Error $error)
+{
+    aif_log_salesforce_error($error);
+
+    return new WP_REST_Response(['message' => 'service temporarily unavailable'], status: 503);
 }
 
 function check_nonce(WP_REST_Request $request)
