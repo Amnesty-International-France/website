@@ -24,6 +24,11 @@ if (!function_exists('render_card_rich_text_block')) {
         // Drop the empty paragraphs left in the description (e.g. the default one of the template).
         $content = (string) preg_replace('#<p[^>]*>(?:\s|&nbsp;|<br\s*/?>)*</p>#i', '', $content);
 
+        // The image is required in the editor; this guards older content and deleted attachments.
+        $thumbnail = !empty($thumbnail_id)
+            ? wp_get_attachment_image((int) $thumbnail_id, 'large', false, [ 'class' => 'card-rich-text-thumbnail', 'loading' => 'lazy', 'decoding' => 'async' ])
+            : '';
+
         $link_extra_attrs = '';
         if ($newTab) {
             $link_extra_attrs = ' target="_blank" rel="noopener noreferrer"';
@@ -32,11 +37,11 @@ if (!function_exists('render_card_rich_text_block')) {
         ob_start();
         ?>
         <div <?php echo get_block_wrapper_attributes(['class' => 'card-rich-text-block']); ?>>
-            <div class="card-rich-text-thumbnail-wrapper">
-                <?php if (!empty($thumbnail_id)) : ?>
-                    <?php echo wp_get_attachment_image((int) $thumbnail_id, 'large', false, [ 'class' => 'card-rich-text-thumbnail', 'loading' => 'lazy', 'decoding' => 'async' ]); ?>
-                <?php endif; ?>
-            </div>
+            <?php if (!empty($thumbnail)) : ?>
+                <div class="card-rich-text-thumbnail-wrapper">
+                    <?php echo $thumbnail; ?>
+                </div>
+            <?php endif; ?>
             <div class="card-rich-text-content">
                 <?php if (!empty($surtitle)) : ?>
                     <p class="card-rich-text-content-surtitle"><?php echo esc_html($surtitle); ?></p>

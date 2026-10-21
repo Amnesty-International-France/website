@@ -1,5 +1,6 @@
 const { __ } = wp.i18n;
-const { useSelect } = wp.data;
+const { useEffect } = wp.element;
+const { useDispatch, useSelect } = wp.data;
 const {
   useBlockProps,
   useInnerBlocksProps,
@@ -8,7 +9,7 @@ const {
   MediaUploadCheck,
   URLInput,
 } = wp.blockEditor;
-const { PanelBody, TextControl, ToggleControl, Button } = wp.components;
+const { PanelBody, TextControl, ToggleControl, Button, Placeholder } = wp.components;
 
 const ALLOWED_BLOCKS = ['core/paragraph', 'core/list', 'core/list-item'];
 const TEMPLATE = [['core/paragraph', { placeholder: __('Descriptif…', 'amnesty') }]];
@@ -31,12 +32,35 @@ const ArrowIcon = () => (
   </svg>
 );
 
-const EditComponent = ({ attributes, setAttributes }) => {
+const EditComponent = ({ attributes, setAttributes, clientId }) => {
   const { thumbnail, surtitle, title, permalink, linkTitle, newTab } = attributes;
 
   const image = useSelect(
     (select) => (thumbnail ? select('core').getMedia(thumbnail) : null),
     [thumbnail],
+  );
+
+  // The image is required: saving the post is blocked until one is chosen.
+  const { lockPostSaving, unlockPostSaving } = useDispatch('core/editor');
+  useEffect(() => {
+    const lockName = `card-rich-text-thumbnail-${clientId}`;
+    if (thumbnail) {
+      unlockPostSaving(lockName);
+      return undefined;
+    }
+    lockPostSaving(lockName);
+    return () => unlockPostSaving(lockName);
+  }, [thumbnail, clientId]);
+
+  const renderMediaUpload = (render) => (
+    <MediaUploadCheck>
+      <MediaUpload
+        onSelect={(media) => setAttributes({ thumbnail: media.id })}
+        allowedTypes={['image']}
+        value={thumbnail}
+        render={render}
+      />
+    </MediaUploadCheck>
   );
 
   const blockProps = useBlockProps({ className: 'card-rich-text-block' });
@@ -49,24 +73,20 @@ const EditComponent = ({ attributes, setAttributes }) => {
     <>
       <InspectorControls>
         <PanelBody title={__('Visuel', 'amnesty')}>
-          <MediaUploadCheck>
-            <MediaUpload
-              onSelect={(media) => setAttributes({ thumbnail: media.id })}
-              allowedTypes={['image']}
-              value={thumbnail}
-              render={({ open }) => (
-                <Button onClick={open} isPrimary>
-                  {thumbnail
-                    ? __('Changer l’image', 'amnesty')
-                    : __('Ajouter une image', 'amnesty')}
-                </Button>
-              )}
-            />
-          </MediaUploadCheck>
+          {renderMediaUpload(({ open }) => (
+            <Button onClick={open} isPrimary>
+              {thumbnail ? __('Changer l’image', 'amnesty') : __('Ajouter une image', 'amnesty')}
+            </Button>
+          ))}
           {thumbnail && (
             <Button onClick={() => setAttributes({ thumbnail: null })} isDestructive>
               {__('Supprimer l’image', 'amnesty')}
             </Button>
+          )}
+          {!thumbnail && (
+            <p className="components-base-control__help">
+              {__('L’image est obligatoire pour enregistrer la page.', 'amnesty')}
+            </p>
           )}
         </PanelBody>
         <PanelBody title={__('Contenu', 'amnesty')}>
@@ -81,6 +101,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
             value={title}
             onChange={(value) => setAttributes({ title: value })}
             placeholder={__('Entrez un titre…', 'amnesty')}
+            help={__('Le descriptif se saisit directement dans la carte (texte riche).', 'amnesty')}
           />
         </PanelBody>
         <PanelBody title={__('Lien', 'amnesty')}>
@@ -88,6 +109,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
             label={__('Lien', 'amnesty')}
             value={permalink}
             onChange={(value) => setAttributes({ permalink: value })}
+            placeholder="https://"
+            isFullWidth
           />
           <TextControl
             label={__('Libellé du lien', 'amnesty')}
@@ -108,12 +131,26 @@ const EditComponent = ({ attributes, setAttributes }) => {
           {image?.source_url && (
             <img className="card-rich-text-thumbnail" src={image.source_url} alt="" />
           )}
+          {!thumbnail && (
+            <Placeholder
+              className="card-rich-text-thumbnail-placeholder"
+              icon="format-image"
+              label={__('Image obligatoire', 'amnesty')}
+              instructions={__('Ajoutez une image pour pouvoir enregistrer la page.', 'amnesty')}
+            >
+              {renderMediaUpload(({ open }) => (
+                <Button onClick={open} isPrimary>
+                  {__('Ajouter une image', 'amnesty')}
+                </Button>
+              ))}
+            </Placeholder>
+          )}
         </div>
         <div className="card-rich-text-content">
           {surtitle && <p className="card-rich-text-content-surtitle">{surtitle}</p>}
           {title && <p className="card-rich-text-content-title">{title}</p>}
           <div {...innerBlocksProps} />
-          {linkTitle && (
+          {permalink && linkTitle && (
             <div className="card-rich-text-content-see-more">
               <span className="card-rich-text-content-see-more-link">
                 <ArrowIcon />
