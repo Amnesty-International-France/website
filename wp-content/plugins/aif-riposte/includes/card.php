@@ -23,15 +23,7 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
     $post_id   = $post->ID;
     $title     = get_the_title($post);
     $date_meta = get_post_meta($post_id, 'aif_riposte_date', true);
-    if ($date_meta && function_exists('amnesty_locale_date')) {
-        $date = amnesty_locale_date(strtotime($date_meta));
-    } elseif ($date_meta) {
-        $date = date_i18n(get_option('date_format'), strtotime($date_meta));
-    } else {
-        $date = function_exists('amnesty_locale_date')
-            ? amnesty_locale_date(get_post_time('U', true, $post))
-            : get_the_date('', $post);
-    }
+    $date     = wp_date('j F Y', $date_meta ? strtotime($date_meta) : get_post_time('U', true, $post));
     $datetime = $date_meta ?: get_the_date('Y-m-d', $post);
     $thumbnail = get_the_post_thumbnail($post_id, 'medium_large', [ 'class' => 'aif-riposte-card__image' ]);
     $locations = get_the_terms($post_id, 'location');
@@ -40,6 +32,7 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
     $post_content   = get_the_content(null, false, $post);
     $external_url = get_post_meta($post_id, 'aif_riposte_external_url', true);
     $external_url = $external_url ? esc_url($external_url) : '';
+    $photo_credit = $thumbnail ? get_post_meta($post_id, 'aif_riposte_photo_credit', true) : '';
     ?>
 
 	<article class="<?php echo esc_attr(aif_riposte_get_card_layout_classes($index)); ?> <?php if ($external_url) : ?>aif-riposte-card__with-link<?php endif; ?>">
@@ -80,6 +73,9 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
                 </div>
             <?php endif; ?>
             <div class="aif-riposte-card__body">
+                <?php if ($photo_credit) : ?>
+                    <p class="aif-riposte-card__credit"><?php echo esc_html($photo_credit); ?></p>
+                <?php endif; ?>
                 <div class="aif-riposte-card__content">
                     <?php if (! empty($locations) && ! is_wp_error($locations)) : ?>
                         <div class="aif-riposte-card__country">
