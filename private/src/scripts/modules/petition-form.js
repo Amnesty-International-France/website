@@ -1,6 +1,7 @@
 import { isValidEmail } from './newsletter';
 
-// État de la vérification /check-email par formulaire.
+// État de la saisie de l'e-mail par formulaire (les champs d'identité sont
+// toujours affichés, aucune vérification n'est demandée au serveur).
 // Valeur : { status: 'pending' | 'done', pendingSubmit: (() => void) | null }
 // Partagé entre toggleFullFormPetition (qui lance la vérif) et initTunnelClhForm :
 // si l'utilisateur tente de signer pendant que la vérif est en cours, on
@@ -28,9 +29,6 @@ export const toggleFullFormPetition = () => {
 
       if (!emailInput || !fullForm) return;
 
-      let debounceTimer = null;
-      let currentController = null;
-
       const resolveCheck = () => {
         const { pendingSubmit } = emailCheckStates.get(form) ?? {};
         emailCheckStates.set(form, { status: 'done', pendingSubmit: null });
@@ -38,9 +36,6 @@ export const toggleFullFormPetition = () => {
       };
 
       emailInput.addEventListener('input', () => {
-        clearTimeout(debounceTimer);
-        currentController?.abort();
-
         const emailValue = emailInput.value.trim();
 
         if (!isValidEmail(emailValue)) {
@@ -50,45 +45,11 @@ export const toggleFullFormPetition = () => {
           return;
         }
 
-        const { pendingSubmit } = emailCheckStates.get(form) ?? {};
-        emailCheckStates.set(form, { status: 'pending', pendingSubmit: pendingSubmit ?? null });
-
-        debounceTimer = setTimeout(() => {
-          currentController = new AbortController();
-          const formData = new URLSearchParams();
-          formData.append('email', emailValue);
-
-          fetch('/wp-json/humanity/v1/check-email', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData,
-            signal: currentController.signal,
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error();
-              }
-              return response.json();
-            })
-            .then((data) => {
-              if (data.exists) {
-                fullForm.style.display = 'none';
-                setRequiredHiddenFields(form, false);
-              } else {
-                fullForm.style.display = 'flex';
-                setRequiredHiddenFields(form, true);
-              }
-              resolveCheck();
-            })
-            .catch((error) => {
-              if (error.name === 'AbortError') return;
-              fullForm.style.display = 'flex';
-              setRequiredHiddenFields(form, true);
-              resolveCheck();
-            });
-        }, 300);
+        // The identity fields are always shown: whether the address already
+        // signed is never asked to the server. Known signers keep their data.
+        fullForm.style.display = 'flex';
+        setRequiredHiddenFields(form, true);
+        resolveCheck();
       });
     });
 };

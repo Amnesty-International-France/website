@@ -859,13 +859,17 @@ function amnesty_handle_petition_signature(): void
                 amnesty_set_clh_signer_email($user_email);
             }
 
+            // Same redirect as a new signature, so it does not tell whether
+            // this address had already signed.
+            $gtm_args = [
+                'gtm_type' => 'petition',
+                'gtm_name' => urlencode(get_the_title($petition_id)),
+            ];
             $redirect_url = $is_clh_petition && amnesty_get_clh_signed_petition_count_for_user((int) $user_id, $petition_id) >= 10
-                ? amnesty_get_clh_petition_tunnel_thanks_url()
+                ? add_query_arg($gtm_args, amnesty_get_clh_petition_tunnel_thanks_url())
                 : amnesty_get_petition_signature_redirect_url(
                     $petition_id,
-                    [
-                        'alreadysigned' => '',
-                    ],
+                    $gtm_args,
                     $is_clh_petition
                 );
             wp_redirect($redirect_url);
