@@ -13,6 +13,7 @@ if (!$post_object instanceof WP_Post) {
     $thumbnail = $args['thumbnail'] ?? null;
     $main_category = $args['main_category'] ?? null;
     $post_terms = $args['terms'] ?? [];
+    $is_national_event = false;
 
     $label = $args['label'] ?? ($main_category->name ?? null);
     $link = $args['label_link'] ?? '';
