@@ -37,7 +37,6 @@ import {
   toggleFullFormPetition,
   submitCodeOrigine,
   initTunnelClhForm,
-  getPetitionIdForCLH,
   stepperTunnelClh,
 } from './modules/petition-form';
 import { closeUrgentBanner } from './modules/urgent-banner';
@@ -111,7 +110,6 @@ const App = () => {
   GoPetitionsForm();
   closeAlertBanner();
   Countdown();
-  getPetitionIdForCLH();
   stepperTunnelClh();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);

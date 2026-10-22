@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/errors.php';
+require_once dirname(__DIR__) . '/domain/expiring-secret.php';
 
 function post_salesforce_data_donor_space($url, $params = [])
 {
@@ -72,7 +73,7 @@ function get_salesforce_data_donor_space($url)
 
 function get_salesforce_member_data($email)
 {
-    $url = 'services/apexrest/search/v1/' . $email;
+    $url = 'services/apexrest/search/v1/' . rawurlencode($email);
     return get_salesforce_data_donor_space($url);
 }
 
@@ -143,33 +144,17 @@ const AIF_EMAIL_TOKEN_TTL = 3600;
 
 function store_email_token($user_id, $token)
 {
-    // Legacy plaintext token, without expiry.
-    delete_user_meta($user_id, 'user_email_token');
-    update_user_meta($user_id, 'user_email_token_hash', hash('sha256', $token));
-    update_user_meta($user_id, 'user_email_token_expires', time() + AIF_EMAIL_TOKEN_TTL);
+    aif_store_expiring_secret($user_id, 'user_email_token', $token, AIF_EMAIL_TOKEN_TTL);
 }
 
 function is_email_token_valid($user_id, $token)
 {
-    if (!is_string($token) || $token === '') {
-        return false;
-    }
-
-    $stored_hash = get_user_meta($user_id, 'user_email_token_hash', true);
-    $expires = (int) get_user_meta($user_id, 'user_email_token_expires', true);
-
-    if (!is_string($stored_hash) || $stored_hash === '' || $expires < time()) {
-        return false;
-    }
-
-    return hash_equals($stored_hash, hash('sha256', $token));
+    return aif_is_expiring_secret_valid($user_id, 'user_email_token', $token);
 }
 
 function delete_email_token($user_id)
 {
-    delete_user_meta($user_id, 'user_email_token');
-    delete_user_meta($user_id, 'user_email_token_hash');
-    delete_user_meta($user_id, 'user_email_token_expires');
+    aif_delete_expiring_secret($user_id, 'user_email_token');
 }
 
 

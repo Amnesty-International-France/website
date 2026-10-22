@@ -19,18 +19,27 @@ if (!defined('ABSPATH')) {
 }
 
 if (!class_exists('WP_CLI')) {
+    $GLOBALS['__phpunit_wp_cli_messages'] = [];
+
+    /**
+     * Records CLI output so tests can verify that logs contain no donor data.
+     * Unlike the real WP_CLI::error(), error() does not halt execution.
+     */
     class WP_CLI
     {
         public static function log(string $message): void
         {
+            $GLOBALS['__phpunit_wp_cli_messages'][] = ['level' => 'log', 'message' => $message];
         }
 
         public static function error(string $message): void
         {
+            $GLOBALS['__phpunit_wp_cli_messages'][] = ['level' => 'error', 'message' => $message];
         }
 
         public static function success(string $message): void
         {
+            $GLOBALS['__phpunit_wp_cli_messages'][] = ['level' => 'success', 'message' => $message];
         }
 
         public static function add_command(string $name, callable|object $callable): void
@@ -126,6 +135,13 @@ if (!function_exists('sanitize_email')) {
     function sanitize_email(string $email): string
     {
         return trim($email);
+    }
+}
+
+if (!function_exists('wp_unslash')) {
+    function wp_unslash(string $value): string
+    {
+        return stripslashes($value);
     }
 }
 
@@ -276,16 +292,50 @@ if (!class_exists('WP_Error')) {
 
 if (!class_exists('WP_User')) {
     /**
-     * Stand-in for WP_User, carrying only the role slugs a test assigns.
+     * Stand-in for WP_User with the account fields used by donor-space tests.
      */
     class WP_User
     {
         /**
          * @param array<int,string> $roles
          */
-        public function __construct(public array $roles = [])
+        public function __construct(
+            public array $roles = [],
+            public int $ID = 0,
+            public string $user_email = '',
+            public string $user_login = '',
+            public string $user_activation_key = '',
+            public string $user_pass = '',
+        ) {
+        }
+    }
+}
+
+if (!class_exists('WP_Session_Tokens')) {
+    final class WP_Session_Tokens
+    {
+        private function __construct(private readonly int $user_id)
         {
         }
+
+        public static function get_instance(int $user_id): self
+        {
+            return new self($user_id);
+        }
+
+        public function destroy_all(): void
+        {
+            $GLOBALS['__phpunit_destroyed_sessions'][] = $this->user_id;
+        }
+    }
+}
+
+if (!function_exists('get_userdata')) {
+    $GLOBALS['__phpunit_users'] = [];
+
+    function get_userdata(int $user_id): WP_User|false
+    {
+        return $GLOBALS['__phpunit_users'][$user_id] ?? false;
     }
 }
 

@@ -18,6 +18,9 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
 
     $email_provided = $_GET['email'] ?? '';
     $inscription_nl_status = $_GET['inscription__nl'] ?? '';
+    if ($inscription_nl_status !== 'success') {
+        $inscription_nl_status = '';
+    }
     $inscription_nl_success = $inscription_nl_status === 'success';
 
     if (!empty($email_provided)) {
@@ -123,7 +126,7 @@ print esc_attr($class_name ?? ''); ?>">
 			<?php
             if ($inscription_nl_status): ?>
 				<div class="newsletter-popin <?php
-                echo $inscription_nl_status; ?>">
+                echo esc_attr($inscription_nl_status); ?>">
 					<?php
                     if ($inscription_nl_success): ?>
 						<p>Merci de vous être inscrit·e à la newsletter !</p>

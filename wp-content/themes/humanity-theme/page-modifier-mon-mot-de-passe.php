@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
         $error_title = 'La vérification de sécurité a échoué.';
         $error_message = turnstile_friendly_error($turnstile_error);
     } else {
-        $email = $_GET['user'];
+        $email = sanitize_email(wp_unslash($_GET['user']));
         $token = $_GET['token'];
         $password = $_POST['password'];
         $user = get_user_by('email', $email);
@@ -26,9 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
                         'user_pass' => $password,
                     ];
                     wp_update_user($userdata);
+                    // wp_update_user() keeps other sessions alive.
+                    aif_destroy_user_sessions($user->ID);
+                    aif_verify_email_on_password_reset($user);
 
                     $url = add_query_arg([
-                        'user' => $user->user_email,
+                        'user' => rawurlencode($user->user_email),
                     ], get_permalink(get_page_by_path('connectez-vous')));
 
                     wp_redirect($url);

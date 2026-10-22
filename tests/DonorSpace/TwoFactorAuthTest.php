@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
+require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
 
 final class TwoFactorAuthTest extends TestCase
 {
@@ -13,24 +13,158 @@ final class TwoFactorAuthTest extends TestCase
     protected function setUp(): void
     {
         $GLOBALS['__phpunit_user_meta'] = [];
+        $GLOBALS['__phpunit_users'] = [self::USER_ID => new WP_User(['subscriber'], self::USER_ID, 'donor@example.org')];
     }
 
-    public function testStoresAndRetrievesTheTwoFactorCode(): void
+    public function testGeneratedCodeIsASixDigitString(): void
     {
-        store_2fa_code(self::USER_ID, 123456);
+        $code = generate_2fa_code();
 
-        self::assertSame(123456, get_2fa_code(self::USER_ID));
+        self::assertMatchesRegularExpression('/^\d{6}$/', $code);
+    }
+
+    public function testStoresOnlyAHashOfTheCode(): void
+    {
+        update_user_meta(self::USER_ID, '2fa_code', 111111);
+
+        store_2fa_code(self::USER_ID, '123456');
+
+        self::assertSame(hash('sha256', "donor@example.org\0" . '123456'), get_user_meta(self::USER_ID, '2fa_code_hash', true));
+        self::assertSame('', get_user_meta(self::USER_ID, '2fa_code', true));
+    }
+
+    public function testStoredCodeIsValidBeforeExpiry(): void
+    {
+        store_2fa_code(self::USER_ID, '123456');
+
+        self::assertTrue(is_2fa_code_valid(self::USER_ID, '123456'));
+        self::assertFalse(is_2fa_code_valid(self::USER_ID, '654321'));
+    }
+
+    public function testExpiredCodeIsInvalid(): void
+    {
+        store_2fa_code(self::USER_ID, '123456');
+        update_user_meta(self::USER_ID, '2fa_code_expires', time() - 1);
+
+        self::assertFalse(is_2fa_code_valid(self::USER_ID, '123456'));
+    }
+
+    public function testLegacyPlaintextCodeIsNeverAccepted(): void
+    {
+        update_user_meta(self::USER_ID, '2fa_code', 123456);
+
+        self::assertFalse(is_2fa_code_valid(self::USER_ID, '123456'));
+    }
+
+    public function testEmptyOrNonStringCodeIsInvalid(): void
+    {
+        store_2fa_code(self::USER_ID, '123456');
+
+        self::assertFalse(is_2fa_code_valid(self::USER_ID, ''));
+        self::assertFalse(is_2fa_code_valid(self::USER_ID, 123456));
+        self::assertFalse(is_2fa_code_valid(self::USER_ID, null));
+    }
+
+    public function testDeleteCodeInvalidatesIt(): void
+    {
+        store_2fa_code(self::USER_ID, '123456');
+
+        delete_2fa_code(self::USER_ID);
+
+        self::assertFalse(is_2fa_code_valid(self::USER_ID, '123456'));
+    }
+
+    public function testCheckReturnsValidForTheCorrectCode(): void
+    {
+        store_2fa_code(self::USER_ID, '123456');
+
+        self::assertSame('valid', aif_check_2fa_code(self::USER_ID, '123456'));
+    }
+
+    public function testCheckCountsAWrongCodeAsAnAttempt(): void
+    {
+        store_2fa_code(self::USER_ID, '123456');
+
+        self::assertSame('invalid', aif_check_2fa_code(self::USER_ID, '000000'));
+        self::assertSame(1, get_user_meta(self::USER_ID, 'login_attempts', true));
+    }
+
+    public function testCheckBlocksAfterTenWrongCodes(): void
+    {
+        store_2fa_code(self::USER_ID, '123456');
+
+        for ($i = 1; $i <= 10; $i++) {
+            self::assertSame('invalid', aif_check_2fa_code(self::USER_ID, '000000'), "Attempt {$i}");
+        }
+
+        self::assertSame('blocked', aif_check_2fa_code(self::USER_ID, '000000'));
+    }
+
+    public function testCorrectCodeIsRefusedAfterTenWrongCodes(): void
+    {
+        store_2fa_code(self::USER_ID, '123456');
+
+        for ($i = 1; $i <= 10; $i++) {
+            aif_check_2fa_code(self::USER_ID, '000000');
+        }
+
+        self::assertSame('blocked', aif_check_2fa_code(self::USER_ID, '123456'));
+    }
+
+    public function testCorrectCodeIsRefusedWhileBlocked(): void
+    {
+        store_2fa_code(self::USER_ID, '123456');
+        update_user_meta(self::USER_ID, 'login_blocked_until', time() + 3600);
+
+        self::assertSame('blocked', aif_check_2fa_code(self::USER_ID, '123456'));
+    }
+
+    public function testCorrectCodeIsAcceptedOnceTheBlockHasExpired(): void
+    {
+        store_2fa_code(self::USER_ID, '123456');
+        update_user_meta(self::USER_ID, 'login_attempts', 10);
+        update_user_meta(self::USER_ID, 'login_blocked_until', time() - 1);
+
+        self::assertSame('valid', aif_check_2fa_code(self::USER_ID, '123456'));
+    }
+
+    public function testIsLoginBlockedFollowsTheBlockWindow(): void
+    {
+        self::assertFalse(is_login_blocked(self::USER_ID));
+
+        update_user_meta(self::USER_ID, 'login_blocked_until', time() + 3600);
+        self::assertTrue(is_login_blocked(self::USER_ID));
+
+        update_user_meta(self::USER_ID, 'login_blocked_until', time() - 1);
+        self::assertFalse(is_login_blocked(self::USER_ID));
     }
 
     public function testStoresAndRetrievesEmailVerifiedFlag(): void
     {
-        // get_user_meta() defaults to '' (falsy) when nothing was stored yet -
-        // not a strict boolean false.
-        self::assertSame('', get_email_is_verified(self::USER_ID));
+        self::assertFalse(get_email_is_verified(self::USER_ID));
 
         store_email_is_verified(self::USER_ID);
 
         self::assertTrue(get_email_is_verified(self::USER_ID));
+        self::assertSame('donor@example.org', get_user_meta(self::USER_ID, 'email-verfied', true));
+    }
+
+    public function testVerifiedAddressDoesNotAuthorizeAnotherAddress(): void
+    {
+        store_email_is_verified(self::USER_ID);
+
+        $GLOBALS['__phpunit_users'][self::USER_ID]->user_email = 'other@example.org';
+
+        self::assertFalse(get_email_is_verified(self::USER_ID));
+    }
+
+    public function testLegacyUnboundVerifiedFlagRequiresReverification(): void
+    {
+        update_user_meta(self::USER_ID, 'email-verfied', true);
+        self::assertFalse(get_email_is_verified(self::USER_ID));
+
+        update_user_meta(self::USER_ID, 'email-verfied', '1');
+        self::assertFalse(get_email_is_verified(self::USER_ID));
     }
 
     public function testCanCheckCodeIsFalseWhenNeverBlocked(): void

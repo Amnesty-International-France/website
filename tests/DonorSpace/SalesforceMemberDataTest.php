@@ -15,6 +15,14 @@ final class SalesforceServiceUnavailableTestException extends RuntimeException
     }
 }
 
+final class RedirectTestException extends RuntimeException
+{
+    public function __construct(public readonly string $location)
+    {
+        parent::__construct($location);
+    }
+}
+
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState(false)]
 final class SalesforceMemberDataTest extends TestCase
@@ -54,7 +62,7 @@ final class SalesforceMemberDataTest extends TestCase
         }
 
         if (!function_exists('wp_get_current_user')) {
-            function wp_get_current_user(): object
+            function wp_get_current_user(): WP_User
             {
                 return $GLOBALS['__phpunit_current_user'];
             }
@@ -145,9 +153,18 @@ final class SalesforceMemberDataTest extends TestCase
             }
         }
 
+        if (!function_exists('wp_redirect')) {
+            function wp_redirect(string $location, int $status = 302): never
+            {
+                throw new RedirectTestException($location);
+            }
+        }
+
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/sales-force/user-data.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/authorization.php';
         require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/my-space/template.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/email-verification/index.php';
 
         $GLOBALS['__phpunit_donor_space_access_token'] = 'access-token';
         $GLOBALS['__phpunit_wp_remote_calls'] = [];
@@ -155,7 +172,10 @@ final class SalesforceMemberDataTest extends TestCase
         $GLOBALS['__phpunit_wp_remote_response'] = $this->response(200, '{}');
         $GLOBALS['__phpunit_query_vars'] = [];
         $GLOBALS['__phpunit_current_user_id'] = 1;
-        $GLOBALS['__phpunit_current_user'] = (object) ['user_email' => 'member@example.test'];
+        $GLOBALS['__phpunit_current_user'] = new WP_User(['subscriber'], 1, 'member@example.test');
+        $GLOBALS['__phpunit_users'] = [1 => $GLOBALS['__phpunit_current_user']];
+        $GLOBALS['__phpunit_user_meta'] = [];
+        store_email_is_verified(1);
         $GLOBALS['__phpunit_is_page'] = false;
         $GLOBALS['__phpunit_is_preview'] = false;
         $GLOBALS['__phpunit_singular_post_types'] = [];
@@ -377,6 +397,48 @@ final class SalesforceMemberDataTest extends TestCase
         self::assertSame($sf_member, aif_get_request_salesforce_member());
         self::assertSame($sf_member, aif_get_request_salesforce_member());
         self::assertSame('donateur', aif_get_user_status($sf_member));
+        self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
+    }
+
+    public function testUnverifiedSubscriberIsRedirectedBeforeAnySalesforceCall(): void
+    {
+        $GLOBALS['__phpunit_user_meta'] = [];
+
+        try {
+            check_user_page_access();
+            self::fail('Expected a redirect.');
+        } catch (RedirectTestException $redirect) {
+            self::assertSame('https://wordpress.example.test/connectez-vous/', $redirect->location);
+        }
+
+        self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
+    }
+
+    public function testVerifiedSubscriberCannotAccessAnotherAddressAfterEmailChange(): void
+    {
+        $GLOBALS['__phpunit_current_user']->user_email = 'another-donor@example.test';
+
+        try {
+            check_user_page_access();
+            self::fail('Changing the account address must revoke donor-space access.');
+        } catch (RedirectTestException $redirect) {
+            self::assertSame('https://wordpress.example.test/connectez-vous/', $redirect->location);
+        }
+
+        self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
+    }
+
+    public function testEditorWithoutFlagKeepsTodaysAccess(): void
+    {
+        // Staff accounts never carry the verified flag; their access must not change.
+        $GLOBALS['__phpunit_current_user'] = new WP_User(['editor'], 1, 'member@example.test');
+        $GLOBALS['__phpunit_user_meta'] = [];
+        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(
+            200,
+            '{"Id":"contact-id","isDonateur":true,"isMembre":false,"hasMandatActif":false}'
+        );
+
+        self::assertSame('contact-id', check_user_page_access()->Id);
         self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
