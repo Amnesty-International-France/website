@@ -2,6 +2,34 @@
 
 declare(strict_types=1);
 
+if (!function_exists('add_query_arg')) {
+    /**
+     * Minimal URL query handling for tests, including existing queries and
+     * fragments. Like WordPress, values already in the URL are re-encoded while
+     * newly supplied keys and values are kept as given, and false removes a key.
+     */
+    function add_query_arg(mixed ...$args): string
+    {
+        $values = is_array($args[0]) ? $args[0] : [$args[0] => $args[1]];
+        $url = (string) (is_array($args[0]) ? ($args[1] ?? '') : ($args[2] ?? ''));
+        [$url, $fragment] = array_pad(explode('#', $url, 2), 2, null);
+        [$base, $query] = array_pad(explode('?', $url, 2), 2, '');
+        parse_str($query, $params);
+        $params = array_map(static fn ($value) => is_string($value) ? urlencode($value) : $value, $params);
+        $params = array_filter(
+            array_replace($params, $values),
+            static fn ($value) => $value !== false && $value !== null
+        );
+        $query = implode('&', array_map(
+            static fn ($key, $value) => $value === '' ? (string) $key : $key . '=' . $value,
+            array_keys($params),
+            $params
+        ));
+
+        return $base . ($query !== '' ? '?' . $query : '') . ($fragment !== null ? '#' . $fragment : '');
+    }
+}
+
 /**
  * Shared stubs for PHP unit tests.
  *
@@ -75,6 +103,17 @@ if (!function_exists('update_field')) {
     }
 }
 
+if (!function_exists('sanitize_text_field')) {
+    /**
+     * Stub for sanitize_text_field(): strips tags and trims, enough for
+     * values that only need to survive sanitization unchanged.
+     */
+    function sanitize_text_field(string $str): string
+    {
+        return trim(strip_tags($str));
+    }
+}
+
 if (!function_exists('is_wp_error')) {
     function is_wp_error(mixed $thing): bool
     {
@@ -122,6 +161,19 @@ if (!function_exists('get_post_permalink')) {
      */
     function get_post_permalink(int $post_id): string|false
     {
+        return $GLOBALS['__phpunit_post_permalinks'][$post_id] ?? false;
+    }
+}
+
+if (!function_exists('get_permalink')) {
+    /**
+     * Stub for get_permalink(), reading the same seeds as get_post_permalink()
+     * (above): $GLOBALS['__phpunit_post_permalinks'][$post_id].
+     */
+    function get_permalink(object|int $post = 0): string|false
+    {
+        $post_id = is_object($post) ? $post->ID : $post;
+
         return $GLOBALS['__phpunit_post_permalinks'][$post_id] ?? false;
     }
 }
