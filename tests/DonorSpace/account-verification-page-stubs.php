@@ -34,11 +34,6 @@ function esc_url(mixed $url): string
     return (string) $url;
 }
 
-function sanitize_text_field(string $text): string
-{
-    return trim(strip_tags($text));
-}
-
 if (!function_exists('wp_unslash')) {
     function wp_unslash(string $value): string
     {
@@ -48,22 +43,11 @@ if (!function_exists('wp_unslash')) {
 
 function get_page_by_path(string $path): object
 {
-    return (object) ['ID' => 1, 'post_name' => $path];
-}
+    // One ID per slug, so get_permalink() (tests/bootstrap.php) resolves each page.
+    $id = crc32($path);
+    $GLOBALS['__phpunit_post_permalinks'][$id] ??= 'https://wordpress.example.test/' . $path . '/';
 
-function get_permalink(object $post): string
-{
-    return 'https://wordpress.example.test/' . $post->post_name . '/';
-}
-
-function add_query_arg(array $args, string $url): string
-{
-    // WordPress leaves newly supplied values unencoded.
-    return $url . '?' . implode('&', array_map(
-        static fn (string $key, string $value): string => rawurlencode($key) . '=' . $value,
-        array_keys($args),
-        array_values($args)
-    ));
+    return (object) ['ID' => $id, 'post_name' => $path];
 }
 
 function aif_turnstile_site_key(): string

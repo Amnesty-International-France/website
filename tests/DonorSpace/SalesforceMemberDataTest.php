@@ -71,14 +71,7 @@ final class SalesforceMemberDataTest extends TestCase
         if (!function_exists('home_url')) {
             function home_url(string $path = ''): string
             {
-                return 'https://wordpress.example.test' . $path;
-            }
-        }
-
-        if (!function_exists('add_query_arg')) {
-            function add_query_arg(mixed ...$args): string
-            {
-                return (string) end($args);
+                return 'https://wordpress.example.test' . ($path !== '' ? '/' . ltrim($path, '/') : '');
             }
         }
 
@@ -86,13 +79,6 @@ final class SalesforceMemberDataTest extends TestCase
             function get_page_by_path(string $path): object
             {
                 return (object) ['ID' => 1, 'post_name' => $path];
-            }
-        }
-
-        if (!function_exists('get_permalink')) {
-            function get_permalink(object|int $post): string
-            {
-                return 'https://wordpress.example.test/connectez-vous/';
             }
         }
 
@@ -171,6 +157,7 @@ final class SalesforceMemberDataTest extends TestCase
         $GLOBALS['__phpunit_wp_remote_response_queue'] = [];
         $GLOBALS['__phpunit_wp_remote_response'] = $this->response(200, '{}');
         $GLOBALS['__phpunit_query_vars'] = [];
+        $GLOBALS['__phpunit_post_permalinks'][1] = 'https://wordpress.example.test/connectez-vous/';
         $GLOBALS['__phpunit_current_user_id'] = 1;
         $GLOBALS['__phpunit_current_user'] = new WP_User(['subscriber'], 1, 'member@example.test');
         $GLOBALS['__phpunit_users'] = [1 => $GLOBALS['__phpunit_current_user']];
@@ -408,7 +395,10 @@ final class SalesforceMemberDataTest extends TestCase
             check_user_page_access();
             self::fail('Expected a redirect.');
         } catch (RedirectTestException $redirect) {
-            self::assertSame('https://wordpress.example.test/connectez-vous/', $redirect->location);
+            self::assertSame(
+                'https://wordpress.example.test/connectez-vous/?redirect_to=https%3A%2F%2Fwordpress.example.test%2Fmon-espace%2Fmes-dons',
+                $redirect->location
+            );
         }
 
         self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
@@ -422,7 +412,10 @@ final class SalesforceMemberDataTest extends TestCase
             check_user_page_access();
             self::fail('Changing the account address must revoke donor-space access.');
         } catch (RedirectTestException $redirect) {
-            self::assertSame('https://wordpress.example.test/connectez-vous/', $redirect->location);
+            self::assertSame(
+                'https://wordpress.example.test/connectez-vous/?redirect_to=https%3A%2F%2Fwordpress.example.test%2Fmon-espace%2Fmes-dons',
+                $redirect->location
+            );
         }
 
         self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
