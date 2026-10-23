@@ -27,19 +27,13 @@ function aif_handle_account_creation_request()
     }
 
     $email = sanitize_email($_POST['email'] ?? '');
-    $password = sanitize_text_field($_POST['password'] ?? '');
-    $confirm_password = sanitize_text_field($_POST['confirm-password'] ?? '');
 
-    if (empty($email) || empty($password)) {
-        return aif_account_creation_result('Veuillez renseigner le mot de passe et votre email');
+    if (empty($email)) {
+        return aif_account_creation_result('Veuillez renseigner votre email');
     }
 
     if (!is_email($email)) {
         return aif_account_creation_result("L'email renseigné est invalide");
-    }
-
-    if ($password !== $confirm_password) {
-        return aif_account_creation_result('Les mots de passe ne correspondent pas');
     }
 
     $sf_member = aif_validate_salesforce_member(get_salesforce_member_data($email));
@@ -64,19 +58,7 @@ function aif_handle_account_creation_request()
         );
     }
 
-    $first_name = $user->FirstName ?? '';
-    $last_name = $user->LastName ?? '';
-    $userdata = [
-        'user_login' => $email,
-        'user_email' => $email,
-        'user_pass' => $password,
-        'first_name' => $first_name,
-        'last_name' => $last_name,
-        'nickname' => trim($first_name . ' ' . $last_name),
-        'role' => 'subscriber',
-    ];
-
-    $user_id = wp_insert_user($userdata);
+    $user_id = aif_prepare_account_for_verification($email, $user->FirstName ?? '', $user->LastName ?? '');
 
     if (is_wp_error($user_id)) {
         $url = get_permalink(get_page_by_path('connectez-vous'));
@@ -85,19 +67,16 @@ function aif_handle_account_creation_request()
         );
     }
 
-    $code = generate_2fa_code();
-    store_2fa_code($user_id, $code);
-
-    $verification_url = add_query_arg([
-        'user' => $email,
-    ], get_permalink(get_page_by_path('verifier-votre-email')));
-
-    if (send_2fa_code($email, $code)) {
-        wp_redirect($verification_url);
-        exit;
+    if (!aif_send_verification_code($user_id)) {
+        return aif_account_creation_result("L'envoi du code de vérification a échoué. Veuillez réessayer dans quelques instants.");
     }
 
-    return aif_account_creation_result();
+    $verification_url = add_query_arg([
+        'user' => rawurlencode($email),
+    ], get_permalink(get_page_by_path('verifier-votre-email')));
+
+    wp_redirect($verification_url);
+    exit;
 }
 
 $account_creation_result = aif_handle_account_creation_request();
@@ -139,11 +118,12 @@ if (!empty($error_no_access_to_donor_space)) {
         'title' => $title,
         'content' => $content]);
 }
+
 ?>
 
 		<section>
 			<h3 class="aif-sr-only">S'inscrire</h3>
-			<form class="aif-form-container" action="" method="POST" onsubmit="return checkPasswordMatch()">
+			<form class="aif-form-container" action="" method="POST">
 				<div>
 					<div class="cf-turnstile"
 					     data-callback="aifTurnstileSuccess"
@@ -161,63 +141,8 @@ if (!empty($error_no_access_to_donor_space)) {
                 'content' => 'Commencez par renseigner l’adresse e-mail utilisé lors de la réalisation de votre adhésion ou de votre don.']);
 ?>
 				</div>
-				<div class="aif-password-container">
-					<label class="aif-password-container__label" for="password">Votre mot de passe (obligatoire)</label>
-					<div class="aif-password-container__input-wrapper">
-						<input class="aif-password-container__input aif-input" placeholder="Mot de passe"
-						       name="password" aria-describedby="passwordHelp passphraseRequirements" type="password"
-						       id="password" autocomplete="new-password" required aria-required="true"
-						       oninput="checkPassphraseStrength(); checkPasswordMatch();">
-						<button class="aif-password-container__button" type="button" id="toggle-password"
-						        data-target="password" aria-label="Afficher ou masquer le mot de passe">
-							Afficher
-						</button>
-					</div>
-
-					<div id="password-error-too-weak" class="aif-text-red aif-hide">
-						Le mot de passe est trop faible
-					</div>
-
-					<?php
-aif_include_partial('info-message', [
-    'id' => 'passwordHelp',
-    'content' => 'Exemple : Mon@MotDePasse123']);
-?>
-
-					<div id="passphraseRequirements aif-text-small">
-						<p class=" aif-m0 aif-text-small">Votre mot de passe : </p>
-						<ul class="aif-text-small">
-							<li id=" length">Doit contenir au moins 6 caractères</li>
-							<li id="uppercase">Doit contenir au moins une lettre majuscule</li>
-							<li id="lowercase">Doit contenir au moins une lettre minuscule</li>
-							<li id="number">Doit contenir au moins un chiffre</li>
-							<li id="special">Doit contenir au moins un caractère spécial (!, @, #, $, %,
-								etc.)
-							</li>
-						</ul>
-					</div>
-
-					<div class="aif-password-container">
-						<label class="aif-password-container__label" for="confirm-password">Confirmer votre mot de passe
-							(obligatoire)</label>
-						<div class="aif-password-container__input-wrapper">
-							<input class="aif-password-container__input aif-input" name="confirm-password"
-							       type="password" id="confirm-password" autocomplete="new-password" required
-							       aria-required="true" placeholder="Mot de passe" oninput="checkPasswordMatch()">
-							<button class="aif-password-container__button" type="button" id="toggle-confirm-password"
-							        data-target="confirm-password" aria-label="Afficher ou masquer le mot de passe">
-								Afficher
-							</button>
-						</div>
-
-						<div id="password-error-not-match" class="aif-text-red aif-hide">Les mots de passe ne
-							correspondent
-							pas.
-						</div>
-						<button class="btn  aif-mt1w aif-button--full" type="submit" id="submit-btn">Créer mon compte
-						</button>
-					</div>
-				</div>
+				<button class="btn  aif-mt1w aif-button--full" type="submit" id="submit-btn">Créer mon compte
+				</button>
 			</form>
 
 			<p class="aif-mt1w aif-text-small">

@@ -9,7 +9,7 @@ if (!isset($_GET['user'])) {
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 
 } else {
-    $user = get_user_by('email', $_GET['user']);
+    $user = get_user_by('email', sanitize_email(wp_unslash($_GET['user'])));
     if ($user) {
         $email = $user->user_email;
     }
@@ -29,7 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         $stored_user = get_user_by('email', $email);
 
         if ($stored_user) {
-            if (get_email_is_verified(user_id: $stored_user->ID)) {
+            // Staff accounts are verified by administrators; only subscribers
+            // use the self-registration email verification flow.
+            if (!aif_is_unverified_subscriber($stored_user)) {
 
                 $creds = [
                     'user_login' => $email,
@@ -59,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
             } else {
                 $verification_url = add_query_arg([
-                    'user' => $email,
+                    'user' => rawurlencode($email),
                 ], get_permalink(get_page_by_path('verifier-votre-email')));
 
                 $title = 'Votre email ne semble pas encore vérifié';

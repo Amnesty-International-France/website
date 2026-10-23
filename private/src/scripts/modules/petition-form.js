@@ -170,30 +170,6 @@ const getSignedPetitionIds = () => {
   }
 };
 
-export const getPetitionIdForCLH = () => {
-  const button = document.getElementById('petition-clh');
-
-  if (!button) return;
-
-  const currentPetitionId = String(button.dataset.petitionId);
-
-  if (!currentPetitionId) return;
-
-  const signForm = button.closest('form');
-
-  if (!signForm) return;
-
-  signForm.addEventListener('submit', () => {
-    const stored = getSignedPetitionIds();
-    const updated = [...new Set([...stored.map(String), currentPetitionId])];
-    localStorage.setItem('signedPetition', JSON.stringify(updated));
-
-    const expires = new Date();
-    expires.setDate(expires.getDate() + 30);
-    document.cookie = `clh_signed_petitions=${encodeURIComponent(JSON.stringify(updated))};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
-  });
-};
-
 export const stepperTunnelClh = () => {
   const stepper = document.querySelector('.tunnel-clh-stepper');
   if (!stepper) return;

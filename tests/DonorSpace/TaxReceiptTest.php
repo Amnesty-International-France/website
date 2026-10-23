@@ -2,12 +2,36 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 $posted_salesforce_data_donor_space = [];
 $post_salesforce_data_donor_space_response = (object) ['success' => true];
 $sf_user_ids = [];
 $logged_salesforce_errors = [];
+$tax_receipts_by_contact = [];
+$tax_receipt_fetches = [];
+
+if (!function_exists('get_salesforce_user_tax_reciept')) {
+    function get_salesforce_user_tax_reciept(string $contactId): mixed
+    {
+        global $tax_receipts_by_contact, $tax_receipt_fetches;
+
+        $tax_receipt_fetches[] = $contactId;
+
+        return $tax_receipts_by_contact[$contactId] ?? [];
+    }
+}
+
+if (!function_exists('aif_create_salesforce_invalid_response_error')) {
+    function aif_create_salesforce_invalid_response_error(string $operation, string $endpoint): WP_Error
+    {
+        return new WP_Error('salesforce_invalid_response', 'Invalid response', [
+            'operation' => $operation,
+            'endpoint' => $endpoint,
+        ]);
+    }
+}
 
 function post_salesforce_data_donor_space(string $url, array $params = []): mixed
 {
@@ -32,16 +56,22 @@ function get_SF_user_ID(int $user_id): string|false
 
 require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/index.php';
 require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/rest-controllers.php';
+require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
 
 final class TaxReceiptTest extends TestCase
 {
     protected function setUp(): void
     {
-        global $posted_salesforce_data_donor_space, $post_salesforce_data_donor_space_response, $sf_user_ids;
+        global $posted_salesforce_data_donor_space, $post_salesforce_data_donor_space_response, $sf_user_ids,
+            $tax_receipts_by_contact, $tax_receipt_fetches;
 
         $posted_salesforce_data_donor_space = [];
         $post_salesforce_data_donor_space_response = (object) ['success' => true];
         $sf_user_ids = [];
+        $tax_receipts_by_contact = [];
+        $tax_receipt_fetches = [];
+        $GLOBALS['__phpunit_user_meta'] = [];
+        $GLOBALS['__phpunit_users'] = [42 => new WP_User(['subscriber'], 42, 'member@example.test')];
         $GLOBALS['logged_salesforce_errors'] = [];
         $GLOBALS['__phpunit_current_user_id'] = 0;
         $GLOBALS['__phpunit_valid_nonces'] = [];
@@ -95,21 +125,36 @@ final class TaxReceiptTest extends TestCase
         self::assertSame(date('Y-m-d'), $call['params']['Date_de_la_demande__c']);
     }
 
-    public function testHandleRequestRejectsMissingTaxReceiptReferenceButHttpStatusStaysDefault200(): void
+    private static function logInAsContact(string $contactId, array $receipts): void
     {
-        global $sf_user_ids;
-
-        $sf_user_ids[42] = '003-contact-id';
+        $GLOBALS['sf_user_ids'][42] = $contactId;
+        $GLOBALS['tax_receipts_by_contact'][$contactId] = $receipts;
         $GLOBALS['__phpunit_current_user_id'] = 42;
+    }
 
-        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => '']));
+    /**
+     * @return iterable<string, array{array<string, mixed>}>
+     */
+    public static function invalidReferenceParams(): iterable
+    {
+        yield 'missing' => [[]];
+        yield 'empty string' => [['taxReceiptReference' => '']];
+        yield 'whitespace only' => [['taxReceiptReference' => "  \t "]];
+        yield 'array' => [['taxReceiptReference' => ['REF-1']]];
+        yield 'integer' => [['taxReceiptReference' => 123]];
+    }
 
-        // Documents current (arguably buggy) behaviour: the body carries
-        // 'status' => 403 but the actual WP_REST_Response HTTP status is left
-        // at the default 200, since no explicit status is passed here.
-        self::assertSame(200, $response->get_status());
-        self::assertSame(403, $response->get_data()['status']);
+    #[DataProvider('invalidReferenceParams')]
+    public function testHandleRequestRejectsAnInvalidTaxReceiptReference(array $params): void
+    {
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1'], (object) ['Name' => '123']]);
+
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request($params));
+
+        self::assertSame(403, $response->get_status());
         self::assertSame('tax receipt ID not provided', $response->get_data()['message']);
+        self::assertSame([], $GLOBALS['tax_receipt_fetches']);
+        self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
     }
 
     public function testHandleRequestRejectsWhenUserHasNoSalesforceId(): void
@@ -118,31 +163,90 @@ final class TaxReceiptTest extends TestCase
 
         $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
 
-        self::assertSame(200, $response->get_status());
-        self::assertSame(403, $response->get_data()['status']);
+        self::assertSame(403, $response->get_status());
+        self::assertSame('tax receipt ID not provided', $response->get_data()['message']);
+        self::assertSame([], $GLOBALS['tax_receipt_fetches']);
+        self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
     }
 
-    public function testHandleRequestReturns200OnSuccess(): void
+    public function testHandleRequestCreatesACaseForAReceiptTheCallerOwns(): void
     {
-        global $sf_user_ids;
-
-        $sf_user_ids[42] = '003-contact-id';
-        $GLOBALS['__phpunit_current_user_id'] = 42;
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-0'], (object) ['Name' => 'REF-1']]);
 
         $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
 
         self::assertSame(200, $response->get_status());
         self::assertSame('demand succeed', $response->get_data()['message']);
+        self::assertSame(['003-contact-id'], $GLOBALS['tax_receipt_fetches']);
+        self::assertCount(1, $GLOBALS['posted_salesforce_data_donor_space']);
+        self::assertSame('003-contact-id', $GLOBALS['posted_salesforce_data_donor_space'][0]['params']['ContactId']);
+        self::assertSame('REF-1', $GLOBALS['posted_salesforce_data_donor_space'][0]['params']['Identifiant__c']);
+    }
+
+    /**
+     * @return iterable<string, array{array<int, mixed>, string}>
+     */
+    public static function receiptsNotContainingTheReference(): iterable
+    {
+        yield 'another donor\'s reference' => [[(object) ['Name' => 'REF-0']], 'REF-1'];
+        yield 'no receipts' => [[], 'REF-1'];
+        yield 'reference differing only by case or whitespace' => [[(object) ['Name' => 'ref-1'], (object) ['Name' => ' REF-1']], 'REF-1'];
+        yield 'malformed records' => [['REF-1', (object) ['Name' => null], (object) ['Montant_recu__c' => 'REF-1']], 'REF-1'];
+        // '1e1' == '10' under PHP's loose comparison of numeric strings.
+        yield 'numeric string only loosely equal' => [[(object) ['Name' => '10']], '1e1'];
+    }
+
+    #[DataProvider('receiptsNotContainingTheReference')]
+    public function testHandleRequestRejectsAReceiptTheCallerDoesNotOwn(array $receipts, string $reference): void
+    {
+        self::logInAsContact('003-contact-id', $receipts);
+
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => $reference]));
+
+        self::assertSame(403, $response->get_status());
+        self::assertSame('tax receipt not found', $response->get_data()['message']);
+        self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
+    }
+
+    public function testHandleRequestReturns503WhenTheReceiptsFetchFails(): void
+    {
+        $error = new WP_Error('salesforce_transport_error', 'Request failed');
+        self::logInAsContact('003-contact-id', []);
+        $GLOBALS['tax_receipts_by_contact']['003-contact-id'] = $error;
+
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+
+        self::assertSame(503, $response->get_status());
+        self::assertSame('service temporarily unavailable', $response->get_data()['message']);
+        self::assertSame([$error], $GLOBALS['logged_salesforce_errors']);
+        self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
+    }
+
+    public function testHandleRequestReturns503WhenTheReceiptsFetchReturnsANonArray(): void
+    {
+        self::logInAsContact('003-contact-id', []);
+        $GLOBALS['tax_receipts_by_contact']['003-contact-id'] = (object) ['Name' => 'REF-1'];
+
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+
+        self::assertSame(503, $response->get_status());
+        self::assertSame('service temporarily unavailable', $response->get_data()['message']);
+        self::assertCount(1, $GLOBALS['logged_salesforce_errors']);
+        self::assertSame('salesforce_invalid_response', $GLOBALS['logged_salesforce_errors'][0]->get_error_code());
+        self::assertSame(
+            ['operation' => 'GET', 'endpoint' => 'tax_receipts'],
+            $GLOBALS['logged_salesforce_errors'][0]->get_error_data(),
+        );
+        self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
     }
 
     public function testHandleRequestReturns503WhenSalesforceFails(): void
     {
-        global $post_salesforce_data_donor_space_response, $sf_user_ids;
+        global $post_salesforce_data_donor_space_response;
 
         $error = new WP_Error('salesforce_transport_error', 'Request failed');
         $post_salesforce_data_donor_space_response = $error;
-        $sf_user_ids[42] = '003-contact-id';
-        $GLOBALS['__phpunit_current_user_id'] = 42;
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1']]);
 
         $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
 
@@ -174,9 +278,21 @@ final class TaxReceiptTest extends TestCase
     {
         $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
         $GLOBALS['__phpunit_current_user_id'] = 42;
+        store_email_is_verified(42);
 
         $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 
         self::assertTrue($result);
+    }
+
+    public function testCheckNonceRejectsALoggedInUserWithAnUnverifiedEmail(): void
+    {
+        $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
+        $GLOBALS['__phpunit_current_user_id'] = 43;
+
+        $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
+
+        self::assertInstanceOf(WP_Error::class, $result);
+        self::assertSame('Email not verified.', $result->get_error_message());
     }
 }

@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             store_email_token($user->ID, $token);
 
             $url = add_query_arg([
-                'user' => $email,
+                'user' => rawurlencode($email),
                 'token' => $token,
             ], get_permalink(get_page_by_path('modifier-mon-mot-de-passe')));
 

@@ -18,6 +18,7 @@ final class PasswordResetTokenTest extends TestCase
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/sales-force/user-data.php';
 
         $GLOBALS['__phpunit_user_meta'] = [];
+        $GLOBALS['__phpunit_users'] = [self::USER_ID => new WP_User(['subscriber'], self::USER_ID, 'donor@example.org')];
     }
 
     public function testEmptyTokenIsRejectedWhenNoTokenWasEverStored(): void

@@ -29,6 +29,7 @@
     "test:petitions": "phpunit --testsuite Petitions",
     "test:blocks": "phpunit --testsuite Blocks",
     "test:salesforce-sync": "phpunit --testsuite SalesforceSync",
+    "test:patterns": "phpunit --testsuite Patterns",
     "test:clh": "phpunit --testsuite Clh",
     "makePot": "wp i18n make-pot wp-content/themes/humanity-theme wp-content/themes/humanity-theme/languages/amnesty.pot --domain=amnesty --exclude=private",
     "updatePoMo": [

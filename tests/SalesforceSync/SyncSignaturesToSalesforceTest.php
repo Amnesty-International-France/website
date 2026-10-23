@@ -41,6 +41,7 @@ final class SyncSignaturesToSalesforceTest extends TestCase
             124 => ['uidsf' => 'UID-124'],
         ];
 
+        $GLOBALS['__phpunit_wp_cli_messages'] = [];
         $GLOBALS['__phpunit_salesforce_data_calls'] = [];
         $GLOBALS['__phpunit_salesforce_data_response_queue'] = [
             // create_bulk_job_signatures() -> post_salesforce_data()
@@ -63,6 +64,7 @@ final class SyncSignaturesToSalesforceTest extends TestCase
                     'state' => 'JobComplete',
                     'numberRecordsProcessed' => 2,
                     'numberRecordsFailed' => 0,
+                    'errorMessage' => 'Unexpected response contains ada@example.test and her signature',
                 ]),
                 'response' => ['code' => 200],
             ],
@@ -95,7 +97,7 @@ final class SyncSignaturesToSalesforceTest extends TestCase
                 'postal_code' => '75001',
                 'phone' => '0102030405',
                 'code_origine' => 'WEB',
-                'message' => '',
+                'message' => 'Mon message personnel',
             ],
             [
                 'petition_id' => 124,
@@ -116,6 +118,17 @@ final class SyncSignaturesToSalesforceTest extends TestCase
         ];
 
         sync_signatures_to_salesforce($signatures);
+
+        // CLI output (appended to the cron logs) carries technical
+        // identifiers and counters only, never signature data.
+        self::assertSame([
+            ['level' => 'log', 'message' => 'Prepared bulk CSV for 2 signature(s)'],
+            ['level' => 'log', 'message' => 'Statut du job ' . self::JOB_ID . ' après 30s : JobComplete. Records processed: 2, failed: 0. Salesforce reported a job error.'],
+        ], $GLOBALS['__phpunit_wp_cli_messages']);
+        $cli_output = implode("\n", array_column($GLOBALS['__phpunit_wp_cli_messages'], 'message'));
+        foreach (['ada@example.test', 'grace@example.test', 'Lovelace', 'Hopper', '0102030405', '75001', 'Mon message personnel', 'UID-123', 'Email__c'] as $signature_value) {
+            self::assertStringNotContainsString($signature_value, $cli_output);
+        }
 
         $data_calls = $GLOBALS['__phpunit_salesforce_data_calls'];
         self::assertCount(2, $data_calls);
