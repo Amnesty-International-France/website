@@ -78,13 +78,6 @@ final class ClhTunnelContextTest extends TestCase
             }
         }
 
-        if (!function_exists('get_permalink')) {
-            function get_permalink(int $post_id = 0): string
-            {
-                return 'https://wordpress.example.test/?p=' . $post_id;
-            }
-        }
-
         if (!function_exists('get_local_user')) {
             function get_local_user(string $email): object|false
             {
