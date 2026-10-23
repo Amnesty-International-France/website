@@ -154,17 +154,65 @@ test('renders the registered donor contact preview inside the real iframe editor
   await testInfo.attach('donor-contact-iframe', { body: await block.screenshot(), contentType: 'image/png' });
 });
 
+test('accepts the REST edit context from the URL or JSON body without Salesforce', async ({
+  page, request, gotoWithoutCookieOverlay, salesforceTestId,
+}, testInfo) => {
+  await login(page, gotoWithoutCookieOverlay, true);
+  await resetSalesforceCalls(request, salesforceTestId);
+
+  const results = await page.evaluate(async () => {
+    const nonce = await (await fetch('/wp-admin/admin-ajax.php?action=rest-nonce')).text();
+    const pages = await (await fetch('/wp-json/wp/v2/pages?slug=e2e-contact-twice&_fields=id')).json();
+    const endpoint = '/wp-json/wp/v2/block-renderer/amnesty-core/donor-contact-form';
+    const variants = [
+      { name: 'GET query context', method: 'GET', url: `${endpoint}?context=edit` },
+      { name: 'POST query context', method: 'POST', url: `${endpoint}?context=edit`, body: { attributes: {} } },
+      { name: 'POST JSON context', method: 'POST', url: endpoint, body: { context: 'edit', attributes: {} } },
+      { name: 'POST JSON context with page', method: 'POST', url: endpoint, body: { context: 'edit', attributes: {}, post_id: pages[0].id } },
+      { name: 'GET page editor content', method: 'GET', url: `/wp-json/wp/v2/pages/${pages[0].id}?context=edit` },
+    ];
+    return Promise.all(variants.map(async (variant) => {
+      const response = await fetch(variant.url, {
+        method: variant.method,
+        headers: { 'X-WP-Nonce': nonce, 'Content-Type': 'application/json' },
+        ...(variant.body ? { body: JSON.stringify(variant.body) } : {}),
+      });
+      const body = await response.text();
+      return {
+        name: variant.name,
+        status: response.status,
+        placeholder: body.includes('Le formulaire est disponible dans votre espace donateur.'),
+        form: body.includes('<form'),
+      };
+    }));
+  });
+
+  await testInfo.attach('rest-preview-contexts', { body: JSON.stringify(results), contentType: 'application/json' });
+  results.forEach((result) => {
+    expect.soft(result.status, result.name).toBe(200);
+    expect.soft(result.placeholder, result.name).toBe(true);
+    expect.soft(result.form, result.name).toBe(false);
+  });
+  expect(await getSalesforceCalls(request, salesforceTestId)).toEqual([]);
+});
+
 test('denies an unauthenticated ServerSideRender request without contacting Salesforce', async ({
   request, salesforceTestId,
 }) => {
   const pages = await (await request.get('/wp-json/wp/v2/pages?slug=e2e-contact-twice&_fields=id')).json();
   await resetSalesforceCalls(request, salesforceTestId);
 
-  const responses = await Promise.all(['', `&post_id=${pages[0].id}`].map((postQuery) => (
-    request.get(`/wp-json/wp/v2/block-renderer/amnesty-core/donor-contact-form?context=edit${postQuery}`, {
+  const responses = await Promise.all([
+    ...['', `&post_id=${pages[0].id}`].map((postQuery) => (
+      request.get(`/wp-json/wp/v2/block-renderer/amnesty-core/donor-contact-form?context=edit${postQuery}`, {
+        headers: { 'X-AIF-E2E-Test-Id': salesforceTestId },
+      })
+    )),
+    ...[undefined, pages[0].id].map((postId) => request.post('/wp-json/wp/v2/block-renderer/amnesty-core/donor-contact-form', {
       headers: { 'X-AIF-E2E-Test-Id': salesforceTestId },
-    })
-  )));
+      data: { context: 'edit', attributes: {}, ...(postId ? { post_id: postId } : {}) },
+    })),
+  ]);
   responses.forEach((response) => expect([401, 403]).toContain(response.status()));
   expect(await getSalesforceCalls(request, salesforceTestId)).toEqual([]);
 });
