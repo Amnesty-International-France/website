@@ -2,20 +2,6 @@
 
 declare(strict_types=1);
 
-if (!function_exists('sanitize_text_field')) {
-    function sanitize_text_field(string $str): string
-    {
-        return trim(strip_tags($str));
-    }
-}
-
-if (!function_exists('wp_unslash')) {
-    function wp_unslash(mixed $value): mixed
-    {
-        return is_string($value) ? stripslashes($value) : $value;
-    }
-}
-
 if (!function_exists('esc_attr')) {
     function esc_attr(mixed $text): string
     {
@@ -47,13 +33,6 @@ if (!function_exists('get_page_by_path')) {
     function get_page_by_path(string $path): object
     {
         return (object) ['ID' => 1, 'post_name' => $path];
-    }
-}
-
-if (!function_exists('get_permalink')) {
-    function get_permalink(object|int $post = 0): string
-    {
-        return 'https://wordpress.example.test/page/';
     }
 }
 
