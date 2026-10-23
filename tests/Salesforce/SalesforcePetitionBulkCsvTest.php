@@ -25,11 +25,19 @@ final class SalesforcePetitionBulkCsvTest extends TestCase
             123 => ['uidsf' => 'UID-123'],
             789 => ['uidsf' => 'UID-789'],
         ];
+        $GLOBALS['__phpunit_wp_cli_messages'] = [];
+        $GLOBALS['__phpunit_wp_remote_calls'] = [];
+        $GLOBALS['__phpunit_wp_remote_response_queue'] = [];
         $GLOBALS['__phpunit_salesforce_data_calls'] = [];
         $GLOBALS['__phpunit_salesforce_data_response'] = [
             'id' => '750-job-id',
             'contentUrl' => 'services/data/v57.0/jobs/ingest/750-job-id/batches',
         ];
+    }
+
+    protected function tearDown(): void
+    {
+        putenv('AIF_SALESFORCE_URL');
     }
 
     public function testBulkCsvPreservesMessagesWithNewlinesCommasAndQuotes(): void
@@ -73,6 +81,82 @@ final class SalesforcePetitionBulkCsvTest extends TestCase
         self::assertCount(14, $header);
         self::assertCount(count($header), $row);
         self::assertSame($message, $row[13]);
+    }
+
+    public function testBulkCsvPreparationLogsOnlyTheSignatureCount(): void
+    {
+        prepare_bulk_data([
+            [
+                'petition_id' => 123,
+                'user_id' => 456,
+                'is_synched' => 0,
+                'last_sync' => null,
+                'civility' => 'Mme',
+                'firstname' => 'Ada',
+                'lastname' => 'Lovelace',
+                'email' => 'ada@example.test',
+                'date_signature' => '2026-06-22',
+                'country' => 'France',
+                'postal_code' => '75001',
+                'phone' => '0102030405',
+                'code_origine' => 'WEB',
+                'message' => 'Mon message personnel',
+            ],
+            [
+                'petition_id' => 789,
+                'user_id' => 101,
+                'is_synched' => 0,
+                'last_sync' => null,
+                'civility' => 'M',
+                'firstname' => 'Grace',
+                'lastname' => 'Hopper',
+                'email' => 'grace@example.test',
+                'date_signature' => '2026-06-22',
+                'country' => 'France',
+                'postal_code' => '75002',
+                'phone' => '0102030406',
+                'code_origine' => 'WEB',
+                'message' => '',
+            ],
+        ]);
+
+        self::assertSame(
+            [['level' => 'log', 'message' => 'Prepared bulk CSV for 2 signature(s)']],
+            $GLOBALS['__phpunit_wp_cli_messages']
+        );
+        self::assertCliOutputContainsNoSignatureData([
+            'ada@example.test', 'grace@example.test', 'Ada', 'Lovelace', 'Grace', 'Hopper',
+            '0102030405', '0102030406', '75001', '75002', 'Mon message personnel', 'UID-123', 'Email__c', 'Mme',
+        ]);
+    }
+
+    public function testFailedBulkUploadDoesNotOutputTheSalesforceResponseBody(): void
+    {
+        putenv('AIF_SALESFORCE_URL=https://fake-salesforce.phpunit.test/');
+        $GLOBALS['__phpunit_wp_remote_response_queue'] = [
+            [
+                'body' => json_encode([
+                    [
+                        'errorCode' => 'INVALID_FIELD',
+                        'message' => 'Invalid value ada@example.test for Lovelace',
+                    ],
+                    [
+                        'errorCode' => "INVALID_FIELD\nada@example.test",
+                        'message' => 'Another rejected record',
+                    ],
+                ]),
+                'response' => ['code' => 400],
+            ],
+        ];
+
+        ob_start();
+        $uploaded = upload_bulk_data('services/data/v57.0/jobs/ingest/750-job-id/batches', "Email__c\r\nada@example.test\r\n");
+        $output = (string) ob_get_clean();
+
+        self::assertFalse($uploaded);
+        self::assertSame("Erreur de requête Salesforce : HTTP 400 INVALID_FIELD\n", $output);
+        self::assertStringNotContainsString('ada@example.test', $output);
+        self::assertStringNotContainsString('Lovelace', $output);
     }
 
     public function testBulkIngestJobDeclaresCsvContentAndLineEndings(): void
@@ -169,5 +253,17 @@ final class SalesforcePetitionBulkCsvTest extends TestCase
             'numberRecordsProcessed' => 0,
             'numberRecordsFailed' => 1,
         ]));
+    }
+
+    /**
+     * @param list<string> $values
+     */
+    private static function assertCliOutputContainsNoSignatureData(array $values): void
+    {
+        $output = implode("\n", array_column($GLOBALS['__phpunit_wp_cli_messages'], 'message'));
+
+        foreach ($values as $value) {
+            self::assertStringNotContainsString($value, $output);
+        }
     }
 }

@@ -124,7 +124,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
       };
     } else {
       newItems[index] = {
-        subhead: newItems[index].subhead,
+        subtitle: newItems[index].subtitle,
         ...externalLinkDefaultValue,
       };
     }
@@ -206,8 +206,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
             {index === 0 && (
               <TextControl
                 label={__('Surtitre (facultatif)', 'amnesty')}
-                value={item.subhead || ''}
-                onChange={(value) => updateItem(index, 'subhead', value)}
+                value={item.subtitle || ''}
+                onChange={(value) => updateItem(index, 'subtitle', value)}
               />
             )}
           </PanelBody>
@@ -238,9 +238,9 @@ const EditComponent = ({ attributes, setAttributes }) => {
                               dangerouslySetInnerHTML={{ __html: mainTitle(items[0]) }}
                             />
                           </div>
-                          {items[0].subhead && (
-                            <div className="article-subhead-wrapper">
-                              <p className="article-subhead">{items[0].subhead}</p>
+                          {items[0].subtitle && (
+                            <div className="article-subtitle-wrapper">
+                              <p className="article-subtitle">{items[0].subtitle}</p>
                             </div>
                           )}
                           {items[0].selectedPostId && (

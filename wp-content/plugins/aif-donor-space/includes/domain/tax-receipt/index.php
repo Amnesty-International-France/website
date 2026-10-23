@@ -27,6 +27,31 @@ function groupByYear(array $objects, string $prop): array
     return $groupedByYear;
 }
 
+/**
+ * Whether the reference matches the exact Name of one of the contact's tax receipts.
+ * Returns a WP_Error when the receipts cannot be fetched, so callers fail closed.
+ */
+function aif_contact_owns_tax_receipt($contact_id, $tax_receipt_reference)
+{
+    $receipts = get_salesforce_user_tax_reciept($contact_id);
+
+    if (is_wp_error($receipts)) {
+        return $receipts;
+    }
+
+    if (!is_array($receipts)) {
+        return aif_create_salesforce_invalid_response_error('GET', 'tax_receipts');
+    }
+
+    foreach ($receipts as $receipt) {
+        if (is_object($receipt) && isset($receipt->Name) && $receipt->Name === $tax_receipt_reference) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function create_duplicate_taxt_receipt_request($Contact_ID, $taxt_receipt_reference)
 {
     $url = 'services/data/v57.0/sobjects/Case';
