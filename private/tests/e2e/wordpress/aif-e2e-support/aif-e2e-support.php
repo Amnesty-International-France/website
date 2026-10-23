@@ -357,6 +357,8 @@ add_filter('pre_http_request', function ($preempt, $args, $url) {
             'instance_url' => rtrim(AIF_E2E_SALESFORCE_BASE_URL, '/'),
             'token_type' => 'Bearer',
         ];
+    } elseif (str_contains($path, 'sobjects/Contact/') && 'GET' === ($args['method'] ?? 'GET')) {
+        $body = ['Id' => 'fake-sf-id-donor', 'Tech_Lien_Mandat_Actif__c' => null];
     } elseif (str_contains($path, 'query/?q=')) {
         // SOQL lookup (existing Contact/Lead by email). Defaults to "not
         // found" so the create branch of whichever handler is under test
@@ -380,7 +382,34 @@ add_filter('pre_http_request', function ($preempt, $args, $url) {
     return aif_e2e_fake_http_response($body);
 }, 10, 3);
 
+// Warm the real registry before auth_my_space() prepares its context. The
+// cached pattern must remain safe on POST and usable later in this request.
+add_action('template_redirect', function () {
+    if (isset($_GET['aif_e2e_warm_contact_pattern'])) {
+        WP_Block_Patterns_Registry::get_instance()->get_registered('amnesty/contact-us');
+    }
+}, 0);
+
 add_action('rest_api_init', function () {
+    // Isolate the target pattern with WordPress's real registry. The full
+    // catalogue also executes the unrelated CLH pattern's redirect to '/'.
+    register_rest_route('aif-e2e/v1', '/contact-patterns', [
+        'methods' => 'GET',
+        'callback' => function () {
+            $registry = new WP_Block_Patterns_Registry();
+            $registry->register('amnesty/contact-us', [
+                'title' => 'Nous contacter',
+                'inserter' => false,
+                'filePath' => get_theme_file_path('/patterns/contact-us.php'),
+            ]);
+
+            return new WP_REST_Response($registry->get_all_registered(), 200);
+        },
+        'permission_callback' => function () {
+            return current_user_can('edit_posts');
+        },
+    ]);
+
     register_rest_route('aif-e2e/v1', '/salesforce-calls', [
         'methods' => 'GET',
         'callback' => function () {
