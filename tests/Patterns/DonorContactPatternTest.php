@@ -90,6 +90,7 @@ final class DonorContactPatternTest extends TestCase
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/email-verification/index.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/contact/index.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/full-site-editing/blocks/donor-contact-form/class-rest-preview.php';
         // Unmodified upstream registry from the WordPress 7.1.3 investigation.
         require_once __DIR__ . '/fixtures/wordpress-7.1.3-patterns-registry.php';
 
@@ -301,18 +302,21 @@ final class DonorContactPatternTest extends TestCase
 
     public static function editorPostContexts(): iterable
     {
-        yield 'with a page' => [12, true, false];
-        yield 'autoRegister without a page' => [false, false, true];
+        yield 'with a page, query context' => [12, true, false, true];
+        yield 'autoRegister without a page, query context' => [false, false, true, true];
+        yield 'with a page, JSON context' => [12, true, false, false];
+        yield 'autoRegister without a page, JSON context' => [false, false, true, false];
     }
 
     #[DataProvider('editorPostContexts')]
-    public function testAuthorizedServerSideRenderNeedsNoContextAndDoesNotSubmit(int|false $post_id, bool $can_edit_post, bool $can_edit_posts): void
+    public function testAuthorizedServerSideRenderNeedsNoContextAndDoesNotSubmit(int|false $post_id, bool $can_edit_post, bool $can_edit_posts, bool $query_context): void
     {
         $GLOBALS['__phpunit_rest_editor'] = true;
         $GLOBALS['__phpunit_editor_post_id'] = $post_id;
         $GLOBALS['__phpunit_can_preview'] = $can_edit_post;
         $GLOBALS['__phpunit_can_edit_posts'] = $can_edit_posts;
-        $_GET = ['context' => 'edit'];
+        $_GET = $query_context ? ['context' => 'edit'] : [];
+        AIF_Donor_Contact_Form_REST_Preview::begin(null, [], new WP_REST_Request(['context' => 'edit']));
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_POST = ['subject' => 'REST preview', 'message' => 'Do not submit', 'contact_nonce' => 'contact-nonce'];
 
@@ -340,11 +344,43 @@ final class DonorContactPatternTest extends TestCase
         $GLOBALS['__phpunit_can_preview'] = $can_edit;
         $GLOBALS['__phpunit_editor_post_id'] = $post_id;
         $GLOBALS['__phpunit_can_edit_posts'] = $can_edit_posts;
-        $_GET = ['context' => $context];
+        $_GET = ['context' => 'edit'];
+        if ($rest) {
+            AIF_Donor_Contact_Form_REST_Preview::begin(null, [], new WP_REST_Request(['context' => $context]));
+        }
 
         try {
             $this->renderForm();
             self::fail('The request must not receive an editor preview.');
+        } catch (ContactFormHttpError $error) {
+            self::assertSame(503, $error->status);
+        }
+        self::assertSame([], $GLOBALS['__phpunit_wp_remote_calls']);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    public function testRestPreviewContextIsRestoredAfterNestedRequestsAndReleasedAfterRendering(): void
+    {
+        $GLOBALS['__phpunit_can_preview'] = true;
+        $outer = new WP_REST_Request(['context' => 'edit']);
+        $nested = new WP_REST_Request(['context' => 'view']);
+        AIF_Donor_Contact_Form_REST_Preview::begin(null, [], $outer);
+        self::assertStringContainsString('Le formulaire est disponible', $this->renderForm());
+
+        AIF_Donor_Contact_Form_REST_Preview::begin(null, [], $nested);
+        try {
+            $this->renderForm();
+            self::fail('A nested view request must not inherit the outer preview context.');
+        } catch (ContactFormHttpError $error) {
+            self::assertSame(503, $error->status);
+        }
+        AIF_Donor_Contact_Form_REST_Preview::end(null);
+        self::assertStringContainsString('Le formulaire est disponible', $this->renderForm());
+
+        AIF_Donor_Contact_Form_REST_Preview::end(null);
+        try {
+            $this->renderForm();
+            self::fail('The completed REST preview must not affect a later render.');
         } catch (ContactFormHttpError $error) {
             self::assertSame(503, $error->status);
         }
