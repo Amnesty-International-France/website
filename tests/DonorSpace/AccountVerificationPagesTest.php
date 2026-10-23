@@ -32,8 +32,9 @@ final class AccountVerificationPagesTest extends TestCase
 
     private function queueEligibleDonor(): void
     {
+        $responses = json_decode(file_get_contents(__DIR__ . '/fixtures/apex-search.json'), true);
         $GLOBALS['__phpunit_wp_remote_response_queue'] = [
-            ['response' => ['code' => 200], 'body' => '{"Id":"contact-id","isDonateur":true,"isMembre":false,"hasMandatActif":false}'],
+            ['response' => ['code' => 200], 'body' => json_encode($responses['donor'])],
             ['response' => ['code' => 200], 'body' => '{"FirstName":"Ada","LastName":"Lovelace"}'],
         ];
     }
@@ -141,5 +142,54 @@ final class AccountVerificationPagesTest extends TestCase
         $mail = $GLOBALS['__phpunit_sent_mails'][0];
         self::assertSame(self::EMAIL, $mail['to']);
         self::assertTrue(is_2fa_code_valid(42, json_decode($mail['t:variables'], true)['code']));
+    }
+
+    public static function deniedContacts(): iterable
+    {
+        $responses = json_decode(file_get_contents(__DIR__ . '/fixtures/apex-search.json'), true);
+        yield 'provider absence' => [$responses['absent']];
+        yield 'known ineligible contact' => [$responses['ineligible']];
+    }
+
+    #[DataProvider('deniedContacts')]
+    public function testSignupDeniesAbsentAndIneligibleContactsAsABusinessResult(array $response): void
+    {
+        $GLOBALS['__phpunit_wp_remote_response_queue'][0]['body'] = json_encode($response);
+
+        $html = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
+
+        self::assertStringContainsString('ne trouve pas de correspondance', $html);
+        self::assertStringNotContainsString(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE, $html);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+        self::assertSame([], $GLOBALS['__phpunit_inserted_users']);
+        self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
+    }
+
+    #[DataProvider('deniedContacts')]
+    public function testCodeResendDoesNotSendToAbsentOrIneligibleContacts(array $response): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+        $GLOBALS['__phpunit_wp_remote_response_queue'][0]['body'] = json_encode($response);
+
+        $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
+
+        self::assertStringContainsString('Utilisateur inconnu', $html);
+        self::assertStringNotContainsString(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE, $html);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    #[DataProvider('deniedContacts')]
+    public function testLoginDoesNotAuthenticateAbsentOrIneligibleContacts(array $response): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+        store_email_is_verified(42);
+        $GLOBALS['__phpunit_wp_remote_response_queue'][0]['body'] = json_encode($response);
+
+        $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password']);
+
+        self::assertStringContainsString('ne trouve pas de correspondance', $html);
+        self::assertStringNotContainsString(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE, $html);
+        self::assertSame([], $GLOBALS['__phpunit_signons'] ?? []);
+        self::assertSame('', get_user_meta(42, 'user_SF_ID', true));
     }
 }

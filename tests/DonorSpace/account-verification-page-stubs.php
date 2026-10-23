@@ -19,6 +19,11 @@ function get_footer(): void
 {
 }
 
+function get_template_directory_uri(): string
+{
+    return 'https://wordpress.example.test/theme';
+}
+
 function aif_include_partial(string $name, array $args = []): void
 {
     echo '<div class="partial-' . $name . '">' . ($args['title'] ?? '') . ' | ' . ($args['content'] ?? '') . '</div>';
