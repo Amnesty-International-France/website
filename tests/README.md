@@ -26,6 +26,14 @@ WordPress/plugins qu'il appelle sont stubées.
 - Les stubs **spécifiques à un scénario** (fausses réponses Salesforce,
   fixtures en mémoire, etc.) restent dans le fichier de test concerné, pas
   dans `bootstrap.php`.
+- Les stubs **propres à un domaine** mais partagés par plusieurs de ses
+  fichiers de test vont dans un fichier commun du dossier du domaine, chargé
+  avec `require_once` par chaque test (ex. `tests/Clh/petitions-stand-ins.php`,
+  qui remplace les fonctions de `includes/post-types/petitions.php`). Chaque
+  fonction y est protégée par `function_exists()` : PHPUnit charge toutes les
+  suites dans un même processus, et deux copies d'une même fonction feraient
+  dépendre les tests de l'ordre de chargement. Le nom de ce fichier ne doit
+  pas finir par `Test.php`, sinon PHPUnit le prend pour un test.
 
 Si un nouveau test a besoin de stuber beaucoup de fonctions WP (plus d'une
 quinzaine) ou du comportement de hooks (`add_filter`/`apply_filters`), envisager
