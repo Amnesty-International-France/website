@@ -565,6 +565,44 @@ final class SalesforceMemberDataTest extends TestCase
         }
     }
 
+    public static function emailSegmentProvider(): iterable
+    {
+        yield 'at' => ['ada@example.test', 'ada@example.test'];
+        yield 'unreserved characters' => ['ada.-_~09@example.test', 'ada.-_~09@example.test'];
+        yield 'plus' => ['ada+tag@example.test', 'ada+tag@example.test'];
+        yield 'apostrophe' => ["o'connor@example.test", "o'connor@example.test"];
+        yield 'plus and apostrophe' => ["o'connor+tag@example.test", "o'connor+tag@example.test"];
+        yield 'exclamation mark' => ['ada!tag@example.test', 'ada!tag@example.test'];
+        yield 'dollar' => ['ada$tag@example.test', 'ada$tag@example.test'];
+        yield 'ampersand' => ['ada&tag@example.test', 'ada&tag@example.test'];
+        yield 'asterisk' => ['ada*tag@example.test', 'ada*tag@example.test'];
+        yield 'equals sign' => ['ada=tag@example.test', 'ada=tag@example.test'];
+        yield 'quoted local part' => ['"a(b),c;d:e"@example.test', '%22a(b),c;d:e%22@example.test'];
+        yield 'fragment' => ['ada#tag@example.test', 'ada%23tag@example.test'];
+        yield 'query' => ['ada?tag@example.test', 'ada%3Ftag@example.test'];
+        yield 'slash' => ['ada/tag@example.test', 'ada%2Ftag@example.test'];
+        yield 'percent' => ['ada%40tag@example.test', 'ada%2540tag@example.test'];
+        yield 'encoded plus in address' => ['ada%2Btag@example.test', 'ada%252Btag@example.test'];
+        yield 'encoded apostrophe in address' => ['ada%27tag@example.test', 'ada%2527tag@example.test'];
+        yield 'characters outside pchar' => ['ada^`{|}tag@example.test', 'ada%5E%60%7B%7C%7Dtag@example.test'];
+        yield 'space and control characters' => ["ada \t\r\n\0tag@example.test", 'ada%20%09%0D%0A%00tag@example.test'];
+        yield 'utf8 bytes' => ['adé@example.test', 'ad%C3%A9@example.test'];
+        yield 'backslash' => ['ada\\tag@example.test', 'ada%5Ctag@example.test'];
+        yield 'brackets' => ['ada[tag]@example.test', 'ada%5Btag%5D@example.test'];
+    }
+
+    #[DataProvider('emailSegmentProvider')]
+    public function testLookupPreservesTheEmailInASinglePathSegment(string $email, string $expected_segment): void
+    {
+        get_salesforce_member_data($email);
+
+        $url = $GLOBALS['__phpunit_wp_remote_calls'][0]['url'];
+        self::assertSame('/services/apexrest/search/v1/' . $expected_segment, parse_url($url, PHP_URL_PATH));
+        self::assertNull(parse_url($url, PHP_URL_QUERY));
+        self::assertNull(parse_url($url, PHP_URL_FRAGMENT));
+        self::assertSame($email, rawurldecode(substr(parse_url($url, PHP_URL_PATH), strlen('/services/apexrest/search/v1/'))));
+    }
+
     /** @return array{body:string,response:array{code:int}} */
     private function response(int $status, string $body): array
     {
