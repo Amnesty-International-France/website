@@ -1,0 +1,6 @@
+{
+  "donor": {"Id":"donor-contact","isDonateur":true,"isMembre":false,"isAncienMembre":true,"hasMandatActif":true,"hasEspaceDon":true},
+  "member": {"Id":"member-contact","isDonateur":false,"isMembre":true,"isAncienMembre":false,"hasMandatActif":false,"hasEspaceDon":true},
+  "ineligible": {"Id":"ineligible-contact","isDonateur":false,"isMembre":false,"isAncienMembre":true,"hasMandatActif":true,"hasEspaceDon":true},
+  "absent": {"Id":null,"isDonateur":null,"isMembre":null,"isAncienMembre":null,"hasMandatActif":null,"hasEspaceDon":false}
+}
