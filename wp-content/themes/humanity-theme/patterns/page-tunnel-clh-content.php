@@ -22,61 +22,27 @@ $signature_status_message = $signature_status_messages[$signature_status] ?? '';
 $post = get_post();
 $parent = $post->post_parent;
 
-$active_campaign = amnesty_get_active_clh_campaign_for_page($parent);
+$context = amnesty_get_clh_tunnel_context($post);
+$active_campaign = $context['active_campaign'] ?? null;
 
 if (!$active_campaign) {
     wp_redirect('/'); // TODO: REDIRECT IF NO ACTIVE CAMPAIGN
     exit();
 }
 
-// The signed state only reflects petitions signed from this browser: it is
-// never looked up from an email address the visitor can set.
-$raw_email = $_SESSION['clh_last_signer_email'] ?? null;
-
-$last_signer_email = ($raw_email && is_email($raw_email)) ? sanitize_email($raw_email) : null;
-
-$signed_ids = amnesty_get_clh_signed_petitions();
-$list_petitions_clh = amnesty_get_clh_campaign_petitions();
+$last_signer_email = $context['last_signer_email'];
+$list_petitions_clh = $context['list_petitions_clh'];
 
 if (empty($list_petitions_clh)) {
     wp_redirect(amnesty_get_clh_tunnel_end_url());
     exit();
 }
 
-$selected_posts = [];
-$skipped_petitions = amnesty_get_clh_skipped_petitions();
-
-foreach ($list_petitions_clh as $petition) {
-    $goal = get_field('objectif_signatures', $petition->ID) ?: 200000;
-    $current = amnesty_get_petition_signature_count($petition->ID) ?: 0;
-    $already_signed = in_array((int) $petition->ID, $signed_ids, true);
-
-    $selected_posts[] = [
-        'id' => $petition->ID,
-        'title' => $petition->post_title,
-        'description' => get_field('short_description', $petition->ID) ?: get_the_excerpt($petition->ID),
-        'image_id' => get_post_thumbnail_id($petition->ID),
-        'letter' => get_field('lettre', $petition->ID),
-        'link' => get_permalink($petition->ID),
-        'goal' => $goal,
-        'current' => $current,
-        'percentage' => ($goal > 0) ? min(($current / $goal) * 100, 100) : 0,
-        'already_signed' => $already_signed,
-        'active' => amnesty_is_petition_not_expired($petition->ID),
-        'already_skipped' => in_array($petition->ID, $skipped_petitions, true),
-    ];
-}
-$signed_count = count(array_filter($selected_posts, fn ($p) => $p['already_signed'] === true));
+$selected_posts = $context['selected_posts'];
+$signed_count = $context['signed_count'];
 $total_steps = min(10, count($list_petitions_clh));
-
-$not_signed = \array_filter(
-    $selected_posts,
-    static fn ($petition) => $petition['already_signed'] === false &&
-        $petition['already_skipped'] === false &&
-        $petition['active'] === true
-);
-
-$show_final_screen = $signed_count >= 10 || empty($not_signed);
+$next_petition = $context['next_petition'];
+$show_final_screen = $next_petition === null;
 
 if ($show_final_screen) {
     $fallback_share_petition = $selected_posts[0] ?? null;
@@ -278,8 +244,6 @@ if ($show_final_screen) {
     return;
 }
 
-$random_key = array_rand($not_signed);
-$next_petition = $not_signed[$random_key];
 $accordion_id = sprintf('tunnel-clh-petition-accordion-%d', (int)$next_petition['id']);
 $mobile_accordion_id = sprintf('tunnel-clh-petition-accordion-mobile-%d', (int)$next_petition['id']);
 $skip_form_id = sprintf('tunnel-clh-skip-form-%d', (int)$next_petition['id']);

@@ -1,13 +1,22 @@
 <?php
 $direction = $args['direction'] ?? 'portrait';
+$grid_petition = $args['petition'] ?? null;
 
-$post_id = $args['post_id'] ?? ($args['post']->ID ?? null);
+$post_id = $grid_petition['id'] ?? $args['post_id'] ?? ($args['post']->ID ?? null);
 if (! $post_id) {
     $post_id = get_the_ID();
 }
-$post_object = $post_id ? get_post($post_id) : null;
+$post_object = !$grid_petition && $post_id ? get_post($post_id) : null;
 
-if (!$post_object instanceof WP_Post) {
+if ($grid_petition) {
+    $title = $grid_petition['title'];
+    $permalink = $grid_petition['url'];
+    $thumbnail = $grid_petition['image_id']
+        ? wp_get_attachment_image($grid_petition['image_id'], 'medium', false, ['class' => 'petition-image'])
+        : '';
+    $current = $grid_petition['signatures'];
+    $percentage = $grid_petition['percentage'];
+} elseif (!$post_object instanceof WP_Post) {
     $title       = $args['title'] ?? 'Titre par défaut';
     $permalink   = $args['permalink'] ?? '#';
     $date        = $args['date'] ?? date('Y-m-d');
@@ -33,7 +42,11 @@ if (!$post_object instanceof WP_Post) {
     $percentage = ($goal > 0) ? min(($current / $goal) * 100, 100) : 0;
 }
 
-$subtitle_clh = $post_id ? (get_field('subtitle_clh', $post_id) ?: '') : '';
+$subtitle_clh = !$grid_petition && $post_id ? (get_field('subtitle_clh', $post_id) ?: '') : '';
+
+// Campagne terminée : le bouton ne fait plus signer mais mène à la pétition.
+$closed = !empty($args['closed']);
+$button_url = $grid_petition && !$closed ? $grid_petition['sign_url'] : $permalink;
 
 ?>
 
@@ -41,6 +54,7 @@ $subtitle_clh = $post_id ? (get_field('subtitle_clh', $post_id) ?: '') : '';
     class="petition-card-change-their-history card-<?php echo esc_attr($direction); ?>"
     data-petition-id="<?php echo esc_attr((string) $post_id); ?>"
     data-signature-count="<?php echo esc_attr((string) $current); ?>"
+    data-clh-reveal
 >
     <?php if ($thumbnail): ?>
         <a href="<?= esc_url($permalink); ?>" class="petition-thumbnail" aria-label="<?= esc_attr($title); ?>">
@@ -53,7 +67,12 @@ $subtitle_clh = $post_id ? (get_field('subtitle_clh', $post_id) ?: '') : '';
     <div class="petition-content">
         <div class="petition-title">
             <a class="as-h5" href="<?= esc_url($permalink); ?>">
-                <?= esc_html($title); ?>
+                <?php if ($grid_petition) : ?>
+                    <span class="clh-petition-title-desktop"><?= esc_html($title); ?></span>
+                    <span class="clh-petition-title-mobile"><?= esc_html($grid_petition['short_title']); ?></span>
+                <?php else : ?>
+                    <?= esc_html($title); ?>
+                <?php endif; ?>
             </a>
         </div>
         <?php if (!empty($subtitle_clh)) : ?>
@@ -76,12 +95,12 @@ echo esc_html(number_format_i18n($current) . ' ' . $soutien_mot);
 
         <div class="petition-sign-button">
             <div class='custom-button-block center' style="gap: 12px;">
-                <a href="<?= esc_url($permalink); ?>" target="_blank" rel="noopener noreferrer" class="custom-button">
+                <a href="<?= esc_url($button_url); ?>" <?php if (!$grid_petition) : ?>target="_blank" rel="noopener noreferrer" <?php endif; ?>class="custom-button">
                     <div class='content bg-yellow small'>
                         <div class="icon-container">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="20" height="19.97" viewBox="0 0 20 19.97"><defs></defs><path fill="currentColor" d="M6.691,0.131 L0.137,6.674 C-0.061,6.872 -0.061,7.216 0.137,7.414 L2.490,9.762 C2.694,9.965 3.026,9.965 3.231,9.762 L3.745,9.249 C5.096,10.921 6.425,13.060 6.425,14.032 C6.425,14.187 6.389,14.302 6.320,14.371 C6.194,14.497 6.137,14.703 6.177,14.874 C6.263,15.244 6.298,15.396 12.933,17.736 C16.079,18.845 19.265,19.924 19.292,19.933 C19.480,19.997 19.691,19.948 19.845,19.793 C19.944,19.694 19.999,19.563 19.999,19.424 C19.999,19.366 19.990,19.310 19.961,19.227 C19.695,18.444 18.749,15.675 17.770,12.907 C15.428,6.283 15.274,6.247 14.904,6.161 C14.727,6.119 14.529,6.175 14.401,6.304 C13.876,6.828 11.357,5.413 9.269,3.733 L9.783,3.220 C9.981,3.022 9.981,2.678 9.783,2.480 L7.431,0.132 C7.226,-0.072 6.895,-0.072 6.691,0.131 ZM14.586,7.370 C15.206,8.761 16.880,13.480 18.252,17.466 L13.151,12.384 C13.288,12.126 13.360,11.839 13.360,11.544 C13.360,11.067 13.174,10.618 12.837,10.282 C12.138,9.585 11.002,9.585 10.304,10.282 C9.966,10.619 9.780,11.068 9.780,11.546 C9.780,12.024 9.966,12.473 10.304,12.811 C10.858,13.364 11.724,13.487 12.409,13.124 L17.499,18.217 C13.502,16.845 8.773,15.172 7.388,14.557 C7.434,14.402 7.457,14.232 7.457,14.048 C7.457,12.364 5.491,9.737 4.541,8.567 L8.587,4.528 C9.951,5.634 12.959,7.851 14.586,7.370 Z"></path></svg>
                         </div>
-                        <div class="button-label">Signer la pétition</div>
+                        <div class="button-label"><?= $closed ? esc_html__('Voir la pétition', 'amnesty') : esc_html__('Signer la pétition', 'amnesty'); ?></div>
                     </div>
                 </a>
             </div>

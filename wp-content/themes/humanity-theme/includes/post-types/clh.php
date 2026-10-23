@@ -2,6 +2,19 @@
 
 declare(strict_types=1);
 
+if (!defined('AMNESTY_CLH_START_DATE_FIELD_KEY')) {
+    define('AMNESTY_CLH_START_DATE_FIELD_KEY', 'field_6a159135fec38');
+}
+
+if (!defined('AMNESTY_CLH_FINAL_SIGNATURES_MAX')) {
+    define('AMNESTY_CLH_FINAL_SIGNATURES_MAX', 99_999_999);
+}
+
+if (!defined('AMNESTY_CLH_FIRST_CAMPAIGN_YEAR')) {
+    // Same bound as FIRST_TESTIMONIAL_YEAR in private/src/scripts/editor/clh/testimonial-validation.js.
+    define('AMNESTY_CLH_FIRST_CAMPAIGN_YEAR', 2001);
+}
+
 add_action('acf/include_fields', function () {
     if (!function_exists('acf_add_local_field_group')) {
         return;
@@ -11,6 +24,24 @@ add_action('acf/include_fields', function () {
         'key' => 'group_6a199c4a7e369',
         'title' => 'Highlight',
         'fields' => [
+            [
+                'key' => 'field_clh_petitions_heading_active',
+                'label' => 'Titre des situations — campagne en cours',
+                'name' => 'petitions_heading_active_clh',
+                'type' => 'text',
+                'instructions' => 'Laisser vide pour utiliser le titre automatique avec l’année de la campagne.',
+                'required' => 0,
+                'default_value' => '',
+            ],
+            [
+                'key' => 'field_clh_petitions_heading_closed',
+                'label' => 'Titre des situations — campagne terminée',
+                'name' => 'petitions_heading_closed_clh',
+                'type' => 'text',
+                'instructions' => 'Laisser vide pour utiliser le titre automatique avec le nombre de situations et l’année de la campagne.',
+                'required' => 0,
+                'default_value' => '',
+            ],
             [
                 'key' => 'field_6a199c4b42f0a',
                 'label' => 'Passer en mode Temps fort',
@@ -29,7 +60,7 @@ add_action('acf/include_fields', function () {
                 'ui_off_text' => '',
             ],
             [
-                'key' => 'field_6a159135fec38',
+                'key' => AMNESTY_CLH_START_DATE_FIELD_KEY,
                 'label' => 'Date de début',
                 'name' => 'start_date_highligth_clh',
                 'aria-label' => '',
@@ -172,6 +203,42 @@ add_action('acf/include_fields', function () {
                 'rows' => '',
                 'placeholder' => '',
                 'new_lines' => '',
+            ],
+            [
+                'key' => 'field_6a4d2c8e1b7f1',
+                'label' => 'Nombre de signatures final',
+                'name' => 'final_signatures_clh',
+                'aria-label' => '',
+                // A text input, not a number one: browsers send an empty value for "1 000" in a number
+                // input, so the server-side check could not reject it.
+                'type' => 'text',
+                'instructions' => 'Affiché quand la campagne est terminée. Chiffres uniquement, sans espace (ex. : 1250000). L\'indicateur reste masqué tant que le nombre de signatures et l\'année ne sont pas tous deux renseignés.',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => ['width' => '', 'class' => '', 'id' => ''],
+                'default_value' => '',
+                'maxlength' => '',
+                'allow_in_bindings' => 0,
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+            ],
+            [
+                'key' => 'field_6a4d2c8e1b7f2',
+                'label' => 'Année de la campagne',
+                'name' => 'campaign_year_clh',
+                'aria-label' => '',
+                'type' => 'text',
+                'instructions' => 'Affichée quand la campagne est terminée. L\'indicateur reste masqué tant que le nombre de signatures et l\'année ne sont pas tous deux renseignés.',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => ['width' => '', 'class' => '', 'id' => ''],
+                'default_value' => '',
+                'maxlength' => '',
+                'allow_in_bindings' => 0,
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
             ],
         ],
         'location' => [
