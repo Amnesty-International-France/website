@@ -7,7 +7,7 @@ function render_donor_contact_form_block(): string
     // Frontend previews, editor preloads and ServerSideRender have no prepared
     // donor context. They must not read donor details or submit a Case.
     $is_editor = is_admin() && function_exists('get_current_screen') && get_current_screen()?->is_block_editor();
-    $is_rest_editor = wp_is_serving_rest_request() && 'edit' === ($_GET['context'] ?? '');
+    $is_rest_editor = AIF_Donor_Contact_Form_REST_Preview::is_active();
     $preview_post_id = ($is_editor || $is_rest_editor) ? get_the_ID() : get_queried_object_id();
     // autoRegister omits post_id. Match the native block-renderer permission
     // for this static placeholder; a supplied page still requires edit_post.
