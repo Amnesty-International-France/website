@@ -105,6 +105,7 @@
   "resolutions": {
     "@typescript-eslint/typescript-estree/minimatch": "^9.0.7",
     "copy-webpack-plugin/serialize-javascript": "^7.0.3",
+    "express/qs": "~6.16.0",
     "node-gyp": "^12.4.0",
     "tmp": "^0.2.6"
   }
