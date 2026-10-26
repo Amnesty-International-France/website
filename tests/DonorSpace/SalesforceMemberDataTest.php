@@ -7,6 +7,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
+require_once __DIR__ . '/apex-search-fixture.php';
+
 final class SalesforceServiceUnavailableTestException extends RuntimeException
 {
     public function __construct(public readonly int $status)
@@ -568,7 +570,7 @@ final class SalesforceMemberDataTest extends TestCase
     /** Provider shapes observed in Test on 2026-10-22; contact IDs are synthetic. */
     public static function apexResponses(): iterable
     {
-        foreach (json_decode(file_get_contents(__DIR__ . '/fixtures/apex-search.json'), true) as $name => $response) {
+        foreach (apexSearchFixture() as $name => $response) {
             yield $name => [$response];
         }
     }
@@ -628,7 +630,7 @@ final class SalesforceMemberDataTest extends TestCase
 
     public static function inconsistentApexResponses(): iterable
     {
-        $responses = json_decode(file_get_contents(__DIR__ . '/fixtures/apex-search.json'), true);
+        $responses = apexSearchFixture();
         foreach (['Id', 'isDonateur', 'isMembre', 'isAncienMembre', 'hasMandatActif', 'hasEspaceDon'] as $field) {
             $missing = $responses['absent'];
             unset($missing[$field]);
@@ -645,8 +647,11 @@ final class SalesforceMemberDataTest extends TestCase
             'isDonateur' => true,
             'metadata' => ['schemaVersion' => 2],
         ])];
-        foreach (['Id' => 42, 'isDonateur' => 'false', 'isMembre' => 1, 'hasMandatActif' => null, 'isAncienMembre' => [], 'hasEspaceDon' => 'true'] as $field => $value) {
+        foreach (['Id' => 42, 'isDonateur' => 'false', 'isMembre' => 1, 'hasMandatActif' => 'false', 'isAncienMembre' => [], 'hasEspaceDon' => 'true'] as $field => $value) {
             yield 'invalid contact type ' . $field => [array_replace($responses['donor'], [$field => $value])];
+        }
+        foreach (['isDonateur', 'isMembre'] as $field) {
+            yield 'unknown eligibility ' . $field => [array_replace($responses['donor'], [$field => null])];
         }
         yield 'list' => [[$responses['donor']]];
         yield 'empty list' => [[]];
@@ -665,10 +670,43 @@ final class SalesforceMemberDataTest extends TestCase
 
     public static function deniedApexResponses(): iterable
     {
-        $responses = json_decode(file_get_contents(__DIR__ . '/fixtures/apex-search.json'), true);
+        $responses = apexSearchFixture();
         yield 'absent' => [$responses['absent']];
         yield 'absent with additional metadata' => [$responses['absent'] + ['metadata' => ['schemaVersion' => 2]]];
         yield 'known but ineligible' => [$responses['ineligible']];
+        yield 'ineligible with nullable ancillary flags' => [array_replace($responses['ineligible'], [
+            'isAncienMembre' => null,
+            'hasMandatActif' => null,
+            'hasEspaceDon' => null,
+        ])];
+    }
+
+    public static function nullableAncillaryFlags(): iterable
+    {
+        $responses = apexSearchFixture();
+        foreach (['donor', 'member', 'ineligible'] as $name) {
+            foreach (['isAncienMembre', 'hasMandatActif', 'hasEspaceDon'] as $field) {
+                yield $name . ' with null ' . $field => [array_replace($responses[$name], [$field => null]), 'ineligible' !== $name];
+            }
+            yield $name . ' with all ancillary flags null' => [array_replace($responses[$name], [
+                'isAncienMembre' => null,
+                'hasMandatActif' => null,
+                'hasEspaceDon' => null,
+            ]), 'ineligible' !== $name];
+        }
+    }
+
+    #[DataProvider('nullableAncillaryFlags')]
+    public function testNullableAncillaryFlagsDoNotChangeContactEligibility(array $response, bool $eligible): void
+    {
+        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(200, json_encode($response));
+
+        $member = aif_validate_salesforce_member(get_salesforce_member_data('known@example.test'));
+
+        self::assertNotInstanceOf(WP_Error::class, $member);
+        self::assertSame($response, get_object_vars($member));
+        self::assertFalse(aif_is_salesforce_contact_absent($member));
+        self::assertSame($eligible, has_access_to_donation_space($member));
     }
 
     #[DataProvider('deniedApexResponses')]
