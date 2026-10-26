@@ -81,8 +81,14 @@ function aif_validate_salesforce_member($sf_member)
         return aif_create_salesforce_invalid_response_error('GET', 'member_search');
     }
 
-    foreach (['isDonateur', 'isMembre', 'hasMandatActif', 'isAncienMembre', 'hasEspaceDon'] as $property) {
-        if (property_exists($sf_member, $property) && !is_bool($sf_member->$property)) {
+    foreach (['isDonateur', 'isMembre'] as $property) {
+        if (!is_bool($sf_member->$property)) {
+            return aif_create_salesforce_invalid_response_error('GET', 'member_search');
+        }
+    }
+
+    foreach (['hasMandatActif', 'isAncienMembre', 'hasEspaceDon'] as $property) {
+        if (isset($sf_member->$property) && !is_bool($sf_member->$property)) {
             return aif_create_salesforce_invalid_response_error('GET', 'member_search');
         }
     }
