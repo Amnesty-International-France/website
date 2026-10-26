@@ -7,6 +7,8 @@ use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 
+require_once __DIR__ . '/apex-search-fixture.php';
+
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState(false)]
 final class AccountVerificationPagesTest extends TestCase
@@ -24,6 +26,9 @@ final class AccountVerificationPagesTest extends TestCase
         $GLOBALS['__phpunit_users'] = [];
         $GLOBALS['__phpunit_user_meta'] = [];
         $GLOBALS['__phpunit_inserted_users'] = [];
+        $GLOBALS['__phpunit_current_user_id'] = 0;
+        $GLOBALS['__phpunit_signons'] = [];
+        $GLOBALS['__phpunit_signon_result'] = new WP_Error('invalid_credentials', 'Invalid credentials');
         $GLOBALS['__phpunit_sent_mails'] = [];
         $GLOBALS['__phpunit_mail_response'] = ['response' => ['code' => 200]];
         $GLOBALS['__phpunit_wp_remote_calls'] = [];
@@ -32,7 +37,7 @@ final class AccountVerificationPagesTest extends TestCase
 
     private function queueEligibleDonor(): void
     {
-        $responses = json_decode(file_get_contents(__DIR__ . '/fixtures/apex-search.json'), true);
+        $responses = apexSearchFixture();
         $GLOBALS['__phpunit_wp_remote_response_queue'] = [
             ['response' => ['code' => 200], 'body' => json_encode($responses['donor'])],
             ['response' => ['code' => 200], 'body' => '{"FirstName":"Ada","LastName":"Lovelace"}'],
@@ -146,9 +151,14 @@ final class AccountVerificationPagesTest extends TestCase
 
     public static function deniedContacts(): iterable
     {
-        $responses = json_decode(file_get_contents(__DIR__ . '/fixtures/apex-search.json'), true);
+        $responses = apexSearchFixture();
         yield 'provider absence' => [$responses['absent']];
         yield 'known ineligible contact' => [$responses['ineligible']];
+        yield 'ineligible contact with nullable ancillary flags' => [array_replace($responses['ineligible'], [
+            'isAncienMembre' => null,
+            'hasMandatActif' => null,
+            'hasEspaceDon' => null,
+        ])];
     }
 
     #[DataProvider('deniedContacts')]
@@ -189,7 +199,39 @@ final class AccountVerificationPagesTest extends TestCase
 
         self::assertStringContainsString('ne trouve pas de correspondance', $html);
         self::assertStringNotContainsString(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE, $html);
-        self::assertSame([], $GLOBALS['__phpunit_signons'] ?? []);
+        self::assertSame([], $GLOBALS['__phpunit_signons']);
+        self::assertSame(0, get_current_user_id());
         self::assertSame('', get_user_meta(42, 'user_SF_ID', true));
+    }
+
+    public static function eligibleContacts(): iterable
+    {
+        $donor = apexSearchFixture()['donor'];
+        yield 'eligible donor' => [$donor];
+        yield 'eligible donor with nullable ancillary flags' => [array_replace($donor, [
+            'isAncienMembre' => null,
+            'hasMandatActif' => null,
+            'hasEspaceDon' => null,
+        ])];
+    }
+
+    #[DataProvider('eligibleContacts')]
+    public function testLoginAuthenticatesVerifiedEligibleContacts(array $response): void
+    {
+        $user = new WP_User(['subscriber'], 42, self::EMAIL);
+        $GLOBALS['__phpunit_users'][42] = $user;
+        $GLOBALS['__phpunit_signon_result'] = $user;
+        store_email_is_verified(42);
+        $GLOBALS['__phpunit_wp_remote_response_queue'][0]['body'] = json_encode($response);
+
+        $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password']);
+
+        self::assertSame('redirect:https://wordpress.example.test/mon-espace/', $html);
+        self::assertSame([[
+            'credentials' => ['user_login' => self::EMAIL, 'user_password' => 'password', 'remember' => true],
+            'secure_cookie' => true,
+        ]], $GLOBALS['__phpunit_signons']);
+        self::assertSame(42, get_current_user_id());
+        self::assertSame($response['Id'], get_user_meta(42, 'user_SF_ID', true));
     }
 }
