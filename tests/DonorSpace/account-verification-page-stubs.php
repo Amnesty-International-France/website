@@ -76,6 +76,20 @@ function get_user_by(string $field, string $value): WP_User|false
     return false;
 }
 
+function wp_signon(array $credentials = [], bool|string $secure_cookie = ''): WP_User|WP_Error
+{
+    $GLOBALS['__phpunit_signons'][] = ['credentials' => $credentials, 'secure_cookie' => $secure_cookie];
+
+    return $GLOBALS['__phpunit_signon_result'];
+}
+
+function wp_set_current_user(int $id, string $name = ''): WP_User
+{
+    $GLOBALS['__phpunit_current_user_id'] = $id;
+
+    return $GLOBALS['__phpunit_current_user'] = get_userdata($id);
+}
+
 function wp_insert_user(array $userdata): int
 {
     $GLOBALS['__phpunit_inserted_users'][] = $userdata;
