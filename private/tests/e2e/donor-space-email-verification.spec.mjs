@@ -30,7 +30,7 @@ test.describe('donor space e-mail verification', () => {
       gotoWithoutCookieOverlay,
       salesforceTestId,
     }) => {
-      const email = uniqueEmail().replace('e2e-', `e2e-${localPart}-`);
+      const email = uniqueEmail().replace('e2e-', () => `e2e-${localPart}-`);
       await resetSalesforceCalls(request, salesforceTestId);
       await mockSuccessfulTurnstile(page, { token: 'mock-special-character-token' });
 
@@ -55,6 +55,7 @@ test.describe('donor space e-mail verification', () => {
       expect(searches).toHaveLength(1);
       expect(searches[0].method).toBe('GET');
       expect(new URL(searches[0].url).pathname).toBe(`/services/apexrest/search/v1/${email}`);
+      expect(new URL(searches[0].url).pathname).toContain(localPart);
       if (providerStatus === 404) {
         expect(calls.filter(({ url }) => url.includes('/sobjects/Contact/'))).toHaveLength(0);
       }
