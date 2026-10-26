@@ -107,8 +107,14 @@ test('renders the registered donor contact preview inside the real iframe editor
 }, testInfo) => {
   // wp-admin needs its native auth cookie, separate from the public login.
   await page.goto('/wp-login.php');
-  await page.locator('#user_login').fill('e2e-legacy-editor-donor@example.test');
-  await page.locator('#user_pass').fill('E2e-Legacy-Editor-1!');
+  const username = page.locator('#user_login');
+  const password = page.locator('#user_pass');
+  // Core's delayed autofocus must finish before filling the password field.
+  await expect(username).toBeFocused();
+  await username.fill('e2e-legacy-editor-donor@example.test');
+  await password.fill('E2e-Legacy-Editor-1!');
+  await expect(username).toHaveValue('e2e-legacy-editor-donor@example.test');
+  await expect(password).toHaveValue('E2e-Legacy-Editor-1!');
   await page.locator('#wp-submit').click();
   await expect(page).toHaveURL(/\/wp-admin\//);
   const postId = await page.evaluate(async () => {
