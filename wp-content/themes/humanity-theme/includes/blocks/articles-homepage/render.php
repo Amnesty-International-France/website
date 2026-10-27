@@ -339,9 +339,6 @@ if (!function_exists('render_articles_homepage_block')) {
 									</div>
 									<div class="article-main-mobile-content">
 										<div class="article-main-mobile-header">
-											<?php if (!empty($post_date)): ?>
-												<p class="article-date"><?php echo esc_html($post_date); ?></p>
-											<?php endif; ?>
 											<h3 class="article-title"><?php echo esc_html($title); ?></h3>
 										</div>
 										<?php if (!empty($custom_terms)): ?>
@@ -421,11 +418,6 @@ if (!function_exists('render_articles_homepage_block')) {
 											</div>
 											<div class="article-side-content">
 												<div class="article-side-header">
-													<?php if (!empty($post_date)): ?>
-														<p class="article-date">
-															<?php echo esc_html($post_date); ?>
-														</p>
-													<?php endif; ?>
 													<h3 class="article-title"><?php echo esc_html($title); ?></h3>
 												</div>
 												<?php if (!empty($custom_terms)): ?>
