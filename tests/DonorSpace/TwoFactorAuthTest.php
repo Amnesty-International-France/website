@@ -159,20 +159,12 @@ final class TwoFactorAuthTest extends TestCase
         self::assertFalse(get_email_is_verified(self::USER_ID));
     }
 
-    #[DataProvider('legacyVerifiedFlags')]
-    public function testLegacyVerifiedFlagIsAcceptedWithoutRewritingIt(mixed $flag): void
+    public function testLegacyVerifiedFlagIsAcceptedWithoutRewritingIt(): void
     {
-        update_user_meta(self::USER_ID, 'email-verfied', $flag);
+        update_user_meta(self::USER_ID, 'email-verfied', '1');
 
         self::assertTrue(get_email_is_verified(self::USER_ID));
-        self::assertSame($flag, get_user_meta(self::USER_ID, 'email-verfied', true));
-    }
-
-    public static function legacyVerifiedFlags(): iterable
-    {
-        yield 'WordPress persisted boolean' => ['1'];
-        yield 'boolean' => [true];
-        yield 'integer' => [1];
+        self::assertSame('1', get_user_meta(self::USER_ID, 'email-verfied', true));
     }
 
     #[DataProvider('unverifiedFlags')]

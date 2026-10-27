@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
             } elseif (aif_send_verification_code($stored_user->ID)) {
                 $send_code_success_message = "Nous avons bien reçu votre demande de code. Il arrivera dans votre boîte email d'ici quelques minutes";
             } else {
-                $send_code_error_message = "L'envoi du code de vérification a échoué. Veuillez réessayer dans quelques instants.";
+                $send_code_error_message = AIF_VERIFICATION_CODE_SEND_ERROR_MESSAGE;
             }
         } else {
             $send_code_error_message = 'Utilisateur inconnu';

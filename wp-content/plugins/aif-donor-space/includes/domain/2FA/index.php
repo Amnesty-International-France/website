@@ -3,6 +3,7 @@
 require_once dirname(__DIR__) . '/expiring-secret.php';
 
 const AIF_2FA_CODE_TTL = 900;
+const AIF_VERIFICATION_CODE_SEND_ERROR_MESSAGE = "L'envoi du code de vérification a échoué. Veuillez réessayer dans quelques instants.";
 
 function generate_2fa_code()
 {
@@ -63,7 +64,7 @@ function get_email_is_verified($user_id)
     }
 
     // Keep historical validations valid alongside address-bound proofs.
-    if (in_array($verified_email, [true, 1, '1'], true)) {
+    if ('1' === $verified_email) {
         return true;
     }
 
