@@ -4,7 +4,7 @@ add_action('rest_api_init', function () {
     register_rest_route('aif-donor-space/v1', '/duplicate-tax-receipt-request/', [
         'methods' => 'POST',
         'callback' => 'handle_duplicate_tax_receipt_request',
-        'permission_callback' => 'check_nonce',
+        'permission_callback' => 'aif_check_nonce',
     ]);
 });
 
@@ -57,7 +57,7 @@ function aif_salesforce_unavailable_response(WP_Error $error)
     return new WP_REST_Response(['message' => 'service temporarily unavailable'], status: 503);
 }
 
-function check_nonce(WP_REST_Request $request)
+function aif_check_nonce(WP_REST_Request $request)
 {
 
     $nonce = $request->get_header('X-WP-Nonce');

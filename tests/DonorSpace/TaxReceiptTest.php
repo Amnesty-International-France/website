@@ -257,7 +257,7 @@ final class TaxReceiptTest extends TestCase
 
     public function testCheckNonceRejectsAnInvalidNonce(): void
     {
-        $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'invalid']));
+        $result = aif_check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'invalid']));
 
         self::assertInstanceOf(WP_Error::class, $result);
         self::assertSame('rest_forbidden', $result->get_error_code());
@@ -268,7 +268,7 @@ final class TaxReceiptTest extends TestCase
         $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
         $GLOBALS['__phpunit_current_user_id'] = 0;
 
-        $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
+        $result = aif_check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 
         self::assertInstanceOf(WP_Error::class, $result);
         self::assertSame('Not logged in.', $result->get_error_message());
@@ -280,7 +280,7 @@ final class TaxReceiptTest extends TestCase
         $GLOBALS['__phpunit_current_user_id'] = 42;
         store_email_is_verified(42);
 
-        $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
+        $result = aif_check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 
         self::assertTrue($result);
     }
@@ -290,7 +290,7 @@ final class TaxReceiptTest extends TestCase
         $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
         $GLOBALS['__phpunit_current_user_id'] = 43;
 
-        $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
+        $result = aif_check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 
         self::assertInstanceOf(WP_Error::class, $result);
         self::assertSame('Email not verified.', $result->get_error_message());
