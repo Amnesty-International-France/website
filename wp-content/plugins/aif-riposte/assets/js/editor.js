@@ -70,6 +70,19 @@
 							},
 						});
 					},
+				}),
+				el(TextControl, {
+					label: 'Crédit photo',
+					value: meta.aif_riposte_photo_credit || '',
+					help: 'Affiché sous l’image de la carte. Ex. : © Prénom Nom / Agence',
+					onChange: function (value) {
+						editEntityRecord('postType', postType, postId, {
+							meta: {
+								...meta,
+								aif_riposte_photo_credit: value,
+							},
+						});
+					},
 				})
 			)
 		);
