@@ -95,11 +95,6 @@ final class DonorContactPatternTest extends TestCase
             {
                 return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             }
-            function wp_safe_redirect(string $location, int $status = 302): never
-            {
-                $GLOBALS['__phpunit_redirect_status'] = $status;
-                wp_redirect($location, $status);
-            }
         }
 
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/sales-force/user-data.php';
