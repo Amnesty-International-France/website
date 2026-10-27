@@ -58,8 +58,16 @@ function get_email_is_verified($user_id)
     $verified_email = get_user_meta($user_id, 'email-verfied', true);
     $user = get_userdata($user_id);
 
-    // A legacy boolean flag does not identify the address that was verified.
-    return is_string($verified_email) && $verified_email !== '' && $user
+    if (!$user) {
+        return false;
+    }
+
+    // Keep historical validations valid alongside address-bound proofs.
+    if (in_array($verified_email, [true, 1, '1'], true)) {
+        return true;
+    }
+
+    return is_string($verified_email) && $verified_email !== ''
         && 0 === strcasecmp($verified_email, $user->user_email);
 }
 
@@ -89,9 +97,9 @@ function send_2fa_code($to_email, $code)
 
     if (is_wp_error($response)) {
         return false;
-    } else {
-        return true;
     }
+
+    return 200 === wp_remote_retrieve_response_code($response);
 }
 
 function get_login_blocked_until($user_id)

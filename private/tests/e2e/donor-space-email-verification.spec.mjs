@@ -128,7 +128,7 @@ test.describe('donor space e-mail verification', () => {
     await expect(page).toHaveURL(/\/mon-espace\/$/);
   });
 
-  test('still requires verification for a subscriber with the legacy flag', async ({
+  test('lets a historically verified subscriber log in with the existing password', async ({
     page,
     gotoWithoutCookieOverlay,
   }) => {
@@ -139,9 +139,22 @@ test.describe('donor space e-mail verification', () => {
     await page.locator(`${LOGIN_FORM} #password`).fill(LEGACY_SUBSCRIBER.password);
     await page.locator(`${LOGIN_FORM} button[type="submit"]`).click();
 
-    await expect(page.getByText('Votre email ne semble pas encore vérifié')).toBeVisible();
-    await page.goto('/mon-espace/');
-    await expect(page).toHaveURL(/\/connectez-vous\//);
+    await expect(page).toHaveURL(/\/mon-espace\/$/);
+    const response = await page.reload();
+    expect(response.status()).toBe(200);
+    await expect(page).toHaveURL(/\/mon-espace\/$/);
+  });
+
+  test('lets a historically verified subscriber use the native login', async ({ page }) => {
+    await page.goto('/wp-login.php?redirect_to=%2Fmon-espace%2F');
+    await expect(page.locator('#user_login')).toBeFocused();
+    await page.locator('#user_login').fill(LEGACY_SUBSCRIBER.email);
+    await page.locator('#user_pass').fill(LEGACY_SUBSCRIBER.password);
+    await page.locator('#wp-submit').click();
+
+    await expect(page).toHaveURL(/\/mon-espace\/$/);
+    const response = await page.reload();
+    expect(response.status()).toBe(200);
   });
 
   test('refuses an unverified subscriber on wp-login.php and keeps the donor space closed', async ({

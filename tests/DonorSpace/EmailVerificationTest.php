@@ -129,11 +129,24 @@ final class EmailVerificationTest extends TestCase
         self::assertFalse(aif_is_unverified_subscriber(new WP_User(['subscriber'], self::USER_ID)));
     }
 
-    public function testLegacyStringOneRequiresReverification(): void
+    public function testHistoricallyVerifiedSubscriberKeepsLoginAndSession(): void
     {
         update_user_meta(self::USER_ID, 'email-verfied', '1');
+        $user = get_userdata(self::USER_ID);
+        $GLOBALS['__phpunit_current_user_id'] = self::USER_ID;
+        $GLOBALS['__phpunit_current_user'] = $user;
 
-        self::assertTrue(aif_is_unverified_subscriber(new WP_User(['subscriber'], self::USER_ID)));
+        self::assertFalse(aif_is_unverified_subscriber($user));
+        self::assertSame($user, aif_reject_unverified_subscriber_login($user));
+
+        aif_log_out_unverified_subscriber();
+
+        self::assertSame(self::USER_ID, get_current_user_id());
+        self::assertFalse($GLOBALS['__phpunit_auth_cookie_cleared']);
+        self::assertSame([], $GLOBALS['__phpunit_destroyed_sessions']);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+        self::assertSame([], $GLOBALS['__phpunit_passwords']);
+        self::assertSame('1', get_user_meta(self::USER_ID, 'email-verfied', true));
     }
 
     public function testAdministratorWithoutMetaIsNotBlocked(): void
