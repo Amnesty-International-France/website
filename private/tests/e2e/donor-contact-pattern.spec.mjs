@@ -49,24 +49,104 @@ test('enumerates the contact pattern through the real WordPress registry without
   expect(await getSalesforceCalls(request, salesforceTestId)).toEqual([]);
 });
 
-test('renders after catalogue warming and submits one Case for two rendered forms', async ({
+test('redirects after one Case and refreshing the two rendered forms does not send again', async ({
   page, request, gotoWithoutCookieOverlay, salesforceTestId,
 }) => {
   await login(page, gotoWithoutCookieOverlay);
+  await resetSalesforceCalls(request, salesforceTestId);
   await gotoWithoutCookieOverlay(`${CONTACT_PAGE}&subject=${encodeURIComponent("Demande d'un reçu")}`);
   const forms = page.locator('form:has(#subject)');
   await expect(forms).toHaveCount(2);
   await expect(forms.first().locator('#subject')).toHaveValue("Demande d'un reçu");
-  await forms.first().locator('#message').fill('Demande de contact de test');
+  const getCalls = await getSalesforceCalls(request, salesforceTestId);
+  expect(getCalls.filter((call) => call.url.includes('/sobjects/Contact/'))).toEqual([]);
+  const message = 'Premier paragraphe\n\nDeuxième paragraphe';
+  await forms.first().locator('#message').fill(message);
   await resetSalesforceCalls(request, salesforceTestId);
+  const submitted = page.waitForResponse((response) => response.request().method() === 'POST' && response.url().includes('/mon-espace/e2e-contact-twice/'));
 
   await forms.first().getByRole('button', { name: 'Enregistrer' }).click();
 
-  await expect(page.getByText('Votre demande de contact à bien été prise en compte')).toHaveCount(2);
+  expect((await submitted).status()).toBe(303);
+  await expect(page).toHaveURL(/\/mon-espace\/e2e-contact-twice\/\?contact_sent=1$/);
+  await expect(page.getByText('Votre demande de contact a bien été prise en compte')).toHaveCount(2);
+  await expect(page.getByRole('link', { name: 'Mes demandes', exact: true }).last()).toHaveAttribute('href', /\/mon-espace\/mes-dons\/mes-demandes\/$/);
+  await page.reload();
+  await expect(page.getByText('Votre demande de contact a bien été prise en compte')).toHaveCount(2);
   const calls = await getSalesforceCalls(request, salesforceTestId);
   const cases = calls.filter((call) => call.method === 'POST' && call.url.endsWith('/sobjects/Case'));
   expect(cases).toHaveLength(1);
   expect(JSON.parse(cases[0].body).Subject).toBe("Demande d'un reçu");
+  // Browsers serialize textarea line endings as CRLF in a form POST.
+  expect(JSON.parse(cases[0].body).Description.replace(/\r\n/g, '\n')).toBe(message);
+});
+
+test('rejects invalid POST values on the server before reading or creating Salesforce records', async ({
+  page, request, gotoWithoutCookieOverlay, salesforceTestId,
+}) => {
+  await login(page, gotoWithoutCookieOverlay);
+  await gotoWithoutCookieOverlay(CONTACT_PAGE);
+  const nonce = await page.locator('[name="contact_nonce"]').first().inputValue();
+  const invalidFields = [
+    { subject: '', message: 'Message conservé' },
+    { subject: 'é'.repeat(256), message: 'Message conservé' },
+    { subject: 'Objet conservé', 'message[]': 'x' },
+  ];
+  for (const fields of invalidFields) {
+    await resetSalesforceCalls(request, salesforceTestId);
+    const response = await page.request.post(CONTACT_PAGE, {
+      form: { aif_donor_contact_form: '1', contact_nonce: nonce, ...fields },
+    });
+    expect(response.status()).toBe(200);
+    const body = await response.text();
+    expect(body).toContain('Veuillez vérifier les champs du formulaire.');
+    expect(body).toContain('aria-invalid="true"');
+    expect(body).not.toContain('Votre demande de contact a bien été prise en compte');
+    const calls = await getSalesforceCalls(request, salesforceTestId);
+    expect(calls.filter((call) => call.method === 'POST' || call.url.includes('/sobjects/Contact/'))).toEqual([]);
+  }
+});
+
+test('public REST content and search remain accessible without rendering a donor form', async ({
+  page, request, salesforceTestId,
+}) => {
+  await resetSalesforceCalls(request, salesforceTestId);
+  const response = await request.get('/wp-json/wp/v2/pages?slug=e2e-contact-twice', {
+    headers: { 'X-AIF-E2E-Test-Id': salesforceTestId },
+  });
+  expect(response.status()).toBe(200);
+  const pages = await response.json();
+  expect(pages[0].content.rendered).not.toContain('contact_nonce');
+  const search = await page.goto('/?s=Contact+donateur');
+  expect(search.status()).toBe(200);
+  await expect(page.locator('[name="contact_nonce"]')).toHaveCount(0);
+  expect(await getSalesforceCalls(request, salesforceTestId)).toEqual([]);
+});
+
+test('keeps anonymous and ineligible submissions behind the shared donor access checks', async ({
+  page, request, context, gotoWithoutCookieOverlay, salesforceTestId,
+}) => {
+  const form = {
+    aif_donor_contact_form: '1', contact_nonce: 'untrusted', subject: 'Objet', message: 'Message',
+  };
+  await resetSalesforceCalls(request, salesforceTestId);
+  const anonymous = await request.post(CONTACT_PAGE, {
+    form, maxRedirects: 0, headers: { 'X-AIF-E2E-Test-Id': salesforceTestId },
+  });
+  expect(anonymous.status()).toBe(302);
+  expect(anonymous.headers().location).toContain('/connectez-vous/');
+  expect(await getSalesforceCalls(request, salesforceTestId)).toEqual([]);
+
+  await login(page, gotoWithoutCookieOverlay);
+  await context.setExtraHTTPHeaders({
+    'X-AIF-E2E-Test-Id': salesforceTestId, 'X-AIF-E2E-Apex-Result': 'ineligible',
+  });
+  await resetSalesforceCalls(request, salesforceTestId);
+  const ineligible = await page.request.post(CONTACT_PAGE, { form, maxRedirects: 0 });
+  expect(ineligible.status()).toBe(302);
+  expect(ineligible.headers().location).toContain('/connectez-vous/');
+  const calls = await getSalesforceCalls(request, salesforceTestId);
+  expect(calls.filter((call) => call.method === 'POST' || call.url.includes('/sobjects/Contact/'))).toEqual([]);
 });
 
 test('rejects a contact POST with an invalid nonce without creating a Case', async ({
@@ -176,6 +256,7 @@ test('accepts the REST edit context from the URL or JSON body without Salesforce
       { name: 'POST JSON context', method: 'POST', url: endpoint, body: { context: 'edit', attributes: {} } },
       { name: 'POST JSON context with page', method: 'POST', url: endpoint, body: { context: 'edit', attributes: {}, post_id: pages[0].id } },
       { name: 'GET page editor content', method: 'GET', url: `/wp-json/wp/v2/pages/${pages[0].id}?context=edit` },
+      { name: 'GET page view content', method: 'GET', url: `/wp-json/wp/v2/pages/${pages[0].id}` },
     ];
     return Promise.all(variants.map(async (variant) => {
       const response = await fetch(variant.url, {

@@ -42,27 +42,6 @@ if (!function_exists('wp_nonce_field')) {
     }
 }
 
-if (!function_exists('aif_get_request_salesforce_member')) {
-    function aif_get_request_salesforce_member(): object
-    {
-        return (object) ['Id' => '003000000000001'];
-    }
-}
-
-if (!function_exists('get_salesforce_user_data')) {
-    function get_salesforce_user_data(string $id): object
-    {
-        return (object) ['Id' => $id, 'Tech_Lien_Mandat_Actif__c' => null];
-    }
-}
-
-if (!function_exists('aif_require_salesforce_object')) {
-    function aif_require_salesforce_object(mixed $object, string $label, string $field): mixed
-    {
-        return $object;
-    }
-}
-
 if (!function_exists('has_post_thumbnail')) {
     function has_post_thumbnail(): bool
     {
