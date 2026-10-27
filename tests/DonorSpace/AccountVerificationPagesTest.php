@@ -307,4 +307,29 @@ final class AccountVerificationPagesTest extends TestCase
         self::assertSame(42, get_current_user_id());
         self::assertSame($response['Id'], get_user_meta(42, 'user_SF_ID', true));
     }
+
+    public static function loginRedirects(): iterable
+    {
+        yield 'page of the site' => ['https://wordpress.example.test/mon-espace/recus-fiscaux/', 'https://wordpress.example.test/mon-espace/recus-fiscaux/'];
+        yield 'relative path' => ['/mon-espace/recus-fiscaux/', '/mon-espace/recus-fiscaux/'];
+        yield 'external site' => ['https://site-malveillant.example/session-expiree', 'https://wordpress.example.test/mon-espace/'];
+        yield 'protocol-relative external site' => ['//site-malveillant.example/session-expiree', 'https://wordpress.example.test/mon-espace/'];
+        yield 'external site behind credentials' => ['https://wordpress.example.test@site-malveillant.example/', 'https://wordpress.example.test/mon-espace/'];
+        yield 'javascript scheme' => ['javascript:alert(1)', 'https://wordpress.example.test/mon-espace/'];
+        yield 'empty value' => ['', 'https://wordpress.example.test/mon-espace/'];
+    }
+
+    #[DataProvider('loginRedirects')]
+    public function testLoginOnlyFollowsRedirectToWithinTheSite(string $redirectTo, string $expected): void
+    {
+        $user = new WP_User(['subscriber'], 42, self::EMAIL);
+        $GLOBALS['__phpunit_users'][42] = $user;
+        $GLOBALS['__phpunit_signon_result'] = $user;
+        store_email_is_verified(42);
+
+        $result = $this->render('page-connectez-vous.php', ['redirect_to' => $redirectTo], ['email' => self::EMAIL, 'password' => 'password']);
+
+        self::assertSame('redirect:' . $expected, $result);
+        self::assertSame(42, get_current_user_id());
+    }
 }
