@@ -44,11 +44,11 @@ final class AccountVerificationPagesTest extends TestCase
         ];
     }
 
-    private function render(string $page, array $get, array $post): string
+    private function render(string $page, array $get, array $post, string $method = 'POST'): string
     {
         $_GET = $get;
         $_POST = $post;
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_SERVER['REQUEST_METHOD'] = $method;
 
         ob_start();
         try {
@@ -147,6 +147,79 @@ final class AccountVerificationPagesTest extends TestCase
         $mail = $GLOBALS['__phpunit_sent_mails'][0];
         self::assertSame(self::EMAIL, $mail['to']);
         self::assertTrue(is_2fa_code_valid(42, json_decode($mail['t:variables'], true)['code']));
+    }
+
+    public function testHistoricallyVerifiedSubscriberLogsInWithTheExistingPassword(): void
+    {
+        $user = new WP_User(['subscriber'], 42, self::EMAIL, self::EMAIL, 'existing-reset-key', 'existing-password');
+        $GLOBALS['__phpunit_users'][42] = $user;
+        $GLOBALS['__phpunit_signon_result'] = $user;
+        update_user_meta(42, 'email-verfied', '1');
+
+        $result = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'existing-password']);
+
+        self::assertSame('redirect:https://wordpress.example.test/mon-espace/', $result);
+        self::assertSame([[
+            'credentials' => ['user_login' => self::EMAIL, 'user_password' => 'existing-password', 'remember' => true],
+            'secure_cookie' => true,
+        ]], $GLOBALS['__phpunit_signons']);
+        self::assertSame(42, get_current_user_id());
+        self::assertSame('1', get_user_meta(42, 'email-verfied', true));
+        self::assertSame('existing-password', $user->user_pass);
+        self::assertSame('existing-reset-key', $user->user_activation_key);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+        self::assertSame([], $GLOBALS['__phpunit_inserted_users']);
+        self::assertSame('', get_user_meta(42, '2fa_code_hash', true));
+    }
+
+    public function testOpeningVerificationPageDoesNotSendACode(): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+
+        $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], [], 'GET');
+
+        self::assertStringContainsString('Recevoir un nouveau code', $html);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+        self::assertSame([], $GLOBALS['__phpunit_wp_remote_calls']);
+    }
+
+    public static function failedMailResponses(): iterable
+    {
+        yield 'transport error' => [new WP_Error('http_request_failed', 'Mail service unavailable')];
+        yield 'HTTP 400' => [['response' => ['code' => 400]]];
+        yield 'HTTP 401' => [['response' => ['code' => 401]]];
+        yield 'HTTP 429' => [['response' => ['code' => 429]]];
+        yield 'HTTP 500' => [['response' => ['code' => 500]]];
+        yield 'missing status' => [[]];
+    }
+
+    #[DataProvider('failedMailResponses')]
+    public function testFailedResendDisplaysAnErrorAndAllowsRetry(mixed $response): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL, '', '', 'existing-password');
+        $GLOBALS['__phpunit_mail_response'] = $response;
+
+        $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
+
+        self::assertStringContainsString("L'envoi du code de vérification a échoué", $html);
+        self::assertStringContainsString('Recevoir un nouveau code', $html);
+        self::assertStringNotContainsString('Nous avons bien reçu votre demande de code', $html);
+        self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
+        self::assertFalse(get_email_is_verified(42));
+        self::assertSame('existing-password', get_userdata(42)->user_pass);
+    }
+
+    public function testHttpRejectionKeepsSignupOnTheExistingForm(): void
+    {
+        $GLOBALS['__phpunit_mail_response'] = ['response' => ['code' => 401]];
+
+        $html = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
+
+        self::assertStringContainsString("L'envoi du code de vérification a échoué", $html);
+        self::assertStringContainsString('Créer mon compte', $html);
+        self::assertCount(1, $GLOBALS['__phpunit_inserted_users']);
+        self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
+        self::assertFalse(get_email_is_verified(42));
     }
 
     public static function deniedContacts(): iterable
