@@ -70,8 +70,13 @@ final class AccountVerificationPagesTest extends TestCase
         }
         $GLOBALS['__phpunit_mail_response'] = new WP_Error('http_request_failed', 'Mail service unavailable');
 
+        $errorLog = tempnam(sys_get_temp_dir(), 'error-log');
+        ini_set('error_log', $errorLog);
+
         $html = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
 
+        self::assertStringContainsString('Mailgun failed to send mail with template "2facode": http_request_failed', (string) file_get_contents($errorLog));
+        unlink($errorLog);
         self::assertStringContainsString("L'envoi du code de vérification a échoué", $html);
         self::assertStringContainsString('Créer mon compte', $html);
         self::assertFalse(get_email_is_verified(42));
