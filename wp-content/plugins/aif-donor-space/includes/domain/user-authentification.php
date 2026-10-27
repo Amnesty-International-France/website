@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/mailgun.php';
+
 function aif_generate_random_hash()
 {
     return bin2hex(random_bytes(12));
@@ -11,6 +13,7 @@ function send_reset_password_email($to_email, $authentification_url)
     $api_key = getenv('AIF_MAILGUN_TOKEN');
     $url = getenv('AIF_MAILGUN_URL') . '/'. getenv('AIF_MAILGUN_DOMAIN') . '/messages';
 
+    $template = 'espace-don réinitialisation du mot de passe';
     $variables = [
         'url' => $authentification_url,
     ];
@@ -22,7 +25,7 @@ function send_reset_password_email($to_email, $authentification_url)
             'to' => $to_email,
             'subject' => 'Amnesty France- réinitialiser votre mot de passe',
             't:variables' => json_encode($variables),
-            'template' => 'espace-don réinitialisation du mot de passe',
+            'template' => $template,
         ],
         'timeout'   => 30,
         'headers' => [
@@ -30,9 +33,5 @@ function send_reset_password_email($to_email, $authentification_url)
         ],
     ]);
 
-    if (is_wp_error($response)) {
-        return false;
-    } else {
-        return true;
-    }
+    return is_mailgun_send_successful($response, $template);
 }
