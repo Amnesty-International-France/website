@@ -68,7 +68,7 @@ function aif_handle_account_creation_request()
     }
 
     if (!aif_send_verification_code($user_id)) {
-        return aif_account_creation_result("L'envoi du code de vérification a échoué. Veuillez réessayer dans quelques instants.");
+        return aif_account_creation_result(AIF_VERIFICATION_CODE_SEND_ERROR_MESSAGE);
     }
 
     $verification_url = add_query_arg([
