@@ -17,8 +17,19 @@ const getCategoryLink = (slug) => {
 };
 
 const EditComponent = ({ attributes, setAttributes }) => {
-  const { custom, newTab, direction, textDisplay, title, surtitle, category, permalink, linkTitle, thumbnail, text } =
-    attributes;
+  const {
+    custom,
+    newTab,
+    direction,
+    textDisplay,
+    title,
+    subtitle,
+    category,
+    permalink,
+    linkTitle,
+    thumbnail,
+    text,
+  } = attributes;
 
   const allowedTypesForThisBlock = ['post', 'pages', 'landmark', 'document'];
 
@@ -32,7 +43,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
       setAttributes({
         postId: null,
         title: '',
-        surtitle: '',
+        subtitle: '',
         category: '',
         permalink: '',
         linkTitle: '',
@@ -42,7 +53,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
     } else {
       setAttributes({
         title: '',
-        surtitle: '',
+        subtitle: '',
         category: '',
         permalink: '',
         linkTitle: '',
@@ -61,15 +72,15 @@ const EditComponent = ({ attributes, setAttributes }) => {
   };
 
   const updateTextDisplay = (value) => {
-    setAttributes({ textDisplay: value});
+    setAttributes({ textDisplay: value });
   };
 
   const updateTitle = (newTitle) => {
     setAttributes({ title: newTitle });
   };
 
-  const updateSurtitle = (newSurtitle) => {
-    setAttributes({ surtitle: newSurtitle });
+  const updateSubtitle = (newSubtitle) => {
+    setAttributes({ subtitle: newSubtitle });
   };
 
   const updateCategory = (newCategory) => {
@@ -81,7 +92,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
   };
 
   const updateLinkTitle = (newLinkTitle) => {
-    setAttributes({ linkTitle: newLinkTitle});
+    setAttributes({ linkTitle: newLinkTitle });
   };
 
   const updateText = (newText) => {
@@ -93,7 +104,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
       setAttributes({
         postId: null,
         title: '',
-        surtitle: '',
+        subtitle: '',
         permalink: '',
         linkTitle: '',
         thumbnail: null,
@@ -113,7 +124,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
         postId: id,
         category: docCategory || 'Document',
         title: post.title.rendered,
-        surtitle: '',
+        subtitle: '',
         text: excerpt?.rendered || '',
         permalink: acf?.upload_du_document?.url || '',
         linkTitle: '',
@@ -137,7 +148,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
       setAttributes({
         postId: id,
         title: post.title.rendered,
-        surtitle: '',
+        subtitle: '',
         category: postCategoryName,
         permalink: `${getCategoryLink(type)}/${slug}`,
         linkTitle: '',
@@ -160,37 +171,34 @@ const EditComponent = ({ attributes, setAttributes }) => {
   return (
     <>
       <InspectorControls>
-        <PanelBody
-          title={__("Paramètres du bloc", "amnesty")}
-          initialOpen={true}
-        >
+        <PanelBody title={__('Paramètres du bloc', 'amnesty')} initialOpen={true}>
           <ToggleControl
             __nextHasNoMarginBottom
-            label={__("Contenu personnalisé", "amnesty")}
+            label={__('Contenu personnalisé', 'amnesty')}
             checked={custom}
             onChange={updateCustom}
           />
           <ToggleControl
             __nextHasNoMarginBottom
-            label={__("Ouvrir dans un nouvel onglet", "amnesty")}
+            label={__('Ouvrir dans un nouvel onglet', 'amnesty')}
             checked={newTab}
             onChange={updateNewTab}
           />
           <SelectControl
-            label={__("Disposition", "amnesty")}
+            label={__('Disposition', 'amnesty')}
             value={direction}
             options={[
-              { label: __("Horizontal", "amnesty"), value: "horizontal" },
-              { label: __("Vertical", "amnesty"), value: "vertical" },
+              { label: __('Horizontal', 'amnesty'), value: 'horizontal' },
+              { label: __('Vertical', 'amnesty'), value: 'vertical' },
             ]}
             onChange={updateDirection}
           />
           <SelectControl
-            label={__("Affichage du texte", "amnesty")}
+            label={__('Affichage du texte', 'amnesty')}
             value={textDisplay}
             options={[
-              { label: __("Au survol", "amnesty"), value: "rollOver" },
-              { label: __("Dès le chargement", "amnesty"), value: "showText" },
+              { label: __('Au survol', 'amnesty'), value: 'rollOver' },
+              { label: __('Dès le chargement', 'amnesty'), value: 'showText' },
             ]}
             onChange={updateTextDisplay}
           />
@@ -201,9 +209,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
                 onPostSelect={handlePostSelection}
               />
               {title && (
-                <p style={{ fontStyle: "italic", marginTop: "1rem" }}>
-                  {__("Contenu sélectionné :", "amnesty")}{" "}
-                  <strong>{title}</strong>
+                <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>
+                  {__('Contenu sélectionné :', 'amnesty')} <strong>{title}</strong>
                 </p>
               )}
             </>
@@ -213,53 +220,53 @@ const EditComponent = ({ attributes, setAttributes }) => {
               <MediaUploadCheck>
                 <MediaUpload
                   onSelect={handleSelectImage}
-                  allowedTypes={["image"]}
+                  allowedTypes={['image']}
                   value={thumbnail}
                   render={({ open }) => (
                     <Button onClick={open} isPrimary>
                       {thumbnail
-                        ? __("Changer l’image", "amnesty")
-                        : __("Ajouter une image", "amnesty")}
+                        ? __('Changer l’image', 'amnesty')
+                        : __('Ajouter une image', 'amnesty')}
                     </Button>
                   )}
                 />
               </MediaUploadCheck>
               <TextControl
-                label={__("Catégorie", "amnesty")}
+                label={__('Catégorie', 'amnesty')}
                 value={category}
                 onChange={updateCategory}
-                placeholder={__("Entrez une catégorie…", "amnesty")}
+                placeholder={__('Entrez une catégorie…', 'amnesty')}
               />
               <TextControl
-                label={__("Titre", "amnesty")}
+                label={__('Titre', 'amnesty')}
                 value={title}
                 onChange={updateTitle}
-                placeholder={__("Entrez un titre…", "amnesty")}
+                placeholder={__('Entrez un titre…', 'amnesty')}
               />
               <TextControl
-                label={__("Surtitre", "amnesty")}
-                value={surtitle}
-                onChange={updateSurtitle}
-                placeholder={__("Entrez un surtitre…", "amnesty")}
+                label={__('Surtitre', 'amnesty')}
+                value={subtitle}
+                onChange={updateSubtitle}
+                placeholder={__('Entrez un surtitre…', 'amnesty')}
               />
               <TextControl
-                label={__("Lien", "amnesty")}
+                label={__('Lien', 'amnesty')}
                 value={permalink}
                 onChange={updatePermalink}
-                placeholder={__("Lien", "amnesty")}
+                placeholder={__('Lien', 'amnesty')}
               />
               <TextControl
-                label={__("Intitulé du lien", "amnesty")}
+                label={__('Intitulé du lien', 'amnesty')}
                 value={linkTitle}
                 onChange={updateLinkTitle}
-                placeholder={__("Voir la suite", "amnesty")}
+                placeholder={__('Voir la suite', 'amnesty')}
               />
               <TextareaControl
                 __nextHasNoMarginBottom
-                label={__("Texte", "amnesty")}
+                label={__('Texte', 'amnesty')}
                 value={text}
                 onChange={updateText}
-                placeholder={__("Texte", "amnesty")}
+                placeholder={__('Texte', 'amnesty')}
               />
             </>
           )}

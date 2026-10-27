@@ -40,9 +40,9 @@ if (!function_exists('register_card_image_text_block')) {
                     'type' => 'string',
                     'default' => 'Titre par défaut',
                 ],
-                'surtitle' => [
+                'subtitle' => [
                     'type' => 'string',
-                    'default' => 'Surtitre par défaut',
+                    'default' => 'Sous-titre par défaut',
                 ],
                 'category' => [
                     'type' => 'string',
