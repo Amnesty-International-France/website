@@ -70,6 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
                 $send_code_error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>.";
             } elseif (aif_send_verification_code($stored_user->ID)) {
                 $send_code_success_message = "Nous avons bien reçu votre demande de code. Il arrivera dans votre boîte email d'ici quelques minutes";
+            } else {
+                $send_code_error_message = "L'envoi du code de vérification a échoué. Veuillez réessayer dans quelques instants.";
             }
         } else {
             $send_code_error_message = 'Utilisateur inconnu';

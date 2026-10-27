@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
@@ -158,12 +159,45 @@ final class TwoFactorAuthTest extends TestCase
         self::assertFalse(get_email_is_verified(self::USER_ID));
     }
 
-    public function testLegacyUnboundVerifiedFlagRequiresReverification(): void
+    #[DataProvider('legacyVerifiedFlags')]
+    public function testLegacyVerifiedFlagIsAcceptedWithoutRewritingIt(mixed $flag): void
     {
-        update_user_meta(self::USER_ID, 'email-verfied', true);
-        self::assertFalse(get_email_is_verified(self::USER_ID));
+        update_user_meta(self::USER_ID, 'email-verfied', $flag);
 
+        self::assertTrue(get_email_is_verified(self::USER_ID));
+        self::assertSame($flag, get_user_meta(self::USER_ID, 'email-verfied', true));
+    }
+
+    public static function legacyVerifiedFlags(): iterable
+    {
+        yield 'WordPress persisted boolean' => ['1'];
+        yield 'boolean' => [true];
+        yield 'integer' => [1];
+    }
+
+    #[DataProvider('unverifiedFlags')]
+    public function testUnverifiedOrUnrecognizedFlagsAreNotAccepted(mixed $flag): void
+    {
+        update_user_meta(self::USER_ID, 'email-verfied', $flag);
+
+        self::assertFalse(get_email_is_verified(self::USER_ID));
+    }
+
+    public static function unverifiedFlags(): iterable
+    {
+        yield 'empty' => [''];
+        yield 'false' => [false];
+        yield 'zero' => [0];
+        yield 'persisted zero' => ['0'];
+        yield 'unrecognized' => ['yes'];
+        yield 'another address' => ['other@example.org'];
+    }
+
+    public function testLegacyFlagDoesNotVerifyAMissingUser(): void
+    {
         update_user_meta(self::USER_ID, 'email-verfied', '1');
+        unset($GLOBALS['__phpunit_users'][self::USER_ID]);
+
         self::assertFalse(get_email_is_verified(self::USER_ID));
     }
 
