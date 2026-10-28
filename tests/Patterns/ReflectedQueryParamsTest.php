@@ -57,10 +57,19 @@ final class ReflectedQueryParamsTest extends TestCase
     public function testChronicleStatusKeepsKnownValues(): void
     {
         $success = $this->render('page-discover-chronicle-content', ['inscription_chronique' => 'success']);
-        $already = $this->render('page-discover-chronicle-content', ['inscription_chronique' => 'already-sent']);
 
         $this->assertStringContainsString('class="discover-chronicle-popin success"', $success);
-        $this->assertStringContainsString('class="discover-chronicle-popin already-sent"', $already);
+    }
+
+    public function testChronicleNoLongerShowsAnAlreadySentStatus(): void
+    {
+        // A repeated request is redirected with "success": "already-sent" is
+        // no longer produced, and would tell that a request exists.
+        $html = $this->render('page-discover-chronicle-content', ['inscription_chronique' => 'already-sent']);
+
+        $this->assertStringNotContainsString('discover-chronicle-popin', $html);
+        $this->assertStringNotContainsString('déjà été envoyé', $html);
+        $this->assertStringContainsString('id="discover-chronicle-form"', $html);
     }
 
     public function testNewsletterStatusRejectsUnknownValues(): void

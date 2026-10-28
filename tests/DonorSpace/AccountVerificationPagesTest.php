@@ -14,6 +14,7 @@ require_once __DIR__ . '/apex-search-fixture.php';
 final class AccountVerificationPagesTest extends TestCase
 {
     private const EMAIL = 'donor+tag@example.test';
+    private const RESEND_ANSWER = 'Si votre adresse correspond à un compte, un code arrivera';
 
     protected function setUp(): void
     {
@@ -22,6 +23,7 @@ final class AccountVerificationPagesTest extends TestCase
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/authorization.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/email-verification/index.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/user-authentification.php';
 
         $GLOBALS['__phpunit_users'] = [];
         $GLOBALS['__phpunit_user_meta'] = [];
@@ -109,14 +111,15 @@ final class AccountVerificationPagesTest extends TestCase
         self::assertFalse(get_email_is_verified(42));
     }
 
-    public function testResendForAnEligibleNonSubscriberPointsToLoginWithoutSendingACode(): void
+    public function testResendForAnEligibleNonSubscriberSendsNoCodeAndGetsTheUsualAnswer(): void
     {
         $GLOBALS['__phpunit_users'][42] = new WP_User(['editor'], 42, self::EMAIL, 'staff', 'native-reset-key', 'existing-password');
         update_user_meta(42, 'email-verfied', '1');
 
         $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
 
-        self::assertStringContainsString("href='https://wordpress.example.test/connectez-vous/'", $html);
+        self::assertStringContainsString(self::RESEND_ANSWER, $html);
+        self::assertStringNotContainsString('Vous semblez déjà avoir un compte', $html);
         self::assertStringNotContainsString('Votre compte n\'existe pas', $html);
         self::assertStringNotContainsString("href='/creer-votre-compte'", $html);
         self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
@@ -126,12 +129,13 @@ final class AccountVerificationPagesTest extends TestCase
         self::assertSame('native-reset-key', get_userdata(42)->user_activation_key);
     }
 
-    public function testResendForAnAbsentAccountStillPointsToSignup(): void
+    public function testResendForAnAbsentAccountGetsTheUsualAnswer(): void
     {
         $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
 
-        self::assertStringContainsString("href='/creer-votre-compte'", $html);
-        self::assertStringContainsString('Votre compte n\'existe pas', $html);
+        self::assertStringContainsString(self::RESEND_ANSWER, $html);
+        self::assertStringNotContainsString("href='/creer-votre-compte'", $html);
+        self::assertStringNotContainsString('Votre compte n\'existe pas', $html);
         self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
         self::assertSame([], $GLOBALS['__phpunit_inserted_users']);
     }
@@ -142,7 +146,7 @@ final class AccountVerificationPagesTest extends TestCase
 
         $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
 
-        self::assertStringContainsString('Nous avons bien reçu votre demande de code', $html);
+        self::assertStringContainsString(self::RESEND_ANSWER, $html);
         self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
         $mail = $GLOBALS['__phpunit_sent_mails'][0];
         self::assertSame(self::EMAIL, $mail['to']);
@@ -203,7 +207,7 @@ final class AccountVerificationPagesTest extends TestCase
 
         self::assertStringContainsString("L'envoi du code de vérification a échoué", $html);
         self::assertStringContainsString('Recevoir un nouveau code', $html);
-        self::assertStringNotContainsString('Nous avons bien reçu votre demande de code', $html);
+        self::assertStringNotContainsString('Nous avons bien reçu votre demande', $html);
         self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
         self::assertFalse(get_email_is_verified(42));
         self::assertSame('existing-password', get_userdata(42)->user_pass);
@@ -235,14 +239,13 @@ final class AccountVerificationPagesTest extends TestCase
     }
 
     #[DataProvider('deniedContacts')]
-    public function testSignupDeniesAbsentAndIneligibleContactsAsABusinessResult(array $response): void
+    public function testSignupDeniesAbsentAndIneligibleContactsLikeASuccessfulSignup(array $response): void
     {
         $GLOBALS['__phpunit_wp_remote_response_queue'][0]['body'] = json_encode($response);
 
-        $html = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
+        $result = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
 
-        self::assertStringContainsString('ne trouve pas de correspondance', $html);
-        self::assertStringNotContainsString(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE, $html);
+        self::assertSame('redirect:https://wordpress.example.test/verifier-votre-email/?user=donor%2Btag%40example.test', $result);
         self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
         self::assertSame([], $GLOBALS['__phpunit_inserted_users']);
         self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
@@ -256,7 +259,8 @@ final class AccountVerificationPagesTest extends TestCase
 
         $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
 
-        self::assertStringContainsString('Utilisateur inconnu', $html);
+        self::assertStringContainsString(self::RESEND_ANSWER, $html);
+        self::assertStringNotContainsString('Utilisateur inconnu', $html);
         self::assertStringNotContainsString(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE, $html);
         self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
     }
@@ -264,7 +268,7 @@ final class AccountVerificationPagesTest extends TestCase
     #[DataProvider('deniedContacts')]
     public function testLoginDoesNotAuthenticateAbsentOrIneligibleContacts(array $response): void
     {
-        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL, '', '', 'password');
         store_email_is_verified(42);
         $GLOBALS['__phpunit_wp_remote_response_queue'][0]['body'] = json_encode($response);
 
@@ -291,7 +295,7 @@ final class AccountVerificationPagesTest extends TestCase
     #[DataProvider('eligibleContacts')]
     public function testLoginAuthenticatesVerifiedEligibleContacts(array $response): void
     {
-        $user = new WP_User(['subscriber'], 42, self::EMAIL);
+        $user = new WP_User(['subscriber'], 42, self::EMAIL, '', '', 'password');
         $GLOBALS['__phpunit_users'][42] = $user;
         $GLOBALS['__phpunit_signon_result'] = $user;
         store_email_is_verified(42);
@@ -322,7 +326,7 @@ final class AccountVerificationPagesTest extends TestCase
     #[DataProvider('loginRedirects')]
     public function testLoginOnlyFollowsRedirectToWithinTheSite(string $redirectTo, string $expected): void
     {
-        $user = new WP_User(['subscriber'], 42, self::EMAIL);
+        $user = new WP_User(['subscriber'], 42, self::EMAIL, '', '', 'password');
         $GLOBALS['__phpunit_users'][42] = $user;
         $GLOBALS['__phpunit_signon_result'] = $user;
         store_email_is_verified(42);

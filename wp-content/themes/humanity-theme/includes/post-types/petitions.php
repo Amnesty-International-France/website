@@ -805,12 +805,10 @@ function amnesty_handle_petition_skip(): void
 
     amnesty_set_clh_skipped_petition($petition_id);
 
-    if (isset($_POST['user_email'])) {
-        $email = sanitize_email($_POST['user_email']);
-        if (is_email($email)) {
-            amnesty_set_clh_signer_email($email);
-        }
-    }
+    // The signer address is only set by a signature: one posted with a skip
+    // would let the one-click form, which sends no names, sign for any
+    // address that is already known. The skip form only re-sends the address
+    // already in the session.
 
     wp_redirect(amnesty_get_clh_petition_tunnel_url());
     exit;
@@ -887,6 +885,30 @@ function amnesty_handle_petition_signature(): void
         exit;
     }
 
+    $firstname = sanitize_text_field($_POST['user_firstname'] ?? '');
+    $lastname  = sanitize_text_field($_POST['user_lastname']  ?? '');
+
+    // First and last names are required before the address is looked up, so
+    // a known and an unknown address get the same outcome. The only exception
+    // is the CLH tunnel's one-click form, which sends the address this browser
+    // has already signed with.
+    if ($firstname === '' || $lastname === '') {
+        if ($is_clh_tunnel_submission) {
+            amnesty_start_secure_session();
+        }
+
+        $is_tunnel_signer = $is_clh_tunnel_submission
+            && $user_email === ($_SESSION['clh_last_signer_email'] ?? null);
+
+        if (!$is_tunnel_signer) {
+            $fallback_url = $is_clh_tunnel_submission
+                ? amnesty_get_clh_petition_tunnel_url()
+                : amnesty_get_petition_form_fallback_url($petition_id);
+            wp_redirect(add_query_arg('signature_status', 'missing_fields', $fallback_url));
+            exit;
+        }
+    }
+
     $local_user = get_local_user($user_email);
 
     if ($local_user !== false) {
@@ -897,13 +919,17 @@ function amnesty_handle_petition_signature(): void
                 amnesty_set_clh_signed_petition($petition_id);
             }
 
+            // Same redirect as a new signature, so it does not tell whether
+            // this address had already signed.
+            $gtm_args = [
+                'gtm_type' => 'petition',
+                'gtm_name' => urlencode(get_the_title($petition_id)),
+            ];
             $redirect_url = $is_clh_petition && amnesty_get_clh_signed_petition_count_for_browser() >= 10
-                ? amnesty_get_clh_petition_tunnel_thanks_url()
+                ? add_query_arg($gtm_args, amnesty_get_clh_petition_tunnel_thanks_url())
                 : amnesty_get_petition_signature_redirect_url(
                     $petition_id,
-                    [
-                        'alreadysigned' => '',
-                    ],
+                    $gtm_args,
                     $is_clh_petition
                 );
             wp_redirect($redirect_url);
@@ -911,17 +937,14 @@ function amnesty_handle_petition_signature(): void
         }
     } else {
         $civility    = sanitize_text_field($_POST['civility']       ?? '');
-        $firstname   = sanitize_text_field($_POST['user_firstname'] ?? '');
-        $lastname    = sanitize_text_field($_POST['user_lastname']  ?? '');
         $postal_code = sanitize_text_field($_POST['user_zipcode']   ?? '');
         $country     = sanitize_text_field($_POST['user_country']   ?? '');
         $phone       = sanitize_text_field($_POST['user_phone']     ?? '');
 
         if ($firstname === '' || $lastname === '') {
-            $fallback_url = $is_clh_tunnel_submission
-                ? amnesty_get_clh_petition_tunnel_url()
-                : amnesty_get_petition_form_fallback_url($petition_id);
-            wp_redirect(add_query_arg('signature_status', 'missing_fields', $fallback_url));
+            // The tunnel's one-click form sent no names for an address that
+            // is not (or no longer) a local signer: nothing to sign with.
+            wp_redirect(add_query_arg('signature_status', 'missing_fields', amnesty_get_clh_petition_tunnel_url()));
             exit;
         }
 
