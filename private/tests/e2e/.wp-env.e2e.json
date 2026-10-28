@@ -15,7 +15,8 @@
   ],
   "config": {
     "WP_ENVIRONMENT_TYPE": "development",
-    "WP_AUTO_UPDATE_CORE": false
+    "WP_AUTO_UPDATE_CORE": false,
+    "AIF_LOGIN_RATE_LIMIT_MAX_ATTEMPTS": 1000
   },
   "port": 8898,
   "testsEnvironment": false,

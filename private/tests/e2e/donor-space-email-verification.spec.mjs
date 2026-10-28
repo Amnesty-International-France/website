@@ -79,7 +79,9 @@ test.describe('donor space e-mail verification', () => {
       await setServerSideTurnstileResult(page, signup, { success: true });
       await page.locator(`${signup} #email`).fill(VERIFIED_DONOR.email);
       await page.locator(`${signup} button[type="submit"]`).click();
-      await expect(page.getByText('L’adresse email renseignée ne trouve pas de correspondance dans notre système.')).toBeVisible();
+      // Same outcome as a successful signup: the page does not tell whether the address has access.
+      await expect(page).toHaveURL(/\/verifier-votre-email\//);
+      await expect(page.getByText('L’adresse email renseignée ne trouve pas de correspondance dans notre système.')).toHaveCount(0);
       await expect(page.getByText('Votre espace est temporairement indisponible.')).toHaveCount(0);
 
       await gotoWithoutCookieOverlay('/connectez-vous/');
@@ -93,7 +95,8 @@ test.describe('donor space e-mail verification', () => {
       const resend = 'form:has(input[value="2FA_send_code"])';
       await setServerSideTurnstileResult(page, resend, { success: true });
       await page.locator(`${resend} button[type="submit"]`).click();
-      await expect(page.getByText('Utilisateur inconnu', { exact: true })).toBeVisible();
+      await expect(page.getByText(/Si votre adresse correspond à un compte, un code arrivera/)).toBeVisible();
+      await expect(page.getByText('Utilisateur inconnu', { exact: true })).toHaveCount(0);
       await expect(page.getByText('Votre espace est temporairement indisponible.')).toHaveCount(0);
     });
   });

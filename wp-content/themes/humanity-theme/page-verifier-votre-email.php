@@ -35,13 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
                 ], get_permalink(get_page_by_path('modifier-mon-mot-de-passe')));
                 wp_redirect($password_url);
                 exit;
-            } elseif ('invalid' === $code_status) {
-                $error_message = 'Le code fourni est incorrect ou a expiré. Veuillez réessayer';
             } else {
-                $error_message = 'Une erreur est survenue. Veuillez réessayer plus tard.';
+                // A blocked account gets the same answer as a wrong code: an
+                // unknown address is never blocked, so a distinct message
+                // would tell that the account exists.
+                $error_message = 'Le code fourni est incorrect ou a expiré. Veuillez réessayer';
             }
         } else {
-            $error_message = 'Utilisateur inconnu ou code invalide';
+            $error_message = 'Le code fourni est incorrect ou a expiré. Veuillez réessayer';
         }
     }
 }
@@ -59,22 +60,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
         if (is_wp_error($sf_user)) {
             aif_log_salesforce_error($sf_user);
             $send_code_error_message = AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE;
-        } elseif (has_access_to_donation_space($sf_user)) {
-            $stored_user = get_user_by('email', $email);
-
-            if (!$stored_user) {
-                $url = '/creer-votre-compte';
-                $send_code_error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page <a class='aif-link--primary' href='{$url}'>Créer mon compte </a>.";
-            } elseif (!aif_is_subscriber($stored_user)) {
-                $url = get_permalink(get_page_by_path('connectez-vous'));
-                $send_code_error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>.";
-            } elseif (aif_send_verification_code($stored_user->ID)) {
-                $send_code_success_message = "Nous avons bien reçu votre demande de code. Il arrivera dans votre boîte email d'ici quelques minutes";
-            } else {
-                $send_code_error_message = AIF_VERIFICATION_CODE_SEND_ERROR_MESSAGE;
-            }
         } else {
-            $send_code_error_message = 'Utilisateur inconnu';
+            // Same answer whether or not the address has an account. Codes
+            // only go to self-registered donor accounts; staff accounts are
+            // created by admins.
+            $stored_user = has_access_to_donation_space($sf_user) ? get_user_by('email', $email) : false;
+
+            if ($stored_user && aif_is_subscriber($stored_user) && !aif_send_verification_code($stored_user->ID)) {
+                $send_code_error_message = AIF_VERIFICATION_CODE_SEND_ERROR_MESSAGE;
+            } else {
+                $send_code_success_message = "Nous avons bien reçu votre demande. Si votre adresse correspond à un compte, un code arrivera dans votre boîte email d'ici quelques minutes";
+            }
         }
     } // end turnstile check
 }
@@ -90,8 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
 	<div class="aif-container--form">
 		<section>
 			<h2> Validation de la création de mon compte </h2>
-			<p>Pour finaliser la création de votre compte, veuillez rentrer le code à 6 chiffres que vous venez de
-				recevoir par email</p>
+			<p>Si votre adresse correspond à un donateur ou un membre, vous allez recevoir par email un code à
+				6 chiffres. Pour finaliser la création de votre compte, veuillez le rentrer ci-dessous. Si vous avez
+				déjà un compte, <a class="aif-link--primary" href="<?php echo esc_url(get_permalink(get_page_by_path('connectez-vous'))); ?>">connectez-vous</a>.</p>
 			<form role="form" method="POST" action="">
 				<input type="hidden" name="form_action" value="2FA_check">
 				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
