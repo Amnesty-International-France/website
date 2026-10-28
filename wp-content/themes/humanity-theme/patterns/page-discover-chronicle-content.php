@@ -21,10 +21,9 @@ $countries = get_posts(
 );
 
 $inscription_chronique_status = $_GET['inscription_chronique'] ?? '';
-if (!in_array($inscription_chronique_status, ['success', 'already-sent'], true)) {
+if (!in_array($inscription_chronique_status, ['success'], true)) {
     $inscription_chronique_status = '';
 }
-$inscription_chronique_success = $inscription_chronique_status === 'success';
 
 if (isset($_POST['sign_discover_chronicle'])) {
     $turnstile_error = verify_turnstile();
@@ -74,7 +73,7 @@ if (isset($_POST['sign_discover_chronicle'])) {
             exit;
         }
 
-        wp_redirect(add_query_arg('inscription_chronique', 'already-sent', get_permalink()));
+        wp_redirect(add_query_arg('inscription_chronique', 'success', get_permalink()));
         exit;
     }
 }
@@ -88,12 +87,7 @@ if (isset($_POST['sign_discover_chronicle'])) {
 		<?php if (! empty($inscription_chronique_status)): ?>
 		<div class="discover-chronicle-form-container">
 			<div class="discover-chronicle-popin <?php echo esc_attr($inscription_chronique_status); ?>">
-				<?php
-                if ($inscription_chronique_success): ?>
-					<p>Votre demande a bien été prise en compte.</p>
-				<?php else: ?>
-					<p>Une demande a déjà été envoyé.</p>
-				<?php endif; ?>
+				<p>Votre demande a bien été prise en compte.</p>
 			</div>
 		</div>
 		<?php else: ?>

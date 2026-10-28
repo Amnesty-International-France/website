@@ -157,3 +157,25 @@ function wp_remote_post(string $url, array $args = []): mixed
 
     return $GLOBALS['__phpunit_mail_response'];
 }
+
+/**
+ * Like WordPress, a password is checked against the stored hash; here the
+ * "hash" is the password itself. Every check is recorded.
+ */
+function wp_check_password(string $password, string $hash, int|string $user_id = ''): bool
+{
+    $GLOBALS['__phpunit_password_checks'][] = $hash;
+
+    return '' !== $hash && $password === $hash;
+}
+
+function wp_hash_password(string $password): string
+{
+    return 'hashed:' . $password;
+}
+
+function wp_hash(string $data, string $scheme = 'auth'): string
+{
+    return hash_hmac('md5', $data, 'test-salt');
+}
+

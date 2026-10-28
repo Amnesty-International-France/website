@@ -123,14 +123,14 @@ final class ClhTunnelSignatureTest extends TestCase
      *
      * @return array{location: string, cookies: array<string,string>, session: array<string,mixed>}
      */
-    private function signFromTunnel(int $petition_id, string $email): array
+    private function signFromTunnel(int $petition_id, string $email, array $fields = []): array
     {
         $_POST = [
             'sign_petition' => '1',
             'petition_id' => (string) $petition_id,
             'from_tunnel' => '1',
             'user_email' => $email,
-        ];
+        ] + $fields;
 
         try {
             amnesty_handle_petition_signature();
@@ -154,13 +154,15 @@ final class ClhTunnelSignatureTest extends TestCase
 
     public function testAddressThatAlreadySignedGetsTheResponseOfANewSignature(): void
     {
-        $already_signed = $this->signFromTunnel(102, self::VICTIM);
+        // An address this browser has not signed with must send the names.
+        $names = ['user_firstname' => 'Camille', 'user_lastname' => 'Martin'];
+        $already_signed = $this->signFromTunnel(102, self::VICTIM, $names);
 
         self::assertSame([[102, self::USER_IDS[self::VICTIM]]], $GLOBALS['__phpunit_signatures']);
 
         $_SESSION = [];
         $_COOKIE = [];
-        $new_signature = $this->signFromTunnel(102, self::NEWCOMER);
+        $new_signature = $this->signFromTunnel(102, self::NEWCOMER, $names);
 
         self::assertContains([102, self::USER_IDS[self::NEWCOMER]], $GLOBALS['__phpunit_signatures']);
         self::assertStringNotContainsString('alreadysigned', $already_signed['location']);

@@ -328,10 +328,18 @@ if (!defined('DAY_IN_SECONDS')) {
 }
 
 if (!function_exists('get_transient')) {
+    // Values in __phpunit_transients; the expiry timestamp of a transient set
+    // with an expiration in __phpunit_transient_expirations.
     $GLOBALS['__phpunit_transients'] = [];
+    $GLOBALS['__phpunit_transient_expirations'] = [];
 
     function get_transient(string $transient): mixed
     {
+        $expires_at = $GLOBALS['__phpunit_transient_expirations'][$transient] ?? null;
+        if (null !== $expires_at && $expires_at <= time()) {
+            return false;
+        }
+
         return $GLOBALS['__phpunit_transients'][$transient] ?? false;
     }
 
@@ -339,12 +347,18 @@ if (!function_exists('get_transient')) {
     {
         $GLOBALS['__phpunit_transients'][$transient] = $value;
 
+        if ($expiration > 0) {
+            $GLOBALS['__phpunit_transient_expirations'][$transient] = time() + $expiration;
+        } else {
+            unset($GLOBALS['__phpunit_transient_expirations'][$transient]);
+        }
+
         return true;
     }
 
     function delete_transient(string $transient): bool
     {
-        unset($GLOBALS['__phpunit_transients'][$transient]);
+        unset($GLOBALS['__phpunit_transients'][$transient], $GLOBALS['__phpunit_transient_expirations'][$transient]);
 
         return true;
     }
