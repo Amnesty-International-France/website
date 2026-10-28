@@ -866,7 +866,11 @@ function amnesty_handle_petition_signature(): void
     }
 
     if (!$raw_email || !is_email($raw_email)) {
-        wp_redirect(add_query_arg('signature_status', 'invalid', amnesty_get_petition_form_fallback_url($petition_id)));
+        $fallback_url = $is_clh_tunnel_submission
+            ? amnesty_get_clh_petition_tunnel_url()
+            : amnesty_get_petition_form_fallback_url($petition_id);
+
+        wp_redirect(add_query_arg('signature_status', 'invalid', $fallback_url));
         exit;
     }
 
