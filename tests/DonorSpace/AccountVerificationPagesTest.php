@@ -15,8 +15,14 @@ final class AccountVerificationPagesTest extends TestCase
 {
     private const EMAIL = 'donor+tag@example.test';
 
+    private string $errorLog;
+    private string|false $previousErrorLog;
+
     protected function setUp(): void
     {
+        $this->errorLog = tempnam(sys_get_temp_dir(), 'error-log');
+        $this->previousErrorLog = ini_set('error_log', $this->errorLog);
+
         require_once __DIR__ . '/account-verification-page-stubs.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/sales-force/user-data.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/authorization.php';
@@ -33,6 +39,14 @@ final class AccountVerificationPagesTest extends TestCase
         $GLOBALS['__phpunit_mail_response'] = ['response' => ['code' => 200]];
         $GLOBALS['__phpunit_wp_remote_calls'] = [];
         $this->queueEligibleDonor();
+    }
+
+    protected function tearDown(): void
+    {
+        ini_set('error_log', (string) $this->previousErrorLog);
+        if (is_file($this->errorLog)) {
+            unlink($this->errorLog);
+        }
     }
 
     private function queueEligibleDonor(): void
@@ -70,13 +84,9 @@ final class AccountVerificationPagesTest extends TestCase
         }
         $GLOBALS['__phpunit_mail_response'] = new WP_Error('http_request_failed', 'Mail service unavailable');
 
-        $errorLog = tempnam(sys_get_temp_dir(), 'error-log');
-        ini_set('error_log', $errorLog);
-
         $html = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
 
-        self::assertStringContainsString('Mailgun failed to send mail with template "2facode": http_request_failed', (string) file_get_contents($errorLog));
-        unlink($errorLog);
+        self::assertStringContainsString('Mailgun failed to send mail with template "2facode": http_request_failed', (string) file_get_contents($this->errorLog));
         self::assertStringContainsString("L'envoi du code de vérification a échoué", $html);
         self::assertStringContainsString('Créer mon compte', $html);
         self::assertFalse(get_email_is_verified(42));
