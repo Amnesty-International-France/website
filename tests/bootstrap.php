@@ -266,6 +266,33 @@ if (!function_exists('update_user_meta')) {
     }
 }
 
+if (!defined('DAY_IN_SECONDS')) {
+    define('DAY_IN_SECONDS', 86400);
+}
+
+if (!function_exists('get_transient')) {
+    $GLOBALS['__phpunit_transients'] = [];
+
+    function get_transient(string $transient): mixed
+    {
+        return $GLOBALS['__phpunit_transients'][$transient] ?? false;
+    }
+
+    function set_transient(string $transient, mixed $value, int $expiration = 0): bool
+    {
+        $GLOBALS['__phpunit_transients'][$transient] = $value;
+
+        return true;
+    }
+
+    function delete_transient(string $transient): bool
+    {
+        unset($GLOBALS['__phpunit_transients'][$transient]);
+
+        return true;
+    }
+}
+
 if (!function_exists('wp_verify_nonce')) {
     $GLOBALS['__phpunit_valid_nonces'] = [];
 

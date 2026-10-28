@@ -68,3 +68,13 @@ function create_duplicate_taxt_receipt_request($Contact_ID, $taxt_receipt_refere
     ];
     return  post_salesforce_data_donor_space($url, $params);
 }
+
+function aif_duplicate_tax_receipt_request_key($contact_id, $tax_receipt_reference)
+{
+    return 'aif_duplicate_tax_receipt_request_' . md5($contact_id . '|' . $tax_receipt_reference);
+}
+
+function aif_duplicate_tax_receipt_requests_count_key($contact_id)
+{
+    return 'aif_duplicate_tax_receipt_requests_count_' . md5($contact_id) . '_' . date('Y-m-d');
+}

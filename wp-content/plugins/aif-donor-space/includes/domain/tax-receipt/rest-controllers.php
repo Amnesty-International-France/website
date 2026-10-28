@@ -29,6 +29,18 @@ function handle_duplicate_tax_receipt_request(WP_REST_Request $request)
 
     $SF_ID = $sf_member->Id;
 
+    $request_key = aif_duplicate_tax_receipt_request_key($SF_ID, $taxt_receipt_reference);
+    $count_key = aif_duplicate_tax_receipt_requests_count_key($SF_ID);
+    $requests_count = (int) get_transient($count_key);
+
+    if (false !== get_transient($request_key)) {
+        return new WP_REST_Response(['message' => 'demand already sent'], 200);
+    }
+
+    if ($requests_count >= 5) {
+        return new WP_REST_Response(['message' => 'too many demands'], status: 429);
+    }
+
     $owns_receipt = aif_contact_owns_tax_receipt($SF_ID, $taxt_receipt_reference);
 
     if (is_wp_error($owns_receipt)) {
@@ -40,15 +52,21 @@ function handle_duplicate_tax_receipt_request(WP_REST_Request $request)
         return new WP_REST_Response(['message' => 'tax receipt not found'], status: 403);
     }
 
+    set_transient($request_key, time(), DAY_IN_SECONDS);
+
     $result = create_duplicate_taxt_receipt_request($SF_ID, $taxt_receipt_reference);
 
     if (is_wp_error($result)) {
+        delete_transient($request_key);
         return aif_salesforce_unavailable_response($result);
     }
 
     if (!is_object($result) || empty($result->success)) {
+        delete_transient($request_key);
         return new WP_REST_Response(['message' => 'demand failed'], status: 400);
     }
+
+    set_transient($count_key, $requests_count + 1, DAY_IN_SECONDS);
 
     return new WP_REST_Response(['message' => 'demand succeed'], 200);
 }
