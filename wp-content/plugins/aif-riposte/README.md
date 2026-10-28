@@ -432,7 +432,7 @@ aif_riposte_photo_credit
 
 Le texte est affiché tel que saisi (le « © » est à saisir par l’éditeur), uniquement si la carte a une image mise en avant.
 
-Il est placé à droite de l’image, à la verticale (lu de bas en haut, aligné sur le bas de l’image) et passe à la ligne au-delà de la hauteur de l’image. Une marge à droite de l’image lui réserve la place de deux lignes.
+Il est placé à droite de l’image, à la verticale (lu de bas en haut, aligné sur le bas de l’image) et passe à la ligne au-delà de la hauteur de l’image. Toutes les cartes avec image ont une marge de chaque côté de l’image, qui la garde centrée et réserve la place de deux lignes de crédit à droite (marge à droite seulement quand l’image est à gauche du texte : `--xlarge`, `--tablet-full`). L’aide du champ conseille 80 caractères environ pour ne pas dépasser deux lignes.
 
 Fichiers concernés :
 
@@ -1437,7 +1437,7 @@ aif_riposte_photo_credit
 
 The text is displayed as entered (editors type the "©" themselves), only when the card has a featured image.
 
-It sits vertically on the right of the image (read bottom to top, aligned with the bottom of the image) and wraps beyond the image height. A right margin next to the image leaves room for two lines.
+It sits vertically on the right of the image (read bottom to top, aligned with the bottom of the image) and wraps beyond the image height. Every card with an image has a margin on each side of it, which keeps the image centred and leaves room for two lines of credit on the right (right margin only when the image sits left of the text: `--xlarge`, `--tablet-full`). The field help suggests about 80 characters so the credit stays within two lines.
 
 Related files:
 

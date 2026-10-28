@@ -63,6 +63,7 @@
 
   .aif-riposte-card--tablet-full .aif-riposte-card__visual {
     margin-bottom: 0;
+    margin-left: 0;
   }
 
   .aif-riposte-card--tablet-full .aif-riposte-card__media {
@@ -119,6 +120,7 @@
 
   .aif-riposte-card--xlarge .aif-riposte-card__visual {
     margin-bottom: 0;
+    margin-left: 0;
   }
 
   .aif-riposte-card--xlarge .aif-riposte-card__media {
@@ -217,13 +219,9 @@
   pointer-events: none;
 }
 
+/* Room on both sides keeps the image centred; the credit sits in the right one. */
 .aif-riposte-card__visual {
-  margin-bottom: 1rem;
-}
-
-/* Room on the right of the image for the vertical credit. */
-.aif-riposte-card__visual--with-credit {
-  margin-right: 2.25rem;
+  margin: 0 2.25rem 1rem;
 }
 
 .aif-riposte-card__media {
