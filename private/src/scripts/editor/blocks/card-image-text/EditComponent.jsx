@@ -17,8 +17,19 @@ const getCategoryLink = (slug) => {
 };
 
 const EditComponent = ({ attributes, setAttributes }) => {
-  const { custom, newTab, direction, title, subtitle, category, permalink, thumbnail, text } =
-    attributes;
+  const {
+    custom,
+    newTab,
+    direction,
+    textDisplay,
+    title,
+    subtitle,
+    category,
+    permalink,
+    linkTitle,
+    thumbnail,
+    text,
+  } = attributes;
 
   const allowedTypesForThisBlock = ['post', 'pages', 'landmark', 'document'];
 
@@ -35,6 +46,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
         subtitle: '',
         category: '',
         permalink: '',
+        linkTitle: '',
         thumbnail: null,
         text: '',
       });
@@ -44,6 +56,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
         subtitle: '',
         category: '',
         permalink: '',
+        linkTitle: '',
         thumbnail: null,
         text: '',
       });
@@ -56,6 +69,10 @@ const EditComponent = ({ attributes, setAttributes }) => {
 
   const updateDirection = (value) => {
     setAttributes({ direction: value });
+  };
+
+  const updateTextDisplay = (value) => {
+    setAttributes({ textDisplay: value });
   };
 
   const updateTitle = (newTitle) => {
@@ -74,6 +91,10 @@ const EditComponent = ({ attributes, setAttributes }) => {
     setAttributes({ permalink: newPermalink });
   };
 
+  const updateLinkTitle = (newLinkTitle) => {
+    setAttributes({ linkTitle: newLinkTitle });
+  };
+
   const updateText = (newText) => {
     setAttributes({ text: newText });
   };
@@ -85,6 +106,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
         title: '',
         subtitle: '',
         permalink: '',
+        linkTitle: '',
         thumbnail: null,
         text: '',
         category: '',
@@ -105,6 +127,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
         subtitle: '',
         text: excerpt?.rendered || '',
         permalink: acf?.upload_du_document?.url || '',
+        linkTitle: '',
         thumbnail: post.featured_media !== 0 ? post.featured_media : null,
       });
     } else {
@@ -128,6 +151,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
         subtitle: '',
         category: postCategoryName,
         permalink: `${getCategoryLink(type)}/${slug}`,
+        linkTitle: '',
         thumbnail: _embedded?.['wp:featuredmedia']?.[0]?.id || null,
         text: excerpt?.rendered || '',
       });
@@ -168,6 +192,15 @@ const EditComponent = ({ attributes, setAttributes }) => {
               { label: __('Vertical', 'amnesty'), value: 'vertical' },
             ]}
             onChange={updateDirection}
+          />
+          <SelectControl
+            label={__('Affichage du texte', 'amnesty')}
+            value={textDisplay}
+            options={[
+              { label: __('Au survol', 'amnesty'), value: 'rollOver' },
+              { label: __('Dès le chargement', 'amnesty'), value: 'showText' },
+            ]}
+            onChange={updateTextDisplay}
           />
           {!custom && (
             <>
@@ -211,16 +244,22 @@ const EditComponent = ({ attributes, setAttributes }) => {
                 placeholder={__('Entrez un titre…', 'amnesty')}
               />
               <TextControl
-                label={__('Sous-titre', 'amnesty')}
+                label={__('Surtitre', 'amnesty')}
                 value={subtitle}
                 onChange={updateSubtitle}
-                placeholder={__('Entrez un sous-titre…', 'amnesty')}
+                placeholder={__('Entrez un surtitre…', 'amnesty')}
               />
               <TextControl
                 label={__('Lien', 'amnesty')}
                 value={permalink}
                 onChange={updatePermalink}
                 placeholder={__('Lien', 'amnesty')}
+              />
+              <TextControl
+                label={__('Intitulé du lien', 'amnesty')}
+                value={linkTitle}
+                onChange={updateLinkTitle}
+                placeholder={__('Voir la suite', 'amnesty')}
               />
               <TextareaControl
                 __nextHasNoMarginBottom

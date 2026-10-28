@@ -7,6 +7,8 @@ use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 
+require_once __DIR__ . '/apex-search-fixture.php';
+
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState(false)]
 final class AccountVerificationPagesTest extends TestCase
@@ -24,6 +26,9 @@ final class AccountVerificationPagesTest extends TestCase
         $GLOBALS['__phpunit_users'] = [];
         $GLOBALS['__phpunit_user_meta'] = [];
         $GLOBALS['__phpunit_inserted_users'] = [];
+        $GLOBALS['__phpunit_current_user_id'] = 0;
+        $GLOBALS['__phpunit_signons'] = [];
+        $GLOBALS['__phpunit_signon_result'] = new WP_Error('invalid_credentials', 'Invalid credentials');
         $GLOBALS['__phpunit_sent_mails'] = [];
         $GLOBALS['__phpunit_mail_response'] = ['response' => ['code' => 200]];
         $GLOBALS['__phpunit_wp_remote_calls'] = [];
@@ -32,17 +37,18 @@ final class AccountVerificationPagesTest extends TestCase
 
     private function queueEligibleDonor(): void
     {
+        $responses = apexSearchFixture();
         $GLOBALS['__phpunit_wp_remote_response_queue'] = [
-            ['response' => ['code' => 200], 'body' => '{"Id":"contact-id","isDonateur":true,"isMembre":false,"hasMandatActif":false}'],
+            ['response' => ['code' => 200], 'body' => json_encode($responses['donor'])],
             ['response' => ['code' => 200], 'body' => '{"FirstName":"Ada","LastName":"Lovelace"}'],
         ];
     }
 
-    private function render(string $page, array $get, array $post): string
+    private function render(string $page, array $get, array $post, string $method = 'POST'): string
     {
         $_GET = $get;
         $_POST = $post;
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_SERVER['REQUEST_METHOD'] = $method;
 
         ob_start();
         try {
@@ -141,5 +147,189 @@ final class AccountVerificationPagesTest extends TestCase
         $mail = $GLOBALS['__phpunit_sent_mails'][0];
         self::assertSame(self::EMAIL, $mail['to']);
         self::assertTrue(is_2fa_code_valid(42, json_decode($mail['t:variables'], true)['code']));
+    }
+
+    public function testHistoricallyVerifiedSubscriberLogsInWithTheExistingPassword(): void
+    {
+        $user = new WP_User(['subscriber'], 42, self::EMAIL, self::EMAIL, 'existing-reset-key', 'existing-password');
+        $GLOBALS['__phpunit_users'][42] = $user;
+        $GLOBALS['__phpunit_signon_result'] = $user;
+        update_user_meta(42, 'email-verfied', '1');
+
+        $result = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'existing-password']);
+
+        self::assertSame('redirect:https://wordpress.example.test/mon-espace/', $result);
+        self::assertSame([[
+            'credentials' => ['user_login' => self::EMAIL, 'user_password' => 'existing-password', 'remember' => true],
+            'secure_cookie' => true,
+        ]], $GLOBALS['__phpunit_signons']);
+        self::assertSame(42, get_current_user_id());
+        self::assertSame('1', get_user_meta(42, 'email-verfied', true));
+        self::assertSame('existing-password', $user->user_pass);
+        self::assertSame('existing-reset-key', $user->user_activation_key);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+        self::assertSame([], $GLOBALS['__phpunit_inserted_users']);
+        self::assertSame('', get_user_meta(42, '2fa_code_hash', true));
+    }
+
+    public function testOpeningVerificationPageDoesNotSendACode(): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+
+        $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], [], 'GET');
+
+        self::assertStringContainsString('Recevoir un nouveau code', $html);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+        self::assertSame([], $GLOBALS['__phpunit_wp_remote_calls']);
+    }
+
+    public static function failedMailResponses(): iterable
+    {
+        yield 'transport error' => [new WP_Error('http_request_failed', 'Mail service unavailable')];
+        yield 'HTTP 400' => [['response' => ['code' => 400]]];
+        yield 'HTTP 401' => [['response' => ['code' => 401]]];
+        yield 'HTTP 429' => [['response' => ['code' => 429]]];
+        yield 'HTTP 500' => [['response' => ['code' => 500]]];
+        yield 'missing status' => [[]];
+    }
+
+    #[DataProvider('failedMailResponses')]
+    public function testFailedResendDisplaysAnErrorAndAllowsRetry(mixed $response): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL, '', '', 'existing-password');
+        $GLOBALS['__phpunit_mail_response'] = $response;
+
+        $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
+
+        self::assertStringContainsString("L'envoi du code de vérification a échoué", $html);
+        self::assertStringContainsString('Recevoir un nouveau code', $html);
+        self::assertStringNotContainsString('Nous avons bien reçu votre demande de code', $html);
+        self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
+        self::assertFalse(get_email_is_verified(42));
+        self::assertSame('existing-password', get_userdata(42)->user_pass);
+    }
+
+    public function testHttpRejectionKeepsSignupOnTheExistingForm(): void
+    {
+        $GLOBALS['__phpunit_mail_response'] = ['response' => ['code' => 401]];
+
+        $html = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
+
+        self::assertStringContainsString("L'envoi du code de vérification a échoué", $html);
+        self::assertStringContainsString('Créer mon compte', $html);
+        self::assertCount(1, $GLOBALS['__phpunit_inserted_users']);
+        self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
+        self::assertFalse(get_email_is_verified(42));
+    }
+
+    public static function deniedContacts(): iterable
+    {
+        $responses = apexSearchFixture();
+        yield 'provider absence' => [$responses['absent']];
+        yield 'known ineligible contact' => [$responses['ineligible']];
+        yield 'ineligible contact with nullable ancillary flags' => [array_replace($responses['ineligible'], [
+            'isAncienMembre' => null,
+            'hasMandatActif' => null,
+            'hasEspaceDon' => null,
+        ])];
+    }
+
+    #[DataProvider('deniedContacts')]
+    public function testSignupDeniesAbsentAndIneligibleContactsAsABusinessResult(array $response): void
+    {
+        $GLOBALS['__phpunit_wp_remote_response_queue'][0]['body'] = json_encode($response);
+
+        $html = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
+
+        self::assertStringContainsString('ne trouve pas de correspondance', $html);
+        self::assertStringNotContainsString(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE, $html);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+        self::assertSame([], $GLOBALS['__phpunit_inserted_users']);
+        self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
+    }
+
+    #[DataProvider('deniedContacts')]
+    public function testCodeResendDoesNotSendToAbsentOrIneligibleContacts(array $response): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+        $GLOBALS['__phpunit_wp_remote_response_queue'][0]['body'] = json_encode($response);
+
+        $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
+
+        self::assertStringContainsString('Utilisateur inconnu', $html);
+        self::assertStringNotContainsString(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE, $html);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    #[DataProvider('deniedContacts')]
+    public function testLoginDoesNotAuthenticateAbsentOrIneligibleContacts(array $response): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+        store_email_is_verified(42);
+        $GLOBALS['__phpunit_wp_remote_response_queue'][0]['body'] = json_encode($response);
+
+        $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password']);
+
+        self::assertStringContainsString('ne trouve pas de correspondance', $html);
+        self::assertStringNotContainsString(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE, $html);
+        self::assertSame([], $GLOBALS['__phpunit_signons']);
+        self::assertSame(0, get_current_user_id());
+        self::assertSame('', get_user_meta(42, 'user_SF_ID', true));
+    }
+
+    public static function eligibleContacts(): iterable
+    {
+        $donor = apexSearchFixture()['donor'];
+        yield 'eligible donor' => [$donor];
+        yield 'eligible donor with nullable ancillary flags' => [array_replace($donor, [
+            'isAncienMembre' => null,
+            'hasMandatActif' => null,
+            'hasEspaceDon' => null,
+        ])];
+    }
+
+    #[DataProvider('eligibleContacts')]
+    public function testLoginAuthenticatesVerifiedEligibleContacts(array $response): void
+    {
+        $user = new WP_User(['subscriber'], 42, self::EMAIL);
+        $GLOBALS['__phpunit_users'][42] = $user;
+        $GLOBALS['__phpunit_signon_result'] = $user;
+        store_email_is_verified(42);
+        $GLOBALS['__phpunit_wp_remote_response_queue'][0]['body'] = json_encode($response);
+
+        $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password']);
+
+        self::assertSame('redirect:https://wordpress.example.test/mon-espace/', $html);
+        self::assertSame([[
+            'credentials' => ['user_login' => self::EMAIL, 'user_password' => 'password', 'remember' => true],
+            'secure_cookie' => true,
+        ]], $GLOBALS['__phpunit_signons']);
+        self::assertSame(42, get_current_user_id());
+        self::assertSame($response['Id'], get_user_meta(42, 'user_SF_ID', true));
+    }
+
+    public static function loginRedirects(): iterable
+    {
+        yield 'page of the site' => ['https://wordpress.example.test/mon-espace/recus-fiscaux/', 'https://wordpress.example.test/mon-espace/recus-fiscaux/'];
+        yield 'relative path' => ['/mon-espace/recus-fiscaux/', '/mon-espace/recus-fiscaux/'];
+        yield 'external site' => ['https://site-malveillant.example/session-expiree', 'https://wordpress.example.test/mon-espace/'];
+        yield 'protocol-relative external site' => ['//site-malveillant.example/session-expiree', 'https://wordpress.example.test/mon-espace/'];
+        yield 'external site behind credentials' => ['https://wordpress.example.test@site-malveillant.example/', 'https://wordpress.example.test/mon-espace/'];
+        yield 'javascript scheme' => ['javascript:alert(1)', 'https://wordpress.example.test/mon-espace/'];
+        yield 'empty value' => ['', 'https://wordpress.example.test/mon-espace/'];
+    }
+
+    #[DataProvider('loginRedirects')]
+    public function testLoginOnlyFollowsRedirectToWithinTheSite(string $redirectTo, string $expected): void
+    {
+        $user = new WP_User(['subscriber'], 42, self::EMAIL);
+        $GLOBALS['__phpunit_users'][42] = $user;
+        $GLOBALS['__phpunit_signon_result'] = $user;
+        store_email_is_verified(42);
+
+        $result = $this->render('page-connectez-vous.php', ['redirect_to' => $redirectTo], ['email' => self::EMAIL, 'password' => 'password']);
+
+        self::assertSame('redirect:' . $expected, $result);
+        self::assertSame(42, get_current_user_id());
     }
 }

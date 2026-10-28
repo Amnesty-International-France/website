@@ -73,7 +73,14 @@ function get_salesforce_data_donor_space($url)
 
 function get_salesforce_member_data($email)
 {
-    $url = 'services/apexrest/search/v1/' . rawurlencode($email);
+    // Keep RFC 3986 pchar literals for Apex and encode every other byte.
+    // The input is a raw email: a literal % must also be encoded, even before hex digits.
+    $email_segment = preg_replace_callback(
+        '/[^A-Za-z0-9._~!$&\'()*+,;=:@-]/',
+        static fn (array $matches): string => rawurlencode($matches[0]),
+        $email
+    );
+    $url = 'services/apexrest/search/v1/' . $email_segment;
     return get_salesforce_data_donor_space($url);
 }
 

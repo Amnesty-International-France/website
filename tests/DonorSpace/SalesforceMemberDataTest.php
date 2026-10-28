@@ -7,6 +7,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
+require_once __DIR__ . '/apex-search-fixture.php';
+
 final class SalesforceServiceUnavailableTestException extends RuntimeException
 {
     public function __construct(public readonly int $status)
@@ -557,6 +559,163 @@ final class SalesforceMemberDataTest extends TestCase
             ini_set('error_log', (string) $previous_log_file);
             unlink($log_file);
         }
+    }
+
+    /** Provider shapes observed in Test on 2026-10-22; contact IDs are synthetic. */
+    public static function apexResponses(): iterable
+    {
+        foreach (apexSearchFixture() as $name => $response) {
+            yield $name => [$response];
+        }
+    }
+
+    #[DataProvider('apexResponses')]
+    public function testObservedApexResponsesKeepExistenceSeparateFromEligibility(array $response): void
+    {
+        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(200, json_encode($response));
+
+        $member = aif_validate_salesforce_member(get_salesforce_member_data('known@example.test'));
+
+        self::assertNotInstanceOf(WP_Error::class, $member);
+        self::assertSame($response, get_object_vars($member));
+        self::assertSame(null === $response['Id'], aif_is_salesforce_contact_absent($member));
+        self::assertSame(true === $response['isDonateur'] || true === $response['isMembre'], has_access_to_donation_space($member));
+        // %40 loses known contacts in the observed Apex contract.
+        self::assertSame('https://salesforce.example.test/services/apexrest/search/v1/known@example.test', $GLOBALS['__phpunit_wp_remote_calls'][0]['url']);
+    }
+
+    public static function emailSegmentProvider(): iterable
+    {
+        yield 'at' => ['ada@example.test', 'ada@example.test'];
+        yield 'unreserved characters' => ['ada.-_~09@example.test', 'ada.-_~09@example.test'];
+        yield 'plus' => ['ada+tag@example.test', 'ada+tag@example.test'];
+        yield 'apostrophe' => ["o'connor@example.test", "o'connor@example.test"];
+        yield 'plus and apostrophe' => ["o'connor+tag@example.test", "o'connor+tag@example.test"];
+        yield 'exclamation mark' => ['ada!tag@example.test', 'ada!tag@example.test'];
+        yield 'dollar' => ['ada$tag@example.test', 'ada$tag@example.test'];
+        yield 'ampersand' => ['ada&tag@example.test', 'ada&tag@example.test'];
+        yield 'asterisk' => ['ada*tag@example.test', 'ada*tag@example.test'];
+        yield 'equals sign' => ['ada=tag@example.test', 'ada=tag@example.test'];
+        yield 'quoted local part' => ['"a(b),c;d:e"@example.test', '%22a(b),c;d:e%22@example.test'];
+        yield 'fragment' => ['ada#tag@example.test', 'ada%23tag@example.test'];
+        yield 'query' => ['ada?tag@example.test', 'ada%3Ftag@example.test'];
+        yield 'slash' => ['ada/tag@example.test', 'ada%2Ftag@example.test'];
+        yield 'percent' => ['ada%40tag@example.test', 'ada%2540tag@example.test'];
+        yield 'encoded plus in address' => ['ada%2Btag@example.test', 'ada%252Btag@example.test'];
+        yield 'encoded apostrophe in address' => ['ada%27tag@example.test', 'ada%2527tag@example.test'];
+        yield 'characters outside pchar' => ['ada^`{|}tag@example.test', 'ada%5E%60%7B%7C%7Dtag@example.test'];
+        yield 'space and control characters' => ["ada \t\r\n\0tag@example.test", 'ada%20%09%0D%0A%00tag@example.test'];
+        yield 'utf8 bytes' => ['adé@example.test', 'ad%C3%A9@example.test'];
+        yield 'backslash' => ['ada\\tag@example.test', 'ada%5Ctag@example.test'];
+        yield 'brackets' => ['ada[tag]@example.test', 'ada%5Btag%5D@example.test'];
+    }
+
+    #[DataProvider('emailSegmentProvider')]
+    public function testLookupPreservesTheEmailInASinglePathSegment(string $email, string $expected_segment): void
+    {
+        get_salesforce_member_data($email);
+
+        $url = $GLOBALS['__phpunit_wp_remote_calls'][0]['url'];
+        self::assertSame('/services/apexrest/search/v1/' . $expected_segment, parse_url($url, PHP_URL_PATH));
+        self::assertNull(parse_url($url, PHP_URL_QUERY));
+        self::assertNull(parse_url($url, PHP_URL_FRAGMENT));
+        self::assertSame($email, rawurldecode(substr(parse_url($url, PHP_URL_PATH), strlen('/services/apexrest/search/v1/'))));
+    }
+
+    public static function inconsistentApexResponses(): iterable
+    {
+        $responses = apexSearchFixture();
+        foreach (['Id', 'isDonateur', 'isMembre', 'isAncienMembre', 'hasMandatActif', 'hasEspaceDon'] as $field) {
+            $missing = $responses['absent'];
+            unset($missing[$field]);
+            yield 'absence missing ' . $field => [$missing];
+        }
+        foreach (['Id' => '', 'isDonateur' => false, 'isMembre' => true, 'isAncienMembre' => false, 'hasMandatActif' => false, 'hasEspaceDon' => true] as $field => $value) {
+            yield 'inconsistent absence ' . $field => [array_replace($responses['absent'], [$field => $value])];
+        }
+        $missing_with_metadata = $responses['absent'];
+        unset($missing_with_metadata['hasEspaceDon']);
+        $missing_with_metadata['metadata'] = ['schemaVersion' => 2];
+        yield 'absence with metadata missing a required field' => [$missing_with_metadata];
+        yield 'contradictory absence with metadata' => [array_replace($responses['absent'], [
+            'isDonateur' => true,
+            'metadata' => ['schemaVersion' => 2],
+        ])];
+        foreach (['Id' => 42, 'isDonateur' => 'false', 'isMembre' => 1, 'hasMandatActif' => 'false', 'isAncienMembre' => [], 'hasEspaceDon' => 'true'] as $field => $value) {
+            yield 'invalid contact type ' . $field => [array_replace($responses['donor'], [$field => $value])];
+        }
+        foreach (['isDonateur', 'isMembre'] as $field) {
+            yield 'unknown eligibility ' . $field => [array_replace($responses['donor'], [$field => null])];
+        }
+        yield 'list' => [[$responses['donor']]];
+        yield 'empty list' => [[]];
+    }
+
+    #[DataProvider('inconsistentApexResponses')]
+    public function testInconsistentApexResponsesRemainTechnicalErrors(array $response): void
+    {
+        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(200, json_encode($response));
+
+        $member = aif_validate_salesforce_member(get_salesforce_member_data('known@example.test'));
+
+        self::assertInstanceOf(WP_Error::class, $member);
+        self::assertSame('salesforce_invalid_response', $member->get_error_code());
+    }
+
+    public static function deniedApexResponses(): iterable
+    {
+        $responses = apexSearchFixture();
+        yield 'absent' => [$responses['absent']];
+        yield 'absent with additional metadata' => [$responses['absent'] + ['metadata' => ['schemaVersion' => 2]]];
+        yield 'known but ineligible' => [$responses['ineligible']];
+        yield 'ineligible with nullable ancillary flags' => [array_replace($responses['ineligible'], [
+            'isAncienMembre' => null,
+            'hasMandatActif' => null,
+            'hasEspaceDon' => null,
+        ])];
+    }
+
+    public static function nullableAncillaryFlags(): iterable
+    {
+        $responses = apexSearchFixture();
+        foreach (['donor', 'member', 'ineligible'] as $name) {
+            foreach (['isAncienMembre', 'hasMandatActif', 'hasEspaceDon'] as $field) {
+                yield $name . ' with null ' . $field => [array_replace($responses[$name], [$field => null]), 'ineligible' !== $name];
+            }
+            yield $name . ' with all ancillary flags null' => [array_replace($responses[$name], [
+                'isAncienMembre' => null,
+                'hasMandatActif' => null,
+                'hasEspaceDon' => null,
+            ]), 'ineligible' !== $name];
+        }
+    }
+
+    #[DataProvider('nullableAncillaryFlags')]
+    public function testNullableAncillaryFlagsDoNotChangeContactEligibility(array $response, bool $eligible): void
+    {
+        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(200, json_encode($response));
+
+        $member = aif_validate_salesforce_member(get_salesforce_member_data('known@example.test'));
+
+        self::assertNotInstanceOf(WP_Error::class, $member);
+        self::assertSame($response, get_object_vars($member));
+        self::assertFalse(aif_is_salesforce_contact_absent($member));
+        self::assertSame($eligible, has_access_to_donation_space($member));
+    }
+
+    #[DataProvider('deniedApexResponses')]
+    public function testAbsentAndIneligibleContactsAreDeniedWithoutAServiceFailure(array $response): void
+    {
+        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(200, json_encode($response));
+
+        try {
+            check_user_page_access();
+            self::fail('No donor-space access should be granted.');
+        } catch (RedirectTestException $redirect) {
+            self::assertSame('https://wordpress.example.test/connectez-vous/', $redirect->location);
+        }
+
+        self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
     /** @return array{body:string,response:array{code:int}} */

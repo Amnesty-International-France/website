@@ -24,6 +24,7 @@ import './editor/blocks/au-thematique-register/index.jsx';
 import './editor/blocks/button/index.jsx';
 import './editor/blocks/call-to-action/index.jsx';
 import './editor/blocks/card-image-text/index.jsx';
+import './editor/blocks/card-rich-text/index.jsx';
 import './editor/blocks/carousel/index.jsx';
 import './editor/blocks/change-their-history-toc/index.jsx';
 import './editor/blocks/chapo/index.jsx';
