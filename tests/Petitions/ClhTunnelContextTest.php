@@ -23,37 +23,12 @@ final class ClhTunnelContextTest extends TestCase
             define('DAY_IN_SECONDS', 86400);
         }
 
-        if (!class_exists('WP_Post')) {
-            eval('class WP_Post { public int $ID = 0; public int $post_parent = 0; public string $post_title = ""; }');
-        }
-
-        if (!class_exists('WP_Query')) {
-            eval('class WP_Query { public array $posts; public function __construct(array $args) { $this->posts = $GLOBALS["__phpunit_clh_petitions"]; } }');
-        }
+        require_once __DIR__ . '/clh-tunnel-stand-ins.php';
 
         if (!function_exists('is_ssl')) {
             function is_ssl(): bool
             {
                 return true;
-            }
-        }
-
-        if (!function_exists('is_admin')) {
-            function is_admin(): bool
-            {
-                return false;
-            }
-        }
-
-        if (!function_exists('amnesty_get_clh_petition_campaign_page')) {
-            function amnesty_get_clh_petition_campaign_page(): ?WP_Post
-            {
-                return $GLOBALS['__phpunit_clh_campaign'] ?? null;
-            }
-
-            function amnesty_get_active_clh_campaign_for_page(int $page_id): ?WP_Post
-            {
-                return $GLOBALS['__phpunit_clh_campaign'];
             }
         }
 
