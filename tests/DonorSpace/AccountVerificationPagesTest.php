@@ -201,6 +201,7 @@ final class AccountVerificationPagesTest extends TestCase
     public static function failedMailResponses(): iterable
     {
         yield 'transport error' => [new WP_Error('http_request_failed', 'Mail service unavailable')];
+        yield 'HTTP 204' => [['response' => ['code' => 204]]];
         yield 'HTTP 400' => [['response' => ['code' => 400]]];
         yield 'HTTP 401' => [['response' => ['code' => 401]]];
         yield 'HTTP 429' => [['response' => ['code' => 429]]];

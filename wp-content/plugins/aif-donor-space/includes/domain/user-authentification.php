@@ -33,5 +33,5 @@ function send_reset_password_email($to_email, $authentification_url)
         ],
     ]);
 
-    return is_mailgun_send_successful($response, $template);
+    return aif_is_mailgun_send_successful($response, $template);
 }

@@ -98,7 +98,7 @@ function send_2fa_code($to_email, $code)
             'Authorization' => 'Basic ' . base64_encode('api:' . $api_key),
         ]]);
 
-    return is_mailgun_send_successful($response, $template);
+    return aif_is_mailgun_send_successful($response, $template);
 }
 
 function get_login_blocked_until($user_id)
