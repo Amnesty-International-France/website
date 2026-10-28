@@ -47,6 +47,7 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
         <?php endif; ?>
         <div class="aif-riposte-card__top">
             <?php if ($thumbnail) : ?>
+                <div class="aif-riposte-card__visual<?php if ($photo_credit) : ?> aif-riposte-card__visual--with-credit<?php endif; ?>">
                 <div class="aif-riposte-card__media">
                     <?php echo $thumbnail; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>
                     <?php if ($external_url) : ?>
@@ -71,11 +72,12 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
                         </div>
                     <?php endif; ?>
                 </div>
-            <?php endif; ?>
-            <div class="aif-riposte-card__body">
                 <?php if ($photo_credit) : ?>
                     <p class="aif-riposte-card__credit"><?php echo esc_html($photo_credit); ?></p>
                 <?php endif; ?>
+                </div>
+            <?php endif; ?>
+            <div class="aif-riposte-card__body">
                 <div class="aif-riposte-card__content">
                     <?php if (! empty($locations) && ! is_wp_error($locations)) : ?>
                         <div class="aif-riposte-card__country">

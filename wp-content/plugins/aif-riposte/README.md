@@ -430,10 +430,9 @@ Meta utilisée :
 aif_riposte_photo_credit
 ```
 
-Le texte est affiché tel que saisi (le « © » est à saisir par l’éditeur), uniquement si la carte a une image mise en avant :
+Le texte est affiché tel que saisi (le « © » est à saisir par l’éditeur), uniquement si la carte a une image mise en avant.
 
-* sous l’image, centré, sur les cartes où l’image est au-dessus du contenu ;
-* sous le texte, aligné à gauche, sur les cartes où l’image est à gauche (`--xlarge` sur desktop, `--tablet-full` sur tablette).
+Il est placé à droite de l’image, à la verticale (lu de bas en haut, aligné sur le bas de l’image) et passe à la ligne au-delà de la hauteur de l’image. Une marge à droite de l’image lui réserve la place de deux lignes.
 
 Fichiers concernés :
 
@@ -1436,10 +1435,9 @@ Meta key:
 aif_riposte_photo_credit
 ```
 
-The text is displayed as entered (editors type the "©" themselves), only when the card has a featured image:
+The text is displayed as entered (editors type the "©" themselves), only when the card has a featured image.
 
-* below the image, centered, on cards where the image sits above the content;
-* below the text, left-aligned, on cards where the image sits on the left (`--xlarge` on desktop, `--tablet-full` on tablet).
+It sits vertically on the right of the image (read bottom to top, aligned with the bottom of the image) and wraps beyond the image height. A right margin next to the image leaves room for two lines.
 
 Related files:
 
