@@ -171,8 +171,7 @@ final class SalesforceMemberDataTest extends TestCase
         $GLOBALS['__phpunit_queried_object'] = (object) ['ID' => 42, 'post_name' => 'content'];
         $GLOBALS['__phpunit_post_ancestors'] = [];
         $GLOBALS['__phpunit_user_capabilities'] = [];
-        $GLOBALS['__phpunit_post_permalinks'] = [1 => 'https://wordpress.example.test/connectez-vous/'];
-        $GLOBALS['wp'] =(object) ['request' => 'mon-espace/mes-dons'];
+        $GLOBALS['wp'] = (object) ['request' => 'mon-espace/mes-dons'];
     }
 
     public function testTransportErrorIsReturnedWithoutOutput(): void
