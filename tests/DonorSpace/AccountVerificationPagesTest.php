@@ -28,6 +28,7 @@ final class AccountVerificationPagesTest extends TestCase
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/authorization.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/email-verification/index.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/user-authentification.php';
 
         $GLOBALS['__phpunit_users'] = [];
         $GLOBALS['__phpunit_user_meta'] = [];
@@ -200,17 +201,17 @@ final class AccountVerificationPagesTest extends TestCase
 
     public static function failedMailResponses(): iterable
     {
-        yield 'transport error' => [new WP_Error('http_request_failed', 'Mail service unavailable')];
-        yield 'HTTP 204' => [['response' => ['code' => 204]]];
-        yield 'HTTP 400' => [['response' => ['code' => 400]]];
-        yield 'HTTP 401' => [['response' => ['code' => 401]]];
-        yield 'HTTP 429' => [['response' => ['code' => 429]]];
-        yield 'HTTP 500' => [['response' => ['code' => 500]]];
-        yield 'missing status' => [[]];
+        yield 'transport error' => [new WP_Error('http_request_failed', 'Mail service unavailable'), ': http_request_failed (Mail service unavailable)'];
+        yield 'HTTP 204' => [['response' => ['code' => 204]], ' and returned HTTP code 204: '];
+        yield 'HTTP 400' => [['response' => ['code' => 400]], ' and returned HTTP code 400: '];
+        yield 'HTTP 401' => [['response' => ['code' => 401]], ' and returned HTTP code 401: '];
+        yield 'HTTP 429' => [['response' => ['code' => 429]], ' and returned HTTP code 429: '];
+        yield 'HTTP 500' => [['response' => ['code' => 500]], ' and returned HTTP code 500: '];
+        yield 'missing status' => [[], ' and returned HTTP code 0: '];
     }
 
     #[DataProvider('failedMailResponses')]
-    public function testFailedResendDisplaysAnErrorAndAllowsRetry(mixed $response): void
+    public function testFailedResendDisplaysAnErrorAndAllowsRetry(mixed $response, string $expectedLog): void
     {
         $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL, '', '', 'existing-password');
         $GLOBALS['__phpunit_mail_response'] = $response;
@@ -220,9 +221,37 @@ final class AccountVerificationPagesTest extends TestCase
         self::assertStringContainsString("L'envoi du code de vérification a échoué", $html);
         self::assertStringContainsString('Recevoir un nouveau code', $html);
         self::assertStringNotContainsString('Nous avons bien reçu votre demande de code', $html);
+        self::assertStringContainsString('Mailgun failed to send mail with template "2facode"' . $expectedLog, (string) file_get_contents($this->errorLog));
         self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
         self::assertFalse(get_email_is_verified(42));
         self::assertSame('existing-password', get_userdata(42)->user_pass);
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function testResetPasswordEmailIsSentWithTheAuthenticationUrl(): void
+    {
+        $url = 'https://wordpress.example.test/mot-de-passe-oublie/?token=reset-token';
+
+        self::assertTrue(send_reset_password_email(self::EMAIL, $url));
+        self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
+
+        $mail = $GLOBALS['__phpunit_sent_mails'][0];
+        self::assertSame(self::EMAIL, $mail['to']);
+        self::assertSame('espace-don réinitialisation du mot de passe', $mail['template']);
+        self::assertSame(['url' => $url], json_decode($mail['t:variables'], true, 512, JSON_THROW_ON_ERROR));
+        self::assertSame('', (string) file_get_contents($this->errorLog));
+    }
+
+    #[DataProvider('failedMailResponses')]
+    public function testFailedResetPasswordEmailIsReportedAndLogged(mixed $response, string $expectedLog): void
+    {
+        $GLOBALS['__phpunit_mail_response'] = $response;
+        self::assertFalse(send_reset_password_email(self::EMAIL, 'https://wordpress.example.test/mot-de-passe-oublie/?token=reset-token'));
+
+        self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
+        self::assertStringContainsString('Mailgun failed to send mail with template "espace-don réinitialisation du mot de passe"' . $expectedLog, (string) file_get_contents($this->errorLog));
     }
 
     public function testHttpRejectionKeepsSignupOnTheExistingForm(): void
