@@ -28,9 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     } else {
         $stored_user = get_user_by('email', $email);
 
-        if ($stored_user) {
-            // Staff accounts are verified by administrators; only subscribers
-            // use the self-registration email verification flow.
+        if ($stored_user && !aif_is_subscriber($stored_user)) {
+            $error_message = "Ce compte ne permet pas d'accéder à l'Espace Don.";
+        } elseif ($stored_user) {
             if (!aif_is_unverified_subscriber($stored_user)) {
 
                 $creds = [

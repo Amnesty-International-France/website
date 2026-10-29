@@ -116,7 +116,8 @@ final class AccountVerificationPagesTest extends TestCase
 
         $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
 
-        self::assertStringContainsString("href='https://wordpress.example.test/connectez-vous/'", $html);
+        self::assertStringContainsString('Ce compte ne permet pas d\'accéder à l\'Espace Don.', $html);
+        self::assertStringNotContainsString("href='https://wordpress.example.test/connectez-vous/'", $html);
         self::assertStringNotContainsString('Votre compte n\'existe pas', $html);
         self::assertStringNotContainsString("href='/creer-votre-compte'", $html);
         self::assertSame([], $GLOBALS['__phpunit_sent_mails']);

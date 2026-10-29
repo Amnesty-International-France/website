@@ -136,9 +136,7 @@ function check_user_page_access()
 
     $current_user = wp_get_current_user();
 
-    // The Salesforce lookup below trusts user_email, so a self-registered
-    // account must have proven it owns that address.
-    if (!is_user_logged_in() || aif_is_unverified_subscriber($current_user)) {
+    if (!is_user_logged_in() || !aif_can_access_donor_space($current_user)) {
         wp_redirect($redirect_url);
         exit;
     }

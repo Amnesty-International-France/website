@@ -54,9 +54,18 @@ function get_SF_user_ID(int $user_id): string|false
     return $sf_user_ids[$user_id] ?? false;
 }
 
+if (!function_exists('wp_get_current_user')) {
+	function wp_get_current_user(): WP_User
+	{
+		return $GLOBALS['__phpunit_users'][$GLOBALS['__phpunit_current_user_id']] ?? new WP_User();
+	}
+}
+
+
 require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/index.php';
 require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/rest-controllers.php';
 require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
+require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/email-verification/index.php';
 
 final class TaxReceiptTest extends TestCase
 {

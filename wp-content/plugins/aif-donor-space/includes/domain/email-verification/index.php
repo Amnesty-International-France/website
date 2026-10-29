@@ -234,3 +234,8 @@ function aif_complete_email_verification($user_id)
 
     return $token;
 }
+
+function aif_can_access_donor_space(WP_User $user)
+{
+    return aif_is_subscriber($user) && get_email_is_verified($user->ID);
+}
