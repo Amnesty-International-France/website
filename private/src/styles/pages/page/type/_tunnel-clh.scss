@@ -156,12 +156,6 @@
       }
     }
   }
-
-  @media (max-width: ($container-md - 1px)) {
-    .yoast-breadcrumb-wrapper {
-      display: none;
-    }
-  }
 }
 
 @media (max-width: ($container-md - 1px)) {
