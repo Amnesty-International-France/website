@@ -7,10 +7,6 @@ use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 
-final class ClhSignatureRedirect extends RuntimeException
-{
-}
-
 /**
  * Only the CLH tunnel page reads `signature_status`: an invalid email typed in the
  * tunnel must bring the visitor back there, where the error message is shown.
@@ -26,13 +22,6 @@ final class ClhTunnelInvalidEmailRedirectTest extends TestCase
     protected function setUp(): void
     {
         require_once __DIR__ . '/clh-tunnel-stand-ins.php';
-
-        if (!function_exists('wp_redirect')) {
-            function wp_redirect(string $location, int $status = 302): never
-            {
-                throw new ClhSignatureRedirect($location);
-            }
-        }
 
         if (!function_exists('wp_get_referer')) {
             // The tunnel form posts back to its own URL, so WordPress finds no usable referer.
@@ -106,7 +95,7 @@ final class ClhTunnelInvalidEmailRedirectTest extends TestCase
     {
         try {
             amnesty_handle_petition_signature();
-        } catch (ClhSignatureRedirect $redirect) {
+        } catch (ClhRedirect $redirect) {
             return $redirect->getMessage();
         }
 

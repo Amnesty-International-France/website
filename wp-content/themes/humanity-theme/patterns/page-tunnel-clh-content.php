@@ -347,9 +347,6 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 								<?php wp_nonce_field('clh_skip_petition', 'clh_skip_nonce'); ?>
 								<input type="hidden" name="petition_id"
 								       value="<?= esc_attr((string)$next_petition['id']); ?>">
-								<?php if ($last_signer_email) : ?>
-									<input type="hidden" name="user_email" value="<?= esc_attr($last_signer_email); ?>">
-								<?php endif; ?>
 							</form>
 							<?php if ($last_signer_email) :
 							    $sign_form_id = sprintf('tunnel-clh-sign-form-%d', (int)$next_petition['id']); ?>
@@ -360,7 +357,6 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 									     data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
 									<input type="hidden" name="petition_id" value="<?= esc_attr((string)$next_petition['id']); ?>">
 									<input type="hidden" name="from_tunnel" value="1">
-									<input type="hidden" name="user_email" value="<?= esc_attr($last_signer_email); ?>">
 								</form>
 								<?php require get_theme_file_path('/patterns/petition-clh-actions.php'); ?>
 							<?php endif; ?>
