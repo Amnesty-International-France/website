@@ -69,6 +69,7 @@ final class ClhTunnelContextTest extends TestCase
             }
         }
 
+        require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/clh/helpers.php';
         require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/post-types/petitions.php';
 
         $campaign = new WP_Post();
