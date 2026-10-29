@@ -34,8 +34,7 @@ final class ClhGridPetitionsTest extends TestCase
 
         self::assertSame([[
             'id' => 7,
-            'title' => 'Pétition 7',
-            'short_title' => 'Personne A',
+            'title' => 'Personne A',
             'image_id' => 42,
             'signatures' => 1_500,
             'target' => 2_000,
@@ -45,21 +44,21 @@ final class ClhGridPetitionsTest extends TestCase
         ]], amnesty_get_clh_grid_petitions());
     }
 
-    #[DataProvider('blankShortTitleCases')]
-    public function testShortTitleFallsBackToTheTitle(string $short_title): void
+    #[DataProvider('blankClhTitleCases')]
+    public function testClhTitleFallsBackToThePostTitle(string $clh_title): void
     {
-        $this->seedPetition(1, '01.11.2026', ['short_title' => $short_title]);
+        $this->seedPetition(1, '01.11.2026', ['short_title' => $clh_title]);
 
         $petitions = amnesty_get_clh_grid_petitions();
 
         self::assertArrayHasKey(0, $petitions);
-        self::assertSame('Pétition 1', $petitions[0]['short_title']);
+        self::assertSame('Pétition 1', $petitions[0]['title']);
     }
 
     /**
      * @return iterable<string, array{string}>
      */
-    public static function blankShortTitleCases(): iterable
+    public static function blankClhTitleCases(): iterable
     {
         yield 'empty' => [''];
         yield 'spaces only' => ['  '];

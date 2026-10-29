@@ -208,7 +208,7 @@ if (!function_exists('amnesty_get_clh_grid_petitions')) {
      * Petitions with the same end date keep the order of amnesty_get_clh_campaign_petitions().
      * Titles are returned as entered, unescaped: escape them on output.
      *
-     * @return list<array{id: int, title: string, short_title: string, image_id: int, signatures: int, target: int, percentage: int, url: string, sign_url: string}>
+     * @return list<array{id: int, title: string, image_id: int, signatures: int, target: int, percentage: int, url: string, sign_url: string}>
      *         image_id is 0 when the petition has no photo; url is '' when the
      *         permalink cannot be built
      */
@@ -243,6 +243,19 @@ if (!function_exists('amnesty_get_clh_grid_petitions')) {
     }
 }
 
+if (!function_exists('amnesty_get_clh_petition_title')) {
+    /**
+     * Title of a petition on the CLH page and in the tunnel: the "Titre CLH" field,
+     * or the post title when the field is blank. Returned unescaped.
+     *
+     * @param object $petition the petition post
+     */
+    function amnesty_get_clh_petition_title(object $petition): string
+    {
+        return trim((string) get_field('short_title', (int) $petition->ID)) ?: (string) $petition->post_title;
+    }
+}
+
 if (!function_exists('amnesty_get_clh_grid_card')) {
     /**
      * Card of a petition in the campaign grid; see amnesty_get_clh_grid_petitions().
@@ -250,19 +263,17 @@ if (!function_exists('amnesty_get_clh_grid_card')) {
      * @param object $petition the petition post
      * @param string $sign_url entry into the signature tunnel
      *
-     * @return array{id: int, title: string, short_title: string, image_id: int, signatures: int, target: int, percentage: int, url: string, sign_url: string}
+     * @return array{id: int, title: string, image_id: int, signatures: int, target: int, percentage: int, url: string, sign_url: string}
      */
     function amnesty_get_clh_grid_card(object $petition, string $sign_url): array
     {
         $id = (int) $petition->ID;
-        $title = (string) $petition->post_title;
         $signatures = amnesty_get_petition_signature_count($id);
         $target = amnesty_get_clh_petition_target($id);
 
         return [
             'id' => $id,
-            'title' => $title,
-            'short_title' => trim((string) get_field('short_title', $id)) ?: $title,
+            'title' => amnesty_get_clh_petition_title($petition),
             'image_id' => (int) get_post_thumbnail_id($id),
             'signatures' => $signatures,
             'target' => $target,

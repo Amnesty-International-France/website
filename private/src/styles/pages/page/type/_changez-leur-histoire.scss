@@ -765,20 +765,6 @@
   display: flex;
   counter-increment: clh-case;
 
-  .clh-petition-title-mobile {
-    display: none;
-  }
-
-  @media (max-width: 767px) {
-    .clh-petition-title-desktop {
-      display: none;
-    }
-
-    .clh-petition-title-mobile {
-      display: inline;
-    }
-  }
-
   .petition-thumbnail:empty {
     display: grid;
     place-items: center;
@@ -820,10 +806,6 @@
     min-height: 44px;
     font-size: 1.0625rem;
     line-height: 1.25;
-  }
-
-  .petition-subtitle {
-    font-size: 0.875rem;
   }
 
   .custom-button-block .content.small {

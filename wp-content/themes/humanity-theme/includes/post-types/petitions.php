@@ -687,7 +687,7 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
 
         $selected_posts[] = [
             'id' => $petition->ID,
-            'title' => $petition->post_title,
+            'title' => amnesty_get_clh_petition_title($petition),
             'description' => get_field('short_description', $petition->ID) ?: get_the_excerpt($petition->ID),
             'image_id' => get_post_thumbnail_id($petition->ID),
             'letter' => get_field('lettre', $petition->ID),
