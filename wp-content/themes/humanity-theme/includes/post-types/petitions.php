@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__DIR__) . '/clh/tunnel-selection.php';
+
 function amnesty_register_petitions_cpt()
 {
     $labels = [
@@ -292,11 +294,8 @@ if (!function_exists('amnesty_get_active_clh_campaign_for_page')) {
             return $cache[$page_id] = null;
         }
 
-        $timestamp_now   = time();
-        $start_date      = get_field('start_date_highligth_clh', $page_id);
-        $end_date        = get_field('end_date_highlight_clh', $page_id);
-        $timestamp_start = $start_date ? strtotime((string) $start_date) : 0;
-        $timestamp_end   = $end_date ? strtotime((string) $end_date) : 0;
+        $timestamp_now = time();
+        ['start' => $timestamp_start, 'end' => $timestamp_end] = amnesty_get_clh_campaign_timestamps($page_id);
 
         if ($timestamp_start > $timestamp_now) {
             return $cache[$page_id] = null;
@@ -491,6 +490,38 @@ function amnesty_set_clh_signer_email(string $email): void
     }
 
     $_SESSION['clh_last_signer_email'] = $email;
+}
+
+/**
+ * Whether the visitor passed Turnstile in the CLH tunnel less than 30 minutes ago.
+ */
+function amnesty_is_clh_tunnel_turnstile_verified(): bool
+{
+    amnesty_start_secure_session();
+
+    $verified_at = (int) ($_SESSION['clh_turnstile_verified_at'] ?? 0);
+
+    return $verified_at > time() - 30 * MINUTE_IN_SECONDS;
+}
+
+/**
+ * Turnstile check of a tunnel submission. A token is single-use, so a successful check
+ * is remembered in the session: later tunnel submissions skip it for 30 minutes.
+ *
+ * @return string|null the error code, or null when the visitor is verified
+ */
+function amnesty_verify_clh_tunnel_turnstile(): ?string
+{
+    if (amnesty_is_clh_tunnel_turnstile_verified()) {
+        return null;
+    }
+
+    $error = verify_turnstile();
+    if ($error === null) {
+        $_SESSION['clh_turnstile_verified_at'] = time();
+    }
+
+    return $error;
 }
 
 function amnesty_get_clh_skipped_petitions(): array
@@ -688,7 +719,7 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
 
         $selected_posts[] = [
             'id' => $petition->ID,
-            'title' => $petition->post_title,
+            'title' => amnesty_get_clh_petition_title($petition),
             'description' => get_field('short_description', $petition->ID) ?: get_the_excerpt($petition->ID),
             'image_id' => get_post_thumbnail_id($petition->ID),
             'letter' => get_field('lettre', $petition->ID),
@@ -714,8 +745,8 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
     $next_petition = null;
 
     if ($signed_count < 10 && !empty($not_signed)) {
-        $random_key = array_rand($not_signed);
-        $next_petition = $not_signed[$random_key];
+        // Read-only choice, matched against eligible campaign petitions by the selector.
+        $next_petition = amnesty_select_clh_tunnel_petition($not_signed, $_GET['clh_petition'] ?? null);
     }
 
     $contexts[$post->ID] = [
@@ -791,7 +822,7 @@ function amnesty_handle_petition_skip(): void
         wp_die('Action non autorisée.', '', ['response' => 403]);
     }
 
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = amnesty_verify_clh_tunnel_turnstile();
     if ($turnstile_error !== null) {
         wp_redirect(add_query_arg('signature_status', 'turnstile', amnesty_get_clh_petition_tunnel_url()));
         exit;
@@ -849,7 +880,7 @@ function amnesty_handle_petition_signature(): void
         exit;
     }
 
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = $is_clh_tunnel_submission ? amnesty_verify_clh_tunnel_turnstile() : verify_turnstile();
     if ($turnstile_error !== null) {
         if ($is_clh_tunnel_submission) {
             wp_redirect(add_query_arg('signature_status', 'turnstile', amnesty_get_clh_petition_tunnel_url()));
@@ -1133,11 +1164,11 @@ add_action('acf/include_fields', function () {
             ],
             [
                 'key' => 'field_6a155b0a87p9c',
-                'label' => 'Titre court',
+                'label' => 'Titre CLH',
                 'name' => 'short_title',
                 'aria-label' => '',
                 'type' => 'text',
-                'instructions' => '',
+                'instructions' => '50 caractères maximum conseillés',
                 'required' => 0,
                 'conditional_logic' => [
                     [
@@ -1167,7 +1198,7 @@ add_action('acf/include_fields', function () {
             ],
             [
                 'key' => 'field_6a155b0a8709c',
-                'label' => 'Description courte',
+                'label' => 'Description CLH',
                 'name' => 'short_description',
                 'aria-label' => '',
                 'type' => 'textarea',
@@ -1358,27 +1389,6 @@ add_action('acf/include_fields', function () {
                         ],
                     ],
                 ],
-                'wrapper' => [
-                    'width' => '',
-                    'class' => '',
-                    'id' => '',
-                ],
-                'default_value' => '',
-                'maxlength' => '',
-                'allow_in_bindings' => 0,
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-            ],
-            [
-                'key' => 'field_68f4b1a4a9c10',
-                'label' => 'Sous-titre CLH',
-                'name' => 'subtitle_clh',
-                'aria-label' => '',
-                'type' => 'text',
-                'instructions' => '',
-                'required' => 0,
-                'conditional_logic' => 0,
                 'wrapper' => [
                     'width' => '',
                     'class' => '',

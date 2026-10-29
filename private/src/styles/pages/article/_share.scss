@@ -49,6 +49,11 @@
   .article-shareCopy {
     position: relative;
 
+    &:focus-visible {
+      outline: 2px solid var(--wp--preset--color--black);
+      outline-offset: 3px;
+    }
+
     &.copied::after {
       content: 'Lien copié !';
       position: absolute;
