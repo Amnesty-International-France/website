@@ -492,6 +492,38 @@ function amnesty_set_clh_signer_email(string $email): void
     $_SESSION['clh_last_signer_email'] = $email;
 }
 
+/**
+ * Whether the visitor passed Turnstile in the CLH tunnel less than 30 minutes ago.
+ */
+function amnesty_is_clh_tunnel_turnstile_verified(): bool
+{
+    amnesty_start_secure_session();
+
+    $verified_at = (int) ($_SESSION['clh_turnstile_verified_at'] ?? 0);
+
+    return $verified_at > time() - 30 * MINUTE_IN_SECONDS;
+}
+
+/**
+ * Turnstile check of a tunnel submission. A token is single-use, so a successful check
+ * is remembered in the session: later tunnel submissions skip it for 30 minutes.
+ *
+ * @return string|null the error code, or null when the visitor is verified
+ */
+function amnesty_verify_clh_tunnel_turnstile(): ?string
+{
+    if (amnesty_is_clh_tunnel_turnstile_verified()) {
+        return null;
+    }
+
+    $error = verify_turnstile();
+    if ($error === null) {
+        $_SESSION['clh_turnstile_verified_at'] = time();
+    }
+
+    return $error;
+}
+
 function amnesty_get_clh_skipped_petitions(): array
 {
     amnesty_start_secure_session();
@@ -790,7 +822,7 @@ function amnesty_handle_petition_skip(): void
         wp_die('Action non autorisée.', '', ['response' => 403]);
     }
 
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = amnesty_verify_clh_tunnel_turnstile();
     if ($turnstile_error !== null) {
         wp_redirect(add_query_arg('signature_status', 'turnstile', amnesty_get_clh_petition_tunnel_url()));
         exit;
@@ -848,7 +880,7 @@ function amnesty_handle_petition_signature(): void
         exit;
     }
 
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = $is_clh_tunnel_submission ? amnesty_verify_clh_tunnel_turnstile() : verify_turnstile();
     if ($turnstile_error !== null) {
         if ($is_clh_tunnel_submission) {
             wp_redirect(add_query_arg('signature_status', 'turnstile', amnesty_get_clh_petition_tunnel_url()));
