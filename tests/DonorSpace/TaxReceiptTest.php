@@ -54,6 +54,24 @@ function get_salesforce_member_data(string $email): mixed
     return $sf_user_mails[$email] ?? (object) [];
 }
 
+function aif_is_salesforce_contact_absent(mixed $sf_member): bool
+{
+    return is_object($sf_member) && [] === get_object_vars($sf_member);
+}
+
+function aif_validate_salesforce_member(mixed $sf_member): mixed
+{
+    if (is_wp_error($sf_member) || aif_is_salesforce_contact_absent($sf_member)) {
+        return $sf_member;
+    }
+
+    if (!is_object($sf_member) || !is_string($sf_member->Id ?? null) || '' === trim($sf_member->Id)) {
+        return aif_create_salesforce_invalid_response_error('GET', 'member_search');
+    }
+
+    return $sf_member;
+}
+
 function has_access_to_donation_space(mixed $sf_user): bool
 {
     return is_object($sf_user) && (!empty($sf_user->isDonateur) || !empty($sf_user->isMembre));
@@ -180,7 +198,6 @@ final class TaxReceiptTest extends TestCase
     {
         yield 'neither donor nor member' => [(object) ['Id' => '003-contact-id', 'isDonateur' => false, 'isMembre' => false]];
         yield 'contact not found' => [(object) []];
-        yield 'donor without Id' => [(object) ['Id' => '', 'isDonateur' => true, 'isMembre' => false]];
     }
 
     #[DataProvider('membersWithoutDonationSpaceAccess')]
@@ -193,6 +210,19 @@ final class TaxReceiptTest extends TestCase
 
         self::assertSame(403, $response->get_status());
         self::assertSame('donation space access denied', $response->get_data()['message']);
+        self::assertSame([], $GLOBALS['tax_receipt_fetches']);
+        self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
+    }
+
+    public function testHandleRequestReturns503WhenTheContactHasNoId(): void
+    {
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1']]);
+        $GLOBALS['sf_user_mails']['member@example.test'] = (object) ['Id' => '', 'isDonateur' => true, 'isMembre' => false];
+
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+
+        self::assertSame(503, $response->get_status());
+        self::assertSame('salesforce_invalid_response', $GLOBALS['logged_salesforce_errors'][0]->get_error_code());
         self::assertSame([], $GLOBALS['tax_receipt_fetches']);
         self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
     }

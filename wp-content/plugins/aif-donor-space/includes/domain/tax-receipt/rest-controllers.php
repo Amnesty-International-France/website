@@ -18,12 +18,12 @@ function handle_duplicate_tax_receipt_request(WP_REST_Request $request)
         return new WP_REST_Response(['message' => 'tax receipt ID not provided'], status: 403);
     }
 
-    $sf_member = get_salesforce_member_data(wp_get_current_user()->user_email);
+    $sf_member = aif_validate_salesforce_member(get_salesforce_member_data(wp_get_current_user()->user_email));
     if (is_wp_error($sf_member)) {
         return aif_salesforce_unavailable_response($sf_member);
     }
 
-    if (!has_access_to_donation_space($sf_member) || empty($sf_member->Id)) {
+    if (aif_is_salesforce_contact_absent($sf_member) || !has_access_to_donation_space($sf_member)) {
         return new WP_REST_Response(['message' => 'donation space access denied'], status: 403);
     }
 

@@ -67,7 +67,7 @@ $url = get_permalink(get_page_by_path('mon-espace/mes-dons/mes-demandes'));
 								<?php
 					    aif_include_partial('alert', [
 					        'title' => "Votre demande n'a pas pu être envoyée",
-					        'content' => 'Merci de réessayer dans quelques instants.',
+					        'content' => 'Merci de réessayer dans quelques instants. Si le problème persiste, rechargez la page.',
 					        'state' => 'error',
 					    ]);
 					    ?>
