@@ -34,7 +34,8 @@ All the code lives in the theme, `wp-content/themes/humanity-theme`.
 - **Campaign petitions**: a petition belongs to the campaign when its ACF field
   `clh_petition` is checked. Each petition has a signature count
   (`amnesty_get_petition_signature_count()`), a target (`objectif_signatures`), an end
-  date (`date_de_fin`) and a short title (`short_title`).
+  date (`date_de_fin`), a "Titre CLH" (`short_title`) and a "Description CLH"
+  (`short_description`).
 - **Signature tunnel**: sub-pages of the campaign page (`campagne`, `merci`), active only
   while the campaign is in progress.
 
@@ -91,8 +92,7 @@ Titles are returned as entered, unescaped: escape them on output (`esc_html()`).
 | Key | Type | Meaning |
 |---|---|---|
 | `id` | `int` | Petition post ID. |
-| `title` | `string` | Petition title. |
-| `short_title` | `string` | Short title, for mobile; falls back to `title`. |
+| `title` | `string` | "Titre CLH" (`short_title`); falls back to the post title. |
 | `image_id` | `int` | Attachment ID of the photo; 0 without photo. |
 | `signatures` | `int` | Signatures of the petition. |
 | `target` | `int` | Signature target of the petition; 200,000 when empty. |
@@ -103,8 +103,7 @@ Titles are returned as entered, unescaped: escape them on output (`esc_html()`).
 ### Grid display and targeted tunnel entry
 
 The grid renders the helper's ten cards at most, with five columns from 1024 px,
-two from 768 px and one below 768 px. Mobile uses `short_title` (falling back to the
-full title). The heading has a yellow line above it and can be entered separately
+two from 768 px and one below 768 px. The heading has a yellow line above it and can be entered separately
 for each campaign state in `petitions_heading_active_clh` and
 `petitions_heading_closed_clh`. Empty fields keep the automatic year/count headings.
 

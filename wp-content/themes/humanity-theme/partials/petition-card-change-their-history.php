@@ -42,8 +42,6 @@ if ($grid_petition) {
     $percentage = ($goal > 0) ? min(($current / $goal) * 100, 100) : 0;
 }
 
-$subtitle_clh = !$grid_petition && $post_id ? (get_field('subtitle_clh', $post_id) ?: '') : '';
-
 // Campagne terminée : le bouton ne fait plus signer mais mène à la pétition.
 $closed = !empty($args['closed']);
 $button_url = $grid_petition && !$closed ? $grid_petition['sign_url'] : $permalink;
@@ -67,19 +65,9 @@ $button_url = $grid_petition && !$closed ? $grid_petition['sign_url'] : $permali
     <div class="petition-content">
         <div class="petition-title">
             <a class="as-h5" href="<?= esc_url($permalink); ?>">
-                <?php if ($grid_petition) : ?>
-                    <span class="clh-petition-title-desktop"><?= esc_html($title); ?></span>
-                    <span class="clh-petition-title-mobile"><?= esc_html($grid_petition['short_title']); ?></span>
-                <?php else : ?>
-                    <?= esc_html($title); ?>
-                <?php endif; ?>
+                <?= esc_html($title); ?>
             </a>
         </div>
-        <?php if (!empty($subtitle_clh)) : ?>
-            <p class="petition-subtitle">
-                <?= esc_html($subtitle_clh); ?>
-            </p>
-        <?php endif; ?>
 
         <div class="petition-infos">
             <div class="progress-bar-container">

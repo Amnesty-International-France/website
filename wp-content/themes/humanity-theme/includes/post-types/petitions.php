@@ -687,7 +687,7 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
 
         $selected_posts[] = [
             'id' => $petition->ID,
-            'title' => $petition->post_title,
+            'title' => amnesty_get_clh_petition_title($petition),
             'description' => get_field('short_description', $petition->ID) ?: get_the_excerpt($petition->ID),
             'image_id' => get_post_thumbnail_id($petition->ID),
             'letter' => get_field('lettre', $petition->ID),
@@ -1132,11 +1132,11 @@ add_action('acf/include_fields', function () {
             ],
             [
                 'key' => 'field_6a155b0a87p9c',
-                'label' => 'Titre court',
+                'label' => 'Titre CLH',
                 'name' => 'short_title',
                 'aria-label' => '',
                 'type' => 'text',
-                'instructions' => '',
+                'instructions' => '50 caractères maximum conseillés',
                 'required' => 0,
                 'conditional_logic' => [
                     [
@@ -1166,7 +1166,7 @@ add_action('acf/include_fields', function () {
             ],
             [
                 'key' => 'field_6a155b0a8709c',
-                'label' => 'Description courte',
+                'label' => 'Description CLH',
                 'name' => 'short_description',
                 'aria-label' => '',
                 'type' => 'textarea',
@@ -1357,27 +1357,6 @@ add_action('acf/include_fields', function () {
                         ],
                     ],
                 ],
-                'wrapper' => [
-                    'width' => '',
-                    'class' => '',
-                    'id' => '',
-                ],
-                'default_value' => '',
-                'maxlength' => '',
-                'allow_in_bindings' => 0,
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-            ],
-            [
-                'key' => 'field_68f4b1a4a9c10',
-                'label' => 'Sous-titre CLH',
-                'name' => 'subtitle_clh',
-                'aria-label' => '',
-                'type' => 'text',
-                'instructions' => '',
-                'required' => 0,
-                'conditional_logic' => 0,
                 'wrapper' => [
                     'width' => '',
                     'class' => '',

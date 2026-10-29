@@ -81,24 +81,24 @@ final class ClhPetitionsGridTest extends TestCase
 
     public function testCardUsesPreparedValuesAndTargetedTunnelLink(): void
     {
-        $GLOBALS['__phpunit_acf_field_values'][1] = ['short_title' => 'Titre mobile', 'objectif_signatures' => '3000'];
+        $GLOBALS['__phpunit_acf_field_values'][1] = ['short_title' => 'Titre CLH', 'objectif_signatures' => '3000'];
         $GLOBALS['__phpunit_clh_signature_counts'][1] = 1999;
         $GLOBALS['__phpunit_post_thumbnail_ids'][1] = 42;
         $html = $this->render();
         self::assertStringContainsString('href="/campagne/?clh_petition=1"', $html);
         self::assertStringContainsString('Signer la pétition', $html);
-        self::assertStringContainsString('clh-petition-title-desktop">Titre complet', $html);
-        self::assertStringContainsString('clh-petition-title-mobile">Titre mobile', $html);
+        self::assertStringContainsString('Titre CLH', $html);
+        self::assertStringNotContainsString('Titre complet', $html);
         self::assertStringContainsString('width: 66%', $html);
         self::assertStringContainsString('1 999 signatures', $html);
         self::assertStringContainsString('/photo-42.jpg', $html);
     }
 
-    public function testMissingPhotoAndShortTitleKeepTheCardUsable(): void
+    public function testMissingPhotoAndClhTitleKeepTheCardUsable(): void
     {
         $html = $this->render();
         self::assertStringContainsString('<div class="petition-thumbnail"></div>', $html);
-        self::assertStringContainsString('clh-petition-title-mobile">Titre complet', $html);
+        self::assertStringContainsString('Titre complet', $html);
         self::assertStringContainsString('Signer la pétition', $html);
     }
 

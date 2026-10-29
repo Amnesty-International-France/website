@@ -17,8 +17,6 @@ if (!$post_object instanceof WP_Post) {
     $thumbnail   = get_the_post_thumbnail($post_id, 'medium', ['class' => 'petition-image']);
     $post_terms  = wp_get_post_terms($post_id, ['category', 'post_tag']);
 }
-
-$subtitle_clh = $post_id ? (get_field('subtitle_clh', $post_id) ?: '') : '';
 ?>
 
 <article class="action-card-change-their-history card-<?php echo esc_attr($direction); ?>">
@@ -36,11 +34,6 @@ $subtitle_clh = $post_id ? (get_field('subtitle_clh', $post_id) ?: '') : '';
                 <?= esc_html($title); ?>
             </a>
         </div>
-        <?php if (!empty($subtitle_clh)) : ?>
-            <p class="petition-subtitle">
-                <?= esc_html($subtitle_clh); ?>
-            </p>
-        <?php endif; ?>
 
         <div class="petition-sign-button">
             <div class='custom-button-block center' style="gap: 12px;">
