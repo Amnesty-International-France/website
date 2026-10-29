@@ -288,15 +288,6 @@
               flex-direction: column;
               gap: 10px;
 
-              .article-date {
-                font-size: 14px;
-                font-weight: bold;
-                font-family: var(--wp--preset--font-family--secondary);
-                line-height: 20px;
-                color: var(--wp--preset--color--grey-dark);
-                margin: 0;
-              }
-
               .article-title {
                 font-family: var(--wp--preset--font-family--secondary);
                 font-size: 22px;
@@ -446,15 +437,6 @@
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
-
-                .article-date {
-                  font-size: 14px;
-                  font-weight: bold;
-                  font-family: var(--wp--preset--font-family--secondary);
-                  line-height: 20px;
-                  color: var(--wp--preset--color--grey-dark);
-                  margin: 0;
-                }
 
                 .article-title {
                   font-family: var(--wp--preset--font-family--secondary);
