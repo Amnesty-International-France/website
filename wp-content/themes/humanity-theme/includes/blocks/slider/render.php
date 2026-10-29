@@ -83,14 +83,21 @@ if (!function_exists('render_slider_block')) {
                     return $base_url;
                 }
 
-                $first_location = get_field('lieu', get_post($post_ids[0]), false);
-                for ($i = 1; $i < count($post_ids); $i++) {
-                    if (get_field('lieu', get_post($post_ids[$i]), false) !== $first_location) {
-                        return $base_url;
+                $locations = [];
+                foreach ($post_ids as $post_id) {
+                    $location = get_field('lieu', $post_id, false);
+                    if ($location) {
+                        $locations[] = $location;
                     }
                 }
+                if (empty($locations)) {
+                    return $base_url;
+                }
 
-                return add_query_arg('qlieu', $first_location, $base_url);
+                $location_counts = array_count_values($locations);
+                arsort($location_counts);
+
+                return add_query_arg('qlieu', array_key_first($location_counts), $base_url);
             }
         }
 
