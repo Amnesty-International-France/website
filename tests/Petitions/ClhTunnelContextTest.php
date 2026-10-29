@@ -19,18 +19,7 @@ final class ClhTunnelContextTest extends TestCase
 
     protected function setUp(): void
     {
-        if (!defined('DAY_IN_SECONDS')) {
-            define('DAY_IN_SECONDS', 86400);
-        }
-
         require_once __DIR__ . '/clh-tunnel-stand-ins.php';
-
-        if (!function_exists('is_ssl')) {
-            function is_ssl(): bool
-            {
-                return true;
-            }
-        }
 
         if (!function_exists('get_post_meta')) {
             function get_post_meta(int $post_id, string $key = '', bool $single = false): mixed
@@ -87,13 +76,6 @@ final class ClhTunnelContextTest extends TestCase
             function wp_json_encode(mixed $data): string|false
             {
                 return json_encode($data);
-            }
-        }
-
-        if (!function_exists('wp_redirect')) {
-            function wp_redirect(string $location, int $status = 302): never
-            {
-                throw new RuntimeException($location);
             }
         }
 
@@ -159,7 +141,7 @@ final class ClhTunnelContextTest extends TestCase
 
     public function testSkippingDoesNotSetTheSignerEmail(): void
     {
-        $GLOBALS['__phpunit_valid_nonces'][] = 'nonce';
+        $GLOBALS['__phpunit_valid_nonces'] = ['nonce'];
         $_POST = [
             'skip_petition'  => '',
             'petition_id'    => '101',
@@ -170,7 +152,7 @@ final class ClhTunnelContextTest extends TestCase
         try {
             amnesty_handle_petition_skip();
             self::fail('The skip handler should redirect.');
-        } catch (RuntimeException $redirect) {
+        } catch (ClhRedirect $redirect) {
             self::assertSame('https://example.test/campagne/', $redirect->getMessage());
         }
 
