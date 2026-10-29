@@ -46,6 +46,11 @@ if (!defined('ABSPATH')) {
     define('ABSPATH', dirname(__DIR__) . '/');
 }
 
+if (!defined('MINUTE_IN_SECONDS')) {
+    // WordPress time constant (wp-includes/default-constants.php).
+    define('MINUTE_IN_SECONDS', 60);
+}
+
 if (!defined('DAY_IN_SECONDS')) {
     // WordPress time constant (wp-includes/default-constants.php).
     define('DAY_IN_SECONDS', 86_400);

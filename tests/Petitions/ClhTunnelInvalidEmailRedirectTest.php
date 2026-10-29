@@ -70,6 +70,13 @@ final class ClhTunnelInvalidEmailRedirectTest extends TestCase
             }
         }
 
+        if (!function_exists('is_ssl')) {
+            function is_ssl(): bool
+            {
+                return true;
+            }
+        }
+
         if (!function_exists('verify_turnstile')) {
             function verify_turnstile(): ?string
             {

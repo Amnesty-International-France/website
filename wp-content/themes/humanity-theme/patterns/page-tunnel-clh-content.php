@@ -43,6 +43,8 @@ $signed_count = $context['signed_count'];
 $total_steps = min(10, count($list_petitions_clh));
 $next_petition = $context['next_petition'];
 $show_final_screen = $next_petition === null;
+// Once the visitor has passed Turnstile, the tunnel forms submit without a new check.
+$turnstile_verified = amnesty_is_clh_tunnel_turnstile_verified();
 
 if ($show_final_screen) {
     $fallback_share_petition = $selected_posts[0] ?? null;
@@ -298,6 +300,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 							</div>
 							<form id="<?php echo esc_attr($skip_form_id); ?>" class="tunnel-clh-skip-form" method="post"
 							      action="">
+								<?php if (!$turnstile_verified) : ?>
 								<div
 									class="cf-turnstile"
 									data-callback="aifTurnstileSuccess"
@@ -308,6 +311,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 									data-unsupported-callback="aifTurnstileFailure"
 									data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"
 								></div>
+								<?php endif; ?>
 								<?php wp_nonce_field('clh_skip_petition', 'clh_skip_nonce'); ?>
 								<input type="hidden" name="petition_id"
 								       value="<?= esc_attr((string)$next_petition['id']); ?>">
@@ -319,9 +323,11 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 							    $sign_form_id = sprintf('tunnel-clh-sign-form-%d', (int)$next_petition['id']); ?>
 								<form id="<?php echo esc_attr($sign_form_id); ?>" class="tunnel-clh-sign-form"
 								      method="post" action="">
+									<?php if (!$turnstile_verified) : ?>
 									<div class="cf-turnstile"
 									     data-appearance="interaction-only"
 									     data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+									<?php endif; ?>
 									<input type="hidden" name="petition_id" value="<?= esc_attr((string)$next_petition['id']); ?>">
 									<input type="hidden" name="from_tunnel" value="1">
 									<input type="hidden" name="user_email" value="<?= esc_attr($last_signer_email); ?>">
@@ -363,9 +369,11 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 						    $sign_form_id = sprintf('tunnel-clh-sign-form-anonymous-%d', (int)$next_petition['id']); ?>
 							<figure class="page-tunnel-clh-petition-card-anonymous">
 								<form id="<?php echo esc_attr($sign_form_id); ?>" class="tunnel-clh-sign-form-anonymous" method="post" action="">
+									<?php if (!$turnstile_verified) : ?>
 									<div class="cf-turnstile"
 									     data-appearance="interaction-only"
 									     data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+									<?php endif; ?>
 									<?php if ($turnstile_error_message) : ?>
 										<?php aif_include_partial('alert', ['state' => 'error', 'title' => 'Une erreur est survenue', 'content' => $turnstile_error_message]); ?>
 									<?php endif; ?>
