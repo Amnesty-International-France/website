@@ -259,11 +259,6 @@
     font-size: 24px;
     font-weight: bold;
     line-height: 1.15;
-    text-transform: uppercase;
-
-    @media (max-width: $container-sm) {
-      text-transform: none;
-    }
   }
 
   &-description {
