@@ -83,21 +83,14 @@ if (!function_exists('render_slider_block')) {
                     return $base_url;
                 }
 
-                $locations = [];
-                foreach ($post_ids as $post_id) {
-                    $location = get_field('lieu', $post_id, false);
-                    if ($location) {
-                        $locations[] = $location;
+                $first_location = get_field('lieu', $post_ids[0], false);
+                for ($i = 1, $iMax = count($post_ids); $i < $iMax; $i++) {
+                    if (get_field('lieu', $post_ids[$i], false) !== $first_location) {
+                        return $base_url;
                     }
                 }
-                if (empty($locations)) {
-                    return $base_url;
-                }
 
-                $location_counts = array_count_values($locations);
-                arsort($location_counts);
-
-                return add_query_arg('qlieu', array_key_first($location_counts), $base_url);
+                return add_query_arg('qlieu', $first_location, $base_url);
             }
         }
 
@@ -114,7 +107,9 @@ if (!function_exists('render_slider_block')) {
             return '';
         }
 
-        $redirect_link = $post_type === 'training' ? find_redirect_link_for_trainings($post_type, $post_ids) : get_dynamic_category_or_post_type_link($post_type);
+        $redirect_link = $post_type === 'training'
+            ? find_redirect_link_for_trainings($post_type, wp_list_pluck($slider_query->posts, 'ID'))
+            : get_dynamic_category_or_post_type_link($post_type);
         ob_start();
         ?>
         <div class="slider-block">
