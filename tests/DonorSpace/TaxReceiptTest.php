@@ -84,9 +84,17 @@ if (!function_exists('wp_get_current_user')) {
     }
 }
 
+if (!function_exists('wp_get_current_user')) {
+    function wp_get_current_user(): WP_User
+    {
+        return $GLOBALS['__phpunit_users'][$GLOBALS['__phpunit_current_user_id']] ?? new WP_User();
+    }
+}
+
 require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/index.php';
 require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/rest-controllers.php';
 require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
+require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/email-verification/index.php';
 
 final class TaxReceiptTest extends TestCase
 {
@@ -361,11 +369,24 @@ final class TaxReceiptTest extends TestCase
     public function testCheckNonceRejectsALoggedInUserWithAnUnverifiedEmail(): void
     {
         $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
-        $GLOBALS['__phpunit_current_user_id'] = 43;
+        $GLOBALS['__phpunit_current_user_id'] = 42;
 
         $result = aif_check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 
         self::assertInstanceOf(WP_Error::class, $result);
-        self::assertSame('Email not verified.', $result->get_error_message());
+        self::assertSame('Donor space access denied.', $result->get_error_message());
+    }
+
+    public function testCheckNonceRejectsAVerifiedNonSubscriber(): void
+    {
+        $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
+        $GLOBALS['__phpunit_users'][44] = new WP_User(['editor'], 44, 'editor@example.test');
+        $GLOBALS['__phpunit_current_user_id'] = 44;
+        store_email_is_verified(44);
+
+        $result = aif_check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
+
+        self::assertInstanceOf(WP_Error::class, $result);
+        self::assertSame(403, $result->get_error_data()['status']);
     }
 }

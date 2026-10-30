@@ -113,7 +113,7 @@ test.describe('donor space e-mail verification', () => {
     await expect(page.locator('#resetpassform #pass1')).toBeVisible();
   });
 
-  test('lets a legacy non-subscriber donor log in and reach the donor space', async ({
+  test('refuses a non-subscriber donor at the donor space login', async ({
     page,
     gotoWithoutCookieOverlay,
   }) => {
@@ -125,7 +125,24 @@ test.describe('donor space e-mail verification', () => {
     await page.locator(`${LOGIN_FORM} #password`).fill(LEGACY_EDITOR_DONOR.password);
     await page.locator(`${LOGIN_FORM} button[type="submit"]`).click();
 
-    await expect(page).toHaveURL(/\/mon-espace\/$/);
+    await expect(page).toHaveURL(/\/connectez-vous\/$/);
+    await expect(page.getByText("Ce compte ne permet pas d'accéder à l'Espace Don.")).toBeVisible();
+  });
+
+  test('does not reveal a non-subscriber account without its password', async ({
+    page,
+    gotoWithoutCookieOverlay,
+  }) => {
+    await mockSuccessfulTurnstile(page, { token: 'mock-legacy-donor-token' });
+
+    await gotoWithoutCookieOverlay('/connectez-vous/');
+    await setServerSideTurnstileResult(page, LOGIN_FORM, { success: true });
+    await page.locator(`${LOGIN_FORM} #email`).fill(LEGACY_EDITOR_DONOR.email);
+    await page.locator(`${LOGIN_FORM} #password`).fill('wrong-password');
+    await page.locator(`${LOGIN_FORM} button[type="submit"]`).click();
+
+    await expect(page.getByText('Mauvais email ou mot de passe')).toBeVisible();
+    await expect(page.getByText("Ce compte ne permet pas d'accéder à l'Espace Don.")).toHaveCount(0);
   });
 
   test('lets a historically verified subscriber log in with the existing password', async ({
