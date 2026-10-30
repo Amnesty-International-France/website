@@ -4979,194 +4979,197 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@php-wasm/cli-util@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/cli-util@npm:3.1.38"
+"@php-wasm/cli-util@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/cli-util@npm:3.1.61"
   dependencies:
-    "@php-wasm/util": "npm:3.1.38"
+    "@php-wasm/util": "npm:3.1.61"
     fast-xml-parser: "npm:^5.8.0"
     jsonc-parser: "npm:3.3.1"
-  checksum: 10c0/6ffd27119b828633f5d3e12c3bd28441e51815a9b90d9e3abeebf0db3e76bad1d9075d1781dafd96445a41b72292ef3601210bde546cc3731198f8cf96347cd9
+  checksum: 10c0/263e0ce63c43f4a619c8bbb43aa401c9773a7f5a8fcb674ad9295eb38e96fbed9d22da1c331ff3a6f5759346b21d58d4f52b20b53b6458f65d017c53119eea33
   languageName: node
   linkType: hard
 
-"@php-wasm/logger@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/logger@npm:3.1.38"
-  checksum: 10c0/a525fe9d43a38e1b2372a08f368fa53ee59891f8e05f9635ae2d44787ca0a6172e86209e2dc489849e7572c2d27772997b0fd2385170eb01738c80621712a26f
+"@php-wasm/logger@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/logger@npm:3.1.61"
+  checksum: 10c0/c000cfe51ce23416f7c30d52b4252f563cf9a060be9da2cce11650eb7362f165b42ef94680651dcff1bd2358f821f1e8d0833319543fe8c0db35c3eb31532981
   languageName: node
   linkType: hard
 
-"@php-wasm/node-5-2@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/node-5-2@npm:3.1.38"
+"@php-wasm/node-5-2@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/node-5-2@npm:3.1.61"
   dependencies:
-    "@php-wasm/universal": "npm:3.1.38"
+    "@php-wasm/universal": "npm:3.1.61"
     wasm-feature-detect: "npm:1.8.0"
-  checksum: 10c0/499b2a08b9be728100a657c92aa9876cc5620c9bc11ff48b01fe6974dcc20e2308cee26aae5794fd43306959d023b3fe709eed13d349dcea49fb6cf45bbc71b0
+  checksum: 10c0/1f5bee37c8dbbfa69a914bdafe92df969d28dfa5ab8cd27cf51b077a94f29fbc2048969e16535a02634cc9ea0d5d5e7a78cb8ab4268ed83fe374d092a014e252
   languageName: node
   linkType: hard
 
-"@php-wasm/node-7-4@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/node-7-4@npm:3.1.38"
+"@php-wasm/node-7-4@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/node-7-4@npm:3.1.61"
   dependencies:
-    "@php-wasm/universal": "npm:3.1.38"
+    "@php-wasm/universal": "npm:3.1.61"
     wasm-feature-detect: "npm:1.8.0"
-  checksum: 10c0/5b1bea4cbbfafcff9233ecbed5a3bcbb9903487ec448ca0ca50966977555d5db02a5311f95d18fa01b3335f9ab801cd2d570cbf146f98fac3f4abcc1826c8602
+  checksum: 10c0/e9e3025f07a759b06c35b2279721b268305e0944633c055407b1e4753c07846acdbd050d3b23e04e1eb7d370adfdb547b62688d8f259b9260cceb4c8e1c910fa
   languageName: node
   linkType: hard
 
-"@php-wasm/node-8-0@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/node-8-0@npm:3.1.38"
+"@php-wasm/node-8-0@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/node-8-0@npm:3.1.61"
   dependencies:
-    "@php-wasm/universal": "npm:3.1.38"
+    "@php-wasm/universal": "npm:3.1.61"
     wasm-feature-detect: "npm:1.8.0"
-  checksum: 10c0/bedad792d2ebf62323ace8ebd77645722e1174c57afd7d87a98cd2e0a62b1aaafd2b862cf6e63211fd1b0997f7f2dac3d6106b7d22ea3934cd5a1f579b9ee4d3
+  checksum: 10c0/8a246c99f988dad1747200aad48e9f121cffaade5221f78c43230f1494d11c3ba82c11ea40a7719a01bc0a34ef31f32d08a24a56a80a90122f97f13b2d04fdfe
   languageName: node
   linkType: hard
 
-"@php-wasm/node-8-1@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/node-8-1@npm:3.1.38"
+"@php-wasm/node-8-1@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/node-8-1@npm:3.1.61"
   dependencies:
-    "@php-wasm/universal": "npm:3.1.38"
+    "@php-wasm/universal": "npm:3.1.61"
     wasm-feature-detect: "npm:1.8.0"
-  checksum: 10c0/475499665f5af27978d2a8c14e2e8b42f55574bcc8dff7e66bc4e24b9ed1f69848368f56051bc8daa89d6c34c7633634c80edc95cabed3b2a3f4a1fbf5bfcad4
+  checksum: 10c0/8b1fbe80043f1f1fc4a049970fca915432546b809143450958523692ac64b14b33bdf0fceb8c083f6994281e1d64bc45ff64ba09318e59ab9e793cb9355d7f76
   languageName: node
   linkType: hard
 
-"@php-wasm/node-8-2@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/node-8-2@npm:3.1.38"
+"@php-wasm/node-8-2@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/node-8-2@npm:3.1.61"
   dependencies:
-    "@php-wasm/universal": "npm:3.1.38"
+    "@php-wasm/universal": "npm:3.1.61"
     wasm-feature-detect: "npm:1.8.0"
-  checksum: 10c0/d5733ab247ce129269f874d62abc97a573768a80ba54bbeb827358dd1e03eaf9af3a8e959c9360f228fda02fb6a574c16b56404961ce48c99373e9b4e9fb1362
+  checksum: 10c0/22ba23a90f96630e0ee4076502ae802c985ac374e1888179122f504b7a23eb29d43a24115fb8246c4518f60059cbb9cd8ef30b9e861c97342c8db6b6cda41a91
   languageName: node
   linkType: hard
 
-"@php-wasm/node-8-3@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/node-8-3@npm:3.1.38"
+"@php-wasm/node-8-3@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/node-8-3@npm:3.1.61"
   dependencies:
-    "@php-wasm/universal": "npm:3.1.38"
+    "@php-wasm/universal": "npm:3.1.61"
     wasm-feature-detect: "npm:1.8.0"
-  checksum: 10c0/695097e7f73487fa8a4498dc1480190a6f3a4412672e115886a8565f034198a3c86b1884dfb7b9a39fafd2b0be6aeff856f2ad6df563ae0a9cad69189a0d8245
+  checksum: 10c0/20689a6e437f68d58e9764764f39f39ef000677e202b3b37fe81725835a1299f993e6f4d4c101f97d2075496bf262d14925f63f9517d1d7f64750995a8773a72
   languageName: node
   linkType: hard
 
-"@php-wasm/node-8-4@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/node-8-4@npm:3.1.38"
+"@php-wasm/node-8-4@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/node-8-4@npm:3.1.61"
   dependencies:
-    "@php-wasm/universal": "npm:3.1.38"
+    "@php-wasm/universal": "npm:3.1.61"
     wasm-feature-detect: "npm:1.8.0"
-  checksum: 10c0/caef1ebb43cb1b7b328bd66991ae6d1a23fef2d6d4d411436ccfc33006e986afa18cc5a37b5bb8f35dafe9d2b679e44d87d590634ca192f121222c04836e0efd
+  checksum: 10c0/6b5211ec43621990e6c21645fad894f77771b596b8f3ca1f0eb333f500cdad30289984e61073d4183f5052ac885edab5135adce530bb6c1c9a4223f98d4d3be2
   languageName: node
   linkType: hard
 
-"@php-wasm/node-8-5@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/node-8-5@npm:3.1.38"
+"@php-wasm/node-8-5@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/node-8-5@npm:3.1.61"
   dependencies:
-    "@php-wasm/universal": "npm:3.1.38"
+    "@php-wasm/universal": "npm:3.1.61"
     wasm-feature-detect: "npm:1.8.0"
-  checksum: 10c0/45d85501f28c7b26c70a662b0f9115a70e2edddc81268bde29edad3310a6d342b3cca09ed46fcbae6e2e893b414fa1d22d6d903653524b51cbbbe929d50933f3
+  checksum: 10c0/74cd06e01b8126912c18f8aaddfa80ddeb6433d9c4374b4fb9219a2573af1a8cf4c80834884f54abfa5d531625d988bcf4140fcf6de019352619a7920cc9f3ad
   languageName: node
   linkType: hard
 
-"@php-wasm/node@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/node@npm:3.1.38"
+"@php-wasm/node@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/node@npm:3.1.61"
   dependencies:
-    "@php-wasm/cli-util": "npm:3.1.38"
-    "@php-wasm/logger": "npm:3.1.38"
-    "@php-wasm/node-5-2": "npm:3.1.38"
-    "@php-wasm/node-7-4": "npm:3.1.38"
-    "@php-wasm/node-8-0": "npm:3.1.38"
-    "@php-wasm/node-8-1": "npm:3.1.38"
-    "@php-wasm/node-8-2": "npm:3.1.38"
-    "@php-wasm/node-8-3": "npm:3.1.38"
-    "@php-wasm/node-8-4": "npm:3.1.38"
-    "@php-wasm/node-8-5": "npm:3.1.38"
-    "@php-wasm/universal": "npm:3.1.38"
-    "@php-wasm/util": "npm:3.1.38"
-    fs-ext-extra-prebuilt: "npm:2.2.7"
+    "@php-wasm/cli-util": "npm:3.1.61"
+    "@php-wasm/logger": "npm:3.1.61"
+    "@php-wasm/node-5-2": "npm:3.1.61"
+    "@php-wasm/node-7-4": "npm:3.1.61"
+    "@php-wasm/node-8-0": "npm:3.1.61"
+    "@php-wasm/node-8-1": "npm:3.1.61"
+    "@php-wasm/node-8-2": "npm:3.1.61"
+    "@php-wasm/node-8-3": "npm:3.1.61"
+    "@php-wasm/node-8-4": "npm:3.1.61"
+    "@php-wasm/node-8-5": "npm:3.1.61"
+    "@php-wasm/universal": "npm:3.1.61"
+    "@php-wasm/util": "npm:3.1.61"
+    fs-ext-extra-prebuilt: "npm:~2.2.15"
     wasm-feature-detect: "npm:1.8.0"
     ws: "npm:8.21.0"
-  checksum: 10c0/d2c93815bef4fc542763057ed9c07bd575e0daf30a839ef15d21aab6e6e91d1e046bb504c0b57b1a46c06551a4e24109319914e89f4648139b5a7e9ba522e65e
+  dependenciesMeta:
+    fs-ext-extra-prebuilt:
+      optional: true
+  checksum: 10c0/ca87890d7a47a7d141103f38a1a685557e6ece7f2c80bcfe7ce5d1500c369426a349665a12dbec164ae8129463dfa1e50cca5d34d096d1fcb2bdd1eaa628f42f
   languageName: node
   linkType: hard
 
-"@php-wasm/progress@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/progress@npm:3.1.38"
+"@php-wasm/progress@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/progress@npm:3.1.61"
   dependencies:
-    "@php-wasm/logger": "npm:3.1.38"
-  checksum: 10c0/be93fa7b254cf4ed87a7dbd5253e716fc4ca2eabfd30da7a039adfd0c3c1cc2a67c92bfa5ec75f0d20ed93bf3d365e928bcb18a489fe7fbb67fc32c3942365a4
+    "@php-wasm/logger": "npm:3.1.61"
+  checksum: 10c0/4a7d80f5225ed88436cdfd42423fbb6df7a7822546532c69735a29070baede178ca764a08a6c756865a54e56572841d23cbd93d31a94705560f755c5c325543f
   languageName: node
   linkType: hard
 
-"@php-wasm/scopes@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/scopes@npm:3.1.38"
-  checksum: 10c0/6bcb30effef2cc0a71987ffb3b4f6f1abb7a16c8c6dc8e71d92bf83fddde09008c17f48241016d6a9bb7ae861a454beb30f59e3c32fbb3a074568f8a64397479
+"@php-wasm/scopes@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/scopes@npm:3.1.61"
+  checksum: 10c0/b1a32ac3777e686be2d3fc5b292233629358c50c0cd271409e63cec8398c9c74552376e681e35fc1fe1bc3df9859d1d9961d6c2726058a001c8645b29aa769f0
   languageName: node
   linkType: hard
 
-"@php-wasm/stream-compression@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/stream-compression@npm:3.1.38"
+"@php-wasm/stream-compression@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/stream-compression@npm:3.1.61"
   dependencies:
-    "@php-wasm/util": "npm:3.1.38"
-  checksum: 10c0/00776da2f33b96e5ecb692fb6eea381bc79a170fd92fc7bc53dcfe80cfbb00a0594cff0e436c7d4fdef2ccea3c8e031abf91a1cff55c80bf3cfd1adf6882c270
+    "@php-wasm/util": "npm:3.1.61"
+  checksum: 10c0/5d34120d3a9d1bdb020c9959796d5c00860525616b3fd7c7499c364de94b3f42acb8c7e042f9e18747442c1e286847e93f7aef81cd6e48c40dde0c78eec6052d
   languageName: node
   linkType: hard
 
-"@php-wasm/universal@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/universal@npm:3.1.38"
+"@php-wasm/universal@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/universal@npm:3.1.61"
   dependencies:
-    "@php-wasm/logger": "npm:3.1.38"
-    "@php-wasm/progress": "npm:3.1.38"
-    "@php-wasm/stream-compression": "npm:3.1.38"
-    "@php-wasm/util": "npm:3.1.38"
+    "@php-wasm/logger": "npm:3.1.61"
+    "@php-wasm/progress": "npm:3.1.61"
+    "@php-wasm/stream-compression": "npm:3.1.61"
+    "@php-wasm/util": "npm:3.1.61"
     ini: "npm:4.1.2"
-  checksum: 10c0/6e57dd3bfb5fd61ec090ddaf9cc19b6c5460fbae1021271f2fee60bfec5d329fc2421a7721e4496b93c68acf8a647b2431ff4c37a4b5bf330a817bf25d24aeca
+  checksum: 10c0/59760bdefa2199b615c009d6245d1ff0cbf96350df4edf217d4044d59ef95be432f0ba9cea15d9fa76e3246219954b090ee535af020edc82c729ac8eb64ef5aa
   languageName: node
   linkType: hard
 
-"@php-wasm/util@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/util@npm:3.1.38"
-  checksum: 10c0/635bebf42571d6ced9f08092a9a4632ce50869c3b3108b722a536a87e94ca932657a1ef16412a4bb078d2e2f1889e4b9d69c64810c14a89aff9a65243ba24c45
+"@php-wasm/util@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/util@npm:3.1.61"
+  checksum: 10c0/d2c592b3e2175eefff4b7867f1bcbf3d689d9a64beba5e0663ea301d072aadc875530ab847c9bce99f7da24868ff54740bd2a85a5e55b63bef296bf3a43ac9b5
   languageName: node
   linkType: hard
 
-"@php-wasm/web-service-worker@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/web-service-worker@npm:3.1.38"
+"@php-wasm/web-service-worker@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/web-service-worker@npm:3.1.61"
   dependencies:
-    "@php-wasm/scopes": "npm:3.1.38"
-    "@php-wasm/universal": "npm:3.1.38"
-  checksum: 10c0/abdfbca2813088fc9279d5c72b0ae07db0331037cd96cf906680e3626e80c5bb89d3ffd71da331e802ebf59d29be01eb988b4a7cf040af7cf4e8708c40696d5c
+    "@php-wasm/scopes": "npm:3.1.61"
+    "@php-wasm/universal": "npm:3.1.61"
+  checksum: 10c0/a53f31a2b529660e131a842355bb8ba8a1724c6b0da0c36c24e1f10e32855b8d1ee5be891882500e772609807c6353a272519533df200705e92e1dc9c6ae0610
   languageName: node
   linkType: hard
 
-"@php-wasm/xdebug-bridge@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@php-wasm/xdebug-bridge@npm:3.1.38"
+"@php-wasm/xdebug-bridge@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@php-wasm/xdebug-bridge@npm:3.1.61"
   dependencies:
-    "@php-wasm/logger": "npm:3.1.38"
-    "@php-wasm/universal": "npm:3.1.38"
+    "@php-wasm/logger": "npm:3.1.61"
+    "@php-wasm/universal": "npm:3.1.61"
     ws: "npm:8.21.0"
     xml2js: "npm:0.6.2"
     yargs: "npm:17.7.2"
   bin:
     xdebug-bridge: xdebug-bridge.js
-  checksum: 10c0/770d3922cd1f3a0e157647b5be9eb13e7b472f217117e0f0d37c62c83d333389125fcadb351a4bfce1b76bcc5d322d072bdff0a1e444c287864a62fffef5e24e
+  checksum: 10c0/6be889ce1f8dcc78fa4712cc1bdf83103a28cfcf2554f23ee501b15d0ea135146ad7a885e9e3cd78e861d2051b2b7292e1e1bec7cd6a2dbc974a07b33806b224
   languageName: node
   linkType: hard
 
@@ -5400,19 +5403,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@simple-git/args-pathspec@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@simple-git/args-pathspec@npm:1.0.3"
-  checksum: 10c0/91bfc99daa956df28e4efd683cd799f60c6d169fce6adf71a9efa80a6b5938fed4b03e55fa929cfd51aed64f3ada5c1e4edad45a3872dbd94d11924b3258b5bc
+"@simple-git/args-pathspec@npm:1.0.4, @simple-git/args-pathspec@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@simple-git/args-pathspec@npm:1.0.4"
+  checksum: 10c0/f62c09daf6a17734b2a13a186421bf0fdbdbd48782d1ca6d751027b2a9f515f11505da672489609f95335a0541d2fcf6d6fd6c2754919245109e92335e437b1b
   languageName: node
   linkType: hard
 
-"@simple-git/argv-parser@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "@simple-git/argv-parser@npm:1.1.1"
+"@simple-git/argv-parser@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@simple-git/argv-parser@npm:2.0.1"
   dependencies:
-    "@simple-git/args-pathspec": "npm:^1.0.3"
-  checksum: 10c0/2c21166f1bb7c4373e7b4e52bd0c7f333e58ea0ff5ac0b6c2d305835f4a2bcad1ef4bcce3cff63312ac55655ea7be3aba4c7c0c41e3ebcb8bee343f65bb92f5e
+    "@simple-git/args-pathspec": "npm:^1.0.4"
+  checksum: 10c0/7d2cd9852139ca3b524dcd91f6a887fa505cfb68c8813d7b849005566147365bb1e34f5450411c494fbd714a80c123058e65dc2ffc0b41d059e30bdc98e12223
   languageName: node
   linkType: hard
 
@@ -6565,26 +6568,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wordpress/env@npm:^11.8.0":
-  version: 11.8.0
-  resolution: "@wordpress/env@npm:11.8.0"
+"@wordpress/env@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@wordpress/env@npm:12.0.0"
   dependencies:
     "@inquirer/prompts": "npm:^7.2.0"
-    "@wp-playground/cli": "npm:^3.0.48"
-    chalk: "npm:^4.0.0"
+    "@wp-playground/cli": "npm:^3.1.56"
+    adm-zip: "npm:^0.6.1"
+    chalk: "npm:^4.1.1"
     copy-dir: "npm:^1.3.0"
     cross-spawn: "npm:^7.0.6"
     docker-compose: "npm:^0.24.3"
-    extract-zip: "npm:^1.6.7"
     got: "npm:^11.8.5"
-    js-yaml: "npm:^3.13.1"
+    js-yaml: "npm:^3.15.2"
     ora: "npm:^4.0.2"
     rimraf: "npm:^5.0.10"
-    simple-git: "npm:^3.5.0"
+    simple-git: "npm:^4.0.2"
     yargs: "npm:^17.3.0"
   bin:
     wp-env: bin/wp-env
-  checksum: 10c0/b518442db9c52a40bef4a0e296b4a502927679c59c8319cd2a968e7470f0125ea9d5721ff3bb44c64ed4eb6cde7c1244cd594c71b88031c11b835a5cd49aa4fb
+  checksum: 10c0/a60edbd6a5325d5dab41cb6cac6ef55b1acf3ed6df70f78835126cf06be252562df0c98bbf41c0543654a5d7875940288924e22cfcd243e460587dcf20d42553
   languageName: node
   linkType: hard
 
@@ -6696,40 +6699,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wp-playground/blueprints@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@wp-playground/blueprints@npm:3.1.38"
+"@wp-playground/blueprints@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@wp-playground/blueprints@npm:3.1.61"
   dependencies:
-    "@php-wasm/logger": "npm:3.1.38"
-    "@php-wasm/progress": "npm:3.1.38"
-    "@php-wasm/stream-compression": "npm:3.1.38"
-    "@php-wasm/universal": "npm:3.1.38"
-    "@php-wasm/util": "npm:3.1.38"
-    "@php-wasm/web-service-worker": "npm:3.1.38"
-    "@wp-playground/common": "npm:3.1.38"
-    "@wp-playground/storage": "npm:3.1.38"
-    "@wp-playground/wordpress": "npm:3.1.38"
+    "@php-wasm/logger": "npm:3.1.61"
+    "@php-wasm/progress": "npm:3.1.61"
+    "@php-wasm/stream-compression": "npm:3.1.61"
+    "@php-wasm/universal": "npm:3.1.61"
+    "@php-wasm/util": "npm:3.1.61"
+    "@php-wasm/web-service-worker": "npm:3.1.61"
+    "@wp-playground/common": "npm:3.1.61"
+    "@wp-playground/storage": "npm:3.1.61"
+    "@wp-playground/wordpress": "npm:3.1.61"
     ajv: "npm:8.18.0"
-  checksum: 10c0/ab0738d40206d34ba463b1cb7e4b0c6d5a748236eb65a01f8f06099551d47e964a58dfd7f9eab56433a50a1b380786a95db140aff18d5147249d65584e6526b9
+  checksum: 10c0/2e5794a946d068d973b68643e00f61b265f77070e1fad182608b3a75c88fd94bfe93b42bf77d9600737caeaa103f74c37a45740259573dd85c63912dc3663d78
   languageName: node
   linkType: hard
 
-"@wp-playground/cli@npm:^3.0.48":
-  version: 3.1.38
-  resolution: "@wp-playground/cli@npm:3.1.38"
+"@wp-playground/cli@npm:^3.1.56":
+  version: 3.1.61
+  resolution: "@wp-playground/cli@npm:3.1.61"
   dependencies:
-    "@php-wasm/cli-util": "npm:3.1.38"
-    "@php-wasm/logger": "npm:3.1.38"
-    "@php-wasm/node": "npm:3.1.38"
-    "@php-wasm/progress": "npm:3.1.38"
-    "@php-wasm/universal": "npm:3.1.38"
-    "@php-wasm/util": "npm:3.1.38"
-    "@php-wasm/xdebug-bridge": "npm:3.1.38"
-    "@wp-playground/blueprints": "npm:3.1.38"
-    "@wp-playground/common": "npm:3.1.38"
-    "@wp-playground/storage": "npm:3.1.38"
-    "@wp-playground/tools": "npm:3.1.38"
-    "@wp-playground/wordpress": "npm:3.1.38"
+    "@php-wasm/cli-util": "npm:3.1.61"
+    "@php-wasm/logger": "npm:3.1.61"
+    "@php-wasm/node": "npm:3.1.61"
+    "@php-wasm/progress": "npm:3.1.61"
+    "@php-wasm/universal": "npm:3.1.61"
+    "@php-wasm/util": "npm:3.1.61"
+    "@php-wasm/xdebug-bridge": "npm:3.1.61"
+    "@wp-playground/blueprints": "npm:3.1.61"
+    "@wp-playground/common": "npm:3.1.61"
+    "@wp-playground/storage": "npm:3.1.61"
+    "@wp-playground/tools": "npm:3.1.61"
+    "@wp-playground/wordpress": "npm:3.1.61"
     express: "npm:4.22.2"
     fs-extra: "npm:11.1.1"
     tmp-promise: "npm:3.0.3"
@@ -6737,53 +6740,60 @@ __metadata:
     yargs: "npm:17.7.2"
   bin:
     wp-playground-cli: wp-playground.js
-  checksum: 10c0/7cd1e346a09b6b46d6e6972f5390808165b3bdfb126eec6380a6f44f7ec8eed4004069b2f6dc4590a4e93e54d49a5f89a77d6912a5c46688a19fe55f3fbc509f
+  checksum: 10c0/579f026b52998cfc7d9e3b72a0c762b2d60bfaee3368857ec586a9a51db54c67bd65d411da9d0834d07c9f786f772c83b94337bc319b0ce5d7c459e83814b88c
   languageName: node
   linkType: hard
 
-"@wp-playground/common@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@wp-playground/common@npm:3.1.38"
+"@wp-playground/common@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@wp-playground/common@npm:3.1.61"
   dependencies:
-    "@php-wasm/universal": "npm:3.1.38"
-    "@php-wasm/util": "npm:3.1.38"
-  checksum: 10c0/04382fb32065926cf8a80882836fb4ab8feb45d46a12f8d3597224445d82631eded3c268d29498ebaaa1262b845f5c155b0e1cb5b75ed0a0803d59604d302e94
+    "@php-wasm/universal": "npm:3.1.61"
+    "@php-wasm/util": "npm:3.1.61"
+  checksum: 10c0/77f67562e6441417bb3754d048256c30955b77d4bff8ac333a83b09cf1775b2936ebddd738cf5c598b74c8c4468d12c4c02afbba1cd09d135eaad0d32ba76b43
   languageName: node
   linkType: hard
 
-"@wp-playground/storage@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@wp-playground/storage@npm:3.1.38"
+"@wp-playground/storage@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@wp-playground/storage@npm:3.1.61"
   dependencies:
-    "@php-wasm/stream-compression": "npm:3.1.38"
-    "@php-wasm/universal": "npm:3.1.38"
-    "@php-wasm/util": "npm:3.1.38"
+    "@php-wasm/stream-compression": "npm:3.1.61"
+    "@php-wasm/universal": "npm:3.1.61"
+    "@php-wasm/util": "npm:3.1.61"
     "@zip.js/zip.js": "npm:2.7.57"
     isomorphic-git: "npm:1.37.6"
     octokit: "npm:3.1.2"
     pako: "npm:^1.0.10"
-  checksum: 10c0/8324262aa163c8b2cdb039400adfce23cf8019499e5a0bffc50144186686266ce6b21488ce60f184ce43f0af63611c7e2218526eefc40df58bf0db42c827d04f
+    sha.js: "npm:2.4.12"
+  checksum: 10c0/e7af3eb15bdd8c91d769e4324774ebb8334f944904ba3e10e58fc3722bfd90ebba7ad62f9a9ff0d1167d86d83e95a5d998d3d70ae94227989a8764daeb6fedf6
   languageName: node
   linkType: hard
 
-"@wp-playground/tools@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@wp-playground/tools@npm:3.1.38"
+"@wp-playground/tools@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@wp-playground/tools@npm:3.1.61"
   dependencies:
-    "@wp-playground/blueprints": "npm:3.1.38"
-  checksum: 10c0/98d8bf22a478b96098445f56cb0c9925d0fedefc29ef5bb7a7bed5ef1668e6d9290f8933aeb3c7368502a7b0305c0451aa0176ea90da8f3409d00afa2dd081be
+    "@php-wasm/node": "npm:3.1.61"
+    "@php-wasm/universal": "npm:3.1.61"
+    "@php-wasm/util": "npm:3.1.61"
+    "@wp-playground/blueprints": "npm:3.1.61"
+    "@wp-playground/common": "npm:3.1.61"
+    "@wp-playground/wordpress": "npm:3.1.61"
+  checksum: 10c0/20a023999cf1523bc6de6a45434134a4a52a424397411bc65668cc47dbe07eceba1ab36d727649c30000cc8f65fb7ef966a56a0e525954c2f810eb4c16f8fb94
   languageName: node
   linkType: hard
 
-"@wp-playground/wordpress@npm:3.1.38":
-  version: 3.1.38
-  resolution: "@wp-playground/wordpress@npm:3.1.38"
+"@wp-playground/wordpress@npm:3.1.61":
+  version: 3.1.61
+  resolution: "@wp-playground/wordpress@npm:3.1.61"
   dependencies:
-    "@php-wasm/logger": "npm:3.1.38"
-    "@php-wasm/universal": "npm:3.1.38"
-    "@php-wasm/util": "npm:3.1.38"
-    "@wp-playground/common": "npm:3.1.38"
-  checksum: 10c0/4f30e7669c9c049d2dd36feff82cf9ee2b0837ee9eaa3d410182f87c44ec30ec793b6297d3be6e6f295b2678e8f6a66819857d5cedb6b38a298a73e6c001504b
+    "@php-wasm/logger": "npm:3.1.61"
+    "@php-wasm/universal": "npm:3.1.61"
+    "@php-wasm/util": "npm:3.1.61"
+    "@wp-playground/common": "npm:3.1.61"
+    zstddec: "npm:^0.2.0"
+  checksum: 10c0/e9dd4a423db46fdf4cbc4cba025c18a7e07d17cf75cb38c3590db13f8f788649f8edab4c5b4da8999670acb57ff0c86896bafd67ad82077788fbb9840d4a8821
   languageName: node
   linkType: hard
 
@@ -6877,6 +6887,13 @@ __metadata:
     loader-utils: "npm:^2.0.0"
     regex-parser: "npm:^2.2.11"
   checksum: 10c0/6a6e5bb8b670e4e1238c708f6163e92aa2ad0308fe5913de73c89e4cbf41738ee0bcc5552b94d0b7bf8be435ee49b78c6de8a6db7badd80762051e843c8aa14f
+  languageName: node
+  linkType: hard
+
+"adm-zip@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "adm-zip@npm:0.6.1"
+  checksum: 10c0/78233c6fbfd418dd605ef3c4c6a656406a49f81f716f2850d565f5e55915f18b99f4fdaf15436d77c73536da0915eeca33adab8055872a983b0ac7d07664cd25
   languageName: node
   linkType: hard
 
@@ -7959,7 +7976,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^4.0.0":
+"chalk@npm:^4.0.0, chalk@npm:^4.1.1":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -8314,18 +8331,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concat-stream@npm:^1.6.2":
-  version: 1.6.2
-  resolution: "concat-stream@npm:1.6.2"
-  dependencies:
-    buffer-from: "npm:^1.0.0"
-    inherits: "npm:^2.0.3"
-    readable-stream: "npm:^2.2.2"
-    typedarray: "npm:^0.0.6"
-  checksum: 10c0/2e9864e18282946dabbccb212c5c7cec0702745e3671679eb8291812ca7fd12023f7d8cb36493942a62f770ac96a7f90009dc5c82ad69893438371720fa92617
-  languageName: node
-  linkType: hard
-
 "configstore@npm:^5.0.1":
   version: 5.0.1
   resolution: "configstore@npm:5.0.1"
@@ -8454,13 +8459,6 @@ __metadata:
   version: 3.49.0
   resolution: "core-js@npm:3.49.0"
   checksum: 10c0/2e42edb47eda38fd5368380131623c8aa5d4a6b42164125b17744bdc08fa5ebbbdd06b4b4aa6ca3663470a560b0f2fba48e18f142dfe264b0039df85bc625694
-  languageName: node
-  linkType: hard
-
-"core-util-is@npm:~1.0.0":
-  version: 1.0.3
-  resolution: "core-util-is@npm:1.0.3"
-  checksum: 10c0/90a0e40abbddfd7618f8ccd63a74d88deea94e77d0e8dbbea059fa7ebebb8fbb4e2909667fe26f3a467073de1a542ebe6ae4c73a73745ac5833786759cd906c9
   languageName: node
   linkType: hard
 
@@ -10272,20 +10270,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"extract-zip@npm:^1.6.7":
-  version: 1.7.0
-  resolution: "extract-zip@npm:1.7.0"
-  dependencies:
-    concat-stream: "npm:^1.6.2"
-    debug: "npm:^2.6.9"
-    mkdirp: "npm:^0.5.4"
-    yauzl: "npm:^2.10.0"
-  bin:
-    extract-zip: cli.js
-  checksum: 10c0/333f1349ee678d47268315f264dbfcd7003747d25640441e186e87c66efd7129f171f1bcfe8ff1151a24da19d5f8602daff002ee24145dc65516bc9a8e40ee08
-  languageName: node
-  linkType: hard
-
 "extract-zip@npm:^2.0.1":
   version: 2.0.1
   resolution: "extract-zip@npm:2.0.1"
@@ -10637,12 +10621,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-ext-extra-prebuilt@npm:2.2.7":
-  version: 2.2.7
-  resolution: "fs-ext-extra-prebuilt@npm:2.2.7"
+"fs-ext-extra-prebuilt@npm:~2.2.15":
+  version: 2.2.16
+  resolution: "fs-ext-extra-prebuilt@npm:2.2.16"
   dependencies:
-    nan: "npm:^2.24.0"
-  checksum: 10c0/8cdbb088ed1531871fe0d85a8a4759ed627749198fcb5809cd9172cf81fb1ff96c4e40f2b6c70ceabeed75f7ccd3e0314132827c866f19e29722e46fa95ae654
+    nan: "npm:^2.27.0"
+  checksum: 10c0/841762c7678964017e0cb9466b7660f56c871a7618e22379b187b5412f77a6ba19ca8ca596db6b51f3d8733c57e98ce38610c706a4eb5332bcdd78accbd8b375
   languageName: node
   linkType: hard
 
@@ -11411,7 +11395,7 @@ __metadata:
     "@lhci/cli": "npm:0.15.x"
     "@playwright/test": "npm:1.60.0"
     "@svgr/webpack": "npm:^8.1.0"
-    "@wordpress/env": "npm:^11.8.0"
+    "@wordpress/env": "npm:^12.0.0"
     "@wordpress/eslint-plugin": "npm:24.5.0"
     "@wordpress/i18n": "npm:^6.19.0"
     autoprefixer: "npm:^10.4.27"
@@ -11616,7 +11600,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inherits@npm:2, inherits@npm:^2.0.3, inherits@npm:^2.0.4, inherits@npm:~2.0.3, inherits@npm:~2.0.4":
+"inherits@npm:2, inherits@npm:^2.0.4, inherits@npm:~2.0.4":
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
   checksum: 10c0/4e531f648b29039fb7426fb94075e6545faa1eb9fe83c29f0b6d9e7263aceb4289d2d4557db0d428188eeb449cc7c5e77b0a0b2c4e248ff2a65933a0dee49ef2
@@ -12229,13 +12213,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isarray@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "isarray@npm:1.0.0"
-  checksum: 10c0/18b5be6669be53425f0b84098732670ed4e727e3af33bc7f948aac01782110eb9a18b3b329c5323bcdd3acdaae547ee077d3951317e7f133bff7105264b3003d
-  languageName: node
-  linkType: hard
-
 "isexe@npm:^2.0.0":
   version: 2.0.0
   resolution: "isexe@npm:2.0.0"
@@ -12389,7 +12366,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^3.13.1":
+"js-yaml@npm:^3.13.1, js-yaml@npm:^3.15.2":
   version: 3.15.2
   resolution: "js-yaml@npm:3.15.2"
   dependencies:
@@ -13402,7 +13379,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:^0.5.3, mkdirp@npm:^0.5.4":
+"mkdirp@npm:^0.5.3":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
   dependencies:
@@ -13455,12 +13432,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nan@npm:^2.24.0":
-  version: 2.27.0
-  resolution: "nan@npm:2.27.0"
+"nan@npm:^2.27.0":
+  version: 2.30.0
+  resolution: "nan@npm:2.30.0"
   dependencies:
     node-gyp: "npm:latest"
-  checksum: 10c0/38eb00b06e40f0c65b6a98d75795f17d651a8b7b52f03873dff6902d0053f12e7638d7f64fc52bda6c8f8ec454d69636e3988c8a9eb2bc749c2d5c255ba55f4c
+  checksum: 10c0/563bf97c84099feeccae9aeaee1f1e14043e0ab0e8525497058495373e9a53abd46b00a6f5d178931911c2739c8ee94604da13d1245ab9e8b689339e61e98c23
   languageName: node
   linkType: hard
 
@@ -14537,13 +14514,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"process-nextick-args@npm:~2.0.0":
-  version: 2.0.1
-  resolution: "process-nextick-args@npm:2.0.1"
-  checksum: 10c0/bec089239487833d46b59d80327a1605e1c5287eaad770a291add7f45fda1bb5e28b38e0e061add0a1d0ee0984788ce74fa394d345eed1c420cacf392c554367
-  languageName: node
-  linkType: hard
-
 "process@npm:^0.11.10":
   version: 0.11.10
   resolution: "process@npm:0.11.10"
@@ -14798,21 +14768,6 @@ __metadata:
   dependencies:
     loose-envify: "npm:^1.1.0"
   checksum: 10c0/283e8c5efcf37802c9d1ce767f302dd569dd97a70d9bb8c7be79a789b9902451e0d16334b05d73299b20f048cbc3c7d288bbbde10b701fa194e2089c237dbea3
-  languageName: node
-  linkType: hard
-
-"readable-stream@npm:^2.2.2":
-  version: 2.3.8
-  resolution: "readable-stream@npm:2.3.8"
-  dependencies:
-    core-util-is: "npm:~1.0.0"
-    inherits: "npm:~2.0.3"
-    isarray: "npm:~1.0.0"
-    process-nextick-args: "npm:~2.0.0"
-    safe-buffer: "npm:~5.1.1"
-    string_decoder: "npm:~1.1.1"
-    util-deprecate: "npm:~1.0.1"
-  checksum: 10c0/7efdb01f3853bc35ac62ea25493567bf588773213f5f4a79f9c365e1ad13bab845ac0dae7bc946270dc40c3929483228415e92a3fc600cc7e4548992f41ee3fa
   languageName: node
   linkType: hard
 
@@ -15390,13 +15345,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:~5.1.0, safe-buffer@npm:~5.1.1":
-  version: 5.1.2
-  resolution: "safe-buffer@npm:5.1.2"
-  checksum: 10c0/780ba6b5d99cc9a40f7b951d47152297d0e260f0df01472a1b99d4889679a4b94a13d644f7dbc4f022572f09ae9005fa2fbb93bbbd83643316f365a3e9a45b21
-  languageName: node
-  linkType: hard
-
 "safe-push-apply@npm:^1.0.0":
   version: 1.0.0
   resolution: "safe-push-apply@npm:1.0.0"
@@ -15737,7 +15685,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sha.js@npm:^2.4.12":
+"sha.js@npm:2.4.12, sha.js@npm:^2.4.12":
   version: 2.4.12
   resolution: "sha.js@npm:2.4.12"
   dependencies:
@@ -15873,16 +15821,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@npm:^3.5.0":
-  version: 3.36.0
-  resolution: "simple-git@npm:3.36.0"
+"simple-git@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "simple-git@npm:4.0.2"
   dependencies:
     "@kwsites/file-exists": "npm:^1.1.1"
     "@kwsites/promise-deferred": "npm:^1.1.1"
-    "@simple-git/args-pathspec": "npm:^1.0.3"
-    "@simple-git/argv-parser": "npm:^1.1.0"
+    "@simple-git/args-pathspec": "npm:1.0.4"
+    "@simple-git/argv-parser": "npm:2.0.1"
     debug: "npm:^4.4.0"
-  checksum: 10c0/4c22e57107535168f354e5abbbf6e618a7b39d76491ca225c70588520fbe86891f3b9a5c4f8a3fc0137e669aad2f0e11f6c6e677bfec07169cd18f29bf23cb77
+  checksum: 10c0/d028927258fa286d9d8e462f29ec6a37a32398acd7e53cef7fc81e70636c149d7359a542d1a4f8490b342d40d98e341c35c718734aec448fc24fdee88566e981
   languageName: node
   linkType: hard
 
@@ -16253,15 +16201,6 @@ __metadata:
   dependencies:
     safe-buffer: "npm:~5.2.0"
   checksum: 10c0/810614ddb030e271cd591935dcd5956b2410dd079d64ff92a1844d6b7588bf992b3e1b69b0f4d34a3e06e0bd73046ac646b5264c1987b20d0601f81ef35d731d
-  languageName: node
-  linkType: hard
-
-"string_decoder@npm:~1.1.1":
-  version: 1.1.1
-  resolution: "string_decoder@npm:1.1.1"
-  dependencies:
-    safe-buffer: "npm:~5.1.0"
-  checksum: 10c0/b4f89f3a92fd101b5653ca3c99550e07bdf9e13b35037e9e2a1c7b47cec4e55e06ff3fc468e314a0b5e80bfbaf65c1ca5a84978764884ae9413bec1fc6ca924e
   languageName: node
   linkType: hard
 
@@ -16800,10 +16739,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinypool@npm:2.1.0":
-  version: 2.1.0
-  resolution: "tinypool@npm:2.1.0"
-  checksum: 10c0/9fb1c760558c6264e0f4cfde96a63b12450b43f1730fbe6274aa24ddbdf488745c08924d0dea7a1303b47d555416a6415f2113898c69b6ecf731e75ac95238a5
+"tinypool@npm:2.1.2":
+  version: 2.1.2
+  resolution: "tinypool@npm:2.1.2"
+  checksum: 10c0/4d8c0cf2d9710eff4aa9cb4318fecaac09d847f1d7dce3eb314d36bea35ed23f754315592a3c00c1d0aa21d9eb4a1f69e84c69feb8517b4cd769e1e0a7ee308e
   languageName: node
   linkType: hard
 
@@ -17134,13 +17073,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedarray@npm:^0.0.6":
-  version: 0.0.6
-  resolution: "typedarray@npm:0.0.6"
-  checksum: 10c0/6005cb31df50eef8b1f3c780eb71a17925f3038a100d82f9406ac2ad1de5eb59f8e6decbdc145b3a1f8e5836e17b0c0002fb698b9fe2516b8f9f9ff602d36412
-  languageName: node
-  linkType: hard
-
 "typescript@npm:^6.0.3":
   version: 6.0.3
   resolution: "typescript@npm:6.0.3"
@@ -17436,7 +17368,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"util-deprecate@npm:^1.0.2, util-deprecate@npm:~1.0.1":
+"util-deprecate@npm:^1.0.2":
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 10c0/41a5bdd214df2f6c3ecf8622745e4a366c4adced864bc3c833739791aeeeb1838119af7daed4ba36428114b5c67dcda034a79c882e97e43c03e66a4dd7389942
@@ -18240,5 +18172,12 @@ __metadata:
   version: 3.25.76
   resolution: "zod@npm:3.25.76"
   checksum: 10c0/5718ec35e3c40b600316c5b4c5e4976f7fee68151bc8f8d90ec18a469be9571f072e1bbaace10f1e85cf8892ea12d90821b200e980ab46916a6166a4260a983c
+  languageName: node
+  linkType: hard
+
+"zstddec@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "zstddec@npm:0.2.0"
+  checksum: 10c0/58d0facb7171dfdab6b7cc1e2e3dcd23f4e3e4318fe0bbc5a293925f231b8f7932c82e2930867f4174fd4ccd443ee18b80cc240464bfd2519a82e92c7dc46b4a
   languageName: node
   linkType: hard
