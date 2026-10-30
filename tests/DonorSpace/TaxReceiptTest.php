@@ -370,6 +370,16 @@ final class TaxReceiptTest extends TestCase
         self::assertCount(2, $GLOBALS['posted_salesforce_data_donor_space']);
     }
 
+    public function testHandleRequestLeavesNoTransientForAnUnknownReceipt(): void
+    {
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1']]);
+
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-UNKNOWN']));
+
+        self::assertSame(403, $response->get_status());
+        self::assertSame([], $GLOBALS['__phpunit_transients']);
+    }
+
     public function testHandleRequestRejectsDemandsBeyondTheLimit(): void
     {
         $receipts = array_map(static fn (int $i): object => (object) ['Name' => "REF-$i"], range(1, 6));

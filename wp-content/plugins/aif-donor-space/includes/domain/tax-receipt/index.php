@@ -1,5 +1,7 @@
 <?php
 
+const AIF_DUPLICATE_TAX_RECEIPT_DAILY_LIMIT = 5;
+
 function sortByDateProp(array $objects, string $prop): array
 {
     $sortedObjects = $objects;
@@ -69,12 +71,25 @@ function create_duplicate_taxt_receipt_request($Contact_ID, $taxt_receipt_refere
     return  post_salesforce_data_donor_space($url, $params);
 }
 
-function aif_duplicate_tax_receipt_request_key($contact_id, $tax_receipt_reference)
+function aif_duplicate_tax_receipt_request_key($user_id, $tax_receipt_reference)
 {
-    return 'aif_duplicate_tax_receipt_request_' . md5($contact_id . '|' . $tax_receipt_reference);
+    return 'aif_duplicate_tax_receipt_request_' . md5($user_id . '|' . $tax_receipt_reference);
 }
 
-function aif_duplicate_tax_receipt_requests_count_key($contact_id)
+function aif_duplicate_tax_receipt_requests_count_key($user_id)
 {
-    return 'aif_duplicate_tax_receipt_requests_count_' . md5($contact_id) . '_' . date('Y-m-d');
+    return 'aif_duplicate_tax_receipt_requests_count_' . $user_id;
+}
+
+function aif_release_duplicate_tax_receipt_request($request_key, $count_key)
+{
+    delete_transient($request_key);
+
+    $requests_count = (int) get_transient($count_key) - 1;
+
+    if ($requests_count > 0) {
+        set_transient($count_key, $requests_count, DAY_IN_SECONDS);
+    } else {
+        delete_transient($count_key);
+    }
 }
