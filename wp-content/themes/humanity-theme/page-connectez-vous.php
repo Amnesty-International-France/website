@@ -29,7 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         $stored_user = get_user_by('email', $email);
 
         if ($stored_user && !aif_is_subscriber($stored_user)) {
-            $error_message = "Ce compte ne permet pas d'accéder à l'Espace Don.";
+            // Only reveal the account's role to someone who knows its password.
+            $error_message = is_wp_error(wp_authenticate($email, $password))
+                ? 'Mauvais email ou mot de passe'
+                : "Ce compte ne permet pas d'accéder à l'Espace Don.";
         } elseif ($stored_user) {
             if (!aif_is_unverified_subscriber($stored_user)) {
 

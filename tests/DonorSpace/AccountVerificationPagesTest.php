@@ -109,7 +109,7 @@ final class AccountVerificationPagesTest extends TestCase
         self::assertFalse(get_email_is_verified(42));
     }
 
-    public function testResendForAnEligibleNonSubscriberPointsToLoginWithoutSendingACode(): void
+    public function testResendForANonSubscriberIsRefusedWithoutSendingACode(): void
     {
         $GLOBALS['__phpunit_users'][42] = new WP_User(['editor'], 42, self::EMAIL, 'staff', 'native-reset-key', 'existing-password');
         update_user_meta(42, 'email-verfied', '1');
