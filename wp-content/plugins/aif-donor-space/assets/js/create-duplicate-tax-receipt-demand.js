@@ -18,6 +18,7 @@ const createDuplicateTaxReceiptDemand = async (taxReceiptReference) => {
     const buttons = document.querySelectorAll('[data-id="get-duplicate-tax-receipt-button"]')
     const successMessage = document.getElementById(`aif-success-message-${taxReceiptReference}`);
     const errorMessage = document.getElementById(`aif-error-message-${taxReceiptReference}`);
+    const limitMessage = document.getElementById(`aif-limit-message-${taxReceiptReference}`);
 
     if (!buttons.length === 0) {
         return;
@@ -28,6 +29,7 @@ const createDuplicateTaxReceiptDemand = async (taxReceiptReference) => {
 
         successMessage.classList.add("aif-hide")
         errorMessage.classList.add("aif-hide")
+        limitMessage.classList.add("aif-hide")
         const response = await fetch(aifDonorSpace.root + 'aif-donor-space/v1/duplicate-tax-receipt-request/', {
             method: 'POST',
             headers: {
@@ -38,6 +40,11 @@ const createDuplicateTaxReceiptDemand = async (taxReceiptReference) => {
                 taxReceiptReference
             })
         });
+
+        if (response.status === 429) {
+            limitMessage.classList.remove("aif-hide");
+            return;
+        }
 
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);

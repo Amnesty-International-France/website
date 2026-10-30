@@ -72,6 +72,15 @@ $url = get_permalink(get_page_by_path('mon-espace/mes-dons/mes-demandes'));
 					    ]);
 					    ?>
 							</div>
+							<div id="aif-limit-message-<?=$name?>" class="aif-hide">
+								<?php
+					    aif_include_partial('alert', [
+					        'title' => "Vous avez atteint le nombre maximum de demandes pour aujourd'hui",
+					        'content' => 'Merci de réessayer dans 24 heures.',
+					        'state' => 'error',
+					    ]);
+					    ?>
+							</div>
 							<p class="aif-m0 aif-p0">Du
 								<?= date('d/m/Y', strtotime($record->Debut__c)); ?>
 								au

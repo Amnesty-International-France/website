@@ -105,6 +105,7 @@ final class TaxReceiptTest extends TestCase
         $GLOBALS['logged_salesforce_errors'] = [];
         $GLOBALS['__phpunit_current_user_id'] = 0;
         $GLOBALS['__phpunit_valid_nonces'] = [];
+        $GLOBALS['__phpunit_transients'] = [];
     }
 
     private static function receipt(string $date): object
@@ -326,6 +327,76 @@ final class TaxReceiptTest extends TestCase
         self::assertSame(503, $response->get_status());
         self::assertSame('service temporarily unavailable', $response->get_data()['message']);
         self::assertSame([$error], $GLOBALS['logged_salesforce_errors']);
+    }
+
+    public function testHandleRequestDoesNotCreateASecondCaseForTheSameReceipt(): void
+    {
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1']]);
+
+        $first = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+        $second = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+
+        self::assertSame(200, $first->get_status());
+        self::assertSame(200, $second->get_status());
+        self::assertSame('demand already sent', $second->get_data()['message']);
+        self::assertCount(1, $GLOBALS['posted_salesforce_data_donor_space']);
+    }
+
+    public function testHandleRequestCreatesACaseForAnotherReceiptOfTheSameContact(): void
+    {
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1'], (object) ['Name' => 'REF-2']]);
+
+        handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-2']));
+
+        self::assertSame(200, $response->get_status());
+        self::assertSame('demand succeed', $response->get_data()['message']);
+        self::assertCount(2, $GLOBALS['posted_salesforce_data_donor_space']);
+    }
+
+    public function testHandleRequestAllowsARetryAfterASalesforceFailure(): void
+    {
+        global $post_salesforce_data_donor_space_response;
+
+        $post_salesforce_data_donor_space_response = new WP_Error('salesforce_transport_error', 'Request failed');
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1']]);
+
+        handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+        $post_salesforce_data_donor_space_response = (object) ['success' => true];
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+
+        self::assertSame(200, $response->get_status());
+        self::assertSame('demand succeed', $response->get_data()['message']);
+        self::assertCount(2, $GLOBALS['posted_salesforce_data_donor_space']);
+    }
+
+    public function testHandleRequestLeavesNoTransientForAnUnknownReceipt(): void
+    {
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1']]);
+
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-UNKNOWN']));
+
+        self::assertSame(403, $response->get_status());
+        self::assertSame([], $GLOBALS['__phpunit_transients']);
+    }
+
+    public function testHandleRequestRejectsDemandsBeyondTheLimit(): void
+    {
+        $receipts = array_map(static fn (int $i): object => (object) ['Name' => "REF-$i"], range(1, 6));
+        self::logInAsContact('003-contact-id', $receipts);
+
+        for ($i = 1; $i <= 5; $i++) {
+            $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => "REF-$i"]));
+            self::assertSame(200, $response->get_status());
+        }
+
+        $GLOBALS['tax_receipt_fetches'] = [];
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-6']));
+
+        self::assertSame(429, $response->get_status());
+        self::assertSame('too many demands', $response->get_data()['message']);
+        self::assertSame([], $GLOBALS['tax_receipt_fetches']);
+        self::assertCount(5, $GLOBALS['posted_salesforce_data_donor_space']);
     }
 
     public function testCheckNonceRejectsAnInvalidNonce(): void
