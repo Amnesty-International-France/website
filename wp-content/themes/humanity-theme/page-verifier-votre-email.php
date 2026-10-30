@@ -65,9 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
             if (!$stored_user) {
                 $url = '/creer-votre-compte';
                 $send_code_error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page <a class='aif-link--primary' href='{$url}'>Créer mon compte </a>.";
-            } elseif (!aif_is_subscriber($stored_user)) {
-                $send_code_error_message = "Ce compte ne permet pas d'accéder à l'Espace Don.";
-            } elseif (aif_send_verification_code($stored_user->ID)) {
+            } elseif (!aif_is_subscriber($stored_user) || aif_send_verification_code($stored_user->ID)) {
                 $send_code_success_message = "Nous avons bien reçu votre demande de code. Il arrivera dans votre boîte email d'ici quelques minutes";
             } else {
                 $send_code_error_message = AIF_VERIFICATION_CODE_SEND_ERROR_MESSAGE;

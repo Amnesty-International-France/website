@@ -109,14 +109,15 @@ final class AccountVerificationPagesTest extends TestCase
         self::assertFalse(get_email_is_verified(42));
     }
 
-    public function testResendForANonSubscriberIsRefusedWithoutSendingACode(): void
+    public function testResendForANonSubscriberAnswersLikeASubscriberWithoutSendingACode(): void
     {
         $GLOBALS['__phpunit_users'][42] = new WP_User(['editor'], 42, self::EMAIL, 'staff', 'native-reset-key', 'existing-password');
         update_user_meta(42, 'email-verfied', '1');
 
         $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
 
-        self::assertStringContainsString('Ce compte ne permet pas d\'accéder à l\'Espace Don.', $html);
+        self::assertStringContainsString('Nous avons bien reçu votre demande de code.', $html);
+        self::assertStringNotContainsString('Ce compte ne permet pas d\'accéder à l\'Espace Don.', $html);
         self::assertStringNotContainsString("href='https://wordpress.example.test/connectez-vous/'", $html);
         self::assertStringNotContainsString('Votre compte n\'existe pas', $html);
         self::assertStringNotContainsString("href='/creer-votre-compte'", $html);
