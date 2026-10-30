@@ -2,6 +2,7 @@ import '../styles/admin.scss';
 import './admin/cmb-events';
 import './admin/cmb-term-type';
 import './admin/acf-short-description-counter';
+import './admin/signatures-goal-input';
 import './admin/ordered-list-preview';
 import './admin/options-general';
 import './admin/components/IconPickerControl.jsx';

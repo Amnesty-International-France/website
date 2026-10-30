@@ -1,6 +1,6 @@
 <?php
 
-const AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE = 'Votre espace est temporairement indisponible. Merci de réessayer dans quelques instants.';
+const AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE = 'Votre espace est temporairement indisponible. Merci de réessayer plus tard.';
 
 function aif_get_salesforce_endpoint_name($url)
 {

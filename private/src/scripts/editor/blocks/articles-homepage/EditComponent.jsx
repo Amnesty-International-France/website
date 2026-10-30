@@ -79,7 +79,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
         selectedPostTitle: null,
         selectedPostSlug: null,
         _embedded: null,
-        selectedPostDate: null,
         selectedPostCustomTerms: [],
         category: '',
         ...externalLinkDefaultValue,
@@ -117,7 +116,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
         selectedPostTitle: post.title.rendered,
         selectedPostSlug: post.slug,
         _embedded: post._embedded || null,
-        selectedPostDate: post.date,
         selectedPostCustomTerms: allExtractedTerms || [],
         category,
         ...externalLinkDefaultValue,
@@ -149,12 +147,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
       default:
         return '';
     }
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('fr-FR', options);
   };
 
   const mainImage = (item) =>
@@ -305,9 +297,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
                       </div>
                       <div className="article-main-mobile-content">
                         <div className="article-main-mobile-header">
-                          {items[0].selectedPostDate && (
-                            <p className="article-date">{formatDate(items[0].selectedPostDate)}</p>
-                          )}
                           <h3
                             className="article-title"
                             dangerouslySetInnerHTML={{ __html: mainTitle(items[0]) }}
@@ -381,11 +370,6 @@ const EditComponent = ({ attributes, setAttributes }) => {
                             </div>
                             <div className="article-side-content">
                               <div className="article-side-header">
-                                {item.selectedPostDate && (
-                                  <p className="article-date">
-                                    {formatDate(item.selectedPostDate)}
-                                  </p>
-                                )}
                                 <h3
                                   className="article-title"
                                   dangerouslySetInnerHTML={{

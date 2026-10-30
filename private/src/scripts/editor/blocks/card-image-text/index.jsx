@@ -20,6 +20,10 @@ registerBlockType('amnesty-core/card-image-text', {
       type: 'string',
       default: 'vertical',
     },
+    textDisplay: {
+      type: 'string',
+      default: 'rollOver',
+    },
     postId: {
       type: 'integer',
       default: null,
@@ -40,6 +44,10 @@ registerBlockType('amnesty-core/card-image-text', {
       type: 'string',
       default: '#',
     },
+    linkTitle: {
+      type: 'string',
+      default: 'Voir la suite',
+    },
     thumbnail: {
       type: 'integer',
       default: null,
@@ -57,10 +65,12 @@ registerBlockType('amnesty-core/card-image-text', {
     attributes: {
       custom: true,
       direction: 'vertical',
+      textDisplay: 'rollOver',
       title: "Le Droit à l'Information : Un Pilier de la Démocratie",
       subtitle: "Notre dernier rapport d'enquête",
       category: 'Actualités',
       permalink: '#',
+      linkTitle: 'Voir la suite',
       text: "<p>Découvrez notre analyse approfondie sur les défis que rencontrent les journalistes et les défenseurs des droits humains pour accéder à l'information et la diffuser librement.</p>",
       thumbnail: '4',
     },

@@ -70,6 +70,19 @@
 							},
 						});
 					},
+				}),
+				el(TextControl, {
+					label: 'Crédit photo',
+					value: meta.aif_riposte_photo_credit || '',
+					help: 'Affiché à la verticale à droite de l’image, sur deux lignes au plus : 80 caractères environ. Ex. : © Prénom Nom / Agence',
+					onChange: function (value) {
+						editEntityRecord('postType', postType, postId, {
+							meta: {
+								...meta,
+								aif_riposte_photo_credit: value,
+							},
+						});
+					},
 				})
 			)
 		);

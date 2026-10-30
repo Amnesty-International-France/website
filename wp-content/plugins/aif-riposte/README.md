@@ -32,6 +32,7 @@ Caractéristiques :
 * Contenu
 * Date personnalisée
 * Lien externe optionnel
+* Crédit photo
 * Taxonomies :
   * `location` : taxonomie existante du site, utilisée comme filtre **Pays**
   * `riposte_theme` : taxonomie dédiée au plugin, utilisée comme filtre **Thématique**
@@ -159,7 +160,7 @@ includes/metaboxes.php
 assets/js/editor.js
 ```
 
-Gèrent les champs personnalisés Gutenberg : date et lien externe.
+Gèrent les champs personnalisés Gutenberg : date, lien externe et crédit photo.
 
 ```text
 includes/settings.php
@@ -390,7 +391,7 @@ La date est affichée dans :
 includes/card.php
 ```
 
-Le formatage s’appuie sur le helper du thème Humanity quand il est disponible, afin de conserver le même comportement que les actualités.
+La date est formatée au format fixe `j F Y` (ex. « 10 septembre 2026 ») plutôt qu’avec l’option `date_format` du site, qui ajoute une virgule après le mois.
 
 ### Lien externe
 
@@ -417,6 +418,29 @@ Fichiers concernés :
 includes/metaboxes.php
 assets/js/editor.js
 includes/card.php
+```
+
+### Crédit photo
+
+Chaque Riposte peut recevoir le crédit de son image, obligatoire légalement.
+
+Meta utilisée :
+
+```text
+aif_riposte_photo_credit
+```
+
+Le texte est affiché tel que saisi (le « © » est à saisir par l’éditeur), uniquement si la carte a une image mise en avant.
+
+Il est placé à droite de l’image, à la verticale (lu de bas en haut, aligné sur le bas de l’image) et passe à la ligne au-delà de la hauteur de l’image. Toutes les cartes avec image ont une marge de chaque côté de l’image, qui la garde centrée et réserve la place de deux lignes de crédit à droite (marge à droite seulement quand l’image est à gauche du texte : `--xlarge`, `--tablet-full`). L’aide du champ conseille 80 caractères environ pour ne pas dépasser deux lignes.
+
+Fichiers concernés :
+
+```text
+includes/metaboxes.php
+assets/js/editor.js
+includes/card.php
+assets/css/aif-riposte.css
 ```
 
 ---
@@ -594,6 +618,7 @@ includes/card.php
 Les cartes peuvent afficher :
 
 * le pays principal via `location` ;
+* le crédit photo ;
 * la date personnalisée ;
 * le contenu éditorial ;
 * un lien externe optionnel ;
@@ -745,8 +770,7 @@ Le plugin dépend de plusieurs éléments fournis par le thème Humanity :
 * le template-part `footer` ;
 * le partial `partials/forms/taxonomy-filters.php` ;
 * les styles et scripts des filtres ;
-* certaines variables CSS WordPress du thème ;
-* le helper de formatage des dates lorsqu’il est disponible.
+* certaines variables CSS WordPress du thème.
 
 ---
 
@@ -1008,6 +1032,7 @@ Characteristics:
 * Content
 * Custom date
 * Optional external link
+* Photo credit
 * Taxonomies:
   * `location`: existing site taxonomy, used as the **Country** filter
   * `riposte_theme`: taxonomy provided by the plugin, used as the **Theme** filter
@@ -1135,7 +1160,7 @@ includes/metaboxes.php
 assets/js/editor.js
 ```
 
-Manage the Gutenberg custom fields: custom date and external link.
+Manage the Gutenberg custom fields: custom date, external link and photo credit.
 
 ```text
 includes/settings.php
@@ -1371,7 +1396,7 @@ The date is displayed in:
 includes/card.php
 ```
 
-Formatting relies on the Humanity theme helper whenever it is available, ensuring consistent behavior with the site's news posts.
+The date uses the fixed `j F Y` format (e.g. "10 septembre 2026") instead of the site's `date_format` option, which adds a comma after the month.
 
 ### External Link
 
@@ -1398,6 +1423,29 @@ Related files:
 includes/metaboxes.php
 assets/js/editor.js
 includes/card.php
+```
+
+### Photo Credit
+
+Each Riposte can include the credit of its image, which is a legal requirement.
+
+Meta key:
+
+```text
+aif_riposte_photo_credit
+```
+
+The text is displayed as entered (editors type the "©" themselves), only when the card has a featured image.
+
+It sits vertically on the right of the image (read bottom to top, aligned with the bottom of the image) and wraps beyond the image height. Every card with an image has a margin on each side of it, which keeps the image centred and leaves room for two lines of credit on the right (right margin only when the image sits left of the text: `--xlarge`, `--tablet-full`). The field help suggests about 80 characters so the credit stays within two lines.
+
+Related files:
+
+```text
+includes/metaboxes.php
+assets/js/editor.js
+includes/card.php
+assets/css/aif-riposte.css
 ```
 
 ---
@@ -1577,6 +1625,7 @@ includes/card.php
 Cards may display:
 
 * the main country from the `location` taxonomy;
+* the photo credit;
 * the custom date;
 * the editorial content;
 * an optional external link;
@@ -1729,8 +1778,7 @@ The plugin depends on several components provided by the Humanity theme:
 * the `footer` template part;
 * the `partials/forms/taxonomy-filters.php` partial;
 * the filter styles and scripts;
-* several WordPress CSS variables defined by the theme;
-* the theme date formatting helper, when available.
+* several WordPress CSS variables defined by the theme.
 
 ---
 

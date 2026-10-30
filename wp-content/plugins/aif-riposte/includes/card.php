@@ -23,15 +23,7 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
     $post_id   = $post->ID;
     $title     = get_the_title($post);
     $date_meta = get_post_meta($post_id, 'aif_riposte_date', true);
-    if ($date_meta && function_exists('amnesty_locale_date')) {
-        $date = amnesty_locale_date(strtotime($date_meta));
-    } elseif ($date_meta) {
-        $date = date_i18n(get_option('date_format'), strtotime($date_meta));
-    } else {
-        $date = function_exists('amnesty_locale_date')
-            ? amnesty_locale_date(get_post_time('U', true, $post))
-            : get_the_date('', $post);
-    }
+    $date     = wp_date('j F Y', $date_meta ? strtotime($date_meta) : get_post_time('U', true, $post));
     $datetime = $date_meta ?: get_the_date('Y-m-d', $post);
     $thumbnail = get_the_post_thumbnail($post_id, 'medium_large', [ 'class' => 'aif-riposte-card__image' ]);
     $locations = get_the_terms($post_id, 'location');
@@ -40,6 +32,7 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
     $post_content   = get_the_content(null, false, $post);
     $external_url = get_post_meta($post_id, 'aif_riposte_external_url', true);
     $external_url = $external_url ? esc_url($external_url) : '';
+    $photo_credit = $thumbnail ? get_post_meta($post_id, 'aif_riposte_photo_credit', true) : '';
     ?>
 
 	<article class="<?php echo esc_attr(aif_riposte_get_card_layout_classes($index)); ?> <?php if ($external_url) : ?>aif-riposte-card__with-link<?php endif; ?>">
@@ -54,28 +47,33 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
         <?php endif; ?>
         <div class="aif-riposte-card__top">
             <?php if ($thumbnail) : ?>
-                <div class="aif-riposte-card__media">
-                    <?php echo $thumbnail; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>
-                    <?php if ($external_url) : ?>
-                        <div class="aif-riposte-card__overlay" aria-hidden="true">
-                            <div class="aif-riposte-card__overlay-icon">
+                <div class="aif-riposte-card__visual">
+                    <div class="aif-riposte-card__media">
+                        <?php echo $thumbnail; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>
+                        <?php if ($external_url) : ?>
+                            <div class="aif-riposte-card__overlay" aria-hidden="true">
+                                <div class="aif-riposte-card__overlay-icon">
 
-                                <svg
-                                    width="68"
-                                    height="68"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    aria-hidden="true"
-                                >
-                                    <circle cx="10.5" cy="10.5" r="6.5"></circle>
-                                    <path d="M15.5 15.5L21 21"></path>
-                                    <path d="M10.5 7.5V13.5"></path>
-                                    <path d="M7.5 10.5H13.5"></path>
-                                </svg>
+                                    <svg
+                                        width="68"
+                                        height="68"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        aria-hidden="true"
+                                    >
+                                        <circle cx="10.5" cy="10.5" r="6.5"></circle>
+                                        <path d="M15.5 15.5L21 21"></path>
+                                        <path d="M10.5 7.5V13.5"></path>
+                                        <path d="M7.5 10.5H13.5"></path>
+                                    </svg>
+                                </div>
                             </div>
-                        </div>
+                        <?php endif; ?>
+                    </div>
+                    <?php if ($photo_credit) : ?>
+                        <p class="aif-riposte-card__credit"><?php echo esc_html($photo_credit); ?></p>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
