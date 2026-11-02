@@ -63,6 +63,15 @@ $url = get_permalink(get_page_by_path('mon-espace/mes-dons/mes-demandes'));
 					    ]);
 					    ?>
 							</div>
+							<div id="aif-error-message-<?=$name?>" class="aif-hide">
+								<?php
+					    aif_include_partial('alert', [
+					        'title' => "Votre demande n'a pas pu être envoyée",
+					        'content' => 'Merci de réessayer dans quelques instants. Si le problème persiste, rechargez la page.',
+					        'state' => 'error',
+					    ]);
+					    ?>
+							</div>
 							<p class="aif-m0 aif-p0">Du
 								<?= date('d/m/Y', strtotime($record->Debut__c)); ?>
 								au

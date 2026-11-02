@@ -6,10 +6,6 @@ use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 
-final class ClhTurnstileRedirect extends RuntimeException
-{
-}
-
 /**
  * A Turnstile token is single-use: once a visitor has passed the check in the CLH
  * tunnel, the following tunnel submissions of the session skip it for 30 minutes.
@@ -24,11 +20,6 @@ final class ClhTunnelTurnstileSessionTest extends TestCase
     protected function setUp(): void
     {
         require_once __DIR__ . '/clh-tunnel-stand-ins.php';
-
-        function wp_redirect(string $location, int $status = 302): never
-        {
-            throw new ClhTurnstileRedirect($location);
-        }
 
         function is_page(): bool
         {
@@ -55,11 +46,6 @@ final class ClhTunnelTurnstileSessionTest extends TestCase
             $GLOBALS['__phpunit_turnstile_calls']++;
 
             return $GLOBALS['__phpunit_turnstile_error'];
-        }
-
-        function is_ssl(): bool
-        {
-            return false;
         }
 
         function wp_json_encode(mixed $value): string|false
@@ -181,7 +167,7 @@ final class ClhTunnelTurnstileSessionTest extends TestCase
     {
         try {
             $handler();
-        } catch (ClhTurnstileRedirect $redirect) {
+        } catch (ClhRedirect $redirect) {
             return $redirect->getMessage();
         }
 

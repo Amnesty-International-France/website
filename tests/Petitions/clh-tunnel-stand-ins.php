@@ -8,6 +8,31 @@ declare(strict_types=1);
  * and its petitions in $GLOBALS['__phpunit_clh_petitions'].
  */
 
+if (!defined('DAY_IN_SECONDS')) {
+    define('DAY_IN_SECONDS', 86400);
+}
+
+if (!function_exists('is_ssl')) {
+    function is_ssl(): bool
+    {
+        return true;
+    }
+}
+
+if (!class_exists('ClhRedirect')) {
+    /** Thrown by the wp_redirect() stand-in, so tests can read where a handler redirects. */
+    final class ClhRedirect extends RuntimeException
+    {
+    }
+}
+
+if (!function_exists('wp_redirect')) {
+    function wp_redirect(string $location, int $status = 302): never
+    {
+        throw new ClhRedirect($location);
+    }
+}
+
 if (!class_exists('WP_Post')) {
     eval('class WP_Post { public int $ID = 0; public int $post_parent = 0; public string $post_title = ""; }');
 }
