@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/escaping-stubs.php';
+
 final class AccountVerificationRedirect extends RuntimeException
 {
 }
@@ -59,16 +61,6 @@ function get_template_directory_uri(): string
 function aif_include_partial(string $name, array $args = []): void
 {
     echo '<div class="partial-' . $name . '">' . ($args['title'] ?? '') . ' | ' . ($args['content'] ?? '') . '</div>';
-}
-
-function esc_attr(mixed $text): string
-{
-    return htmlspecialchars((string) $text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-}
-
-function esc_url(mixed $url): string
-{
-    return (string) $url;
 }
 
 if (!function_exists('wp_unslash')) {

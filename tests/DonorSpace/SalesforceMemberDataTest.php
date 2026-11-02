@@ -134,6 +134,8 @@ final class SalesforceMemberDataTest extends TestCase
             }
         }
 
+        require_once __DIR__ . '/escaping-stubs.php';
+
         if (!function_exists('wp_die')) {
             function wp_die(mixed $message = '', mixed $title = '', array $args = []): never
             {
