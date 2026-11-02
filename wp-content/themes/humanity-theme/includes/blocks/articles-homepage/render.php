@@ -43,19 +43,6 @@ if (!function_exists('render_articles_homepage_block')) {
         }
 
         /**
-         * Helper function to format the date for a specific post.
-         *
-         * @param int|WP_Post $post The post ID or post object.
-         * @return string Formatted date.
-         */
-        if (!function_exists('format_post_date')) {
-            function format_post_date($post): string
-            {
-                return get_the_date('j F Y', $post);
-            }
-        }
-
-        /**
          * Helper function to get custom terms for a post.
          *
          * @param int $post_id The ID of the post.
@@ -175,7 +162,6 @@ if (!function_exists('render_articles_homepage_block')) {
                 'entity_slug' => $externalPost ? '' : $entity_slug,
                 'chip_style' => $externalPost ? '' : $chip_style,
                 'entity_label' => $externalPost ? '' : $entity_label,
-                'post_date' => $externalPost ? '' : format_post_date($post),
                 'custom_terms' => $externalPost ? 0 : get_post_custom_terms($post->ID),
                 'link' => $externalPost ? $externalItemLink : get_permalink($post),
                 'externalPost' => $externalPost ?? false,
@@ -232,7 +218,6 @@ if (!function_exists('render_articles_homepage_block')) {
                         $entity_slug = $posts[0]['entity_slug'];
                         $chip_style = $posts[0]['chip_style'];
                         $entity_label = $posts[0]['entity_label'];
-                        $post_date = $posts[0]['post_date'];
                         $custom_terms = $posts[0]['custom_terms'];
                         $externalPost = $posts[0]['externalPost'] ?? false;
 
@@ -339,9 +324,6 @@ if (!function_exists('render_articles_homepage_block')) {
 									</div>
 									<div class="article-main-mobile-content">
 										<div class="article-main-mobile-header">
-											<?php if (!empty($post_date)): ?>
-												<p class="article-date"><?php echo esc_html($post_date); ?></p>
-											<?php endif; ?>
 											<h3 class="article-title"><?php echo esc_html($title); ?></h3>
 										</div>
 										<?php if (!empty($custom_terms)): ?>
@@ -384,7 +366,6 @@ if (!function_exists('render_articles_homepage_block')) {
 							    $entity_slug = $post_data['entity_slug'];
 							    $chip_style = $post_data['chip_style'];
 							    $entity_label = $post_data['entity_label'];
-							    $post_date = $post_data['post_date'];
 							    $custom_terms = $post_data['custom_terms'];
 
 							    if (!$post_data['externalPost'] && $post->post_type === 'actualities-my-space') {
@@ -421,11 +402,6 @@ if (!function_exists('render_articles_homepage_block')) {
 											</div>
 											<div class="article-side-content">
 												<div class="article-side-header">
-													<?php if (!empty($post_date)): ?>
-														<p class="article-date">
-															<?php echo esc_html($post_date); ?>
-														</p>
-													<?php endif; ?>
 													<h3 class="article-title"><?php echo esc_html($title); ?></h3>
 												</div>
 												<?php if (!empty($custom_terms)): ?>

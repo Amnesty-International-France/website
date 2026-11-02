@@ -3,7 +3,7 @@
 /*
  * Plugin Name: AIF Riposte
  * Description: A plugin to add Riposte post type
- * Version: 1.0.1
+ * Version: 1.1.1
  * Author: Bottoms Up x Tebayo for Amnesty International France
  */
 
@@ -16,7 +16,7 @@ if (! defined('ABSPATH')) {
 /**
  * Plugin constants
  */
-define('AIF_RIPOSTE_VERSION', '1.0.1');
+define('AIF_RIPOSTE_VERSION', '1.1.1');
 define('AIF_RIPOSTE_FILE', __FILE__);
 define('AIF_RIPOSTE_PATH', plugin_dir_path(__FILE__));
 define('AIF_RIPOSTE_URL', plugin_dir_url(__FILE__));

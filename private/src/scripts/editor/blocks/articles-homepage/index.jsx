@@ -52,7 +52,6 @@ registerBlockType('amnesty-core/articles-homepage', {
           selectedPostId: 101,
           selectedPostTitle: "Un titre d'article percutant pour l'aperçu",
           selectedPostSlug: 'titre-article-percutant-apercu',
-          selectedPostDate: '2025-09-30T10:00:00',
           subtitle: "Ceci est un sous-titre pour mettre en avant l'article principal.",
           selectedPostCustomTerms: [
             { id: 1, name: 'Afrique', slug: 'afrique', taxonomy: 'region' },
@@ -71,7 +70,6 @@ registerBlockType('amnesty-core/articles-homepage', {
           selectedPostId: 102,
           selectedPostTitle: 'Notre nouvelle campagne pour le climat',
           selectedPostSlug: 'nouvelle-campagne-climat',
-          selectedPostDate: '2025-09-28T14:00:00',
           selectedPostCustomTerms: [
             {
               id: 3,
@@ -92,7 +90,6 @@ registerBlockType('amnesty-core/articles-homepage', {
           selectedPostId: 103,
           selectedPostTitle: 'Repères : La situation au Yémen',
           selectedPostSlug: 'reperes-situation-yemen',
-          selectedPostDate: '2025-09-25T11:00:00',
           selectedPostCustomTerms: [
             { id: 5, name: 'Crise humanitaire', slug: 'crise-humanitaire', taxonomy: 'thematique' },
           ],

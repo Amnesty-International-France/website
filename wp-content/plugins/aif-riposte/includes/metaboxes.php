@@ -41,6 +41,19 @@ function aif_riposte_register_meta(): void
             },
         ]
     );
+    register_post_meta(
+        'riposte_victory',
+        'aif_riposte_photo_credit',
+        [
+            'type'              => 'string',
+            'single'            => true,
+            'show_in_rest'      => true,
+            'sanitize_callback' => 'sanitize_text_field',
+            'auth_callback'     => static function (bool $allowed, string $meta_key, int $post_id): bool {
+                return current_user_can('edit_post', $post_id);
+            },
+        ]
+    );
 }
 add_action('init', 'aif_riposte_register_meta');
 

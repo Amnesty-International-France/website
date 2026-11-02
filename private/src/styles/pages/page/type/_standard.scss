@@ -136,7 +136,8 @@
       .call-to-action-block p,
       .wp-block-amnesty-core-section-home p,
       .interactive-map p,
-      .wp-block-amnesty-core-card-image-text p
+      .wp-block-amnesty-core-card-image-text p,
+      .wp-block-amnesty-core-card-rich-text p
     ),
     .wp-block-columns,
     .wp-block-details,
@@ -159,7 +160,8 @@
     }
 
     .wp-block-image,
-    .image-block {
+    .image-block,
+    .card-rich-text-block {
       max-width: $container-lg;
       margin-left: auto;
       margin-right: auto;

@@ -19,43 +19,7 @@ final class ClhTunnelContextTest extends TestCase
 
     protected function setUp(): void
     {
-        if (!defined('DAY_IN_SECONDS')) {
-            define('DAY_IN_SECONDS', 86400);
-        }
-
-        if (!class_exists('WP_Post')) {
-            eval('class WP_Post { public int $ID = 0; public int $post_parent = 0; public string $post_title = ""; }');
-        }
-
-        if (!class_exists('WP_Query')) {
-            eval('class WP_Query { public array $posts; public function __construct(array $args) { $this->posts = $GLOBALS["__phpunit_clh_petitions"]; } }');
-        }
-
-        if (!function_exists('is_ssl')) {
-            function is_ssl(): bool
-            {
-                return true;
-            }
-        }
-
-        if (!function_exists('is_admin')) {
-            function is_admin(): bool
-            {
-                return false;
-            }
-        }
-
-        if (!function_exists('amnesty_get_clh_petition_campaign_page')) {
-            function amnesty_get_clh_petition_campaign_page(): ?WP_Post
-            {
-                return $GLOBALS['__phpunit_clh_campaign'] ?? null;
-            }
-
-            function amnesty_get_active_clh_campaign_for_page(int $page_id): ?WP_Post
-            {
-                return $GLOBALS['__phpunit_clh_campaign'];
-            }
-        }
+        require_once __DIR__ . '/clh-tunnel-stand-ins.php';
 
         if (!function_exists('get_post_meta')) {
             function get_post_meta(int $post_id, string $key = '', bool $single = false): mixed
@@ -91,6 +55,27 @@ final class ClhTunnelContextTest extends TestCase
             function have_signed(int $petition_id, int $user_id): bool
             {
                 return true;
+            }
+        }
+
+        if (!function_exists('amnesty_get_clh_petition_tunnel_url')) {
+            function amnesty_get_clh_petition_tunnel_url(): string
+            {
+                return 'https://example.test/campagne/';
+            }
+        }
+
+        if (!function_exists('verify_turnstile')) {
+            function verify_turnstile(): ?string
+            {
+                return null;
+            }
+        }
+
+        if (!function_exists('wp_json_encode')) {
+            function wp_json_encode(mixed $data): string|false
+            {
+                return json_encode($data);
             }
         }
 
@@ -154,9 +139,30 @@ final class ClhTunnelContextTest extends TestCase
         self::assertArrayNotHasKey('clh_user_email', $_COOKIE);
     }
 
+    public function testSkippingDoesNotSetTheSignerEmail(): void
+    {
+        $GLOBALS['__phpunit_valid_nonces'] = ['nonce'];
+        $_POST = [
+            'skip_petition'  => '',
+            'petition_id'    => '101',
+            'clh_skip_nonce' => 'nonce',
+            'user_email'     => self::VICTIM,
+        ];
+
+        try {
+            amnesty_handle_petition_skip();
+            self::fail('The skip handler should redirect.');
+        } catch (ClhRedirect $redirect) {
+            self::assertSame('https://example.test/campagne/', $redirect->getMessage());
+        }
+
+        self::assertSame([101], amnesty_get_clh_skipped_petitions());
+        self::assertArrayNotHasKey('clh_last_signer_email', $_SESSION);
+    }
+
     public function testSessionEmailDoesNotRevealSignatures(): void
     {
-        // Set by "passer" from an address typed by the visitor.
+        // Set after signing with an address the visitor typed.
         $_SESSION['clh_last_signer_email'] = self::VICTIM;
 
         $context = amnesty_get_clh_tunnel_context($this->tunnelPage());

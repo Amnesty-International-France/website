@@ -147,7 +147,7 @@
       }
     }
 
-    &:hover {
+    &.rollOver:hover {
       .card-image-text-thumbnail-wrapper {
         opacity: 0;
       }
@@ -166,6 +166,54 @@
         .card-image-text-content-see-more {
           visibility: visible;
           opacity: 1;
+        }
+      }
+    }
+
+    &.showText {
+      height: 440px;
+
+      .card-image-text-block-link {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-image-text-thumbnail-wrapper {
+        flex-shrink: 0;
+        transition: none;
+      }
+
+      .card-image-text-content-container {
+        position: relative;
+        top: auto;
+        flex-grow: 1;
+        height: auto;
+        min-height: 0;
+        padding: 16px 20px;
+        transition: none;
+
+        .card-image-text-content {
+          min-height: 0;
+          padding: 0;
+
+          .card-image-text-content-text {
+            visibility: visible;
+            opacity: 1;
+            max-height: none;
+            -webkit-line-clamp: 4;
+            line-clamp: 4;
+            padding-bottom: 0;
+            transition: none;
+          }
+
+          .card-image-text-content-see-more {
+            visibility: visible;
+            position: static;
+            opacity: 1;
+            margin-top: auto;
+            padding-top: 12px;
+            transition: none;
+          }
         }
       }
     }
@@ -322,7 +370,7 @@
       }
     }
 
-    &:hover {
+    &.rollOver:hover {
       .card-image-text-thumbnail-wrapper {
         opacity: 0;
         width: 0;
@@ -342,6 +390,52 @@
         .card-image-text-content-see-more {
           visibility: visible;
           opacity: 1;
+        }
+      }
+    }
+
+    &.showText {
+      height: auto;
+      min-height: 200px;
+
+      .card-content-wrapper,
+      .card-image-text-block-link {
+        height: auto;
+        min-height: 200px;
+      }
+
+      .card-image-text-thumbnail-wrapper {
+        height: auto;
+        transition: none;
+      }
+
+      .card-image-text-content-container {
+        min-width: 0;
+        height: auto;
+        padding: 16px 20px;
+        transition: none;
+
+        .card-image-text-content {
+          min-height: 0;
+
+          .card-image-text-content-text {
+            flex-shrink: 0;
+            visibility: visible;
+            opacity: 1;
+            max-height: none;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            transition: none;
+          }
+
+          .card-image-text-content-see-more {
+            visibility: visible;
+            position: static;
+            opacity: 1;
+            margin-top: auto;
+            padding-top: 12px;
+            transition: none;
+          }
         }
       }
     }

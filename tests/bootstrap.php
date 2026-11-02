@@ -128,10 +128,15 @@ if (!function_exists('get_post')) {
      * Stub for get_post(). Tests seed a post via
      * $GLOBALS['__phpunit_posts'][$post_id] = (object) ['ID' => $post_id, ...];
      * anything not seeded resolves to null (matching WordPress when the ID
-     * doesn't exist).
+     * doesn't exist). Without an ID, returns the current post from
+     * $GLOBALS['post'], like WordPress.
      */
-    function get_post(int $post_id): ?object
+    function get_post(?int $post_id = null): ?object
     {
+        if ($post_id === null) {
+            return $GLOBALS['post'] ?? null;
+        }
+
         return $GLOBALS['__phpunit_posts'][$post_id] ?? null;
     }
 }
@@ -198,8 +203,16 @@ if (!function_exists('wp_unslash')) {
 }
 
 if (!function_exists('is_email')) {
+    /**
+     * Like WordPress, rejects addresses shorter than 6 characters, which
+     * FILTER_VALIDATE_EMAIL alone would accept (e.g. "a@b.c").
+     */
     function is_email(string $email): string|false
     {
+        if (strlen($email) < 6) {
+            return false;
+        }
+
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false ? $email : false;
     }
 }
