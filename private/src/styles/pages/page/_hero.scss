@@ -294,7 +294,8 @@
 
 .page-tunnel-clh-hero {
   position: relative;
-  background-color: var(--wp--preset--color--black);
+  // Same grey as the CLH page hero.
+  background-color: #1e282c;
   width: 100vw;
 
   .page-hero-title-wrapper {
@@ -305,6 +306,7 @@
     text-align: center;
 
     .page-hero-title {
+      background-color: transparent;
       font-family: bely-display, sans-serif;
       font-weight: normal;
       line-height: 4.625rem;

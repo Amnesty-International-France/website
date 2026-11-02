@@ -32,6 +32,9 @@
         <testsuite name="Riposte">
             <directory>tests/Riposte</directory>
         </testsuite>
+        <testsuite name="Clh">
+            <directory>tests/Clh</directory>
+        </testsuite>
         <testsuite name="RestApi">
             <directory>tests/RestApi</directory>
         </testsuite>

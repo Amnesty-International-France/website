@@ -13,6 +13,7 @@ import '../styles/gutenberg.scss';
 import './editor/block-styles';
 
 import './editor/plugins/appearance-options/index.jsx';
+import './editor/plugins/clh-testimonials-validation/index.jsx';
 import './editor/plugins/pop-in/index.jsx';
 
 import './editor/blocks/action/index.jsx';
@@ -27,6 +28,7 @@ import './editor/blocks/card-rich-text/index.jsx';
 import './editor/blocks/carousel/index.jsx';
 import './editor/blocks/change-their-history-toc/index.jsx';
 import './editor/blocks/chapo/index.jsx';
+import './editor/blocks/clh-testimonials/index.jsx';
 import './editor/blocks/content-callout/index.jsx';
 import './editor/blocks/core-mods';
 import './editor/blocks/download-go-further/index.jsx';

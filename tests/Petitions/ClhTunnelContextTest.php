@@ -58,6 +58,8 @@ final class ClhTunnelContextTest extends TestCase
             }
         }
 
+        require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/clh/helpers.php';
+
         if (!function_exists('amnesty_get_clh_petition_tunnel_url')) {
             function amnesty_get_clh_petition_tunnel_url(): string
             {
