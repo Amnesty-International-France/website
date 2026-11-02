@@ -29,13 +29,13 @@ if ($has_valid_mandate) {
 
 $user_status = aif_get_user_status($SF_membre_data);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isset($_POST['iban'])) {
-    if (!isset($_POST['iban_nonce']) || !wp_verify_nonce($_POST['iban_nonce'], 'iban_form')) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isset($_POST['iban'])) {
+    if (!isset($_POST['iban_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['iban_nonce'])), 'iban_form')) {
         die('Invalid nonce.');
     }
 
     unset($_POST['iban_nonce'], $_POST['_wp_http_referer']);
-    $ibandirty = $_POST['iban'];
+    $ibandirty = sanitize_text_field(wp_unslash($_POST['iban']));
     $newIban = str_replace(' ', '', $ibandirty);
 
     $request_result = create_duplicate_update_IBAN_request($sf_user_ID, $newIban);

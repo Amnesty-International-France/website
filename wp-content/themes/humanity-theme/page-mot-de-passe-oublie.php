@@ -4,8 +4,8 @@ $disable_button = false;
 $display_form = true;
 $email = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = sanitize_email($_POST['email']);
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = sanitize_email($_POST['email'] ?? '');
     $user = get_user_by('email', $email);
 
     $turnstile_error = verify_turnstile();
@@ -75,7 +75,7 @@ if (isset($success_message)) {
 					     data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
 					<label for="email">Votre email (obligatoire) :</label>
 					<input
-						value="<?= $email ? $email : '' ?>"
+						value="<?= esc_attr($email) ?>"
 						placeholder="adresse@mail.fr" type="email" class="aif-input" id="email" name="email" required
 						aria-required="true">
 					<button class='custom-button-block center' type="submit" id="submit-btn">

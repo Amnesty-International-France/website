@@ -16,7 +16,7 @@ $user_status =  aif_get_user_status($sf_member);
 		<div class="aif-container--form">
 			<header class="wp-block-group article-header is-layout-flow wp-block-group-is-layout-flow">
 				<h1 class="aif-mb1w">Bonjour
-					<?= $current_user->first_name ?>,
+					<?= esc_html($current_user->first_name) ?>,
 				</h1>
 				<?php
                 aif_include_partial('label', [

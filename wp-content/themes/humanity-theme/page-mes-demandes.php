@@ -30,7 +30,7 @@ function aif_format_date($date)
 			<?php foreach ($sortedDemands as $demand): ?>
 			<div class="aif-my-demand-container">
 				<div class="aif-my-demand-container__title-container">
-					<p class="aif-my-demand-container__title-container__date"><?= aif_format_date($demand->Date_de_la_demande__c) ?></p>
+					<p class="aif-my-demand-container__title-container__date"><?= esc_html(aif_format_date($demand->Date_de_la_demande__c)) ?></p>
 					<?php
                     $status = '';
 
@@ -60,9 +60,9 @@ function aif_format_date($date)
 				<div class="aif-my-demand-container__info-container">
 					<p class="aif-my-demand-container__info-container__subject">
 						<?php if (isset($demand->Type_de_demande_AIF__c)) : ?>
-							<?= $demand->Type_de_demande_AIF__c ?>
+							<?= esc_html($demand->Type_de_demande_AIF__c) ?>
 						<?php else : ?>
-							<?= $demand->Subject ?>
+							<?= esc_html($demand->Subject) ?>
 						<?php endif ?>
 					</p>
 
@@ -83,7 +83,7 @@ function aif_format_date($date)
 			<?php endif ?>
 
 			<a class="btn btn--dark aif-mt1w aif-button--full"
-				href="<?= get_permalink(get_page_by_path('mon-espace/mes-dons/nous-contacter')) ?>">Vous
+				href="<?= esc_url(get_permalink(get_page_by_path('mon-espace/mes-dons/nous-contacter'))) ?>">Vous
 				avez une question ?
 			</a>
 		</section>

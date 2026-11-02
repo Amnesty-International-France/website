@@ -13,7 +13,7 @@ if (!isset($_GET['user'])) {
     $email = sanitize_email(wp_unslash($_GET['user']));
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_check') {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_check') {
     $code = sanitize_text_field(wp_unslash($_POST['2FA-code']));
 
     $turnstile_error = verify_turnstile();
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
 $send_code_error_message = '';
 $send_code_success_message = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_send_code') {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_send_code') {
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
         $send_code_error_message = turnstile_friendly_error($turnstile_error);

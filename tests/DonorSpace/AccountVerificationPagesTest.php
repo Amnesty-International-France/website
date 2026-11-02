@@ -59,11 +59,15 @@ final class AccountVerificationPagesTest extends TestCase
         ];
     }
 
-    private function render(string $page, array $get, array $post, string $method = 'POST'): string
+    private function render(string $page, array $get, array $post, ?string $method = 'POST'): string
     {
         $_GET = $get;
         $_POST = $post;
-        $_SERVER['REQUEST_METHOD'] = $method;
+        if (null === $method) {
+            unset($_SERVER['REQUEST_METHOD']);
+        } else {
+            $_SERVER['REQUEST_METHOD'] = $method;
+        }
 
         ob_start();
         try {
@@ -378,5 +382,63 @@ final class AccountVerificationPagesTest extends TestCase
 
         self::assertSame('redirect:' . $expected, $result);
         self::assertSame(42, get_current_user_id());
+    }
+
+    public function testLoginFormEscapesTheSubmittedEmail(): void
+    {
+        $html = $this->render('page-connectez-vous.php', [], ['email' => 'donor"><script>alert(1)</script>@example.test', 'password' => 'password']);
+
+        self::assertStringNotContainsString('<script>', $html);
+        self::assertStringContainsString('value="donor&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;@example.test"', $html);
+    }
+
+    public function testForgottenPasswordFormEscapesTheSubmittedEmail(): void
+    {
+        $html = $this->render('page-mot-de-passe-oublie.php', [], ['email' => 'donor"><script>alert(1)</script>@example.test']);
+
+        self::assertStringNotContainsString('<script>', $html);
+        self::assertStringContainsString('value="donor&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;@example.test"', $html);
+    }
+
+    public static function pageLinks(): iterable
+    {
+        yield 'login: forgotten password' => ['page-connectez-vous.php', 'mot-de-passe-oublie'];
+        yield 'login: connection problem' => ['page-connectez-vous.php', 'probleme-connexion'];
+        yield 'login: account creation' => ['page-connectez-vous.php', 'creer-votre-compte'];
+        yield 'account creation: login' => ['page-creer-votre-compte.php', 'connectez-vous'];
+    }
+
+    #[DataProvider('pageLinks')]
+    public function testPageLinksEscapeThePermalink(string $page, string $slug): void
+    {
+        $GLOBALS['__phpunit_post_permalinks'][get_page_by_path($slug)->ID] = 'https://wordpress.example.test/' . $slug . '/"><script>alert(1)</script>';
+
+        $html = $this->render($page, [], [], 'GET');
+
+        self::assertStringNotContainsString('<script>', $html);
+        self::assertStringContainsString('href="https://wordpress.example.test/' . $slug . '/', $html);
+    }
+
+    public static function accountPages(): iterable
+    {
+        yield 'login' => ['page-connectez-vous.php'];
+        yield 'account creation' => ['page-creer-votre-compte.php'];
+        yield 'email verification' => ['page-verifier-votre-email.php'];
+        yield 'forgotten password' => ['page-mot-de-passe-oublie.php'];
+    }
+
+    #[DataProvider('accountPages')]
+    public function testPageRendersWithoutRequestMethodOrWarning(string $page): void
+    {
+        set_error_handler(static function (int $level, string $message): never {
+            throw new ErrorException($message, 0, $level);
+        }, E_WARNING);
+        try {
+            $html = $this->render($page, ['user' => self::EMAIL], [], null);
+        } finally {
+            restore_error_handler();
+        }
+
+        self::assertStringContainsString('<form', $html);
     }
 }

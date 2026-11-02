@@ -84,8 +84,8 @@ function checkKeys($requiredFields, $array_to_check)
     return true;
 }
 
-if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['personal_info_nonce']) || !wp_verify_nonce($_POST['personal_info_nonce'], 'update_personal_info')) {
+if (checkKeys($requiredFields, $_POST) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['personal_info_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['personal_info_nonce'])), 'update_personal_info')) {
         wp_die('Erreur de sécurité : token CSRF invalide.');
     }
 
