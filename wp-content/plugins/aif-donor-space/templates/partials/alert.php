@@ -38,12 +38,12 @@ $has_error =  isset($state) && $state == 'error';
 
         <?php if (isset($title)) : ?>
 
-            <p class=" aif-text-bold <?= $has_success ? 'aif-text-green' : '' ?> <?= $has_error ? 'aif-text-red' : '' ?>"><?= $title ?></p>
+            <p class=" aif-text-bold <?= $has_success ? 'aif-text-green' : '' ?> <?= $has_error ? 'aif-text-red' : '' ?>"><?= wp_kses_post($title) ?></p>
         <?php endif ?>
           
             <p class="aif-m0">
 
-                <?= $content ?>
+                <?= wp_kses_post($content) ?>
 
             </p>
 
@@ -53,7 +53,7 @@ $has_error =  isset($state) && $state == 'error';
           
             <p class="aif-mt1w">
 
-                <?= $additional_content ?>
+                <?= wp_kses_post($additional_content) ?>
 
             </p>
 

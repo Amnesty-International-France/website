@@ -6,7 +6,7 @@ function aif_salesforce_service_unavailable($error)
 {
     aif_log_salesforce_error($error);
     wp_die(
-        AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE,
+        esc_html(AIF_SALESFORCE_SERVICE_UNAVAILABLE_MESSAGE),
         'Service temporairement indisponible',
         ['response' => 503]
     );
