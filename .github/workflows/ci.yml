@@ -29,6 +29,8 @@ jobs:
         run: composer run cs
       - name: Run PHPStan
         run: composer run analyse -- --no-progress --error-format=raw
+      - name: Run PHPCS
+        run: composer run lint:security
 
   frontend-checks:
     name: Frontend Checks

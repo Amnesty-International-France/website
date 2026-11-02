@@ -117,6 +117,23 @@ You may need to execute `corepack enable` before (use `sudo corepack enable` if 
 Each environment holds the SSH secrets (`*_SSH_USER`, `*_SSH_KEY`, `*_SSH_HOST`) used
 to reach the Infomaniak server.
 
+### PHPCS security sniffs
+
+The `php-checks` job of `ci.yml` runs `composer run lint:security`: the WordPress
+`EscapeOutput` and `ValidatedSanitizedInput` sniffs of `phpcs.xml`, on the theme and on
+`aif-donor-space`.
+
+Violations that predate this check are listed in `phpcs.baseline.xml`
+([digitalrevolution/php-codesniffer-baseline](https://github.com/123inkt/php-codesniffer-baseline))
+and ignored. Any other violation fails the job, including a listed one once its line, or the
+line just before or after it, changes. Escape or sanitize the value instead of adding it to the
+baseline; for a false positive, add `// phpcs:ignore <sniff> -- <reason>` on the line, or, for a
+function whose output is always safe markup, list it in `phpcs.xml` as done for `render_block()`.
+
+After fixing listed violations, shrink the baseline with `composer run lint:security:baseline`
+and commit it. The baseline only applies after `composer install`, as the package patches
+PHPCS in `vendor/`.
+
 ## Custom Plugins
 
 A custom plugin must be developed directly in a folder under `<path>/wp-content/plugins` (example: wp-content/plugins/hello-world).  

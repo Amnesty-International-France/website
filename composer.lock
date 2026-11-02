@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "02b6e94df32a61bffd6f0b95ee6080db",
+    "content-hash": "41e95a9060cca3538ed59e59fe285a53",
     "packages": [
         {
             "name": "graham-campbell/result-type",
@@ -1024,6 +1024,59 @@
                 }
             ],
             "time": "2026-05-06T08:26:05+00:00"
+        },
+        {
+            "name": "digitalrevolution/php-codesniffer-baseline",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/123inkt/php-codesniffer-baseline.git",
+                "reference": "7fbcb9ef5f6e0be791683fcf3dd259d9fe0651a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/123inkt/php-codesniffer-baseline/zipball/7fbcb9ef5f6e0be791683fcf3dd259d9fe0651a0",
+                "reference": "7fbcb9ef5f6e0be791683fcf3dd259d9fe0651a0",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2.0",
+                "php": ">=8.1",
+                "squizlabs/php_codesniffer": "^3.6 || ^4.0"
+            },
+            "require-dev": {
+                "composer/composer": "^2.0",
+                "mikey179/vfsstream": "1.6.12",
+                "phpmd/phpmd": "^2.15",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpstan/phpstan-strict-rules": "^2.0",
+                "phpunit/phpunit": "^10.5 || ^11.5 || ^12.0",
+                "roave/security-advisories": "dev-latest"
+            },
+            "bin": [
+                "bin/phpcs-baseline"
+            ],
+            "type": "composer-plugin",
+            "extra": {
+                "class": "DR\\CodeSnifferBaseline\\Plugin\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "DR\\CodeSnifferBaseline\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Digital Revolution PHP_Codesniffer baseline extension",
+            "support": {
+                "issues": "https://github.com/123inkt/php-codesniffer-baseline/issues",
+                "source": "https://github.com/123inkt/php-codesniffer-baseline/tree/v1.3.0"
+            },
+            "time": "2025-10-16T08:23:07+00:00"
         },
         {
             "name": "ergebnis/agent-detector",
