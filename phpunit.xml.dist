@@ -35,6 +35,9 @@
         <testsuite name="Clh">
             <directory>tests/Clh</directory>
         </testsuite>
+        <testsuite name="Users">
+            <directory>tests/Users</directory>
+        </testsuite>
         <testsuite name="RestApi">
             <directory>tests/RestApi</directory>
         </testsuite>
