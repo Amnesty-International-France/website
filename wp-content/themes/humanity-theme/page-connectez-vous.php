@@ -19,7 +19,8 @@ $error_message = '';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
     $email = sanitize_email($_POST['email']);
-    $password = sanitize_text_field($_POST['password']);
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only hashed, sanitizing would change the password.
+    $password = $_POST['password'];
 
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {

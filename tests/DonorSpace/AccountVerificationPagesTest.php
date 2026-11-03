@@ -384,6 +384,18 @@ final class AccountVerificationPagesTest extends TestCase
         self::assertSame(42, get_current_user_id());
     }
 
+    public function testLoginChecksThePasswordAsTyped(): void
+    {
+        $user = new WP_User(['subscriber'], 42, self::EMAIL);
+        $GLOBALS['__phpunit_users'][42] = $user;
+        $GLOBALS['__phpunit_signon_result'] = $user;
+        store_email_is_verified(42);
+
+        $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'mot  de<passe%41']);
+
+        self::assertSame('mot  de<passe%41', $GLOBALS['__phpunit_signons'][0]['credentials']['user_password']);
+    }
+
     public function testLoginFormEscapesTheSubmittedEmail(): void
     {
         $html = $this->render('page-connectez-vous.php', [], ['email' => 'donor"><script>alert(1)</script>@example.test', 'password' => 'password']);
