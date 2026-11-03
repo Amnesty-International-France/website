@@ -30,7 +30,7 @@ if ($has_valid_mandate) {
 $user_status = aif_get_user_status($SF_membre_data);
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isset($_POST['iban'])) {
-    if (!isset($_POST['iban_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['iban_nonce'])), 'iban_form')) {
+    if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['iban_nonce'])), 'iban_form')) {
         die('Invalid nonce.');
     }
 
