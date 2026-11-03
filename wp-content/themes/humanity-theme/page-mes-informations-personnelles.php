@@ -144,9 +144,9 @@ if (checkKeys($requiredFields, $_POST) && isset($_SERVER['REQUEST_METHOD']) && $
 				/>
 				<?php
 
-    $url = add_query_arg([
+    $url = esc_url(add_query_arg([
         'subject' =>  'Modifier mon e-mail',
-    ], get_permalink(get_page_by_path('nous-contacter')));
+    ], get_permalink(get_page_by_path('nous-contacter'))));
 aif_include_partial('info-message', [
     'id' => 'email-help-message',
     'content' => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>."]); ?>

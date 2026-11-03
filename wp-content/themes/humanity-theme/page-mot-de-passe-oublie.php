@@ -28,7 +28,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
             $success_message = 'Si votre adresse est reconnue vous allez recevoir un email pour pouvoir réinitialiser votre mot de passe';
             $display_form = false;
         } else {
-            $url = get_permalink(get_page_by_path('creer-votre-compte'));
+            $url = esc_url(get_permalink(get_page_by_path('creer-votre-compte')));
             $error_title = 'Votre utilisateur nous est inconnu';
             $error_message = "Vous pouvez créer votre compte en allant sur <a class='aif-link--primary' href='{$url}'> Créer mon compte </a>";
         }

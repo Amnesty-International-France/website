@@ -24,13 +24,14 @@ if (!function_exists('esc_html')) {
 
 if (!function_exists('esc_url')) {
     /**
-     * Like WordPress: drops the characters a URL cannot hold (quotes, angle
-     * brackets, spaces...), empties URLs with another protocol than http(s) or
-     * mailto, and encodes & and ' for HTML.
+     * Like WordPress: encodes spaces as %20, drops the other characters a URL
+     * cannot hold (quotes, angle brackets...), empties URLs with another
+     * protocol than http(s) or mailto, and encodes & and ' for HTML.
      */
     function esc_url(mixed $url): string
     {
-        $url = (string) preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@$\|*\'()\[\]\x80-\xff]|i', '', (string) $url);
+        $url = str_replace(' ', '%20', ltrim((string) $url));
+        $url = (string) preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@$\|*\'()\[\]\x80-\xff]|i', '', $url);
         if (1 === preg_match('/^([a-z][a-z0-9+.-]*):/i', $url, $scheme) && !in_array(strtolower($scheme[1]), ['http', 'https', 'mailto'], true)) {
             return '';
         }

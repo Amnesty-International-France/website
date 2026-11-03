@@ -47,7 +47,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
     if (is_object($request_result) && !empty($request_result->success)) {
         $success_message_title = 'Votre demande de modification a bien été prise en compte';
 
-        $url = get_permalink(get_page_by_path('mes-demandes'));
+        $url = esc_url(get_permalink(get_page_by_path('mes-demandes')));
         $success_message = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
     } else {
         $error_message = 'Un problème technique est survenu. Merci de réessayer plus tard';
@@ -100,7 +100,7 @@ if (!empty($success_message)) {
 				/>
 
 				<?php
-    $url = get_permalink(get_page_by_path('mes-demandes'));
+    $url = esc_url(get_permalink(get_page_by_path('mes-demandes')));
 $content = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
 aif_include_partial('info-message', [
     'id' => 'iban-help-message',

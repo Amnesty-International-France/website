@@ -68,15 +68,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
                 }
 
             } else {
-                $verification_url = add_query_arg([
+                $verification_url = esc_url(add_query_arg([
                     'user' => rawurlencode($email),
-                ], get_permalink(get_page_by_path('verifier-votre-email')));
+                ], get_permalink(get_page_by_path('verifier-votre-email'))));
 
                 $title = 'Votre email ne semble pas encore vérifié';
                 $error_message = "Pour le faire veuillez vous rendre sur la page <a class='aif-link--primary' href='{$verification_url}'> Vérifier mon email</a>.";
             }
         } else {
-            $url = get_permalink(get_page_by_path('creer-votre-compte'));
+            $url = esc_url(get_permalink(get_page_by_path('creer-votre-compte')));
             $title = "L'adresse email renseignée ne trouve pas de correspondance dans notre système";
             $error_message = "Pour créer votre compte, veuillez vous rendre sur la page  <a class='aif-link--primary' href='{$url}'> Créer mon compte </a>.";
         }

@@ -81,6 +81,17 @@ final class AccountVerificationPagesTest extends TestCase
         }
     }
 
+    /**
+     * @return list<string>
+     */
+    private static function hrefs(string $html): array
+    {
+        $dom = new DOMDocument();
+        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html);
+
+        return array_map(static fn (DOMAttr $href) => $href->value, iterator_to_array((new DOMXPath($dom))->query('//a/@href'), false));
+    }
+
     #[DataProvider('accountStateProvider')]
     public function testFailedDeliveryKeepsSignupRecoverableWithoutCreatingADuplicate(bool $existing): void
     {
@@ -452,5 +463,44 @@ final class AccountVerificationPagesTest extends TestCase
         }
 
         self::assertStringContainsString('<form', $html);
+    }
+
+    public function testUnverifiedLoginLinkKeepsTheWholeVerificationUrl(): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+        $verification = seed_permalink_with_apostrophe('verifier-votre-email');
+
+        $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password']);
+
+        self::assertContains($verification . '?user=donor%2Btag%40example.test', self::hrefs($html));
+    }
+
+    public function testUnknownLoginLinksKeepTheWholeSignupUrl(): void
+    {
+        $signup = seed_permalink_with_apostrophe('creer-votre-compte');
+
+        $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password']);
+
+        self::assertCount(2, array_keys(self::hrefs($html), $signup, true));
+    }
+
+    public function testExistingAccountSignupLinksKeepTheWholeLoginUrl(): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+        store_email_is_verified(42);
+        $login = seed_permalink_with_apostrophe('connectez-vous');
+
+        $html = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
+
+        self::assertCount(2, array_keys(self::hrefs($html), $login, true));
+    }
+
+    public function testUnknownForgottenPasswordLinkKeepsTheWholeSignupUrl(): void
+    {
+        $signup = seed_permalink_with_apostrophe('creer-votre-compte');
+
+        $html = $this->render('page-mot-de-passe-oublie.php', [], ['email' => self::EMAIL]);
+
+        self::assertContains($signup, self::hrefs($html));
     }
 }

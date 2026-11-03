@@ -85,4 +85,20 @@ final class TaxReceiptsPageTest extends TestCase
         self::assertSame('Numéro du reçu fiscal : ' . $name, $xpath->query('//p[starts-with(., "Numéro du reçu fiscal")]')->item(0)->textContent);
         self::assertSame('<b>150</b> €', $xpath->query('//span[@class="aif-text-bold"]')->item(0)->textContent);
     }
+
+    public function testAlertLinksKeepTheirWholeUrl(): void
+    {
+        $contact = seed_permalink_with_apostrophe('mon-espace/mes-dons/nous-contacter');
+        $requests = seed_permalink_with_apostrophe('mon-espace/mes-dons/mes-demandes');
+
+        $xpath = $this->render((object) ['Name' => 'RF-2024-0001', 'Debut__c' => '2024-01-01', 'Fin__c' => '2024-12-31', 'Montant_recu__c' => 150]);
+        $hrefs = array_map(static fn (DOMAttr $href) => $href->value, iterator_to_array($xpath->query('//a/@href'), false));
+        $titled = $xpath->query('//a[@title]')->item(0);
+
+        self::assertContains($contact . '?subject=Mes%20dons%20et%20adhésions', $hrefs);
+        self::assertContains($requests, $hrefs);
+        self::assertContains($contact . '?subject=Mes%20reçus%20fiscaux', $hrefs);
+        self::assertInstanceOf(DOMElement::class, $titled);
+        self::assertSame('contacter le service SMD d’Amnesty France', $titled->getAttribute('title'));
+    }
 }
