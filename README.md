@@ -126,7 +126,8 @@ The `php-checks` job of `ci.yml` runs `composer run lint:security`: the WordPres
 Violations that predate this check are listed in `phpcs.baseline.xml`
 ([digitalrevolution/php-codesniffer-baseline](https://github.com/123inkt/php-codesniffer-baseline))
 and ignored. Any other violation fails the job, including a listed one once its line, or the
-line just before or after it, changes. Escape or sanitize the value instead of adding it to the
+line just before or after it, changes (a copy of a listed violation with the same surrounding
+lines in the same file still matches). Escape or sanitize the value instead of adding it to the
 baseline; for a false positive, add `// phpcs:ignore <sniff> -- <reason>` on the line, or, for a
 function whose output is always safe markup, list it in `phpcs.xml` as done for `render_block()`.
 
