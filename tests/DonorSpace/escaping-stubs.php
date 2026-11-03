@@ -41,11 +41,14 @@ if (!function_exists('esc_url')) {
 
 if (!function_exists('wp_kses_post')) {
     /**
-     * Keeps links, the only markup the donor space messages use, and strips
-     * every other tag (script, img...), as the real wp_kses_post() does.
+     * Keeps links, the only markup the donor space messages use, minus their
+     * event handlers and their non-http(s)/mailto URLs, and strips every other
+     * tag. Unlike the real wp_kses_post(), it also strips <img>.
      */
     function wp_kses_post(string $text): string
     {
-        return strip_tags($text, ['a']);
+        $text = strip_tags($text, ['a']);
+        $text = (string) preg_replace('/\son\w+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $text);
+        return (string) preg_replace('~\shref\s*=\s*("\s*(?!https?:|mailto:|[/#])[^"]*"|\'\s*(?!https?:|mailto:|[/#])[^\']*\'|(?!["\']|https?:|mailto:|[/#])[^\s>]+)~i', '', $text);
     }
 }

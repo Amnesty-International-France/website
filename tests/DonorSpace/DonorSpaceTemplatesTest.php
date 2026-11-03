@@ -81,16 +81,20 @@ final class DonorSpaceTemplatesTest extends TestCase
     public function testAlertFieldKeepsLinksAndDropsScripts(string $field): void
     {
         $args = ['state' => 'error', 'title' => 'Titre', 'content' => 'Contenu', 'additional_content' => 'Complément'];
-        $args[$field] = "Rendez-vous sur <a class='aif-link--primary' href='https://wordpress.example.test/creer-votre-compte/'>Créer mon compte</a>."
-            . '<img src=x onerror=alert(1)>' . self::SCRIPT;
+        $args[$field] = "Rendez-vous sur <a class='aif-link--primary' href='https://wordpress.example.test/creer-votre-compte/' onclick='alert(1)'>Créer mon compte</a>"
+            . " ou <a href='javascript:alert(2)'>ici</a>." . self::SCRIPT;
 
         $xpath = $this->partial('alert', $args);
-        $link = $xpath->query('//a')->item(0);
+        $link = $xpath->query('//a[@class="aif-link--primary"]')->item(0);
+        $javascript = array_filter(
+            iterator_to_array($xpath->query('//a/@href')),
+            static fn (DOMAttr $href) => str_starts_with(strtolower(trim($href->value)), 'javascript:')
+        );
 
-        self::assertSame(0, $xpath->query('//script | //img')->length);
+        self::assertSame(0, $xpath->query('//script | //@*[starts-with(name(), "on")]')->length);
+        self::assertSame([], $javascript);
         self::assertInstanceOf(DOMElement::class, $link);
         self::assertSame('https://wordpress.example.test/creer-votre-compte/', $link->getAttribute('href'));
-        self::assertSame('aif-link--primary', $link->getAttribute('class'));
         self::assertSame('Créer mon compte', $link->textContent);
     }
 
