@@ -61,6 +61,6 @@ function aif_donor_space_get_partial($partial_name)
     if (file_exists($partial_path)) {
         include $partial_path;
     } else {
-        echo "<!-- Partial {$partial_name} introuvable -->";
+        echo '<!-- Partial ' . esc_html($partial_name) . ' introuvable -->';
     }
 }

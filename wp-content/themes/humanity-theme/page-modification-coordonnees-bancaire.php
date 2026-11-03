@@ -29,13 +29,13 @@ if ($has_valid_mandate) {
 
 $user_status = aif_get_user_status($SF_membre_data);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isset($_POST['iban'])) {
-    if (!isset($_POST['iban_nonce']) || !wp_verify_nonce($_POST['iban_nonce'], 'iban_form')) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isset($_POST['iban'])) {
+    if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['iban_nonce'])), 'iban_form')) {
         die('Invalid nonce.');
     }
 
     unset($_POST['iban_nonce'], $_POST['_wp_http_referer']);
-    $ibandirty = $_POST['iban'];
+    $ibandirty = sanitize_text_field(wp_unslash($_POST['iban']));
     $newIban = str_replace(' ', '', $ibandirty);
 
     $request_result = create_duplicate_update_IBAN_request($sf_user_ID, $newIban);
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isse
     if (is_object($request_result) && !empty($request_result->success)) {
         $success_message_title = 'Votre demande de modification a bien été prise en compte';
 
-        $url = get_permalink(get_page_by_path('mes-demandes'));
+        $url = esc_url(get_permalink(get_page_by_path('mes-demandes')));
         $success_message = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
     } else {
         $error_message = 'Un problème technique est survenu. Merci de réessayer plus tard';
@@ -100,7 +100,7 @@ if (!empty($success_message)) {
 				/>
 
 				<?php
-    $url = get_permalink(get_page_by_path('mes-demandes'));
+    $url = esc_url(get_permalink(get_page_by_path('mes-demandes')));
 $content = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
 aif_include_partial('info-message', [
     'id' => 'iban-help-message',

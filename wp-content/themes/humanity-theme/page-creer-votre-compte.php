@@ -17,7 +17,7 @@ function aif_account_creation_salesforce_error_result(WP_Error $error)
 
 function aif_handle_account_creation_request()
 {
-    if ('POST' !== $_SERVER['REQUEST_METHOD']) {
+    if (!isset($_SERVER['REQUEST_METHOD']) || 'POST' !== $_SERVER['REQUEST_METHOD']) {
         return aif_account_creation_result();
     }
 
@@ -61,7 +61,7 @@ function aif_handle_account_creation_request()
     $user_id = aif_prepare_account_for_verification($email, $user->FirstName ?? '', $user->LastName ?? '');
 
     if (is_wp_error($user_id)) {
-        $url = get_permalink(get_page_by_path('connectez-vous'));
+        $url = esc_url(get_permalink(get_page_by_path('connectez-vous')));
         return aif_account_creation_result(
             "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>."
         );
@@ -169,7 +169,7 @@ if (!empty($error_no_access_to_donor_space)) {
 
 		<section class="aif-mt2w aif-mb1w">
 			<h3> Vous avez déja un compte ? </h3>
-			<a href="<?php echo get_permalink(get_page_by_path('connectez-vous')) ?>"
+			<a href="<?php echo esc_url(get_permalink(get_page_by_path('connectez-vous'))) ?>"
 			   class="btn  btn--white aif-button--full ">Se connecter</a>
 		</section>
 	</div>

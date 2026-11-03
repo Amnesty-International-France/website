@@ -17,9 +17,10 @@ if (!isset($_GET['user'])) {
 
 $error_message = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
     $email = sanitize_email($_POST['email']);
-    $password = sanitize_text_field($_POST['password']);
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only hashed, sanitizing would change the password.
+    $password = $_POST['password'];
 
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
@@ -57,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                         $verification_url = get_permalink(get_page_by_path('mon-espace'));
                         // redirect_to comes from the URL: only follow it to this site, and
                         // fall back to the donor space rather than wp_safe_redirect()'s wp-admin.
+                        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- wp_validate_redirect() is the sanitizer.
                         $redirect_to = wp_validate_redirect(wp_unslash($_GET['redirect_to'] ?? ''), $verification_url);
                         wp_safe_redirect($redirect_to ?: $verification_url);
                         exit;
@@ -66,15 +68,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 }
 
             } else {
-                $verification_url = add_query_arg([
+                $verification_url = esc_url(add_query_arg([
                     'user' => rawurlencode($email),
-                ], get_permalink(get_page_by_path('verifier-votre-email')));
+                ], get_permalink(get_page_by_path('verifier-votre-email'))));
 
                 $title = 'Votre email ne semble pas encore vérifié';
                 $error_message = "Pour le faire veuillez vous rendre sur la page <a class='aif-link--primary' href='{$verification_url}'> Vérifier mon email</a>.";
             }
         } else {
-            $url = get_permalink(get_page_by_path('creer-votre-compte'));
+            $url = esc_url(get_permalink(get_page_by_path('creer-votre-compte')));
             $title = "L'adresse email renseignée ne trouve pas de correspondance dans notre système";
             $error_message = "Pour créer votre compte, veuillez vous rendre sur la page  <a class='aif-link--primary' href='{$url}'> Créer mon compte </a>.";
         }
@@ -104,7 +106,7 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
 				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
 				<label for="email" class="sr-only">Votre adresse email (obligatoire)</label>
 				<input placeholder="Email"
-				       value="<?= $email ? $email : '' ?>" class="aif-input" type="email" name="email" id="email"
+				       value="<?= esc_attr($email) ?>" class="aif-input" type="email" name="email" id="email"
 				       autocomplete="email" required="true">
 				<div class="aif-password-container">
 					<label class="aif-password-container__label sr-only" for="password">Votre mot de passe
@@ -128,11 +130,11 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
 				<div class="aif-flex aif-justify-end">
 					<div>
 						<a class="aif-link--primary aif-block"
-						   href="<?= get_permalink(get_page_by_path('mot-de-passe-oublie')) ?>">
+						   href="<?= esc_url(get_permalink(get_page_by_path('mot-de-passe-oublie'))) ?>">
 							Mot de passe oublié ?
 						</a>
 						<a class="aif-link--primary aif-block"
-						   href="<?= get_permalink(get_page_by_path('probleme-connexion')) ?>">
+						   href="<?= esc_url(get_permalink(get_page_by_path('probleme-connexion'))) ?>">
 							Un problème de connexion ?
 						</a>
 					</div>
@@ -164,7 +166,7 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
 				<span class="first-connection">Première connexion ?</span>
 				<p class="description">La création de votre espace n’est pas automatique lorsque vous faites un don. Si
 					vous n’avez jamais créé votre espace, merci de cliquer sur “Créer votre compte”.</p>
-				<a href="<?= get_permalink(get_page_by_path('creer-votre-compte')) ?>"
+				<a href="<?= esc_url(get_permalink(get_page_by_path('creer-votre-compte'))) ?>"
 				   class="aif-link--primary create-account aif-block">Créer votre compte</a>
 			</div>
 		</div>

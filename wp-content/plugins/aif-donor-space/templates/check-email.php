@@ -6,7 +6,7 @@ $success_message = '';
 
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
         $error_message = turnstile_friendly_error($turnstile_error);
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
 <main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
     <?php if (isset($error_message)) : ?>
-    <div class="aif-error-message"><?php echo $error_message; ?>
+    <div class="aif-error-message"><?php echo esc_html($error_message); ?>
     </div>
     <?php endif; ?>
     <div class="container">

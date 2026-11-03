@@ -84,8 +84,8 @@ function checkKeys($requiredFields, $array_to_check)
     return true;
 }
 
-if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['personal_info_nonce']) || !wp_verify_nonce($_POST['personal_info_nonce'], 'update_personal_info')) {
+if (checkKeys($requiredFields, $_POST) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['personal_info_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['personal_info_nonce'])), 'update_personal_info')) {
         wp_die('Erreur de sécurité : token CSRF invalide.');
     }
 
@@ -144,9 +144,9 @@ if (checkKeys($requiredFields, $_POST) && $_SERVER['REQUEST_METHOD'] === 'POST')
 				/>
 				<?php
 
-    $url = add_query_arg([
+    $url = esc_url(add_query_arg([
         'subject' =>  'Modifier mon e-mail',
-    ], get_permalink(get_page_by_path('nous-contacter')));
+    ], get_permalink(get_page_by_path('nous-contacter'))));
 aif_include_partial('info-message', [
     'id' => 'email-help-message',
     'content' => "Votre email sert d’identifiant pour votre compte Espace donateur. Pour le modifier, <a class='aif-link--secondary' href='{$url}'>contactez-nous </a>."]); ?>

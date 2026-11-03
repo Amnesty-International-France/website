@@ -1,6 +1,6 @@
 
 
-<a class="aif-nav-item-link" href="<?=$url?>">
+<a class="aif-nav-item-link" href="<?= esc_url($url) ?>">
                         <div class="aif-nav-item-link__container">
                             <div class="aif-nav-item-link__container__icon">
 
@@ -48,10 +48,10 @@
                             <?php endif ?>
                             </div>
                             <div class="aif-nav-item-link__container__content">
-                                <h2 class="aif-nav-item-link__container__content__title"><?= $title ?></h2>
+                                <h2 class="aif-nav-item-link__container__content__title"><?= esc_html($title) ?></h2>
 
                                 <p class="aif-nav-item-link__container__content__info">
-                                   <?= $content ?>
+                                   <?= esc_html($content) ?>
                                 </p>
 
                             </div>

@@ -5,14 +5,15 @@ if (!isset($_GET['user']) || !isset($_GET['token'])) {
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset($_POST['confirm-password']) && isset($_GET['user']) && isset($_GET['token'])) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset($_POST['confirm-password']) && isset($_GET['user']) && isset($_GET['token'])) {
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
         $error_title = 'La vérification de sécurité a échoué.';
         $error_message = turnstile_friendly_error($turnstile_error);
     } else {
         $email = sanitize_email(wp_unslash($_GET['user']));
-        $token = $_GET['token'];
+        $token = sanitize_text_field(wp_unslash($_GET['token']));
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only hashed, sanitizing would change the password.
         $password = $_POST['password'];
         $user = get_user_by('email', $email);
 
