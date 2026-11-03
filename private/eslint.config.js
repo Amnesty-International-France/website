@@ -24,7 +24,7 @@ module.exports = [
     rules: wordpress.configs.i18n.rules,
   },
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['**/*.{js,jsx,mjs,cjs}'],
     languageOptions: {
       ecmaVersion: 'latest',
       globals: {
