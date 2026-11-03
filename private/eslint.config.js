@@ -13,6 +13,7 @@ module.exports = [
   prettier,
   react.configs.flat.recommended,
   {
+    // Same rules as v4 "recommended"; the v7 React Compiler rules would raise 2 errors, not enabled yet.
     plugins: { 'react-hooks': reactHooks },
     rules: {
       'react-hooks/rules-of-hooks': 'error',
