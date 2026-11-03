@@ -5,20 +5,33 @@ import { getSalesforceCalls, resetSalesforceCalls } from './support/salesforce';
 const CONTACT_PAGE = '/mon-espace/e2e-contact-twice/?aif_e2e_warm_contact_pattern=1';
 const LOGIN_FORM = '.login-form form.aif-form-container';
 
-const login = async (page, goto, editor = false) => {
+const login = async (page, goto) => {
   await mockSuccessfulTurnstile(page, { token: 'mock-contact-login' });
   await goto('/connectez-vous/');
   await setServerSideTurnstileResult(page, LOGIN_FORM, { success: true });
-  await page.locator(`${LOGIN_FORM} #email`).fill(editor ? 'e2e-legacy-editor-donor@example.test' : 'e2e-verified-donor@example.test');
-  await page.locator(`${LOGIN_FORM} #password`).fill(editor ? 'E2e-Legacy-Editor-1!' : 'E2e-Verified-1!');
+  await page.locator(`${LOGIN_FORM} #email`).fill('e2e-verified-donor@example.test');
+  await page.locator(`${LOGIN_FORM} #password`).fill('E2e-Verified-1!');
   await page.locator(`${LOGIN_FORM} button[type="submit"]`).click();
   await expect(page).toHaveURL(/\/mon-espace\/$/);
 };
 
+const loginAsEditor = async (page) => {
+  await page.goto('/wp-login.php');
+  const username = page.locator('#user_login');
+  const password = page.locator('#user_pass');
+  await expect(username).toBeFocused();
+  await username.fill('e2e-legacy-editor-donor@example.test');
+  await password.fill('E2e-Legacy-Editor-1!');
+  await expect(username).toHaveValue('e2e-legacy-editor-donor@example.test');
+  await expect(password).toHaveValue('E2e-Legacy-Editor-1!');
+  await page.locator('#wp-submit').click();
+  await expect(page).toHaveURL(/\/wp-admin\//);
+};
+
 test('enumerates the contact pattern through the real WordPress registry without Salesforce', async ({
-  page, request, gotoWithoutCookieOverlay, salesforceTestId,
+  page, request, salesforceTestId,
 }) => {
-  await login(page, gotoWithoutCookieOverlay, true);
+  await loginAsEditor(page);
   await resetSalesforceCalls(request, salesforceTestId);
 
   const result = await page.evaluate(async () => {
@@ -172,7 +185,7 @@ test('rejects a contact POST with an invalid nonce without creating a Case', asy
 test('lets an editor preview without donor context or Salesforce', async ({
   page, request, gotoWithoutCookieOverlay, salesforceTestId,
 }) => {
-  await login(page, gotoWithoutCookieOverlay, true);
+  await loginAsEditor(page);
   await resetSalesforceCalls(request, salesforceTestId);
 
   await gotoWithoutCookieOverlay(`${CONTACT_PAGE}&preview=true`);
@@ -185,18 +198,7 @@ test('lets an editor preview without donor context or Salesforce', async ({
 test('renders the registered donor contact preview inside the real iframe editor without Salesforce', async ({
   page, request, salesforceTestId,
 }, testInfo) => {
-  // wp-admin needs its native auth cookie, separate from the public login.
-  await page.goto('/wp-login.php');
-  const username = page.locator('#user_login');
-  const password = page.locator('#user_pass');
-  // Core's delayed autofocus must finish before filling the password field.
-  await expect(username).toBeFocused();
-  await username.fill('e2e-legacy-editor-donor@example.test');
-  await password.fill('E2e-Legacy-Editor-1!');
-  await expect(username).toHaveValue('e2e-legacy-editor-donor@example.test');
-  await expect(password).toHaveValue('E2e-Legacy-Editor-1!');
-  await page.locator('#wp-submit').click();
-  await expect(page).toHaveURL(/\/wp-admin\//);
+  await loginAsEditor(page);
   const postId = await page.evaluate(async () => {
     const response = await fetch('/wp-json/wp/v2/pages?slug=e2e-contact-twice&_fields=id');
     return (await response.json())[0].id;
@@ -241,9 +243,9 @@ test('renders the registered donor contact preview inside the real iframe editor
 });
 
 test('accepts the REST edit context from the URL or JSON body without Salesforce', async ({
-  page, request, gotoWithoutCookieOverlay, salesforceTestId,
+  page, request, salesforceTestId,
 }, testInfo) => {
-  await login(page, gotoWithoutCookieOverlay, true);
+  await loginAsEditor(page);
   await resetSalesforceCalls(request, salesforceTestId);
 
   const results = await page.evaluate(async () => {

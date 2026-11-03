@@ -423,18 +423,23 @@ final class SalesforceMemberDataTest extends TestCase
         self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
-    public function testEditorWithoutFlagKeepsTodaysAccess(): void
+    public function testEditorIsRedirectedBeforeAnySalesforceCall(): void
     {
-        // Staff accounts never carry the verified flag; their access must not change.
         $GLOBALS['__phpunit_current_user'] = new WP_User(['editor'], 1, 'member@example.test');
-        $GLOBALS['__phpunit_user_meta'] = [];
-        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(
-            200,
-            '{"Id":"contact-id","isDonateur":true,"isMembre":false,"hasMandatActif":false}'
-        );
+        $GLOBALS['__phpunit_users'] = [1 => $GLOBALS['__phpunit_current_user']];
+        update_user_meta(1, 'email-verfied', '1');
 
-        self::assertSame('contact-id', check_user_page_access()->Id);
-        self::assertCount(1, $GLOBALS['__phpunit_wp_remote_calls']);
+        try {
+            check_user_page_access();
+            self::fail('Expected a redirect.');
+        } catch (RedirectTestException $redirect) {
+            self::assertSame(
+                'https://wordpress.example.test/connectez-vous/?redirect_to=https%3A%2F%2Fwordpress.example.test%2Fmon-espace%2Fmes-dons',
+                $redirect->location
+            );
+        }
+
+        self::assertCount(0, $GLOBALS['__phpunit_wp_remote_calls']);
     }
 
     public function testEmptyObjectIsAValidAbsentContact(): void

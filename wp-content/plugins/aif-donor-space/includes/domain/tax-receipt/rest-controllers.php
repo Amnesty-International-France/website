@@ -74,8 +74,8 @@ function aif_check_nonce(WP_REST_Request $request)
 
     }
 
-    if (!get_email_is_verified(get_current_user_id())) {
-        return new WP_Error('rest_forbidden', 'Email not verified.', ['status' => 403]);
+    if (!aif_can_access_donor_space(wp_get_current_user())) {
+        return new WP_Error('rest_forbidden', 'Donor space access denied.', ['status' => 403]);
     }
 
 
