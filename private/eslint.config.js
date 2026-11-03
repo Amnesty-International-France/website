@@ -29,10 +29,10 @@ module.exports = [
       ecmaVersion: 'latest',
       globals: {
         ...globals.browser,
-        lodash: 'writable',
-        React: 'writable',
-        ReactDOM: 'writable',
-        wp: 'writable',
+        lodash: 'readonly',
+        React: 'readonly',
+        ReactDOM: 'readonly',
+        wp: 'readonly',
       },
     },
     settings: {
