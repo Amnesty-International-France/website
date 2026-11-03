@@ -70,50 +70,59 @@ final class DonorSpaceTemplatesTest extends TestCase
         return $this->dom(static fn () => aif_include_partial($name, $args));
     }
 
-    public static function alertFields(): iterable
+    private function message(string $partial, string $field, string $value): DOMXPath
     {
-        yield 'title' => ['title'];
-        yield 'content' => ['content'];
-        yield 'additional_content' => ['additional_content'];
+        $args = ['state' => 'error', 'id' => 'message', 'title' => 'Titre', 'content' => 'Contenu', 'additional_content' => 'Complément'];
+        $args[$field] = $value;
+
+        return $this->partial($partial, $args);
     }
 
-    #[DataProvider('alertFields')]
-    public function testAlertFieldKeepsLinksAndDropsScripts(string $field): void
+    public static function messageFields(): iterable
     {
-        $args = ['state' => 'error', 'title' => 'Titre', 'content' => 'Contenu', 'additional_content' => 'Complément'];
-        $args[$field] = "Rendez-vous sur <a class='aif-link--primary' href='https://wordpress.example.test/creer-votre-compte/' onclick='alert(1)'>Créer mon compte</a>"
-            . " ou <a href='javascript:alert(2)'>ici</a>." . self::SCRIPT;
+        yield 'alert title' => ['alert', 'title'];
+        yield 'alert content' => ['alert', 'content'];
+        yield 'alert additional_content' => ['alert', 'additional_content'];
+        yield 'info-message content' => ['info-message', 'content'];
+    }
 
-        $xpath = $this->partial('alert', $args);
-        $link = $xpath->query('//a[@class="aif-link--primary"]')->item(0);
-        $javascript = array_filter(
-            iterator_to_array($xpath->query('//a/@href')),
-            static fn (DOMAttr $href) => str_starts_with(strtolower(trim($href->value)), 'javascript:')
-        );
+    #[DataProvider('messageFields')]
+    public function testMessageKeepsLinks(string $partial, string $field): void
+    {
+        $xpath = $this->message($partial, $field, "Rendez-vous sur <a class='aif-link--primary' href='https://wordpress.example.test/creer-votre-compte/'>Créer mon compte</a>.");
+        $link = $xpath->query('//a')->item(0);
 
-        self::assertSame(0, $xpath->query('//script | //@*[starts-with(name(), "on")]')->length);
-        self::assertSame([], $javascript);
         self::assertInstanceOf(DOMElement::class, $link);
         self::assertSame('https://wordpress.example.test/creer-votre-compte/', $link->getAttribute('href'));
+        self::assertSame('aif-link--primary', $link->getAttribute('class'));
         self::assertSame('Créer mon compte', $link->textContent);
     }
 
-    public function testInfoMessageKeepsLinksAndEscapesItsId(): void
+    public static function activeContent(): iterable
+    {
+        foreach (self::messageFields() as $name => [$partial, $field]) {
+            yield "{$name}: script" => [$partial, $field, 'Message' . self::SCRIPT, '//script'];
+            yield "{$name}: event handler" => [$partial, $field, "<a href='https://wordpress.example.test/' onclick='alert(1)'>lien</a>", '//@*[starts-with(name(), "on")]'];
+            yield "{$name}: javascript link" => [$partial, $field, "<a href='javascript:alert(1)'>lien</a>", '//a[starts-with(normalize-space(@href), "javascript:")]'];
+        }
+    }
+
+    #[DataProvider('activeContent')]
+    public function testMessageDropsActiveContent(string $partial, string $field, string $value, string $injected): void
+    {
+        self::assertSame(0, $this->message($partial, $field, $value)->query($injected)->length);
+    }
+
+    public function testInfoMessageEscapesItsId(): void
     {
         $id = 'help">' . self::SCRIPT;
 
-        $xpath = $this->partial('info-message', [
-            'id' => $id,
-            'content' => "Pour le modifier, <a class='aif-link--secondary' href='https://wordpress.example.test/nous-contacter/'>contactez-nous</a>." . self::SCRIPT,
-        ]);
+        $xpath = $this->partial('info-message', ['id' => $id, 'content' => 'Contenu']);
         $container = $xpath->query('//div[@class="aif-info-message__container"]')->item(0);
-        $link = $xpath->query('//a')->item(0);
 
         self::assertSame(0, $xpath->query('//script')->length);
         self::assertInstanceOf(DOMElement::class, $container);
         self::assertSame($id, $container->getAttribute('id'));
-        self::assertInstanceOf(DOMElement::class, $link);
-        self::assertSame('https://wordpress.example.test/nous-contacter/', $link->getAttribute('href'));
     }
 
     public function testLabelPrintsItsContentAsText(): void
