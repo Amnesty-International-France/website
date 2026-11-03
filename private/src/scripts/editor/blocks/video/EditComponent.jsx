@@ -19,7 +19,7 @@ const getYouTubeEmbedUrl = (url) => {
     }
 
     return url;
-  } catch (e) {
+  } catch {
     return url;
   }
 };
@@ -31,7 +31,7 @@ const isSelfHostedVideo = (url) => {
   try {
     const { pathname } = new URL(url);
     return /\.(mp4|webm|ogv|ogg|mov|m4v)$/i.test(pathname);
-  } catch (e) {
+  } catch {
     return false;
   }
 };
