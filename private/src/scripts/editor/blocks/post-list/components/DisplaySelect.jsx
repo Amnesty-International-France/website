@@ -462,9 +462,7 @@ class DisplaySelect extends Component {
 
     let tags = [];
     const results = selectedPosts.map((resp) => {
-      // eslint-disable-next-line no-underscore-dangle
       if (resp._embedded) {
-        // eslint-disable-next-line no-underscore-dangle
         tags = (resp._embedded['wp:term'] || [])
           .reduce((prev, curr) => [...prev, ...curr], [])
           .map((tag) => ({
