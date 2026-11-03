@@ -46,6 +46,16 @@ if (!defined('ABSPATH')) {
     define('ABSPATH', dirname(__DIR__) . '/');
 }
 
+if (!defined('MINUTE_IN_SECONDS')) {
+    // WordPress time constant (wp-includes/default-constants.php).
+    define('MINUTE_IN_SECONDS', 60);
+}
+
+if (!defined('DAY_IN_SECONDS')) {
+    // WordPress time constant (wp-includes/default-constants.php).
+    define('DAY_IN_SECONDS', 86_400);
+}
+
 if (!class_exists('WP_CLI')) {
     $GLOBALS['__phpunit_wp_cli_messages'] = [];
 
@@ -103,6 +113,37 @@ if (!function_exists('update_field')) {
     }
 }
 
+if (!function_exists('__')) {
+    /**
+     * Stub for __(): returns the text untranslated.
+     */
+    function __(string $text, string $domain = 'default'): string
+    {
+        return $text;
+    }
+}
+
+if (!function_exists('wp_date')) {
+    /**
+     * Stub for wp_date(): formats in the PHP default timezone instead of the
+     * site's.
+     */
+    function wp_date(string $format, ?int $timestamp = null): string
+    {
+        return date($format, $timestamp ?? time());
+    }
+}
+
+if (!function_exists('wp_unslash')) {
+    /**
+     * Stub for wp_unslash(): strips the slashes WordPress adds to request data.
+     */
+    function wp_unslash(mixed $value): mixed
+    {
+        return is_string($value) ? stripslashes($value) : $value;
+    }
+}
+
 if (!function_exists('sanitize_text_field')) {
     /**
      * Stub for sanitize_text_field(): strips tags and trims, enough for
@@ -128,10 +169,15 @@ if (!function_exists('get_post')) {
      * Stub for get_post(). Tests seed a post via
      * $GLOBALS['__phpunit_posts'][$post_id] = (object) ['ID' => $post_id, ...];
      * anything not seeded resolves to null (matching WordPress when the ID
-     * doesn't exist).
+     * doesn't exist). Without an ID, returns the current post from
+     * $GLOBALS['post'], like WordPress.
      */
-    function get_post(int $post_id): ?object
+    function get_post(?int $post_id = null): ?object
     {
+        if ($post_id === null) {
+            return $GLOBALS['post'] ?? null;
+        }
+
         return $GLOBALS['__phpunit_posts'][$post_id] ?? null;
     }
 }
@@ -178,6 +224,22 @@ if (!function_exists('get_permalink')) {
     }
 }
 
+if (!function_exists('get_post_thumbnail_id')) {
+    $GLOBALS['__phpunit_post_thumbnail_ids'] = [];
+
+    /**
+     * Stub for get_post_thumbnail_id(). Tests seed an attachment ID via
+     * $GLOBALS['__phpunit_post_thumbnail_ids'][$post_id]; anything not seeded
+     * resolves to 0 (matching WordPress when the post has no thumbnail).
+     */
+    function get_post_thumbnail_id(object|int|null $post = null): int|false
+    {
+        $post_id = is_object($post) ? $post->ID : (int) $post;
+
+        return $GLOBALS['__phpunit_post_thumbnail_ids'][$post_id] ?? 0;
+    }
+}
+
 if (!function_exists('sanitize_email')) {
     /**
      * Simplified stand-in for WordPress's sanitize_email() (which strips
@@ -198,8 +260,16 @@ if (!function_exists('wp_unslash')) {
 }
 
 if (!function_exists('is_email')) {
+    /**
+     * Like WordPress, rejects addresses shorter than 6 characters, which
+     * FILTER_VALIDATE_EMAIL alone would accept (e.g. "a@b.c").
+     */
     function is_email(string $email): string|false
     {
+        if (strlen($email) < 6) {
+            return false;
+        }
+
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false ? $email : false;
     }
 }

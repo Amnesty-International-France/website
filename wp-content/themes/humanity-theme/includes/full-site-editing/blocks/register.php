@@ -28,6 +28,8 @@ require_once realpath(__DIR__) . '/search-header/register.php';
 require_once realpath(__DIR__) . '/search-header/render.php';
 require_once realpath(__DIR__) . '/sidebar/register.php';
 require_once realpath(__DIR__) . '/sidebar/render.php';
+require_once realpath(__DIR__) . '/donor-contact-form/register.php';
+require_once realpath(__DIR__) . '/donor-contact-form/render.php';
 
 if (! function_exists('amnesty_register_full_site_editing_blocks')) {
     /**
@@ -52,6 +54,7 @@ if (! function_exists('amnesty_register_full_site_editing_blocks')) {
         register_search_form_block();
         register_search_header_block();
         register_sidebar_block();
+        register_donor_contact_form_block();
     }
 }
 

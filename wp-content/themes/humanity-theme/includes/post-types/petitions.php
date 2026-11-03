@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__DIR__) . '/clh/tunnel-selection.php';
+
 function amnesty_register_petitions_cpt()
 {
     $labels = [
@@ -292,11 +294,8 @@ if (!function_exists('amnesty_get_active_clh_campaign_for_page')) {
             return $cache[$page_id] = null;
         }
 
-        $timestamp_now   = time();
-        $start_date      = get_field('start_date_highligth_clh', $page_id);
-        $end_date        = get_field('end_date_highlight_clh', $page_id);
-        $timestamp_start = $start_date ? strtotime((string) $start_date) : 0;
-        $timestamp_end   = $end_date ? strtotime((string) $end_date) : 0;
+        $timestamp_now = time();
+        ['start' => $timestamp_start, 'end' => $timestamp_end] = amnesty_get_clh_campaign_timestamps($page_id);
 
         if ($timestamp_start > $timestamp_now) {
             return $cache[$page_id] = null;
@@ -493,6 +492,38 @@ function amnesty_set_clh_signer_email(string $email): void
     $_SESSION['clh_last_signer_email'] = $email;
 }
 
+/**
+ * Whether the visitor passed Turnstile in the CLH tunnel less than 30 minutes ago.
+ */
+function amnesty_is_clh_tunnel_turnstile_verified(): bool
+{
+    amnesty_start_secure_session();
+
+    $verified_at = (int) ($_SESSION['clh_turnstile_verified_at'] ?? 0);
+
+    return $verified_at > time() - 30 * MINUTE_IN_SECONDS;
+}
+
+/**
+ * Turnstile check of a tunnel submission. A token is single-use, so a successful check
+ * is remembered in the session: later tunnel submissions skip it for 30 minutes.
+ *
+ * @return string|null the error code, or null when the visitor is verified
+ */
+function amnesty_verify_clh_tunnel_turnstile(): ?string
+{
+    if (amnesty_is_clh_tunnel_turnstile_verified()) {
+        return null;
+    }
+
+    $error = verify_turnstile();
+    if ($error === null) {
+        $_SESSION['clh_turnstile_verified_at'] = time();
+    }
+
+    return $error;
+}
+
 function amnesty_get_clh_skipped_petitions(): array
 {
     amnesty_start_secure_session();
@@ -592,24 +623,6 @@ function amnesty_is_clh_tunnel_final_page(): bool
     return (bool) get_query_var('clh_final_thanks');
 }
 
-function amnesty_get_clh_signed_petition_count_for_user(int $user_id, int $include_petition_id = 0): int
-{
-    $campaign_petition_ids = amnesty_get_active_clh_campaign_petition_ids();
-    $signed_petition_ids = [];
-
-    if ($include_petition_id && in_array($include_petition_id, $campaign_petition_ids, true)) {
-        $signed_petition_ids[] = $include_petition_id;
-    }
-
-    foreach ($campaign_petition_ids as $campaign_petition_id) {
-        if (have_signed($campaign_petition_id, $user_id)) {
-            $signed_petition_ids[] = $campaign_petition_id;
-        }
-    }
-
-    return count(array_unique($signed_petition_ids));
-}
-
 function amnesty_get_clh_signed_petition_count_for_browser(): int
 {
     return count(array_intersect(
@@ -688,7 +701,7 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
 
         $selected_posts[] = [
             'id' => $petition->ID,
-            'title' => $petition->post_title,
+            'title' => amnesty_get_clh_petition_title($petition),
             'description' => get_field('short_description', $petition->ID) ?: get_the_excerpt($petition->ID),
             'image_id' => get_post_thumbnail_id($petition->ID),
             'letter' => get_field('lettre', $petition->ID),
@@ -714,8 +727,8 @@ function amnesty_get_clh_tunnel_context(?WP_Post $post = null): array
     $next_petition = null;
 
     if ($signed_count < 10 && !empty($not_signed)) {
-        $random_key = array_rand($not_signed);
-        $next_petition = $not_signed[$random_key];
+        // Read-only choice, matched against eligible campaign petitions by the selector.
+        $next_petition = amnesty_select_clh_tunnel_petition($not_signed, $_GET['clh_petition'] ?? null);
     }
 
     $contexts[$post->ID] = [
@@ -791,7 +804,7 @@ function amnesty_handle_petition_skip(): void
         wp_die('Action non autorisée.', '', ['response' => 403]);
     }
 
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = amnesty_verify_clh_tunnel_turnstile();
     if ($turnstile_error !== null) {
         wp_redirect(add_query_arg('signature_status', 'turnstile', amnesty_get_clh_petition_tunnel_url()));
         exit;
@@ -804,13 +817,6 @@ function amnesty_handle_petition_skip(): void
     }
 
     amnesty_set_clh_skipped_petition($petition_id);
-
-    if (isset($_POST['user_email'])) {
-        $email = sanitize_email($_POST['user_email']);
-        if (is_email($email)) {
-            amnesty_set_clh_signer_email($email);
-        }
-    }
 
     wp_redirect(amnesty_get_clh_petition_tunnel_url());
     exit;
@@ -849,7 +855,7 @@ function amnesty_handle_petition_signature(): void
         exit;
     }
 
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = $is_clh_tunnel_submission ? amnesty_verify_clh_tunnel_turnstile() : verify_turnstile();
     if ($turnstile_error !== null) {
         if ($is_clh_tunnel_submission) {
             wp_redirect(add_query_arg('signature_status', 'turnstile', amnesty_get_clh_petition_tunnel_url()));
@@ -860,13 +866,18 @@ function amnesty_handle_petition_signature(): void
         return;
     }
 
-    if (!$raw_email && $is_clh_tunnel_submission) {
+    if ($is_clh_tunnel_submission) {
+        // Once this browser has signed, the tunnel keeps signing with that address only.
         amnesty_start_secure_session();
-        $raw_email = $_SESSION['clh_last_signer_email'] ?? null;
+        $raw_email = $_SESSION['clh_last_signer_email'] ?? $raw_email;
     }
 
     if (!$raw_email || !is_email($raw_email)) {
-        wp_redirect(add_query_arg('signature_status', 'invalid', amnesty_get_petition_form_fallback_url($petition_id)));
+        $fallback_url = $is_clh_tunnel_submission
+            ? amnesty_get_clh_petition_tunnel_url()
+            : amnesty_get_petition_form_fallback_url($petition_id);
+
+        wp_redirect(add_query_arg('signature_status', 'invalid', $fallback_url));
         exit;
     }
 
@@ -884,25 +895,16 @@ function amnesty_handle_petition_signature(): void
     }
 
     $local_user = get_local_user($user_email);
+    $already_signed = false;
 
     if ($local_user !== false) {
         $user_id = $local_user->id;
-        if (have_signed($petition_id, $user_id)) {
-            if ($is_clh_petition) {
-                amnesty_set_clh_signer_email($user_email);
-                amnesty_set_clh_signed_petition($petition_id);
-            }
+        $already_signed = have_signed($petition_id, $user_id);
 
-            $redirect_url = $is_clh_petition && amnesty_get_clh_signed_petition_count_for_browser() >= 10
-                ? amnesty_get_clh_petition_tunnel_thanks_url()
-                : amnesty_get_petition_signature_redirect_url(
-                    $petition_id,
-                    [
-                        'alreadysigned' => '',
-                    ],
-                    $is_clh_petition
-                );
-            wp_redirect($redirect_url);
+        // In the CLH tunnel, an address that already signed gets the same response as a
+        // new signature, so the tunnel never tells whether an address signed a petition.
+        if ($already_signed && !$is_clh_petition) {
+            wp_redirect(amnesty_get_petition_signature_redirect_url($petition_id, ['alreadysigned' => '']));
             exit;
         }
     } else {
@@ -932,14 +934,16 @@ function amnesty_handle_petition_signature(): void
     $code_origine = isset($_POST['code_origine']) && !empty($_POST['code_origine']) ? $_POST['code_origine'] : get_field('code_origine', $petition_id) ?? '';
     $message = $type === 'action-soutien' && isset($_POST['user_message']) && !empty($_POST['user_message']) ? sanitize_textarea_field($_POST['user_message']) : '';
 
-    if (insert_petition_signature($petition_id, $user_id, date('Y-m-d'), $code_origine, $message) === false) {
-        wp_redirect(add_query_arg('signature_status', 'error', amnesty_get_petition_form_fallback_url($petition_id)));
-        exit;
-    }
+    if (!$already_signed) {
+        if (insert_petition_signature($petition_id, $user_id, date('Y-m-d'), $code_origine, $message) === false) {
+            wp_redirect(add_query_arg('signature_status', 'error', amnesty_get_petition_form_fallback_url($petition_id)));
+            exit;
+        }
 
-    $current_signatures = amnesty_get_petition_signature_count($petition_id);
-    $new_signatures = $current_signatures + 1;
-    update_post_meta($petition_id, '_amnesty_signature_count', $new_signatures);
+        $current_signatures = amnesty_get_petition_signature_count($petition_id);
+        $new_signatures = $current_signatures + 1;
+        update_post_meta($petition_id, '_amnesty_signature_count', $new_signatures);
+    }
 
     $gtm_type = 'petition';
     $gtm_name = get_the_title($petition_id);
@@ -1129,11 +1133,11 @@ add_action('acf/include_fields', function () {
             ],
             [
                 'key' => 'field_6a155b0a87p9c',
-                'label' => 'Titre court',
+                'label' => 'Titre CLH',
                 'name' => 'short_title',
                 'aria-label' => '',
                 'type' => 'text',
-                'instructions' => '',
+                'instructions' => '50 caractères maximum conseillés',
                 'required' => 0,
                 'conditional_logic' => [
                     [
@@ -1163,7 +1167,7 @@ add_action('acf/include_fields', function () {
             ],
             [
                 'key' => 'field_6a155b0a8709c',
-                'label' => 'Description courte',
+                'label' => 'Description CLH',
                 'name' => 'short_description',
                 'aria-label' => '',
                 'type' => 'textarea',
@@ -1354,27 +1358,6 @@ add_action('acf/include_fields', function () {
                         ],
                     ],
                 ],
-                'wrapper' => [
-                    'width' => '',
-                    'class' => '',
-                    'id' => '',
-                ],
-                'default_value' => '',
-                'maxlength' => '',
-                'allow_in_bindings' => 0,
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-            ],
-            [
-                'key' => 'field_68f4b1a4a9c10',
-                'label' => 'Sous-titre CLH',
-                'name' => 'subtitle_clh',
-                'aria-label' => '',
-                'type' => 'text',
-                'instructions' => '',
-                'required' => 0,
-                'conditional_logic' => 0,
                 'wrapper' => [
                     'width' => '',
                     'class' => '',

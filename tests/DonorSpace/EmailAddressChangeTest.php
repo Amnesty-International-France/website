@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
@@ -23,9 +24,17 @@ final class EmailAddressChangeTest extends TestCase
         $GLOBALS['__phpunit_destroyed_sessions'] = [];
     }
 
-    public function testEmailChangeRevokesVerificationCodeResetTokenAndSession(): void
+    public static function verifiedFlags(): iterable
     {
-        store_email_is_verified(self::USER_ID);
+        yield 'address-bound proof' => ['old@example.test'];
+        yield 'historical verification' => ['1'];
+    }
+
+    #[DataProvider('verifiedFlags')]
+    public function testEmailChangeRevokesVerificationCodeResetTokenAndSession(string $flag): void
+    {
+        update_user_meta(self::USER_ID, 'email-verfied', $flag);
+        self::assertTrue(get_email_is_verified(self::USER_ID));
         store_2fa_code(self::USER_ID, '123456');
         store_email_token(self::USER_ID, 'reset-secret');
 
@@ -39,9 +48,10 @@ final class EmailAddressChangeTest extends TestCase
         self::assertSame([self::USER_ID], $GLOBALS['__phpunit_destroyed_sessions']);
     }
 
-    public function testCaseOnlyEmailChangeKeepsCurrentVerification(): void
+    #[DataProvider('verifiedFlags')]
+    public function testCaseOnlyEmailChangeKeepsCurrentVerification(string $flag): void
     {
-        store_email_is_verified(self::USER_ID);
+        update_user_meta(self::USER_ID, 'email-verfied', $flag);
         $old_user = clone $GLOBALS['__phpunit_users'][self::USER_ID];
         $GLOBALS['__phpunit_users'][self::USER_ID]->user_email = 'OLD@example.test';
 

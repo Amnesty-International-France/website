@@ -1,8 +1,10 @@
 <?php
 
 require_once dirname(__DIR__) . '/expiring-secret.php';
+require_once dirname(__DIR__) . '/mailgun.php';
 
 const AIF_2FA_CODE_TTL = 900;
+const AIF_VERIFICATION_CODE_SEND_ERROR_MESSAGE = "L'envoi du code de vérification a échoué. Veuillez réessayer dans quelques instants.";
 
 function generate_2fa_code()
 {
@@ -58,8 +60,16 @@ function get_email_is_verified($user_id)
     $verified_email = get_user_meta($user_id, 'email-verfied', true);
     $user = get_userdata($user_id);
 
-    // A legacy boolean flag does not identify the address that was verified.
-    return is_string($verified_email) && $verified_email !== '' && $user
+    if (!$user) {
+        return false;
+    }
+
+    // Keep historical validations valid alongside address-bound proofs.
+    if ('1' === $verified_email) {
+        return true;
+    }
+
+    return is_string($verified_email) && $verified_email !== ''
         && 0 === strcasecmp($verified_email, $user->user_email);
 }
 
@@ -69,6 +79,7 @@ function send_2fa_code($to_email, $code)
     $api_key = getenv('AIF_MAILGUN_TOKEN');
     $url = getenv('AIF_MAILGUN_URL') . '/'. getenv('AIF_MAILGUN_DOMAIN') . '/messages';
 
+    $template = '2facode';
     $variables = [
         'code' => $code,
     ];
@@ -80,18 +91,14 @@ function send_2fa_code($to_email, $code)
             'to' => $to_email,
             'subject' => 'Amnesty France- Vérifier votre email',
             't:variables' => json_encode($variables),
-            'template' => '2facode',
+            'template' => $template,
         ],
         'timeout'   => 30,
         'headers' => [
             'Authorization' => 'Basic ' . base64_encode('api:' . $api_key),
         ]]);
 
-    if (is_wp_error($response)) {
-        return false;
-    } else {
-        return true;
-    }
+    return aif_is_mailgun_send_successful($response, $template);
 }
 
 function get_login_blocked_until($user_id)

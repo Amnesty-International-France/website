@@ -78,15 +78,6 @@
     }
   }
 
-  .petition-subtitle {
-    text-align: center;
-    font-family: var(--wp--preset--font-family--secondary);
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 24px;
-    margin-bottom: 0;
-  }
-
   .petition-infos {
     display: flex;
     flex-direction: column;
@@ -105,6 +96,7 @@
       height: 100%;
       background-color: var(--wp--preset--color--black);
       transition: width 0.5s ease-in-out;
+      transform-origin: left center;
     }
 
     .supports {

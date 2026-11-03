@@ -135,6 +135,21 @@ if (!getenv('AIF_SALESFORCE_URL')) {
     putenv('AIF_SALESFORCE_URL=' . AIF_E2E_SALESFORCE_BASE_URL);
 }
 
+const AIF_E2E_MAILGUN_BASE_URL = 'https://fake-mailgun.e2e.test/v3';
+
+// The account-creation journey sends its verification code through Mailgun,
+// independently of wp_mail. Keep that external boundary local to the tests.
+putenv('AIF_MAILGUN_URL=' . AIF_E2E_MAILGUN_BASE_URL);
+putenv('AIF_MAILGUN_DOMAIN=example.test');
+
+add_filter('pre_http_request', function ($preempt, $args, $url) {
+    if (AIF_E2E_MAILGUN_BASE_URL . '/example.test/messages' !== $url) {
+        return $preempt;
+    }
+
+    return aif_e2e_fake_http_response(['id' => 'fake-e2e-message', 'message' => 'Queued. Thank you.']);
+}, 10, 3);
+
 /**
  * Namespaces the call log per test (see support/fixtures.mjs' salesforceTestId)
  * instead of one shared option: Playwright can run tests concurrently against
@@ -357,6 +372,8 @@ add_filter('pre_http_request', function ($preempt, $args, $url) {
             'instance_url' => rtrim(AIF_E2E_SALESFORCE_BASE_URL, '/'),
             'token_type' => 'Bearer',
         ];
+    } elseif (str_contains($path, 'sobjects/Contact/') && 'GET' === ($args['method'] ?? 'GET')) {
+        $body = ['Id' => 'fake-sf-id-donor', 'Tech_Lien_Mandat_Actif__c' => null];
     } elseif (str_contains($path, 'query/?q=')) {
         // SOQL lookup (existing Contact/Lead by email). Defaults to "not
         // found" so the create branch of whichever handler is under test
@@ -366,12 +383,24 @@ add_filter('pre_http_request', function ($preempt, $args, $url) {
             ? ['totalSize' => 1, 'records' => [['Id' => 'fake-sf-id-existing']]]
             : ['totalSize' => 0, 'records' => []];
     } elseif (str_contains($path, 'apexrest/search/v1/')) {
-        // Donor-space member lookup by e-mail: seeded e2e-*@example.test
-        // addresses are members, any other address is an absent contact.
-        $email = urldecode((string) substr($path, strrpos($path, '/') + 1));
-        $body = str_starts_with($email, 'e2e-') && str_ends_with($email, '@example.test')
-            ? ['Id' => 'fake-sf-id-donor', 'isDonateur' => true, 'isMembre' => true, 'hasMandatActif' => false]
-            : new stdClass();
+        // Match the observed Apex responses: encoded @, + or apostrophe
+        // lose existing contacts. A missing contact is a six-property object.
+        $segment = (string) substr($path, strrpos($path, '/') + 1);
+        // Literal and encoded asterisks return NOT_FOUND from Apex.
+        if (preg_match('/\*|%2A/i', $segment)) {
+            $response = aif_e2e_fake_http_response([
+                ['errorCode' => 'NOT_FOUND', 'message' => 'No matching Apex resource'],
+            ]);
+            $response['response'] = ['code' => 404, 'message' => 'Not Found'];
+            return $response;
+        }
+        $email = rawurldecode($segment);
+        $scenario = $_SERVER['HTTP_X_AIF_E2E_APEX_RESULT'] ?? '';
+        $found = !preg_match('/%(?:40|2B|27)/i', $segment) && 'absent' !== $scenario
+            && str_starts_with($email, 'e2e-') && str_ends_with($email, '@example.test');
+        $body = $found
+            ? ['Id' => 'fake-sf-id-donor', 'isDonateur' => 'ineligible' !== $scenario, 'isMembre' => 'ineligible' !== $scenario, 'isAncienMembre' => false, 'hasMandatActif' => false, 'hasEspaceDon' => true]
+            : ['Id' => null, 'isDonateur' => null, 'isMembre' => null, 'isAncienMembre' => null, 'hasMandatActif' => null, 'hasEspaceDon' => false];
     } else {
         // Any create/update/delete call (Contact, Lead, Case, ...).
         $body = ['success' => true, 'id' => 'fake-sf-id-new'];
@@ -380,7 +409,34 @@ add_filter('pre_http_request', function ($preempt, $args, $url) {
     return aif_e2e_fake_http_response($body);
 }, 10, 3);
 
+// Warm the real registry before auth_my_space() prepares its context. The
+// cached pattern must remain safe on POST and usable later in this request.
+add_action('template_redirect', function () {
+    if (isset($_GET['aif_e2e_warm_contact_pattern'])) {
+        WP_Block_Patterns_Registry::get_instance()->get_registered('amnesty/contact-us');
+    }
+}, 0);
+
 add_action('rest_api_init', function () {
+    // Isolate the target pattern with WordPress's real registry. The full
+    // catalogue also executes the unrelated CLH pattern's redirect to '/'.
+    register_rest_route('aif-e2e/v1', '/contact-patterns', [
+        'methods' => 'GET',
+        'callback' => function () {
+            $registry = new WP_Block_Patterns_Registry();
+            $registry->register('amnesty/contact-us', [
+                'title' => 'Nous contacter',
+                'inserter' => false,
+                'filePath' => get_theme_file_path('/patterns/contact-us.php'),
+            ]);
+
+            return new WP_REST_Response($registry->get_all_registered(), 200);
+        },
+        'permission_callback' => function () {
+            return current_user_can('edit_posts');
+        },
+    ]);
+
     register_rest_route('aif-e2e/v1', '/salesforce-calls', [
         'methods' => 'GET',
         'callback' => function () {

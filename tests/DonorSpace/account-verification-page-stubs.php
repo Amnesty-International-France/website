@@ -11,12 +11,49 @@ function wp_redirect(string $location, int $status = 302): never
     throw new AccountVerificationRedirect($location);
 }
 
+/**
+ * Simplified stand-in for WordPress's wp_validate_redirect(): keeps relative
+ * paths and http(s) URLs on the test site's host, and returns the fallback for
+ * anything else (other hosts, protocol-relative URLs, other schemes).
+ */
+function wp_validate_redirect(string $location, string $fallback_url = ''): string
+{
+    $location = trim($location);
+    if (str_starts_with($location, '//')) {
+        $location = 'http:' . $location;
+    }
+
+    $parts = parse_url($location);
+    if (false === $parts) {
+        return $fallback_url;
+    }
+    if (isset($parts['scheme']) && !in_array($parts['scheme'], ['http', 'https'], true)) {
+        return $fallback_url;
+    }
+    if (isset($parts['host']) && 'wordpress.example.test' !== $parts['host']) {
+        return $fallback_url;
+    }
+
+    return $location;
+}
+
+function wp_safe_redirect(string $location, int $status = 302): never
+{
+    $GLOBALS['__phpunit_redirect_status'] = $status;
+    wp_redirect(wp_validate_redirect($location, 'https://wordpress.example.test/wp-admin/'), $status);
+}
+
 function get_header(): void
 {
 }
 
 function get_footer(): void
 {
+}
+
+function get_template_directory_uri(): string
+{
+    return 'https://wordpress.example.test/theme';
 }
 
 function aif_include_partial(string $name, array $args = []): void
@@ -69,6 +106,20 @@ function get_user_by(string $field, string $value): WP_User|false
     }
 
     return false;
+}
+
+function wp_signon(array $credentials = [], bool|string $secure_cookie = ''): WP_User|WP_Error
+{
+    $GLOBALS['__phpunit_signons'][] = ['credentials' => $credentials, 'secure_cookie' => $secure_cookie];
+
+    return $GLOBALS['__phpunit_signon_result'];
+}
+
+function wp_set_current_user(int $id, string $name = ''): WP_User
+{
+    $GLOBALS['__phpunit_current_user_id'] = $id;
+
+    return $GLOBALS['__phpunit_current_user'] = get_userdata($id);
 }
 
 function wp_insert_user(array $userdata): int

@@ -227,6 +227,17 @@ if (!get_page_by_path('modifier-mon-mot-de-passe')) {
 
 // Donor-space accounts. No theme or plugin hook runs on user creation, so
 // wp_insert_user() is safe here (unlike wp_insert_post(), see above).
+$donor_space_page = get_page_by_path('mon-espace');
+if ($donor_space_page && !get_page_by_path('mon-espace/e2e-contact-twice')) {
+    aif_e2e_insert_post([
+        'post_title' => 'Contact donateur (e2e)',
+        'post_name' => 'e2e-contact-twice',
+        'post_parent' => $donor_space_page->ID,
+        'post_content' => str_repeat('<!-- wp:pattern {"slug":"amnesty/contact-us"} /-->', 2),
+        'guid' => home_url('/mon-espace/e2e-contact-twice/'),
+    ]);
+}
+
 $aif_e2e_donors = [
     'e2e-unverified-donor@example.test' => ['password' => 'E2e-Unverified-1!', 'verified' => false],
     'e2e-verified-donor@example.test' => ['password' => 'E2e-Verified-1!', 'verified' => true],

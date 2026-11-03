@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset(
         if ($user) {
             if (is_email_token_valid($user->ID, $token)) {
 
-                if ($password == $_POST['confirm-password']) {
+                if ($password === $_POST['confirm-password']) {
                     delete_email_token($user->ID);
                     $userdata = [
                         'ID' => $user->ID,

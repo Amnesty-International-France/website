@@ -6,7 +6,7 @@ autres :
 | Couche | Outil | Où | Lancer |
 |---|---|---|---|
 | PHP unitaire | PHPUnit | `tests/<Domaine>/` | `composer run test:<domaine>` |
-| JS unitaire | Vitest | `private/tests/scripts/modules/` | `cd private && yarn test` |
+| JS unitaire | Vitest | `private/tests/scripts/` | `cd private && yarn test` |
 | End-to-end | Playwright | `private/tests/e2e/` | voir [section dédiée](#tests-e2e-playwright) |
 
 Tout tourne aussi en CI (`.github/workflows/ci.yml`, jobs `php-checks` et
@@ -74,6 +74,34 @@ processus. Les fichiers de test qui partagent une fonction de production la
 chargent donc avec `require_once`, et isolent leurs données en recréant leurs
 doubles dans `setUp()` plutôt qu'en redéclarant des fonctions globales.
 
+### DataProvider
+
+Regrouper dans un seul test `#[DataProvider]` les tests qui partagent la même
+logique et ne diffèrent que par leurs entrées ou leur résultat attendu.
+Nommer chaque cas avec `yield 'libellé' => [...]`, pour qu'un échec indique
+le cas concerné.
+
+```php
+#[DataProvider('digitsCases')]
+public function testIsDigits(mixed $value, bool $expected): void
+{
+    self::assertSame($expected, amnesty_clh_is_digits($value));
+}
+
+/**
+ * @return iterable<string, array{mixed, bool}>
+ */
+public static function digitsCases(): iterable
+{
+    yield 'digits' => ['2024', true];
+    yield 'decimal' => ['2024.5', false];
+    yield 'thousands separator' => ['2 024', false];
+}
+```
+
+Voir `tests/Clh/ClhCampaignFinalResultsTest.php` et
+`tests/Clh/ClhFieldsValidationTest.php`.
+
 ### Test d'intégration de la sync CLI Salesforce (`test:salesforce-sync`)
 
 La signature d'une pétition (`amnesty_handle_petition_signature()`) n'appelle
@@ -108,9 +136,9 @@ la découverte agrégée de PHPUnit et des IDE.
 
 ### Où et comment
 
-Les tests vivent dans `private/tests/scripts/modules/`, un fichier
-`<module>.test.js` par module de `private/src/scripts/modules/<module>.js`.
-Environnement `jsdom` (voir `private/vitest.config.js`).
+Un test reprend le chemin de son fichier source sous `private/src/scripts/` :
+`private/tests/scripts/modules/<module>.test.js` pour
+`private/src/scripts/modules/<module>.js`. Environnement `jsdom` (voir `private/vitest.config.js`).
 
 ```
 cd private

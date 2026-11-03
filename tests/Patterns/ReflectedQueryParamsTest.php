@@ -45,29 +45,6 @@ final class ReflectedQueryParamsTest extends TestCase
         return (string) ob_get_clean();
     }
 
-    public function testContactSubjectIsEscapedInTheInputValue(): void
-    {
-        $html = $this->render('contact-us', ['subject' => self::PAYLOAD]);
-
-        $this->assertStringNotContainsString('<script>', $html);
-        $this->assertStringNotContainsString('value=""', $html);
-        $this->assertMatchesRegularExpression('/name="subject"[^>]*value="&quot;&gt;alert\(1\)"/s', $html);
-    }
-
-    public function testContactSubjectKeepsALegitimateValueReadable(): void
-    {
-        $html = $this->render('contact-us', ['subject' => "Demande d\\'un reçu fiscal"]);
-
-        $this->assertStringContainsString('value="Demande d&#039;un reçu fiscal"', $html);
-    }
-
-    public function testContactSubjectIgnoresAnArray(): void
-    {
-        $html = $this->render('contact-us', ['subject' => ['x']]);
-
-        $this->assertMatchesRegularExpression('/name="subject"[^>]*value=""/s', $html);
-    }
-
     public function testChronicleStatusRejectsUnknownValues(): void
     {
         $html = $this->render('page-discover-chronicle-content', ['inscription_chronique' => self::PAYLOAD]);

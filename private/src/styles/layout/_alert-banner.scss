@@ -38,7 +38,7 @@
       width: 100%;
 
       .alert-body-image {
-        max-width: 195px;
+        max-width: min(195px, 40%);
         flex-shrink: 0;
 
         > img {
@@ -52,6 +52,8 @@
       .alert-body-text {
         display: flex;
         flex-direction: column;
+        min-width: 0;
+        overflow-wrap: anywhere;
         color: inherit;
 
         > .title {

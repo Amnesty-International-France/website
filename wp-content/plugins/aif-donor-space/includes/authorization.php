@@ -77,8 +77,20 @@ function aif_validate_salesforce_member($sf_member)
         }
     }
 
-    if (empty($sf_member->Id)) {
+    if (!is_string($sf_member->Id) || empty(trim($sf_member->Id))) {
         return aif_create_salesforce_invalid_response_error('GET', 'member_search');
+    }
+
+    foreach (['isDonateur', 'isMembre'] as $property) {
+        if (!is_bool($sf_member->$property)) {
+            return aif_create_salesforce_invalid_response_error('GET', 'member_search');
+        }
+    }
+
+    foreach (['hasMandatActif', 'isAncienMembre', 'hasEspaceDon'] as $property) {
+        if (isset($sf_member->$property) && !is_bool($sf_member->$property)) {
+            return aif_create_salesforce_invalid_response_error('GET', 'member_search');
+        }
     }
 
     return $sf_member;
@@ -86,7 +98,33 @@ function aif_validate_salesforce_member($sf_member)
 
 function aif_is_salesforce_contact_absent($sf_member)
 {
-    return is_object($sf_member) && [] === get_object_vars($sf_member);
+    if (!is_object($sf_member)) {
+        return false;
+    }
+
+    $properties = get_object_vars($sf_member);
+    if ([] === $properties) {
+        return true;
+    }
+
+    // Test's search/v1 endpoint returns this complete, typed absence result.
+    // Allow additional properties while requiring every known value to match.
+    // A missing/empty Id alone could instead mean a malformed response.
+    $absent = [
+        'Id' => null,
+        'isDonateur' => null,
+        'isMembre' => null,
+        'isAncienMembre' => null,
+        'hasMandatActif' => null,
+        'hasEspaceDon' => false,
+    ];
+    foreach ($absent as $property => $value) {
+        if (!array_key_exists($property, $properties) || $properties[$property] !== $value) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 function check_user_page_access()

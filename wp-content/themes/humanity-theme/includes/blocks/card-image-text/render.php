@@ -15,6 +15,8 @@ if (!function_exists('render_card_image_text_block')) {
         $custom = $attributes['custom'] ?? false;
         $postId = $attributes['postId'] ?? null;
         $direction = $attributes['direction'] ?? 'horizontal';
+        $textDisplay = $attributes['textDisplay'] ?? 'rollOver';
+        $linkTitle = ($attributes['linkTitle'] ?? '') ?: 'Voir la suite';
         $newTab = $attributes['newTab'] ?? false;
 
         if (! $custom && $postId && is_numeric($postId)) {
@@ -82,7 +84,7 @@ if (!function_exists('render_card_image_text_block')) {
 
         ob_start();
 
-        $wrapper_classes = ['card-image-text-block', $direction];
+        $wrapper_classes = ['card-image-text-block', $direction, $textDisplay];
         ?>
         <div <?php echo get_block_wrapper_attributes(['class' => implode(' ', $wrapper_classes)]); ?>>
             <?php if (!empty($category)) : ?>
@@ -128,7 +130,7 @@ if (!function_exists('render_card_image_text_block')) {
                                         fill="black"
                                     />
                                 </svg>
-                                <p class="card-image-text-content-see-more-label">Voir la suite</p>
+                                <p class="card-image-text-content-see-more-label"><?php echo esc_html($linkTitle); ?></p>
                             </div>
                         </div>
                     </div>

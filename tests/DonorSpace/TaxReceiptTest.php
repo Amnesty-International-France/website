@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 $posted_salesforce_data_donor_space = [];
 $post_salesforce_data_donor_space_response = (object) ['success' => true];
-$sf_user_ids = [];
+$sf_user_mails = [];
 $logged_salesforce_errors = [];
 $tax_receipts_by_contact = [];
 $tax_receipt_fetches = [];
@@ -47,11 +47,41 @@ function aif_log_salesforce_error(WP_Error $error): void
     $GLOBALS['logged_salesforce_errors'][] = $error;
 }
 
-function get_SF_user_ID(int $user_id): string|false
+function get_salesforce_member_data(string $email): mixed
 {
-    global $sf_user_ids;
+    global $sf_user_mails;
 
-    return $sf_user_ids[$user_id] ?? false;
+    return $sf_user_mails[$email] ?? (object) [];
+}
+
+function aif_is_salesforce_contact_absent(mixed $sf_member): bool
+{
+    return is_object($sf_member) && [] === get_object_vars($sf_member);
+}
+
+function aif_validate_salesforce_member(mixed $sf_member): mixed
+{
+    if (is_wp_error($sf_member) || aif_is_salesforce_contact_absent($sf_member)) {
+        return $sf_member;
+    }
+
+    if (!is_object($sf_member) || !is_string($sf_member->Id ?? null) || '' === trim($sf_member->Id)) {
+        return aif_create_salesforce_invalid_response_error('GET', 'member_search');
+    }
+
+    return $sf_member;
+}
+
+function has_access_to_donation_space(mixed $sf_user): bool
+{
+    return is_object($sf_user) && (!empty($sf_user->isDonateur) || !empty($sf_user->isMembre));
+}
+
+if (!function_exists('wp_get_current_user')) {
+    function wp_get_current_user(): WP_User
+    {
+        return get_userdata(get_current_user_id()) ?: new WP_User([], 0, '');
+    }
 }
 
 require dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/index.php';
@@ -62,12 +92,12 @@ final class TaxReceiptTest extends TestCase
 {
     protected function setUp(): void
     {
-        global $posted_salesforce_data_donor_space, $post_salesforce_data_donor_space_response, $sf_user_ids,
-            $tax_receipts_by_contact, $tax_receipt_fetches;
+        global $posted_salesforce_data_donor_space, $post_salesforce_data_donor_space_response, $sf_user_mails,
+        $tax_receipts_by_contact, $tax_receipt_fetches;
 
         $posted_salesforce_data_donor_space = [];
         $post_salesforce_data_donor_space_response = (object) ['success' => true];
-        $sf_user_ids = [];
+        $sf_user_mails = [];
         $tax_receipts_by_contact = [];
         $tax_receipt_fetches = [];
         $GLOBALS['__phpunit_user_meta'] = [];
@@ -127,7 +157,11 @@ final class TaxReceiptTest extends TestCase
 
     private static function logInAsContact(string $contactId, array $receipts): void
     {
-        $GLOBALS['sf_user_ids'][42] = $contactId;
+        $GLOBALS['sf_user_mails']['member@example.test'] = (object) [
+            'Id' => $contactId,
+            'isDonateur' => true,
+            'isMembre' => false,
+        ];
         $GLOBALS['tax_receipts_by_contact'][$contactId] = $receipts;
         $GLOBALS['__phpunit_current_user_id'] = 42;
     }
@@ -157,14 +191,53 @@ final class TaxReceiptTest extends TestCase
         self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
     }
 
-    public function testHandleRequestRejectsWhenUserHasNoSalesforceId(): void
+    /**
+     * @return iterable<string, array{object}>
+     */
+    public static function membersWithoutDonationSpaceAccess(): iterable
     {
-        $GLOBALS['__phpunit_current_user_id'] = 999;
+        yield 'neither donor nor member' => [(object) ['Id' => '003-contact-id', 'isDonateur' => false, 'isMembre' => false]];
+        yield 'contact not found' => [(object) []];
+    }
+
+    #[DataProvider('membersWithoutDonationSpaceAccess')]
+    public function testHandleRequestRejectsAContactWithoutDonationSpaceAccess(object $member): void
+    {
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1']]);
+        $GLOBALS['sf_user_mails']['member@example.test'] = $member;
 
         $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
 
         self::assertSame(403, $response->get_status());
-        self::assertSame('tax receipt ID not provided', $response->get_data()['message']);
+        self::assertSame('donation space access denied', $response->get_data()['message']);
+        self::assertSame([], $GLOBALS['tax_receipt_fetches']);
+        self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
+    }
+
+    public function testHandleRequestReturns503WhenTheContactHasNoId(): void
+    {
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1']]);
+        $GLOBALS['sf_user_mails']['member@example.test'] = (object) ['Id' => '', 'isDonateur' => true, 'isMembre' => false];
+
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+
+        self::assertSame(503, $response->get_status());
+        self::assertSame('salesforce_invalid_response', $GLOBALS['logged_salesforce_errors'][0]->get_error_code());
+        self::assertSame([], $GLOBALS['tax_receipt_fetches']);
+        self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
+    }
+
+    public function testHandleRequestReturns503WhenTheContactLookupFails(): void
+    {
+        $error = new WP_Error('salesforce_transport_error', 'Request failed');
+        self::logInAsContact('003-contact-id', [(object) ['Name' => 'REF-1']]);
+        $GLOBALS['sf_user_mails']['member@example.test'] = $error;
+
+        $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
+
+        self::assertSame(503, $response->get_status());
+        self::assertSame('service temporarily unavailable', $response->get_data()['message']);
+        self::assertSame([$error], $GLOBALS['logged_salesforce_errors']);
         self::assertSame([], $GLOBALS['tax_receipt_fetches']);
         self::assertSame([], $GLOBALS['posted_salesforce_data_donor_space']);
     }
@@ -176,7 +249,7 @@ final class TaxReceiptTest extends TestCase
         $response = handle_duplicate_tax_receipt_request(new WP_REST_Request(['taxReceiptReference' => 'REF-1']));
 
         self::assertSame(200, $response->get_status());
-        self::assertSame('demand succeed', $response->get_data()['message']);
+        self::assertSame(['message' => 'demand succeed'], $response->get_data());
         self::assertSame(['003-contact-id'], $GLOBALS['tax_receipt_fetches']);
         self::assertCount(1, $GLOBALS['posted_salesforce_data_donor_space']);
         self::assertSame('003-contact-id', $GLOBALS['posted_salesforce_data_donor_space'][0]['params']['ContactId']);
@@ -257,7 +330,7 @@ final class TaxReceiptTest extends TestCase
 
     public function testCheckNonceRejectsAnInvalidNonce(): void
     {
-        $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'invalid']));
+        $result = aif_check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'invalid']));
 
         self::assertInstanceOf(WP_Error::class, $result);
         self::assertSame('rest_forbidden', $result->get_error_code());
@@ -268,7 +341,7 @@ final class TaxReceiptTest extends TestCase
         $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
         $GLOBALS['__phpunit_current_user_id'] = 0;
 
-        $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
+        $result = aif_check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 
         self::assertInstanceOf(WP_Error::class, $result);
         self::assertSame('Not logged in.', $result->get_error_message());
@@ -280,7 +353,7 @@ final class TaxReceiptTest extends TestCase
         $GLOBALS['__phpunit_current_user_id'] = 42;
         store_email_is_verified(42);
 
-        $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
+        $result = aif_check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 
         self::assertTrue($result);
     }
@@ -290,7 +363,7 @@ final class TaxReceiptTest extends TestCase
         $GLOBALS['__phpunit_valid_nonces'] = ['valid-nonce'];
         $GLOBALS['__phpunit_current_user_id'] = 43;
 
-        $result = check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
+        $result = aif_check_nonce(new WP_REST_Request([], ['X-WP-Nonce' => 'valid-nonce']));
 
         self::assertInstanceOf(WP_Error::class, $result);
         self::assertSame('Email not verified.', $result->get_error_message());

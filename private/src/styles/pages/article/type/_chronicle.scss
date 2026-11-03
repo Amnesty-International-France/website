@@ -53,7 +53,8 @@
       .wp-block-amnesty-core-section.large p,
       .download-go-further-block p,
       .call-to-action-block p,
-      .wp-block-amnesty-core-card-image-text p
+      .wp-block-amnesty-core-card-image-text p,
+      .wp-block-amnesty-core-card-rich-text p
     ),
     .wp-block-columns,
     .wp-block-details,
@@ -74,7 +75,8 @@
       margin-right: auto;
     }
 
-    .call-to-action-block {
+    .call-to-action-block,
+    .card-rich-text-block {
       max-width: $container-lg;
       margin-left: auto;
       margin-right: auto;
