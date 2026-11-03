@@ -21,13 +21,11 @@ final class DonationPagesTest extends TestCase
     protected function setUp(): void
     {
         require_once __DIR__ . '/account-verification-page-stubs.php';
+        require_once __DIR__ . '/salesforce-page-stubs.php';
+        require_once __DIR__ . '/html-helpers.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/index.php';
 
-        if (!function_exists('aif_get_request_salesforce_member')) {
-            function aif_get_request_salesforce_member(): object
-            {
-                return (object) ['Id' => '003000000000001', 'isMembre' => true, 'isDonateur' => false, 'hasMandatActif' => false];
-            }
+        if (!function_exists('get_salesforce_user_demands')) {
             function wp_get_current_user(): object
             {
                 return (object) ['first_name' => $GLOBALS['__phpunit_first_name'] ?? 'Ada', 'user_email' => 'donor@example.test'];
@@ -38,10 +36,6 @@ final class DonationPagesTest extends TestCase
                     'Salutation', 'FirstName', 'LastName', 'Adresse_Ligne_3__c', 'Adresse_Ligne_4__c', 'Adresse_Ligne_5__c',
                     'Code_Postal__c', 'Ville__c', 'Pays__c', 'HomePhone', 'MobilePhone',
                 ], ''));
-            }
-            function aif_require_salesforce_records(mixed $result, string $endpoint): mixed
-            {
-                return $result;
             }
             function get_salesforce_user_SEPA_mandate(string $id): object
             {
@@ -58,10 +52,6 @@ final class DonationPagesTest extends TestCase
             function wp_nonce_field(string $action, string $name): void
             {
             }
-            function aif_require_salesforce_object(mixed $result, string $endpoint, ?string $required_property = null): mixed
-            {
-                return $result;
-            }
             function aif_get_user_status(object $sf_user): string
             {
                 return 'membre';
@@ -70,33 +60,12 @@ final class DonationPagesTest extends TestCase
             {
                 return $GLOBALS['__phpunit_demands'];
             }
-            function aif_require_salesforce_array(mixed $result, string $endpoint): mixed
-            {
-                return $result;
-            }
-            function render_block(array $block): string
-            {
-                return '';
-            }
         }
     }
 
     private function render(string $page): DOMXPath
     {
-        ob_start();
-        require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/' . $page;
-        $dom = new DOMDocument();
-        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . ob_get_clean());
-
-        return new DOMXPath($dom);
-    }
-
-    /**
-     * @return list<string>
-     */
-    private static function hrefs(DOMXPath $xpath): array
-    {
-        return array_map(static fn (DOMAttr $href) => $href->value, iterator_to_array($xpath->query('//a/@href'), false));
+        return render_html(static fn () => require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/' . $page);
     }
 
     public function testDonationsHomePrintsTheFirstNameAsText(): void
@@ -135,7 +104,7 @@ final class DonationPagesTest extends TestCase
     {
         $GLOBALS['__phpunit_demands'] = [(object) ['Subject' => 'Duplicata', 'Date_de_la_demande__c' => '2024-03-01', 'Statut_Espace_Don__c' => 'Fermé - Echoué']];
 
-        $hrefs = self::hrefs($this->render('page-mes-demandes.php'));
+        $hrefs = link_hrefs($this->render('page-mes-demandes.php'));
 
         self::assertContains("https://wordpress.example.test/mon-espace/mes-dons/nous-contacter/?subject=Ma%20demande%20n'a%20pas%20pu%20aboutir", $hrefs);
     }
@@ -144,7 +113,7 @@ final class DonationPagesTest extends TestCase
     {
         $contact = seed_permalink_with_apostrophe('nous-contacter');
 
-        $hrefs = self::hrefs($this->render('page-mes-informations-personnelles.php'));
+        $hrefs = link_hrefs($this->render('page-mes-informations-personnelles.php'));
 
         self::assertContains($contact . '?subject=Modifier%20mon%20e-mail', $hrefs);
     }
@@ -156,7 +125,7 @@ final class DonationPagesTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_POST = ['iban_nonce' => 'iban-nonce', 'iban' => 'FR76 3000 6000 0112 3456 7890 189'];
 
-        $hrefs = self::hrefs($this->render('page-modification-coordonnees-bancaire.php'));
+        $hrefs = link_hrefs($this->render('page-modification-coordonnees-bancaire.php'));
 
         self::assertCount(2, array_keys($hrefs, $requests, true));
     }

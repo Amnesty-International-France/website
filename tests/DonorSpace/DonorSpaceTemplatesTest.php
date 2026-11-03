@@ -25,6 +25,7 @@ final class DonorSpaceTemplatesTest extends TestCase
             define('AIF_DONOR_SPACE_PATH', dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/');
         }
         require_once __DIR__ . '/escaping-stubs.php';
+        require_once __DIR__ . '/html-helpers.php';
         require_once AIF_DONOR_SPACE_PATH . 'includes/utils.php';
         require_once AIF_DONOR_SPACE_PATH . 'configuration.php';
 
@@ -55,19 +56,9 @@ final class DonorSpaceTemplatesTest extends TestCase
         $GLOBALS['__phpunit_template_directory_uri'] = 'https://wordpress.example.test/theme';
     }
 
-    private function dom(callable $render): DOMXPath
-    {
-        ob_start();
-        $render();
-        $dom = new DOMDocument();
-        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . ob_get_clean());
-
-        return new DOMXPath($dom);
-    }
-
     private function partial(string $name, array $args): DOMXPath
     {
-        return $this->dom(static fn () => aif_include_partial($name, $args));
+        return render_html(static fn () => aif_include_partial($name, $args));
     }
 
     private function message(string $partial, string $field, string $value): DOMXPath
@@ -184,7 +175,7 @@ final class DonorSpaceTemplatesTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_POST = ['email' => 'donor@example.test'];
 
-        $xpath = $this->dom(static fn () => require AIF_DONOR_SPACE_PATH . 'templates/check-email.php');
+        $xpath = render_html(static fn () => require AIF_DONOR_SPACE_PATH . 'templates/check-email.php');
 
         self::assertSame(0, $xpath->query('//script')->length);
         self::assertSame($GLOBALS['__phpunit_turnstile_message'], trim($xpath->query('//div[@class="aif-error-message"]')->item(0)->textContent));
@@ -192,7 +183,7 @@ final class DonorSpaceTemplatesTest extends TestCase
 
     public function testMissingPartialNameCannotCloseTheHtmlComment(): void
     {
-        $xpath = $this->dom(static fn () => aif_donor_space_get_partial('inconnu -->' . self::SCRIPT . '<!--'));
+        $xpath = render_html(static fn () => aif_donor_space_get_partial('inconnu -->' . self::SCRIPT . '<!--'));
 
         self::assertSame(0, $xpath->query('//script')->length);
     }

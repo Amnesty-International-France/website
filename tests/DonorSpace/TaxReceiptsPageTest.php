@@ -19,28 +19,18 @@ final class TaxReceiptsPageTest extends TestCase
     protected function setUp(): void
     {
         require_once __DIR__ . '/account-verification-page-stubs.php';
+        require_once __DIR__ . '/salesforce-page-stubs.php';
+        require_once __DIR__ . '/html-helpers.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/index.php';
 
         if (!function_exists('get_salesforce_user_tax_reciept')) {
-            function aif_get_request_salesforce_member(): object
-            {
-                return (object) ['Id' => '003000000000001'];
-            }
             function get_salesforce_user_tax_reciept(mixed $id): array
             {
                 return $GLOBALS['__phpunit_tax_receipts'];
             }
-            function aif_require_salesforce_array(mixed $result, string $endpoint): mixed
-            {
-                return $result;
-            }
             function wp_json_encode(mixed $value): string|false
             {
                 return json_encode($value);
-            }
-            function render_block(array $block): string
-            {
-                return '';
             }
         }
     }
@@ -49,13 +39,7 @@ final class TaxReceiptsPageTest extends TestCase
     {
         $GLOBALS['__phpunit_tax_receipts'] = [$receipt];
 
-        ob_start();
-        require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/page-mes-recus-fiscaux.php';
-
-        $dom = new DOMDocument();
-        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . ob_get_clean());
-
-        return new DOMXPath($dom);
+        return render_html(static fn () => require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/page-mes-recus-fiscaux.php');
     }
 
     public static function receiptNames(): iterable
@@ -92,7 +76,7 @@ final class TaxReceiptsPageTest extends TestCase
         $requests = seed_permalink_with_apostrophe('mon-espace/mes-dons/mes-demandes');
 
         $xpath = $this->render((object) ['Name' => 'RF-2024-0001', 'Debut__c' => '2024-01-01', 'Fin__c' => '2024-12-31', 'Montant_recu__c' => 150]);
-        $hrefs = array_map(static fn (DOMAttr $href) => $href->value, iterator_to_array($xpath->query('//a/@href'), false));
+        $hrefs = link_hrefs($xpath);
         $titled = $xpath->query('//a[@title]')->item(0);
 
         self::assertContains($contact . '?subject=Mes%20dons%20et%20adhésions', $hrefs);

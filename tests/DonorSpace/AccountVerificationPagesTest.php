@@ -24,6 +24,7 @@ final class AccountVerificationPagesTest extends TestCase
         $this->previousErrorLog = ini_set('error_log', $this->errorLog);
 
         require_once __DIR__ . '/account-verification-page-stubs.php';
+        require_once __DIR__ . '/html-helpers.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/sales-force/user-data.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/authorization.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
@@ -79,17 +80,6 @@ final class AccountVerificationPagesTest extends TestCase
         } finally {
             ob_end_clean();
         }
-    }
-
-    /**
-     * @return list<string>
-     */
-    private static function hrefs(string $html): array
-    {
-        $dom = new DOMDocument();
-        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html);
-
-        return array_map(static fn (DOMAttr $href) => $href->value, iterator_to_array((new DOMXPath($dom))->query('//a/@href'), false));
     }
 
     #[DataProvider('accountStateProvider')]
@@ -472,7 +462,7 @@ final class AccountVerificationPagesTest extends TestCase
 
         $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password']);
 
-        self::assertContains($verification . '?user=donor%2Btag%40example.test', self::hrefs($html));
+        self::assertContains($verification . '?user=donor%2Btag%40example.test', link_hrefs(parse_html($html)));
     }
 
     public function testUnknownLoginLinksKeepTheWholeSignupUrl(): void
@@ -481,7 +471,7 @@ final class AccountVerificationPagesTest extends TestCase
 
         $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password']);
 
-        self::assertCount(2, array_keys(self::hrefs($html), $signup, true));
+        self::assertCount(2, array_keys(link_hrefs(parse_html($html)), $signup, true));
     }
 
     public function testExistingAccountSignupLinksKeepTheWholeLoginUrl(): void
@@ -492,7 +482,7 @@ final class AccountVerificationPagesTest extends TestCase
 
         $html = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
 
-        self::assertCount(2, array_keys(self::hrefs($html), $login, true));
+        self::assertCount(2, array_keys(link_hrefs(parse_html($html)), $login, true));
     }
 
     public function testUnknownForgottenPasswordLinkKeepsTheWholeSignupUrl(): void
@@ -501,6 +491,6 @@ final class AccountVerificationPagesTest extends TestCase
 
         $html = $this->render('page-mot-de-passe-oublie.php', [], ['email' => self::EMAIL]);
 
-        self::assertContains($signup, self::hrefs($html));
+        self::assertContains($signup, link_hrefs(parse_html($html)));
     }
 }
