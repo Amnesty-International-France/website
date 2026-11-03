@@ -1,17 +1,15 @@
-const { FlatCompat } = require('@eslint/eslintrc');
 const wordpress = require('@wordpress/eslint-plugin');
 const prettier = require('eslint-config-prettier');
 const react = require('eslint-plugin-react');
 const reactHooks = require('eslint-plugin-react-hooks');
 const globals = require('globals');
-
-const compat = new FlatCompat({ baseDirectory: __dirname });
+const airbnb = require('./eslint.airbnb.js');
 
 module.exports = [
   {
     ignores: ['tests/e2e/**/*.mjs'],
   },
-  ...compat.extends('airbnb-base'),
+  airbnb,
   prettier,
   react.configs.flat.recommended,
   {
@@ -44,7 +42,7 @@ module.exports = [
     },
     rules: {
       'react/prop-types': 'off',
-      'import/no-extraneous-dependencies': [
+      'import-x/no-extraneous-dependencies': [
         'error',
         {
           devDependencies: true,
