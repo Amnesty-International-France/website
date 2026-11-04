@@ -374,7 +374,10 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 										<?php aif_include_partial('alert', ['state' => 'error', 'title' => 'Une erreur est survenue', 'content' => $turnstile_error_message]); ?>
 									<?php endif; ?>
 									<?php $field_id_suffix = '-clh-' . (int) $next_petition['id']; ?>
+									<?php /* Fields typed in a signature the server rejected, shown once. */ ?>
+									<?php $form_values = amnesty_pull_clh_signature_form(); ?>
 									<?php require get_theme_file_path('/patterns/petition-form-fields.php'); ?>
+									<?php unset($form_values); ?>
 									<input type="hidden" name="petition_id" value="<?= esc_attr((string)$next_petition['id']); ?>">
 									<input type="hidden" name="from_tunnel" value="1">
 									<?php require get_theme_file_path('/patterns/petition-clh-actions.php'); ?>

@@ -90,6 +90,12 @@ export const toggleFullFormPetition = () => {
             });
         }, 300);
       });
+
+      // Email kept by the server from a rejected tunnel signature: check it as if it had
+      // just been typed. Petition pages only get browser-restored values, left as they are.
+      if (form.matches('.tunnel-clh-sign-form-anonymous') && emailInput.value.trim()) {
+        emailInput.dispatchEvent(new Event('input'));
+      }
     });
 };
 

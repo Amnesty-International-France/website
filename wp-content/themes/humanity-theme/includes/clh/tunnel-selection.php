@@ -6,7 +6,8 @@ declare(strict_types=1);
  * Select only among the campaign petitions still eligible for signature.
  * An unavailable or invalid requested ID preserves the usual random selection.
  * The request parameter is not retained by the sign/skip redirects, so following
- * petitions continue to be chosen at random.
+ * petitions continue to be chosen at random. A rejected signature sets it again,
+ * to show the error above the same petition.
  *
  * @param array<int, array<string, mixed>> $eligible_petitions Active, unsigned, unskipped petitions.
  * @param mixed $requested_id Optional clh_petition query parameter.
