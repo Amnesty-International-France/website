@@ -20,7 +20,6 @@ const presets = [
 
 const plugins = [
   ['@babel/plugin-transform-optional-chaining'],
-  ['@babel/plugin-proposal-pipeline-operator', { proposal: 'minimal' }],
   ['@babel/plugin-transform-class-properties'],
 ];
 

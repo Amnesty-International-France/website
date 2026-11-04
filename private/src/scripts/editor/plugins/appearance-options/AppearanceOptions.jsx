@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import FeaturedImage from './components/FeaturedImage.jsx';
 import Header from './components/Header.jsx';
 import Metadata from './components/Metadata.jsx';
