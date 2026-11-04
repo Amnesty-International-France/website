@@ -209,7 +209,7 @@ function aif_donor_space_enqueue_assets()
         'aif-create-duplicate-tax-receipt',
         plugins_url('/assets/js/create-duplicate-tax-receipt-demand.js', __FILE__),
         [],
-        '1.1.0',
+        '1.2.0',
         [
             'in_footer' => false,
         ]
