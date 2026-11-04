@@ -72,7 +72,7 @@ $url = esc_url(get_permalink(get_page_by_path('mon-espace/mes-dons/mes-demandes'
 					    ]);
 					    ?>
 							</div>
-							<div id="aif-limit-message-<?=$name?>" class="aif-hide">
+							<div id="aif-limit-message-<?= esc_attr($name) ?>" class="aif-hide">
 								<?php
 					    aif_include_partial('alert', [
 					        'title' => "Vous avez atteint le nombre maximum de demandes pour aujourd'hui",
