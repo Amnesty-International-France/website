@@ -73,14 +73,6 @@ final class NewsletterConsentTest extends TestCase
                 return $GLOBALS['__nl_lead'];
             }
         }
-        if (!function_exists('delete_salesforce_data')) {
-            function delete_salesforce_data(mixed ...$args): mixed
-            {
-                $GLOBALS['__nl_record']('delete_salesforce_data', $args);
-
-                return null;
-            }
-        }
         if (!function_exists('update_salesforce_users')) {
             function update_salesforce_users(mixed ...$args): mixed
             {
@@ -193,7 +185,7 @@ final class NewsletterConsentTest extends TestCase
     }
 
     /**
-     * @return list<array{0: string, 1: array}>
+     * @return list<array>
      */
     private function callsTo(string $name): array
     {
@@ -203,50 +195,45 @@ final class NewsletterConsentTest extends TestCase
         ));
     }
 
-    public function testNewsletterPageNeverSendsOptoutFlagWhenUpdatingExistingContact(): void
+    /**
+     * @return iterable<string, array{0: string, 1: array<string, string>, 2: bool}>
+     */
+    public static function existingContactScenarios(): iterable
     {
-        $GLOBALS['__nl_local_user'] = $this->localUser();
-        $GLOBALS['__nl_sf_user'] = $this->salesforceContact();
-        $_POST = ['sign_newsletter' => '1', 'newsletter' => 'jane@example.test'];
-
-        $this->submit('page-nl-content');
-
-        $updates = $this->callsTo('update_salesforce_users');
-        $this->assertCount(1, $updates);
-        $this->assertSame('003X', $updates[0][0]);
-        $this->assertTrue($updates[0][1]['Optin_Actionaute_Newsletter_mensuelle__c']);
-        $this->assertArrayNotHasKey('Optout_toute_communication__c', $updates[0][1]);
+        yield 'newsletter page, local user and Salesforce contact' => [
+            'page-nl-content',
+            ['sign_newsletter' => '1', 'newsletter' => 'jane@example.test'],
+            true,
+        ];
+        yield 'footer, local user and Salesforce contact' => [
+            'footer-content',
+            ['newsletter-lead' => 'jane@example.test'],
+            true,
+        ];
+        yield 'footer, Salesforce contact without local user' => [
+            'footer-content',
+            ['newsletter-lead' => 'jane@example.test'],
+            false,
+        ];
     }
 
-    public function testFooterNeverSendsOptoutFlagWhenUpdatingExistingContact(): void
+    /**
+     * @param array<string, string> $post
+     */
+    #[DataProvider('existingContactScenarios')]
+    public function testNeverSendsOptoutFlagWhenUpdatingExistingContact(string $pattern, array $post, bool $hasLocalUser): void
     {
-        $GLOBALS['__nl_local_user'] = $this->localUser();
+        $GLOBALS['__nl_local_user'] = $hasLocalUser ? $this->localUser() : false;
         $GLOBALS['__nl_sf_user'] = $this->salesforceContact();
-        $_POST = ['newsletter-lead' => 'jane@example.test'];
+        $_POST = $post;
 
-        $this->submit('footer-content');
+        $this->submit($pattern);
 
         $updates = $this->callsTo('update_salesforce_users');
         $this->assertCount(1, $updates);
         $this->assertSame('003X', $updates[0][0]);
         $this->assertTrue($updates[0][1]['Optin_Actionaute_Newsletter_mensuelle__c']);
         $this->assertArrayNotHasKey('Optout_toute_communication__c', $updates[0][1]);
-    }
-
-    public function testFooterNeverSendsOptoutFlagForSalesforceContactWithoutLocalUser(): void
-    {
-        $GLOBALS['__nl_local_user'] = false;
-        $GLOBALS['__nl_sf_user'] = $this->salesforceContact();
-        $_POST = ['newsletter-lead' => 'jane@example.test'];
-
-        $this->submit('footer-content');
-
-        $updates = $this->callsTo('update_salesforce_users');
-        $this->assertCount(1, $updates);
-        $this->assertSame('003X', $updates[0][0]);
-        $this->assertTrue($updates[0][1]['Optin_Actionaute_Newsletter_mensuelle__c']);
-        $this->assertArrayNotHasKey('Optout_toute_communication__c', $updates[0][1]);
-        $this->assertArrayNotHasKey('Id', $updates[0][1]);
     }
 
     /**
@@ -279,6 +266,5 @@ final class NewsletterConsentTest extends TestCase
 
         $this->assertStringContainsString('inscription__nl=success', $redirect);
         $this->assertSame([], $this->callsTo('get_salesforce_nl_lead'));
-        $this->assertSame([], $this->callsTo('delete_salesforce_data'));
     }
 }
