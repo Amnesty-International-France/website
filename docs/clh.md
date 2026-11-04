@@ -153,11 +153,12 @@ returned as entered, unescaped: escape them on output (`esc_html()`). Each testi
 
 ### `amnesty_get_clh_donation_url(): string`
 
-Status: used by `patterns/clh-donation-cta.php`; hard-coded (TODO CLH-23).
+Status: implemented; used by `patterns/clh-donation-cta.php`.
 
 Donation link of the page, carrying the page's own origin code (CLH-23, CLH-35).
-The provisional code `CLH_PAGE_TEMP` is distinct from the tunnel's `WBF01W1012`;
-replace it with the definitive code supplied by Périscope under CLH-23.
+The page's code `26PJPWSI01` is distinct from the tunnel's `26PJPWSI02`, set in the
+donation calculator of `patterns/page-tunnel-clh-content.php`, so that Amnesty's
+statistics tell the two apart. Both codes are hard-coded, not editable in the back-office.
 The donation block uses fixed copy and opens the donation page in a new tab.
 It is identical during and after the campaign, with no back-office fields.
 

@@ -161,7 +161,7 @@ final class ClhHelpersTest extends TestCase
         $url = amnesty_get_clh_donation_url();
 
         self::assertStringStartsWith('https://soutenir.amnesty.fr/', $url);
-        self::assertStringContainsString('reserved_originecode=', $url);
+        self::assertStringContainsString('reserved_originecode=26PJPWSI01', $url);
     }
 
     /**
