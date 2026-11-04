@@ -66,6 +66,7 @@ final class TaxReceiptsPageTest extends TestCase
         self::assertSame('Demander votre duplicata pour le reçu fiscal numéro ' . $name, $button->getAttribute('aria-label'));
         self::assertContains('aif-success-message-' . $name, $ids);
         self::assertContains('aif-error-message-' . $name, $ids);
+        self::assertContains('aif-limit-message-' . $name, $ids);
         self::assertSame('Numéro du reçu fiscal : ' . $name, $xpath->query('//p[starts-with(., "Numéro du reçu fiscal")]')->item(0)->textContent);
         self::assertSame('<b>150</b> €', $xpath->query('//span[@class="aif-text-bold"]')->item(0)->textContent);
     }
