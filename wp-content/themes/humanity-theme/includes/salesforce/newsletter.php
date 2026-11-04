@@ -36,11 +36,3 @@ function update_salesforce_lead(string $lead_id, array $data)
 
     return patch_salesforce_data($post_url, $data);
 }
-
-
-function deleting_lead_on_salesforce(string $lead_id)
-{
-    $delete_url = URL . "sobjects/Lead/$lead_id";
-
-    return delete_salesforce_data($delete_url);
-}
