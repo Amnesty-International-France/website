@@ -5,7 +5,7 @@ const { registerBlockType } = wp.blocks;
 const { __ } = wp.i18n;
 
 registerBlockType('amnesty-core/card-rich-text', {
-  title: __('Carte image / texte enrichie', 'amnesty'),
+  title: __('Carte image / texte riche', 'amnesty'),
   description: __('Carte avec image et texte riche intégral', 'amnesty'),
   category: 'amnesty-core',
   icon: 'id-alt',
