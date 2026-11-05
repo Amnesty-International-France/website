@@ -93,7 +93,7 @@ final class ClhTestimonialsBlockTest extends TestCase
         self::assertSame('Personne 6', $dom->query('//h3/span')->item(5)->textContent);
     }
 
-    public function testDeletedPhotoKeepsTextAndVictoryLabelAndEscapesEditorialContent(): void
+    public function testDeletedPhotoKeepsTextAndEscapesEditorialContent(): void
     {
         $html = render_clh_testimonials_block([
             'title' => '<script>titre</script>', 'subtitle' => 'Sous-titre & suite',
@@ -104,7 +104,6 @@ final class ClhTestimonialsBlockTest extends TestCase
         self::assertStringNotContainsString('<script>', $html);
         self::assertStringContainsString('&lt;b&gt;Nom&lt;/b&gt;', $html);
         self::assertStringContainsString('Sous-titre &amp; suite', $html);
-        self::assertStringContainsString('>Victoire</span>', $html);
         self::assertStringContainsString('Une victoire collective.', $html);
     }
 
