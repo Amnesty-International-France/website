@@ -79,13 +79,15 @@ final class ClhPetitionsGridTest extends TestCase
         self::assertSame('', trim($this->render()));
     }
 
-    public function testCardUsesPreparedValuesAndTargetedTunnelLink(): void
+    public function testCardUsesPreparedValuesAndPetitionPageLink(): void
     {
         $GLOBALS['__phpunit_acf_field_values'][1] = ['short_title' => 'Titre CLH', 'objectif_signatures' => '3000'];
         $GLOBALS['__phpunit_clh_signature_counts'][1] = 1999;
         $GLOBALS['__phpunit_post_thumbnail_ids'][1] = 42;
         $html = $this->render();
-        self::assertStringContainsString('href="/campagne/?clh_petition=1"', $html);
+        // Signing on the petition page leads into the tunnel while the campaign runs.
+        self::assertSame(3, substr_count($html, 'href="/petitions/1/"'));
+        self::assertStringNotContainsString('clh_petition=', $html);
         self::assertStringContainsString('Signer la pétition', $html);
         self::assertStringContainsString('Titre CLH', $html);
         self::assertStringNotContainsString('Titre complet', $html);

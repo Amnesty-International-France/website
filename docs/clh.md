@@ -97,21 +97,23 @@ Titles are returned as entered, unescaped: escape them on output (`esc_html()`).
 | `signatures` | `int` | Signatures of the petition. |
 | `target` | `int` | Signature target of the petition; 200,000 when empty. |
 | `percentage` | `int` | `signatures` / `target`, rounded down, from 0 to 100. |
-| `url` | `string` | Petition page ("Voir la pétition"); `''` when the permalink cannot be built. |
-| `sign_url` | `string` | Signature tunnel ("Signer la pétition"), with `clh_petition=<id>` to select the first eligible petition. |
+| `url` | `string` | Petition page, linked by the card image, title and button; `''` when the permalink cannot be built. |
 
-### Grid display and targeted tunnel entry
+### Grid display and tunnel entry
 
 The grid renders the helper's ten cards at most, with five columns from 1024 px,
 two from 768 px and one below 768 px. The heading has a yellow line above it and can be entered separately
 for each campaign state in `petitions_heading_active_clh` and
 `petitions_heading_closed_clh`. Empty fields keep the automatic year/count headings.
 
-During the campaign, active petitions link to the tunnel with `clh_petition=<id>`.
-The tunnel context selects this ID only among eligible campaign petitions and is
-shared by the hero, redirects and content. Sign/skip redirects use the plain tunnel
-URL, so the following petition is random. Invalid IDs (including array parameters)
-cannot select a petition outside that eligible list.
+Every card button opens the petition page. During the campaign, signing a campaign
+petition on that page redirects to the tunnel.
+
+The tunnel still accepts `clh_petition=<id>`. The tunnel context selects this ID only
+among eligible campaign petitions and is shared by the hero, redirects and content.
+Sign/skip redirects use the plain tunnel URL, so the following petition is random.
+Invalid IDs (including array parameters) cannot select a petition outside that
+eligible list.
 
 The agreed business rules are:
 
@@ -120,7 +122,8 @@ The agreed business rules are:
 - Already signed, skipped or expired petitions remain excluded from tunnel selection;
   a direct request for one falls back to another eligible petition, or the final screen.
 - A closed petition links to its page with “Voir la pétition”, even during a campaign.
-- The button labels remain fixed. After the campaign, every card links to its petition page.
+- The button labels remain fixed. Every card links to its petition page, during and
+  after the campaign.
 - Missing photos display the card number on a yellow background.
 
 ### `amnesty_get_clh_testimonials(array $attributes): array`
