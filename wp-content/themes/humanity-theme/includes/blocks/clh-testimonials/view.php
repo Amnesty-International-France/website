@@ -78,14 +78,10 @@ $subtitle = $attributes['subtitle'] ?? '';
                                 <?php if ($photo) : ?>
                                 <figure class="clh-timeline-panel-figure">
                                     <?php echo $photo; ?>
-                                    <figcaption class="clh-timeline-panel-stamp"><?php esc_html_e('Victoire', 'amnesty'); ?></figcaption>
                                 </figure>
                                 <?php endif; ?>
 
                                 <div class="clh-timeline-panel-body">
-                                    <?php if (!$photo) : ?>
-                                        <span class="clh-timeline-panel-stamp"><?php esc_html_e('Victoire', 'amnesty'); ?></span>
-                                    <?php endif; ?>
                                     <h3 class="clh-timeline-panel-name"><span><?php echo esc_html($victory['name']); ?></span></h3>
                                     <p class="clh-timeline-panel-place"><?php echo esc_html($victory['country']); ?></p>
                                     <?php if (! empty($victory['activity'])) : ?>

@@ -1354,9 +1354,8 @@ $clh-timeline-exit: 180ms;
 }
 
 // Le panneau sortant s'efface d'un bloc ; l'entrant se compose dans l'ordre de lecture, le
-// portrait d'abord, le tampon « Victoire » en dernier, comme un cachet posé sur la photo.
+// portrait d'abord, puis le texte.
 .clh-timeline-panel-photo,
-.clh-timeline-panel-stamp,
 .clh-timeline-panel-body > *,
 .clh-timeline-panel-place {
   opacity: 0;
@@ -1373,7 +1372,6 @@ $clh-timeline-exit: 180ms;
 
 .clh-timeline-year:has(.clh-timeline-input:checked) {
   .clh-timeline-panel-photo,
-  .clh-timeline-panel-stamp,
   .clh-timeline-panel-body > *,
   .clh-timeline-panel-place {
     --clh-timeline-delay: calc(
@@ -1466,32 +1464,6 @@ $clh-timeline-exit: 180ms;
   .clh-timeline-panel-body {
     grid-column: 1;
   }
-
-  .clh-timeline-panel-stamp {
-    position: static;
-    align-self: flex-start;
-    justify-self: start;
-    margin-bottom: 24px;
-  }
-}
-
-// La pastille déborde de la photo : c'est le geste qu'Amnesty pose sur ses visuels de victoire.
-.clh-timeline-panel-stamp {
-  --clh-timeline-step: 6;
-
-  transform: scale(1.3);
-  position: absolute;
-  left: -14px;
-  bottom: 32px;
-  padding: 8px 20px;
-  background-color: var(--wp--preset--color--primary);
-  color: var(--wp--preset--color--black);
-  font-family: var(--wp--preset--font-family--secondary);
-  font-size: 1.125rem;
-  font-weight: bold;
-  line-height: 1;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .clh-timeline-panel-body {
@@ -1594,7 +1566,6 @@ $clh-timeline-pace: 70ms;
   .clh-timeline-year:has(.clh-timeline-input:checked) {
     .clh-timeline-picks,
     .clh-timeline-panel-photo,
-    .clh-timeline-panel-stamp,
     .clh-timeline-panel-body > *,
     .clh-timeline-panel-place {
       opacity: 0;
@@ -1603,10 +1574,6 @@ $clh-timeline-pace: 70ms;
 
     .clh-timeline-panel-photo {
       clip-path: inset(100% 0 0);
-    }
-
-    .clh-timeline-panel-stamp {
-      transform: scale(1.3);
     }
 
     .clh-timeline-panel-body > *,
@@ -1690,7 +1657,6 @@ $clh-timeline-pace: 70ms;
   @starting-style {
     .clh-timeline-year:has(.clh-timeline-input:checked) {
       .clh-timeline-panel-photo,
-      .clh-timeline-panel-stamp,
       .clh-timeline-panel-body > *,
       .clh-timeline-panel-place {
         opacity: 0;
@@ -1703,10 +1669,6 @@ $clh-timeline-pace: 70ms;
 
       .clh-timeline-panel-photo {
         clip-path: inset(100% 0 0);
-      }
-
-      .clh-timeline-panel-stamp {
-        transform: scale(1.3);
       }
     }
   }
@@ -1773,11 +1735,9 @@ $clh-timeline-pace: 70ms;
   }
 
   .clh-timeline-panel-photo,
-  .clh-timeline-panel-stamp,
   .clh-timeline-panel-body > *,
   .clh-timeline-panel-place,
   .clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-panel-photo,
-  .clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-panel-stamp,
   .clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-panel-body > *,
   .clh-timeline-year:has(.clh-timeline-input:checked) .clh-timeline-panel-place {
     transform: none;
