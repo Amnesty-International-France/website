@@ -13,15 +13,12 @@ require_once __DIR__ . '/petitions-stand-ins.php';
  */
 final class ClhGridPetitionsTest extends TestCase
 {
-    private const TUNNEL_URL = 'https://example.org/changez-leur-histoire/campagne/';
-
     private const DAY = 86_400;
 
     protected function setUp(): void
     {
         $GLOBALS['__phpunit_clh_campaign_petitions'] = [];
         $GLOBALS['__phpunit_clh_signature_counts'] = [];
-        $GLOBALS['__phpunit_clh_tunnel_url'] = self::TUNNEL_URL;
         $GLOBALS['__phpunit_acf_field_values'] = [];
         $GLOBALS['__phpunit_post_permalinks'] = [];
         $GLOBALS['__phpunit_post_thumbnail_ids'] = [];
@@ -40,7 +37,6 @@ final class ClhGridPetitionsTest extends TestCase
             'target' => 2_000,
             'percentage' => 75,
             'url' => 'https://example.org/petitions/7/',
-            'sign_url' => self::TUNNEL_URL . '?clh_petition=7',
         ]], amnesty_get_clh_grid_petitions());
     }
 

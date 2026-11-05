@@ -208,7 +208,7 @@ if (!function_exists('amnesty_get_clh_grid_petitions')) {
      * Petitions with the same end date keep the order of amnesty_get_clh_campaign_petitions().
      * Titles are returned as entered, unescaped: escape them on output.
      *
-     * @return list<array{id: int, title: string, image_id: int, signatures: int, target: int, percentage: int, url: string, sign_url: string}>
+     * @return list<array{id: int, title: string, image_id: int, signatures: int, target: int, percentage: int, url: string}>
      *         image_id is 0 when the petition has no photo; url is '' when the
      *         permalink cannot be built
      */
@@ -234,10 +234,8 @@ if (!function_exists('amnesty_get_clh_grid_petitions')) {
         $order = array_keys($petitions);
         usort($order, static fn (int $a, int $b): int => $sort_keys[$a] <=> $sort_keys[$b]);
 
-        $sign_url = amnesty_get_clh_petition_tunnel_url();
-
         return array_map(
-            static fn (int $index): array => amnesty_get_clh_grid_card($petitions[$index], $sign_url),
+            static fn (int $index): array => amnesty_get_clh_grid_card($petitions[$index]),
             array_slice($order, 0, AMNESTY_CLH_GRID_MAX_PETITIONS),
         );
     }
@@ -261,11 +259,10 @@ if (!function_exists('amnesty_get_clh_grid_card')) {
      * Card of a petition in the campaign grid; see amnesty_get_clh_grid_petitions().
      *
      * @param object $petition the petition post
-     * @param string $sign_url entry into the signature tunnel
      *
-     * @return array{id: int, title: string, image_id: int, signatures: int, target: int, percentage: int, url: string, sign_url: string}
+     * @return array{id: int, title: string, image_id: int, signatures: int, target: int, percentage: int, url: string}
      */
-    function amnesty_get_clh_grid_card(object $petition, string $sign_url): array
+    function amnesty_get_clh_grid_card(object $petition): array
     {
         $id = (int) $petition->ID;
         $signatures = amnesty_get_petition_signature_count($id);
@@ -279,7 +276,6 @@ if (!function_exists('amnesty_get_clh_grid_card')) {
             'target' => $target,
             'percentage' => amnesty_clh_percentage($signatures, $target),
             'url' => (string) get_permalink($id),
-            'sign_url' => add_query_arg('clh_petition', $id, $sign_url),
         ];
     }
 }
