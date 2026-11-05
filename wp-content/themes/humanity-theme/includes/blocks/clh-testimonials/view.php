@@ -77,7 +77,7 @@ $subtitle = $attributes['subtitle'] ?? '';
                             <article class="clh-timeline-slide<?php echo $rank === 0 ? ' is-active' : ''; ?><?php echo $photo ? '' : ' has-no-photo'; ?>" id="<?php echo esc_attr($instance . '-slide-' . $timeline_year . '-' . $rank); ?>">
                                 <?php if ($photo) : ?>
                                 <figure class="clh-timeline-panel-figure">
-                                    <?php echo $photo; ?>
+                                    <?php echo wp_kses_post($photo); ?>
                                 </figure>
                                 <?php endif; ?>
 

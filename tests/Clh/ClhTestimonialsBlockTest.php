@@ -40,6 +40,12 @@ final class ClhTestimonialsBlockTest extends TestCase
             return $id === 42 ? '<img class="clh-timeline-panel-photo" src="portrait.jpg" alt="Portrait">' : '';
         }
 
+        // These rendering tests use fixed, safe image HTML; they do not test WordPress sanitization.
+        function wp_kses_post(string $text): string
+        {
+            return $text;
+        }
+
         $GLOBALS['__phpunit_is_clh'] = false;
     }
 
@@ -69,6 +75,7 @@ final class ClhTestimonialsBlockTest extends TestCase
         self::assertSame(2, $dom->query('//input[@class="clh-timeline-input"]')->length);
         self::assertSame((int) date('Y') - 2020 + 1, $dom->query('//li')->length);
         self::assertSame(0, $dom->query('//input[@class="clh-timeline-pick-input"]')->length);
+        self::assertSame(2, $dom->query('//figure/img[@class="clh-timeline-panel-photo"][@src="portrait.jpg"]')->length);
         self::assertStringNotContainsString('data-clh-reminder', $html);
     }
 
