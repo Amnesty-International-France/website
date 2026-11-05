@@ -57,9 +57,12 @@ if (!function_exists('has_block')) {
 }
 
 if (!function_exists('get_the_title')) {
+    /**
+     * Tests seed titles via $GLOBALS['__phpunit_post_titles'][$post_id].
+     */
     function get_the_title(int $post_id = 0): string
     {
-        return 'FRANCE';
+        return $GLOBALS['__phpunit_post_titles'][$post_id] ?? 'FRANCE';
     }
 }
 

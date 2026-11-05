@@ -137,7 +137,30 @@ final class ClhTunnelTurnstileSessionTest extends TestCase
         // No email anywhere: past the Turnstile check, the handler sends the visitor back as invalid.
         $_POST = ['sign_petition' => '1', 'petition_id' => (string) self::PETITION_ID, 'from_tunnel' => '1'];
 
-        self::assertSame(self::TUNNEL_URL . '?signature_status=invalid', $this->redirectLocation('amnesty_handle_petition_signature'));
+        self::assertSame(
+            self::TUNNEL_URL . '?signature_status=invalid&clh_petition=' . self::PETITION_ID,
+            $this->redirectLocation('amnesty_handle_petition_signature'),
+        );
+    }
+
+    public function testTunnelSignatureWithoutTokenKeepsPetitionAndTypedFields(): void
+    {
+        $this->seedActiveCampaign();
+        $GLOBALS['__phpunit_turnstile_error'] = 'missing-input-response';
+        $_POST = [
+            'sign_petition' => '1',
+            'petition_id' => (string) self::PETITION_ID,
+            'from_tunnel' => '1',
+            'user_email' => 'jane@example.org',
+            'user_firstname' => 'Jane',
+        ];
+
+        self::assertSame(
+            self::TUNNEL_URL . '?signature_status=turnstile&clh_petition=' . self::PETITION_ID,
+            $this->redirectLocation('amnesty_handle_petition_signature'),
+        );
+        self::assertSame('jane@example.org', $_SESSION['clh_signature_form']['user_email'] ?? null);
+        self::assertSame('Jane', $_SESSION['clh_signature_form']['user_firstname'] ?? null);
     }
 
     public function testSignatureOutsideTunnelIgnoresTheVerifiedSession(): void

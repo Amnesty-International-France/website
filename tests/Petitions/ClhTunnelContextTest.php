@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
@@ -184,6 +185,30 @@ final class ClhTunnelContextTest extends TestCase
         self::assertSame([101 => false, 102 => true, 103 => false], $this->signedStates($context));
         self::assertSame(1, $context['signed_count']);
         self::assertNotSame(102, $context['next_petition']['id']);
+    }
+
+    /**
+     * One run per petition: a tunnel ignoring the parameter would pick each one at
+     * random, and pass all three runs once in 27.
+     */
+    #[DataProvider('campaignPetitionIds')]
+    public function testRequestedPetitionIsShown(int $petition_id): void
+    {
+        $_GET['clh_petition'] = (string) $petition_id;
+
+        $context = amnesty_get_clh_tunnel_context($this->tunnelPage());
+
+        self::assertSame($petition_id, $context['next_petition']['id'] ?? null);
+    }
+
+    /**
+     * @return iterable<string, array{int}>
+     */
+    public static function campaignPetitionIds(): iterable
+    {
+        yield 'first' => [101];
+        yield 'second' => [102];
+        yield 'third' => [103];
     }
 
     public function testConcurrentSignatureResponsesKeepBothPetitions(): void
