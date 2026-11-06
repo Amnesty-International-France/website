@@ -7,7 +7,7 @@
   "require-dev": {
     "bigbite/phpcs-config": "v3.0.0",
     "friendsofphp/php-cs-fixer": "^3.87",
-    "symfony/var-dumper": "^7.3",
+    "symfony/var-dumper": "^8.1",
     "phpstan/phpstan": "^2.2",
     "szepeviktor/phpstan-wordpress": "^2.0",
     "php-stubs/wp-cli-stubs": "2.12.0",
