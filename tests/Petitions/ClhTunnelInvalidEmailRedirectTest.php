@@ -101,6 +101,12 @@ final class ClhTunnelInvalidEmailRedirectTest extends TestCase
         self::assertArrayNotHasKey('clh_signature_form', $_SESSION);
     }
 
+    public function testMissingEmailOutsideTunnelRedirectsToPetitionPage(): void
+    {
+        self::assertSame(self::PETITION_URL . '?signature_status=invalid', $this->redirectLocation());
+        self::assertArrayNotHasKey('clh_signature_form', $_SESSION);
+    }
+
     /**
      * @return iterable<string, array{string}>
      */

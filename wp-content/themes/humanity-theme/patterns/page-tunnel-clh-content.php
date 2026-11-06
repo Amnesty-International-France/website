@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 $signature_status = sanitize_key($_GET['signature_status'] ?? '');
 $signature_status_messages = [
-    'invalid' => 'Merci de renseigner une adresse email valide avant de signer.',
+    'invalid' => AMNESTY_PETITION_INVALID_EMAIL_MESSAGE,
     'missing_fields' => 'Merci de renseigner vos nom et prénom pour signer la pétition.',
-    'expired' => 'Cette pétition est terminée, merci pour votre soutien.',
+    'expired' => 'La pétition que vous avez essayé de signer est terminée, merci pour votre soutien.',
     'error' => 'Une erreur est survenue pendant la signature. Veuillez réessayer.',
     'turnstile' => 'La vérification de sécurité a échoué. Veuillez réessayer.',
 ];
