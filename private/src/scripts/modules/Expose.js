@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * Expose functions/modules to be used with the `.using()` method on App
  * to conditionally run functions/modules if they are page dependant.
