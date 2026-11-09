@@ -10,9 +10,8 @@ use PHPUnit\Framework\TestCase;
 require_once __DIR__ . '/ClhTunnelRedirectSetup.php';
 
 /**
- * Only the CLH tunnel page reads `signature_status`: an invalid email typed in the
- * tunnel must bring the visitor back there, where the error message is shown above
- * the same petition, with the fields already typed.
+ * An invalid email typed in the CLH tunnel must bring the visitor back there, where
+ * the error message is shown above the same petition, with the fields already typed.
  */
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState(false)]

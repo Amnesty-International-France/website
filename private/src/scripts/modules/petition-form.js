@@ -279,6 +279,19 @@ export const stepperTunnelClh = () => {
     .forEach((child) => child.classList.add('is-checked'));
 };
 
+// The server adds `signature_status` to the petition page address when it rejects a
+// signature. Removing it once the page shows the error keeps the form posting to the clean
+// address (`action=""`), so a retry or a reload does not show that error again.
+export const clearSignatureStatusFromUrl = () => {
+  if (!document.querySelector('.signature-petition-form')) return;
+
+  const url = new URL(window.location.href);
+  if (!url.searchParams.has('signature_status')) return;
+
+  url.searchParams.delete('signature_status');
+  window.history.replaceState(window.history.state, '', url);
+};
+
 export const submitCodeOrigine = () => {
   document.querySelectorAll('.signature-petition-form').forEach((form) => {
     form.addEventListener('submit', () => {
