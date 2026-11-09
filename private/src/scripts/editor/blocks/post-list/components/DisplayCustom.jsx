@@ -18,7 +18,6 @@ class DisplayCustom extends Component {
     authorName: '',
   };
 
-  // eslint-disable-next-line camelcase
   createUpdateMediaAttribute =
     (index) =>
     ({ featured_image_id, featured_image }) => {
