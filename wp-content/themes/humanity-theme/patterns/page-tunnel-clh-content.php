@@ -9,15 +9,7 @@ declare(strict_types=1);
  * Inserter: no
  */
 
-$signature_status = sanitize_key($_GET['signature_status'] ?? '');
-$signature_status_messages = [
-    'invalid' => AMNESTY_PETITION_INVALID_EMAIL_MESSAGE,
-    'missing_fields' => 'Merci de renseigner vos nom et prénom pour signer la pétition.',
-    'expired' => 'La pétition que vous avez essayé de signer est terminée, merci pour votre soutien.',
-    'error' => 'Une erreur est survenue pendant la signature. Veuillez réessayer.',
-    'turnstile' => 'La vérification de sécurité a échoué. Veuillez réessayer.',
-];
-$signature_status_message = $signature_status_messages[$signature_status] ?? '';
+$signature_status_message = amnesty_get_requested_signature_status_message();
 
 $post = get_post();
 $parent = $post->post_parent;
