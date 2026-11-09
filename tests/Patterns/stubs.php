@@ -24,8 +24,27 @@ if (!function_exists('_e')) {
 }
 
 if (!function_exists('aif_include_partial')) {
+    /**
+     * Records each call in $GLOBALS['__phpunit_partials'] as [$name, $args].
+     */
     function aif_include_partial(string $name, array $args = []): void
     {
+        $GLOBALS['__phpunit_partials'][] = [$name, $args];
+    }
+}
+
+if (!function_exists('sanitize_key')) {
+    // Like WordPress: '' for a non-scalar, such as an array from `?key[]=`.
+    function sanitize_key(mixed $key): string
+    {
+        return is_scalar($key) ? (string) preg_replace('/[^a-z0-9_\-]/', '', strtolower((string) $key)) : '';
+    }
+}
+
+if (!function_exists('get_theme_file_path')) {
+    function get_theme_file_path(string $file): string
+    {
+        return dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/' . ltrim($file, '/');
     }
 }
 
