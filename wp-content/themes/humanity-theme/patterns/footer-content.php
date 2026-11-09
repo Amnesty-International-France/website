@@ -287,27 +287,25 @@ if (!amnesty_is_clh_petition_tunnel_page($queried_object instanceof WP_Post ? $q
         <?php
         endif; ?>
     </div>
-
-
-
-    <div class="privacy-footer">
-        <?php
-        if (isset($footer_policy_items['top_level'])) : ?>
-            <ul class="list-children">
-                <?php
-                foreach ($footer_policy_items['top_level'] as $_id => $item) : ?>
-                    <li class="child"><a
-                            href="<?php
-                                    echo esc_url($item->url ?: get_permalink($item->db_id)); ?>"><?php
-                                                                                        echo esc_html($item->title); ?></a>
-                    </li>
-                <?php
-                endforeach; ?>
-                <li class="child">
-                    <a class="ot-sdk-show-settings" style="cursor: pointer">Paramètrer les cookies</a>
-                </li>
-            </ul>
-        <?php
-        endif; ?>
-    </div>
 <?php endif; ?>
+
+<div class="privacy-footer">
+    <?php
+    if (isset($footer_policy_items['top_level'])) : ?>
+        <ul class="list-children">
+            <?php
+            foreach ($footer_policy_items['top_level'] as $_id => $item) : ?>
+                <li class="child"><a
+                        href="<?php
+                                echo esc_url($item->url ?: get_permalink($item->db_id)); ?>"><?php
+                                                                                    echo esc_html($item->title); ?></a>
+                </li>
+            <?php
+            endforeach; ?>
+            <li class="child">
+                <a class="ot-sdk-show-settings" style="cursor: pointer">Paramètrer les cookies</a>
+            </li>
+        </ul>
+    <?php
+    endif; ?>
+</div>

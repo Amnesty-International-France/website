@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   initTunnelClhForm,
+  scrollToTunnelClhPetition,
   toggleFullFormPetition,
 } from '../../../src/scripts/modules/petition-form';
 import initTurnstileForms, { destroyTurnstileForms } from '../../../src/scripts/modules/turnstile';
@@ -135,6 +136,17 @@ describe('CLH signature loading state', () => {
     expect(submissions).toHaveLength(2);
   });
 
+  it('frees the button when the POST never completes', () => {
+    form.elements.user_email.value = 'signer@example.org';
+    button.click();
+    vi.advanceTimersByTime(14999);
+    expect(button.classList.contains('is-loading')).toBe(true);
+    vi.advanceTimersByTime(1);
+    expect(button.classList.contains('is-loading')).toBe(false);
+    button.click();
+    expect(submissions).toHaveLength(2);
+  });
+
   it('waits for the email check, then sends only one signature', async () => {
     form.elements.user_email.value = 'signer@example.org';
     form.elements.user_email.dispatchEvent(new Event('input'));
@@ -213,5 +225,39 @@ describe('CLH signature loading state', () => {
     await vi.advanceTimersByTimeAsync(300);
     expect(submissions).toHaveLength(1);
     expect(button.classList.contains('is-loading')).toBe(true);
+  });
+});
+
+describe('scrollToTunnelClhPetition', () => {
+  let scrollIntoView;
+
+  beforeEach(() => {
+    document.body.innerHTML = '<input id="email"><div id="tunnel-clh-petition"></div>';
+    scrollIntoView = vi.fn();
+    document.getElementById('tunnel-clh-petition').scrollIntoView = scrollIntoView;
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true })));
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    window.scrollY = 0;
+    document.body.innerHTML = '';
+  });
+
+  it('scrolls to the petition on mobile', () => {
+    scrollToTunnelClhPetition();
+    expect(scrollIntoView).toHaveBeenCalledOnce();
+  });
+
+  it('leaves the visitor in place once they scrolled', () => {
+    window.scrollY = 120;
+    scrollToTunnelClhPetition();
+    expect(scrollIntoView).not.toHaveBeenCalled();
+  });
+
+  it('leaves the visitor in place while they type', () => {
+    document.getElementById('email').focus();
+    scrollToTunnelClhPetition();
+    expect(scrollIntoView).not.toHaveBeenCalled();
   });
 });

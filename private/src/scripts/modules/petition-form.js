@@ -105,6 +105,8 @@ export const scrollToTunnelClhPetition = () => {
 
   const scrollToPetition = () => {
     if (!window.matchMedia('(max-width: 767px)').matches) return;
+    // Leave the visitor in place if they moved or started typing before `load`.
+    if (window.scrollY > 0 || document.activeElement?.matches('input, select, textarea')) return;
 
     container.scrollIntoView({ behavior: 'instant', block: 'start' });
   };
@@ -206,6 +208,8 @@ export const initTunnelClhForm = () => {
         return;
       }
       setPending('submission', true);
+      // The page normally unloads first; free the button if the POST never completes.
+      window.setTimeout(() => setPending('submission', false), 15000);
     });
 
     // Editing the email cancels a queued signature; the visitor can submit again.
