@@ -2,8 +2,6 @@ const presets = [
   [
     '@babel/preset-env',
     {
-      corejs: '3.40',
-      useBuiltIns: 'usage',
       modules: 'auto',
       shippedProposals: true,
     },
@@ -11,6 +9,7 @@ const presets = [
   [
     '@babel/preset-react',
     {
+      runtime: 'classic',
       pragma: 'wp.element.createElement',
       pragmaFrag: 'wp.element.Fragment',
       throwIfNamespace: false,
@@ -21,6 +20,7 @@ const presets = [
 const plugins = [
   ['@babel/plugin-transform-optional-chaining'],
   ['@babel/plugin-transform-class-properties'],
+  ['babel-plugin-polyfill-corejs3', { method: 'usage-global', version: '3.40' }],
 ];
 
 module.exports = {
