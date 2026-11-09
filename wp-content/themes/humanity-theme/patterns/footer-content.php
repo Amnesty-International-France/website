@@ -232,7 +232,7 @@ if (!amnesty_is_clh_petition_tunnel_page($queried_object instanceof WP_Post ? $q
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 title="<?php esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
-                                <?php echo file_get_contents(get_template_directory() . $child['svg']); ?>
+                                <?php echo file_get_contents(get_template_directory() . $child['svg']); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG local du thème */ ?>
                             </a>
                         </div>
                     <?php
@@ -244,9 +244,8 @@ if (!amnesty_is_clh_petition_tunnel_page($queried_object instanceof WP_Post ? $q
                     <?php
                     foreach ($action_links as $child) : ?>
                         <a href="<?php echo esc_url($child['url']); ?>">
-                            <?php echo file_get_contents(get_template_directory() . $child['svg']); ?>
-                            <span><?php
-                                    echo $child['name']; ?></span>
+                            <?php echo file_get_contents(get_template_directory() . $child['svg']); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG local du thème */ ?>
+                            <span><?php echo esc_html($child['name']); ?></span>
                         </a>
                     <?php
                     endforeach; ?>
