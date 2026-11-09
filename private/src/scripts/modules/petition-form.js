@@ -109,6 +109,37 @@ export const initTunnelClhForm = () => {
 
     if (!signBtn) return;
 
+    const pending = new Set();
+    const status = document.createElement('span');
+    status.className = 'screen-reader-text';
+    status.setAttribute('role', 'status');
+    signBtn.after(status);
+
+    const setPending = (reason, active) => {
+      if (active) pending.add(reason);
+      else pending.delete(reason);
+
+      const busy = pending.size > 0;
+      signBtn.classList.toggle('is-loading', busy);
+      signBtn.setAttribute('aria-busy', String(busy));
+      // Keep the named submitter enabled so sign_petition is included in the POST.
+      signBtn.setAttribute('aria-disabled', String(busy));
+      mobileSignCta?.setAttribute('aria-disabled', String(busy));
+      status.textContent = busy ? 'Traitement en cours, veuillez patienter.' : '';
+    };
+
+    signForm.addEventListener('aif:turnstile-state', (event) => {
+      setPending('security', event.detail.pending);
+    });
+
+    window.addEventListener('pageshow', (event) => {
+      if (!event.persisted) return;
+      pending.clear();
+      const state = emailCheckStates.get(signForm);
+      if (state) state.pendingSubmit = null;
+      setPending('submission', false);
+    });
+
     const submitForm = () => {
       if (signForm.requestSubmit) {
         signForm.requestSubmit(signBtn);
@@ -124,11 +155,11 @@ export const initTunnelClhForm = () => {
       if (email) {
         const state = emailCheckStates.get(signForm);
         if (state?.status === 'pending') {
-          signBtn.setAttribute('aria-busy', 'true');
+          setPending('email', true);
           emailCheckStates.set(signForm, {
             ...state,
             pendingSubmit: () => {
-              signBtn.removeAttribute('aria-busy');
+              setPending('email', false);
               submitForm();
             },
           });
@@ -145,15 +176,31 @@ export const initTunnelClhForm = () => {
     };
 
     signBtn.addEventListener('click', (e) => {
-      if (!prepareSignature()) {
+      if (pending.size > 0 || !prepareSignature()) {
         e.preventDefault();
       }
+    });
+
+    signForm.addEventListener('submit', (event) => {
+      if (event.defaultPrevented) return;
+      if (pending.has('submission') || !prepareSignature()) {
+        event.preventDefault();
+        return;
+      }
+      setPending('submission', true);
+    });
+
+    // Editing the email cancels a queued signature; the visitor can submit again.
+    signForm.querySelector('.email-input')?.addEventListener('input', () => {
+      const state = emailCheckStates.get(signForm);
+      if (state) state.pendingSubmit = null;
+      setPending('email', false);
     });
 
     const submitFromMobileCta = (event) => {
       event.preventDefault();
 
-      if (!prepareSignature()) return;
+      if (pending.size > 0 || !prepareSignature()) return;
 
       submitForm();
     };
