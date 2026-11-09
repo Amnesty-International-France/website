@@ -186,7 +186,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
     echo file_get_contents(get_template_directory() . '/assets/images/icon-simple-arrow.svg'); ?>
 </button>
 
-<?php if (!amnesty_is_clh_petition_tunnel_page()) : ?>
+<?php
+$queried_object = get_queried_object();
+if (!amnesty_is_clh_petition_tunnel_page($queried_object instanceof WP_Post ? $queried_object : null)) : ?>
     <div class="over-footer">
         <div class="over-footer-container">
             <div class="over-footer-social">
@@ -216,24 +218,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
                             aif_include_partial('alert', [
                                 'state' => 'error',
                                 'title' => $title,
-                                'content' => $error_message
+                                'content' => $error_message,
                             ]);
-                        };
-                        ?>
+                        }
+    ?>
                     </form>
                 </div>
                 <div class="social-network-list">
                     <?php
                     foreach ($social_links as $child) : ?>
                         <div class="social-network-item">
-                            <a class="social-network-item-svg" href="<?php
-                                                                        echo esc_url($child['url']); ?>"
+                            <a class="social-network-item-svg" href="<?php echo esc_url($child['url']); ?>"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                title="<?php
-                                        esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
-                                <?php
-                                echo file_get_contents(get_template_directory() . $child['svg']); ?>
+                                title="<?php esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
+                                <?php echo file_get_contents(get_template_directory() . $child['svg']); ?>
                             </a>
                         </div>
                     <?php
@@ -244,10 +243,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
                 <div class="call-to-action">
                     <?php
                     foreach ($action_links as $child) : ?>
-                        <a href="<?php
-                                    echo esc_url($child['url']); ?>">
-                            <?php
-                            echo file_get_contents(get_template_directory() . $child['svg']); ?>
+                        <a href="<?php echo esc_url($child['url']); ?>">
+                            <?php echo file_get_contents(get_template_directory() . $child['svg']); ?>
                             <span><?php
                                     echo $child['name']; ?></span>
                         </a>
