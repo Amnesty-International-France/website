@@ -99,6 +99,24 @@ export const toggleFullFormPetition = () => {
     });
 };
 
+export const scrollToTunnelClhPetition = () => {
+  const container = document.getElementById('tunnel-clh-petition');
+  if (!container) return;
+
+  const scrollToPetition = () => {
+    if (!window.matchMedia('(max-width: 767px)').matches) return;
+
+    container.scrollIntoView({ behavior: 'instant', block: 'start' });
+  };
+
+  // Wait for images to settle before positioning the next petition after a reload.
+  if (document.readyState === 'complete') {
+    scrollToPetition();
+  } else {
+    window.addEventListener('load', scrollToPetition, { once: true });
+  }
+};
+
 export const initTunnelClhForm = () => {
   document.querySelectorAll('.page-tunnel-clh-card').forEach((card) => {
     const signForm = card.querySelector('.tunnel-clh-sign-form, .tunnel-clh-sign-form-anonymous');

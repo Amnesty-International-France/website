@@ -37,6 +37,7 @@ import {
   toggleFullFormPetition,
   submitCodeOrigine,
   initTunnelClhForm,
+  scrollToTunnelClhPetition,
   stepperTunnelClh,
 } from './modules/petition-form';
 import { closeUrgentBanner } from './modules/urgent-banner';
@@ -94,6 +95,7 @@ const App = () => {
   toggleFullFormPetition();
   submitCodeOrigine();
   initTunnelClhForm();
+  scrollToTunnelClhPetition();
   closeUrgentBanner();
   initJetpackForm();
   edhFilters();
