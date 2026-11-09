@@ -89,7 +89,6 @@ parameters:
             - wp-content/themes/humanity-theme/partials/forms/trainings-filters.php
             - wp-content/themes/humanity-theme/partials/petition-card-change-their-history.php
             - wp-content/themes/humanity-theme/partials/petition-card.php
-            - wp-content/themes/humanity-theme/partials/petition-signature-card-content.php
             - wp-content/themes/humanity-theme/partials/urgent-banner.php
             - wp-content/themes/humanity-theme/patterns/agenda-content.php
             - wp-content/themes/humanity-theme/patterns/archive-loop-trainings.php
