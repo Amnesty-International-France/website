@@ -139,6 +139,38 @@ if (! function_exists('amnesty_dedupe_events_needs_repair')) {
     }
 }
 
+if (! function_exists('amnesty_dedupe_events_to_repair')) {
+    /**
+     * Events whose occurrence --repair must rebuild: every event without one,
+     * except the copies of a group, which would go online next to their
+     * original.
+     *
+     * @param array<int,object>               $events rows from amnesty_dedupe_events_fetch()
+     * @param array<string,array<int,object>> $groups result of amnesty_dedupe_events_group()
+     *
+     * @return array<int,object>
+     */
+    function amnesty_dedupe_events_to_repair(array $events, array $groups): array
+    {
+        $copies = [];
+
+        foreach ($groups as $group) {
+            $keeper = amnesty_dedupe_events_pick_keeper($group);
+
+            foreach ($group as $event) {
+                if ($event->ID !== $keeper->ID) {
+                    $copies[$event->ID] = true;
+                }
+            }
+        }
+
+        return array_values(array_filter(
+            $events,
+            fn (object $event) => ! isset($copies[$event->ID]) && amnesty_dedupe_events_needs_repair($event)
+        ));
+    }
+}
+
 if (! function_exists('amnesty_dedupe_events_utc_meta')) {
     /**
      * Compute the UTC meta of an event from its local dates, as TEC does when
@@ -148,13 +180,23 @@ if (! function_exists('amnesty_dedupe_events_utc_meta')) {
      * @param string       $end      local end date, Y-m-d H:i:s
      * @param DateTimeZone $timezone timezone of the local dates
      *
-     * @return array{_EventStartDateUTC: string, _EventEndDateUTC: string, _EventDuration: int}
+     * An empty or malformed date gives null: DateTimeImmutable would read the
+     * first as "now" and throw on the second.
+     *
+     * @return array{_EventStartDateUTC: string, _EventEndDateUTC: string, _EventDuration: int}|null
      */
-    function amnesty_dedupe_events_utc_meta(string $start, string $end, DateTimeZone $timezone): array
+    function amnesty_dedupe_events_utc_meta(string $start, string $end, DateTimeZone $timezone): ?array
     {
+        $start_date = DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', $start, $timezone);
+        $end_date   = DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', $end, $timezone);
+
+        if (! $start_date || ! $end_date || $start_date->format('Y-m-d H:i:s') !== $start || $end_date->format('Y-m-d H:i:s') !== $end) {
+            return null;
+        }
+
         $utc        = new DateTimeZone('UTC');
-        $start_date = (new DateTimeImmutable($start, $timezone))->setTimezone($utc);
-        $end_date   = (new DateTimeImmutable($end, $timezone))->setTimezone($utc);
+        $start_date = $start_date->setTimezone($utc);
+        $end_date   = $end_date->setTimezone($utc);
 
         return [
             '_EventStartDateUTC' => $start_date->format('Y-m-d H:i:s'),
@@ -174,7 +216,11 @@ if (! function_exists('amnesty_dedupe_events_repair')) {
      * as they are, and returns false, without throwing, when they give a
      * negative duration. The import left such meta (an _EventEndDateUTC before
      * _EventStartDateUTC) or none at all, so they are first rebuilt from the
-     * local dates and the event timezone, the site one when it has none.
+     * local dates and the event timezone. An event without _EventTimezone gets
+     * the site one, saved as its timezone, since TEC refuses an empty one.
+     *
+     * When the local dates are empty or malformed, nothing is written. When
+     * TEC still creates no occurrence, the previous meta are put back.
      *
      * @global wpdb $wpdb
      *
@@ -191,16 +237,39 @@ if (! function_exists('amnesty_dedupe_events_repair')) {
         }
 
         $post_id  = (int) $event->ID;
-        $timezone = Tribe__Timezones::build_timezone_object(get_post_meta($post_id, '_EventTimezone', true) ?: null);
+        $stored   = get_post_meta($post_id, '_EventTimezone', true);
+        $timezone = Tribe__Timezones::build_timezone_object($stored ?: null);
+        $utc_meta = amnesty_dedupe_events_utc_meta((string) $event->start_date, (string) $event->end_date, $timezone);
 
-        foreach (amnesty_dedupe_events_utc_meta((string) $event->start_date, (string) $event->end_date, $timezone) as $key => $value) {
+        if (null === $utc_meta) {
+            return false;
+        }
+
+        // TEC reads _EventTimezone as is and rejects an empty one.
+        if (! $stored) {
+            $utc_meta['_EventTimezone'] = $timezone->getName();
+        }
+
+        $previous = [];
+
+        foreach ($utc_meta as $key => $value) {
+            $previous[$key] = metadata_exists('post', $post_id, $key) ? get_post_meta($post_id, $key, true) : null;
             update_post_meta($post_id, $key, $value);
         }
 
         tribe(Events::class)->update($post_id);
 
         $occurrences = $wpdb->prefix . 'tec_occurrences';
-        return $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $occurrences WHERE post_id = %d", $post_id)) > 0;
+
+        if ($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $occurrences WHERE post_id = %d", $post_id)) > 0) {
+            return true;
+        }
+
+        foreach ($previous as $key => $value) {
+            null === $value ? delete_post_meta($post_id, $key) : update_post_meta($post_id, $key, $value);
+        }
+
+        return false;
     }
 }
 
@@ -266,7 +335,7 @@ if (! function_exists('amnesty_dedupe_events_command')) {
      * ---
      *
      * [--repair]
-     * : Rebuild the missing occurrence of every kept event. Nothing is removed.
+     * : Rebuild the missing occurrence of every event, copies excepted. Nothing is removed.
      *
      * @param array $args       positional arguments (unused)
      * @param array $assoc_args associative arguments
@@ -278,14 +347,10 @@ if (! function_exists('amnesty_dedupe_events_command')) {
         $events  = amnesty_dedupe_events_fetch();
         $groups  = amnesty_dedupe_events_group($events);
         $rows    = [];
-        $to_fix  = [];
+        $to_fix  = amnesty_dedupe_events_to_repair($events, $groups);
 
         foreach ($groups as $fingerprint => $group) {
             $keeper = amnesty_dedupe_events_pick_keeper($group);
-
-            if (amnesty_dedupe_events_needs_repair($keeper)) {
-                $to_fix[] = $keeper;
-            }
 
             foreach ($group as $event) {
                 $is_keeper = $event->ID === $keeper->ID;
@@ -316,7 +381,7 @@ if (! function_exists('amnesty_dedupe_events_command')) {
             $orphans = count(array_filter($events, 'amnesty_dedupe_events_needs_repair'));
 
             WP_CLI::success(sprintf(
-                '%d événements inspectés, %d groupes de doublons, %d copies en trop, %d événements gardés à réparer. %d événements sans occurrence (404) au total.',
+                '%d événements inspectés, %d groupes de doublons, %d copies en trop, %d événements à réparer. %d événements sans occurrence (404) au total.',
                 count($events),
                 count($groups),
                 count($rows) - count($groups),
@@ -338,7 +403,7 @@ if (! function_exists('amnesty_dedupe_events_command')) {
                 continue;
             }
 
-            WP_CLI::warning(sprintf('event %d (%s): réparation impossible, ses copies doivent être conservées', $event->ID, $event->post_name));
+            WP_CLI::warning(sprintf('event %d (%s): réparation impossible, ses éventuelles copies doivent être conservées', $event->ID, $event->post_name));
             $failed++;
         }
 

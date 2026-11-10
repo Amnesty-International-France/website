@@ -158,6 +158,37 @@ final class DedupeEventsTest extends TestCase
     }
 
     /**
+     * An event imported once with broken UTC meta has no copy, hence no group,
+     * but answers 404 all the same.
+     */
+    public function testStandaloneEventWithoutOccurrenceIsRepaired(): void
+    {
+        $events = [
+            $this->event([ 'ID' => '1', 'post_title' => 'Soirée débat', 'occurrences' => '0' ]),
+            $this->event([ 'ID' => '2', 'post_title' => 'Concert', 'occurrences' => '1' ]),
+        ];
+
+        $to_repair = amnesty_dedupe_events_to_repair($events, amnesty_dedupe_events_group($events));
+
+        $this->assertSame([ '1' ], array_column($to_repair, 'ID'));
+    }
+
+    /**
+     * Repairing a copy would put it online next to its original.
+     */
+    public function testOnlyTheKeeperOfAGroupIsRepaired(): void
+    {
+        $events = [
+            $this->event([ 'ID' => '60000', 'occurrences' => '0' ]),
+            $this->event([ 'ID' => '76486', 'occurrences' => '0' ]),
+        ];
+
+        $to_repair = amnesty_dedupe_events_to_repair($events, amnesty_dedupe_events_group($events));
+
+        $this->assertSame([ '60000' ], array_column($to_repair, 'ID'));
+    }
+
+    /**
      * soiree-debat-a-pechbonnieu (38872): its imported _EventEndDateUTC was a
      * month before its start, so TEC refused the occurrence. The UTC meta are
      * rebuilt from the local dates, whatever the stored ones say.
@@ -182,6 +213,20 @@ final class DedupeEventsTest extends TestCase
             '_EventEndDateUTC'   => '2024-07-01 20:00:00',
             '_EventDuration'     => 7200,
         ], $meta);
+    }
+
+    /**
+     * An event without _EventEndDate: an empty date would read as "now" and
+     * give the event an occurrence lasting until today.
+     */
+    public function testUtcMetaAreNotComputedFromAnEmptyDate(): void
+    {
+        $this->assertNull(amnesty_dedupe_events_utc_meta('2016-11-18 19:30:00', '', new DateTimeZone('Europe/Paris')));
+    }
+
+    public function testUtcMetaAreNotComputedFromAMalformedDate(): void
+    {
+        $this->assertNull(amnesty_dedupe_events_utc_meta('18/11/2016 19h30', '2016-11-18 21:30:00', new DateTimeZone('Europe/Paris')));
     }
 
     /**
