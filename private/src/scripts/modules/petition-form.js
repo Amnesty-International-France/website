@@ -99,6 +99,26 @@ export const toggleFullFormPetition = () => {
     });
 };
 
+export const scrollToTunnelClhPetition = () => {
+  const container = document.getElementById('tunnel-clh-petition');
+  if (!container) return;
+
+  const scrollToPetition = () => {
+    if (!window.matchMedia('(max-width: 767px)').matches) return;
+    // Leave the visitor in place if they moved or started typing before `load`.
+    if (window.scrollY > 0 || document.activeElement?.matches('input, select, textarea')) return;
+
+    container.scrollIntoView({ behavior: 'instant', block: 'start' });
+  };
+
+  // Wait for images to settle before positioning the next petition after a reload.
+  if (document.readyState === 'complete') {
+    scrollToPetition();
+  } else {
+    window.addEventListener('load', scrollToPetition, { once: true });
+  }
+};
+
 export const initTunnelClhForm = () => {
   document.querySelectorAll('.page-tunnel-clh-card').forEach((card) => {
     const signForm = card.querySelector('.tunnel-clh-sign-form, .tunnel-clh-sign-form-anonymous');
@@ -108,6 +128,37 @@ export const initTunnelClhForm = () => {
     const mobileSignCta = card.querySelector(`[data-sign-form="${signForm.id}"]`);
 
     if (!signBtn) return;
+
+    const pending = new Set();
+    const status = document.createElement('span');
+    status.className = 'screen-reader-text';
+    status.setAttribute('role', 'status');
+    signBtn.after(status);
+
+    const setPending = (reason, active) => {
+      if (active) pending.add(reason);
+      else pending.delete(reason);
+
+      const busy = pending.size > 0;
+      signBtn.classList.toggle('is-loading', busy);
+      signBtn.setAttribute('aria-busy', String(busy));
+      // Keep the named submitter enabled so sign_petition is included in the POST.
+      signBtn.setAttribute('aria-disabled', String(busy));
+      mobileSignCta?.setAttribute('aria-disabled', String(busy));
+      status.textContent = busy ? 'Traitement en cours, veuillez patienter.' : '';
+    };
+
+    signForm.addEventListener('aif:turnstile-state', (event) => {
+      setPending('security', event.detail.pending);
+    });
+
+    window.addEventListener('pageshow', (event) => {
+      if (!event.persisted) return;
+      pending.clear();
+      const state = emailCheckStates.get(signForm);
+      if (state) state.pendingSubmit = null;
+      setPending('submission', false);
+    });
 
     const submitForm = () => {
       if (signForm.requestSubmit) {
@@ -124,11 +175,11 @@ export const initTunnelClhForm = () => {
       if (email) {
         const state = emailCheckStates.get(signForm);
         if (state?.status === 'pending') {
-          signBtn.setAttribute('aria-busy', 'true');
+          setPending('email', true);
           emailCheckStates.set(signForm, {
             ...state,
             pendingSubmit: () => {
-              signBtn.removeAttribute('aria-busy');
+              setPending('email', false);
               submitForm();
             },
           });
@@ -145,15 +196,33 @@ export const initTunnelClhForm = () => {
     };
 
     signBtn.addEventListener('click', (e) => {
-      if (!prepareSignature()) {
+      if (pending.size > 0 || !prepareSignature()) {
         e.preventDefault();
       }
+    });
+
+    signForm.addEventListener('submit', (event) => {
+      if (event.defaultPrevented) return;
+      if (pending.has('submission') || !prepareSignature()) {
+        event.preventDefault();
+        return;
+      }
+      setPending('submission', true);
+      // The page normally unloads first; free the button if the POST never completes.
+      window.setTimeout(() => setPending('submission', false), 15000);
+    });
+
+    // Editing the email cancels a queued signature; the visitor can submit again.
+    signForm.querySelector('.email-input')?.addEventListener('input', () => {
+      const state = emailCheckStates.get(signForm);
+      if (state) state.pendingSubmit = null;
+      setPending('email', false);
     });
 
     const submitFromMobileCta = (event) => {
       event.preventDefault();
 
-      if (!prepareSignature()) return;
+      if (pending.size > 0 || !prepareSignature()) return;
 
       submitForm();
     };
