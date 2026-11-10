@@ -259,6 +259,7 @@ require_once realpath(__DIR__ . '/includes/post-types/portraits.php');
 require_once realpath(__DIR__ . '/includes/post-types/trainings.php');
 require_once realpath(__DIR__ . '/includes/post-types/document.php');
 require_once realpath(__DIR__ . '/includes/post-types/newsletter.php');
+require_once realpath(__DIR__ . '/includes/newsletter/links.php');
 require_once realpath(__DIR__ . '/includes/post-types/edh.php');
 require_once realpath(__DIR__ . '/includes/post-types/chronicle.php');
 require_once realpath(__DIR__ . '/includes/post-types/actualities-my-space.php');
@@ -328,7 +329,6 @@ require_once realpath(__DIR__ . '/includes/document/rest_endpoint.php');
  */
 require_once realpath(__DIR__ . '/includes/petitions/tables.php');
 require_once realpath(__DIR__ . '/includes/petitions/create-petition.php');
-require_once realpath(__DIR__ . '/includes/petitions/newsletter-link.php');
 require_once realpath(__DIR__ . '/includes/petitions/rest_endpoint.php');
 
 /**
