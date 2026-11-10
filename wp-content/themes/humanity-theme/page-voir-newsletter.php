@@ -118,7 +118,7 @@ $oswald_font_url = esc_url(get_template_directory_uri() . '/assets/fonts/oswald/
                             setup_postdata($post);
                             $external_link = $article['external_link'];
                             $link_type = $article['link_type'];
-                            $post_url = $link_type === 'internal' ? esc_url(add_query_arg($utm_params, get_permalink($post->ID))) : esc_url($external_link);
+                            $post_url = $link_type === 'internal' ? esc_url(amnesty_newsletter_internal_link_url($post, $utm_params)) : esc_url($external_link);
                             $title = !empty($article['titre']) ? $article['titre'] : esc_html(get_the_title($post->ID));
                             $featured_image_url = get_the_post_thumbnail_url($post->ID, 'post-featured');
                             if (! $featured_image_url) {
