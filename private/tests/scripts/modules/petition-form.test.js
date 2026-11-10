@@ -157,17 +157,6 @@ describe('CLH signature loading state', () => {
     expect(submissions).toHaveLength(0);
   });
 
-  it('cancels the queued signature when the email is edited', async () => {
-    form.elements.user_email.value = 'signer@example.org';
-    form.elements.user_email.dispatchEvent(new Event('input'));
-    button.click();
-    form.elements.user_email.value = 'another@example.org';
-    form.elements.user_email.dispatchEvent(new Event('input'));
-    await vi.advanceTimersByTimeAsync(300);
-    expect(button.classList.contains('is-loading')).toBe(false);
-    expect(submissions).toHaveLength(0);
-  });
-
   it('covers Turnstile waiting and the subsequent submission', () => {
     form.insertAdjacentHTML('beforeend', '<div class="cf-turnstile"></div>');
     form.elements.user_email.value = 'signer@example.org';

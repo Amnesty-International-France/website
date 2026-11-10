@@ -1,13 +1,5 @@
 import { isValidEmail } from './newsletter';
 
-// État de la saisie de l'e-mail par formulaire (les champs d'identité sont
-// toujours affichés, aucune vérification n'est demandée au serveur).
-// Valeur : { status: 'pending' | 'done', pendingSubmit: (() => void) | null }
-// Partagé entre toggleFullFormPetition (qui lance la vérif) et initTunnelClhForm :
-// si l'utilisateur tente de signer pendant que la vérif est en cours, on
-// mémorise son intention dans pendingSubmit pour la rejouer à la résolution.
-const emailCheckStates = new WeakMap();
-
 function setRequiredHiddenFields(form, status) {
   ['.firstname-input', '.lastname-input', '.zipcode-input', '.country-input'].forEach(
     (selector) => {
@@ -29,31 +21,19 @@ export const toggleFullFormPetition = () => {
 
       if (!emailInput || !fullForm) return;
 
-      const resolveCheck = () => {
-        const { pendingSubmit } = emailCheckStates.get(form) ?? {};
-        emailCheckStates.set(form, { status: 'done', pendingSubmit: null });
-        pendingSubmit?.();
-      };
-
       emailInput.addEventListener('input', () => {
-        const emailValue = emailInput.value.trim();
+        // The identity fields are shown for every valid address: whether the
+        // address already signed is never asked to the server. Known signers
+        // keep their data.
+        const isValid = isValidEmail(emailInput.value.trim());
 
-        if (!isValidEmail(emailValue)) {
-          emailCheckStates.delete(form);
-          fullForm.style.display = 'none';
-          setRequiredHiddenFields(form, false);
-          return;
-        }
-
-        // The identity fields are always shown: whether the address already
-        // signed is never asked to the server. Known signers keep their data.
-        fullForm.style.display = 'flex';
-        setRequiredHiddenFields(form, true);
-        resolveCheck();
+        fullForm.style.display = isValid ? 'flex' : 'none';
+        setRequiredHiddenFields(form, isValid);
       });
 
       // Email kept by the server from a rejected tunnel signature: show the identity
-      // fields as if it had just been typed. Petition pages only get browser-restored values, left as they are.
+      // fields as if it had just been typed. Petition pages only get browser-restored
+      // values, left as they are.
       if (form.matches('.tunnel-clh-sign-form-anonymous') && emailInput.value.trim()) {
         emailInput.dispatchEvent(new Event('input'));
       }
@@ -116,8 +96,6 @@ export const initTunnelClhForm = () => {
     window.addEventListener('pageshow', (event) => {
       if (!event.persisted) return;
       pending.clear();
-      const state = emailCheckStates.get(signForm);
-      if (state) state.pendingSubmit = null;
       setPending('submission', false);
     });
 
@@ -131,23 +109,7 @@ export const initTunnelClhForm = () => {
 
     const prepareSignature = () => {
       const emailInput = signForm.querySelector('input[name="user_email"]');
-      const email = emailInput?.value.trim();
-
-      if (email) {
-        const state = emailCheckStates.get(signForm);
-        if (state?.status === 'pending') {
-          setPending('email', true);
-          emailCheckStates.set(signForm, {
-            ...state,
-            pendingSubmit: () => {
-              setPending('email', false);
-              submitForm();
-            },
-          });
-          return false;
-        }
-        return true;
-      }
+      if (emailInput?.value.trim()) return true;
 
       const emailStep = signForm.querySelector('.tunnel-clh-email-step');
       if (!emailStep) return true;
@@ -171,13 +133,6 @@ export const initTunnelClhForm = () => {
       setPending('submission', true);
       // The page normally unloads first; free the button if the POST never completes.
       window.setTimeout(() => setPending('submission', false), 15000);
-    });
-
-    // Editing the email cancels a queued signature; the visitor can submit again.
-    signForm.querySelector('.email-input')?.addEventListener('input', () => {
-      const state = emailCheckStates.get(signForm);
-      if (state) state.pendingSubmit = null;
-      setPending('email', false);
     });
 
     const submitFromMobileCta = (event) => {
