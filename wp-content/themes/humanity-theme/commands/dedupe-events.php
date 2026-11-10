@@ -390,7 +390,7 @@ if (! function_exists('amnesty_dedupe_events_command')) {
             ));
         }
 
-        if (! isset($assoc_args['repair'])) {
+        if (! (bool) ($assoc_args['repair'] ?? false)) {
             return;
         }
 
