@@ -37,6 +37,7 @@ import {
   toggleFullFormPetition,
   submitCodeOrigine,
   initTunnelClhForm,
+  scrollToTunnelClhPetition,
   stepperTunnelClh,
 } from './modules/petition-form';
 import { closeUrgentBanner } from './modules/urgent-banner';
@@ -54,7 +55,10 @@ import urgentRegister from './modules/Form/urgent-register-form';
 import { emptyInputNewsletterLead, handleNewsletterSubmission } from './modules/newsletter';
 import GoPetitionsForm from './modules/Form/go-petition-form';
 import { closeAlertBanner } from './modules/alert-banner';
-import Countdown from './modules/countdown-clh';
+import StickyBar from './modules/clh-sticky-bar';
+import Counters from './modules/clh-counters';
+import Timeline from './modules/clh-timeline';
+import Presentation from './modules/clh-presentation';
 
 const App = () => {
   browserDetector();
@@ -91,6 +95,7 @@ const App = () => {
   toggleFullFormPetition();
   submitCodeOrigine();
   initTunnelClhForm();
+  scrollToTunnelClhPetition();
   closeUrgentBanner();
   initJetpackForm();
   edhFilters();
@@ -109,7 +114,10 @@ const App = () => {
   handleNewsletterSubmission();
   GoPetitionsForm();
   closeAlertBanner();
-  Countdown();
+  StickyBar();
+  Counters();
+  Timeline();
+  Presentation();
   stepperTunnelClh();
 
   fluidText(document.getElementsByClassName('article-shareTitle'), 0.9);

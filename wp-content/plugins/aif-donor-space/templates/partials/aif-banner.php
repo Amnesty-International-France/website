@@ -4,12 +4,12 @@ $image_url = get_template_directory_uri() . '/assets/images/other-donation.png';
 
 <div class="aif-banner">
     <div class="aif-banner__image">
-        <img src="<?= $image_url ?>" />
+        <img src="<?= esc_url($image_url) ?>" />
     </div>
     <div class="aif-banner__container">
         
     <?php if ($member->hasMandatActif): ?>
-        <h2 class="aif-banner__container__title">  <?= $firstName ?>, renforcez votre soutien ! </h2>
+        <h2 class="aif-banner__container__title">  <?= esc_html($firstName) ?>, renforcez votre soutien ! </h2>
         <p class="aif-banner__container__content">Merci de nous soutenir ! Envie d’aller plus loin dans votre engagement ? </p>
         <ul class="aif-banner__container__links">
             <li>
@@ -37,7 +37,7 @@ $image_url = get_template_directory_uri() . '/assets/images/other-donation.png';
 
     <?php elseif ($member->isMembre): ?>
         <div>
-            <h2 class="aif-banner__container__title">  <?= $firstName ?>, renforcez votre soutien !</h2>
+            <h2 class="aif-banner__container__title">  <?= esc_html($firstName) ?>, renforcez votre soutien !</h2>
             <p class="aif-banner__container__content">Merci de nous soutenir ! Envie d’aller plus loin dans votre engagement ?</p>
             <ul class="aif-banner__container__links">
                 <li>

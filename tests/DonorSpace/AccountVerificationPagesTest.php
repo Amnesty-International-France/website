@@ -24,6 +24,7 @@ final class AccountVerificationPagesTest extends TestCase
         $this->previousErrorLog = ini_set('error_log', $this->errorLog);
 
         require_once __DIR__ . '/account-verification-page-stubs.php';
+        require_once __DIR__ . '/html-helpers.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/sales-force/user-data.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/authorization.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
@@ -59,11 +60,15 @@ final class AccountVerificationPagesTest extends TestCase
         ];
     }
 
-    private function render(string $page, array $get, array $post, string $method = 'POST'): string
+    private function render(string $page, array $get, array $post, ?string $method = 'POST'): string
     {
         $_GET = $get;
         $_POST = $post;
-        $_SERVER['REQUEST_METHOD'] = $method;
+        if (null === $method) {
+            unset($_SERVER['REQUEST_METHOD']);
+        } else {
+            $_SERVER['REQUEST_METHOD'] = $method;
+        }
 
         ob_start();
         try {
@@ -125,14 +130,16 @@ final class AccountVerificationPagesTest extends TestCase
         self::assertFalse(get_email_is_verified(42));
     }
 
-    public function testResendForAnEligibleNonSubscriberPointsToLoginWithoutSendingACode(): void
+    public function testResendForANonSubscriberAnswersLikeASubscriberWithoutSendingACode(): void
     {
         $GLOBALS['__phpunit_users'][42] = new WP_User(['editor'], 42, self::EMAIL, 'staff', 'native-reset-key', 'existing-password');
         update_user_meta(42, 'email-verfied', '1');
 
         $html = $this->render('page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code']);
 
-        self::assertStringContainsString("href='https://wordpress.example.test/connectez-vous/'", $html);
+        self::assertStringContainsString('Nous avons bien reçu votre demande de code.', $html);
+        self::assertStringNotContainsString('Ce compte ne permet pas d\'accéder à l\'Espace Don.', $html);
+        self::assertStringNotContainsString("href='https://wordpress.example.test/connectez-vous/'", $html);
         self::assertStringNotContainsString('Votre compte n\'existe pas', $html);
         self::assertStringNotContainsString("href='/creer-votre-compte'", $html);
         self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
@@ -376,5 +383,114 @@ final class AccountVerificationPagesTest extends TestCase
 
         self::assertSame('redirect:' . $expected, $result);
         self::assertSame(42, get_current_user_id());
+    }
+
+    public function testLoginChecksThePasswordAsTyped(): void
+    {
+        $user = new WP_User(['subscriber'], 42, self::EMAIL);
+        $GLOBALS['__phpunit_users'][42] = $user;
+        $GLOBALS['__phpunit_signon_result'] = $user;
+        store_email_is_verified(42);
+
+        $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'mot  de<passe%41']);
+
+        self::assertSame('mot  de<passe%41', $GLOBALS['__phpunit_signons'][0]['credentials']['user_password']);
+    }
+
+    public function testLoginFormEscapesTheSubmittedEmail(): void
+    {
+        $html = $this->render('page-connectez-vous.php', [], ['email' => 'donor"><script>alert(1)</script>@example.test', 'password' => 'password']);
+
+        self::assertStringNotContainsString('<script>', $html);
+        self::assertStringContainsString('value="donor&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;@example.test"', $html);
+    }
+
+    public function testForgottenPasswordFormEscapesTheSubmittedEmail(): void
+    {
+        $html = $this->render('page-mot-de-passe-oublie.php', [], ['email' => 'donor"><script>alert(1)</script>@example.test']);
+
+        self::assertStringNotContainsString('<script>', $html);
+        self::assertStringContainsString('value="donor&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;@example.test"', $html);
+    }
+
+    public static function pageLinks(): iterable
+    {
+        yield 'login: forgotten password' => ['page-connectez-vous.php', 'mot-de-passe-oublie'];
+        yield 'login: connection problem' => ['page-connectez-vous.php', 'probleme-connexion'];
+        yield 'login: account creation' => ['page-connectez-vous.php', 'creer-votre-compte'];
+        yield 'account creation: login' => ['page-creer-votre-compte.php', 'connectez-vous'];
+    }
+
+    #[DataProvider('pageLinks')]
+    public function testPageLinksEscapeThePermalink(string $page, string $slug): void
+    {
+        $GLOBALS['__phpunit_post_permalinks'][get_page_by_path($slug)->ID] = 'https://wordpress.example.test/' . $slug . '/"><script>alert(1)</script>';
+
+        $html = $this->render($page, [], [], 'GET');
+
+        self::assertStringNotContainsString('<script>', $html);
+        self::assertStringContainsString('href="https://wordpress.example.test/' . $slug . '/', $html);
+    }
+
+    public static function accountPages(): iterable
+    {
+        yield 'login' => ['page-connectez-vous.php'];
+        yield 'account creation' => ['page-creer-votre-compte.php'];
+        yield 'email verification' => ['page-verifier-votre-email.php'];
+        yield 'forgotten password' => ['page-mot-de-passe-oublie.php'];
+    }
+
+    #[DataProvider('accountPages')]
+    public function testPageRendersWithoutRequestMethodOrWarning(string $page): void
+    {
+        set_error_handler(static function (int $level, string $message): never {
+            throw new ErrorException($message, 0, $level);
+        }, E_WARNING);
+        try {
+            $html = $this->render($page, ['user' => self::EMAIL], [], null);
+        } finally {
+            restore_error_handler();
+        }
+
+        self::assertStringContainsString('<form', $html);
+    }
+
+    public function testUnverifiedLoginLinkKeepsTheWholeVerificationUrl(): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+        $verification = seed_permalink_with_apostrophe('verifier-votre-email');
+
+        $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password']);
+
+        self::assertContains($verification . '?user=donor%2Btag%40example.test', link_hrefs(parse_html($html)));
+    }
+
+    public function testUnknownLoginLinksKeepTheWholeSignupUrl(): void
+    {
+        $signup = seed_permalink_with_apostrophe('creer-votre-compte');
+
+        $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password']);
+
+        self::assertCount(2, array_keys(link_hrefs(parse_html($html)), $signup, true));
+    }
+
+    public function testExistingAccountSignupLinksKeepTheWholeLoginUrl(): void
+    {
+        $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL);
+        store_email_is_verified(42);
+        $login = seed_permalink_with_apostrophe('connectez-vous');
+
+        $html = $this->render('page-creer-votre-compte.php', [], ['email' => self::EMAIL]);
+
+        self::assertCount(2, array_keys(link_hrefs(parse_html($html)), $login, true));
+    }
+
+    public function testUnknownForgottenPasswordLinkKeepsTheWholeSignupUrl(): void
+    {
+        $signup = seed_permalink_with_apostrophe('creer-votre-compte');
+
+        $html = $this->render('page-mot-de-passe-oublie.php', [], ['email' => self::EMAIL]);
+
+        self::assertContains($signup, link_hrefs(parse_html($html)));
     }
 }

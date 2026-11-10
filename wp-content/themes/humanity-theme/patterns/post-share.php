@@ -20,7 +20,7 @@ spaceless();
 <div class="article-share">
 	<p class="title">Partager</p>
 	<a class="article-shareFacebook" target="_blank" rel="noreferrer noopener"
-	href="https://www.facebook.com/sharer.php?u=<?php the_permalink(); ?>"
+	href="https://www.facebook.com/sharer.php?u=<?php echo rawurlencode(get_permalink()); ?>"
 	title="<?php esc_attr_e('Share on Facebook', 'amnesty'); ?>">
 		<div class="icon-container">
 			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-facebook.svg'); ?>
@@ -40,7 +40,10 @@ spaceless();
 			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-mastodon.svg'); ?>
 		</div>
 	</a>
-	<div class="article-shareCopy" 
+	<div class="article-shareCopy"
+		role="button"
+		tabindex="0"
+		aria-label="<?php esc_attr_e('Copier le lien', 'amnesty'); ?>"
 		title="<?php esc_attr_e('Copier le lien', 'amnesty'); ?>"
 		data-url="<?php echo esc_url(get_permalink()); ?>"
 	>

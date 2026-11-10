@@ -12,17 +12,21 @@
     "szepeviktor/phpstan-wordpress": "^2.0",
     "php-stubs/wp-cli-stubs": "2.12.0",
     "phpunit/phpunit": "^11.5",
-    "php-stubs/acf-pro-stubs": "^6.8"
+    "php-stubs/acf-pro-stubs": "^6.8",
+    "digitalrevolution/php-codesniffer-baseline": "^1.3"
   },
   "config": {
     "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "digitalrevolution/php-codesniffer-baseline": true
     }
   },
   "scripts": {
     "analyse": "phpstan analyze",
     "cs": "php-cs-fixer fix --config=.php-cs-fixer.php --diff --dry-run",
     "lint": "./vendor/bin/phpcs wp-content/themes/humanity-theme",
+    "lint:security": "phpcs --sniffs=WordPress.Security.EscapeOutput,WordPress.Security.ValidatedSanitizedInput --no-cache wp-content/themes/humanity-theme wp-content/plugins/aif-donor-space",
+    "lint:security:baseline": "@lint:security --report=DR\\CodeSnifferBaseline\\Reports\\Baseline --report-file=phpcs.baseline.xml --basepath=. --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1",
     "test": "phpunit",
     "test:salesforce": "phpunit --testsuite Salesforce",
     "test:donor-space": "phpunit --testsuite DonorSpace",
@@ -30,6 +34,8 @@
     "test:blocks": "phpunit --testsuite Blocks",
     "test:salesforce-sync": "phpunit --testsuite SalesforceSync",
     "test:patterns": "phpunit --testsuite Patterns",
+    "test:clh": "phpunit --testsuite Clh",
+    "test:users": "phpunit --testsuite Users",
     "makePot": "wp i18n make-pot wp-content/themes/humanity-theme wp-content/themes/humanity-theme/languages/amnesty.pot --domain=amnesty --exclude=private",
     "updatePoMo": [
       "wp i18n update-po wp-content/themes/humanity-theme/languages/amnesty.pot",
@@ -41,12 +47,16 @@
     "analyse": "Runs PHPStan static analysis",
     "cs": "Runs PHP-CS-Fixer checks",
     "lint": "Runs PHP coding standard checks",
+    "lint:security": "Runs the WordPress output escaping and input sanitizing sniffs, minus the violations listed in phpcs.baseline.xml",
+    "lint:security:baseline": "Re-generates phpcs.baseline.xml from the current lint:security violations",
     "test": "Runs all PHP tests",
     "test:salesforce": "Runs focused Salesforce PHP tests",
     "test:donor-space": "Runs donor/member space PHP tests",
     "test:petitions": "Runs petitions and urgent action PHP tests",
     "test:blocks": "Runs focused block PHP tests",
     "test:salesforce-sync": "Runs the CLI signature bulk-sync integration test (~30s, real sleep() in poll_job_state())",
+    "test:clh": "Runs the Changez leur histoire campaign PHP tests",
+    "test:users": "Runs user account management PHP tests",
     "makePot": "Re-generates the POT language file",
     "updatePoMo": "Updates PO, MO, and JSON translation files"
   },

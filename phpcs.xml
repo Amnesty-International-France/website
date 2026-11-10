@@ -3,4 +3,12 @@
   <description>PHPCS linting rules for the Humanity Theme</description>
   <config name="minimum_supported_wp_version" value="5.8" />
   <rule ref="./vendor/bigbite/phpcs-config/BigBite" />
+
+  <rule ref="WordPress.Security.EscapeOutput">
+    <properties>
+      <property name="customAutoEscapedFunctions" type="array">
+        <element value="render_block" />
+      </property>
+    </properties>
+  </rule>
 </ruleset>

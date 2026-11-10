@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/escaping-stubs.php';
+
 final class AccountVerificationRedirect extends RuntimeException
 {
 }
@@ -58,17 +60,7 @@ function get_template_directory_uri(): string
 
 function aif_include_partial(string $name, array $args = []): void
 {
-    echo '<div class="partial-' . $name . '">' . ($args['title'] ?? '') . ' | ' . ($args['content'] ?? '') . '</div>';
-}
-
-function esc_attr(mixed $text): string
-{
-    return htmlspecialchars((string) $text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-}
-
-function esc_url(mixed $url): string
-{
-    return (string) $url;
+    echo '<div class="partial-' . $name . '">' . ($args['title'] ?? '') . ' | ' . ($args['content'] ?? '') . ' | ' . ($args['additional_content'] ?? '') . '</div>';
 }
 
 if (!function_exists('wp_unslash')) {
@@ -85,6 +77,18 @@ function get_page_by_path(string $path): object
     $GLOBALS['__phpunit_post_permalinks'][$id] ??= 'https://wordpress.example.test/' . $path . '/';
 
     return (object) ['ID' => $id, 'post_name' => $path];
+}
+
+/**
+ * Gives the page at $path a permalink holding an apostrophe, so a test can
+ * tell an escaped link from one cut short at the apostrophe.
+ */
+function seed_permalink_with_apostrophe(string $path): string
+{
+    $url = "https://wordpress.example.test/l'espace/{$path}/";
+    $GLOBALS['__phpunit_post_permalinks'][get_page_by_path($path)->ID] = $url;
+
+    return $url;
 }
 
 function aif_turnstile_site_key(): string

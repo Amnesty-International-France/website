@@ -1,5 +1,5 @@
 
-<div id="<?= $id ?>" class="aif-info-message__container">
+<div id="<?= esc_attr($id) ?>" class="aif-info-message__container">
 
 <div class="aif-info-message__container__icon-container">
 <svg width="15px" height="15px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -7,6 +7,6 @@
 </svg>
 </div>
 
-<p class="aif-text-small "> <?= $content ?></p>
+<p class="aif-text-small "> <?= wp_kses_post($content) ?></p>
 
 </div>

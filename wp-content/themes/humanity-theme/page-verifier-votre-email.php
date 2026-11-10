@@ -13,7 +13,7 @@ if (!isset($_GET['user'])) {
     $email = sanitize_email(wp_unslash($_GET['user']));
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_check') {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_check') {
     $code = sanitize_text_field(wp_unslash($_POST['2FA-code']));
 
     $turnstile_error = verify_turnstile();
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset(
 $send_code_error_message = '';
 $send_code_success_message = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_send_code') {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_send_code') {
     $turnstile_error = verify_turnstile();
     if ($turnstile_error !== null) {
         $send_code_error_message = turnstile_friendly_error($turnstile_error);
@@ -65,10 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
             if (!$stored_user) {
                 $url = '/creer-votre-compte';
                 $send_code_error_message = "Votre compte n'existe pas. Pour le créer, veuillez vous rendre sur la page <a class='aif-link--primary' href='{$url}'>Créer mon compte </a>.";
-            } elseif (!aif_is_subscriber($stored_user)) {
-                $url = get_permalink(get_page_by_path('connectez-vous'));
-                $send_code_error_message = "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>.";
-            } elseif (aif_send_verification_code($stored_user->ID)) {
+            } elseif (!aif_is_subscriber($stored_user) || aif_send_verification_code($stored_user->ID)) {
                 $send_code_success_message = "Nous avons bien reçu votre demande de code. Il arrivera dans votre boîte email d'ici quelques minutes";
             } else {
                 $send_code_error_message = AIF_VERIFICATION_CODE_SEND_ERROR_MESSAGE;

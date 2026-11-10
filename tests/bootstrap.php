@@ -46,6 +46,16 @@ if (!defined('ABSPATH')) {
     define('ABSPATH', dirname(__DIR__) . '/');
 }
 
+if (!defined('MINUTE_IN_SECONDS')) {
+    // WordPress time constant (wp-includes/default-constants.php).
+    define('MINUTE_IN_SECONDS', 60);
+}
+
+if (!defined('DAY_IN_SECONDS')) {
+    // WordPress time constant (wp-includes/default-constants.php).
+    define('DAY_IN_SECONDS', 86_400);
+}
+
 if (!class_exists('WP_CLI')) {
     $GLOBALS['__phpunit_wp_cli_messages'] = [];
 
@@ -100,6 +110,37 @@ if (!function_exists('update_field')) {
         $GLOBALS['__phpunit_acf_field_values'][$post_id][$selector] = $value;
 
         return true;
+    }
+}
+
+if (!function_exists('__')) {
+    /**
+     * Stub for __(): returns the text untranslated.
+     */
+    function __(string $text, string $domain = 'default'): string
+    {
+        return $text;
+    }
+}
+
+if (!function_exists('wp_date')) {
+    /**
+     * Stub for wp_date(): formats in the PHP default timezone instead of the
+     * site's.
+     */
+    function wp_date(string $format, ?int $timestamp = null): string
+    {
+        return date($format, $timestamp ?? time());
+    }
+}
+
+if (!function_exists('wp_unslash')) {
+    /**
+     * Stub for wp_unslash(): strips the slashes WordPress adds to request data.
+     */
+    function wp_unslash(mixed $value): mixed
+    {
+        return is_string($value) ? stripslashes($value) : $value;
     }
 }
 
@@ -183,6 +224,22 @@ if (!function_exists('get_permalink')) {
     }
 }
 
+if (!function_exists('get_post_thumbnail_id')) {
+    $GLOBALS['__phpunit_post_thumbnail_ids'] = [];
+
+    /**
+     * Stub for get_post_thumbnail_id(). Tests seed an attachment ID via
+     * $GLOBALS['__phpunit_post_thumbnail_ids'][$post_id]; anything not seeded
+     * resolves to 0 (matching WordPress when the post has no thumbnail).
+     */
+    function get_post_thumbnail_id(object|int|null $post = null): int|false
+    {
+        $post_id = is_object($post) ? $post->ID : (int) $post;
+
+        return $GLOBALS['__phpunit_post_thumbnail_ids'][$post_id] ?? 0;
+    }
+}
+
 if (!function_exists('sanitize_email')) {
     /**
      * Simplified stand-in for WordPress's sanitize_email() (which strips
@@ -261,6 +318,33 @@ if (!function_exists('update_user_meta')) {
     function delete_user_meta(int $user_id, string $key): bool
     {
         unset($GLOBALS['__phpunit_user_meta'][$user_id][$key]);
+
+        return true;
+    }
+}
+
+if (!defined('DAY_IN_SECONDS')) {
+    define('DAY_IN_SECONDS', 86400);
+}
+
+if (!function_exists('get_transient')) {
+    $GLOBALS['__phpunit_transients'] = [];
+
+    function get_transient(string $transient): mixed
+    {
+        return $GLOBALS['__phpunit_transients'][$transient] ?? false;
+    }
+
+    function set_transient(string $transient, mixed $value, int $expiration = 0): bool
+    {
+        $GLOBALS['__phpunit_transients'][$transient] = $value;
+
+        return true;
+    }
+
+    function delete_transient(string $transient): bool
+    {
+        unset($GLOBALS['__phpunit_transients'][$transient]);
 
         return true;
     }

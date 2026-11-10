@@ -174,140 +174,138 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
 ?>
 
 <div id="confirmationPopup" class="popup <?php echo $inscription_nl_success ? 'popup-visible' : ''; ?>">
-	<div class="popup-content">
-		<a href="<?= home_url() ?>" class="close-btn">&times;</a>
-		<h3>Inscription Réussie !</h3>
-		<p>Merci de vous être inscrit·e à la newsletter !</p>
-	</div>
+    <div class="popup-content">
+        <a href="<?= home_url() ?>" class="close-btn">&times;</a>
+        <h3>Inscription Réussie !</h3>
+        <p>Merci de vous être inscrit·e à la newsletter !</p>
+    </div>
 </div>
 
 <button class="back-to-top hidden" aria-label="Retour haut de page">
-	<?php
+    <?php
     echo file_get_contents(get_template_directory() . '/assets/images/icon-simple-arrow.svg'); ?>
 </button>
 
-<div class="over-footer">
-	<div class="over-footer-container">
-		<div class="over-footer-social">
-			<h2 class="title">Rester informé·e</h2>
-			<span class="subtitle">Abonnez-vous à notre newsletter hebdo.</span>
-			<div class="nl-container">
-				<form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form"
-				      class="newsletter-lead-form">
-					<div class="cf-turnstile"
-					     data-callback="aifTurnstileSuccess"
-					     data-error-callback="aifTurnstileFailure"
-					     data-appearance="interaction-only"
-					     data-expired-callback="aifTurnstileFailure"
-					     data-timeout-callback="aifTurnstileFailure"
-					     data-unsupported-callback="aifTurnstileFailure"
-					     data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
-					<div class="nl-input-group">
-						<input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
-						<button class="register-nl" name="sign_lead" disabled>
-							<span class="button-text">OK</span>
-							<span class="spinner hidden"></span>
-						</button>
-					</div>
-					<div class="nl-error hidden"></div>
-					<?php
-                    if (!empty($error_message)) {
-                        aif_include_partial('alert', [
-                            'state' => 'error',
-                            'title' => $title,
-                            'content' => $error_message]);
+<?php
+$queried_object = get_queried_object();
+if (!amnesty_is_clh_petition_tunnel_page($queried_object instanceof WP_Post ? $queried_object : null)) : ?>
+    <div class="over-footer">
+        <div class="over-footer-container">
+            <div class="over-footer-social">
+                <h2 class="title">Rester informé·e</h2>
+                <span class="subtitle">Abonnez-vous à notre newsletter hebdo.</span>
+                <div class="nl-container">
+                    <form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form"
+                        class="newsletter-lead-form">
+                        <div class="cf-turnstile"
+                            data-callback="aifTurnstileSuccess"
+                            data-error-callback="aifTurnstileFailure"
+                            data-appearance="interaction-only"
+                            data-expired-callback="aifTurnstileFailure"
+                            data-timeout-callback="aifTurnstileFailure"
+                            data-unsupported-callback="aifTurnstileFailure"
+                            data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+                        <div class="nl-input-group">
+                            <input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
+                            <button class="register-nl" name="sign_lead" disabled>
+                                <span class="button-text">OK</span>
+                                <span class="spinner hidden"></span>
+                            </button>
+                        </div>
+                        <div class="nl-error hidden"></div>
+                        <?php
+                        if (!empty($error_message)) {
+                            aif_include_partial('alert', [
+                                'state' => 'error',
+                                'title' => $title,
+                                'content' => $error_message,
+                            ]);
+                        }
+    ?>
+                    </form>
+                </div>
+                <div class="social-network-list">
+                    <?php
+                    foreach ($social_links as $child) : ?>
+                        <div class="social-network-item">
+                            <a class="social-network-item-svg" href="<?php echo esc_url($child['url']); ?>"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="<?php esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
+                                <?php echo file_get_contents(get_template_directory() . $child['svg']); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG local du thème */ ?>
+                            </a>
+                        </div>
+                    <?php
+                    endforeach; ?>
+                </div>
+            </div>
+            <div class="over-footer-action">
+                <div class="call-to-action">
+                    <?php
+                    foreach ($action_links as $child) : ?>
+                        <a href="<?php echo esc_url($child['url']); ?>">
+                            <?php echo file_get_contents(get_template_directory() . $child['svg']); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG local du thème */ ?>
+                            <span><?php echo esc_html($child['name']); ?></span>
+                        </a>
+                    <?php
+                    endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    };
-?>
-				</form>
-			</div>
-			<div class="social-network-list">
-				<?php
-                foreach ($social_links as $child) : ?>
-					<div class="social-network-item">
-						<a class="social-network-item-svg" href="<?php
-    echo esc_url($child['url']); ?>"
-						   target="_blank"
-						   rel="noopener noreferrer"
-						   title="<?php
-       esc_attr_e('Follow us on ' . $child['name'], 'amnesty'); ?>">
-							<?php
-        echo file_get_contents(get_template_directory() . $child['svg']); ?>
-						</a>
-					</div>
-				<?php
-                endforeach; ?>
-			</div>
-		</div>
-		<div class="over-footer-action">
-			<div class="call-to-action">
-				<?php
-                foreach ($action_links as $child) : ?>
-					<a href="<?php
-                    echo esc_url($child['url']); ?>">
-						<?php
-                        echo file_get_contents(get_template_directory() . $child['svg']); ?>
-						<span><?php
-                            echo $child['name']; ?></span>
-					</a>
-				<?php
-                endforeach; ?>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="main-footer">
-	<?php
-    if (isset($footer_menu_items['top_level'])) : ?>
-		<?php
-        foreach ($footer_menu_items['top_level'] as $_id => $item) : ?>
-			<div class="main-footer-item">
-				<h3 class="title"><?php
-                    echo esc_html($item->title); ?></h3>
-				<?php
-                if (isset($footer_menu_items['children'][$item->title])) : ?>
-					<ul class="list-children">
-						<?php
-                        foreach ($footer_menu_items['children'][$item->title] as $child) : ?>
-							<li class="child"><a
-									href="<?php
-                                    echo esc_url($child->url ?: get_permalink($item->db_id)); ?>"
-									data-type="<?php
-                                    echo esc_attr($child->type); ?>"
-									data-id="<?php
-                                    echo absint($child->db_id); ?>"><?php
-                                    echo esc_html($child->title); ?></a>
-							</li>
-						<?php
-                        endforeach; ?>
-					</ul>
-				<?php
-                endif; ?>
-			</div>
-		<?php
-        endforeach; ?>
-	<?php
-    endif; ?>
-</div>
+    <div class="main-footer">
+        <?php
+        if (isset($footer_menu_items['top_level'])) : ?>
+            <?php
+            foreach ($footer_menu_items['top_level'] as $_id => $item) : ?>
+                <div class="main-footer-item">
+                    <h3 class="title"><?php
+                                        echo esc_html($item->title); ?></h3>
+                    <?php
+                    if (isset($footer_menu_items['children'][$item->title])) : ?>
+                        <ul class="list-children">
+                            <?php
+                            foreach ($footer_menu_items['children'][$item->title] as $child) : ?>
+                                <li class="child"><a
+                                        href="<?php
+                                                echo esc_url($child->url ?: get_permalink($item->db_id)); ?>"
+                                        data-type="<?php
+                                                    echo esc_attr($child->type); ?>"
+                                        data-id="<?php
+                                                    echo absint($child->db_id); ?>"><?php
+                                                                    echo esc_html($child->title); ?></a>
+                                </li>
+                            <?php
+                            endforeach; ?>
+                        </ul>
+                    <?php
+                    endif; ?>
+                </div>
+            <?php
+            endforeach; ?>
+        <?php
+        endif; ?>
+    </div>
+<?php endif; ?>
 
 <div class="privacy-footer">
-	<?php
+    <?php
     if (isset($footer_policy_items['top_level'])) : ?>
-		<ul class="list-children">
-			<?php
+        <ul class="list-children">
+            <?php
             foreach ($footer_policy_items['top_level'] as $_id => $item) : ?>
-				<li class="child"><a
-						href="<?php
-                        echo esc_url($item->url ?: get_permalink($item->db_id)); ?>"><?php
-                        echo esc_html($item->title); ?></a>
-				</li>
-			<?php
+                <li class="child"><a
+                        href="<?php
+                                echo esc_url($item->url ?: get_permalink($item->db_id)); ?>"><?php
+                                                                                    echo esc_html($item->title); ?></a>
+                </li>
+            <?php
             endforeach; ?>
-			<li class="child">
-				<a class="ot-sdk-show-settings" style="cursor: pointer">Paramètrer les cookies</a>
-			</li>
-		</ul>
-	<?php
+            <li class="child">
+                <a class="ot-sdk-show-settings" style="cursor: pointer">Paramètrer les cookies</a>
+            </li>
+        </ul>
+    <?php
     endif; ?>
 </div>

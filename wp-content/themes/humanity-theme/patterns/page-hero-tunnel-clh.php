@@ -22,13 +22,6 @@ $is_clh_tunnel_thanks_request = function_exists('amnesty_is_clh_tunnel_thanks_re
 <?php if (! is_front_page()) : ?>
 	<section class="page-hero-block page-tunnel-clh-hero">
 		<!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
-		<div class="yoast-breadcrumb-wrapper">
-			<?php
-            if (function_exists('yoast_breadcrumb')) {
-                yoast_breadcrumb('<nav class="yoast-breadcrumb">', '</nav>');
-            }
-    ?>
-		</div>
 		<div class="page-hero-title-wrapper">
 			<div class="container">
 				<div class="container-title">

@@ -29,14 +29,17 @@ jobs:
         run: composer run cs
       - name: Run PHPStan
         run: composer run analyse -- --no-progress --error-format=raw
+      - name: Run PHPCS
+        run: composer run lint:security
 
   frontend-checks:
     name: Frontend Checks
-    runs-on: ubuntu-latest
+    # Playwright 1.60.0 cannot install Chromium on Ubuntu 26.04; drop this pin once Playwright is upgraded.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version-file: private/.nvmrc
       - name: Enable Corepack

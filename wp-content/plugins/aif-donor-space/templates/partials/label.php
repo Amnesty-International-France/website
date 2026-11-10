@@ -4,5 +4,5 @@
     <?= $variant === 'error' ? 'aif-label--error' : '' ?>
     <?= $variant === 'warning' ? 'aif-label--warning' : '' ?> 
     ">
-    <?= $content?>
+    <?= esc_html($content) ?>
 </p>

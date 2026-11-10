@@ -4,8 +4,8 @@ $disable_button = false;
 $display_form = true;
 $email = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = sanitize_email($_POST['email']);
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = sanitize_email($_POST['email'] ?? '');
     $user = get_user_by('email', $email);
 
     $turnstile_error = verify_turnstile();
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success_message = 'Si votre adresse est reconnue vous allez recevoir un email pour pouvoir réinitialiser votre mot de passe';
             $display_form = false;
         } else {
-            $url = get_permalink(get_page_by_path('creer-votre-compte'));
+            $url = esc_url(get_permalink(get_page_by_path('creer-votre-compte')));
             $error_title = 'Votre utilisateur nous est inconnu';
             $error_message = "Vous pouvez créer votre compte en allant sur <a class='aif-link--primary' href='{$url}'> Créer mon compte </a>";
         }
@@ -75,7 +75,7 @@ if (isset($success_message)) {
 					     data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
 					<label for="email">Votre email (obligatoire) :</label>
 					<input
-						value="<?= $email ? $email : '' ?>"
+						value="<?= esc_attr($email) ?>"
 						placeholder="adresse@mail.fr" type="email" class="aif-input" id="email" name="email" required
 						aria-required="true">
 					<button class='custom-button-block center' type="submit" id="submit-btn">

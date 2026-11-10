@@ -264,6 +264,9 @@ require_once realpath(__DIR__ . '/includes/post-types/chronicle.php');
 require_once realpath(__DIR__ . '/includes/post-types/actualities-my-space.php');
 require_once realpath(__DIR__ . '/includes/post-types/alert-banner.php');
 require_once realpath(__DIR__ . '/includes/post-types/clh.php');
+require_once realpath(__DIR__ . '/includes/clh/helpers.php');
+require_once realpath(__DIR__ . '/includes/clh/fields.php');
+require_once realpath(__DIR__ . '/includes/clh/presentation.php');
 // endregion post types
 
 /**
@@ -394,6 +397,7 @@ require_once realpath(__DIR__ . '/includes/users/class-users-controller.php');
 require_once realpath(__DIR__ . '/includes/users/contact-methods.php');
 require_once realpath(__DIR__ . '/includes/users/meta.php');
 require_once realpath(__DIR__ . '/includes/users/emails.php');
+require_once realpath(__DIR__ . '/includes/users/smd-role.php');
 // endregion users
 
 /**
@@ -596,6 +600,7 @@ if (defined('WP_CLI') && WP_CLI) {
     require_once __DIR__ . '/commands/duplicate-country-pages.php';
     require_once __DIR__ . '/commands/upgrade-country-pages.php';
     require_once __DIR__ . '/commands/fix-canonical-urls.php';
+    require_once __DIR__ . '/commands/dedupe-events.php';
 }
 
 add_filter('render_block', function ($block_content, $block) {
