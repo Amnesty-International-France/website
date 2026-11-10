@@ -40,6 +40,7 @@ function create_petition(int $post_id)
         if ($sf_obj !== false) {
             update_field('uidsf', $sf_obj['Ext_ID_Petition__c'], $post_id);
             update_field('code_origine', $sf_obj['Code_defaut__c'], $post_id);
+            update_field('reserved_codeorigine', $sf_obj['Code_Newsletter__c'] ?? '', $post_id);
         }
     }
 }
@@ -77,10 +78,10 @@ add_action('acf/save_post', 'update_petition_end_date', 20);
 
 /**
  * The editor's ACF metabox isn't re-rendered after a save, so it keeps posting
- * the empty Salesforce ID and code origine it was loaded with, even once
- * create_petition() stored them (on publish, or from WP-Cron). Keep the stored
- * values instead of letting that stale form wipe them, which would make
- * create_petition() create the petition in Salesforce again.
+ * the empty Salesforce ID, code origine and code origine NL it was loaded with,
+ * even once create_petition() stored them (on publish, or from WP-Cron). Keep
+ * the stored values instead of letting that stale form wipe them, which would
+ * make create_petition() create the petition in Salesforce again.
  */
 function keep_petition_salesforce_link($value, $post_id, $field)
 {
@@ -93,3 +94,4 @@ function keep_petition_salesforce_link($value, $post_id, $field)
 
 add_filter('acf/update_value/name=uidsf', 'keep_petition_salesforce_link', 10, 3);
 add_filter('acf/update_value/name=code_origine', 'keep_petition_salesforce_link', 10, 3);
+add_filter('acf/update_value/name=reserved_codeorigine', 'keep_petition_salesforce_link', 10, 3);
