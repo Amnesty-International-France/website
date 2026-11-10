@@ -156,4 +156,46 @@ final class DedupeEventsTest extends TestCase
     {
         $this->assertFalse(amnesty_dedupe_events_needs_repair($this->event([ 'occurrences' => null ])));
     }
+
+    /**
+     * soiree-debat-a-pechbonnieu (38872): its imported _EventEndDateUTC was a
+     * month before its start, so TEC refused the occurrence. The UTC meta are
+     * rebuilt from the local dates, whatever the stored ones say.
+     */
+    public function testUtcMetaAreRebuiltFromTheLocalDates(): void
+    {
+        $meta = amnesty_dedupe_events_utc_meta('2016-11-18 19:30:00', '2016-11-18 19:30:00', new DateTimeZone('Europe/Paris'));
+
+        $this->assertSame([
+            '_EventStartDateUTC' => '2016-11-18 18:30:00',
+            '_EventEndDateUTC'   => '2016-11-18 18:30:00',
+            '_EventDuration'     => 0,
+        ], $meta);
+    }
+
+    public function testUtcMetaFollowSummerTime(): void
+    {
+        $meta = amnesty_dedupe_events_utc_meta('2024-07-01 20:00:00', '2024-07-01 22:00:00', new DateTimeZone('Europe/Paris'));
+
+        $this->assertSame([
+            '_EventStartDateUTC' => '2024-07-01 18:00:00',
+            '_EventEndDateUTC'   => '2024-07-01 20:00:00',
+            '_EventDuration'     => 7200,
+        ], $meta);
+    }
+
+    /**
+     * Clocks go back one hour on 2024-10-27 in Paris: the event lasts 25 hours,
+     * which a difference of the local dates would miss.
+     */
+    public function testUtcDurationSpansAClockChange(): void
+    {
+        $meta = amnesty_dedupe_events_utc_meta('2024-10-26 12:00:00', '2024-10-27 12:00:00', new DateTimeZone('Europe/Paris'));
+
+        $this->assertSame([
+            '_EventStartDateUTC' => '2024-10-26 10:00:00',
+            '_EventEndDateUTC'   => '2024-10-27 11:00:00',
+            '_EventDuration'     => 90000,
+        ], $meta);
+    }
 }

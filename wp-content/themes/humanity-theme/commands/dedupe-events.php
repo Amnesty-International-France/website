@@ -5,11 +5,13 @@ declare(strict_types=1);
 /**
  * Report the events the Prismic migration imported several times.
  *
- * The migration only checked whether an event existed through a WP_Query on
- * its slug. The Events Calendar joins every tribe_events query on its
- * occurrences table, so an event without an occurrence row is invisible to
- * that check (and answers 404) while its slug stays taken in wp_posts: each
- * new run created a copy, which wp_unique_post_slug() suffixed -2, then -3.
+ * The import left many events with broken UTC meta (an _EventEndDateUTC
+ * before _EventStartDateUTC) or none at all, so TEC refused to create their
+ * occurrence. The migration only checked whether an event existed through a
+ * WP_Query on its slug, and The Events Calendar joins every tribe_events
+ * query on its occurrences table: such an event is invisible to that check
+ * (and answers 404) while its slug stays taken in wp_posts. Each new run
+ * created a copy, which wp_unique_post_slug() suffixed -2, then -3.
  *
  * Duplicates are matched on their content, never on their slug: editors also
  * suffix yearly editions by hand (foire-aux-livres-mably1, -mably2), and those
@@ -98,8 +100,15 @@ if (! function_exists('amnesty_dedupe_events_pick_keeper')) {
      * and occurrences (rows in the TEC occurrences table; 0 means the event
      * answers 404 and is invisible to WP_Query).
      *
-     * The oldest one is kept even without an occurrence: it holds the original
-     * URL, and amnesty_dedupe_events_repair() brings it back online.
+     * The oldest one is kept even without an occurrence, as agreed on
+     * MAINT-323 (https://linear.app/les-tilleuls/issue/MAINT-323/seo-pages-orphelines-et-url-canoniques#comment-7bfbfb67):
+     * it holds the original URL, and amnesty_dedupe_events_repair() brings it
+     * back online.
+     *
+     * The oldest is the lowest ID, not the earliest post_date: the migration
+     * copied the Prismic date into post_date, so a copy can carry an older
+     * date than its original (soiree-debat-a-pechbonnieu-2 is dated
+     * 2016-10-07, the original 2016-10-19).
      *
      * @param array<int,object> $group at least two duplicates, in no particular order
      *
@@ -107,9 +116,6 @@ if (! function_exists('amnesty_dedupe_events_pick_keeper')) {
      */
     function amnesty_dedupe_events_pick_keeper(array $group): object
     {
-        /**
-         * we keep the oldest event (see https://linear.app/les-tilleuls/issue/MAINT-323/seo-pages-orphelines-et-url-canoniques#comment-7bfbfb67)
-         */
         usort($group, static function ($a, $b) {
             return (int) $a->ID <=> (int) $b->ID;
         });
@@ -133,15 +139,42 @@ if (! function_exists('amnesty_dedupe_events_needs_repair')) {
     }
 }
 
+if (! function_exists('amnesty_dedupe_events_utc_meta')) {
+    /**
+     * Compute the UTC meta of an event from its local dates, as TEC does when
+     * an event is saved in the admin.
+     *
+     * @param string       $start    local start date, Y-m-d H:i:s
+     * @param string       $end      local end date, Y-m-d H:i:s
+     * @param DateTimeZone $timezone timezone of the local dates
+     *
+     * @return array{_EventStartDateUTC: string, _EventEndDateUTC: string, _EventDuration: int}
+     */
+    function amnesty_dedupe_events_utc_meta(string $start, string $end, DateTimeZone $timezone): array
+    {
+        $utc        = new DateTimeZone('UTC');
+        $start_date = (new DateTimeImmutable($start, $timezone))->setTimezone($utc);
+        $end_date   = (new DateTimeImmutable($end, $timezone))->setTimezone($utc);
+
+        return [
+            '_EventStartDateUTC' => $start_date->format('Y-m-d H:i:s'),
+            '_EventEndDateUTC'   => $end_date->format('Y-m-d H:i:s'),
+            '_EventDuration'     => $end_date->getTimestamp() - $start_date->getTimestamp(),
+        ];
+    }
+}
+
 if (! function_exists('amnesty_dedupe_events_repair')) {
     /**
      * Rebuild the TEC occurrence of an event from its post meta.
      *
      * Updates\Events::update() is what TEC runs when an event is saved in the
-     * admin: it upserts the wp_tec_events row from _EventStartDate,
-     * _EventEndDate and the timezone meta, then regenerates the occurrences,
-     * UTC dates and hash included. It returns false, without throwing, when
-     * the meta it needs are missing.
+     * admin: it upserts the wp_tec_events row, then regenerates the
+     * occurrences. It reads the UTC dates and the duration from the post meta
+     * as they are, and returns false, without throwing, when they give a
+     * negative duration. The import left such meta (an _EventEndDateUTC before
+     * _EventStartDateUTC) or none at all, so they are first rebuilt from the
+     * local dates and the event timezone, the site one when it has none.
      *
      * @global wpdb $wpdb
      *
@@ -153,15 +186,21 @@ if (! function_exists('amnesty_dedupe_events_repair')) {
     {
         global $wpdb;
 
-        if (! function_exists('tribe') || ! class_exists(Events::class)) {
+        if (! function_exists('tribe') || ! class_exists(Events::class) || ! class_exists(Tribe__Timezones::class)) {
             return false;
         }
 
-        tribe(Events::class)->update((int)$event->ID);
+        $post_id  = (int) $event->ID;
+        $timezone = Tribe__Timezones::build_timezone_object(get_post_meta($post_id, '_EventTimezone', true) ?: null);
+
+        foreach (amnesty_dedupe_events_utc_meta((string) $event->start_date, (string) $event->end_date, $timezone) as $key => $value) {
+            update_post_meta($post_id, $key, $value);
+        }
+
+        tribe(Events::class)->update($post_id);
 
         $occurrences = $wpdb->prefix . 'tec_occurrences';
-        return $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $occurrences WHERE post_id = %d", $event->ID)) > 0;
-
+        return $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $occurrences WHERE post_id = %d", $post_id)) > 0;
     }
 }
 
@@ -171,6 +210,10 @@ if (! function_exists('amnesty_dedupe_events_fetch')) {
      *
      * WP_Query is avoided on purpose: TEC would hide the events that have no
      * occurrence, which are precisely the originals left behind.
+     *
+     * An event may have several _EventVenueID: their names are joined in a
+     * subquery, so that each event stays on one row and cannot become its own
+     * duplicate.
      *
      * @global wpdb $wpdb
      *
@@ -192,13 +235,14 @@ if (! function_exists('amnesty_dedupe_events_fetch')) {
             "SELECT p.ID, p.post_name, p.post_title, p.post_content, p.post_status, p.post_date, p.post_modified,
                 start_meta.meta_value AS start_date,
                 end_meta.meta_value AS end_date,
-                venue.post_title AS venue,
+                (SELECT GROUP_CONCAT(venue.post_title ORDER BY venue.post_title SEPARATOR ' / ')
+                    FROM {$wpdb->postmeta} venue_meta
+                    JOIN {$wpdb->posts} venue ON venue.ID = venue_meta.meta_value
+                    WHERE venue_meta.post_id = p.ID AND venue_meta.meta_key = '_EventVenueID') AS venue,
                 {$occurrence_count} AS occurrences
             FROM {$wpdb->posts} p
             LEFT JOIN {$wpdb->postmeta} start_meta ON start_meta.post_id = p.ID AND start_meta.meta_key = '_EventStartDate'
             LEFT JOIN {$wpdb->postmeta} end_meta ON end_meta.post_id = p.ID AND end_meta.meta_key = '_EventEndDate'
-            LEFT JOIN {$wpdb->postmeta} venue_meta ON venue_meta.post_id = p.ID AND venue_meta.meta_key = '_EventVenueID'
-            LEFT JOIN {$wpdb->posts} venue ON venue.ID = venue_meta.meta_value
             WHERE p.post_type = 'tribe_events' AND p.post_status IN ('publish', 'private')
             ORDER BY p.ID"
         );

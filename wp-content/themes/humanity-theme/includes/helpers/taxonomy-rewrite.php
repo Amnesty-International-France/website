@@ -62,7 +62,7 @@ if (! function_exists('amnesty_reset_location_indexables')) {
      */
     function amnesty_reset_location_indexables(): bool
     {
-        if (!function_exists('YoastSEO')) {
+        if (! function_exists('YoastSEO')) {
             return false;
         }
 
