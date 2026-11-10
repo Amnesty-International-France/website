@@ -914,7 +914,7 @@ function amnesty_handle_petition_signature(): void
     // has already signed with.
     // The tunnel submission already started the session above.
     $is_tunnel_signer = $is_clh_tunnel_submission
-        && $user_email === ($_SESSION['clh_last_signer_email'] ?? null);
+        && $user_email === sanitize_email($_SESSION['clh_last_signer_email'] ?? '');
 
     if (($firstname === '' || $lastname === '') && !$is_tunnel_signer) {
         amnesty_redirect_petition_signature_error($petition_id, 'missing_fields', $is_clh_tunnel_submission);

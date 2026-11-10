@@ -58,7 +58,7 @@ const AIF_LOGIN_RATE_LIMIT_MESSAGE = 'Trop de tentatives de connexion. Veuillez 
  */
 function aif_register_login_attempt_from_ip()
 {
-    $key = 'aif_login_ip_' . wp_hash((string) ($_SERVER['REMOTE_ADDR'] ?? ''));
+    $key = 'aif_login_ip_' . wp_hash(sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? '')));
     $now = time();
     $window = get_transient($key);
 

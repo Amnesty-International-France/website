@@ -20,7 +20,7 @@ $countries = get_posts(
     ]
 );
 
-$inscription_chronique_status = $_GET['inscription_chronique'] ?? '';
+$inscription_chronique_status = sanitize_text_field(wp_unslash($_GET['inscription_chronique'] ?? ''));
 if (!in_array($inscription_chronique_status, ['success'], true)) {
     $inscription_chronique_status = '';
 }
