@@ -40,29 +40,6 @@ add_action('wp_body_open', function () {
 	<?php
 }, 1);
 
-add_action('wp_footer', function () {
-    if (isset($_GET['gtm_type'], $_GET['gtm_name'])) {
-        $type = sanitize_text_field($_GET['gtm_type']);
-        $name = sanitize_text_field($_GET['gtm_name']);
-        ?>
-		<script type="text/javascript">
-			window.dataLayer.push({
-				'event': 'form_submit',
-				'type': '<?php echo esc_js($type);?>',
-				'name': '<?php echo esc_js($name);?>',
-			});
-
-			if (window.history.replaceState) {
-				const url = new URL(window.location.href);
-				url.searchParams.delete('gtm_type');
-				url.searchParams.delete('gtm_name');
-				window.history.replaceState({path: url.href}, '', url.href);
-			}
-		</script>
-		<?php
-    }
-});
-
 /**
  * Theme root includes
  */
@@ -184,6 +161,7 @@ require_once realpath(__DIR__ . '/includes/theme-setup/analytics/google-tag-mana
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/google-analytics.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/my-space-login.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/clh-page-type.php');
+require_once realpath(__DIR__ . '/includes/theme-setup/analytics/form-submit.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/hotjar.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/vwo.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/meta-tags.php');
