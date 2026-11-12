@@ -184,7 +184,7 @@ if ($show_final_screen) {
 
                                 <?php
                                     echo do_blocks(
-                                        '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=395&lang=fr_FR&reserved_originecode=26PJPWSI02", "is_popin": true } /-->'
+                                        '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=395&lang=fr_FR&reserved_originecode=26PJPWSI02", "is_popin": true, "position": "clh_merci" } /-->'
                                     );
     ?>
                             </div>
