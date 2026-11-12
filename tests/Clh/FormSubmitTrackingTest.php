@@ -27,7 +27,17 @@ final class FormSubmitTrackingTest extends TestCase
             {
                 return 3;
             }
+            function amnesty_get_clh_petition_campaign_page(): ?object
+            {
+                return (object) ['ID' => 2026];
+            }
+            function amnesty_get_clh_campaign_timestamps(int $page_id): array
+            {
+                return ['start' => $GLOBALS['__phpunit_clh_campaign_start'], 'end' => 0];
+            }
         }
+
+        $GLOBALS['__phpunit_clh_campaign_start'] = (int) strtotime('2026-10-15 00:00:00 UTC');
 
         require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/theme-setup/analytics/form-submit.php';
     }
@@ -61,6 +71,23 @@ final class FormSubmitTrackingTest extends TestCase
             ],
             aif_get_form_submit_push($this->clhSignatureQuery('tunnel'))
         );
+    }
+
+    public function testCampaignFollowsTheStartYearOfTheCampaign(): void
+    {
+        $GLOBALS['__phpunit_clh_campaign_start'] = (int) strtotime('2027-10-15 00:00:00 UTC');
+
+        self::assertSame('CLH_2027', aif_get_form_submit_push($this->clhSignatureQuery('tunnel'))['campaign']);
+    }
+
+    public function testCampaignWithoutStartDateIsLeftOut(): void
+    {
+        $GLOBALS['__phpunit_clh_campaign_start'] = 0;
+
+        $push = aif_get_form_submit_push($this->clhSignatureQuery('tunnel'));
+
+        self::assertArrayNotHasKey('campaign', $push);
+        self::assertSame('95555', $push['petition_id']);
     }
 
     public function testClhSignatureFromThePetitionPage(): void

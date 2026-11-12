@@ -39,6 +39,25 @@ if (! function_exists('aif_get_form_submit_tracking_args')) {
     }
 }
 
+if (! function_exists('aif_get_clh_tracking_campaign')) {
+    /**
+     * Campaign of the tag plan, named after the start year set on the campaign page
+     * (CLH_2026), or null when that page or its start date is missing.
+     */
+    function aif_get_clh_tracking_campaign(): ?string
+    {
+        $campaign_page = amnesty_get_clh_petition_campaign_page();
+
+        if ($campaign_page === null) {
+            return null;
+        }
+
+        $start = amnesty_get_clh_campaign_timestamps((int) $campaign_page->ID)['start'];
+
+        return $start > 0 ? 'CLH_' . gmdate('Y', $start) : null;
+    }
+}
+
 if (! function_exists('aif_get_form_submit_push')) {
     /**
      * Builds the form_submit push from the redirect query args, or null without them.
@@ -69,7 +88,12 @@ if (! function_exists('aif_get_form_submit_push')) {
             amnesty_is_petition_in_active_clh_campaign($petition_id)
         ) {
             $push['petition_id'] = (string) $petition_id;
-            $push['campaign'] = 'CLH_2026';
+            $campaign = aif_get_clh_tracking_campaign();
+
+            if ($campaign !== null) {
+                $push['campaign'] = $campaign;
+            }
+
             $push['context'] = $context;
             // Same count as the tunnel stepper: the campaign petitions signed from this browser.
             $push['signed_count'] = amnesty_get_clh_signed_petition_count_for_browser();
