@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  clearSignatureStatusFromUrl,
   initTunnelClhForm,
   scrollToTunnelClhPetition,
   toggleFullFormPetition,
@@ -320,5 +321,49 @@ describe('scrollToTunnelClhPetition', () => {
     document.getElementById('email').focus();
     scrollToTunnelClhPetition();
     expect(scrollIntoView).not.toHaveBeenCalled();
+  });
+});
+
+describe('clearSignatureStatusFromUrl', () => {
+  const visit = (url) => window.history.replaceState(null, '', url);
+  const currentUrl = () =>
+    `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+  afterEach(() => {
+    visit('/');
+    document.body.innerHTML = '';
+  });
+
+  it('removes the status of a rejected signature from the petition page address', () => {
+    document.body.innerHTML = '<form class="signature-petition-form"></form>';
+    visit(
+      '/petitions/une-petition/?utm_source=mail&signature_status=error&reserved_originecode=ABC#petition',
+    );
+
+    clearSignatureStatusFromUrl();
+
+    expect(currentUrl()).toBe(
+      '/petitions/une-petition/?utm_source=mail&reserved_originecode=ABC#petition',
+    );
+  });
+
+  it('leaves the address of a page without the petition form unchanged', () => {
+    document.body.innerHTML = '<form class="tunnel-clh-sign-form-anonymous"></form>';
+    visit('/campagne/?signature_status=invalid');
+
+    clearSignatureStatusFromUrl();
+
+    expect(currentUrl()).toBe('/campagne/?signature_status=invalid');
+  });
+
+  it('does not rewrite an address without a signature status', () => {
+    document.body.innerHTML = '<form class="signature-petition-form"></form>';
+    visit('/petitions/une-petition/?utm_source=mail');
+    const replaceState = vi.spyOn(window.history, 'replaceState');
+
+    clearSignatureStatusFromUrl();
+
+    expect(replaceState).not.toHaveBeenCalled();
+    replaceState.mockRestore();
   });
 });
