@@ -45,6 +45,11 @@ if (! function_exists('register_donation_calculator_block')) {
                         'type' => 'boolean',
                         'default' => false,
                     ],
+                    // Tag plan position of the donation link, when the default one does not fit.
+                    'position' => [
+                        'type' => 'string',
+                        'default' => '',
+                    ],
                 ],
             ]
         );
