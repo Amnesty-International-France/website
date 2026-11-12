@@ -183,6 +183,7 @@ require_once realpath(__DIR__ . '/includes/theme-setup/scripts-and-styles.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/google-tag-manager.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/google-analytics.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/my-space-login.php');
+require_once realpath(__DIR__ . '/includes/theme-setup/analytics/clh-page-type.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/hotjar.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/vwo.php');
 require_once realpath(__DIR__ . '/includes/theme-setup/analytics/meta-tags.php');
