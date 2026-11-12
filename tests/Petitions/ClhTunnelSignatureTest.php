@@ -164,6 +164,8 @@ final class ClhTunnelSignatureTest extends TestCase
 
         self::assertContains([102, self::USER_IDS[self::NEWCOMER]], $GLOBALS['__phpunit_signatures']);
         self::assertStringNotContainsString('alreadysigned', $already_signed['location']);
+        self::assertStringContainsString('gtm_petition_id=102', $already_signed['location']);
+        self::assertStringContainsString('gtm_context=tunnel', $already_signed['location']);
         self::assertSame($new_signature['location'], $already_signed['location']);
         self::assertSame(array_keys($new_signature['cookies']), array_keys($already_signed['cookies']));
         self::assertSame(array_keys($new_signature['session']), array_keys($already_signed['session']));

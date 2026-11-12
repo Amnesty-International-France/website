@@ -14,6 +14,14 @@ $percentage = max(0, min(100, (int) ($args['percentage'] ?? 0)));
 // L'anneau se vide au fil de la campagne : plein au premier jour, vide à la date de fin.
 $ring = $span > 0 ? min($days / $span, 1) : 1;
 
+// Tag plan position of the "Je signe" button: the reminder band sits lower on the page.
+$tracking_positions = [
+    'banner'   => 'bandeau_haut',
+    'reminder' => 'bandeau_bas',
+    'sticky'   => 'sticky',
+];
+$tracking_position = $tracking_positions[$variant] ?? '';
+
 ?>
 
 <div class="clh-indicators clh-indicators--<?php echo esc_attr($variant); ?>">
@@ -70,7 +78,7 @@ $ring = $span > 0 ? min($days / $span, 1) : 1;
 	<?php if ($sign_url) : ?>
 		<div class="clh-indicators-action">
 			<div class="custom-button-block">
-				<a href="<?php echo esc_url($sign_url); ?>" class="custom-button">
+				<a href="<?php echo esc_url($sign_url); ?>" class="custom-button" data-gtm="clic_cta" data-name="je signe"<?php if ($tracking_position) : ?> data-position="<?php echo esc_attr($tracking_position); ?>"<?php endif; ?>>
 					<div class="content <?php echo esc_attr($button); ?> medium">
 						<div class="button-label"><?php esc_html_e('Je signe', 'amnesty'); ?></div>
 					</div>

@@ -94,6 +94,8 @@ final class ClhPetitionsGridTest extends TestCase
         self::assertStringContainsString('width: 66%', $html);
         self::assertStringContainsString('1 999 signatures', $html);
         self::assertStringContainsString('/photo-42.jpg', $html);
+        self::assertSame(2, substr_count($html, 'data-gtm="clic_cta" data-name="voir la petition" data-position="situations"'));
+        self::assertSame(1, substr_count($html, 'data-gtm="clic_cta" data-name="signer la petition" data-position="situations"'));
     }
 
     public function testMissingPhotoAndClhTitleKeepTheCardUsable(): void
@@ -109,6 +111,7 @@ final class ClhPetitionsGridTest extends TestCase
         $GLOBALS['__phpunit_closed_petitions'] = [1];
         $html = $this->render();
         self::assertStringContainsString('Voir la pétition', $html);
+        self::assertStringNotContainsString('data-name="signer la petition"', $html);
         self::assertStringContainsString('href="/petitions/1/"', $html);
         self::assertStringNotContainsString('clh_petition=', $html);
     }

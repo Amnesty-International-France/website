@@ -18,7 +18,7 @@ declare(strict_types=1);
 			<p><?php esc_html_e("Face à l'injustice et à l'impunité, ces personnes refusent de se taire. Grâce à vous, nous avons les moyens de les défendre et d'agir à leurs côtés. Chaque don nous donne la force de résister en toute indépendance. Aidez-nous à changer leur histoire.", 'amnesty'); ?></p>
 		</div>
 		<div class="custom-button-block" data-clh-reveal="full">
-			<a href="<?php echo esc_url(amnesty_get_clh_donation_url()); ?>" class="custom-button" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e('JE FAIS UN DON (nouvel onglet)', 'amnesty'); ?>">
+			<a href="<?php echo esc_url(amnesty_get_clh_donation_url()); ?>" class="custom-button" target="_blank" rel="noopener noreferrer" data-gtm="clic_cta" data-name="faire un don" aria-label="<?php esc_attr_e('JE FAIS UN DON (nouvel onglet)', 'amnesty'); ?>">
 				<div class="content bg-yellow medium">
 					<div class="button-label"><?php esc_html_e('JE FAIS UN DON', 'amnesty'); ?></div>
 				</div>
