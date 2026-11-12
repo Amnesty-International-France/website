@@ -208,16 +208,20 @@ if ($show_final_screen) {
                                         aria-label="<?php esc_attr_e('Copier le lien', 'amnesty'); ?>"
                                         role="button"
                                         tabindex="0"
-                                        data-url="<?php echo esc_url($share_url); ?>">
+                                        data-url="<?php echo esc_url($share_url); ?>"
+                                        data-gtm="clic_partage"
+                                        data-name="copier le lien">
                                         <div class="icon-container">
                                             <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-copy.svg'); ?>
                                         </div>
                                         <span class="share-label"><?php esc_html_e('copier le lien', 'amnesty'); ?></span>
                                     </div>
 
-									<?php foreach ($social_network as $sn) : ?>
+									<?php foreach ($social_network as $network => $sn) : ?>
 										<a class="<?php echo esc_attr($sn['class']); ?>" target="_blank" rel="noreferrer noopener"
 										   href="<?php echo esc_url($sn['href']); ?>"
+										   data-gtm="clic_partage"
+										   data-name="<?php echo esc_attr($network); ?>"
 										   title="<?php echo esc_attr($sn['title']); ?>"
 										   aria-label="<?php echo esc_attr($sn['aria_label']); ?>">
 											<div class="icon-container">
@@ -406,7 +410,10 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 						<button type="submit"
 								form="<?php echo esc_attr($skip_form_id); ?>"
 								name="skip_petition"
-						        class="page-tunnel-clh-action-button mobile is-secondary">
+						        class="page-tunnel-clh-action-button mobile is-secondary"
+								data-gtm="clic_cta"
+								data-name="passer la petition"
+								data-value="<?php echo esc_attr((string) $next_petition['id']); ?>">
 							<span>Passer la pétition</span>
 						</button>
 					</article>
