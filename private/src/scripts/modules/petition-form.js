@@ -1,10 +1,21 @@
 import { isValidEmail } from './newsletter';
 
-// État de la vérification /check-email par formulaire.
-// Valeur : { status: 'pending' | 'done', pendingSubmit: (() => void) | null }
-// Partagé entre toggleFullFormPetition (qui lance la vérif) et initTunnelClhForm :
-// si l'utilisateur tente de signer pendant que la vérif est en cours, on
-// mémorise son intention dans pendingSubmit pour la rejouer à la résolution.
+// `type="email"` accepts addresses the server rejects (`a@b`): block the common cases with
+// the server's message. The regex is looser than `is_email()`, so the server stays the
+// reference. An empty field keeps the native `required` message.
+const setEmailValidity = (emailInput, emailValue) => {
+  const isEmailValid = Boolean(isValidEmail(emailValue));
+  emailInput.setCustomValidity(
+    emailValue && !isEmailValid ? emailInput.dataset.invalidMessage : '',
+  );
+
+  return isEmailValid;
+};
+
+// State of the /check-email request, per form.
+// Value: { status: 'pending' | 'done', pendingSubmit: (() => void) | null }
+// Shared by toggleFullFormPetition (which starts the check) and initTunnelClhForm: a sign
+// attempt made while the check runs is kept in pendingSubmit and replayed once it ends.
 const emailCheckStates = new WeakMap();
 
 function setRequiredHiddenFields(form, status) {
@@ -42,8 +53,9 @@ export const toggleFullFormPetition = () => {
         currentController?.abort();
 
         const emailValue = emailInput.value.trim();
+        const isEmailValid = setEmailValidity(emailInput, emailValue);
 
-        if (!isValidEmail(emailValue)) {
+        if (!isEmailValid) {
           emailCheckStates.delete(form);
           fullForm.style.display = 'none';
           setRequiredHiddenFields(form, false);
@@ -91,8 +103,12 @@ export const toggleFullFormPetition = () => {
         }, 300);
       });
 
+      // A browser-restored value fires no `input` event: block it if invalid.
+      setEmailValidity(emailInput, emailInput.value.trim());
+
       // Email kept by the server from a rejected tunnel signature: check it as if it had
-      // just been typed. Petition pages only get browser-restored values, left as they are.
+      // just been typed. Petition pages only get browser-restored values: validated above, but
+      // not sent to /check-email.
       if (form.matches('.tunnel-clh-sign-form-anonymous') && emailInput.value.trim()) {
         emailInput.dispatchEvent(new Event('input'));
       }

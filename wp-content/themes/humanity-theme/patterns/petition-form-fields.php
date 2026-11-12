@@ -29,7 +29,8 @@ $civility_other_id = 'civility_other' . $field_id_suffix;
 <div class="tunnel-clh-email-step">
 	<div class="email-section">
 		<input class="email-input" type="email" name="user_email" placeholder="Email*"
-		       value="<?php echo esc_attr($form_values['user_email'] ?? ''); ?>" required>
+		       value="<?php echo esc_attr($form_values['user_email'] ?? ''); ?>"
+		       data-invalid-message="<?php echo esc_attr(AMNESTY_PETITION_INVALID_EMAIL_MESSAGE); ?>" required>
 	</div>
 	<div class="full-form">
 		<div class="form-group civility-section">
