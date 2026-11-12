@@ -36,16 +36,15 @@ describe('toggleFullFormPetition', () => {
     document.body.innerHTML = '';
   });
 
-  it('checks an email already in the field when the page loads', async () => {
+  it('shows the identity fields for an email already in the field when the page loads', async () => {
     const fullForm = buildTunnelForm('new.signer@example.org');
 
     toggleFullFormPetition();
     await vi.advanceTimersByTimeAsync(300);
 
-    expect(fetch).toHaveBeenCalledOnce();
-    expect(fetch.mock.calls[0][0]).toBe('/wp-json/humanity/v1/check-email');
-    expect(fetch.mock.calls[0][1].body.get('email')).toBe('new.signer@example.org');
+    expect(fetch).not.toHaveBeenCalled();
     expect(fullForm.style.display).toBe('flex');
+    expect(document.querySelector('.firstname-input').required).toBe(true);
   });
 
   it('does not check an empty email field when the page loads', async () => {
@@ -147,36 +146,13 @@ describe('CLH signature loading state', () => {
     expect(submissions).toHaveLength(2);
   });
 
-  it('waits for the email check, then sends only one signature', async () => {
+  it('requires the identity fields for every typed email, without asking the server', async () => {
     form.elements.user_email.value = 'signer@example.org';
     form.elements.user_email.dispatchEvent(new Event('input'));
     button.click();
-    button.click();
-    expect(button.classList.contains('is-loading')).toBe(true);
-    expect(submissions).toHaveLength(0);
     await vi.advanceTimersByTimeAsync(300);
-    expect(submissions).toHaveLength(1);
-    expect(button.classList.contains('is-loading')).toBe(true);
-  });
-
-  it('stops waiting when the email check reveals required fields', async () => {
-    fetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({ exists: false }) });
-    form.elements.user_email.value = 'new@example.org';
-    form.elements.user_email.dispatchEvent(new Event('input'));
-    button.click();
-    await vi.advanceTimersByTimeAsync(300);
+    expect(fetch).not.toHaveBeenCalled();
     expect(form.elements.user_firstname.required).toBe(true);
-    expect(button.classList.contains('is-loading')).toBe(false);
-    expect(submissions).toHaveLength(0);
-  });
-
-  it('cancels the queued signature when the email is edited', async () => {
-    form.elements.user_email.value = 'signer@example.org';
-    form.elements.user_email.dispatchEvent(new Event('input'));
-    button.click();
-    form.elements.user_email.value = 'another@example.org';
-    form.elements.user_email.dispatchEvent(new Event('input'));
-    await vi.advanceTimersByTimeAsync(300);
     expect(button.classList.contains('is-loading')).toBe(false);
     expect(submissions).toHaveLength(0);
   });
@@ -216,16 +192,6 @@ describe('CLH signature loading state', () => {
     expect(button.disabled).toBe(false);
     expect(submissions).toHaveLength(0);
   });
-
-  it('does not cancel a queued signature when the initial page finishes loading', async () => {
-    form.elements.user_email.value = 'signer@example.org';
-    form.elements.user_email.dispatchEvent(new Event('input'));
-    button.click();
-    window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: false }));
-    await vi.advanceTimersByTimeAsync(300);
-    expect(submissions).toHaveLength(1);
-    expect(button.classList.contains('is-loading')).toBe(true);
-  });
 });
 
 describe('scrollToTunnelClhPetition', () => {
@@ -235,7 +201,10 @@ describe('scrollToTunnelClhPetition', () => {
     document.body.innerHTML = '<input id="email"><div id="tunnel-clh-petition"></div>';
     scrollIntoView = vi.fn();
     document.getElementById('tunnel-clh-petition').scrollIntoView = scrollIntoView;
-    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true })));
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => ({ matches: true })),
+    );
   });
 
   afterEach(() => {

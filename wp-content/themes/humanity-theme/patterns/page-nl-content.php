@@ -23,12 +23,6 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
     }
     $inscription_nl_success = $inscription_nl_status === 'success';
 
-    if (!empty($email_provided)) {
-        $local_user = get_local_user($email_provided);
-        $get_salesforce_user = get_salesforce_user_with_email($email_provided);
-        $is_salesforce_user = is_array($get_salesforce_user) && $get_salesforce_user['totalSize'] > 0;
-    }
-
     if (isset($_POST['sign_newsletter'])) {
         $turnstile_error = verify_turnstile();
         if ($turnstile_error !== null) {

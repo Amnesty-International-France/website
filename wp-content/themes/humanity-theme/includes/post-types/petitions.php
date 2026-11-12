@@ -908,28 +908,38 @@ function amnesty_handle_petition_signature(): void
         exit;
     }
 
+    $firstname = sanitize_text_field($_POST['user_firstname'] ?? '');
+    $lastname  = sanitize_text_field($_POST['user_lastname']  ?? '');
+
+    // First and last names are required before the address is looked up, so
+    // a known and an unknown address get the same outcome. The only exception
+    // is the CLH tunnel's one-click form, which sends the address this browser
+    // has already signed with.
+    // The tunnel submission already started the session above.
+    $is_tunnel_signer = $is_clh_tunnel_submission
+        && $user_email === sanitize_email($_SESSION['clh_last_signer_email'] ?? '');
+
+    if (($firstname === '' || $lastname === '') && !$is_tunnel_signer) {
+        amnesty_redirect_petition_signature_error($petition_id, 'missing_fields', $is_clh_tunnel_submission);
+    }
+
     $local_user = get_local_user($user_email);
     $already_signed = false;
 
+    // An address that already signed gets the same response as a new
+    // signature, so the form never tells whether an address signed.
     if ($local_user !== false) {
         $user_id = $local_user->id;
         $already_signed = have_signed($petition_id, $user_id);
-
-        // In the CLH tunnel, an address that already signed gets the same response as a
-        // new signature, so the tunnel never tells whether an address signed a petition.
-        if ($already_signed && !$is_clh_petition) {
-            wp_redirect(amnesty_get_petition_signature_redirect_url($petition_id, ['alreadysigned' => '']));
-            exit;
-        }
     } else {
         $civility    = sanitize_text_field($_POST['civility']       ?? '');
-        $firstname   = sanitize_text_field($_POST['user_firstname'] ?? '');
-        $lastname    = sanitize_text_field($_POST['user_lastname']  ?? '');
         $postal_code = sanitize_text_field($_POST['user_zipcode']   ?? '');
         $country     = sanitize_text_field($_POST['user_country']   ?? '');
         $phone       = sanitize_text_field($_POST['user_phone']     ?? '');
 
         if ($firstname === '' || $lastname === '') {
+            // The tunnel's one-click form sent no names for an address that
+            // is not (or no longer) a local signer: nothing to sign with.
             amnesty_redirect_petition_signature_error($petition_id, 'missing_fields', $is_clh_tunnel_submission);
         }
 

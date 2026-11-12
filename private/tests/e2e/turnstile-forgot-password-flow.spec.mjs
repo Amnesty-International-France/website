@@ -20,7 +20,7 @@ test.describe('forgot password Turnstile server-side flow', () => {
     await setServerSideTurnstileResult(page, FORGOT_PASSWORD_FORM, { success: true });
     await submitForgotPasswordForm(page);
 
-    await expect(page.getByText('Votre utilisateur nous est inconnu')).toBeVisible();
+    await expect(page.getByText('Votre demande à bien été prise en compte')).toBeVisible();
     await expect(page.getByText('La vérification de sécurité a échoué.')).toHaveCount(0);
   });
 
@@ -40,6 +40,6 @@ test.describe('forgot password Turnstile server-side flow', () => {
     await expect(
       page.getByText('La vérification de sécurité a échoué.', { exact: true }),
     ).toBeVisible();
-    await expect(page.getByText('Votre utilisateur nous est inconnu')).toHaveCount(0);
+    await expect(page.getByText('Votre demande à bien été prise en compte')).toHaveCount(0);
   });
 });
