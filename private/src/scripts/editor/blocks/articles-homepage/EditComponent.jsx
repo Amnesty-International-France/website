@@ -1,6 +1,7 @@
 import ChipCategory from '../../components/ChipCategory.jsx';
 import PostSearchControl from '../../components/PostSearchControl.jsx';
 import ExternalPostControl from '../../components/ExternalPostControl.jsx';
+import { extractAllCustomTerms, previewFromEmbedded } from './item-preview';
 
 const { useSelect } = wp.data;
 const { __ } = wp.i18n;
@@ -17,24 +18,6 @@ const getCategoryLink = (slug) => {
   }
 
   return `/${slug}`;
-};
-
-const extractAllCustomTerms = (embeddedData) => {
-  if (!embeddedData || !Array.isArray(embeddedData['wp:term'])) {
-    return [];
-  }
-  let allCustomTerms = [];
-  embeddedData['wp:term'].forEach((termGroup) => {
-    if (Array.isArray(termGroup)) {
-      const customTermsInGroup = termGroup.filter(
-        (term) => term.taxonomy !== 'category' && term.taxonomy !== 'post_tag',
-      );
-      allCustomTerms = allCustomTerms.concat(
-        customTermsInGroup.map(({ id, name, slug, taxonomy }) => ({ id, name, slug, taxonomy })),
-      );
-    }
-  });
-  return allCustomTerms;
 };
 
 const EditComponent = ({ attributes, setAttributes }) => {
@@ -78,7 +61,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
         selectedPostId: null,
         selectedPostTitle: null,
         selectedPostSlug: null,
-        _embedded: null,
+        selectedPostImageUrl: '',
+        selectedPostChip: null,
         selectedPostCustomTerms: [],
         category: '',
         ...externalLinkDefaultValue,
@@ -115,8 +99,8 @@ const EditComponent = ({ attributes, setAttributes }) => {
         selectedPostId: post.id,
         selectedPostTitle: post.title.rendered,
         selectedPostSlug: post.slug,
-        _embedded: post._embedded || null,
-        selectedPostCustomTerms: allExtractedTerms || [],
+        ...previewFromEmbedded(post._embedded),
+        selectedPostCustomTerms: allExtractedTerms,
         category,
         ...externalLinkDefaultValue,
       };
@@ -150,9 +134,7 @@ const EditComponent = ({ attributes, setAttributes }) => {
   };
 
   const mainImage = (item) =>
-    item.externalPost
-      ? item.externalItemImgUrl
-      : item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+    item.externalPost ? item.externalItemImgUrl : item.selectedPostImageUrl;
 
   const mainTitle = (item) => (item.externalPost ? item.externalItemTitle : item.selectedPostTitle);
 
