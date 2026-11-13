@@ -61,16 +61,13 @@
     gap: 1rem;
   }
 
-  .aif-riposte-card--tablet-full .aif-riposte-card__visual {
-    margin-bottom: 0;
-    margin-left: 0;
-  }
-
   .aif-riposte-card--tablet-full .aif-riposte-card__media {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
+    margin-bottom: 0;
+    justify-self: center;
   }
 
   .aif-riposte-card--tablet-full .aif-riposte-card__image {
@@ -82,6 +79,10 @@
   .aif-riposte-card--tablet-full .aif-riposte-card__body,
   .aif-riposte-card--tablet-full .aif-riposte-card__excerpt {
     text-align: left;
+  }
+
+  .aif-riposte-card--tablet-full .aif-riposte-card__credit {
+    margin-left: 0;
   }
 }
 
@@ -112,15 +113,9 @@
     gap: 1rem;
   }
 
-  /* The side margins leave room for the credit. */
-  .aif-riposte-card--small .aif-riposte-card__visual {
+  .aif-riposte-card--small .aif-riposte-card__media {
     width: 78%;
     margin: 0 auto;
-  }
-
-  .aif-riposte-card--xlarge .aif-riposte-card__visual {
-    margin-bottom: 0;
-    margin-left: 0;
   }
 
   .aif-riposte-card--xlarge .aif-riposte-card__media {
@@ -128,6 +123,8 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+    margin-bottom: 0;
+    justify-self: center;
   }
 
   .aif-riposte-card--xlarge .aif-riposte-card__image {
@@ -139,6 +136,10 @@
   .aif-riposte-card--xlarge .aif-riposte-card__body,
   .aif-riposte-card--xlarge .aif-riposte-card__excerpt {
     text-align: left;
+  }
+
+  .aif-riposte-card--xlarge .aif-riposte-card__credit {
+    margin-left: 0;
   }
 
   .aif-riposte-card--small .aif-riposte-card__body,
@@ -180,7 +181,6 @@
 }
 
 .aif-riposte-card__top,
-.aif-riposte-card__visual,
 .aif-riposte-card__media,
 .aif-riposte-card__body,
 .aif-riposte-card__content {
@@ -212,19 +212,14 @@
 }
 
 .aif-riposte-card__body,
-.aif-riposte-card__visual,
 .aif-riposte-card__media {
   position: relative;
   z-index: 2;
   pointer-events: none;
 }
 
-/* Room on both sides keeps the image centred; the credit sits in the right one. */
-.aif-riposte-card__visual {
-  margin: 0 2.25rem 1rem;
-}
-
 .aif-riposte-card__media {
+  margin-bottom: 1rem;
   aspect-ratio: 1 / 1;
   overflow: hidden;
   position: relative;
@@ -271,23 +266,16 @@
   text-align: center;
 }
 
-/* Vertical, read from bottom to top, wrapping on the image height. */
+/* Under the text, after "En savoir plus"; narrower than the text, lines balanced. */
 .aif-riposte-card__credit {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 100%;
-  margin: 0 0 0 0.25rem;
-  writing-mode: vertical-rl;
-  /* Keeps symbols such as "©" turned like the letters instead of upright. */
-  text-orientation: sideways;
-  transform: rotate(180deg);
-  text-align: start;
+  max-width: 60%;
+  margin: 0.5rem auto 0;
+  text-wrap: balance;
   font-family: "URW DIN", sans-serif;
-  font-size: 12px;
+  font-size: 10px;
   font-style: normal;
   font-weight: 400;
-  line-height: 16px;
+  line-height: 13px;
   overflow-wrap: break-word;
 }
 
