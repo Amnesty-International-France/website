@@ -1,49 +1,52 @@
 import EditComponent from './EditComponent.jsx';
+import { embeddedDataDeprecation } from './item-preview';
 
 const { registerBlockType } = wp.blocks;
+
+const blockAttributes = {
+  items: {
+    type: 'array',
+    default: [
+      {
+        category: 'actualites',
+        selectedPostId: null,
+        subtitle: '',
+        externalPost: false,
+        externalItemTitle: '',
+        externalItemLink: '',
+        externalItemImgId: null,
+        externalItemImgUrl: '',
+      },
+      {
+        category: 'actualites',
+        selectedPostId: null,
+        subtitle: '',
+        externalPost: false,
+        externalItemLink: '',
+        externalItemTitle: '',
+        externalItemImgId: null,
+        externalItemImgUrl: '',
+      },
+      {
+        category: 'actualites',
+        selectedPostId: null,
+        subtitle: '',
+        externalPost: false,
+        externalItemLink: '',
+        externalItemTitle: '',
+        externalItemImgId: null,
+        externalItemImgUrl: '',
+      },
+    ],
+  },
+};
 
 registerBlockType('amnesty-core/articles-homepage', {
   title: 'Articles Homepage',
   description: "Permet d'afficher une liste d'articles sur la page d'accueil.",
   category: 'amnesty-core',
   icon: 'layout',
-  attributes: {
-    items: {
-      type: 'array',
-      default: [
-        {
-          category: 'actualites',
-          selectedPostId: null,
-          subtitle: '',
-          externalPost: false,
-          externalItemTitle: '',
-          externalItemLink: '',
-          externalItemImgId: null,
-          externalItemImgUrl: '',
-        },
-        {
-          category: 'actualites',
-          selectedPostId: null,
-          subtitle: '',
-          externalPost: false,
-          externalItemLink: '',
-          externalItemTitle: '',
-          externalItemImgId: null,
-          externalItemImgUrl: '',
-        },
-        {
-          category: 'actualites',
-          selectedPostId: null,
-          subtitle: '',
-          externalPost: false,
-          externalItemLink: '',
-          externalItemTitle: '',
-          externalItemImgId: null,
-          externalItemImgUrl: '',
-        },
-      ],
-    },
-  },
+  attributes: blockAttributes,
   example: {
     attributes: {
       items: [
@@ -56,14 +59,9 @@ registerBlockType('amnesty-core/articles-homepage', {
           selectedPostCustomTerms: [
             { id: 1, name: 'Afrique', slug: 'afrique', taxonomy: 'region' },
           ],
-          _embedded: {
-            'wp:featuredmedia': [
-              {
-                source_url: 'https://placehold.co/800x600/222222/FFFFFF/png?text=Article+Principal',
-              },
-            ],
-            'wp:term': [[{ id: 2, name: 'Actualités', slug: 'actualites', taxonomy: 'category' }]],
-          },
+          selectedPostImageUrl:
+            'https://placehold.co/800x600/222222/FFFFFF/png?text=Article+Principal',
+          selectedPostChip: { label: 'Actualité', slug: 'actualites' },
         },
         {
           category: 'campagnes',
@@ -78,12 +76,8 @@ registerBlockType('amnesty-core/articles-homepage', {
               taxonomy: 'thematique',
             },
           ],
-          _embedded: {
-            'wp:featuredmedia': [
-              { source_url: 'https://placehold.co/600x400/ffdb00/000000/png?text=Campagne' },
-            ],
-            'wp:term': [[{ id: 4, name: 'Campagnes', slug: 'campagnes', taxonomy: 'category' }]],
-          },
+          selectedPostImageUrl: 'https://placehold.co/600x400/ffdb00/000000/png?text=Campagne',
+          selectedPostChip: { label: 'Campagne', slug: 'campagnes' },
         },
         {
           category: 'landmark',
@@ -93,16 +87,20 @@ registerBlockType('amnesty-core/articles-homepage', {
           selectedPostCustomTerms: [
             { id: 5, name: 'Crise humanitaire', slug: 'crise-humanitaire', taxonomy: 'thematique' },
           ],
-          _embedded: {
-            'wp:featuredmedia': [
-              { source_url: 'https://placehold.co/600x400/555555/FFFFFF/png?text=Repères' },
-            ],
-            'wp:term': [[{ id: 6, name: 'Repères', slug: 'landmark', taxonomy: 'category' }]],
-          },
+          selectedPostImageUrl: 'https://placehold.co/600x400/555555/FFFFFF/png?text=Repères',
+          selectedPostChip: { label: 'Repère', slug: 'reperes' },
         },
       ],
     },
   },
+  deprecated: [
+    {
+      // Items used to store the whole REST `_embedded` payload of the selected post (MAINT-307).
+      attributes: blockAttributes,
+      ...embeddedDataDeprecation,
+      save: () => null,
+    },
+  ],
   edit: EditComponent,
   save: () => null,
 });
