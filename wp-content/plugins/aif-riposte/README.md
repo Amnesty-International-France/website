@@ -618,11 +618,11 @@ includes/card.php
 Les cartes peuvent afficher :
 
 * le pays principal via `location` ;
-* le crédit photo ;
 * la date personnalisée ;
 * le contenu éditorial ;
 * un lien externe optionnel ;
 * le texte “En savoir plus” si un lien externe est renseigné ;
+* le crédit photo ;
 * les thématiques via `riposte_theme`.
 * le mot clé via `riposte_tag`.
 
@@ -1625,11 +1625,11 @@ includes/card.php
 Cards may display:
 
 * the main country from the `location` taxonomy;
-* the photo credit;
 * the custom date;
 * the editorial content;
 * an optional external link;
 * the **Learn more** label when an external link is provided;
+* the photo credit;
 * themes from the `riposte_theme` taxonomy;
 * the keyword from the `riposte_tag` taxonomy.
 
