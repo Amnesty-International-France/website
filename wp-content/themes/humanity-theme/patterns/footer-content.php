@@ -98,10 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newsletter-lead'])) {
                     'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
                 ]);
             } else {
-                update_salesforce_users($get_user_sf['records'][0]['Id'], [
-                    ...$data,
-                    'Optout_toute_communication__c' => false,
-                ]);
+                update_salesforce_users($get_user_sf['records'][0]['Id'], $data);
             }
 
             wp_redirect(add_query_arg([
