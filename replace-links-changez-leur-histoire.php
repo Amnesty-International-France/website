@@ -107,7 +107,7 @@ if ( is_array( $redirects ) ) {
 			WP_CLI::warning( "Yoast : une redirection part de la nouvelle URL vers $target. À supprimer, sinon boucle." );
 		}
 		if ( CLH48_OLD_PATH === $origin ) {
-			$has_301 = CLH48_NEW_PATH === $target;
+			$has_301 = CLH48_NEW_PATH === $target && 301 === (int) ( $redirect['type'] ?? 0 );
 			WP_CLI::line( "Yoast : redirection {$redirect['type']} de l'ancienne URL vers $target." );
 		}
 	}
@@ -159,7 +159,7 @@ WP_CLI::line( sprintf( '1/3 Contenus : %d à modifier.', $totals['contents'] ) )
 // --- 2. Menus (ligne 9) --------------------------------------------------------------------------
 
 foreach ( wp_get_nav_menus() as $menu ) {
-	foreach ( (array) wp_get_nav_menu_items( $menu->term_id ) as $item ) {
+	foreach ( wp_get_nav_menu_items( $menu->term_id ) ?: [] as $item ) {
 		if ( 'custom' !== $item->type || ! clh48_is_old_url( (string) $item->url ) ) {
 			continue;
 		}
@@ -206,7 +206,7 @@ if ( $apply ) {
 
 // --- Contrôle : occurrences restantes hors périmètre ----------------------------------------------------
 
-$like      = '%' . $wpdb->esc_like( 'nos-combats/changez-leur-histoire' ) . '%';
+$like      = '%' . $wpdb->esc_like( 'changez-leur-histoire' ) . '%';
 $remaining = $wpdb->get_results(
 	$wpdb->prepare(
 		"SELECT ID, post_title, post_content FROM {$wpdb->posts}
