@@ -12,12 +12,6 @@ const setEmailValidity = (emailInput, emailValue) => {
   return isEmailValid;
 };
 
-// State of the /check-email request, per form.
-// Value: { status: 'pending' | 'done', pendingSubmit: (() => void) | null }
-// Shared by toggleFullFormPetition (which starts the check) and initTunnelClhForm: a sign
-// attempt made while the check runs is kept in pendingSubmit and replayed once it ends.
-const emailCheckStates = new WeakMap();
-
 function setRequiredHiddenFields(form, status) {
   ['.firstname-input', '.lastname-input', '.zipcode-input', '.country-input'].forEach(
     (selector) => {
@@ -39,76 +33,23 @@ export const toggleFullFormPetition = () => {
 
       if (!emailInput || !fullForm) return;
 
-      let debounceTimer = null;
-      let currentController = null;
-
-      const resolveCheck = () => {
-        const { pendingSubmit } = emailCheckStates.get(form) ?? {};
-        emailCheckStates.set(form, { status: 'done', pendingSubmit: null });
-        pendingSubmit?.();
-      };
-
       emailInput.addEventListener('input', () => {
-        clearTimeout(debounceTimer);
-        currentController?.abort();
-
         const emailValue = emailInput.value.trim();
-        const isEmailValid = setEmailValidity(emailInput, emailValue);
+        // The identity fields are shown for every valid address: whether the
+        // address already signed is never asked to the server. Known signers
+        // keep their data.
+        const isValid = setEmailValidity(emailInput, emailValue);
 
-        if (!isEmailValid) {
-          emailCheckStates.delete(form);
-          fullForm.style.display = 'none';
-          setRequiredHiddenFields(form, false);
-          return;
-        }
-
-        const { pendingSubmit } = emailCheckStates.get(form) ?? {};
-        emailCheckStates.set(form, { status: 'pending', pendingSubmit: pendingSubmit ?? null });
-
-        debounceTimer = setTimeout(() => {
-          currentController = new AbortController();
-          const formData = new URLSearchParams();
-          formData.append('email', emailValue);
-
-          fetch('/wp-json/humanity/v1/check-email', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData,
-            signal: currentController.signal,
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error();
-              }
-              return response.json();
-            })
-            .then((data) => {
-              if (data.exists) {
-                fullForm.style.display = 'none';
-                setRequiredHiddenFields(form, false);
-              } else {
-                fullForm.style.display = 'flex';
-                setRequiredHiddenFields(form, true);
-              }
-              resolveCheck();
-            })
-            .catch((error) => {
-              if (error.name === 'AbortError') return;
-              fullForm.style.display = 'flex';
-              setRequiredHiddenFields(form, true);
-              resolveCheck();
-            });
-        }, 300);
+        fullForm.style.display = isValid ? 'flex' : 'none';
+        setRequiredHiddenFields(form, isValid);
       });
 
       // A browser-restored value fires no `input` event: block it if invalid.
       setEmailValidity(emailInput, emailInput.value.trim());
 
-      // Email kept by the server from a rejected tunnel signature: check it as if it had
-      // just been typed. Petition pages only get browser-restored values: validated above, but
-      // not sent to /check-email.
+      // Email kept by the server from a rejected tunnel signature: show the identity
+      // fields as if it had just been typed. Petition pages only get browser-restored
+      // values: validated above, left as they are.
       if (form.matches('.tunnel-clh-sign-form-anonymous') && emailInput.value.trim()) {
         emailInput.dispatchEvent(new Event('input'));
       }
@@ -171,8 +112,6 @@ export const initTunnelClhForm = () => {
     window.addEventListener('pageshow', (event) => {
       if (!event.persisted) return;
       pending.clear();
-      const state = emailCheckStates.get(signForm);
-      if (state) state.pendingSubmit = null;
       setPending('submission', false);
     });
 
@@ -186,23 +125,7 @@ export const initTunnelClhForm = () => {
 
     const prepareSignature = () => {
       const emailInput = signForm.querySelector('input[name="user_email"]');
-      const email = emailInput?.value.trim();
-
-      if (email) {
-        const state = emailCheckStates.get(signForm);
-        if (state?.status === 'pending') {
-          setPending('email', true);
-          emailCheckStates.set(signForm, {
-            ...state,
-            pendingSubmit: () => {
-              setPending('email', false);
-              submitForm();
-            },
-          });
-          return false;
-        }
-        return true;
-      }
+      if (emailInput?.value.trim()) return true;
 
       const emailStep = signForm.querySelector('.tunnel-clh-email-step');
       if (!emailStep) return true;
@@ -226,13 +149,6 @@ export const initTunnelClhForm = () => {
       setPending('submission', true);
       // The page normally unloads first; free the button if the POST never completes.
       window.setTimeout(() => setPending('submission', false), 15000);
-    });
-
-    // Editing the email cancels a queued signature; the visitor can submit again.
-    signForm.querySelector('.email-input')?.addEventListener('input', () => {
-      const state = emailCheckStates.get(signForm);
-      if (state) state.pendingSubmit = null;
-      setPending('email', false);
     });
 
     const submitFromMobileCta = (event) => {
