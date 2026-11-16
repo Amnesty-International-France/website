@@ -151,6 +151,9 @@ const setSubmitting = (submitter, isSubmitting) => {
   const button = submitter;
   button.disabled = isSubmitting;
   button.setAttribute('aria-busy', isSubmitting ? 'true' : 'false');
+  button.form?.dispatchEvent(
+    new CustomEvent('aif:turnstile-state', { detail: { pending: isSubmitting } }),
+  );
 };
 
 /**
@@ -289,6 +292,21 @@ Object.assign(window, {
 });
 
 /**
+ * Clears pending verification when a page is restored from the browser cache.
+ *
+ * @param {PageTransitionEvent} event Page restoration event.
+ * @returns {void}
+ */
+const resetPendingForms = (event) => {
+  if (!event.persisted) return;
+  pendingForms.forEach((form) => {
+    setSubmitting(submitters.get(form) || null, false);
+    hideMessage(form);
+  });
+  pendingForms.clear();
+};
+
+/**
  * Installs global listeners used to guard Turnstile-protected forms.
  *
  * @returns {void}
@@ -299,6 +317,7 @@ const initTurnstileForms = () => {
   initialized = true;
   document.addEventListener('click', rememberSubmitter, true);
   document.addEventListener('submit', submitWhenVerified, true);
+  window.addEventListener('pageshow', resetPendingForms);
 };
 
 /**
@@ -314,6 +333,7 @@ export const destroyTurnstileForms = () => {
   submitters = new WeakMap();
   document.removeEventListener('click', rememberSubmitter, true);
   document.removeEventListener('submit', submitWhenVerified, true);
+  window.removeEventListener('pageshow', resetPendingForms);
 };
 
 export default initTurnstileForms;

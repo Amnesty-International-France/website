@@ -1,4 +1,4 @@
-/* eslint-disable import/prefer-default-export */
+/* eslint-disable import-x/prefer-default-export */
 /**
  * Retrieve form's current data
  * @param {DOMNode} form the form element
@@ -26,4 +26,4 @@ export const getFormInputData = (form) => {
 
   return data;
 };
-/* eslint-enable import/prefer-default-export */
+/* eslint-enable import-x/prefer-default-export */

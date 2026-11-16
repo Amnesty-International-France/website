@@ -9,15 +9,7 @@ declare(strict_types=1);
  * Inserter: no
  */
 
-$signature_status = sanitize_key($_GET['signature_status'] ?? '');
-$signature_status_messages = [
-    'invalid' => 'Merci de renseigner une adresse email valide avant de signer.',
-    'missing_fields' => 'Merci de renseigner vos nom et prénom pour signer la pétition.',
-    'expired' => 'Cette pétition est terminée, merci pour votre soutien.',
-    'error' => 'Une erreur est survenue pendant la signature. Veuillez réessayer.',
-    'turnstile' => 'La vérification de sécurité a échoué. Veuillez réessayer.',
-];
-$signature_status_message = $signature_status_messages[$signature_status] ?? '';
+$signature_status_message = amnesty_get_requested_signature_status_message();
 
 $post = get_post();
 $parent = $post->post_parent;
@@ -184,7 +176,7 @@ if ($show_final_screen) {
 
                                 <?php
                                     echo do_blocks(
-                                        '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=395&lang=fr_FR&reserved_originecode=26PJPWSI02", "is_popin": true } /-->'
+                                        '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=395&lang=fr_FR&reserved_originecode=26PJPWSI02", "is_popin": true, "position": "clh_merci" } /-->'
                                     );
     ?>
                             </div>
@@ -208,16 +200,20 @@ if ($show_final_screen) {
                                         aria-label="<?php esc_attr_e('Copier le lien', 'amnesty'); ?>"
                                         role="button"
                                         tabindex="0"
-                                        data-url="<?php echo esc_url($share_url); ?>">
+                                        data-url="<?php echo esc_url($share_url); ?>"
+                                        data-gtm="clic_partage"
+                                        data-name="copier le lien">
                                         <div class="icon-container">
                                             <?php echo file_get_contents(get_template_directory() . '/assets/images/icon-copy.svg'); ?>
                                         </div>
                                         <span class="share-label"><?php esc_html_e('copier le lien', 'amnesty'); ?></span>
                                     </div>
 
-									<?php foreach ($social_network as $sn) : ?>
+									<?php foreach ($social_network as $network => $sn) : ?>
 										<a class="<?php echo esc_attr($sn['class']); ?>" target="_blank" rel="noreferrer noopener"
 										   href="<?php echo esc_url($sn['href']); ?>"
+										   data-gtm="clic_partage"
+										   data-name="<?php echo esc_attr($network); ?>"
 										   title="<?php echo esc_attr($sn['title']); ?>"
 										   aria-label="<?php echo esc_attr($sn['aria_label']); ?>">
 											<div class="icon-container">
@@ -406,7 +402,10 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 						<button type="submit"
 								form="<?php echo esc_attr($skip_form_id); ?>"
 								name="skip_petition"
-						        class="page-tunnel-clh-action-button mobile is-secondary">
+						        class="page-tunnel-clh-action-button mobile is-secondary"
+								data-gtm="clic_cta"
+								data-name="passer la petition"
+								data-value="<?php echo esc_attr((string) $next_petition['id']); ?>">
 							<span>Passer la pétition</span>
 						</button>
 					</article>

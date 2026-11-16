@@ -34,9 +34,11 @@ import { calculator, hoverDonationMenu } from './modules/donation-calculator';
 import petitionShareFeedback from './modules/social-network-clicked';
 import petitionDonateFeedback from './modules/donate-clicked';
 import {
+  clearSignatureStatusFromUrl,
   toggleFullFormPetition,
   submitCodeOrigine,
   initTunnelClhForm,
+  scrollToTunnelClhPetition,
   stepperTunnelClh,
 } from './modules/petition-form';
 import { closeUrgentBanner } from './modules/urgent-banner';
@@ -92,8 +94,10 @@ const App = () => {
   petitionShareFeedback();
   petitionDonateFeedback();
   toggleFullFormPetition();
+  clearSignatureStatusFromUrl();
   submitCodeOrigine();
   initTunnelClhForm();
+  scrollToTunnelClhPetition();
   closeUrgentBanner();
   initJetpackForm();
   edhFilters();

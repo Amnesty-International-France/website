@@ -1,10 +1,21 @@
 import { isValidEmail } from './newsletter';
 
-// État de la vérification /check-email par formulaire.
-// Valeur : { status: 'pending' | 'done', pendingSubmit: (() => void) | null }
-// Partagé entre toggleFullFormPetition (qui lance la vérif) et initTunnelClhForm :
-// si l'utilisateur tente de signer pendant que la vérif est en cours, on
-// mémorise son intention dans pendingSubmit pour la rejouer à la résolution.
+// `type="email"` accepts addresses the server rejects (`a@b`): block the common cases with
+// the server's message. The regex is looser than `is_email()`, so the server stays the
+// reference. An empty field keeps the native `required` message.
+const setEmailValidity = (emailInput, emailValue) => {
+  const isEmailValid = Boolean(isValidEmail(emailValue));
+  emailInput.setCustomValidity(
+    emailValue && !isEmailValid ? emailInput.dataset.invalidMessage : '',
+  );
+
+  return isEmailValid;
+};
+
+// State of the /check-email request, per form.
+// Value: { status: 'pending' | 'done', pendingSubmit: (() => void) | null }
+// Shared by toggleFullFormPetition (which starts the check) and initTunnelClhForm: a sign
+// attempt made while the check runs is kept in pendingSubmit and replayed once it ends.
 const emailCheckStates = new WeakMap();
 
 function setRequiredHiddenFields(form, status) {
@@ -42,8 +53,9 @@ export const toggleFullFormPetition = () => {
         currentController?.abort();
 
         const emailValue = emailInput.value.trim();
+        const isEmailValid = setEmailValidity(emailInput, emailValue);
 
-        if (!isValidEmail(emailValue)) {
+        if (!isEmailValid) {
           emailCheckStates.delete(form);
           fullForm.style.display = 'none';
           setRequiredHiddenFields(form, false);
@@ -91,12 +103,36 @@ export const toggleFullFormPetition = () => {
         }, 300);
       });
 
+      // A browser-restored value fires no `input` event: block it if invalid.
+      setEmailValidity(emailInput, emailInput.value.trim());
+
       // Email kept by the server from a rejected tunnel signature: check it as if it had
-      // just been typed. Petition pages only get browser-restored values, left as they are.
+      // just been typed. Petition pages only get browser-restored values: validated above, but
+      // not sent to /check-email.
       if (form.matches('.tunnel-clh-sign-form-anonymous') && emailInput.value.trim()) {
         emailInput.dispatchEvent(new Event('input'));
       }
     });
+};
+
+export const scrollToTunnelClhPetition = () => {
+  const container = document.getElementById('tunnel-clh-petition');
+  if (!container) return;
+
+  const scrollToPetition = () => {
+    if (!window.matchMedia('(max-width: 767px)').matches) return;
+    // Leave the visitor in place if they moved or started typing before `load`.
+    if (window.scrollY > 0 || document.activeElement?.matches('input, select, textarea')) return;
+
+    container.scrollIntoView({ behavior: 'instant', block: 'start' });
+  };
+
+  // Wait for images to settle before positioning the next petition after a reload.
+  if (document.readyState === 'complete') {
+    scrollToPetition();
+  } else {
+    window.addEventListener('load', scrollToPetition, { once: true });
+  }
 };
 
 export const initTunnelClhForm = () => {
@@ -108,6 +144,37 @@ export const initTunnelClhForm = () => {
     const mobileSignCta = card.querySelector(`[data-sign-form="${signForm.id}"]`);
 
     if (!signBtn) return;
+
+    const pending = new Set();
+    const status = document.createElement('span');
+    status.className = 'screen-reader-text';
+    status.setAttribute('role', 'status');
+    signBtn.after(status);
+
+    const setPending = (reason, active) => {
+      if (active) pending.add(reason);
+      else pending.delete(reason);
+
+      const busy = pending.size > 0;
+      signBtn.classList.toggle('is-loading', busy);
+      signBtn.setAttribute('aria-busy', String(busy));
+      // Keep the named submitter enabled so sign_petition is included in the POST.
+      signBtn.setAttribute('aria-disabled', String(busy));
+      mobileSignCta?.setAttribute('aria-disabled', String(busy));
+      status.textContent = busy ? 'Traitement en cours, veuillez patienter.' : '';
+    };
+
+    signForm.addEventListener('aif:turnstile-state', (event) => {
+      setPending('security', event.detail.pending);
+    });
+
+    window.addEventListener('pageshow', (event) => {
+      if (!event.persisted) return;
+      pending.clear();
+      const state = emailCheckStates.get(signForm);
+      if (state) state.pendingSubmit = null;
+      setPending('submission', false);
+    });
 
     const submitForm = () => {
       if (signForm.requestSubmit) {
@@ -124,11 +191,11 @@ export const initTunnelClhForm = () => {
       if (email) {
         const state = emailCheckStates.get(signForm);
         if (state?.status === 'pending') {
-          signBtn.setAttribute('aria-busy', 'true');
+          setPending('email', true);
           emailCheckStates.set(signForm, {
             ...state,
             pendingSubmit: () => {
-              signBtn.removeAttribute('aria-busy');
+              setPending('email', false);
               submitForm();
             },
           });
@@ -145,15 +212,33 @@ export const initTunnelClhForm = () => {
     };
 
     signBtn.addEventListener('click', (e) => {
-      if (!prepareSignature()) {
+      if (pending.size > 0 || !prepareSignature()) {
         e.preventDefault();
       }
+    });
+
+    signForm.addEventListener('submit', (event) => {
+      if (event.defaultPrevented) return;
+      if (pending.has('submission') || !prepareSignature()) {
+        event.preventDefault();
+        return;
+      }
+      setPending('submission', true);
+      // The page normally unloads first; free the button if the POST never completes.
+      window.setTimeout(() => setPending('submission', false), 15000);
+    });
+
+    // Editing the email cancels a queued signature; the visitor can submit again.
+    signForm.querySelector('.email-input')?.addEventListener('input', () => {
+      const state = emailCheckStates.get(signForm);
+      if (state) state.pendingSubmit = null;
+      setPending('email', false);
     });
 
     const submitFromMobileCta = (event) => {
       event.preventDefault();
 
-      if (!prepareSignature()) return;
+      if (pending.size > 0 || !prepareSignature()) return;
 
       submitForm();
     };
@@ -192,6 +277,19 @@ export const stepperTunnelClh = () => {
   Array.from(stepper.children)
     .slice(0, limit)
     .forEach((child) => child.classList.add('is-checked'));
+};
+
+// The server adds `signature_status` to the petition page address when it rejects a
+// signature. Removing it once the page shows the error keeps the form posting to the clean
+// address (`action=""`), so a retry or a reload does not show that error again.
+export const clearSignatureStatusFromUrl = () => {
+  if (!document.querySelector('.signature-petition-form')) return;
+
+  const url = new URL(window.location.href);
+  if (!url.searchParams.has('signature_status')) return;
+
+  url.searchParams.delete('signature_status');
+  window.history.replaceState(window.history.state, '', url);
 };
 
 export const submitCodeOrigine = () => {

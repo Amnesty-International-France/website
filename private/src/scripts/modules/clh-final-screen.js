@@ -7,7 +7,7 @@ const clearStoredPetition = (container) => {
 
   try {
     window.localStorage.removeItem(storageKey);
-  } catch (error) {
+  } catch {
     // Local storage can be unavailable in private browsing contexts.
   }
 };

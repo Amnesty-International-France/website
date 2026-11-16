@@ -168,7 +168,7 @@ export const httpsOnly = (string) => {
     url.protocol = 'https:';
 
     return sanitizeUrl(url.toString());
-  } catch (e) {
+  } catch {
     // not a proper url yet
     return string;
   }

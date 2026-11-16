@@ -62,10 +62,7 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
                         'Origine__c' => getenv('AIF_SALESFORCE_ORIGINE__C'),
                     ]);
                 } else {
-                    update_salesforce_users($get_salesforce_user['records'][0]['Id'], [
-                        ...$data,
-                        'Optout_toute_communication__c' => false,
-                    ]);
+                    update_salesforce_users($get_salesforce_user['records'][0]['Id'], $data);
                 }
             }
 
@@ -95,12 +92,6 @@ if (!is_admin() && (!defined('REST_REQUEST') || !REST_REQUEST)) {
                         ]
                     );
                 }
-            }
-
-            $lead_on_sf = get_salesforce_nl_lead($email);
-
-            if (is_array($lead_on_sf) && $lead_on_sf['totalSize'] > 0) {
-                deleting_lead_on_salesforce($lead_on_sf['records'][0]['Id']);
             }
 
             wp_redirect(add_query_arg([

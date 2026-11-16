@@ -1,5 +1,3 @@
-/* eslint-disable react/display-name */
-
 const { Fragment } = wp.element;
 const { InspectorControls } = wp.blockEditor;
 const { PanelBody } = wp.components;

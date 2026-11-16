@@ -29,6 +29,9 @@
         <testsuite name="Patterns">
             <directory>tests/Patterns</directory>
         </testsuite>
+        <testsuite name="Events">
+            <directory>tests/Events</directory>
+        </testsuite>
         <testsuite name="Riposte">
             <directory>tests/Riposte</directory>
         </testsuite>

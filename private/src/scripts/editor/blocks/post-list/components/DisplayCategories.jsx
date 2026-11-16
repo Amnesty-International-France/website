@@ -126,11 +126,8 @@ class DisplayCategories extends Component {
 
   static alterResults = (response) =>
     response.map((resp) => {
-      // eslint-disable-next-line no-underscore-dangle
       let tags = [];
-      // eslint-disable-next-line no-underscore-dangle
       if (resp._embedded['wp:term']) {
-        // eslint-disable-next-line no-underscore-dangle
         tags = resp._embedded['wp:term']
           .reduce((prev, curr) => [...prev, ...curr], [])
           .map((tag) => ({

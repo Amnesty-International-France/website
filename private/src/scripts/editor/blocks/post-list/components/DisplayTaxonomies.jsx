@@ -129,7 +129,6 @@ class DisplayTaxonomies extends Component {
 
           return {
             ...p,
-            // eslint-disable-next-line no-underscore-dangle
             featured_image: p._embedded['wp:featuredmedia'][0].source_url || false,
           };
         });
@@ -191,7 +190,6 @@ class DisplayTaxonomies extends Component {
 
   static alterResults = (response) =>
     response.map((resp) => {
-      // eslint-disable-next-line no-underscore-dangle
       const tags = resp._embedded['wp:term']
         .reduce((prev, curr) => [...prev, ...curr], [])
         .map((tag) => ({
@@ -202,7 +200,6 @@ class DisplayTaxonomies extends Component {
       let featuredImage = false;
 
       if (resp.featured_media || resp.featured_media > 0) {
-        // eslint-disable-next-line no-underscore-dangle
         featuredImage = resp._embedded['wp:featuredmedia'][0].source_url || false;
       }
 
