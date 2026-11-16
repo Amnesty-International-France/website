@@ -2,9 +2,13 @@ const ChipCategory = ({ item }) => {
   let label = '';
   let slug = '';
 
+  // Items of the articles-homepage block store their chip; events still come with `_embedded`.
+  const storedChip = item?.selectedPostChip;
   const category = item?._embedded?.['wp:term']?.[0]?.[0];
 
-  if (category) {
+  if (storedChip) {
+    ({ label, slug } = storedChip);
+  } else if (category) {
     label = category?.acf?.category_singular_name || '';
     slug = category?.slug || '';
   } else if (item?.category === 'landmark') {
