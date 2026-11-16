@@ -153,10 +153,15 @@ if (!function_exists('amnesty_get_clh_petition_tunnel_page')) {
             return $cache;
         }
 
-        $clh_page = get_page_by_path('nous-connaitre/nos-combats/changez-leur-histoire/campagne');
+        // The tunnel lives under the "Changez leur histoire" page at the root of the site (CLH-49);
+        // the one under the historical page in "Nos combats" is only the fallback while the root
+        // tunnel does not exist (preprod still has the historical tree).
+        foreach (['changez-leur-histoire/campagne', 'nous-connaitre/nos-combats/changez-leur-histoire/campagne'] as $path) {
+            $clh_page = get_page_by_path($path);
 
-        if ($clh_page instanceof WP_Post) {
-            return $cache = $clh_page;
+            if ($clh_page instanceof WP_Post) {
+                return $cache = $clh_page;
+            }
         }
 
         return $cache = null;
@@ -167,14 +172,9 @@ if (!function_exists('amnesty_get_clh_petition_tunnel_url')) {
     function amnesty_get_clh_petition_tunnel_url(): string
     {
         $clh_page = amnesty_get_clh_petition_tunnel_page();
+        $clh_permalink = $clh_page ? get_permalink($clh_page) : false;
 
-        if ($clh_page) {
-            $clh_permalink = get_permalink($clh_page);
-
-            return $clh_permalink ?: home_url('/nous-connaitre/nos-combats/changez-leur-histoire/campagne/');
-        }
-
-        return home_url('/nous-connaitre/nos-combats/changez-leur-histoire/campagne/');
+        return $clh_permalink ?: home_url('/changez-leur-histoire/campagne/');
     }
 }
 

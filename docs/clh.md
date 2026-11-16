@@ -37,7 +37,9 @@ All the code lives in the theme, `wp-content/themes/humanity-theme`.
   date (`date_de_fin`), a "Titre CLH" (`short_title`) and a "Description CLH"
   (`short_description`).
 - **Signature tunnel**: sub-pages of the campaign page (`campagne`, `merci`), active only
-  while the campaign is in progress.
+  while the campaign is in progress. `amnesty_get_clh_petition_tunnel_page()` looks for
+  `/changez-leur-histoire/campagne/` first, then `/nous-connaitre/nos-combats/changez-leur-histoire/campagne/`
+  as a fallback; without either page, the URL defaults to the root path.
 
 The existing campaign helpers are in `includes/post-types/petitions.php`; the page
 helpers below are in `includes/clh/helpers.php`.
