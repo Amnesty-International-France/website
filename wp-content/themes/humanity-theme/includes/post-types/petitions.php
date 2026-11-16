@@ -2,6 +2,7 @@
 
 require_once dirname(__DIR__) . '/clh/tunnel-selection.php';
 require_once dirname(__DIR__) . '/clh/tunnel-form-retry.php';
+require_once dirname(__DIR__) . '/petitions/signature-status.php';
 
 function amnesty_register_petitions_cpt()
 {
@@ -871,8 +872,7 @@ function amnesty_handle_petition_signature(): void
 
     $raw_email = $_POST['user_email'] ?? null;
     if ((!$raw_email && !$is_clh_tunnel_submission) || !$petition_id) {
-        wp_redirect(add_query_arg('signature_status', 'invalid', amnesty_get_petition_form_fallback_url($petition_id)));
-        exit;
+        amnesty_redirect_petition_signature_error($petition_id, 'invalid', $is_clh_tunnel_submission);
     }
 
     $turnstile_error = $is_clh_tunnel_submission ? amnesty_verify_clh_tunnel_turnstile() : verify_turnstile();
@@ -900,12 +900,7 @@ function amnesty_handle_petition_signature(): void
     $type = amnesty_get_petition_type($petition_id) ?: 'petition';
 
     if (!amnesty_is_petition_not_expired($petition_id)) {
-        $fallback_url = $is_clh_tunnel_submission
-            ? amnesty_get_clh_petition_tunnel_url()
-            : amnesty_get_petition_form_fallback_url($petition_id);
-
-        wp_redirect(add_query_arg('signature_status', 'expired', $fallback_url));
-        exit;
+        amnesty_redirect_petition_signature_error($petition_id, 'expired', $is_clh_tunnel_submission);
     }
 
     $local_user = get_local_user($user_email);
@@ -936,8 +931,7 @@ function amnesty_handle_petition_signature(): void
         $user_id = insert_user($civility, $firstname, $lastname, $user_email, $country, $postal_code, $phone);
 
         if ($user_id === false) {
-            wp_redirect(add_query_arg('signature_status', 'error', amnesty_get_petition_form_fallback_url($petition_id)));
-            exit;
+            amnesty_redirect_petition_signature_error($petition_id, 'error', $is_clh_tunnel_submission);
         }
     }
 
@@ -946,8 +940,7 @@ function amnesty_handle_petition_signature(): void
 
     if (!$already_signed) {
         if (insert_petition_signature($petition_id, $user_id, date('Y-m-d'), $code_origine, $message) === false) {
-            wp_redirect(add_query_arg('signature_status', 'error', amnesty_get_petition_form_fallback_url($petition_id)));
-            exit;
+            amnesty_redirect_petition_signature_error($petition_id, 'error', $is_clh_tunnel_submission);
         }
 
         $current_signatures = amnesty_get_petition_signature_count($petition_id);

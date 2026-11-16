@@ -6,10 +6,14 @@ import {
 } from '../../../src/scripts/modules/petition-form';
 import initTurnstileForms, { destroyTurnstileForms } from '../../../src/scripts/modules/turnstile';
 
+// Rendered by the email input pattern (petition-form-fields.php).
+const INVALID_EMAIL_MESSAGE = 'Adresse email invalide.';
+
 const buildForm = (className, email) => {
   document.body.innerHTML = `
     <form class="${className}">
-      <input class="email-input" type="email" name="user_email" value="${email}">
+      <input class="email-input" type="email" name="user_email" value="${email}"
+             data-invalid-message="${INVALID_EMAIL_MESSAGE}" required>
       <div class="full-form" style="display: none">
         <input class="firstname-input" name="user_firstname">
       </div>
@@ -21,12 +25,23 @@ const buildForm = (className, email) => {
 
 const buildTunnelForm = (email) => buildForm('tunnel-clh-sign-form-anonymous', email);
 
+const typeEmail = (emailInput, email) => {
+  // eslint-disable-next-line no-param-reassign
+  emailInput.value = email;
+  emailInput.dispatchEvent(new Event('input'));
+};
+
 describe('toggleFullFormPetition', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.stubGlobal(
       'fetch',
-      vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ exists: false }) })),
+      vi.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ exists: false }),
+        }),
+      ),
     );
   });
 
@@ -64,6 +79,52 @@ describe('toggleFullFormPetition', () => {
     await vi.advanceTimersByTimeAsync(300);
 
     expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['petition page', 'signature-petition-form'],
+    ['tunnel', 'tunnel-clh-sign-form-anonymous'],
+  ])('blocks the submit of an invalid typed email on the %s', (_, className) => {
+    buildForm(className, '');
+    const emailInput = document.querySelector('.email-input');
+
+    toggleFullFormPetition();
+    typeEmail(emailInput, 'a@b');
+
+    expect(emailInput.validity.customError).toBe(true);
+    expect(emailInput.validationMessage).toBe(INVALID_EMAIL_MESSAGE);
+  });
+
+  it('blocks the submit of an invalid email restored by the browser on the petition page', () => {
+    buildForm('signature-petition-form', 'a@b');
+    const emailInput = document.querySelector('.email-input');
+
+    toggleFullFormPetition();
+
+    expect(emailInput.validationMessage).toBe(INVALID_EMAIL_MESSAGE);
+  });
+
+  it('lets the submit through once the typed email is valid', () => {
+    buildTunnelForm('');
+    const emailInput = document.querySelector('.email-input');
+
+    toggleFullFormPetition();
+    typeEmail(emailInput, 'a@b');
+    typeEmail(emailInput, 'ada@example.org');
+
+    expect(emailInput.validity.customError).toBe(false);
+  });
+
+  it('leaves an emptied email field to the native required message', () => {
+    buildTunnelForm('');
+    const emailInput = document.querySelector('.email-input');
+
+    toggleFullFormPetition();
+    typeEmail(emailInput, 'a@b');
+    typeEmail(emailInput, '');
+
+    expect(emailInput.validity.customError).toBe(false);
+    expect(emailInput.validity.valueMissing).toBe(true);
   });
 });
 
