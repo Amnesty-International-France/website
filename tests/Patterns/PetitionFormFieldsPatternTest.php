@@ -21,6 +21,7 @@ final class PetitionFormFieldsPatternTest extends TestCase
     protected function setUp(): void
     {
         require_once __DIR__ . '/stubs.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petitions/signature-status.php';
 
         $GLOBALS['__phpunit_transients']['amnesty_fiche_pays_list'] = [(object) ['ID' => 1], (object) ['ID' => 2]];
         $GLOBALS['__phpunit_post_titles'] = [1 => 'Belgique', 2 => 'France'];
@@ -122,6 +123,17 @@ final class PetitionFormFieldsPatternTest extends TestCase
         $html = $this->render(['form_values' => ['civility' => 'Dr']]);
 
         self::assertSame([], self::selected($html, '//input[@name="civility"][@checked]'));
+    }
+
+    public function testEmailInputCarriesTheServerInvalidEmailMessage(): void
+    {
+        $input = $this->render([])->query('//input[@name="user_email"]')->item(0);
+
+        self::assertInstanceOf(DOMElement::class, $input);
+        self::assertSame(
+            'Merci de renseigner une adresse email valide avant de signer.',
+            $input->getAttribute('data-invalid-message'),
+        );
     }
 
     public function testIncluderCivilityIsKeptWithoutTypedCivility(): void
