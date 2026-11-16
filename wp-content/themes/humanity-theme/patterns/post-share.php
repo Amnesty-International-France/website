@@ -13,6 +13,9 @@ if (! $show_share_icons) {
     return;
 }
 
+// The tag plan tracks these buttons on the "Changez leur histoire" page only.
+$track_share = 'clh_accueil' === aif_get_clh_page_type();
+
 spaceless();
 
 ?>
@@ -21,21 +24,24 @@ spaceless();
 	<p class="title">Partager</p>
 	<a class="article-shareFacebook" target="_blank" rel="noreferrer noopener"
 	href="https://www.facebook.com/sharer.php?u=<?php echo rawurlencode(get_permalink()); ?>"
-	title="<?php esc_attr_e('Share on Facebook', 'amnesty'); ?>">
+	title="<?php esc_attr_e('Share on Facebook', 'amnesty'); ?>"
+	<?php if ($track_share) : ?>data-gtm="clic_partage" data-name="facebook"<?php endif; ?>>
 		<div class="icon-container">
 			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-facebook.svg'); ?>
 		</div>
 	</a>
 	<a class="article-shareBluesky" target="_blank" rel="noreferrer noopener"
 	href="https://bsky.app/intent/compose?text=<?php echo urlencode(get_the_title() . ' ' . get_permalink()); ?>"
-	title="<?php esc_attr_e('Share on Bluesky', 'amnesty'); ?>">
+	title="<?php esc_attr_e('Share on Bluesky', 'amnesty'); ?>"
+	<?php if ($track_share) : ?>data-gtm="clic_partage" data-name="bluesky"<?php endif; ?>>
 		<div class="icon-container">
 			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-bluesky.svg'); ?>
 		</div>
 	</a>
 	<a class="article-shareMastodon" target="_blank" rel="noreferrer noopener"
 	href="https://mastodon.social/share?text=<?php echo urlencode(get_the_title() . ' ' . get_permalink()); ?>"
-	title="<?php esc_attr_e('Share on Mastodon', 'amnesty'); ?>">
+	title="<?php esc_attr_e('Share on Mastodon', 'amnesty'); ?>"
+	<?php if ($track_share) : ?>data-gtm="clic_partage" data-name="mastodon"<?php endif; ?>>
 		<div class="icon-container">
 			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-mastodon.svg'); ?>
 		</div>
@@ -46,6 +52,7 @@ spaceless();
 		aria-label="<?php esc_attr_e('Copier le lien', 'amnesty'); ?>"
 		title="<?php esc_attr_e('Copier le lien', 'amnesty'); ?>"
 		data-url="<?php echo esc_url(get_permalink()); ?>"
+		<?php if ($track_share) : ?>data-gtm="clic_partage" data-name="copier le lien"<?php endif; ?>
 	>
 		<div class="icon-container">
 			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-copy.svg'); ?>
@@ -53,7 +60,8 @@ spaceless();
 	</div>
 	<a class="article-shareEmail" target="_blank" rel="noreferrer noopener"
 	href="mailto:?subject=<?php echo rawurlencode(get_the_title()); ?>&body=<?php echo rawurlencode(get_the_title() . "\n\n" . get_permalink()); ?>"
-	title="<?php esc_attr_e('Partager par email', 'amnesty'); ?>">
+	title="<?php esc_attr_e('Partager par email', 'amnesty'); ?>"
+	<?php if ($track_share) : ?>data-gtm="clic_partage" data-name="email"<?php endif; ?>>
 		<div class="icon-container">
 			<?php echo file_get_contents(get_template_directory() . '/assets/images/icon-mail.svg'); ?>
 		</div>

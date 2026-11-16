@@ -769,10 +769,13 @@ function amnesty_redirect_clh_petition_tunnel_page(): void
 
     $signed_count = (int) ($context['signed_count'] ?? 0);
     $is_final_page = amnesty_is_clh_tunnel_final_page();
+    // The last signature of the tunnel lands here: its form_submit args follow it to the
+    // thank-you page.
+    $thanks_url = add_query_arg(aif_get_form_submit_tracking_args($_GET), amnesty_get_clh_petition_tunnel_thanks_url());
 
     if ($signed_count >= 10) {
         if (!$is_final_page) {
-            wp_redirect(amnesty_get_clh_petition_tunnel_thanks_url());
+            wp_redirect($thanks_url);
             exit;
         }
 
@@ -784,7 +787,7 @@ function amnesty_redirect_clh_petition_tunnel_page(): void
             return;
         }
 
-        wp_redirect(amnesty_get_clh_petition_tunnel_thanks_url());
+        wp_redirect($thanks_url);
         exit;
     }
 
@@ -952,31 +955,25 @@ function amnesty_handle_petition_signature(): void
         update_post_meta($petition_id, '_amnesty_signature_count', $new_signatures);
     }
 
-    $gtm_type = 'petition';
-    $gtm_name = get_the_title($petition_id);
+    $gtm_args = [
+        'gtm_type' => 'petition',
+        'gtm_name' => urlencode(get_the_title($petition_id)),
+    ];
 
     if ($is_clh_petition) {
         amnesty_set_clh_signer_email($user_email);
 
         amnesty_set_clh_signed_petition($petition_id);
+
+        // Read by the form_submit push of the tag plan. An address that already signed
+        // gets them too, so the response never tells whether it signed.
+        $gtm_args['gtm_petition_id'] = (string) $petition_id;
+        $gtm_args['gtm_context'] = $is_clh_tunnel_submission ? 'tunnel' : 'fiche_petition';
     }
 
     $redirect_url = $is_clh_petition && amnesty_get_clh_signed_petition_count_for_browser() >= 10
-        ? add_query_arg(
-            [
-                'gtm_type' => $gtm_type,
-                'gtm_name' => urlencode($gtm_name),
-            ],
-            amnesty_get_clh_petition_tunnel_thanks_url()
-        )
-        : amnesty_get_petition_signature_redirect_url(
-            $petition_id,
-            [
-                'gtm_type' => $gtm_type,
-                'gtm_name' => urlencode($gtm_name),
-            ],
-            $is_clh_petition
-        );
+        ? add_query_arg($gtm_args, amnesty_get_clh_petition_tunnel_thanks_url())
+        : amnesty_get_petition_signature_redirect_url($petition_id, $gtm_args, $is_clh_petition);
 
     wp_redirect($redirect_url);
     exit;

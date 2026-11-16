@@ -21,6 +21,7 @@ if (! function_exists('render_donation_calculator_block')) {
         $href        = $attributes['href'] ?? '';
         $rate        = $attributes['rate'] ?? 66;
         $is_popin     = $attributes['is_popin'] ?? false;
+        $position    = $attributes['position'] ?? '';
 
         if (! in_array($rate, [ 66, 75 ], true)) {
             $taux = 66;
@@ -34,6 +35,7 @@ if (! function_exists('render_donation_calculator_block')) {
             'href'        => $href,
             'rate'        => $rate,
             'is_popin'     => $is_popin,
+            'position'    => $position,
         ];
 
         ob_start();

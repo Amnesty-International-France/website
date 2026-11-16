@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 <div class="page-tunnel-clh-petition-actions">
 	<button type="submit" form="<?php echo esc_attr($skip_form_id); ?>" name="skip_petition"
-	        class="page-tunnel-clh-action-button is-secondary">
+	        class="page-tunnel-clh-action-button is-secondary"
+	        data-gtm="clic_cta"
+	        data-name="passer la petition"
+	        data-value="<?php echo esc_attr((string) $next_petition['id']); ?>">
 		<span>Passer la pétition</span>
 	</button>
 	<button type="submit" form="<?php echo esc_attr($sign_form_id); ?>" name="sign_petition"

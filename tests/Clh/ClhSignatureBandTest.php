@@ -40,6 +40,26 @@ final class ClhSignatureBandTest extends TestCase
         self::assertStringContainsString('99 %', $html);
     }
 
+    #[DataProvider('trackingPositions')]
+    public function testSignButtonCarriesTheTagPlanPosition(string $variant, string $position): void
+    {
+        $GLOBALS['__phpunit_clh_tunnel_active'] = true;
+        $GLOBALS['__phpunit_clh_campaign_petitions'] = [(object) ['ID' => 1]];
+        $GLOBALS['__phpunit_clh_signature_counts'] = [1 => 10];
+
+        self::assertStringContainsString(
+            'data-gtm="clic_cta" data-name="je signe" data-position="' . $position . '"',
+            $this->render($variant)
+        );
+    }
+
+    public static function trackingPositions(): iterable
+    {
+        yield 'banner' => ['banner', 'bandeau_haut'];
+        yield 'reminder' => ['reminder', 'bandeau_bas'];
+        yield 'sticky' => ['sticky', 'sticky'];
+    }
+
     #[DataProvider('variants')]
     public function testExceededTargetKeepsProgressWithinAriaRange(string $variant): void
     {
