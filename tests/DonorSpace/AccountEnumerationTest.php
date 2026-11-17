@@ -197,13 +197,12 @@ final class AccountEnumerationTest extends TestCase
         $this->login(self::UNKNOWN, 'whatever');
         self::assertLessThanOrEqual($window_end, $GLOBALS['__phpunit_transient_expirations'][$key]);
 
-        // Then the window started 15 minutes ago.
-
         for ($i = 3; $i <= AIF_LOGIN_RATE_LIMIT_MAX_ATTEMPTS + 1; $i++) {
             $this->login(self::UNKNOWN, 'whatever');
         }
         self::assertStringContainsString(AIF_LOGIN_RATE_LIMIT_MESSAGE, $this->login(self::UNKNOWN, 'whatever'));
 
+        // Then the window started 15 minutes ago.
         $GLOBALS['__phpunit_transients'][$key]['start'] -= AIF_LOGIN_RATE_LIMIT_WINDOW;
 
         self::assertStringContainsString('Mauvais email ou mot de passe', $this->login(self::UNKNOWN, 'whatever'));
