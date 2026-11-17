@@ -23,9 +23,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
     // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only hashed, sanitizing would change the password.
     $password = $_POST['password'];
 
-    // Counted before anything looks at the address, so a blocked client gets
+    // Checked before anything looks at the address, so a blocked client gets
     // the same answer whether or not the address has an account.
-    if (!aif_register_login_attempt_from_ip()) {
+    if (aif_login_blocked_for_seconds() > 0) {
         $title = 'Une erreur est survenue';
         $error_message = AIF_LOGIN_RATE_LIMIT_MESSAGE;
     } elseif (($turnstile_error = verify_turnstile()) !== null) {
@@ -41,6 +41,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
         $password_hash = $stored_user ? $stored_user->user_pass : wp_hash_password('aif-unknown-account');
         $password_matches = wp_check_password($password, $password_hash, $stored_user ? $stored_user->ID : '');
         if (!$stored_user || !$password_matches) {
+            aif_register_failed_login_from_ip();
             $error_message = 'Mauvais email ou mot de passe';
         } elseif (!aif_is_subscriber($stored_user)) {
             $error_message = "Ce compte ne permet pas d'accéder à l'Espace Don.";

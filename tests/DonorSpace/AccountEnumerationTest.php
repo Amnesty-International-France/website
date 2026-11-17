@@ -185,6 +185,29 @@ final class AccountEnumerationTest extends TestCase
         self::assertStringContainsString('Mauvais email ou mot de passe', $this->login(self::UNKNOWN, 'whatever'));
     }
 
+    public function testLoginLimitOnlyCountsWrongPasswords(): void
+    {
+        delete_user_meta(5, 'email-verfied');
+
+        for ($i = 1; $i <= AIF_LOGIN_RATE_LIMIT_MAX_ATTEMPTS + 1; $i++) {
+            self::assertStringContainsString('pas encore vérifié', $this->login(self::KNOWN, 'right-password'), "Attempt {$i}");
+        }
+    }
+
+    public function testLoginLimitCountsAnIpv6Slash64AsOneClient(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '2001:db8:1:1::1';
+        for ($i = 1; $i <= AIF_LOGIN_RATE_LIMIT_MAX_ATTEMPTS; $i++) {
+            $this->login(self::UNKNOWN, 'whatever');
+        }
+
+        $_SERVER['REMOTE_ADDR'] = '2001:db8:1:1:5990:dc6c:ef4:c25';
+        self::assertStringContainsString(AIF_LOGIN_RATE_LIMIT_MESSAGE, $this->login(self::UNKNOWN, 'whatever'));
+
+        $_SERVER['REMOTE_ADDR'] = '2001:db8:1:2::1';
+        self::assertStringContainsString('Mauvais email ou mot de passe', $this->login(self::UNKNOWN, 'whatever'));
+    }
+
     public function testLoginLimitWindowIsNotExtendedByLaterAttempts(): void
     {
         $this->login(self::UNKNOWN, 'whatever');

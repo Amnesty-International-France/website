@@ -48,31 +48,59 @@ if (!defined('AIF_LOGIN_RATE_LIMIT_WINDOW')) {
 const AIF_LOGIN_RATE_LIMIT_MESSAGE = 'Trop de tentatives de connexion. Veuillez réessayer dans quelques minutes.';
 
 /**
- * Counts a donor space login attempt for the client IP and tells whether it
- * may go on: at most AIF_LOGIN_RATE_LIMIT_MAX_ATTEMPTS attempts per
- * AIF_LOGIN_RATE_LIMIT_WINDOW seconds, from the first attempt of the window.
+ * Transient key of the client for the donor space login limit: at most
+ * AIF_LOGIN_RATE_LIMIT_MAX_ATTEMPTS failed logins per
+ * AIF_LOGIN_RATE_LIMIT_WINDOW seconds, from the first failure of the window.
  *
- * The IP is REMOTE_ADDR, as in verify_turnstile(): the site does not read
- * CF-Connecting-IP anywhere, so the web server must restore the visitor's IP
- * when it sits behind Cloudflare.
+ * The IP is REMOTE_ADDR, as in verify_turnstile(). Behind Cloudflare, the
+ * cloudflare plugin sets it to CF-Connecting-IP on plugins_loaded.
  */
-function aif_register_login_attempt_from_ip()
+function aif_login_rate_limit_key()
 {
-    $key = 'aif_login_ip_' . wp_hash(sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? '')));
-    $now = time();
-    $window = get_transient($key);
-
-    if (!is_array($window) || !isset($window['start'], $window['count']) || $window['start'] + AIF_LOGIN_RATE_LIMIT_WINDOW <= $now) {
-        $window = ['start' => $now, 'count' => 0];
+    $ip = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? ''));
+    $packed = inet_pton($ip);
+    // One IPv6 /64 is one home, office or phone, whose devices pick any
+    // address in it: count the whole block as one client.
+    if ($packed !== false && strlen($packed) === 16) {
+        $ip = inet_ntop(substr($packed, 0, 8) . str_repeat("\0", 8));
     }
 
-    if ($window['count'] >= AIF_LOGIN_RATE_LIMIT_MAX_ATTEMPTS) {
-        return false;
+    return 'aif_login_ip_' . wp_hash($ip);
+}
+
+/**
+ * Current window of the client: when it started and how many logins failed
+ * in it.
+ *
+ * @return array{start: int, count: int}
+ */
+function aif_login_rate_limit_window()
+{
+    $window = get_transient(aif_login_rate_limit_key());
+
+    if (!is_array($window) || !isset($window['start'], $window['count']) || $window['start'] + AIF_LOGIN_RATE_LIMIT_WINDOW <= time()) {
+        return ['start' => time(), 'count' => 0];
     }
 
+    return $window;
+}
+
+/** Seconds until the client may try again, or 0 if it is not blocked. */
+function aif_login_blocked_for_seconds()
+{
+    $window = aif_login_rate_limit_window();
+
+    if ($window['count'] < AIF_LOGIN_RATE_LIMIT_MAX_ATTEMPTS) {
+        return 0;
+    }
+
+    return max(1, $window['start'] + AIF_LOGIN_RATE_LIMIT_WINDOW - time());
+}
+
+function aif_register_failed_login_from_ip()
+{
+    $window = aif_login_rate_limit_window();
     $window['count']++;
     // Keep the window's end: rewriting the transient must not extend it.
-    set_transient($key, $window, max(1, $window['start'] + AIF_LOGIN_RATE_LIMIT_WINDOW - $now));
-
-    return true;
+    set_transient(aif_login_rate_limit_key(), $window, max(1, $window['start'] + AIF_LOGIN_RATE_LIMIT_WINDOW - time()));
 }
