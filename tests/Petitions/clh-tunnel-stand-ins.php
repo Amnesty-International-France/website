@@ -19,6 +19,14 @@ if (!function_exists('is_ssl')) {
     }
 }
 
+if (!function_exists('amnesty_write_clh_tunnel_cookie')) {
+    /** Records the tunnel cookies a handler sends, with their options, instead of sending them. */
+    function amnesty_write_clh_tunnel_cookie(string $name, string $value, array $options): void
+    {
+        $GLOBALS['__phpunit_clh_cookie_writes'][$name] = ['value' => $value] + $options;
+    }
+}
+
 if (!class_exists('ClhRedirect')) {
     /** Thrown by the wp_redirect() stand-in, so tests can read where a handler redirects. */
     final class ClhRedirect extends RuntimeException
