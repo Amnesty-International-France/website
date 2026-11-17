@@ -25,7 +25,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
 
     // Checked before anything looks at the address, so a blocked client gets
     // the same answer whether or not the address has an account.
-    if (aif_login_blocked_for_seconds() > 0) {
+    $blocked_for = aif_login_blocked_for_seconds();
+    if ($blocked_for > 0) {
+        status_header(429);
+        header('Retry-After: ' . $blocked_for);
         $title = 'Une erreur est survenue';
         $error_message = AIF_LOGIN_RATE_LIMIT_MESSAGE;
     } elseif (($turnstile_error = verify_turnstile()) !== null) {

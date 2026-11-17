@@ -49,6 +49,11 @@ function get_header(): void
 {
 }
 
+function status_header(int $code, string $description = ''): void
+{
+    $GLOBALS['__phpunit_status_header'] = $code;
+}
+
 function get_footer(): void
 {
 }

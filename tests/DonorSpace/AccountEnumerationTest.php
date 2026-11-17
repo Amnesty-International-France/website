@@ -167,6 +167,7 @@ final class AccountEnumerationTest extends TestCase
 
         self::assertStringContainsString(AIF_LOGIN_RATE_LIMIT_MESSAGE, $this->alerts($known));
         self::assertSame($this->alerts($known), $this->alerts($unknown));
+        self::assertSame(429, $GLOBALS['__phpunit_status_header']);
         // Blocked before the account, the password or Salesforce is looked at.
         self::assertSame([], $GLOBALS['__phpunit_password_checks']);
         self::assertSame([], $GLOBALS['__phpunit_signons']);
