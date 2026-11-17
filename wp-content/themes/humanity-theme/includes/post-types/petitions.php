@@ -542,15 +542,25 @@ function amnesty_get_clh_tunnel_cookie_options(int $expires): array
     ];
 }
 
+if (!function_exists('amnesty_write_clh_tunnel_cookie')) {
+    /**
+     * Sends a tunnel cookie. A seam for the tests, which record the cookies instead of sending them.
+     */
+    function amnesty_write_clh_tunnel_cookie(string $name, string $value, array $options): void
+    {
+        setcookie($name, $value, $options);
+    }
+}
+
 function amnesty_set_clh_tunnel_cookie(string $name, string $value): void
 {
-    setcookie($name, $value, amnesty_get_clh_tunnel_cookie_options(time() + AMNESTY_CLH_TUNNEL_STATE_TTL));
+    amnesty_write_clh_tunnel_cookie($name, $value, amnesty_get_clh_tunnel_cookie_options(time() + AMNESTY_CLH_TUNNEL_STATE_TTL));
     $_COOKIE[$name] = $value; // Visible to the rest of the current request.
 }
 
 function amnesty_expire_clh_tunnel_cookie(string $name): void
 {
-    setcookie($name, '', amnesty_get_clh_tunnel_cookie_options(time() - 3600));
+    amnesty_write_clh_tunnel_cookie($name, '', amnesty_get_clh_tunnel_cookie_options(time() - 3600));
     unset($_COOKIE[$name]);
 }
 
@@ -560,7 +570,7 @@ function amnesty_expire_clh_tunnel_cookie(string $name): void
  */
 function amnesty_is_clh_tunnel_state_active(): bool
 {
-    return ($_COOKIE['clh_tunnel_active'] ?? '') === '1';
+    return isset($_COOKIE['clh_tunnel_active']) && $_COOKIE['clh_tunnel_active'] === '1';
 }
 
 /**

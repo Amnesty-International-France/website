@@ -245,12 +245,16 @@ final class ClhTunnelContextTest extends TestCase
 
     public function testTunnelCookiesExpireAfterFifteenMinutes(): void
     {
-        $options = amnesty_get_clh_tunnel_cookie_options(time() + AMNESTY_CLH_TUNNEL_STATE_TTL);
+        $GLOBALS['__phpunit_clh_cookie_writes'] = [];
 
-        self::assertSame(15 * 60, AMNESTY_CLH_TUNNEL_STATE_TTL);
-        self::assertEqualsWithDelta(time() + 15 * 60, $options['expires'], 2);
-        self::assertTrue($options['httponly']);
-        self::assertSame('Strict', $options['samesite']);
+        amnesty_set_clh_signed_petition(101);
+
+        $writes = $GLOBALS['__phpunit_clh_cookie_writes'];
+        foreach (['clh_signed_petition_101', 'clh_tunnel_active'] as $name) {
+            self::assertEqualsWithDelta(time() + 15 * 60, $writes[$name]['expires'], 2, $name);
+            self::assertTrue($writes[$name]['httponly'], $name);
+            self::assertSame('Strict', $writes[$name]['samesite'], $name);
+        }
     }
 
     public function testProgressWithoutActivityMarkerIsIgnored(): void
@@ -299,9 +303,17 @@ final class ClhTunnelContextTest extends TestCase
         $_COOKIE = ['clh_tunnel_active' => '1', 'clh_signed_petition_101' => '1'];
         $_SESSION['clh_skipped_petitions'] = [103];
 
+        $GLOBALS['__phpunit_clh_cookie_writes'] = [];
+
         amnesty_set_clh_signed_petition(102);
 
         self::assertSame([101, 102], amnesty_get_clh_signed_petitions());
+        // The earlier signature gets a new 15-minute expiry too.
+        self::assertEqualsWithDelta(
+            time() + 15 * 60,
+            $GLOBALS['__phpunit_clh_cookie_writes']['clh_signed_petition_101']['expires'],
+            2,
+        );
         self::assertSame('[103]', $_COOKIE['clh_skipped_petitions']);
         self::assertSame('1', $_COOKIE['clh_tunnel_active']);
     }
