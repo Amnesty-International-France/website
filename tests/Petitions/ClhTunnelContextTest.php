@@ -178,7 +178,8 @@ final class ClhTunnelContextTest extends TestCase
     public function testPetitionsSignedFromThisBrowserAreShownAsSigned(): void
     {
         $_SESSION['clh_last_signer_email'] = self::VICTIM;
-        $_COOKIE['clh_signed_petitions'] = '[102]';
+        $_COOKIE['clh_tunnel_active'] = '1';
+        $_COOKIE['clh_signed_petition_102'] = '1';
 
         $context = amnesty_get_clh_tunnel_context($this->tunnelPage());
 
@@ -213,7 +214,7 @@ final class ClhTunnelContextTest extends TestCase
 
     public function testConcurrentSignatureResponsesKeepBothPetitions(): void
     {
-        $initial_cookies = ['clh_signed_petitions' => '[101]'];
+        $initial_cookies = ['clh_tunnel_active' => '1', 'clh_signed_petition_101' => '1'];
 
         $_COOKIE = $initial_cookies;
         amnesty_set_clh_signed_petition(102);
@@ -236,8 +237,80 @@ final class ClhTunnelContextTest extends TestCase
     {
         self::assertSame(0, amnesty_get_clh_signed_petition_count_for_browser());
 
+        $_COOKIE['clh_tunnel_active'] = '1';
         $_COOKIE['clh_signed_petition_102'] = '1';
 
         self::assertSame(1, amnesty_get_clh_signed_petition_count_for_browser());
+    }
+
+    public function testTunnelCookiesExpireAfterFifteenMinutes(): void
+    {
+        $options = amnesty_get_clh_tunnel_cookie_options(time() + AMNESTY_CLH_TUNNEL_STATE_TTL);
+
+        self::assertSame(15 * 60, AMNESTY_CLH_TUNNEL_STATE_TTL);
+        self::assertEqualsWithDelta(time() + 15 * 60, $options['expires'], 2);
+        self::assertTrue($options['httponly']);
+        self::assertSame('Strict', $options['samesite']);
+    }
+
+    public function testProgressWithoutActivityMarkerIsIgnored(): void
+    {
+        // Cookies left by the former 30-day lifetime, or past the inactivity window.
+        $_COOKIE['clh_signed_petition_102'] = '1';
+        $_COOKIE['clh_skipped_petitions'] = '[101]';
+        $_SESSION['clh_skipped_petitions'] = [101];
+
+        $context = amnesty_get_clh_tunnel_context($this->tunnelPage());
+
+        self::assertSame([101 => false, 102 => false, 103 => false], $this->signedStates($context));
+        self::assertSame([], amnesty_get_clh_skipped_petitions());
+        self::assertArrayNotHasKey('clh_skipped_petitions', $_SESSION);
+    }
+
+    public function testStaleProgressCookiesAreExpired(): void
+    {
+        $_COOKIE = [
+            'clh_signed_petitions'    => '[101]',
+            'clh_signed_petition_102' => '1',
+            'clh_skipped_petitions'   => '[103]',
+            'other_cookie'            => 'kept',
+        ];
+
+        amnesty_expire_stale_clh_tunnel_cookies();
+
+        self::assertSame(['other_cookie' => 'kept'], $_COOKIE);
+    }
+
+    public function testActiveProgressIsKeptExceptTheLegacyCookie(): void
+    {
+        $_COOKIE = [
+            'clh_tunnel_active'       => '1',
+            'clh_signed_petitions'    => '[101]',
+            'clh_signed_petition_102' => '1',
+        ];
+
+        amnesty_expire_stale_clh_tunnel_cookies();
+
+        self::assertSame(['clh_tunnel_active' => '1', 'clh_signed_petition_102' => '1'], $_COOKIE);
+    }
+
+    public function testSigningRefreshesTheWholeProgress(): void
+    {
+        $_COOKIE = ['clh_tunnel_active' => '1', 'clh_signed_petition_101' => '1'];
+        $_SESSION['clh_skipped_petitions'] = [103];
+
+        amnesty_set_clh_signed_petition(102);
+
+        self::assertSame([101, 102], amnesty_get_clh_signed_petitions());
+        self::assertSame('[103]', $_COOKIE['clh_skipped_petitions']);
+        self::assertSame('1', $_COOKIE['clh_tunnel_active']);
+    }
+
+    public function testFirstSignatureStartsTheProgress(): void
+    {
+        amnesty_set_clh_signed_petition(101);
+
+        self::assertTrue(amnesty_is_clh_tunnel_state_active());
+        self::assertSame([101], amnesty_get_clh_signed_petitions());
     }
 }
