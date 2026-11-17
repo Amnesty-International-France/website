@@ -379,16 +379,19 @@ if (!function_exists('wp_verify_nonce')) {
 
 if (!function_exists('add_action')) {
     $GLOBALS['__phpunit_registered_actions'] = [];
+    $GLOBALS['__phpunit_registered_action_priorities'] = [];
 
     /**
      * No-op recorder for add_action(). Only records the registration so that
      * requiring a file which calls add_action() at the top level (e.g. to
      * register a REST route on 'rest_api_init') doesn't fatal; it does NOT
      * invoke the callback, so tests call the registered function directly.
+     * The priorities are recorded apart, as [callback, priority] pairs.
      */
     function add_action(string $hook, callable $callback, int $priority = 10, int $accepted_args = 1): void
     {
         $GLOBALS['__phpunit_registered_actions'][$hook][] = $callback;
+        $GLOBALS['__phpunit_registered_action_priorities'][$hook][] = [$callback, $priority];
     }
 }
 

@@ -47,7 +47,7 @@ if (! function_exists('aif_output_my_space_login_tracking')) {
             return;
         }
         ?>
-		<script type="text/javascript">
+		<script data-cfasync="false" type="text/javascript">
 			(function () {
 				const cookieName = 'aif_mon_espace_login_tracked';
 				const cookieExists = document.cookie
