@@ -82,7 +82,9 @@ WP_CLI::line( "Mode : $mode" );
 
 // La nouvelle page doit être publiée à la nouvelle URL, sinon les liens remplacés passeraient
 // par la redirection inverse (aujourd'hui la nouvelle URL redirige vers l'ancienne).
-$new_id   = url_to_postid( CLH48_NEW_URL );
+// url_to_postid() returns 0 when the URL host differs from home_url(): in prod, WP-CLI sees the
+// Infomaniak preview domain, not www.amnesty.fr.
+$new_id   = url_to_postid( home_url( CLH48_NEW_PATH . '/' ) );
 $new_path = $new_id ? rtrim( (string) wp_parse_url( get_permalink( $new_id ), PHP_URL_PATH ), '/' ) : '';
 $new_ok   = $new_id && 'publish' === get_post_status( $new_id ) && CLH48_NEW_PATH === $new_path;
 
