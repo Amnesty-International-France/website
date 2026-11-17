@@ -70,6 +70,7 @@ final class MySpaceLoginTrackingTest extends TestCase
         $output = $this->renderTrackingScript();
 
         self::assertTrue(aif_should_output_my_space_login_tracking());
+        self::assertStringContainsString('<script data-cfasync="false" type="text/javascript">', $output);
         self::assertStringContainsString('aif_mon_espace_login_tracked', $output);
         self::assertStringContainsString("event: 'login'", $output);
         self::assertStringContainsString("method: 'mon_espace'", $output);

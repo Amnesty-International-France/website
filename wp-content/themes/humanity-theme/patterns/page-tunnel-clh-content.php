@@ -316,7 +316,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 									data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"
 								></div>
 								<?php endif; ?>
-								<?php wp_nonce_field('clh_skip_petition', 'clh_skip_nonce'); ?>
+								<?php amnesty_clh_skip_nonce_field(); ?>
 								<input type="hidden" name="petition_id"
 								       value="<?= esc_attr((string)$next_petition['id']); ?>">
 							</form>

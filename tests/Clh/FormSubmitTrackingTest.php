@@ -37,6 +37,24 @@ final class FormSubmitTrackingTest extends TestCase
             }
         }
 
+        if (!function_exists('remove_query_arg')) {
+            /**
+             * Strips the keys for real: a stub returning its input would make the assertion meaningless.
+             *
+             * @param string[] $keys
+             */
+            function remove_query_arg(array $keys, string $url): string
+            {
+                $parts = parse_url($url);
+                parse_str($parts['query'] ?? '', $query);
+                $query = array_diff_key($query, array_flip($keys));
+                $base = substr($url, 0, strcspn($url, '?#'));
+
+                return $base . ($query === [] ? '' : '?' . http_build_query($query))
+                    . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+            }
+        }
+
         $GLOBALS['__phpunit_clh_campaign_start'] = (int) strtotime('2026-10-15 00:00:00 UTC');
 
         require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/theme-setup/analytics/form-submit.php';
@@ -114,6 +132,8 @@ final class FormSubmitTrackingTest extends TestCase
     {
         $output = $this->renderOutput($this->clhSignatureQuery('tunnel'));
 
+        // Cloudflare Rocket Loader defers any inline script without this attribute.
+        self::assertStringContainsString('<script data-cfasync="false" type="text/javascript">', $output);
         self::assertStringContainsString('window.dataLayer = window.dataLayer || [];', $output);
         self::assertStringContainsString('"signed_count":3', $output);
         self::assertStringContainsString('["gtm_type","gtm_name","gtm_petition_id","gtm_context"].forEach', $output);
@@ -129,6 +149,16 @@ final class FormSubmitTrackingTest extends TestCase
                 'gtm_context' => 'tunnel',
             ],
             aif_get_form_submit_tracking_args(['clh_petition' => '12'] + $this->clhSignatureQuery('tunnel'))
+        );
+    }
+
+    public function testTrackingArgsAreRemovedFromAUrlAndTheOtherArgsKept(): void
+    {
+        self::assertSame(
+            'https://www.amnesty.fr/changez-leur-histoire/petition?clh_petition=12&sort=date',
+            aif_remove_form_submit_tracking_args(
+                'https://www.amnesty.fr/changez-leur-histoire/petition?clh_petition=12&gtm_type=petition&gtm_name=Libert%C3%A9&gtm_petition_id=95555&gtm_context=tunnel&sort=date'
+            )
         );
     }
 

@@ -334,6 +334,17 @@ if (!function_exists('amnesty_get_clh_testimonials')) {
     }
 }
 
+if (!function_exists('amnesty_clh_skip_nonce_field')) {
+    /**
+     * Nonce field of the tunnel's skip form, without the _wp_http_referer field: after
+     * a signature, the referer would carry the gtm_* args of the form_submit event.
+     */
+    function amnesty_clh_skip_nonce_field(): void
+    {
+        wp_nonce_field('clh_skip_petition', 'clh_skip_nonce', false);
+    }
+}
+
 if (!function_exists('amnesty_get_clh_donation_url')) {
     /**
      * Donation link of the page, carrying the page's own origin code.

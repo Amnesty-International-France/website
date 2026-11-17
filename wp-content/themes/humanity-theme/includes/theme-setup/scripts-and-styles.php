@@ -122,7 +122,7 @@ if (! function_exists('amnesty_scripts')) {
         wp_enqueue_script('amnesty-theme', amnesty_asset_uri('scripts') . '/bundle.js', ['lodash', 'wp-i18n'], $theme->get('Version'), true);
 
         $localise_with = [
-            'archive_base_url' => get_pagenum_link(1, false),
+            'archive_base_url' => aif_remove_form_submit_tracking_args(get_pagenum_link(1, false)),
             'domain'           => wp_parse_url(home_url('/', 'https'), PHP_URL_HOST),
             'pop_in_timeout'   => 30,
             'active_pop_in'    => 0,
