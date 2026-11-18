@@ -64,7 +64,7 @@ export const keepOriginCode = () => {
 
   const code = codeFromUrl ?? readStoredCode();
   if (!code) {
-    return;
+    return () => {};
   }
 
   document.querySelectorAll('a[href]').forEach((link) => applyCodeToLink(link, code));
@@ -78,7 +78,10 @@ export const keepOriginCode = () => {
     }
   };
 
-  ['click', 'auxclick', 'contextmenu'].forEach((type) => {
-    document.addEventListener(type, onLinkActivation, true);
-  });
+  const events = ['click', 'auxclick', 'contextmenu'];
+  events.forEach((type) => document.addEventListener(type, onLinkActivation, true));
+
+  return () => {
+    events.forEach((type) => document.removeEventListener(type, onLinkActivation, true));
+  };
 };
