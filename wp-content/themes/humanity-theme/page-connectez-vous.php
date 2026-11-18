@@ -41,8 +41,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
         // details are only shown once the password is known to be right.
         // Hash the password even for an unknown address, so both cases take
         // about the same time.
-        $password_hash = $stored_user ? $stored_user->user_pass : wp_hash_password('aif-unknown-account');
-        $password_matches = wp_check_password($password, $password_hash, $stored_user ? $stored_user->ID : '');
+        $password_matches = $stored_user
+            ? aif_check_login_password($stored_user, $password)
+            : wp_check_password($password, wp_hash_password('aif-unknown-account'));
         if (!$stored_user || !$password_matches) {
             aif_register_failed_login_from_ip();
             $error_message = 'Mauvais email ou mot de passe';

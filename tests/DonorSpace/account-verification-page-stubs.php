@@ -174,6 +174,11 @@ function wp_check_password(string $password, string $hash, int|string $user_id =
     return '' !== $hash && $password === $hash;
 }
 
+function wp_set_password(string $password, int $user_id): void
+{
+    $GLOBALS['__phpunit_users'][$user_id]->user_pass = $password;
+}
+
 function wp_hash_password(string $password): string
 {
     return 'hashed:' . $password;
