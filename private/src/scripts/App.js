@@ -31,6 +31,7 @@ import initActualitesArchive from './modules/actualites-archive';
 import { getUserLocationFromButton, getUserLocationFromForm } from './modules/localisation';
 import enhanceJetpackFormPlaceholders from './modules/jetpack-form-fix';
 import { calculator, hoverDonationMenu } from './modules/donation-calculator';
+import { keepOriginCode } from './modules/origin-code';
 import petitionShareFeedback from './modules/social-network-clicked';
 import petitionDonateFeedback from './modules/donate-clicked';
 import {
@@ -91,6 +92,7 @@ const App = () => {
   getUserLocationFromForm();
   enhanceJetpackFormPlaceholders();
   calculator();
+  keepOriginCode();
   petitionShareFeedback();
   petitionDonateFeedback();
   toggleFullFormPetition();
