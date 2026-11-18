@@ -397,6 +397,38 @@ final class AccountVerificationPagesTest extends TestCase
         self::assertSame('mot  de<passe%41', $GLOBALS['__phpunit_signons'][0]['credentials']['user_password']);
     }
 
+    /**
+     * Until October 2026, sign-up and login ran the password through
+     * sanitize_text_field(): accounts created then hold the hash of that form.
+     * The account is rehashed with the password as typed before wp_signon()
+     * checks it (MAINT-418).
+     */
+    public function testPasswordStoredInItsLegacySanitizedFormIsRehashedAsTypedBeforeSignon(): void
+    {
+        $user = new WP_User(['subscriber'], 42, self::EMAIL, self::EMAIL, '', 'mot de passe');
+        $GLOBALS['__phpunit_users'][42] = $user;
+        $GLOBALS['__phpunit_signon_result'] = $user;
+        store_email_is_verified(42);
+
+        $result = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => ' mot de passe ']);
+
+        self::assertSame('redirect:https://wordpress.example.test/mon-espace/', $result);
+        self::assertSame(' mot de passe ', $user->user_pass);
+        self::assertSame(' mot de passe ', $GLOBALS['__phpunit_signons'][0]['credentials']['user_password']);
+    }
+
+    public function testWrongPasswordDoesNotChangeTheStoredPassword(): void
+    {
+        $user = new WP_User(['subscriber'], 42, self::EMAIL, self::EMAIL, '', 'mot de passe');
+        $GLOBALS['__phpunit_users'][42] = $user;
+        store_email_is_verified(42);
+
+        $html = $this->render('page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => ' autre passe ']);
+
+        self::assertStringContainsString('Mauvais email ou mot de passe', $html);
+        self::assertSame('mot de passe', $user->user_pass);
+    }
+
     public function testLoginFormEscapesTheSubmittedEmail(): void
     {
         $html = $this->render('page-connectez-vous.php', [], ['email' => 'donor"><script>alert(1)</script>@example.test', 'password' => 'password']);

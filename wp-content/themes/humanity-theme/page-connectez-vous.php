@@ -51,6 +51,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
                     $error_message = "L'adresse email renseignée ne trouve pas de correspondance dans notre système";
                 } else {
                     store_SF_user_ID($stored_user->ID, $sf_member->Id);
+                    aif_upgrade_legacy_login_password($stored_user, $password);
                     $user = wp_signon($creds, true);
 
                     if (!is_wp_error($user)) {

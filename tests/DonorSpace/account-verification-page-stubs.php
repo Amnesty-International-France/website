@@ -119,6 +119,20 @@ function wp_signon(array $credentials = [], bool|string $secure_cookie = ''): WP
     return $GLOBALS['__phpunit_signon_result'];
 }
 
+/**
+ * Like WordPress, a password is checked against the stored hash; here the
+ * "hash" is the password itself.
+ */
+function wp_check_password(string $password, string $hash, int|string $user_id = ''): bool
+{
+    return '' !== $hash && $password === $hash;
+}
+
+function wp_set_password(string $password, int $user_id): void
+{
+    $GLOBALS['__phpunit_users'][$user_id]->user_pass = $password;
+}
+
 function wp_set_current_user(int $id, string $name = ''): WP_User
 {
     $GLOBALS['__phpunit_current_user_id'] = $id;
