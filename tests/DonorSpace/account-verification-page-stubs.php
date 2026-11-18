@@ -174,9 +174,11 @@ function wp_check_password(string $password, string $hash, int|string $user_id =
     return '' !== $hash && $password === $hash;
 }
 
+/** Like WordPress, the trimmed password is stored. */
 function wp_set_password(string $password, int $user_id): void
 {
-    $GLOBALS['__phpunit_users'][$user_id]->user_pass = $password;
+    $GLOBALS['__phpunit_password_sets'][] = $user_id;
+    $GLOBALS['__phpunit_users'][$user_id]->user_pass = trim($password);
 }
 
 function wp_hash_password(string $password): string
