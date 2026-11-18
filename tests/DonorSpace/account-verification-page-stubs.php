@@ -119,18 +119,23 @@ function wp_signon(array $credentials = [], bool|string $secure_cookie = ''): WP
     return $GLOBALS['__phpunit_signon_result'];
 }
 
-/**
- * Like WordPress, a password is checked against the stored hash; here the
- * "hash" is the password itself.
- */
-function wp_check_password(string $password, string $hash, int|string $user_id = ''): bool
-{
-    return '' !== $hash && $password === $hash;
+if (!function_exists('wp_check_password')) {
+    /**
+     * Like WordPress, the stored "hash" is the trimmed password (see
+     * wp_set_password()), and the check does not trim.
+     */
+    function wp_check_password(string $password, string $hash, int|string $user_id = ''): bool
+    {
+        return '' !== $hash && $password === $hash;
+    }
 }
 
-function wp_set_password(string $password, int $user_id): void
-{
-    $GLOBALS['__phpunit_users'][$user_id]->user_pass = $password;
+if (!function_exists('wp_set_password')) {
+    function wp_set_password(string $password, int $user_id): void
+    {
+        $GLOBALS['__phpunit_password_sets'][] = $user_id;
+        $GLOBALS['__phpunit_users'][$user_id]->user_pass = trim($password);
+    }
 }
 
 function wp_set_current_user(int $id, string $name = ''): WP_User

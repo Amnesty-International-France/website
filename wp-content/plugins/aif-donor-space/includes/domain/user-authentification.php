@@ -37,25 +37,33 @@ function send_reset_password_email($to_email, $authentification_url)
 }
 
 /**
- * Rehashes the account with the password as typed when only its legacy form
- * matches, so that wp_signon(), which checks the password as typed, accepts it.
+ * Whether the password typed at the donor space login is the account's.
  *
  * Until October 2026, sign-up stored, and login checked, the password as
- * returned by sanitize_text_field() (trimmed, whitespace collapsed, tags and
- * percent-encoded octets removed). Since the login checks the password as
- * typed (November 2026), those accounts were refused whenever the two forms
- * differ (MAINT-418). A wrong password changes nothing.
+ * returned by sanitize_text_field() (tags, percent-encoded octets and repeated
+ * whitespace removed). Since the login checks the password as typed (November
+ * 2026), those accounts were refused whenever the two forms differ (MAINT-418).
+ * Their legacy form is still accepted, then the account is rehashed with the
+ * password as typed, so the fallback is used only once. A wrong password
+ * changes nothing.
+ *
+ * Like wp_hash_password() and wp_authenticate(), the password is trimmed first:
+ * otherwise a right password with a trailing space would fail the first check
+ * and rehash the account on every login.
  */
-function aif_upgrade_legacy_login_password(WP_User $user, string $password): void
+function aif_check_login_password(WP_User $user, string $password): bool
 {
+    $password = trim($password);
     if (wp_check_password($password, $user->user_pass, $user->ID)) {
-        return;
+        return true;
     }
 
     $legacy_password = sanitize_text_field($password);
     if ('' === $legacy_password || $legacy_password === $password || !wp_check_password($legacy_password, $user->user_pass, $user->ID)) {
-        return;
+        return false;
     }
 
     wp_set_password($password, $user->ID);
+
+    return true;
 }
