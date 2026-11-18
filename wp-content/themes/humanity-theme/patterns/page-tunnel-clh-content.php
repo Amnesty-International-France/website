@@ -305,7 +305,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 									data-expired-callback="aifTurnstileFailure"
 									data-timeout-callback="aifTurnstileFailure"
 									data-unsupported-callback="aifTurnstileFailure"
-									data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"
+									data-sitekey="<?= esc_attr(aif_turnstile_site_key()); ?>"
 								></div>
 								<?php endif; ?>
 								<?php amnesty_clh_skip_nonce_field(); ?>
@@ -319,7 +319,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 									<?php if (!$turnstile_verified) : ?>
 									<div class="cf-turnstile"
 									     data-appearance="interaction-only"
-									     data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+									     data-sitekey="<?= esc_attr(aif_turnstile_site_key()); ?>"></div>
 									<?php endif; ?>
 									<input type="hidden" name="petition_id" value="<?= esc_attr((string)$next_petition['id']); ?>">
 									<input type="hidden" name="from_tunnel" value="1">
@@ -364,7 +364,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 									<?php if (!$turnstile_verified) : ?>
 									<div class="cf-turnstile"
 									     data-appearance="interaction-only"
-									     data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+									     data-sitekey="<?= esc_attr(aif_turnstile_site_key()); ?>"></div>
 									<?php endif; ?>
 									<?php if ($turnstile_error_message) : ?>
 										<?php aif_include_partial('alert', ['state' => 'error', 'title' => 'Une erreur est survenue', 'content' => $turnstile_error_message]); ?>

@@ -19,6 +19,14 @@ if (!function_exists('is_ssl')) {
     }
 }
 
+if (!function_exists('aif_turnstile_enabled')) {
+    /** Turnstile is on unless a test sets $GLOBALS['__phpunit_turnstile_enabled'] to false. */
+    function aif_turnstile_enabled(): bool
+    {
+        return $GLOBALS['__phpunit_turnstile_enabled'] ?? true;
+    }
+}
+
 if (!function_exists('amnesty_write_clh_tunnel_cookie')) {
     /** Records the tunnel cookies a handler sends, with their options, instead of sending them. */
     function amnesty_write_clh_tunnel_cookie(string $name, string $value, array $options): void
