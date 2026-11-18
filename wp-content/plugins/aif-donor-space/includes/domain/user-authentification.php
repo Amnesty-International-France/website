@@ -101,14 +101,20 @@ function aif_login_blocked_for_seconds()
  * Whether the password typed at the donor space login is the account's.
  *
  * Until October 2026, sign-up stored, and login checked, the password as
- * returned by sanitize_text_field() (trimmed, whitespace collapsed, tags and
- * percent-encoded octets removed). Since the login checks the password as
- * typed (November 2026), those accounts were refused whenever the two forms
- * differ (MAINT-418). Their legacy form is still accepted, then the account
- * is rehashed with the password as typed, so the fallback is used only once.
+ * returned by sanitize_text_field() (tags, percent-encoded octets and repeated
+ * whitespace removed). Since the login checks the password as typed (November
+ * 2026), those accounts were refused whenever the two forms differ (MAINT-418).
+ * Their legacy form is still accepted, then the account is rehashed with the
+ * password as typed, so the fallback is used only once. A wrong password
+ * changes nothing.
+ *
+ * Like wp_hash_password() and wp_authenticate(), the password is trimmed first:
+ * otherwise a right password with a trailing space would fail the first check
+ * and rehash the account on every login.
  */
 function aif_check_login_password(WP_User $user, string $password): bool
 {
+    $password = trim($password);
     if (wp_check_password($password, $user->user_pass, $user->ID)) {
         return true;
     }
