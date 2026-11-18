@@ -97,6 +97,32 @@ function aif_login_blocked_for_seconds()
     return max(1, $window['start'] + AIF_LOGIN_RATE_LIMIT_WINDOW - time());
 }
 
+/**
+ * Whether the password typed at the donor space login is the account's.
+ *
+ * Until October 2026, sign-up stored, and login checked, the password as
+ * returned by sanitize_text_field() (trimmed, whitespace collapsed, tags and
+ * percent-encoded octets removed). Since the login checks the password as
+ * typed (November 2026), those accounts were refused whenever the two forms
+ * differ (MAINT-418). Their legacy form is still accepted, then the account
+ * is rehashed with the password as typed, so the fallback is used only once.
+ */
+function aif_check_login_password(WP_User $user, string $password): bool
+{
+    if (wp_check_password($password, $user->user_pass, $user->ID)) {
+        return true;
+    }
+
+    $legacy_password = sanitize_text_field($password);
+    if ('' === $legacy_password || $legacy_password === $password || !wp_check_password($legacy_password, $user->user_pass, $user->ID)) {
+        return false;
+    }
+
+    wp_set_password($password, $user->ID);
+
+    return true;
+}
+
 function aif_register_failed_login_from_ip()
 {
     $window = aif_login_rate_limit_window();
