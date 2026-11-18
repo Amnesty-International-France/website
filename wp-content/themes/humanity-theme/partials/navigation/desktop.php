@@ -58,7 +58,7 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 					<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children donate-link">
 						<div class="donate-button-desktop">
 							<a class="link"
-							   href="https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012&amount=1500&frequency=regular"
+							   href="https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012&amount=25000&frequency=once"
 							   data-gtm="clic_cta" data-name="faire un don" data-position="header">
 								<svg viewBox="0 0 18 14" version="1.1" xmlns="http://www.w3.org/2000/svg"
 								     xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -78,13 +78,6 @@ $header_style = amnesty_get_header_style(amnesty_get_header_object_id());
 								</svg>
 								<p class="label">Faire un don</p>
 							</a>
-							<div class="nav-don-calculator">
-								<?php
-                                echo do_blocks(
-                                    '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=66&reserved_originecode=WBF01W1012", "is_popin": true } /-->'
-                                );
-?>
-							</div>
 						</div>
 					</li>
 				</ul>
