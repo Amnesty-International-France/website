@@ -495,9 +495,14 @@ function amnesty_set_clh_signer_email(string $email): void
 
 /**
  * Whether the visitor passed Turnstile in the CLH tunnel less than 30 minutes ago.
+ * Always true while Turnstile is switched off, so no check runs and none is remembered.
  */
 function amnesty_is_clh_tunnel_turnstile_verified(): bool
 {
+    if (!aif_turnstile_enabled()) {
+        return true;
+    }
+
     amnesty_start_secure_session();
 
     $verified_at = (int) ($_SESSION['clh_turnstile_verified_at'] ?? 0);
