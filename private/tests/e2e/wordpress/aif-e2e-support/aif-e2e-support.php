@@ -276,7 +276,6 @@ function aif_e2e_setup_business_form_fixtures(): array
             0,
             '<!-- wp:pattern {"slug":"amnesty/page-discover-chronicle-content"} /-->'
         );
-        $donor_page_id = aif_e2e_upsert_page('aif-e2e-check-email', 'Contrôle e-mail donateur (e2e)');
 
         $about_page_id = aif_e2e_upsert_page('nous-connaitre', 'Nous connaître');
         $campaigns_page_id = aif_e2e_upsert_page('nos-combats', 'Nos combats', $about_page_id);
@@ -300,25 +299,14 @@ function aif_e2e_setup_business_form_fixtures(): array
 
         return [
             'chronicle_path' => '/aif-e2e-discover-chronicle/',
-            'donor_path' => '/aif-e2e-check-email/',
             'tunnel_path' => '/nous-connaitre/nos-combats/changez-leur-histoire/campagne/',
             'petition_id' => $petition instanceof WP_Post ? (int) $petition->ID : 0,
-            'ready' => $chronicle_page_id > 0 && $donor_page_id > 0 && $tunnel_page_id > 0 && $petition instanceof WP_Post,
+            'ready' => $chronicle_page_id > 0 && $tunnel_page_id > 0 && $petition instanceof WP_Post,
         ];
     } finally {
         $wpdb->get_var($wpdb->prepare('SELECT RELEASE_LOCK(%s)', $lock_name));
     }
 }
-
-add_filter('template_include', function ($template) {
-    if (!is_page('aif-e2e-check-email')) {
-        return $template;
-    }
-
-    $donor_template = WP_PLUGIN_DIR . '/aif-donor-space/templates/check-email.php';
-
-    return is_file($donor_template) ? $donor_template : $template;
-}, PHP_INT_MAX);
 
 add_action('wp_insert_post', function ($post_id, $post, $update) {
     if ($update || !$post instanceof WP_Post || 'feedback' !== $post->post_type) {
