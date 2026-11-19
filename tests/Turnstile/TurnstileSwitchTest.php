@@ -8,8 +8,8 @@ use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Turnstile is on unless TURNSTILE_ENABLED=0. When off, forms are accepted without
- * a token and no Turnstile script is loaded.
+ * TURNSTILE_ENABLED=0 switches Turnstile off on the switchable forms only: they are
+ * accepted without a token and get no site key. The other forms keep Turnstile.
  *
  * Other suites stub verify_turnstile() and aif_turnstile_site_key(), so each test
  * runs in its own process to load the real functions.
@@ -61,11 +61,11 @@ final class TurnstileSwitchTest extends TestCase
         $_POST = [];
     }
 
-    public function testDisabledTurnstileAcceptsSubmissionWithoutTokenOrHttpCall(): void
+    public function testDisabledTurnstileAcceptsSwitchableFormWithoutTokenOrHttpCall(): void
     {
         putenv('TURNSTILE_ENABLED=0');
 
-        self::assertNull(verify_turnstile());
+        self::assertNull(verify_turnstile(switchable: true));
         self::assertSame([], $GLOBALS['__phpunit_turnstile_requests']);
     }
 
@@ -75,26 +75,35 @@ final class TurnstileSwitchTest extends TestCase
         // A page cached before the switch still posts a token.
         $_POST['cf-turnstile-response'] = 'token-from-cached-page';
 
-        self::assertNull(verify_turnstile());
+        self::assertNull(verify_turnstile(switchable: true));
         self::assertSame([], $GLOBALS['__phpunit_turnstile_requests']);
     }
 
-    public function testDisabledTurnstileHasNoSiteKey(): void
+    public function testDisabledTurnstileHasNoSiteKeyForSwitchableForm(): void
     {
         putenv('TURNSTILE_ENABLED=0');
 
-        self::assertFalse(aif_turnstile_enabled());
-        self::assertSame('', aif_turnstile_site_key());
+        self::assertFalse(aif_turnstile_enabled(switchable: true));
+        self::assertSame('', aif_turnstile_site_key(switchable: true));
     }
 
-    public function testDisabledTurnstileLoadsNoScriptAndNoPreconnect(): void
+    public function testDisabledTurnstileKeepsProtectingOtherForms(): void
+    {
+        putenv('TURNSTILE_ENABLED=0');
+
+        self::assertTrue(aif_turnstile_enabled(switchable: false));
+        self::assertSame(self::SITE_KEY, aif_turnstile_site_key());
+        self::assertSame('missing-input-response', verify_turnstile());
+    }
+
+    public function testDisabledTurnstileStillLoadsTheScriptForOtherForms(): void
     {
         putenv('TURNSTILE_ENABLED=0');
 
         self::enqueueScripts();
 
-        self::assertSame([], $GLOBALS['__phpunit_enqueued_scripts']);
-        self::assertSame([], self::preconnectUrls());
+        self::assertSame(['aif-turnstile', 'cf-turnstile'], $GLOBALS['__phpunit_enqueued_scripts']);
+        self::assertSame([self::CLOUDFLARE_ORIGIN], self::preconnectUrls());
     }
 
     #[DataProvider('enabledCases')]
@@ -104,12 +113,24 @@ final class TurnstileSwitchTest extends TestCase
 
         self::enqueueScripts();
 
-        self::assertTrue(aif_turnstile_enabled());
-        self::assertSame(self::SITE_KEY, aif_turnstile_site_key());
+        foreach ([false, true] as $switchable) {
+            self::assertTrue(aif_turnstile_enabled($switchable));
+            self::assertSame(self::SITE_KEY, aif_turnstile_site_key($switchable));
+            self::assertSame('missing-input-response', verify_turnstile($switchable));
+        }
         self::assertSame(['aif-turnstile', 'cf-turnstile'], $GLOBALS['__phpunit_enqueued_scripts']);
         self::assertSame([self::CLOUDFLARE_ORIGIN], self::preconnectUrls());
-        self::assertSame('missing-input-response', verify_turnstile());
         self::assertSame([], $GLOBALS['__phpunit_turnstile_requests']);
+    }
+
+    public function testNoScriptWithoutSiteKey(): void
+    {
+        putenv('TURNSTILE_SITE_KEY');
+
+        self::enqueueScripts();
+
+        self::assertSame([], $GLOBALS['__phpunit_enqueued_scripts']);
+        self::assertSame([], self::preconnectUrls());
     }
 
     /**

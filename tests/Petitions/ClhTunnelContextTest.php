@@ -69,7 +69,7 @@ final class ClhTunnelContextTest extends TestCase
         }
 
         if (!function_exists('verify_turnstile')) {
-            function verify_turnstile(): ?string
+            function verify_turnstile(bool $switchable = false): ?string
             {
                 return null;
             }

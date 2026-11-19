@@ -21,7 +21,7 @@ function aif_handle_account_creation_request()
         return aif_account_creation_result();
     }
 
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = verify_turnstile(switchable: true);
     if (null !== $turnstile_error) {
         return aif_account_creation_result(turnstile_friendly_error($turnstile_error));
     }
@@ -127,13 +127,16 @@ if (!empty($error_no_access_to_donor_space)) {
 			<h3 class="aif-sr-only">S'inscrire</h3>
 			<form class="aif-form-container" action="" method="POST">
 				<div>
+					<?php $turnstile_site_key = aif_turnstile_site_key(switchable: true); ?>
+					<?php if ($turnstile_site_key) : ?>
 					<div class="cf-turnstile"
 					     data-callback="aifTurnstileSuccess"
 					     data-error-callback="aifTurnstileFailure"
 					     data-expired-callback="aifTurnstileFailure"
 					     data-timeout-callback="aifTurnstileFailure"
 					     data-unsupported-callback="aifTurnstileFailure"
-					     data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+					     data-sitekey="<?php echo esc_attr($turnstile_site_key); ?>"></div>
+					<?php endif; ?>
 					<label for="email">Adresse email (obligatoire) :</label>
 					<input type="email" class="aif-input" id="email" name="email" aria-describedby="email-help-message"
 					       placeholder="adresse@mail.fr" autocomplete="email" aria-required="true" required>

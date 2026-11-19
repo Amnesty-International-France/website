@@ -5,21 +5,29 @@
  */
 
 /**
- * Whether Turnstile is on. Only TURNSTILE_ENABLED=0 switches it off; an unset,
- * empty or other value keeps it on.
+ * Whether Turnstile protects a form. TURNSTILE_ENABLED=0 switches it off on the
+ * switchable forms only, listed in README.md; the other forms keep Turnstile
+ * whatever the value.
  *
- * When it is off the keys stay configured, but no site key is exposed: no
- * Turnstile script is loaded, widgets stay empty, and verify_turnstile()
- * accepts every submission.
+ * Only `0` switches it off; an unset, empty or other value keeps it on.
+ *
+ * @param bool $switchable whether the form follows TURNSTILE_ENABLED
  */
-function aif_turnstile_enabled(): bool
+function aif_turnstile_enabled(bool $switchable): bool
 {
-    return '0' !== getenv('TURNSTILE_ENABLED');
+    return !$switchable || '0' !== getenv('TURNSTILE_ENABLED');
 }
 
-function aif_turnstile_site_key(): string
+/**
+ * The site key, or an empty string when Turnstile is off for the form. A form must
+ * then render no widget: the Turnstile script still runs for the other forms of
+ * the page, and would block the submission of a form holding an empty widget.
+ *
+ * @param bool $switchable whether the form follows TURNSTILE_ENABLED
+ */
+function aif_turnstile_site_key(bool $switchable = false): string
 {
-    if (!aif_turnstile_enabled()) {
+    if (!aif_turnstile_enabled($switchable)) {
         return '';
     }
 
@@ -69,9 +77,14 @@ add_filter('wp_resource_hints', function (array $urls, string $relation_type): a
     return $urls;
 }, 10, 2);
 
-function verify_turnstile(): ?string
+/**
+ * @param bool $switchable whether the form follows TURNSTILE_ENABLED
+ *
+ * @return string|null the error code, or null when the submission is accepted
+ */
+function verify_turnstile(bool $switchable = false): ?string
 {
-    if (!aif_turnstile_enabled()) {
+    if (!aif_turnstile_enabled($switchable)) {
         return null;
     }
 

@@ -31,7 +31,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
         header('Retry-After: ' . $blocked_for);
         $title = 'Une erreur est survenue';
         $error_message = AIF_LOGIN_RATE_LIMIT_MESSAGE;
-    } elseif (($turnstile_error = verify_turnstile()) !== null) {
+    } elseif (($turnstile_error = verify_turnstile(switchable: true)) !== null) {
         $title = 'Une erreur est survenue';
         $error_message = turnstile_friendly_error($turnstile_error);
     } else {
@@ -116,7 +116,10 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
 		<div class="login-form">
 			<h3 class="login-title">Connexion</h3>
 			<form class="aif-form-container" role="form" method="POST" action="">
-				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+				<?php $turnstile_site_key = aif_turnstile_site_key(switchable: true); ?>
+				<?php if ($turnstile_site_key) : ?>
+				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr($turnstile_site_key); ?>"></div>
+				<?php endif; ?>
 				<label for="email" class="sr-only">Votre adresse email (obligatoire)</label>
 				<input placeholder="Email"
 				       value="<?= esc_attr($email) ?>" class="aif-input" type="email" name="email" id="email"
