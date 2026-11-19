@@ -495,11 +495,11 @@ function amnesty_set_clh_signer_email(string $email): void
 
 /**
  * Whether the visitor passed Turnstile in the CLH tunnel less than 30 minutes ago.
- * Always true while Turnstile is switched off, so no check runs and none is remembered.
+ * Always true while TURNSTILE_ENABLED=0, so no check runs and none is remembered.
  */
 function amnesty_is_clh_tunnel_turnstile_verified(): bool
 {
-    if (!aif_turnstile_enabled()) {
+    if (!aif_turnstile_enabled(switchable: true)) {
         return true;
     }
 
@@ -522,7 +522,7 @@ function amnesty_verify_clh_tunnel_turnstile(): ?string
         return null;
     }
 
-    $error = verify_turnstile();
+    $error = verify_turnstile(switchable: true);
     if ($error === null) {
         $_SESSION['clh_turnstile_verified_at'] = time();
     }
@@ -948,7 +948,7 @@ function amnesty_handle_petition_signature(): void
         exit;
     }
 
-    $turnstile_error = $is_clh_tunnel_submission ? amnesty_verify_clh_tunnel_turnstile() : verify_turnstile();
+    $turnstile_error = $is_clh_tunnel_submission ? amnesty_verify_clh_tunnel_turnstile() : verify_turnstile(switchable: true);
     if ($turnstile_error !== null) {
         if ($is_clh_tunnel_submission) {
             amnesty_redirect_petition_signature_error($petition_id, 'turnstile', true);

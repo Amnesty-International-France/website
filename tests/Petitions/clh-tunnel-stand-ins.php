@@ -20,10 +20,10 @@ if (!function_exists('is_ssl')) {
 }
 
 if (!function_exists('aif_turnstile_enabled')) {
-    /** Turnstile is on unless a test sets $GLOBALS['__phpunit_turnstile_enabled'] to false. */
-    function aif_turnstile_enabled(): bool
+    /** Turnstile is on, unless a test sets $GLOBALS['__phpunit_turnstile_enabled'] to false to switch the switchable forms off. */
+    function aif_turnstile_enabled(bool $switchable): bool
     {
-        return $GLOBALS['__phpunit_turnstile_enabled'] ?? true;
+        return !$switchable || false !== ($GLOBALS['__phpunit_turnstile_enabled'] ?? true);
     }
 }
 

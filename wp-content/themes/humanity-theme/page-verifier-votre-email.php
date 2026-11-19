@@ -16,7 +16,7 @@ if (!isset($_GET['user'])) {
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['2FA-code']) && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_check') {
     $code = sanitize_text_field(wp_unslash($_POST['2FA-code']));
 
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = verify_turnstile(switchable: true);
     if ($turnstile_error !== null) {
         $error_message = turnstile_friendly_error($turnstile_error);
     } else {
@@ -50,7 +50,7 @@ $send_code_error_message = '';
 $send_code_success_message = '';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_POST['form_action'] === '2FA_send_code') {
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = verify_turnstile(switchable: true);
     if ($turnstile_error !== null) {
         $send_code_error_message = turnstile_friendly_error($turnstile_error);
     } else {
@@ -91,7 +91,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
 				recevoir par email</p>
 			<form role="form" method="POST" action="">
 				<input type="hidden" name="form_action" value="2FA_check">
-				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+				<?php $turnstile_site_key = aif_turnstile_site_key(switchable: true); ?>
+				<?php if ($turnstile_site_key) : ?>
+				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr($turnstile_site_key); ?>"></div>
+				<?php endif; ?>
 				<label for="2FA-code">Code à 6
 					chiffres (obligatoire)</label>
 				<input class="aif-input" pattern="\d{6}" title="rentrer ici votre code de 6 chiffres reçu par email"
@@ -142,7 +145,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
 
 			<form class="aif-form-container" role="form" method="POST" action="">
 				<input type="hidden" name="form_action" value="2FA_send_code">
-				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+				<?php if ($turnstile_site_key) : ?>
+				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr($turnstile_site_key); ?>"></div>
+				<?php endif; ?>
 				<button class="btn aif-mt1w aif-button--full" type="submit">Recevoir un nouveau code</button>
 			</form>
 
