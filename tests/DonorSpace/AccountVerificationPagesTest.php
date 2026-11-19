@@ -518,6 +518,83 @@ final class AccountVerificationPagesTest extends TestCase
         self::assertStringContainsString('<form', $html);
     }
 
+    /**
+     * @return iterable<string, array{string, array<string, string>, int}>
+     */
+    public static function turnstileWidgetsWhenSwitchedOff(): iterable
+    {
+        yield 'login' => ['page-connectez-vous.php', [], 0];
+        yield 'account creation' => ['page-creer-votre-compte.php', [], 0];
+        yield 'email verification' => ['page-verifier-votre-email.php', ['user' => self::EMAIL], 0];
+        yield 'password change' => ['page-modifier-mon-mot-de-passe.php', ['user' => self::EMAIL, 'token' => 'token'], 0];
+        yield 'forgotten password' => ['page-mot-de-passe-oublie.php', [], 1];
+    }
+
+    /**
+     * @param array<string, string> $get
+     */
+    #[DataProvider('turnstileWidgetsWhenSwitchedOff')]
+    public function testSwitchedOffTurnstileOnlyHidesTheWidgetOfSwitchableForms(string $page, array $get, int $widgets): void
+    {
+        $GLOBALS['__phpunit_turnstile_enabled'] = false;
+
+        $html = $this->render($page, $get, [], 'GET');
+
+        self::assertSame($widgets, parse_html($html)->query('//div[contains(@class, "cf-turnstile")]')->length);
+    }
+
+    /**
+     * @return iterable<string, array{string, array<string, string>}>
+     */
+    public static function turnstileWidgetsWhenOn(): iterable
+    {
+        yield 'login' => ['page-connectez-vous.php', []];
+        yield 'account creation' => ['page-creer-votre-compte.php', []];
+        yield 'email verification' => ['page-verifier-votre-email.php', ['user' => self::EMAIL]];
+        yield 'password change' => ['page-modifier-mon-mot-de-passe.php', ['user' => self::EMAIL, 'token' => 'token']];
+        yield 'forgotten password' => ['page-mot-de-passe-oublie.php', []];
+    }
+
+    /**
+     * @param array<string, string> $get
+     */
+    #[DataProvider('turnstileWidgetsWhenOn')]
+    public function testTurnstileWidgetIsShownWhenOn(string $page, array $get): void
+    {
+        $html = $this->render($page, $get, [], 'GET');
+
+        self::assertGreaterThan(0, parse_html($html)->query('//div[contains(@class, "cf-turnstile") and @data-sitekey="site-key"]')->length);
+    }
+
+    /**
+     * @return iterable<string, array{string, array<string, string>, array<string, string>, bool}>
+     */
+    public static function turnstileSubmissions(): iterable
+    {
+        yield 'login' => ['page-connectez-vous.php', [], ['email' => self::EMAIL, 'password' => 'password'], true];
+        yield 'account creation' => ['page-creer-votre-compte.php', [], ['email' => self::EMAIL], true];
+        yield 'code check' => ['page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_check', '2FA-code' => '000000'], true];
+        yield 'code resend' => ['page-verifier-votre-email.php', ['user' => self::EMAIL], ['form_action' => '2FA_send_code'], true];
+        yield 'password change' => ['page-modifier-mon-mot-de-passe.php', ['user' => self::EMAIL, 'token' => 'token'], ['password' => 'Password-1234', 'confirm-password' => 'Password-1234'], true];
+        yield 'forgotten password' => ['page-mot-de-passe-oublie.php', [], ['email' => self::EMAIL], false];
+    }
+
+    /**
+     * Login and every signup step follow TURNSTILE_ENABLED; the forgotten-password form keeps Turnstile.
+     *
+     * @param array<string, string> $get
+     * @param array<string, string> $post
+     */
+    #[DataProvider('turnstileSubmissions')]
+    public function testOnlyLoginAndSignupFollowTheSwitch(string $page, array $get, array $post, bool $switchable): void
+    {
+        $GLOBALS['__phpunit_turnstile_switchable'] = [];
+
+        $this->render($page, $get, $post);
+
+        self::assertSame([$switchable], $GLOBALS['__phpunit_turnstile_switchable']);
+    }
+
     public function testUnverifiedLoginLinkKeepsTheWholeVerificationUrl(): void
     {
         $GLOBALS['__phpunit_users'][42] = new WP_User(['subscriber'], 42, self::EMAIL, self::EMAIL, '', 'password');

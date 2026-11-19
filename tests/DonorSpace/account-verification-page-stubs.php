@@ -96,13 +96,16 @@ function seed_permalink_with_apostrophe(string $path): string
     return $url;
 }
 
-function aif_turnstile_site_key(): string
+/** Empty for a switchable form when a test sets $GLOBALS['__phpunit_turnstile_enabled'] to false. */
+function aif_turnstile_site_key(bool $switchable = false): string
 {
-    return 'site-key';
+    return $switchable && false === ($GLOBALS['__phpunit_turnstile_enabled'] ?? true) ? '' : 'site-key';
 }
 
-function verify_turnstile(): ?string
+function verify_turnstile(bool $switchable = false): ?string
 {
+    $GLOBALS['__phpunit_turnstile_switchable'][] = $switchable;
+
     return null;
 }
 
