@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpcs-baseline version="3.13.6">
-<violation file="wp-content/themes/humanity-theme/functions.php" sniff="WordPress.Security.ValidatedSanitizedInput.InputNotSanitized" signature="0b090259b50d176720019e9c14367e8478065ff8"/>
-<violation file="wp-content/themes/humanity-theme/functions.php" sniff="WordPress.Security.ValidatedSanitizedInput.InputNotSanitized" signature="f636274c261b2f23cf5b1ba09af40ea4fef77429"/>
 <violation file="wp-content/themes/humanity-theme/includes/admin/countries-settings.php" sniff="WordPress.Security.ValidatedSanitizedInput.InputNotSanitized" signature="c2dc0919e4d3041e3d848d8e51b4b488f5c0dd53"/>
 <violation file="wp-content/themes/humanity-theme/includes/admin/event-pagination-redirect.php" sniff="WordPress.Security.ValidatedSanitizedInput.InputNotSanitized" signature="75ff231f8bc90bdc71c7ef0f7742161e7b42ae91"/>
 <violation file="wp-content/themes/humanity-theme/includes/admin/event-pagination-redirect.php" sniff="WordPress.Security.ValidatedSanitizedInput.InputNotValidated" signature="75ff231f8bc90bdc71c7ef0f7742161e7b42ae91"/>

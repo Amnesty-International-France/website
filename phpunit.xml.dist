@@ -44,5 +44,8 @@
         <testsuite name="RestApi">
             <directory>tests/RestApi</directory>
         </testsuite>
+        <testsuite name="Turnstile">
+            <directory>tests/Turnstile</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
