@@ -112,6 +112,17 @@ final class ClhTunnelTurnstileSessionTest extends TestCase
         self::assertSame(0, $GLOBALS['__phpunit_turnstile_calls']);
     }
 
+    public function testDisabledTurnstileSkipsTheCheckWithoutRememberingIt(): void
+    {
+        $GLOBALS['__phpunit_turnstile_enabled'] = false;
+        $GLOBALS['__phpunit_turnstile_error'] = 'missing-input-response';
+
+        self::assertTrue(amnesty_is_clh_tunnel_turnstile_verified());
+        self::assertNull(amnesty_verify_clh_tunnel_turnstile());
+        self::assertSame(0, $GLOBALS['__phpunit_turnstile_calls']);
+        self::assertArrayNotHasKey('clh_turnstile_verified_at', $_SESSION);
+    }
+
     public function testSkipInVerifiedSessionNeedsNoToken(): void
     {
         $_SESSION['clh_turnstile_verified_at'] = time();

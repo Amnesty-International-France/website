@@ -59,19 +59,67 @@ two scripts in the deploy user's home:
 
 Variables read from `$DOCUMENT_ROOT/.env` :
 
-| name                | purpose                                      |
-| ------------------- | -------------------------------------------- |
-| DB_HOST             | database host                                |
-| DB_NAME             | database name                                |
-| DB_USER             | database user name                           |
-| DB_PASSWORD         | database password                            |
-| DB_PREFIX           | table prefix (`wp_`)                         |
-| WP_ENVIRONMENT_TYPE | `production`, `staging` or `development`     |
-| SENTRY_RELEASE      | set by the deploy workflow to the commit sha |
+| name                 | purpose                                      |
+| -------------------- | -------------------------------------------- |
+| DB_HOST              | database host                                |
+| DB_NAME              | database name                                |
+| DB_USER              | database user name                           |
+| DB_PASSWORD          | database password                            |
+| DB_PREFIX            | table prefix (`wp_`)                         |
+| WP_ENVIRONMENT_TYPE  | `production`, `staging` or `development`     |
+| SENTRY_RELEASE       | set by the deploy workflow to the commit sha |
+| TURNSTILE_SITE_KEY   | Cloudflare Turnstile site key                |
+| TURNSTILE_SECRET_KEY | Cloudflare Turnstile secret key              |
+| TURNSTILE_ENABLED    | `0` switches Turnstile off, see below        |
 
 The WordPress salts (`AUTH_KEY`, `SECURE_AUTH_KEY`, `LOGGED_IN_KEY`, `NONCE_KEY`,
 `AUTH_SALT`, `SECURE_AUTH_SALT`, `LOGGED_IN_SALT`, `NONCE_SALT`, `WP_CACHE_KEY_SALT`)
 and the Salesforce / MailGun credentials are also defined there.
+
+### Switching Turnstile off
+
+Cloudflare Turnstile protects the site forms: login, account creation, password
+reset and change, email verification, petitions (including the CLH tunnel),
+urgent-action registration, newsletters, the chronicle discovery offer, contact and
+Jetpack forms.
+
+Leave `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` as they are, `TURNSTILE_ENABLED` is independent.
+
+To switch it off, add this line to `$DOCUMENT_ROOT/.env`:
+
+```
+TURNSTILE_ENABLED=0
+```
+
+Forms are then accepted without a Turnstile token, and no Turnstile script is loaded.
+To switch Turnstile back on, remove the line.
+
+- Only `0` switches Turnstile off (`"0"` and `'0'` work too). An unset or empty
+  variable, or any other value such as `false` or `no`, keeps Turnstile on.
+- The change applies from the next request: `wp-config.php` reads `.env` on every
+  request, with no reload or deployment.
+- A variable already defined in the server environment wins over `.env`: phpdotenv
+  never overwrites it.
+- The switch reads `getenv()`, so `wp-config.php` must load `.env` with
+  `Dotenv::createUnsafeImmutable()` (see Environment Variables below). With
+  `createImmutable()`, Turnstile stays on.
+
+#### Cache
+
+Purge the Cloudflare cache after each switch: public pages stay up to 6 hours at the
+edge. When switching back on, it is mandatory: pages cached without the Turnstile
+script would have their forms rejected. Browsers keep pages 5 more minutes, so a
+visitor may have to reload once.
+
+**Purging from WordPress admin:** as an administrator, open Settings → Cloudflare
+(Réglages → Cloudflare in French), then on the Home tab click "Purge Cache" in the
+"Purge Cache" card and choose "Purge Everything".
+
+**Purging over SSH:**
+
+```bash
+source $HOME/initenv.sh && cd "$DOCUMENT_ROOT" && wp-cli cloudflare cache_purge
+```
 
 ### Scheduled tasks
 
