@@ -120,7 +120,9 @@ print esc_attr($class_name ?? ''); ?>">
 				</div>
 			<?php else: ?>
 			<form id="newsletter-form" class="newsletter-form" action="" method="post" name="newsletter-form">
+				<?php if (aif_turnstile_site_key()) : ?>
 				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+				<?php endif; ?>
 				<div class="form-mess hidden"></div>
 					<?php if (!$local_user && !$is_salesforce_user) : ?>
 					<div class="form-group civility">

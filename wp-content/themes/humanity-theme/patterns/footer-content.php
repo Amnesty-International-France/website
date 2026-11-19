@@ -194,6 +194,7 @@ if (!amnesty_is_clh_petition_tunnel_page($queried_object instanceof WP_Post ? $q
                 <div class="nl-container">
                     <form action="" method="post" id="newsletter-lead-form" name="newsletter-lead-form"
                         class="newsletter-lead-form">
+                        <?php if (aif_turnstile_site_key()) : ?>
                         <div class="cf-turnstile"
                             data-callback="aifTurnstileSuccess"
                             data-error-callback="aifTurnstileFailure"
@@ -202,6 +203,7 @@ if (!amnesty_is_clh_petition_tunnel_page($queried_object instanceof WP_Post ? $q
                             data-timeout-callback="aifTurnstileFailure"
                             data-unsupported-callback="aifTurnstileFailure"
                             data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+                        <?php endif; ?>
                         <div class="nl-input-group">
                             <input type="text" name="newsletter-lead" placeholder="Votre adresse e-mail">
                             <button class="register-nl" name="sign_lead" disabled>

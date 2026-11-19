@@ -83,6 +83,25 @@ final class AccountVerificationPagesTest extends TestCase
         }
     }
 
+    #[DataProvider('turnstileWidgetCases')]
+    public function testTurnstileWidgetIsRenderedOnlyWithASiteKey(string $siteKey, int $expectedWidgets): void
+    {
+        $GLOBALS['__phpunit_turnstile_site_key'] = $siteKey;
+
+        $html = parse_html($this->render('page-mot-de-passe-oublie.php', [], [], 'GET'));
+
+        self::assertSame($expectedWidgets, $html->query('//div[contains(@class, "cf-turnstile")]')->length);
+    }
+
+    /**
+     * @return iterable<string, array{string, int}>
+     */
+    public static function turnstileWidgetCases(): iterable
+    {
+        yield 'Turnstile on' => ['site-key', 1];
+        yield 'Turnstile off' => ['', 0];
+    }
+
     #[DataProvider('accountStateProvider')]
     public function testFailedDeliveryKeepsSignupRecoverableWithoutCreatingADuplicate(bool $existing): void
     {

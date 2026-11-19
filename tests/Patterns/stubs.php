@@ -88,7 +88,7 @@ if (!function_exists('get_the_title')) {
 if (!function_exists('aif_turnstile_site_key')) {
     function aif_turnstile_site_key(): string
     {
-        return 'site-key';
+        return $GLOBALS['__phpunit_turnstile_site_key'] ?? 'site-key';
     }
 }
 

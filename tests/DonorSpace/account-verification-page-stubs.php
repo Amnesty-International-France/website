@@ -98,7 +98,7 @@ function seed_permalink_with_apostrophe(string $path): string
 
 function aif_turnstile_site_key(): string
 {
-    return 'site-key';
+    return $GLOBALS['__phpunit_turnstile_site_key'] ?? 'site-key';
 }
 
 function verify_turnstile(): ?string

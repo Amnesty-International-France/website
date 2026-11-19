@@ -9,7 +9,7 @@
  * empty or other value keeps it on.
  *
  * When it is off the keys stay configured, but no site key is exposed: no
- * Turnstile script is loaded, widgets stay empty, and verify_turnstile()
+ * Turnstile script is loaded, no widget is rendered, and verify_turnstile()
  * accepts every submission.
  */
 function aif_turnstile_enabled(): bool
