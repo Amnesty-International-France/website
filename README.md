@@ -59,18 +59,18 @@ two scripts in the deploy user's home:
 
 Variables read from `$DOCUMENT_ROOT/.env` :
 
-| name                 | purpose                                      |
-| -------------------- | -------------------------------------------- |
-| DB_HOST              | database host                                |
-| DB_NAME              | database name                                |
-| DB_USER              | database user name                           |
-| DB_PASSWORD          | database password                            |
-| DB_PREFIX            | table prefix (`wp_`)                         |
-| WP_ENVIRONMENT_TYPE  | `production`, `staging` or `development`     |
-| SENTRY_RELEASE       | set by the deploy workflow to the commit sha |
-| TURNSTILE_SITE_KEY   | Cloudflare Turnstile site key                |
-| TURNSTILE_SECRET_KEY | Cloudflare Turnstile secret key              |
-| TURNSTILE_ENABLED    | `0` switches Turnstile off, see below        |
+| name                 | purpose                                             |
+| -------------------- | --------------------------------------------------- |
+| DB_HOST              | database host                                       |
+| DB_NAME              | database name                                       |
+| DB_USER              | database user name                                  |
+| DB_PASSWORD          | database password                                   |
+| DB_PREFIX            | table prefix (`wp_`)                                |
+| WP_ENVIRONMENT_TYPE  | `production`, `staging` or `development`            |
+| SENTRY_RELEASE       | set by the deploy workflow to the commit sha        |
+| TURNSTILE_SITE_KEY   | Cloudflare Turnstile site key                       |
+| TURNSTILE_SECRET_KEY | Cloudflare Turnstile secret key                     |
+| TURNSTILE_ENABLED    | `0` switches Turnstile off on some forms, see below |
 
 The WordPress salts (`AUTH_KEY`, `SECURE_AUTH_KEY`, `LOGGED_IN_KEY`, `NONCE_KEY`,
 `AUTH_SALT`, `SECURE_AUTH_SALT`, `LOGGED_IN_SALT`, `NONCE_SALT`, `WP_CACHE_KEY_SALT`)
@@ -83,6 +83,11 @@ reset and change, email verification, petitions (including the CLH tunnel),
 urgent-action registration, newsletters, the chronicle discovery offer, contact and
 Jetpack forms.
 
+`TURNSTILE_ENABLED=0` switches it off on these forms only: login, account creation
+(including email verification and password change, which is also the last step of a
+password reset), petition signature and the CLH tunnel. The other forms keep
+Turnstile.
+
 Leave `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` as they are, `TURNSTILE_ENABLED` is independent.
 
 To switch it off, add this line to `$DOCUMENT_ROOT/.env`:
@@ -91,8 +96,9 @@ To switch it off, add this line to `$DOCUMENT_ROOT/.env`:
 TURNSTILE_ENABLED=0
 ```
 
-Forms are then accepted without a Turnstile token, and no Turnstile script is loaded.
-To switch Turnstile back on, remove the line.
+These forms are then accepted without a Turnstile token and show no widget. The
+Turnstile script still loads for the other forms. To switch Turnstile back on,
+remove the line.
 
 - Only `0` switches Turnstile off (`"0"` and `'0'` work too). An unset or empty
   variable, or any other value such as `false` or `no`, keeps Turnstile on.
@@ -106,10 +112,15 @@ To switch Turnstile back on, remove the line.
 
 #### Cache
 
-Purge the Cloudflare cache after each switch: public pages stay up to 6 hours at the
-edge. When switching back on, it is mandatory: pages cached without the Turnstile
-script would have their forms rejected. Browsers keep pages 5 more minutes, so a
-visitor may have to reload once.
+Purge the Cloudflare cache after each switch, as public pages stay up to 6 hours at
+the edge:
+
+- When switching off, pages cached with the widget still run the Turnstile
+  challenge before their forms are sent.
+- When switching back on, pages cached without the widget would have their forms
+  rejected.
+
+Browsers keep pages 5 more minutes, so a visitor may have to reload once.
 
 **Purging from WordPress admin:** as an administrator, open Settings → Cloudflare
 (Réglages → Cloudflare in French), then on the Home tab click "Purge Cache" in the

@@ -44,6 +44,8 @@ $total_steps = min(10, count($list_petitions_clh));
 $next_petition = $context['next_petition'];
 $show_final_screen = $next_petition === null;
 // Once the visitor has passed Turnstile, the tunnel forms submit without a new check.
+// Also true while TURNSTILE_ENABLED=0, which hides the widgets below: rendered then,
+// they would make the Turnstile guard script hold the forms.
 $turnstile_verified = amnesty_is_clh_tunnel_turnstile_verified();
 
 if ($show_final_screen) {
