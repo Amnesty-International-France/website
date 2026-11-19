@@ -116,7 +116,7 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
 		<div class="login-form">
 			<h3 class="login-title">Connexion</h3>
 			<form class="aif-form-container" role="form" method="POST" action="">
-				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+				<?php echo aif_turnstile_widget(); ?>
 				<label for="email" class="sr-only">Votre adresse email (obligatoire)</label>
 				<input placeholder="Email"
 				       value="<?= esc_attr($email) ?>" class="aif-input" type="email" name="email" id="email"

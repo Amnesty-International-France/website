@@ -91,7 +91,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
 				déjà un compte, <a class="aif-link--primary" href="<?php echo esc_url(get_permalink(get_page_by_path('connectez-vous'))); ?>">connectez-vous</a>.</p>
 			<form role="form" method="POST" action="">
 				<input type="hidden" name="form_action" value="2FA_check">
-				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+				<?php echo aif_turnstile_widget(); ?>
 				<label for="2FA-code">Code à 6
 					chiffres (obligatoire)</label>
 				<input class="aif-input" pattern="\d{6}" title="rentrer ici votre code de 6 chiffres reçu par email"
@@ -142,7 +142,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
 
 			<form class="aif-form-container" role="form" method="POST" action="">
 				<input type="hidden" name="form_action" value="2FA_send_code">
-				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+				<?php echo aif_turnstile_widget(); ?>
 				<button class="btn aif-mt1w aif-button--full" type="submit">Recevoir un nouveau code</button>
 			</form>
 

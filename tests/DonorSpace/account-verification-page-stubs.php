@@ -98,7 +98,13 @@ function seed_permalink_with_apostrophe(string $path): string
 
 function aif_turnstile_site_key(): string
 {
-    return 'site-key';
+    return $GLOBALS['__phpunit_turnstile_site_key'] ?? 'site-key';
+}
+
+/** A bare widget when a site key is set; the real markup is tested in tests/Turnstile. */
+function aif_turnstile_widget(bool $interaction_only = false): string
+{
+    return '' === aif_turnstile_site_key() ? '' : '<div class="cf-turnstile"></div>';
 }
 
 function verify_turnstile(): ?string

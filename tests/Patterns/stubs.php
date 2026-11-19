@@ -88,7 +88,15 @@ if (!function_exists('get_the_title')) {
 if (!function_exists('aif_turnstile_site_key')) {
     function aif_turnstile_site_key(): string
     {
-        return 'site-key';
+        return $GLOBALS['__phpunit_turnstile_site_key'] ?? 'site-key';
+    }
+}
+
+if (!function_exists('aif_turnstile_widget')) {
+    /** A bare widget when a site key is set; the real markup is tested in tests/Turnstile. */
+    function aif_turnstile_widget(bool $interaction_only = false): string
+    {
+        return '' === aif_turnstile_site_key() ? '' : '<div class="cf-turnstile"></div>';
     }
 }
 

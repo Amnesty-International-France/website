@@ -297,16 +297,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 							<form id="<?php echo esc_attr($skip_form_id); ?>" class="tunnel-clh-skip-form" method="post"
 							      action="">
 								<?php if (!$turnstile_verified) : ?>
-								<div
-									class="cf-turnstile"
-									data-callback="aifTurnstileSuccess"
-									data-error-callback="aifTurnstileFailure"
-									data-appearance="interaction-only"
-									data-expired-callback="aifTurnstileFailure"
-									data-timeout-callback="aifTurnstileFailure"
-									data-unsupported-callback="aifTurnstileFailure"
-									data-sitekey="<?= esc_attr(aif_turnstile_site_key()); ?>"
-								></div>
+								<?php echo aif_turnstile_widget(true); ?>
 								<?php endif; ?>
 								<?php amnesty_clh_skip_nonce_field(); ?>
 								<input type="hidden" name="petition_id"
@@ -316,6 +307,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 							    $sign_form_id = sprintf('tunnel-clh-sign-form-%d', (int)$next_petition['id']); ?>
 								<form id="<?php echo esc_attr($sign_form_id); ?>" class="tunnel-clh-sign-form"
 								      method="post" action="">
+									<?php /* Unlike aif_turnstile_widget(), this widget and the next one declare no callbacks, so they keep their own markup. */ ?>
 									<?php if (!$turnstile_verified) : ?>
 									<div class="cf-turnstile"
 									     data-appearance="interaction-only"
