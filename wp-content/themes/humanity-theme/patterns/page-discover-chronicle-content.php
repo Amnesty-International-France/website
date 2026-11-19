@@ -100,18 +100,7 @@ if (isset($_POST['sign_discover_chronicle'])) {
 		<!-- wp:post-content /-->
 		<div class="discover-chronicle-form-container">
 			<form id="discover-chronicle-form" class="discover-chronicle-form" action="" method="post">
-				<?php if (aif_turnstile_site_key()) : ?>
-				<div
-					class="cf-turnstile"
-					data-callback="aifTurnstileSuccess"
-					data-error-callback="aifTurnstileFailure"
-					data-appearance="interaction-only"
-					data-expired-callback="aifTurnstileFailure"
-					data-timeout-callback="aifTurnstileFailure"
-					data-unsupported-callback="aifTurnstileFailure"
-					data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"
-				></div>
-				<?php endif; ?>
+				<?php echo aif_turnstile_widget(true); ?>
 				<?php if (!empty($error_message)) : ?>
 					<?php
                     aif_include_partial('alert', [

@@ -31,6 +31,30 @@ function aif_turnstile_secret_key(): string
     return (string) getenv('TURNSTILE_SECRET_KEY');
 }
 
+/**
+ * Markup of a Turnstile widget for a protected form, or '' when Turnstile is off.
+ *
+ * Declared as auto-escaped in phpcs.xml: the site key is its only variable part.
+ *
+ * @param bool $interaction_only Show the widget only when Cloudflare needs an interaction.
+ */
+function aif_turnstile_widget(bool $interaction_only = false): string
+{
+    $site_key = aif_turnstile_site_key();
+
+    if ('' === $site_key) {
+        return '';
+    }
+
+    return sprintf(
+        '<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure"%s'
+        . ' data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure"'
+        . ' data-unsupported-callback="aifTurnstileFailure" data-sitekey="%s"></div>',
+        $interaction_only ? ' data-appearance="interaction-only"' : '',
+        esc_attr($site_key)
+    );
+}
+
 add_action('wp_enqueue_scripts', function () {
     if (!aif_turnstile_site_key()) {
         return;

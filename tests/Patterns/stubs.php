@@ -92,6 +92,14 @@ if (!function_exists('aif_turnstile_site_key')) {
     }
 }
 
+if (!function_exists('aif_turnstile_widget')) {
+    /** A bare widget when a site key is set; the real markup is tested in tests/Turnstile. */
+    function aif_turnstile_widget(bool $interaction_only = false): string
+    {
+        return '' === aif_turnstile_site_key() ? '' : '<div class="cf-turnstile"></div>';
+    }
+}
+
 if (!function_exists('is_admin')) {
     function is_admin(): bool
     {

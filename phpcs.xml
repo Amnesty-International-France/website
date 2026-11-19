@@ -8,6 +8,7 @@
     <properties>
       <property name="customAutoEscapedFunctions" type="array">
         <element value="render_block" />
+        <element value="aif_turnstile_widget" />
       </property>
     </properties>
   </rule>

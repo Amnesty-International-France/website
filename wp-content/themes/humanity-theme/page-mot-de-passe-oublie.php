@@ -62,15 +62,7 @@ if (isset($success_message)) {
 
 			<section class="aif-forgotten-password">
 				<form class="aif-form-container" action="" method="POST">
-					<?php if (aif_turnstile_site_key()) : ?>
-					<div class="cf-turnstile"
-					     data-callback="aifTurnstileSuccess"
-					     data-error-callback="aifTurnstileFailure"
-					     data-expired-callback="aifTurnstileFailure"
-					     data-timeout-callback="aifTurnstileFailure"
-					     data-unsupported-callback="aifTurnstileFailure"
-					     data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
-					<?php endif; ?>
+					<?php echo aif_turnstile_widget(); ?>
 					<label for="email">Votre email (obligatoire) :</label>
 					<input
 						value="<?= esc_attr($email) ?>"

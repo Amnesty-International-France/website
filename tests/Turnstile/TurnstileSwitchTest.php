@@ -54,6 +54,7 @@ final class TurnstileSwitchTest extends TestCase
             $GLOBALS['__phpunit_enqueued_scripts'][] = $handle;
         }
 
+        require_once dirname(__DIR__) . '/DonorSpace/escaping-stubs.php';
         require_once dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/features/turnstile.php';
 
         putenv('TURNSTILE_SITE_KEY=' . self::SITE_KEY);
@@ -85,6 +86,44 @@ final class TurnstileSwitchTest extends TestCase
 
         self::assertFalse(aif_turnstile_enabled());
         self::assertSame('', aif_turnstile_site_key());
+    }
+
+    public function testDisabledTurnstileRendersNoWidget(): void
+    {
+        putenv('TURNSTILE_ENABLED=0');
+
+        self::assertSame('', aif_turnstile_widget());
+        self::assertSame('', aif_turnstile_widget(true));
+    }
+
+    #[DataProvider('widgetCases')]
+    public function testEnabledTurnstileRendersItsWidget(bool $interactionOnly, ?string $expectedAppearance): void
+    {
+        putenv('TURNSTILE_ENABLED');
+        putenv('TURNSTILE_SITE_KEY=key"><script>');
+
+        $document = new DOMDocument();
+        $document->loadHTML(aif_turnstile_widget($interactionOnly), LIBXML_NOERROR);
+        $widgets = (new DOMXPath($document))->query('//div[@class="cf-turnstile"]');
+
+        self::assertSame(1, $widgets->length);
+        $widget = $widgets->item(0);
+        self::assertInstanceOf(DOMElement::class, $widget);
+        self::assertSame('key"><script>', $widget->getAttribute('data-sitekey'));
+        self::assertSame('aifTurnstileSuccess', $widget->getAttribute('data-callback'));
+        foreach (['data-error-callback', 'data-expired-callback', 'data-timeout-callback', 'data-unsupported-callback'] as $failure) {
+            self::assertSame('aifTurnstileFailure', $widget->getAttribute($failure), $failure);
+        }
+        self::assertSame($expectedAppearance, $widget->hasAttribute('data-appearance') ? $widget->getAttribute('data-appearance') : null);
+    }
+
+    /**
+     * @return iterable<string, array{bool, ?string}>
+     */
+    public static function widgetCases(): iterable
+    {
+        yield 'always visible' => [false, null];
+        yield 'shown only when an interaction is needed' => [true, 'interaction-only'];
     }
 
     public function testDisabledTurnstileLoadsNoScriptAndNoPreconnect(): void

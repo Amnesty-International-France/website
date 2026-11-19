@@ -12,25 +12,11 @@
  */
 function aif_add_turnstile_to_jetpack_form(string $html): string
 {
-    $site_key = aif_turnstile_site_key();
+    $widget = aif_turnstile_widget(true);
 
-    if (!$site_key || !str_contains($html, '<form')) {
+    if ('' === $widget || !str_contains($html, '<form')) {
         return $html;
     }
-
-    $widget = sprintf(
-        '<div
-            class="cf-turnstile"
-            data-callback="aifTurnstileSuccess"
-            data-error-callback="aifTurnstileFailure"
-            data-appearance="interaction-only"
-            data-expired-callback="aifTurnstileFailure"
-            data-timeout-callback="aifTurnstileFailure"
-            data-unsupported-callback="aifTurnstileFailure"
-            data-sitekey="%s"
-        ></div>',
-        esc_attr($site_key)
-    );
 
     $form_with_widget = preg_replace('/(<form\b[^>]*>)/i', '$1' . $widget, $html, 1);
 

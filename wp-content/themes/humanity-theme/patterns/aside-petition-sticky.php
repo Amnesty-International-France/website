@@ -48,9 +48,7 @@ $is_campaign_clh = get_field('clh_petition', $post_id) && amnesty_is_clh_petitio
 			<?php if (isset($end_date) && (strtotime($end_date) >= strtotime($current_date))) : ?>
 				<form class="signature-petition-form" method="post" action="">
 					<input type="hidden" name="petition_id" value="<?php echo esc_attr($post_id); ?>">
-					<?php if (aif_turnstile_site_key()) : ?>
-					<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-appearance="interaction-only" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
-					<?php endif; ?>
+					<?php echo aif_turnstile_widget(true); ?>
 					<?php foreach (array_filter([$turnstile_error_message, $signature_status_message]) as $error_message) : ?>
 						<?php aif_include_partial('alert', ['state' => 'error', 'title' => 'Une erreur est survenue', 'content' => $error_message]); ?>
 					<?php endforeach; ?>

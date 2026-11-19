@@ -74,9 +74,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
 	<section class="aif-container--form">
 		<h2>Modifier mon mot de passe</h2>
 		<form class="aif-form-container" action="" method="POST">
-			<?php if (aif_turnstile_site_key()) : ?>
-			<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
-			<?php endif; ?>
+			<?php echo aif_turnstile_widget(); ?>
 			<div class="aif-password-container">
 				<label class="aif-password-container__label" for="password">Nouveau mot de passe (obligatoire)</label>
 				<div class="aif-password-container__input-wrapper">
