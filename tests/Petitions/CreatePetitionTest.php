@@ -147,7 +147,7 @@ final class CreatePetitionTest extends TestCase
         self::publishedPetitionPost();
         $GLOBALS['__phpunit_salesforce_data_response_queue'] = [
             ['success' => true, 'id' => 'sf-000123'],
-            ['Ext_ID_Petition__c' => 'ext-999', 'Code_defaut__c' => 'WEB'],
+            ['Ext_ID_Petition__c' => 'ext-999', 'Code_defaut__c' => 'WEB', 'Code_Newsletter__c' => '26ABC'],
         ];
 
         create_petition(self::POST_ID);
@@ -155,6 +155,20 @@ final class CreatePetitionTest extends TestCase
         self::assertSame('sf-000123', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['sfid']);
         self::assertSame('ext-999', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf']);
         self::assertSame('WEB', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine']);
+        self::assertSame('26ABC', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['reserved_codeorigine']);
+    }
+
+    public function testStoresEmptyNewsletterCodeWhenSalesforceDoesNotReturnIt(): void
+    {
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_salesforce_data_response_queue'] = [
+            ['success' => true, 'id' => 'sf-000124'],
+            ['Ext_ID_Petition__c' => 'ext-1000', 'Code_defaut__c' => 'WEB'],
+        ];
+
+        create_petition(self::POST_ID);
+
+        self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['reserved_codeorigine']);
     }
 
     public function testDoesNotStoreIdsWhenSalesforceCreationFails(): void
