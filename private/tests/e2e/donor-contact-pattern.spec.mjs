@@ -78,7 +78,7 @@ test('redirects after one Case and refreshing the two rendered forms does not se
   await resetSalesforceCalls(request, salesforceTestId);
   const submitted = page.waitForResponse((response) => response.request().method() === 'POST' && response.url().includes('/mon-espace/e2e-contact-twice/'));
 
-  await forms.first().getByRole('button', { name: 'Enregistrer' }).click();
+  await forms.first().getByRole('button', { name: 'Envoyer' }).click();
 
   expect((await submitted).status()).toBe(303);
   await expect(page).toHaveURL(/\/mon-espace\/e2e-contact-twice\/\?contact_sent=1$/);
@@ -174,7 +174,7 @@ test('rejects a contact POST with an invalid nonce without creating a Case', asy
   await resetSalesforceCalls(request, salesforceTestId);
   const responsePromise = page.waitForResponse((response) => response.request().method() === 'POST' && response.url().includes('/mon-espace/e2e-contact-twice/'));
 
-  await form.getByRole('button', { name: 'Enregistrer' }).click();
+  await form.getByRole('button', { name: 'Envoyer' }).click();
 
   expect((await responsePromise).status()).toBe(403);
   expect(await getSalesforceCalls(request, salesforceTestId)).not.toEqual(expect.arrayContaining([
