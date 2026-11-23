@@ -56,6 +56,39 @@ final class DonationCalculatorPartialTest extends TestCase
         self::assertStringNotContainsString('header popin', $html);
     }
 
+    public function testMonthlyTabIsOpenByDefault(): void
+    {
+        $html = $this->render(['with_tabs' => true]);
+
+        self::assertStringContainsString('class="monthly active"', $html);
+        self::assertStringContainsString('class="amount-monthly active"', $html);
+        self::assertStringContainsString('class="punctual hidden"', $html);
+        self::assertStringContainsString('class="amount-punctual hidden"', $html);
+        self::assertStringContainsString('currency-punctual hidden-currency', $html);
+        self::assertStringNotContainsString('currency-monthly hidden-currency', $html);
+    }
+
+    public function testPunctualTabIsOpenWhenAsked(): void
+    {
+        $html = $this->render(['with_tabs' => true, 'default_tab' => 'punctual']);
+
+        self::assertStringContainsString('class="punctual active"', $html);
+        self::assertStringContainsString('class="amount-punctual active"', $html);
+        self::assertStringContainsString('class="monthly hidden"', $html);
+        self::assertStringContainsString('class="amount-monthly hidden"', $html);
+        self::assertStringContainsString('currency-monthly hidden-currency', $html);
+        self::assertStringNotContainsString('currency-punctual hidden-currency', $html);
+        // The preselected punctual amount does not change.
+        self::assertMatchesRegularExpression('/id="radio-don-250"\s+checked/', $html);
+    }
+
+    public function testClhThankYouPageOpensOnThePunctualTab(): void
+    {
+        $pattern = (string) file_get_contents(dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/patterns/page-tunnel-clh-content.php');
+
+        self::assertMatchesRegularExpression('/"position": "clh_merci", "default_tab": "punctual"/', $pattern);
+    }
+
     /**
      * @param array<string, mixed> $args
      */
