@@ -257,36 +257,40 @@ final class CreatePetitionTest extends TestCase
             'sfid' => 'sf-000123',
             'uidsf' => 'ext-999',
             'code_origine' => 'WEB',
+            'reserved_codeorigine' => '26ABC',
         ];
 
-        self::saveAcfForm(['uidsf' => '', 'code_origine' => '']);
+        self::saveAcfForm(['uidsf' => '', 'code_origine' => '', 'reserved_codeorigine' => '']);
         create_petition(self::POST_ID);
 
         self::assertSame([], self::salesforceCalls());
         self::assertSame('ext-999', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf']);
         self::assertSame('WEB', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine']);
+        self::assertSame('26ABC', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['reserved_codeorigine']);
     }
 
     public function testASalesforceLinkTypedInTheEditorReplacesTheStoredOne(): void
     {
         // e.g. the petition was created by hand in Salesforce.
         self::publishedPetitionPost();
-        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] += ['uidsf' => 'ext-999', 'code_origine' => 'WEB'];
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] += ['uidsf' => 'ext-999', 'code_origine' => 'WEB', 'reserved_codeorigine' => '26ABC'];
 
-        self::saveAcfForm(['uidsf' => 'ext-manual', 'code_origine' => 'MANUAL']);
+        self::saveAcfForm(['uidsf' => 'ext-manual', 'code_origine' => 'MANUAL', 'reserved_codeorigine' => 'MANUAL-NL']);
 
         self::assertSame('ext-manual', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf']);
         self::assertSame('MANUAL', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine']);
+        self::assertSame('MANUAL-NL', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['reserved_codeorigine']);
     }
 
     public function testAnEmptySalesforceLinkStaysEmptyUntilThePetitionIsCreated(): void
     {
         self::publishedPetitionPost();
 
-        self::saveAcfForm(['uidsf' => '', 'code_origine' => '']);
+        self::saveAcfForm(['uidsf' => '', 'code_origine' => '', 'reserved_codeorigine' => '']);
 
         self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf']);
         self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['code_origine']);
+        self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['reserved_codeorigine']);
     }
 
     public function testUpdatePetitionEndDateDoesNothingWhenPostTypeIsNotPetition(): void
