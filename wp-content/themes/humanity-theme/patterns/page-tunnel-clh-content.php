@@ -177,6 +177,7 @@ if ($show_final_screen) {
                                 <p>En faisant un don dès aujourd'hui, vous soutenez notre liberté d'action et nous permettez de changer la vie de personnes dont les droits sont bafoués.</p>
 
                                 <?php
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- block markup rendered by core.
                                     echo do_blocks(
                                         '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=395&lang=fr_FR&reserved_originecode=26PJPWSI02", "is_popin": true, "position": "clh_merci", "default_tab": "punctual" } /-->'
                                     );
