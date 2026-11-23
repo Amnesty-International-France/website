@@ -165,7 +165,7 @@ function aif_donor_space_enqueue_assets()
         'aif-donor-space-style',
         AIF_DONOR_SPACE_URL . 'assets/css/style.css',
         [],
-        '1.0'
+        '1.1'
     );
 
     wp_enqueue_script(
@@ -197,6 +197,14 @@ function aif_donor_space_enqueue_assets()
         'aif-donor-iban-formatter',
         AIF_DONOR_SPACE_URL . 'assets/js/iban-formatter.js',
         ['jquery'],
+        '1.0',
+        true
+    );
+
+    wp_enqueue_script(
+        'aif-donor-space-single-submit-form',
+        AIF_DONOR_SPACE_URL . 'assets/js/single-submit-form.js',
+        [],
         '1.0',
         true
     );
