@@ -155,6 +155,44 @@ if (!function_exists('sanitize_text_field')) {
     }
 }
 
+if (!function_exists('wp_generate_uuid4')) {
+    /**
+     * Same implementation as WordPress core.
+     */
+    function wp_generate_uuid4(): string
+    {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
+        );
+    }
+}
+
+if (!function_exists('wp_is_uuid')) {
+    /**
+     * Same validation as WordPress core (version 4 or any version).
+     */
+    function wp_is_uuid(mixed $uuid, ?int $version = null): bool
+    {
+        if (!is_string($uuid)) {
+            return false;
+        }
+
+        $regex = 4 === $version
+            ? '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/'
+            : '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/';
+
+        return (bool) preg_match($regex, $uuid);
+    }
+}
+
 if (!function_exists('is_wp_error')) {
     function is_wp_error(mixed $thing): bool
     {
@@ -689,6 +727,7 @@ if (!class_exists('wpdb')) {
     class wpdb
     {
         public string $prefix = 'wp_';
+        public string $options = 'wp_options';
         public int $insert_id = 0;
 
         /** @var array<int,array<string,mixed>> */
