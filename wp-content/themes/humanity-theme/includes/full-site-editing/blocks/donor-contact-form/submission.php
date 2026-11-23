@@ -60,14 +60,19 @@ function aif_handle_donor_contact_form(): void
         return;
     }
 
-    $contact = aif_require_salesforce_object(get_salesforce_user_data($member->Id), 'contact', 'Id');
-
     // Same displayed form sent again (repeated clicks): never create a second Case,
-    // answer with the outcome of the first submission instead.
+    // answer with the outcome of the first submission instead. Claimed before any
+    // Salesforce call, so a duplicate never waits for nor depends on Salesforce.
     $submission_key = aif_get_donor_contact_submission_key(get_current_user_id(), $token);
     if (!aif_claim_donor_contact_submission($submission_key)) {
         aif_respond_to_duplicate_donor_contact_submission($submission_key, $state);
         return;
+    }
+
+    $contact = get_salesforce_user_data($member->Id);
+    if (!is_object($contact) || !property_exists($contact, 'Id')) {
+        aif_set_donor_contact_submission_status($submission_key, 'failed');
+        aif_require_salesforce_object($contact, 'contact', 'Id');
     }
 
     $result = create_contact_request($member->Id, $message, $subject, $contact->Tech_Lien_Mandat_Actif__c ?? null);
@@ -101,40 +106,81 @@ function aif_get_donor_contact_submission_key(int $user_id, string $token): stri
     return 'aif_contact_submission_' . md5($user_id . '|' . strtolower($token));
 }
 
+/** A pending claim older than this is considered abandoned (fatal error, killed request). */
+const AIF_DONOR_CONTACT_SUBMISSION_STALE_AFTER = 90;
+
 /**
- * Atomically marks a submission as in progress; false when it was already claimed.
+ * Atomically marks a submission as in progress; false when another request owns it.
  *
  * Stored as a transient so WordPress purges it once expired, but written with
  * INSERT IGNORE: concurrent requests rely on the unique option_name, not on a
- * read-then-write that two requests could both pass.
+ * read-then-write that two requests could both pass. Both rows are inserted by
+ * the same statement so a value never stays without its expiration.
+ *
+ * A failed or abandoned submission can be claimed again (reload of the error
+ * page): only one request wins the compare-and-swap on the stored value.
  */
 function aif_claim_donor_contact_submission(string $key): bool
 {
     global $wpdb;
 
     $inserted = $wpdb->query($wpdb->prepare(
-        "INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'off')",
+        "INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'off'), (%s, %s, 'off')",
         '_transient_' . $key,
-        'pending'
-    ));
-    if (1 !== $inserted) {
-        return false;
-    }
-
-    $wpdb->query($wpdb->prepare(
-        "INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'off')",
+        aif_pending_donor_contact_submission_status(),
         '_transient_timeout_' . $key,
         (string) (time() + DAY_IN_SECONDS)
     ));
+    if (false === $inserted) {
+        aif_log_donor_contact_submission_db_error('claim');
+        return false;
+    }
+    if (2 === $inserted) {
+        return true;
+    }
 
-    return true;
+    $status = aif_get_donor_contact_submission_status($key);
+    if (null === $status || !aif_donor_contact_submission_can_be_retried($status)) {
+        return false;
+    }
+
+    $retaken = $wpdb->query($wpdb->prepare(
+        "UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s AND option_value = %s",
+        aif_pending_donor_contact_submission_status(),
+        '_transient_' . $key,
+        $status
+    ));
+    if (false === $retaken) {
+        aif_log_donor_contact_submission_db_error('retry');
+    }
+
+    return 1 === $retaken;
+}
+
+function aif_pending_donor_contact_submission_status(): string
+{
+    return 'pending:' . time();
+}
+
+function aif_is_pending_donor_contact_submission(string $status): bool
+{
+    return str_starts_with($status, 'pending:')
+        && time() - (int) substr($status, 8) < AIF_DONOR_CONTACT_SUBMISSION_STALE_AFTER;
+}
+
+function aif_donor_contact_submission_can_be_retried(string $status): bool
+{
+    return 'sent' !== $status && !aif_is_pending_donor_contact_submission($status);
 }
 
 function aif_set_donor_contact_submission_status(string $key, string $status): void
 {
     global $wpdb;
 
-    $wpdb->update($wpdb->options, ['option_value' => $status], ['option_name' => '_transient_' . $key]);
+    $updated = $wpdb->update($wpdb->options, ['option_value' => $status], ['option_name' => '_transient_' . $key]);
+    if (false === $updated) {
+        aif_log_donor_contact_submission_db_error('status ' . $status);
+    }
 }
 
 function aif_get_donor_contact_submission_status(string $key): ?string
@@ -150,6 +196,13 @@ function aif_get_donor_contact_submission_status(string $key): ?string
     return is_string($status) ? $status : null;
 }
 
+function aif_log_donor_contact_submission_db_error(string $step): void
+{
+    global $wpdb;
+
+    error_log(sprintf('[AIF contact] Submission token %s failed: %s', $step, (string) ($wpdb->last_error ?? '')));
+}
+
 /** @param array<string, mixed> $state */
 function aif_respond_to_duplicate_donor_contact_submission(string $key, array $state): void
 {
@@ -157,7 +210,7 @@ function aif_respond_to_duplicate_donor_contact_submission(string $key, array $s
     // request (Salesforce timeout is 30 s) so this one can report its outcome.
     $deadline = time() + 35;
     $status = aif_get_donor_contact_submission_status($key);
-    while ('pending' === $status && time() < $deadline) {
+    while (null !== $status && aif_is_pending_donor_contact_submission($status) && time() < $deadline) {
         sleep(1);
         $status = aif_get_donor_contact_submission_status($key);
     }
@@ -166,7 +219,7 @@ function aif_respond_to_duplicate_donor_contact_submission(string $key, array $s
         aif_redirect_to_donor_contact_success();
     }
 
-    $state['error_message'] = 'pending' === $status
+    $state['error_message'] = null !== $status && aif_is_pending_donor_contact_submission($status)
         ? 'Votre demande est en cours de traitement. Consultez la page Mes demandes avant de la renvoyer.'
         : "Votre demande n'a pas pu aboutir. Veuillez réessayer plus tard.";
     set_query_var('aif_donor_contact_form', $state);

@@ -367,12 +367,12 @@ body {
   text-transform: uppercase;
 }
 
-.custom-button.aif-button--loading,
-.custom-button.aif-button--loading .content {
+.aif-container--form .custom-button.aif-button--loading,
+.aif-container--form .custom-button.aif-button--loading .content {
   cursor: progress;
 }
 
-.custom-button .content::after {
+.aif-container--form .custom-button .content::after {
   position: absolute;
   z-index: 0;
   inset: 0;
@@ -384,14 +384,14 @@ body {
   transform-origin: left center;
 }
 
-.custom-button.aif-button--loading .content::after {
+.aif-container--form .custom-button.aif-button--loading .content::after {
   opacity: 1;
   /* Progression estimée : reste en deçà de 100 % jusqu'à la page suivante. */
   animation: aif-button-progress 12s linear both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .custom-button.aif-button--loading .content::after {
+  .aif-container--form .custom-button.aif-button--loading .content::after {
     animation: none;
     transform: scaleX(0.5);
   }
