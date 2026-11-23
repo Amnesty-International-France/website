@@ -293,6 +293,120 @@ final class CreatePetitionTest extends TestCase
         self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['reserved_codeorigine']);
     }
 
+    private const SFID = 'a0X1o00000AbCdEFGH';
+
+    public function testRefreshReadsTheNewsletterCodeFilledLaterBySalesforce(): void
+    {
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] += [
+            'sfid' => self::SFID,
+            'uidsf' => 'ext-999',
+            'reserved_codeorigine' => '',
+        ];
+        $GLOBALS['__phpunit_salesforce_data_response'] = ['Ext_ID_Petition__c' => 'ext-999', 'Code_Newsletter__c' => '26ABC'];
+
+        refresh_petition_newsletter_code(self::POST_ID);
+
+        self::assertSame(
+            [['method' => 'GET', 'url' => 'services/data/v57.0/sobjects/Petition__c/' . self::SFID]],
+            self::salesforceCalls(),
+        );
+        self::assertSame('26ABC', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['reserved_codeorigine']);
+    }
+
+    public function testRefreshUsesTheExternalIdForPetitionsWithoutSalesforceId(): void
+    {
+        // Petitions migrated from Prismic only have uidsf.
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf'] = 'ext/../999';
+        $GLOBALS['__phpunit_salesforce_data_response'] = ['Code_Newsletter__c' => '26ABC'];
+
+        refresh_petition_newsletter_code(self::POST_ID);
+
+        self::assertSame(
+            'services/data/v57.0/sobjects/Petition__c/Ext_ID_Petition__c/ext%2F%2E%2E%2F999',
+            self::salesforceCalls()[0]['url'],
+        );
+        self::assertSame('26ABC', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['reserved_codeorigine']);
+    }
+
+    public function testRefreshIgnoresAMalformedSalesforceId(): void
+    {
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['sfid'] = '../query/?q=SELECT+Id+FROM+User';
+
+        refresh_petition_newsletter_code(self::POST_ID);
+
+        self::assertSame([], self::salesforceCalls());
+    }
+
+    public function testRefreshDoesNotCallSalesforceWhenTheNewsletterCodeIsSet(): void
+    {
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] += ['sfid' => self::SFID, 'reserved_codeorigine' => 'MANUAL-NL'];
+
+        refresh_petition_newsletter_code(self::POST_ID);
+
+        self::assertSame([], self::salesforceCalls());
+    }
+
+    public function testRefreshDoesNothingForAPetitionNotYetInSalesforce(): void
+    {
+        self::publishedPetitionPost();
+
+        refresh_petition_newsletter_code(self::POST_ID);
+
+        self::assertSame([], self::salesforceCalls());
+    }
+
+    public function testRefreshDoesNothingForOtherPostTypes(): void
+    {
+        $GLOBALS['__phpunit_posts'][self::POST_ID] = (object) ['ID' => self::POST_ID, 'post_type' => 'page'];
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] = ['sfid' => self::SFID];
+
+        refresh_petition_newsletter_code(self::POST_ID);
+
+        self::assertSame([], self::salesforceCalls());
+    }
+
+    #[DataProvider('unusableNewsletterCodeResponseProvider')]
+    public function testRefreshKeepsTheCodeEmptyWhenSalesforceHasNone(mixed $response): void
+    {
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] += ['sfid' => self::SFID, 'reserved_codeorigine' => ''];
+        $GLOBALS['__phpunit_salesforce_data_response'] = $response;
+
+        refresh_petition_newsletter_code(self::POST_ID);
+
+        self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['reserved_codeorigine']);
+    }
+
+    public static function unusableNewsletterCodeResponseProvider(): iterable
+    {
+        yield 'request failed' => [false];
+        yield 'field still null' => [['Code_Newsletter__c' => null]];
+        yield 'field not readable' => [['Ext_ID_Petition__c' => 'ext-999']];
+        yield 'unexpected type' => [['Code_Newsletter__c' => ['26ABC']]];
+    }
+
+    public function testRefreshRunsBeforeCreationSoANewPetitionIsReadOnce(): void
+    {
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_salesforce_data_response_queue'] = [
+            ['success' => true, 'id' => self::SFID],
+            ['Ext_ID_Petition__c' => 'ext-999', 'Code_defaut__c' => 'WEB'],
+        ];
+
+        foreach ([15, 20] as $priority) {
+            foreach ($GLOBALS['__phpunit_registered_actions_by_priority']['acf/save_post'][$priority] ?? [] as $callback) {
+                $callback(self::POST_ID);
+            }
+        }
+
+        $reads = array_filter(self::salesforceCalls(), static fn (array $call) => $call['method'] === 'GET');
+        self::assertCount(1, $reads);
+    }
+
     public function testUpdatePetitionEndDateDoesNothingWhenPostTypeIsNotPetition(): void
     {
         $GLOBALS['__phpunit_posts'][self::POST_ID] = (object) [

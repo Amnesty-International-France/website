@@ -375,6 +375,7 @@ if (!function_exists('add_action')) {
     function add_action(string $hook, callable $callback, int $priority = 10, int $accepted_args = 1): void
     {
         $GLOBALS['__phpunit_registered_actions'][$hook][] = $callback;
+        $GLOBALS['__phpunit_registered_actions_by_priority'][$hook][$priority][] = $callback;
     }
 }
 

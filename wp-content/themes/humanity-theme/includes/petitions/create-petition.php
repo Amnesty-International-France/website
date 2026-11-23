@@ -45,6 +45,46 @@ function create_petition(int $post_id)
     }
 }
 
+/**
+ * Salesforce may fill Code_Newsletter__c after create_petition() read it, and
+ * petitions migrated from Prismic never read it. While the code origine NL is
+ * empty, read it again from Salesforce each time the petition is saved.
+ *
+ * Runs before create_petition(), so a petition created by this same save is not
+ * read twice.
+ */
+function refresh_petition_newsletter_code(int $post_id)
+{
+    $post = get_post($post_id);
+
+    if (! $post || $post->post_type !== 'petition') {
+        return;
+    }
+
+    if ((string) get_field('reserved_codeorigine', $post_id, false) !== '') {
+        return;
+    }
+
+    $sfid = (string) get_field('sfid', $post_id, false);
+    $ext_id = (string) get_field('uidsf', $post_id, false);
+
+    if (preg_match('/\A[a-zA-Z0-9]{15}(?:[a-zA-Z0-9]{3})?\z/', $sfid) === 1) {
+        $sf_obj = get_salesforce_petition($sfid);
+    } elseif ($ext_id !== '') {
+        $sf_obj = get_salesforce_petition_by_ext_id($ext_id);
+    } else {
+        return;
+    }
+
+    $code = is_array($sf_obj) ? ($sf_obj['Code_Newsletter__c'] ?? '') : '';
+
+    if (is_string($code) && $code !== '') {
+        update_field('reserved_codeorigine', $code, $post_id);
+    }
+}
+
+add_action('acf/save_post', 'refresh_petition_newsletter_code', 15);
+
 add_action('acf/save_post', 'create_petition', 20);
 
 add_action('publish_future_post', 'create_petition', 20);

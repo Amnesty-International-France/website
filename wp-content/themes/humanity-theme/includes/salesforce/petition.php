@@ -6,6 +6,15 @@ function get_salesforce_petition(string $id)
     return get_salesforce_data($url);
 }
 
+function get_salesforce_petition_by_ext_id(string $external_id)
+{
+    // The external ID can be typed in the editor: encode it, dots included, so
+    // that it stays a single path segment of the Petition__c resource.
+    $segment = str_replace('.', '%2E', rawurlencode($external_id));
+    $url = "services/data/v57.0/sobjects/Petition__c/Ext_ID_Petition__c/$segment";
+    return get_salesforce_data($url);
+}
+
 function post_salesforce_petition(array $data): string|false
 {
     $url = 'services/data/v57.0/sobjects/Petition__c/';
