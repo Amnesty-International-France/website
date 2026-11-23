@@ -50,6 +50,11 @@ if (! function_exists('register_donation_calculator_block')) {
                         'type' => 'string',
                         'default' => '',
                     ],
+                    // Tab open on arrival: "monthly" (default) or "punctual".
+                    'default_tab' => [
+                        'type' => 'string',
+                        'default' => 'monthly',
+                    ],
                 ],
             ]
         );
