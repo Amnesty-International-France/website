@@ -24,6 +24,7 @@ final class DonationPagesTest extends TestCase
         require_once __DIR__ . '/salesforce-page-stubs.php';
         require_once __DIR__ . '/html-helpers.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/index.php';
+        require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/bank/iban-request.php';
 
         if (!function_exists('get_salesforce_user_demands')) {
             function wp_get_current_user(): object
@@ -47,6 +48,8 @@ final class DonationPagesTest extends TestCase
             }
             function create_duplicate_update_IBAN_request(string $id, string $iban): object
             {
+                $GLOBALS['__phpunit_iban_requests'][] = $iban;
+
                 return (object) ['success' => true];
             }
             function wp_nonce_field(string $action, string $name): void
@@ -121,12 +124,59 @@ final class DonationPagesTest extends TestCase
     public function testBankDetailsLinksKeepTheWholeRequestsUrl(): void
     {
         $requests = seed_permalink_with_apostrophe('mes-demandes');
-        $GLOBALS['__phpunit_valid_nonces'] = ['iban-nonce'];
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST = ['iban_nonce' => 'iban-nonce', 'iban' => 'FR76 3000 6000 0112 3456 7890 189'];
+        set_transient(aif_iban_request_pending_key('003000000000001'), '', DAY_IN_SECONDS);
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_GET = ['iban_sent' => '1'];
 
         $hrefs = link_hrefs($this->render('page-modification-coordonnees-bancaire.php'));
 
         self::assertCount(2, array_keys($hrefs, $requests, true));
+    }
+
+    public function testBankDetailsRequestRedirectsAfterSendingIt(): void
+    {
+        $GLOBALS['__phpunit_iban_requests'] = [];
+        $this->postIban('FR76 3000 6000 0112 3456 7890 189');
+
+        try {
+            $this->render('page-modification-coordonnees-bancaire.php');
+            self::fail('The bank details form should redirect after sending the request.');
+        } catch (AccountVerificationRedirect $redirect) {
+            self::assertStringEndsWith('?iban_sent=1', $redirect->getMessage());
+        }
+
+        self::assertSame(['FR7630006000011234567890189'], $GLOBALS['__phpunit_iban_requests']);
+        self::assertSame('', get_transient(aif_iban_request_pending_key('003000000000001')));
+    }
+
+    public function testBankDetailsRequestIsNotSentAgainWhilePending(): void
+    {
+        $GLOBALS['__phpunit_iban_requests'] = [];
+        set_transient(aif_iban_request_pending_key('003000000000001'), '', DAY_IN_SECONDS);
+        $this->postIban('FR76 3000 6000 0112 3456 7890 189');
+
+        $xpath = $this->render('page-modification-coordonnees-bancaire.php');
+
+        self::assertSame([], $GLOBALS['__phpunit_iban_requests']);
+        self::assertStringContainsString('Votre demande a déjà été envoyée, elle est en cours de traitement.', $xpath->document->textContent);
+        self::assertSame('disabled', $xpath->query('//button[@id="iban-submit"]/@disabled')->item(0)?->nodeName);
+    }
+
+    public function testBankDetailsRequestIsNotSentWithoutIban(): void
+    {
+        $GLOBALS['__phpunit_iban_requests'] = [];
+        $this->postIban('   ');
+
+        $xpath = $this->render('page-modification-coordonnees-bancaire.php');
+
+        self::assertSame([], $GLOBALS['__phpunit_iban_requests']);
+        self::assertStringContainsString('Veuillez renseigner un IBAN.', $xpath->document->textContent);
+    }
+
+    private function postIban(string $iban): void
+    {
+        $GLOBALS['__phpunit_valid_nonces'] = ['iban-nonce'];
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = ['iban_nonce' => 'iban-nonce', 'iban' => $iban];
     }
 }
