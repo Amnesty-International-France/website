@@ -53,8 +53,14 @@ function create_petition(int $post_id)
  * Runs before create_petition(), so a petition created by this same save is not
  * read twice.
  */
-function refresh_petition_newsletter_code(int $post_id)
+function refresh_petition_newsletter_code($post_id)
 {
+    // acf/save_post also fires for options pages, users and terms ('options', 'user_1'...).
+    if (! is_numeric($post_id)) {
+        return;
+    }
+
+    $post_id = (int) $post_id;
     $post = get_post($post_id);
 
     if (! $post || $post->post_type !== 'petition') {
@@ -68,7 +74,7 @@ function refresh_petition_newsletter_code(int $post_id)
     $sfid = (string) get_field('sfid', $post_id, false);
     $ext_id = (string) get_field('uidsf', $post_id, false);
 
-    if (preg_match('/\A[a-zA-Z0-9]{15}(?:[a-zA-Z0-9]{3})?\z/', $sfid) === 1) {
+    if (is_salesforce_id($sfid)) {
         $sf_obj = get_salesforce_petition($sfid);
     } elseif ($ext_id !== '') {
         $sf_obj = get_salesforce_petition_by_ext_id($ext_id);

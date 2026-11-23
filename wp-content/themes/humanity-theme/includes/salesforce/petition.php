@@ -6,13 +6,22 @@ function get_salesforce_petition(string $id)
     return get_salesforce_data($url);
 }
 
-function get_salesforce_petition_by_ext_id(string $external_id)
+function is_salesforce_id(string $id): bool
+{
+    return preg_match('/\A[a-zA-Z0-9]{15}(?:[a-zA-Z0-9]{3})?\z/', $id) === 1;
+}
+
+function salesforce_petition_ext_id_url(string $external_id): string
 {
     // The external ID can be typed in the editor: encode it, dots included, so
     // that it stays a single path segment of the Petition__c resource.
     $segment = str_replace('.', '%2E', rawurlencode($external_id));
-    $url = "services/data/v57.0/sobjects/Petition__c/Ext_ID_Petition__c/$segment";
-    return get_salesforce_data($url);
+    return "services/data/v57.0/sobjects/Petition__c/Ext_ID_Petition__c/$segment";
+}
+
+function get_salesforce_petition_by_ext_id(string $external_id)
+{
+    return get_salesforce_data(salesforce_petition_ext_id_url($external_id));
 }
 
 function post_salesforce_petition(array $data): string|false
@@ -27,8 +36,7 @@ function post_salesforce_petition(array $data): string|false
 
 function patch_salesforce_petition(string $external_id, array $data)
 {
-    $url = "services/data/v57.0/sobjects/Petition__c/Ext_ID_Petition__c/$external_id";
-    return patch_salesforce_data($url, $data);
+    return patch_salesforce_data(salesforce_petition_ext_id_url($external_id), $data);
 }
 
 function get_salesforce_petition_counter(string $ext_id)

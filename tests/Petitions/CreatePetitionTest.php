@@ -14,6 +14,7 @@ require dirname(__DIR__, 2) . '/wp-content/themes/humanity-theme/includes/petiti
 final class CreatePetitionTest extends TestCase
 {
     private const POST_ID = 555;
+    private const SFID = 'a0X1o00000AbCdEFGH';
 
     protected function setUp(): void
     {
@@ -293,8 +294,6 @@ final class CreatePetitionTest extends TestCase
         self::assertSame('', $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['reserved_codeorigine']);
     }
 
-    private const SFID = 'a0X1o00000AbCdEFGH';
-
     public function testRefreshReadsTheNewsletterCodeFilledLaterBySalesforce(): void
     {
         self::publishedPetitionPost();
@@ -365,6 +364,13 @@ final class CreatePetitionTest extends TestCase
         $GLOBALS['__phpunit_acf_field_values'][self::POST_ID] = ['sfid' => self::SFID];
 
         refresh_petition_newsletter_code(self::POST_ID);
+
+        self::assertSame([], self::salesforceCalls());
+    }
+
+    public function testRefreshIgnoresNonPostIds(): void
+    {
+        refresh_petition_newsletter_code('options');
 
         self::assertSame([], self::salesforceCalls());
     }
@@ -451,5 +457,18 @@ final class CreatePetitionTest extends TestCase
         self::assertSame('PATCH', $calls[0]['method']);
         self::assertSame('services/data/v57.0/sobjects/Petition__c/Ext_ID_Petition__c/ext-42', $calls[0]['url']);
         self::assertSame(['Date_de_cloture__c' => '2027-01-15'], $calls[0]['params']);
+    }
+
+    public function testUpdatePetitionEndDateKeepsAnEditedExternalIdInOnePathSegment(): void
+    {
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf'] = '../Petition__c/a0X1o00000AbCdEFGH';
+
+        update_petition_end_date(self::POST_ID);
+
+        self::assertSame(
+            'services/data/v57.0/sobjects/Petition__c/Ext_ID_Petition__c/%2E%2E%2FPetition__c%2Fa0X1o00000AbCdEFGH',
+            self::salesforceCalls()[0]['url'],
+        );
     }
 }
