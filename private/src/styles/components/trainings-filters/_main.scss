@@ -8,6 +8,13 @@
     gap: 24px;
   }
 
+  // Wider than the shared 200px so the longest format label ("Présentiel au Secrétariat National") fits on one line.
+  .taxonomyArchive-filters--trainings .checkboxGroup {
+    @media (min-width: $container-sm) {
+      max-width: 240px;
+    }
+  }
+
   .filter-button {
     padding: 12px 24px;
     color: var(--wp--preset--color--black);
