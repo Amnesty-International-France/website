@@ -157,7 +157,7 @@ if (!function_exists('sanitize_text_field')) {
 
 if (!function_exists('wp_generate_uuid4')) {
     /**
-     * Same implementation as WordPress core.
+     * Same output format as WordPress core, but uses mt_rand().
      */
     function wp_generate_uuid4(): string
     {
@@ -740,6 +740,9 @@ if (!class_exists('wpdb')) {
         public bool|int $insert_result = 1;
         public bool|int $update_result = 1;
         public bool|int $query_result = 1;
+        /** @var array<int,bool|int> Consumed one per query() call before falling back to $query_result. */
+        public array $query_results = [];
+        public string $last_error = '';
 
         public function get_charset_collate(): string
         {
@@ -807,6 +810,10 @@ if (!class_exists('wpdb')) {
         public function query(string $query): bool|int
         {
             $this->calls[] = ['method' => 'query', 'query' => $query];
+
+            if ($this->query_results !== []) {
+                return array_shift($this->query_results);
+            }
 
             return $this->query_result;
         }
