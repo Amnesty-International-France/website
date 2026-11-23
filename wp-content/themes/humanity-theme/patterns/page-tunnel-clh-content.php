@@ -407,7 +407,8 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 						        class="page-tunnel-clh-action-button mobile is-secondary"
 								data-gtm="clic_cta"
 								data-name="passer la petition"
-								data-value="<?php echo esc_attr((string) $next_petition['id']); ?>">
+								data-value="<?php echo esc_attr((string) $next_petition['id']); ?>"
+								data-petition-name="<?php echo esc_attr($next_petition['slug']); ?>">
 							<span>Passer la pétition</span>
 						</button>
 					</article>

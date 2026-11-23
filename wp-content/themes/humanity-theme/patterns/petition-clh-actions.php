@@ -16,7 +16,8 @@ declare(strict_types=1);
 	        class="page-tunnel-clh-action-button is-secondary"
 	        data-gtm="clic_cta"
 	        data-name="passer la petition"
-	        data-value="<?php echo esc_attr((string) $next_petition['id']); ?>">
+	        data-value="<?php echo esc_attr((string) $next_petition['id']); ?>"
+	        data-petition-name="<?php echo esc_attr($next_petition['slug']); ?>">
 		<span>Passer la pétition</span>
 	</button>
 	<button type="submit" form="<?php echo esc_attr($sign_form_id); ?>" name="sign_petition"
