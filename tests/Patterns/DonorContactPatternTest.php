@@ -106,6 +106,7 @@ final class DonorContactPatternTest extends TestCase
         require_once __DIR__ . '/fixtures/wordpress-7.1.3-patterns-registry.php';
 
         $GLOBALS['wpdb'] = new wpdb();
+        $GLOBALS['wpdb']->query_result = 2; // INSERT IGNORE of the value and its timeout: the token is free.
         $GLOBALS['__phpunit_wp_remote_calls'] = [];
         $GLOBALS['__phpunit_wp_remote_response_queue'] = [];
         $GLOBALS['__phpunit_wp_remote_response'] = ['response' => ['code' => 200], 'body' => '{"Id":"contact-id","Tech_Lien_Mandat_Actif__c":null}'];
@@ -450,7 +451,9 @@ final class DonorContactPatternTest extends TestCase
         $key = '_transient_' . aif_get_donor_contact_submission_key(42, self::TOKEN);
         self::assertSame('query', $calls[0]['method']);
         self::assertStringStartsWith('INSERT IGNORE INTO wp_options', $calls[0]['query']);
-        self::assertStringContainsString("'" . $key . "', 'pending'", $calls[0]['query']);
+        self::assertStringContainsString("'" . $key . "', 'pending:", $calls[0]['query']);
+        self::assertStringContainsString("'_transient_timeout_" . substr($key, 11) . "', '", $calls[0]['query']);
+        self::assertCount(1, array_filter($calls, static fn (array $call): bool => 'query' === $call['method']));
         self::assertSame('update', end($calls)['method']);
         self::assertSame(['option_value' => 'sent'], end($calls)['data']);
         self::assertSame(['option_name' => $key], end($calls)['where']);
@@ -490,15 +493,66 @@ final class DonorContactPatternTest extends TestCase
         self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
     }
 
-    public function testResentFormAfterAFailureShowsTheErrorWithoutCreatingAnotherCase(): void
+    public static function retryableStatuses(): iterable
+    {
+        yield 'failed' => ['failed'];
+        yield 'abandoned pending' => ['pending:' . (time() - 600)];
+    }
+
+    #[DataProvider('retryableStatuses')]
+    public function testResentFormAfterAFailureOrAnAbandonedAttemptTriesAgain(string $status): void
     {
         $this->preparePost();
-        $GLOBALS['wpdb']->query_result = 0;
+        $GLOBALS['wpdb']->query_results = [0, 1]; // Already claimed, then the compare-and-swap wins.
+        $GLOBALS['wpdb']->var_result = $status;
+        try {
+            aif_handle_donor_contact_form();
+            self::fail('A retried submission must redirect once sent.');
+        } catch (AccountVerificationRedirect) {
+        }
+
+        $queries = array_values(array_filter($GLOBALS['wpdb']->calls, static fn (array $call): bool => 'query' === $call['method']));
+        self::assertStringStartsWith('UPDATE wp_options', $queries[1]['query']);
+        self::assertStringEndsWith("option_value = '" . $status . "'", $queries[1]['query']);
+        self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    public function testConcurrentRetryThatLosesTheRaceDoesNotCreateAnotherCase(): void
+    {
+        $this->preparePost();
+        $GLOBALS['wpdb']->query_results = [0, 0]; // Another request retook the token first.
         $GLOBALS['wpdb']->var_result = 'failed';
         aif_handle_donor_contact_form();
-        $html = render_donor_contact_form_block();
 
-        self::assertStringContainsString("Votre demande n'a pas pu aboutir", $html);
+        self::assertStringContainsString("Votre demande n'a pas pu aboutir", render_donor_contact_form_block());
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    public function testContactLookupFailureReleasesTheTokenForARetry(): void
+    {
+        $this->preparePost();
+        $GLOBALS['__phpunit_wp_remote_response'] = new WP_Error('http_request_failed', 'Transport failure');
+        try {
+            aif_handle_donor_contact_form();
+            self::fail('A Salesforce outage must stop with 503.');
+        } catch (ContactFormHttpError $error) {
+            self::assertSame(503, $error->status);
+        }
+
+        self::assertSame('query', $GLOBALS['wpdb']->calls[0]['method']);
+        self::assertSame(['option_value' => 'failed'], end($GLOBALS['wpdb']->calls)['data']);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    public function testDatabaseErrorWhileClaimingIsLoggedAndSendsNothing(): void
+    {
+        $this->preparePost();
+        $GLOBALS['wpdb']->query_result = false;
+        $GLOBALS['wpdb']->last_error = 'Table is read only';
+        aif_handle_donor_contact_form();
+
+        self::assertStringContainsString("Votre demande n'a pas pu aboutir", render_donor_contact_form_block());
+        self::assertStringContainsString('[AIF contact] Submission token claim failed: Table is read only', (string) file_get_contents($this->log_file));
         self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
     }
 

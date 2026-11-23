@@ -23,7 +23,7 @@
     <form method="post" action="" data-aif-single-submit data-aif-submit-status="Envoi de votre demande en cours, veuillez patienter.">
         <?php wp_nonce_field('contact_form', 'contact_nonce'); ?>
         <input type="hidden" name="aif_donor_contact_form" value="1">
-        <input type="hidden" name="submission_token" value="<?= esc_attr($submission_token) ?>">
+        <input type="hidden" name="submission_token" value="<?= esc_attr($submission_token) ?>" autocomplete="off" data-aif-submission-token>
         <label for="subject">Objet de la demande (obligatoire)</label>
         <input placeholder="L'objet de votre demande" type="text" name="subject"
             aria-describedby="contact-subject-help-message"

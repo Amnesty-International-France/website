@@ -69,11 +69,26 @@
     });
   });
 
-  // Retour arrière depuis la page de confirmation : la page restaurée depuis le
-  // cache du navigateur ne doit pas rester bloquée en chargement.
+  // Retour arrière : la page restaurée depuis le cache du navigateur garde le
+  // jeton déjà utilisé, et le serveur ignorerait silencieusement un nouvel envoi.
+  // On lui donne un nouveau jeton plutôt que de recharger : la page peut être la
+  // réponse à un POST (erreur), que le rechargement renverrait.
   window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
-      forms.forEach(reset);
+    if (!event.persisted) {
+      return;
     }
+
+    const canRenewToken = typeof window.crypto?.randomUUID === 'function';
+    if (!canRenewToken && document.querySelector('form[data-aif-single-submit] [data-aif-submission-token]')) {
+      window.location.reload();
+      return;
+    }
+
+    forms.forEach((form) => {
+      form.querySelectorAll('[data-aif-submission-token]').forEach((input) => {
+        input.value = window.crypto.randomUUID();
+      });
+      reset(form);
+    });
   });
 })();
