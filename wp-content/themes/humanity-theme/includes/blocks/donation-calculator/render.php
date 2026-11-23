@@ -22,6 +22,7 @@ if (! function_exists('render_donation_calculator_block')) {
         $rate        = $attributes['rate'] ?? 66;
         $is_popin     = $attributes['is_popin'] ?? false;
         $position    = $attributes['position'] ?? '';
+        $default_tab = $attributes['default_tab'] ?? 'monthly';
 
         if (! in_array($rate, [ 66, 75 ], true)) {
             $taux = 66;
@@ -36,6 +37,7 @@ if (! function_exists('render_donation_calculator_block')) {
             'rate'        => $rate,
             'is_popin'     => $is_popin,
             'position'    => $position,
+            'default_tab' => $default_tab,
         ];
 
         ob_start();
