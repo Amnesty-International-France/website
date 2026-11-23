@@ -353,6 +353,68 @@ body {
   background-color: white !important;
 }
 
+/*
+  Envoi en cours (single-submit-form.js) : même barre de progression que le
+  bouton « Signer » du tunnel Changez leur histoire (_tunnel-clh.scss).
+*/
+/* Bouton jaune du site dans les formulaires de Mon espace : sans le cadre natif de <button>. */
+.aif-container--form button.custom-button {
+  border: 0;
+  background: none;
+}
+
+.aif-container--form .custom-button .button-label {
+  text-transform: uppercase;
+}
+
+.custom-button.aif-button--loading,
+.custom-button.aif-button--loading .content {
+  cursor: progress;
+}
+
+.custom-button .content::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background-color: rgb(0 0 0 / 18%);
+  pointer-events: none;
+  content: "";
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.custom-button.aif-button--loading .content::after {
+  opacity: 1;
+  /* Progression estimée : reste en deçà de 100 % jusqu'à la page suivante. */
+  animation: aif-button-progress 12s linear both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-button.aif-button--loading .content::after {
+    animation: none;
+    transform: scaleX(0.5);
+  }
+}
+
+@keyframes aif-button-progress {
+  from {
+    transform: scaleX(0.04);
+  }
+
+  20% {
+    transform: scaleX(0.55);
+  }
+
+  60% {
+    transform: scaleX(0.82);
+  }
+
+  to {
+    transform: scaleX(0.94);
+  }
+}
+
 .aif-dropdown__container,
 .aif-dropdown__container_button {
   width: 100%;
