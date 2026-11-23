@@ -557,7 +557,7 @@ add_action(
                     ],
                     [
                         'key'               => 'field_6883319051ddc',
-                        'label'             => 'Lieu de formation',
+                        'label'             => 'Format',
                         'name'              => 'lieu',
                         'aria-label'        => '',
                         'type'              => 'select',
@@ -569,12 +569,15 @@ add_action(
                             'class' => '',
                             'id'    => '',
                         ],
+                        // MAINT-385 : le lieu est devenu le format. Les clés d'origine sont conservées
+                        // (stockées en base et utilisées dans les liens ?qlieu=), seuls les libellés changent.
                         'choices'           => [
-                            'secretariat-national' => 'Secrétariat national',
-                            'region'               => 'Région',
-                            'a-distance'           => 'À distance',
+                            'secretariat-national'   => 'Présentiel au Secrétariat National',
+                            'region'                 => 'Présentiel en région',
+                            'a-distance'             => 'Autoformations numériques',
+                            'autoformations-livrets' => 'Autoformations livrets',
                         ],
-                        'default_value'     => 'Secrétariat national',
+                        'default_value'     => 'secretariat-national',
                         'return_format'     => 'label',
                         'multiple'          => 0,
                         'allow_null'        => 0,

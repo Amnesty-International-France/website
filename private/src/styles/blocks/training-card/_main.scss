@@ -150,10 +150,6 @@
       &:not(.is-empty) {
         border-top: 1px solid var(--wp--preset--color--grey-light);
       }
-
-      .capitalize-place {
-        text-transform: capitalize;
-      }
     }
   }
 }
