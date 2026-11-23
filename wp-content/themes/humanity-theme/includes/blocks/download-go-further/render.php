@@ -123,7 +123,7 @@ if (!function_exists('render_download_go_further_block')) {
 						</li>
 					<?php endforeach; ?>
 				</ul>
-				<script>
+				<script data-cfasync="false">
 					document.addEventListener('DOMContentLoaded', () => {
 						const downloadLinks = document.querySelectorAll('.js-track-download');
 						downloadLinks.forEach((link) => {

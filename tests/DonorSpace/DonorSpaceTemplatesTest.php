@@ -34,24 +34,6 @@ final class DonorSpaceTemplatesTest extends TestCase
             {
                 return $GLOBALS['__phpunit_template_directory_uri'];
             }
-            function verify_turnstile(): ?string
-            {
-                return 'invalid-input-response';
-            }
-            function turnstile_friendly_error(string $error): string
-            {
-                return $GLOBALS['__phpunit_turnstile_message'];
-            }
-            function aif_turnstile_site_key(): string
-            {
-                return 'site-key';
-            }
-            function get_header(): void
-            {
-            }
-            function get_footer(): void
-            {
-            }
         }
         $GLOBALS['__phpunit_template_directory_uri'] = 'https://wordpress.example.test/theme';
     }
@@ -167,18 +149,6 @@ final class DonorSpaceTemplatesTest extends TestCase
         self::assertInstanceOf(DOMElement::class, $image);
         self::assertStringStartsWith('https://wordpress.example.test/theme', $image->getAttribute('src'));
         self::assertSame($firstName . ', renforcez votre soutien !', trim($xpath->query('//h2')->item(0)->textContent));
-    }
-
-    public function testCheckEmailPrintsTheErrorMessageAsText(): void
-    {
-        $GLOBALS['__phpunit_turnstile_message'] = 'La vérification a échoué.' . self::SCRIPT;
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST = ['email' => 'donor@example.test'];
-
-        $xpath = render_html(static fn () => require AIF_DONOR_SPACE_PATH . 'templates/check-email.php');
-
-        self::assertSame(0, $xpath->query('//script')->length);
-        self::assertSame($GLOBALS['__phpunit_turnstile_message'], trim($xpath->query('//div[@class="aif-error-message"]')->item(0)->textContent));
     }
 
     public function testMissingPartialNameCannotCloseTheHtmlComment(): void

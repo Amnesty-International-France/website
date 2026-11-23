@@ -21,7 +21,7 @@ function aif_handle_account_creation_request()
         return aif_account_creation_result();
     }
 
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = verify_turnstile(switchable: true);
     if (null !== $turnstile_error) {
         return aif_account_creation_result(turnstile_friendly_error($turnstile_error));
     }
@@ -42,8 +42,16 @@ function aif_handle_account_creation_request()
         return aif_account_creation_salesforce_error_result($sf_member);
     }
 
+    $verification_url = add_query_arg([
+        'user' => rawurlencode($email),
+    ], get_permalink(get_page_by_path('verifier-votre-email')));
+
+    // Addresses without donor space access and verified or staff accounts
+    // (below) get the same outcome as a successful creation, so the page
+    // reveals neither. Nothing is created and no code is sent for them.
     if (aif_is_salesforce_contact_absent($sf_member) || !has_access_to_donation_space($sf_member)) {
-        return aif_account_creation_result(no_access: true);
+        wp_redirect($verification_url);
+        exit;
     }
 
     $user = get_salesforce_user_data($sf_member->Id);
@@ -61,19 +69,13 @@ function aif_handle_account_creation_request()
     $user_id = aif_prepare_account_for_verification($email, $user->FirstName ?? '', $user->LastName ?? '');
 
     if (is_wp_error($user_id)) {
-        $url = esc_url(get_permalink(get_page_by_path('connectez-vous')));
-        return aif_account_creation_result(
-            "Vous semblez déjà avoir un compte espace don. Pour vous rendre sur votre Espace Don rendez-vous sur  <a class='aif-link--primary' href='{$url}'>{$url}</a>."
-        );
+        wp_redirect($verification_url);
+        exit;
     }
 
     if (!aif_send_verification_code($user_id)) {
         return aif_account_creation_result(AIF_VERIFICATION_CODE_SEND_ERROR_MESSAGE);
     }
-
-    $verification_url = add_query_arg([
-        'user' => rawurlencode($email),
-    ], get_permalink(get_page_by_path('verifier-votre-email')));
 
     wp_redirect($verification_url);
     exit;
@@ -125,13 +127,16 @@ if (!empty($error_no_access_to_donor_space)) {
 			<h3 class="aif-sr-only">S'inscrire</h3>
 			<form class="aif-form-container" action="" method="POST">
 				<div>
+					<?php $turnstile_site_key = aif_turnstile_site_key(switchable: true); ?>
+					<?php if ($turnstile_site_key) : ?>
 					<div class="cf-turnstile"
 					     data-callback="aifTurnstileSuccess"
 					     data-error-callback="aifTurnstileFailure"
 					     data-expired-callback="aifTurnstileFailure"
 					     data-timeout-callback="aifTurnstileFailure"
 					     data-unsupported-callback="aifTurnstileFailure"
-					     data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+					     data-sitekey="<?php echo esc_attr($turnstile_site_key); ?>"></div>
+					<?php endif; ?>
 					<label for="email">Adresse email (obligatoire) :</label>
 					<input type="email" class="aif-input" id="email" name="email" aria-describedby="email-help-message"
 					       placeholder="adresse@mail.fr" autocomplete="email" aria-required="true" required>

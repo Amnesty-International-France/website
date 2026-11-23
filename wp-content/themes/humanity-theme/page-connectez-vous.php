@@ -9,9 +9,10 @@ if (!isset($_GET['user'])) {
     $error_message = "Nous ne pouvons récupérer l'utilisateur associé à l'identifiant.";
 
 } else {
-    $user = get_user_by('email', sanitize_email(wp_unslash($_GET['user'])));
-    if ($user) {
-        $email = $user->user_email;
+    // Prefill only: looking the account up would tell whether the address is known.
+    $prefill_email = is_string($_GET['user']) ? sanitize_email(wp_unslash($_GET['user'])) : '';
+    if (is_email($prefill_email)) {
+        $email = $prefill_email;
     }
 }
 
@@ -22,19 +23,35 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
     // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only hashed, sanitizing would change the password.
     $password = $_POST['password'];
 
-    $turnstile_error = verify_turnstile();
-    if ($turnstile_error !== null) {
+    // Checked before anything looks at the address, so a blocked client gets
+    // the same answer whether or not the address has an account.
+    $blocked_for = aif_login_blocked_for_seconds();
+    if ($blocked_for > 0) {
+        status_header(429);
+        header('Retry-After: ' . $blocked_for);
+        $title = 'Une erreur est survenue';
+        $error_message = AIF_LOGIN_RATE_LIMIT_MESSAGE;
+    } elseif (($turnstile_error = verify_turnstile(switchable: true)) !== null) {
         $title = 'Une erreur est survenue';
         $error_message = turnstile_friendly_error($turnstile_error);
     } else {
         $stored_user = get_user_by('email', $email);
 
-        if ($stored_user && !aif_is_subscriber($stored_user)) {
-            // Only reveal the account's role to someone who knows its password.
-            $error_message = is_wp_error(wp_authenticate($email, $password))
-                ? 'Mauvais email ou mot de passe'
-                : "Ce compte ne permet pas d'accéder à l'Espace Don.";
-        } elseif ($stored_user) {
+        // Unknown address and wrong password get the same answer; account
+        // details are only shown once the password is known to be right.
+        // Hash the password even for an unknown address, so both cases take
+        // about the same time.
+        $password_matches = $stored_user
+            ? aif_check_login_password($stored_user, $password)
+            : wp_check_password($password, wp_hash_password('aif-unknown-account'));
+        if (!$stored_user || !$password_matches) {
+            aif_register_failed_login_from_ip();
+            $error_message = 'Mauvais email ou mot de passe';
+        } elseif (!aif_is_subscriber($stored_user)) {
+            $error_message = "Ce compte ne permet pas d'accéder à l'Espace Don.";
+        } else {
+            // Staff accounts are verified by administrators; only subscribers
+            // use the self-registration email verification flow.
             if (!aif_is_unverified_subscriber($stored_user)) {
 
                 $creds = [
@@ -75,10 +92,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
                 $title = 'Votre email ne semble pas encore vérifié';
                 $error_message = "Pour le faire veuillez vous rendre sur la page <a class='aif-link--primary' href='{$verification_url}'> Vérifier mon email</a>.";
             }
-        } else {
-            $url = esc_url(get_permalink(get_page_by_path('creer-votre-compte')));
-            $title = "L'adresse email renseignée ne trouve pas de correspondance dans notre système";
-            $error_message = "Pour créer votre compte, veuillez vous rendre sur la page  <a class='aif-link--primary' href='{$url}'> Créer mon compte </a>.";
         }
     }
 }
@@ -103,7 +116,10 @@ $image_url = get_template_directory_uri() . '/assets/images/login-background.png
 		<div class="login-form">
 			<h3 class="login-title">Connexion</h3>
 			<form class="aif-form-container" role="form" method="POST" action="">
-				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+				<?php $turnstile_site_key = aif_turnstile_site_key(switchable: true); ?>
+				<?php if ($turnstile_site_key) : ?>
+				<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr($turnstile_site_key); ?>"></div>
+				<?php endif; ?>
 				<label for="email" class="sr-only">Votre adresse email (obligatoire)</label>
 				<input placeholder="Email"
 				       value="<?= esc_attr($email) ?>" class="aif-input" type="email" name="email" id="email"

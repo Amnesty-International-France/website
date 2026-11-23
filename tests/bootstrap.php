@@ -328,10 +328,18 @@ if (!defined('DAY_IN_SECONDS')) {
 }
 
 if (!function_exists('get_transient')) {
+    // Values in __phpunit_transients; the expiry timestamp of a transient set
+    // with an expiration in __phpunit_transient_expirations.
     $GLOBALS['__phpunit_transients'] = [];
+    $GLOBALS['__phpunit_transient_expirations'] = [];
 
     function get_transient(string $transient): mixed
     {
+        $expires_at = $GLOBALS['__phpunit_transient_expirations'][$transient] ?? null;
+        if (null !== $expires_at && $expires_at <= time()) {
+            return false;
+        }
+
         return $GLOBALS['__phpunit_transients'][$transient] ?? false;
     }
 
@@ -339,12 +347,18 @@ if (!function_exists('get_transient')) {
     {
         $GLOBALS['__phpunit_transients'][$transient] = $value;
 
+        if ($expiration > 0) {
+            $GLOBALS['__phpunit_transient_expirations'][$transient] = time() + $expiration;
+        } else {
+            unset($GLOBALS['__phpunit_transient_expirations'][$transient]);
+        }
+
         return true;
     }
 
     function delete_transient(string $transient): bool
     {
-        unset($GLOBALS['__phpunit_transients'][$transient]);
+        unset($GLOBALS['__phpunit_transients'][$transient], $GLOBALS['__phpunit_transient_expirations'][$transient]);
 
         return true;
     }
@@ -365,17 +379,21 @@ if (!function_exists('wp_verify_nonce')) {
 
 if (!function_exists('add_action')) {
     $GLOBALS['__phpunit_registered_actions'] = [];
+    $GLOBALS['__phpunit_registered_action_priorities'] = [];
+    $GLOBALS['__phpunit_registered_actions_by_priority'] = [];
 
     /**
      * No-op recorder for add_action(). Only records the registration so that
      * requiring a file which calls add_action() at the top level (e.g. to
      * register a REST route on 'rest_api_init') doesn't fatal; it does NOT
      * invoke the callback, so tests call the registered function directly.
+     * The priorities are recorded apart, as [callback, priority] pairs.
      */
     function add_action(string $hook, callable $callback, int $priority = 10, int $accepted_args = 1): void
     {
         $GLOBALS['__phpunit_registered_actions'][$hook][] = $callback;
         $GLOBALS['__phpunit_registered_actions_by_priority'][$hook][$priority][] = $callback;
+        $GLOBALS['__phpunit_registered_action_priorities'][$hook][] = [$callback, $priority];
     }
 }
 

@@ -204,6 +204,8 @@ final class ClhPageTypeTrackingTest extends TestCase
     {
         $output = $this->renderOutput();
 
+        // Cloudflare Rocket Loader defers any inline script without this attribute.
+        self::assertStringContainsString('<script data-cfasync="false">', $output);
         self::assertStringContainsString('window.dataLayer = window.dataLayer || [];', $output);
         self::assertSame(1, preg_match('/window\.dataLayer\.push\((\{.*\})\);/', $output, $matches));
 

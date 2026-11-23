@@ -115,6 +115,22 @@ final class AsidePetitionStickyPatternTest extends TestCase
         self::assertSame(1, $html->query('//div[@class="close-petition"]')->length);
     }
 
+    public function testTurnstileWidgetIsShownWhenOn(): void
+    {
+        $html = $this->render();
+
+        self::assertSame(1, $html->query('//div[contains(@class, "cf-turnstile") and @data-sitekey="site-key"]')->length);
+    }
+
+    public function testSwitchedOffTurnstileRendersNoWidget(): void
+    {
+        $GLOBALS['__phpunit_turnstile_enabled'] = false;
+
+        $html = $this->render();
+
+        self::assertSame(0, $html->query('//div[contains(@class, "cf-turnstile")]')->length);
+    }
+
     public function testTurnstileFailureStillShowsItsAlert(): void
     {
         $GLOBALS['petition_turnstile_error_message'] = self::TURNSTILE_MESSAGE;

@@ -41,9 +41,10 @@ final class ClhTunnelTurnstileSessionTest extends TestCase
             return $GLOBALS['__phpunit_clh_tunnel_page'];
         }
 
-        function verify_turnstile(): ?string
+        function verify_turnstile(bool $switchable = false): ?string
         {
             $GLOBALS['__phpunit_turnstile_calls']++;
+            $GLOBALS['__phpunit_turnstile_switchable'][] = $switchable;
 
             return $GLOBALS['__phpunit_turnstile_error'];
         }
@@ -65,6 +66,7 @@ final class ClhTunnelTurnstileSessionTest extends TestCase
         $GLOBALS['__phpunit_clh_tunnel_page'] = $tunnel_page;
         $GLOBALS['__phpunit_post_permalinks'][$tunnel_page->ID] = self::TUNNEL_URL;
         $GLOBALS['__phpunit_turnstile_calls'] = 0;
+        $GLOBALS['__phpunit_turnstile_switchable'] = [];
         $GLOBALS['__phpunit_turnstile_error'] = null;
         $GLOBALS['__phpunit_valid_nonces'] = ['skip-nonce'];
         // Current page of the request; null outside any page.
@@ -82,7 +84,7 @@ final class ClhTunnelTurnstileSessionTest extends TestCase
         self::assertNull(amnesty_verify_clh_tunnel_turnstile());
         self::assertNull(amnesty_verify_clh_tunnel_turnstile());
 
-        self::assertSame(1, $GLOBALS['__phpunit_turnstile_calls']);
+        self::assertSame([true], $GLOBALS['__phpunit_turnstile_switchable']);
         self::assertTrue(amnesty_is_clh_tunnel_turnstile_verified());
     }
 
@@ -110,6 +112,17 @@ final class ClhTunnelTurnstileSessionTest extends TestCase
         self::assertTrue(amnesty_is_clh_tunnel_turnstile_verified());
         self::assertNull(amnesty_verify_clh_tunnel_turnstile());
         self::assertSame(0, $GLOBALS['__phpunit_turnstile_calls']);
+    }
+
+    public function testDisabledTurnstileSkipsTheCheckWithoutRememberingIt(): void
+    {
+        $GLOBALS['__phpunit_turnstile_enabled'] = false;
+        $GLOBALS['__phpunit_turnstile_error'] = 'missing-input-response';
+
+        self::assertTrue(amnesty_is_clh_tunnel_turnstile_verified());
+        self::assertNull(amnesty_verify_clh_tunnel_turnstile());
+        self::assertSame(0, $GLOBALS['__phpunit_turnstile_calls']);
+        self::assertArrayNotHasKey('clh_turnstile_verified_at', $_SESSION);
     }
 
     public function testSkipInVerifiedSessionNeedsNoToken(): void
@@ -172,7 +185,7 @@ final class ClhTunnelTurnstileSessionTest extends TestCase
 
         amnesty_handle_petition_signature();
 
-        self::assertSame(1, $GLOBALS['__phpunit_turnstile_calls']);
+        self::assertSame([true], $GLOBALS['__phpunit_turnstile_switchable']);
         self::assertArrayHasKey('petition_turnstile_error_message', $GLOBALS);
     }
 

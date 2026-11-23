@@ -86,9 +86,10 @@ if (!function_exists('get_the_title')) {
 }
 
 if (!function_exists('aif_turnstile_site_key')) {
-    function aif_turnstile_site_key(): string
+    /** Empty for a switchable form when a test sets $GLOBALS['__phpunit_turnstile_enabled'] to false. */
+    function aif_turnstile_site_key(bool $switchable = false): string
     {
-        return 'site-key';
+        return $switchable && false === ($GLOBALS['__phpunit_turnstile_enabled'] ?? true) ? '' : 'site-key';
     }
 }
 
@@ -102,13 +103,17 @@ if (!function_exists('is_admin')) {
 if (!function_exists('get_local_user')) {
     function get_local_user(string $email): mixed
     {
-        return false;
+        $GLOBALS['__phpunit_signer_lookups'][] = $email;
+
+        return $GLOBALS['__phpunit_local_users'][$email] ?? false;
     }
 }
 
 if (!function_exists('get_salesforce_user_with_email')) {
     function get_salesforce_user_with_email(string $email): mixed
     {
+        $GLOBALS['__phpunit_signer_lookups'][] = $email;
+
         return ['totalSize' => 0];
     }
 }

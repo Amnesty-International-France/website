@@ -81,7 +81,7 @@ if (! function_exists('aif_output_clh_page_type_push')) {
             }
         }
         ?>
-		<script>
+		<script data-cfasync="false">
 			window.dataLayer = window.dataLayer || [];
 			window.dataLayer.push(<?php echo wp_json_encode($data); ?>);
 		</script>

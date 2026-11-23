@@ -153,10 +153,15 @@ if (!function_exists('amnesty_get_clh_petition_tunnel_page')) {
             return $cache;
         }
 
-        $clh_page = get_page_by_path('nous-connaitre/nos-combats/changez-leur-histoire/campagne');
+        // The tunnel lives under the "Changez leur histoire" page at the root of the site (CLH-49);
+        // the one under the historical page in "Nos combats" is only the fallback while the root
+        // tunnel does not exist (preprod still has the historical tree).
+        foreach (['changez-leur-histoire/campagne', 'nous-connaitre/nos-combats/changez-leur-histoire/campagne'] as $path) {
+            $clh_page = get_page_by_path($path);
 
-        if ($clh_page instanceof WP_Post) {
-            return $cache = $clh_page;
+            if ($clh_page instanceof WP_Post) {
+                return $cache = $clh_page;
+            }
         }
 
         return $cache = null;
@@ -167,14 +172,9 @@ if (!function_exists('amnesty_get_clh_petition_tunnel_url')) {
     function amnesty_get_clh_petition_tunnel_url(): string
     {
         $clh_page = amnesty_get_clh_petition_tunnel_page();
+        $clh_permalink = $clh_page ? get_permalink($clh_page) : false;
 
-        if ($clh_page) {
-            $clh_permalink = get_permalink($clh_page);
-
-            return $clh_permalink ?: home_url('/nous-connaitre/nos-combats/changez-leur-histoire/campagne/');
-        }
-
-        return home_url('/nous-connaitre/nos-combats/changez-leur-histoire/campagne/');
+        return $clh_permalink ?: home_url('/changez-leur-histoire/campagne/');
     }
 }
 
@@ -496,9 +496,14 @@ function amnesty_set_clh_signer_email(string $email): void
 
 /**
  * Whether the visitor passed Turnstile in the CLH tunnel less than 30 minutes ago.
+ * Always true while TURNSTILE_ENABLED=0, so no check runs and none is remembered.
  */
 function amnesty_is_clh_tunnel_turnstile_verified(): bool
 {
+    if (!aif_turnstile_enabled(switchable: true)) {
+        return true;
+    }
+
     amnesty_start_secure_session();
 
     $verified_at = (int) ($_SESSION['clh_turnstile_verified_at'] ?? 0);
@@ -518,7 +523,7 @@ function amnesty_verify_clh_tunnel_turnstile(): ?string
         return null;
     }
 
-    $error = verify_turnstile();
+    $error = verify_turnstile(switchable: true);
     if ($error === null) {
         $_SESSION['clh_turnstile_verified_at'] = time();
     }
@@ -526,9 +531,104 @@ function amnesty_verify_clh_tunnel_turnstile(): ?string
     return $error;
 }
 
+if (!defined('AMNESTY_CLH_TUNNEL_STATE_TTL')) {
+    // The tunnel progress (signed and skipped petitions) is forgotten after this long without signing or skipping.
+    define('AMNESTY_CLH_TUNNEL_STATE_TTL', 15 * MINUTE_IN_SECONDS);
+}
+
+function amnesty_get_clh_tunnel_cookie_options(int $expires): array
+{
+    return [
+        'expires'  => $expires,
+        'path'     => '/',
+        'secure'   => is_ssl(),
+        'httponly' => true,
+        'samesite' => 'Strict',
+    ];
+}
+
+if (!function_exists('amnesty_write_clh_tunnel_cookie')) {
+    /**
+     * Sends a tunnel cookie. A seam for the tests, which record the cookies instead of sending them.
+     */
+    function amnesty_write_clh_tunnel_cookie(string $name, string $value, array $options): void
+    {
+        setcookie($name, $value, $options);
+    }
+}
+
+function amnesty_set_clh_tunnel_cookie(string $name, string $value): void
+{
+    amnesty_write_clh_tunnel_cookie($name, $value, amnesty_get_clh_tunnel_cookie_options(time() + AMNESTY_CLH_TUNNEL_STATE_TTL));
+    $_COOKIE[$name] = $value; // Visible to the rest of the current request.
+}
+
+function amnesty_expire_clh_tunnel_cookie(string $name): void
+{
+    amnesty_write_clh_tunnel_cookie($name, '', amnesty_get_clh_tunnel_cookie_options(time() - 3600));
+    unset($_COOKIE[$name]);
+}
+
+/**
+ * Whether the tunnel progress is still within its inactivity window. The marker cookie is
+ * refreshed together with the progress cookies, so progress without it is stale.
+ */
+function amnesty_is_clh_tunnel_state_active(): bool
+{
+    return isset($_COOKIE['clh_tunnel_active']) && $_COOKIE['clh_tunnel_active'] === '1';
+}
+
+/**
+ * Pushes back the expiry of the whole tunnel progress, so it is forgotten
+ * AMNESTY_CLH_TUNNEL_STATE_TTL after the last signature or skip, not after the first one.
+ *
+ * @param int[] $signed_ids
+ * @param int[] $skipped_ids
+ */
+function amnesty_refresh_clh_tunnel_state(array $signed_ids, array $skipped_ids): void
+{
+    // One cookie per signature: parallel responses write different cookies and keep both.
+    foreach ($signed_ids as $petition_id) {
+        amnesty_set_clh_tunnel_cookie('clh_signed_petition_' . (int) $petition_id, '1');
+    }
+
+    if (!empty($skipped_ids)) {
+        amnesty_set_clh_tunnel_cookie('clh_skipped_petitions', (string) wp_json_encode(array_values($skipped_ids)));
+    }
+
+    amnesty_set_clh_tunnel_cookie('clh_tunnel_active', '1');
+}
+
+function amnesty_expire_stale_clh_tunnel_cookies(): void
+{
+    // Aggregate progress cookie from before signatures had their own cookies.
+    if (isset($_COOKIE['clh_signed_petitions'])) {
+        amnesty_expire_clh_tunnel_cookie('clh_signed_petitions');
+    }
+
+    if (amnesty_is_clh_tunnel_state_active()) {
+        return;
+    }
+
+    // Progress without the marker was saved with the former 30-day lifetime.
+    foreach (array_keys($_COOKIE) as $name) {
+        if ($name === 'clh_skipped_petitions' || str_starts_with((string) $name, 'clh_signed_petition_')) {
+            amnesty_expire_clh_tunnel_cookie((string) $name);
+        }
+    }
+}
+add_action('init', 'amnesty_expire_stale_clh_tunnel_cookies');
+
 function amnesty_get_clh_skipped_petitions(): array
 {
     amnesty_start_secure_session();
+
+    if (!amnesty_is_clh_tunnel_state_active()) {
+        // The session lasts until the browser closes: drop skips older than the inactivity window.
+        unset($_SESSION['clh_skipped_petitions']);
+
+        return [];
+    }
 
     $session_skipped = $_SESSION['clh_skipped_petitions'] ?? [];
 
@@ -540,53 +640,34 @@ function amnesty_get_clh_skipped_petitions(): array
         }
     }
 
-    return array_unique(array_merge($session_skipped, $cookie_skipped));
-}
-
-function amnesty_get_clh_signed_petition_cookie_ids(): array
-{
-    if (empty($_COOKIE['clh_signed_petitions'])) {
-        return [];
-    }
-
-    $decoded = json_decode(stripslashes($_COOKIE['clh_signed_petitions']), true);
-
-    if (!is_array($decoded)) {
-        return [];
-    }
-
-    return array_unique(array_map('intval', $decoded));
+    return array_values(array_unique(array_merge($session_skipped, $cookie_skipped)));
 }
 
 function amnesty_set_clh_skipped_petition(int $petition_id): void
 {
-    amnesty_start_secure_session();
     $skipped = amnesty_get_clh_skipped_petitions();
     $skipped[] = $petition_id;
-    $skipped = array_unique($skipped);
+    $skipped = array_values(array_unique($skipped));
 
     $_SESSION['clh_skipped_petitions'] = $skipped;
 
-    setcookie('clh_skipped_petitions', wp_json_encode($skipped), [
-        'expires'  => time() + 30 * DAY_IN_SECONDS,
-        'path'     => '/',
-        'secure'   => is_ssl(),
-        'httponly' => true,
-        'samesite' => 'Strict',
-    ]);
+    amnesty_refresh_clh_tunnel_state(amnesty_get_clh_signed_petitions(), $skipped);
 }
 
 function amnesty_get_clh_signed_petitions(): array
 {
-    // Preserve progress recorded before signatures had individual cookies.
-    $signed = amnesty_get_clh_signed_petition_cookie_ids();
+    if (!amnesty_is_clh_tunnel_state_active()) {
+        return [];
+    }
+
+    $signed = [];
 
     foreach ($_COOKIE as $name => $value) {
-        if (!str_starts_with($name, 'clh_signed_petition_') || $value !== '1') {
+        if (!str_starts_with((string) $name, 'clh_signed_petition_') || $value !== '1') {
             continue;
         }
 
-        $petition_id = filter_var(substr($name, strlen('clh_signed_petition_')), FILTER_VALIDATE_INT, [
+        $petition_id = filter_var(substr((string) $name, strlen('clh_signed_petition_')), FILTER_VALIDATE_INT, [
             'options' => ['min_range' => 1],
         ]);
         if ($petition_id !== false) {
@@ -599,18 +680,10 @@ function amnesty_get_clh_signed_petitions(): array
 
 function amnesty_set_clh_signed_petition(int $petition_id): void
 {
-    // Parallel responses can safely write different cookies without losing either signature.
-    $cookie_name = 'clh_signed_petition_' . $petition_id;
+    $signed = amnesty_get_clh_signed_petitions();
+    $signed[] = $petition_id;
 
-    setcookie($cookie_name, '1', [
-        'expires'  => time() + 30 * DAY_IN_SECONDS,
-        'path'     => '/',
-        'secure'   => is_ssl(),
-        'httponly' => true,
-        'samesite' => 'Strict',
-    ]);
-
-    $_COOKIE[$cookie_name] = '1'; // Include this signature in the current request's count.
+    amnesty_refresh_clh_tunnel_state(array_unique($signed), amnesty_get_clh_skipped_petitions());
 }
 
 function amnesty_get_clh_tunnel_end_url(): string
@@ -875,7 +948,7 @@ function amnesty_handle_petition_signature(): void
         amnesty_redirect_petition_signature_error($petition_id, 'invalid', $is_clh_tunnel_submission);
     }
 
-    $turnstile_error = $is_clh_tunnel_submission ? amnesty_verify_clh_tunnel_turnstile() : verify_turnstile();
+    $turnstile_error = $is_clh_tunnel_submission ? amnesty_verify_clh_tunnel_turnstile() : verify_turnstile(switchable: true);
     if ($turnstile_error !== null) {
         if ($is_clh_tunnel_submission) {
             amnesty_redirect_petition_signature_error($petition_id, 'turnstile', true);

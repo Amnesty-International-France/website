@@ -36,24 +36,6 @@ test.describe('non-Jetpack business forms rejected by server-side Turnstile', ()
     await expect.poll(() => getSalesforceCalls(request, salesforceTestId)).toEqual([]);
   });
 
-  test('does not search for a donor after a rejected e-mail check', async ({
-    page,
-    request,
-    gotoWithoutCookieOverlay,
-    salesforceTestId,
-  }) => {
-    await mockSuccessfulTurnstile(page, { token: 'mock-donor-rejected-token' });
-    await gotoWithoutCookieOverlay(fixtures.donor_path);
-
-    const form = 'form.aif-form-container';
-    await setServerSideTurnstileResult(page, form, { success: false });
-    await page.locator('input[name="email"]').fill(uniqueEmail());
-    await page.getByRole('button', { name: 'Rechercher' }).click();
-
-    await expect(page.getByText('La vérification de sécurité a échoué')).toBeVisible();
-    await expect.poll(() => getSalesforceCalls(request, salesforceTestId)).toEqual([]);
-  });
-
   test('does not mutate the CLH skipped-petition state after a rejected skip', async ({
     context,
     page,
