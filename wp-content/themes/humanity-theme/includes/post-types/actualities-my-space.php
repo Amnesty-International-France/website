@@ -35,6 +35,25 @@ function amnesty_register_actualities_my_space_cpt()
 }
 add_action('init', 'amnesty_register_actualities_my_space_cpt');
 
+/**
+ * Route the pagination of the "mon-espace/actualites" page.
+ */
+function amnesty_actualities_my_space_pagination_rewrite_rule(): void
+{
+    $regex = '^mon-espace/actualites/page/?([0-9]{1,})/?$';
+    add_rewrite_rule(
+        $regex,
+        'index.php?pagename=mon-espace/actualites&paged=$matches[1]',
+        'top'
+    );
+
+    $rules = get_option('rewrite_rules');
+    if (is_array($rules) && ! isset($rules[ $regex ])) {
+        flush_rewrite_rules(false);
+    }
+}
+add_action('init', 'amnesty_actualities_my_space_pagination_rewrite_rule', 20);
+
 add_action('acf/include_fields', function () {
     if (! function_exists('acf_add_local_field_group')) {
         return;
