@@ -265,8 +265,8 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 			<h2 class="page-tunnel-clh-subtitle">Signez pour changer leur histoire</h2>
 			<p class="page-tunnel-clh-description">Votre signature compte bien plus que vous ne l'imaginez.
 				Elle change des lois, brise des chaînes, libère des personnes.
-				Nous avons identifié 10 situations qui nécessitent votre mobilisation dès aujourd'hui.
-				Ensemble, nous avons le pouvoir de les aider.</p>
+				Nous avons identifié 9 situations qui nécessitent votre mobilisation dès aujourd'hui.
+				Ensemble, nous avons le pouvoir de changer leur histoire.</p>
 			<?php
             get_template_part('partials/tunnel-clh-stepper', null, [
                 'signed_count' => $signed_count,
