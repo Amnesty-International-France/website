@@ -102,10 +102,10 @@ describe('exit popin content from the deadline on', () => {
     expect(dialog.querySelector('h2').textContent.trim()).toBe('PSSST... AVANT DE PARTIR !');
   });
 
-  it('shows the generic appeal, broken after FRANCE!', () => {
+  it('shows the generic appeal in lowercase, broken after France!', () => {
     expect(paragraphs(dialog)).toEqual([
-      'FAITES UN DON À AMNESTY INTERNATIONAL FRANCE!',
-      'VOUS DÉNONCEZ LES VIOLATIONS DES DROITS HUMAINS ET AGISSEZ CONCRÈTEMENT POUR PROTÉGER CELLES ET CEUX QUI EN SONT VICTIMES.',
+      'Faites un don à Amnesty International France!',
+      'Vous dénoncez les violations des droits humains et agissez concrètement pour protéger celles et ceux qui en sont victimes.',
     ]);
   });
 
@@ -140,7 +140,7 @@ describe('exit popin refresh', () => {
     const dialog = buildPopin(new Date('2026-12-31T23:59:00+01:00'));
     updatePopin(dialog, AFTER);
     expect(dialog.querySelector('.exit-popin-countdown')).toBeNull();
-    expect(paragraphs(dialog)[0]).toBe('FAITES UN DON À AMNESTY INTERNATIONAL FRANCE!');
+    expect(paragraphs(dialog)[0]).toBe('Faites un don à Amnesty International France!');
     expect(ctaLabel(dialog)).toBe('Je fais un don');
   });
 });

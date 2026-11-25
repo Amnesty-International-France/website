@@ -23,8 +23,8 @@ const BEFORE_DEADLINE = {
 
 const FROM_DEADLINE = {
   paragraphs: [
-    'FAITES UN DON À AMNESTY INTERNATIONAL FRANCE!',
-    'VOUS DÉNONCEZ LES VIOLATIONS DES DROITS HUMAINS ET AGISSEZ CONCRÈTEMENT POUR PROTÉGER CELLES ET CEUX QUI EN SONT VICTIMES.',
+    'Faites un don à Amnesty International France!',
+    'Vous dénoncez les violations des droits humains et agissez concrètement pour protéger celles et ceux qui en sont victimes.',
   ],
   cta: 'Je fais un don',
 };
