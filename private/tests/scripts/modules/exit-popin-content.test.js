@@ -86,7 +86,7 @@ describe('exit popin content before the deadline', () => {
   });
 
   it('shows the countdown', () => {
-    expect(countdownItems(dialog)).toEqual(['36 jours', '12 heures', '0 minutes']);
+    expect(countdownItems(dialog)).toEqual(['36 jours', '12 heures', '0 minute']);
   });
 
   it('links the CTA to the donation form, in a new tab', () => {
@@ -125,6 +125,11 @@ describe('exit popin refresh', () => {
     expect(countdownItems(dialog)).toEqual(['1 jour', '1 heure', '2 minutes']);
     updatePopin(dialog, new Date('2026-12-30T22:59:00+01:00'));
     expect(countdownItems(dialog)).toEqual(['1 jour', '1 heure', '1 minute']);
+  });
+
+  it('uses singular labels for 0', () => {
+    const dialog = buildPopin(new Date('2026-12-31T23:58:30+01:00'));
+    expect(countdownItems(dialog)).toEqual(['0 jour', '0 heure', '1 minute']);
   });
 
   it('keeps the text and countdown nodes in place before the deadline', () => {

@@ -72,7 +72,8 @@ const fillCountdown = (countdown, remaining) => {
   COUNTDOWN_UNITS.forEach(({ key, singular, plural }, index) => {
     const item = countdown.children[index];
     item.firstChild.textContent = String(remaining[key]);
-    item.lastChild.textContent = ` ${remaining[key] === 1 ? singular : plural}`;
+    // French takes the singular for 0 and 1.
+    item.lastChild.textContent = ` ${remaining[key] < 2 ? singular : plural}`;
   });
 };
 
