@@ -911,7 +911,7 @@ add_action('template_redirect', 'amnesty_handle_petition_skip', 5);
  */
 function amnesty_keep_clh_origin_code_from_tunnel_url(): void
 {
-    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'GET' || !amnesty_is_clh_petition_tunnel_page()) {
+    if (!amnesty_is_clh_petition_tunnel_page()) {
         return;
     }
 
@@ -1038,7 +1038,7 @@ function amnesty_handle_petition_signature(): void
     }
 
     $code_origine = amnesty_resolve_petition_origin_code(
-        $_POST['code_origine'] ?? null,
+        isset($_POST['code_origine']) ? sanitize_text_field(wp_unslash($_POST['code_origine'])) : null,
         get_field('code_origine', $petition_id),
         $is_clh_petition,
         $is_clh_tunnel_submission,

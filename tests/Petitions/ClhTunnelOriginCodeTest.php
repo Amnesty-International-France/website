@@ -195,14 +195,12 @@ final class ClhTunnelOriginCodeTest extends TestCase
         $GLOBALS['post'] = $page;
         $GLOBALS['__phpunit_clh_tunnel_page'] = $page;
         $GLOBALS['__phpunit_is_page'] = true;
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $_GET = ['code_origine' => 'CODEA'];
 
         amnesty_keep_clh_origin_code_from_tunnel_url();
 
         // The signature is posted like the tunnel form does, recognised by `from_tunnel` only.
         $GLOBALS['__phpunit_is_page'] = false;
-        $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->sign(102, ['from_tunnel' => '1']);
 
         self::assertSame([102 => 'CODEA'], $GLOBALS['__phpunit_signature_codes']);

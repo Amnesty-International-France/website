@@ -62,6 +62,7 @@ function amnesty_keep_clh_origin_code(string $code): void
  */
 function amnesty_get_kept_clh_origin_code(): ?string
 {
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- written by amnesty_keep_clh_origin_code(), validated by amnesty_sanitize_origin_code() below.
     $kept = $_SESSION[AMNESTY_CLH_ORIGIN_CODE_SESSION_KEY] ?? null;
     if (!is_array($kept)) {
         return null;
