@@ -34,6 +34,13 @@ final class ClhTunnelOriginCodeTest extends TestCase
             }
         }
 
+        if (!function_exists('wp_json_encode')) {
+            function wp_json_encode(mixed $data): string|false
+            {
+                return json_encode($data);
+            }
+        }
+
         if (!function_exists('get_query_var')) {
             function get_query_var(string $key, mixed $default = ''): mixed
             {
@@ -193,9 +200,29 @@ final class ClhTunnelOriginCodeTest extends TestCase
 
         amnesty_keep_clh_origin_code_from_tunnel_url();
 
+        // The signature is posted like the tunnel form does, recognised by `from_tunnel` only.
+        $GLOBALS['__phpunit_is_page'] = false;
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->sign(102, ['from_tunnel' => '1']);
 
+        self::assertSame([102 => 'CODEA'], $GLOBALS['__phpunit_signature_codes']);
+    }
+
+    public function testSkippingAPetitionKeepsTheCodeLikeTheRestOfTheTunnelProgress(): void
+    {
+        // Kept 14 minutes ago: it would be forgotten one minute later without any activity.
+        $_SESSION['clh_origin_code'] = ['code' => 'CODEA', 'at' => time() - AMNESTY_CLH_TUNNEL_STATE_TTL + 60];
+        $GLOBALS['__phpunit_valid_nonces'] = ['nonce'];
+        $_POST = ['skip_petition' => '', 'petition_id' => '101', 'clh_skip_nonce' => 'nonce'];
+
+        try {
+            amnesty_handle_petition_skip();
+            self::fail('The skip handler did not redirect.');
+        } catch (ClhRedirect) {
+        }
+
+        self::assertGreaterThanOrEqual(time() - 1, $_SESSION['clh_origin_code']['at']);
+        $this->sign(102, ['from_tunnel' => '1']);
         self::assertSame([102 => 'CODEA'], $GLOBALS['__phpunit_signature_codes']);
     }
 }

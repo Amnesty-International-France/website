@@ -897,6 +897,8 @@ function amnesty_handle_petition_skip(): void
     }
 
     amnesty_set_clh_skipped_petition($petition_id);
+    // A skip keeps the external origin code as long as the rest of the tunnel progress (AIF-450).
+    amnesty_extend_kept_clh_origin_code();
 
     wp_redirect(amnesty_get_clh_petition_tunnel_url());
     exit;

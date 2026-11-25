@@ -80,6 +80,20 @@ function amnesty_get_kept_clh_origin_code(): ?string
 }
 
 /**
+ * Keeps the kept code for another inactivity window, like the tunnel progress after a
+ * signature or a skip. Returns the kept code, or null when there is none.
+ */
+function amnesty_extend_kept_clh_origin_code(): ?string
+{
+    $kept = amnesty_get_kept_clh_origin_code();
+    if ($kept !== null) {
+        amnesty_keep_clh_origin_code($kept);
+    }
+
+    return $kept;
+}
+
+/**
  * Origin code sent to Salesforce for a petition signature.
  *
  * - A posted code is used as before; on a CLH petition, a well-formed one is also kept.
@@ -100,10 +114,8 @@ function amnesty_resolve_petition_origin_code(mixed $posted, mixed $default, boo
     }
 
     if ($is_clh_petition && $is_tunnel_submission) {
-        $kept = amnesty_get_kept_clh_origin_code();
+        $kept = amnesty_extend_kept_clh_origin_code();
         if ($kept !== null) {
-            amnesty_keep_clh_origin_code($kept);
-
             return $kept;
         }
     }
