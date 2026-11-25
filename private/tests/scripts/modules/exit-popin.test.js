@@ -80,6 +80,26 @@ describe('exit popin desktop trigger', () => {
     expect(showModal).toHaveBeenCalledTimes(1);
   });
 
+  it('ignores the cursor moving between two elements on the top row', () => {
+    exitPopin();
+    document.dispatchEvent(
+      new MouseEvent('mouseout', {
+        clientY: 0,
+        bubbles: true,
+        relatedTarget: document.querySelector('.page-link'),
+      }),
+    );
+    vi.advanceTimersByTime(1000);
+    expect(dialog()).toBeNull();
+  });
+
+  it('opens when a fast exit reports the cursor a few pixels below the top', () => {
+    exitPopin();
+    document.dispatchEvent(new MouseEvent('mouseout', { clientY: 5, bubbles: true }));
+    vi.advanceTimersByTime(1000);
+    expect(dialog().hasAttribute('open')).toBe(true);
+  });
+
   it('ignores the cursor leaving anywhere else', () => {
     exitPopin();
     document.dispatchEvent(new MouseEvent('mouseout', { clientY: 200, bubbles: true }));

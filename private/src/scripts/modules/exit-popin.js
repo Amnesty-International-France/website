@@ -4,6 +4,7 @@ import { buildPopin, updatePopin } from './exit-popin-content';
 export const STORAGE_KEY = 'aif_exit_popin_shown';
 
 const OPEN_DELAY = 1000;
+const EXIT_MARGIN = 5;
 const INACTIVITY_DELAY = 10 * 1000;
 const REFRESH_INTERVAL = 60 * 1000;
 const ACTIVITY_EVENTS = ['touchstart', 'scroll', 'keydown'];
@@ -101,8 +102,10 @@ const tryOpen = () => {
   return true;
 };
 
+// A null relatedTarget means the cursor left the document; a fast exit may
+// report its last position a few pixels below the top edge.
 const onMouseOut = (event) => {
-  if (event.clientY > 0 || state.openTimer) return;
+  if (event.relatedTarget || event.clientY > EXIT_MARGIN || state.openTimer) return;
   if (wasShown() || isOverlayShown()) return;
   state.openTimer = setTimeout(() => {
     state.openTimer = null;
