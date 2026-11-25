@@ -47,33 +47,28 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
         <?php endif; ?>
         <div class="aif-riposte-card__top">
             <?php if ($thumbnail) : ?>
-                <div class="aif-riposte-card__visual">
-                    <div class="aif-riposte-card__media">
-                        <?php echo $thumbnail; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>
-                        <?php if ($external_url) : ?>
-                            <div class="aif-riposte-card__overlay" aria-hidden="true">
-                                <div class="aif-riposte-card__overlay-icon">
+                <div class="aif-riposte-card__media">
+                    <?php echo $thumbnail; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>
+                    <?php if ($external_url) : ?>
+                        <div class="aif-riposte-card__overlay" aria-hidden="true">
+                            <div class="aif-riposte-card__overlay-icon">
 
-                                    <svg
-                                        width="68"
-                                        height="68"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        aria-hidden="true"
-                                    >
-                                        <circle cx="10.5" cy="10.5" r="6.5"></circle>
-                                        <path d="M15.5 15.5L21 21"></path>
-                                        <path d="M10.5 7.5V13.5"></path>
-                                        <path d="M7.5 10.5H13.5"></path>
-                                    </svg>
-                                </div>
+                                <svg
+                                    width="68"
+                                    height="68"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    aria-hidden="true"
+                                >
+                                    <circle cx="10.5" cy="10.5" r="6.5"></circle>
+                                    <path d="M15.5 15.5L21 21"></path>
+                                    <path d="M10.5 7.5V13.5"></path>
+                                    <path d="M7.5 10.5H13.5"></path>
+                                </svg>
                             </div>
-                        <?php endif; ?>
-                    </div>
-                    <?php if ($photo_credit) : ?>
-                        <p class="aif-riposte-card__credit"><?php echo esc_html($photo_credit); ?></p>
+                        </div>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
@@ -107,6 +102,9 @@ function aif_riposte_render_card(?WP_Post $post = null, int $index = 0): void
                                 <span class="aif-riposte-card__more-arrow">›</span>
                             </span>
                         </div>
+                    <?php endif; ?>
+                    <?php if ($photo_credit) : ?>
+                        <p class="aif-riposte-card__credit"><?php echo esc_html($photo_credit); ?></p>
                     <?php endif; ?>
                 </div>
             </div>

@@ -18,6 +18,10 @@ $href        = $args['href'] ?? '';
 $rate        = $args['rate'] ?? 66;
 $is_popin     = $args['is_popin'] ?? false;
 $position    = (string) ($args['position'] ?? '') ?: ($is_popin ? 'header popin' : 'contenu');
+// Tab open on arrival: monthly unless the caller asks for the punctual one.
+$punctual_first = 'punctual' === ($args['default_tab'] ?? '');
+$punctual_state = $punctual_first ? 'active' : 'hidden';
+$monthly_state  = $punctual_first ? 'hidden' : 'active';
 
 $amount_monthly_donation = [
     8  => [
@@ -78,17 +82,17 @@ if (empty($href) && !empty($campaign_url)) {
 	<?php endif ?>
 	<?php if ($with_tabs) : ?>
 		<div class="donation-tabs">
-			<div id="punctual" class="punctual hidden">
+			<div id="punctual" class="punctual <?php echo esc_attr($punctual_state); ?>">
 				Don Ponctuel
 			</div>
-			<div id="monthly" class="monthly active">
+			<div id="monthly" class="monthly <?php echo esc_attr($monthly_state); ?>">
 				Don Mensuel
 			</div>
 		</div>
 	<?php endif ?>
 	<div id="donation-body" class="donation-body">
 		<?php if ($with_tabs) : ?>
-			<div id="punctual" class="amount-punctual hidden">
+			<div id="punctual" class="amount-punctual <?php echo esc_attr($punctual_state); ?>">
 				<?php foreach ($amount_punctual_donation as $key => $value) : ?>
 					<div class="don-radio
 						<?php
@@ -115,7 +119,7 @@ if (empty($href) && !empty($campaign_url)) {
 					</div>
 				<?php endforeach; ?>
 			</div>
-			<div id="monthly" class="amount-monthly active">
+			<div id="monthly" class="amount-monthly <?php echo esc_attr($monthly_state); ?>">
 				<?php foreach ($amount_monthly_donation as $key => $value) : ?>
 					<div class="don-radio
 						<?php
@@ -150,8 +154,8 @@ if (empty($href) && !empty($campaign_url)) {
 							class="input-don-free"
 							placeholder="montant du don">
 					<label id="amount-total" for="input-donation"></label>
-					<span class="currency-symbol currency-monthly">€<span class="by-month">/mois</span></span>
-        			<span class="currency-symbol currency-punctual hidden-currency">€</span>
+					<span class="currency-symbol currency-monthly<?php echo $punctual_first ? ' hidden-currency' : ''; ?>">€<span class="by-month">/mois</span></span>
+        			<span class="currency-symbol currency-punctual<?php echo $punctual_first ? '' : ' hidden-currency'; ?>">€</span>
 				</div>
 			</div>
 		<?php else : ?>

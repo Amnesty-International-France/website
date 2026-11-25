@@ -34,6 +34,7 @@ import { calculator, hoverDonationMenu } from './modules/donation-calculator';
 import petitionShareFeedback from './modules/social-network-clicked';
 import petitionDonateFeedback from './modules/donate-clicked';
 import {
+  clearSignatureStatusFromUrl,
   toggleFullFormPetition,
   submitCodeOrigine,
   initTunnelClhForm,
@@ -93,6 +94,7 @@ const App = () => {
   petitionShareFeedback();
   petitionDonateFeedback();
   toggleFullFormPetition();
+  clearSignatureStatusFromUrl();
   submitCodeOrigine();
   initTunnelClhForm();
   scrollToTunnelClhPetition();
