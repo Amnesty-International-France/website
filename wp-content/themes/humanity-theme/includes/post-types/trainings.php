@@ -318,8 +318,9 @@ add_filter('pre_handle_404', 'aif_formation_archive_fix_pagination', 10, 2);
  * Page "Se former" of the space being browsed (public or Mon Espace).
  *
  * Looked up by path rather than hard-coded URL so the link follows the page
- * (title, permalink). Changing the target page itself goes through the TMA
- * (MAINT-388: no back-office setting on purpose).
+ * permalink. Link labels stay fixed ("Se former", "Toutes les formations"),
+ * as specified in the ticket. Changing the target page itself goes through
+ * the TMA (AIF-388: no back-office setting on purpose).
  */
 function aif_get_training_home_page(): ?WP_Post
 {
