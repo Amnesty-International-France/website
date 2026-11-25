@@ -262,8 +262,11 @@
     letter-spacing: 0.08em;
   }
 
+  // Bely réserve environ 0.16em au-dessus des capitales et rien sous la ligne de base :
+  // le padding bas compense ce vide pour centrer le mot dans l'aplat. À droite, l'interlettrage
+  // du dernier caractère et l'approche du E élargissent l'aplat : le padding droit les retire.
   &.is-marked {
-    padding: 0.06em 0.16em 0.04em;
+    padding: 0 0.11em 0.17em 0.16em;
     background-color: var(--wp--preset--color--primary);
     color: var(--clh-grey);
     box-decoration-break: clone;
