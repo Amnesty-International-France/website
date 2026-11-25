@@ -1,0 +1,141 @@
+$exit-popin-cta: #ff5f3e;
+$exit-popin-heart-path: 'M8.583 0a9.2 9.2 0 016.287 2.527A9.21 9.21 0 0121.157 0a8.333 8.333 0 015.423 1.953A8.748 8.748 0 0129.728 8.3a8.86 8.86 0 01-2.528 6.625l-9.931 10.091a3.373 3.373 0 01-4.8 0L2.53 14.925A8.863 8.863 0 01.01 8.3a8.751 8.751 0 013.147-6.347A8.336 8.336 0 018.583 0zm6.287 7.393l-2.25-2.28a5.708 5.708 0 00-4.037-1.719A4.894 4.894 0 005.4 4.536a5.408 5.408 0 00-1.94 3.922 5.487 5.487 0 001.552 4.107l9.858 10.013 9.859-10.013a5.485 5.485 0 001.556-4.106 5.406 5.406 0 00-1.94-3.923 4.891 4.891 0 00-3.184-1.141 5.718 5.718 0 00-4.041 1.717z';
+
+@function exit-popin-heart($fill) {
+  @return url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29.738' height='26.021'%3E%3Cpath d='#{$exit-popin-heart-path}' fill='#{$fill}'/%3E%3C/svg%3E");
+}
+
+// Reset the browser's <dialog> defaults; the inner block holds the padding,
+// so a click whose target is the dialog itself is a click on the backdrop.
+.exit-popin {
+  max-width: min(90vw, 860px);
+  max-height: 90dvh;
+  padding: 0;
+  border: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  color: var(--wp--preset--color--black);
+  background-color: var(--wp--preset--color--white);
+  box-shadow: 0 0.3rem 0.6rem rgb(0 0 0 / 16%);
+
+  &::backdrop {
+    background-color: rgb(255 255 255 / 60%);
+  }
+}
+
+.exit-popin-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px;
+  font-family: var(--wp--preset--font-family--secondary);
+  text-align: center;
+
+  @media screen and (max-width: $container-sm) {
+    padding: 44px 20px 24px;
+  }
+}
+
+.exit-popin-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  padding: 6px;
+  color: var(--wp--preset--color--black);
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.exit-popin-title {
+  margin: 0 0 18px;
+  font-family: inherit;
+  font-size: 29px;
+  font-weight: bold;
+  line-height: 1.2;
+  text-transform: uppercase;
+
+  @media screen and (max-width: $container-sm) {
+    margin-bottom: 12px;
+    font-size: 22px;
+  }
+}
+
+.exit-popin-text {
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 28px;
+
+  p {
+    margin: 0 0 14px;
+  }
+
+  @media screen and (max-width: $container-sm) {
+    font-size: 17px;
+    line-height: 22px;
+  }
+}
+
+.exit-popin-countdown {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 12px;
+  margin: 0 0 19px;
+  font-size: 22px;
+
+  @media screen and (max-width: $container-sm) {
+    font-size: 18px;
+  }
+}
+
+.exit-popin-countdown-item {
+  white-space: nowrap;
+}
+
+.exit-popin-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 54px;
+  padding: 0 27px;
+  font-size: 23px;
+  font-weight: bold;
+  color: var(--wp--preset--color--white);
+  text-decoration: none;
+  text-transform: uppercase;
+  background-color: $exit-popin-cta;
+  border: 1px solid $exit-popin-cta;
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease;
+
+  &::after {
+    content: '';
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    background: exit-popin-heart('%23ff0') no-repeat center / 100%;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: $exit-popin-cta;
+    background-color: var(--wp--preset--color--white);
+
+    &::after {
+      background-image: exit-popin-heart('%23ff5f3e');
+    }
+  }
+
+  @media screen and (max-width: $container-sm) {
+    font-size: 19px;
+  }
+}
