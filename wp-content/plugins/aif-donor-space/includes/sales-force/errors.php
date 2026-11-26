@@ -68,6 +68,39 @@ function aif_create_salesforce_missing_identifier_error($operation, $endpoint)
     );
 }
 
+/**
+ * Error codes and field names of a Salesforce REST error body.
+ *
+ * Salesforce answers errors with [{"message": ..., "errorCode": ..., "fields": [...]}].
+ * Messages are left out: they can repeat submitted values, such as an email.
+ */
+function aif_get_salesforce_error_codes($body)
+{
+    $errors = json_decode((string) $body, true);
+    if (!is_array($errors) || !isset($errors[0])) {
+        return [];
+    }
+
+    $codes = [];
+    foreach (array_slice($errors, 0, 5) as $error) {
+        $error_code = is_array($error) ? ($error['errorCode'] ?? null) : null;
+        if (!is_string($error_code) || !preg_match('/^[A-Z_]{1,64}$/', $error_code)) {
+            continue;
+        }
+
+        $fields = is_array($error['fields'] ?? null) ? $error['fields'] : [];
+        $codes[] = [
+            'error_code' => $error_code,
+            'fields' => array_values(array_filter(
+                array_slice($fields, 0, 10),
+                static fn ($field) => is_string($field) && preg_match('/^[A-Za-z][A-Za-z0-9_.]{0,79}$/', $field)
+            )),
+        ];
+    }
+
+    return $codes;
+}
+
 function aif_get_salesforce_log_context($error)
 {
     $error_data = $error->get_error_data();
@@ -85,6 +118,7 @@ function aif_get_salesforce_log_context($error)
         'status' => 'http_status',
         'body_size' => 'body_size',
         'json_error' => 'json_error',
+        'salesforce_errors' => 'salesforce_errors',
     ];
 
     foreach ($allowed_fields as $source => $destination) {
@@ -147,6 +181,11 @@ function aif_parse_salesforce_response($response, $operation, $url, $started_at,
     ];
 
     if ($status_code < 200 || $status_code >= 300) {
+        $salesforce_errors = aif_get_salesforce_error_codes($body);
+        if ([] !== $salesforce_errors) {
+            $response_data['salesforce_errors'] = $salesforce_errors;
+        }
+
         return new WP_Error(
             'salesforce_http_error',
             'La requête Salesforce a échoué.',
