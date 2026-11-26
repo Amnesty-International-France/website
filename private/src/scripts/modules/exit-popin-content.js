@@ -1,6 +1,11 @@
 // End of the tax-reduction appeal: 1 January 2027 00:00, Europe/Paris.
 export const DEADLINE = new Date('2027-01-01T00:00:00+01:00');
 
+// End of the popin: it no longer opens from 1 February 2027 00:00, Europe/Paris.
+export const END = new Date('2027-02-01T00:00:00+01:00');
+
+export const hasEnded = (now) => now >= END;
+
 export const CTA_URL =
   'https://soutenir.amnesty.fr/b?cid=442&lang=fr_FR&reserved_originecode=26PFAWSI01';
 

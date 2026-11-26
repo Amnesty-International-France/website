@@ -1,4 +1,4 @@
-import { buildPopin, updatePopin } from './exit-popin-content';
+import { buildPopin, hasEnded, updatePopin } from './exit-popin-content';
 
 // Set when the popin opens: it opens at most once per browser tab.
 export const STORAGE_KEY = 'aif_exit_popin_shown';
@@ -91,8 +91,9 @@ const openPopin = () => {
 
 // Returns false only when an overlay is in the way, so the caller retries.
 const tryOpen = () => {
-  // Shown since this page loaded, e.g. in another page of the tab before a back navigation.
-  if (wasShown()) {
+  // Shown since this page loaded (e.g. in another page of the tab before a back
+  // navigation), or the page stayed open past the end.
+  if (wasShown() || hasEnded(new Date())) {
     state.stopTriggers();
     return true;
   }
@@ -133,7 +134,13 @@ const stopTriggers = () => {
 
 const exitPopin = () => {
   // Browsers without <dialog> (Safari before 15.4) do not get the popin.
-  if (wasShown() || typeof window.HTMLDialogElement?.prototype.showModal !== 'function') return;
+  if (
+    wasShown() ||
+    hasEnded(new Date()) ||
+    typeof window.HTMLDialogElement?.prototype.showModal !== 'function'
+  ) {
+    return;
+  }
 
   state.stopTriggers = stopTriggers;
   // Only a mouse or a trackpad can fire it.

@@ -342,3 +342,31 @@ describe('exit popin countdown refresh', () => {
     expect(vi.getTimerCount()).toBe(whileOpen - 1);
   });
 });
+
+describe('exit popin end', () => {
+  it('still opens on 31 January', () => {
+    vi.setSystemTime(new Date('2027-01-31T23:59:00+01:00'));
+    openOnDesktop();
+    expect(dialog().hasAttribute('open')).toBe(true);
+  });
+
+  it('does not run on a page loaded from 1 February 2027', () => {
+    vi.setSystemTime(new Date('2027-02-01T00:00:00+01:00'));
+    useTouchDevice(true);
+    exitPopin();
+    exitThroughTop();
+    vi.advanceTimersByTime(10000);
+    expect(dialog()).toBeNull();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('does not open on a page loaded before the end and left open past it', () => {
+    vi.setSystemTime(new Date('2027-01-31T23:59:55+01:00'));
+    useTouchDevice(true);
+    exitPopin();
+    vi.advanceTimersByTime(10000);
+    expect(dialog()).toBeNull();
+    expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+});

@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import {
   CTA_URL,
   DEADLINE,
+  END,
   buildPopin,
+  hasEnded,
   getRemaining,
   updatePopin,
 } from '../../../src/scripts/modules/exit-popin-content';
@@ -47,6 +49,17 @@ describe('exit popin countdown', () => {
   it('returns nothing from the deadline on', () => {
     expect(getRemaining(new Date('2026-12-31T23:00:00Z'))).toBeNull();
     expect(getRemaining(new Date('2027-03-01T10:00:00+01:00'))).toBeNull();
+  });
+});
+
+describe('exit popin end', () => {
+  it('ends on 1 February 2027 00:00 Paris time, whatever the machine time zone', () => {
+    expect(END.getTime()).toBe(Date.UTC(2027, 0, 31, 23));
+  });
+
+  it('runs until 31 January included', () => {
+    expect(hasEnded(new Date('2027-01-31T23:59:59+01:00'))).toBe(false);
+    expect(hasEnded(new Date('2027-02-01T00:00:00+01:00'))).toBe(true);
   });
 });
 
