@@ -31,5 +31,19 @@ if (ibanInput) {
     setTimeout(updateSubmitState, 0);
   });
 
+  // Après une erreur, le serveur renvoie la saisie du donateur : le champ la reprend,
+  // et « Annuler » restaure l'IBAN actuel (valeur du champ).
+  if (ibanInput.dataset.submittedIban) {
+    ibanInput.value = ibanInput.dataset.submittedIban;
+  }
+
+  // Retour arrière : la page restaurée depuis le cache du navigateur garde la saisie envoyée.
+  // Le champ reprend l'IBAN actuel, le serveur dira au prochain chargement si une demande est en cours.
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted && ibanInput.form) {
+      ibanInput.form.reset();
+    }
+  });
+
   updateSubmitState();
 }

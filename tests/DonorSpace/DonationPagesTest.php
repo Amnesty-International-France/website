@@ -25,6 +25,7 @@ final class DonationPagesTest extends TestCase
         require_once __DIR__ . '/html-helpers.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/tax-receipt/index.php';
         require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/bank/iban-request.php';
+        $GLOBALS['wpdb'] = new IbanLockWpdb();
 
         if (!function_exists('get_salesforce_user_demands')) {
             function wp_get_current_user(): object
@@ -59,7 +60,7 @@ final class DonationPagesTest extends TestCase
             {
                 return 'membre';
             }
-            function get_salesforce_user_demands(string $id): array
+            function get_salesforce_user_demands(string $id): array|WP_Error
             {
                 return $GLOBALS['__phpunit_demands'] ?? [];
             }
@@ -133,8 +134,16 @@ final class DonationPagesTest extends TestCase
         self::assertCount(2, array_keys($hrefs, $requests, true));
     }
 
-    public function testBankDetailsRequestRedirectsAfterSendingIt(): void
+    public static function sentRequests(): iterable
     {
+        yield 'first request' => [[]];
+        yield 'previous requests closed in Salesforce' => [[self::ibanDemand('Rejeté'), self::ibanDemand('Traité')]];
+    }
+
+    #[DataProvider('sentRequests')]
+    public function testBankDetailsRequestRedirectsAfterSendingIt(array $demands): void
+    {
+        $GLOBALS['__phpunit_demands'] = $demands;
         $this->postIban('FR76 3000 6000 0112 3456 7890 189');
 
         try {
@@ -146,20 +155,23 @@ final class DonationPagesTest extends TestCase
 
         self::assertSame(303, $GLOBALS['__phpunit_redirect_status']);
         self::assertSame(['FR7630006000011234567890189'], $GLOBALS['__phpunit_iban_requests']);
+        // The lock keeps how many IBAN requests Salesforce knew before this one.
         self::assertStringStartsWith('INSERT IGNORE', self::lockQueries()[0]);
+        self::assertStringContainsString("'_transient_aif_iban_request_lock_" . md5('003000000000001') . "', '" . count($demands) . "'", self::lockQueries()[0]);
     }
 
     public static function pendingRequests(): iterable
     {
-        yield 'lock set when the request was sent' => [true, []];
-        yield 'request still open in Salesforce' => [false, [self::ibanDemand('En cours de traitement')]];
+        yield 'lock set, Case not in Salesforce yet' => [1, [self::ibanDemand('Traité')]];
+        yield 'request still open in Salesforce' => [null, [self::ibanDemand('En cours de traitement')]];
+        yield 'lock set, Salesforce unavailable' => [0, new WP_Error('salesforce', 'down')];
     }
 
     #[DataProvider('pendingRequests')]
-    public function testBankDetailsRequestIsNotSentAgainWhilePending(bool $locked, array $demands): void
+    public function testBankDetailsRequestIsNotSentAgainWhilePending(?int $lockedWithRequests, array|WP_Error $demands): void
     {
-        if ($locked) {
-            $this->lockIbanRequest();
+        if (null !== $lockedWithRequests) {
+            $this->lockIbanRequest($lockedWithRequests);
         }
         $GLOBALS['__phpunit_demands'] = $demands;
         $this->postIban('FR76 3000 6000 0112 3456 7890 189');
@@ -167,45 +179,63 @@ final class DonationPagesTest extends TestCase
         $xpath = $this->render('page-modification-coordonnees-bancaire.php');
 
         self::assertSame([], $GLOBALS['__phpunit_iban_requests']);
+        self::assertSame([], self::lockQueries());
         self::assertStringContainsString('Votre demande a déjà été envoyée, elle est en cours de traitement.', $xpath->document->textContent);
         self::assertSame('disabled', $xpath->query('//button[@id="iban-submit"]/@disabled')->item(0)?->nodeName);
     }
 
-    public function testBankDetailsRequestCanBeSentAgainOnceSalesforceClosedThePreviousOne(): void
+    public function testBankDetailsLockIsReleasedOnceTheCaseShowsUpInSalesforce(): void
     {
-        $GLOBALS['__phpunit_demands'] = [self::ibanDemand('Rejeté'), self::ibanDemand('Traité')];
+        // Sent with no IBAN request in Salesforce; the Case is now there, already rejected.
+        $this->lockIbanRequest(0);
+        $GLOBALS['__phpunit_demands'] = [self::ibanDemand('Rejeté')];
         $this->postIban('FR76 3000 6000 0112 3456 7890 189');
+        $GLOBALS['wpdb']->query_results = [2, 2]; // DELETE of the old lock, then INSERT of the new one.
 
         try {
             $this->render('page-modification-coordonnees-bancaire.php');
-            self::fail('The bank details form should send the request once the previous one is closed.');
+            self::fail('The bank details form should send the request once the rejected one is closed.');
         } catch (AccountVerificationRedirect) {
         }
 
+        self::assertStringStartsWith('DELETE FROM', self::lockQueries()[0]);
         self::assertSame(['FR7630006000011234567890189'], $GLOBALS['__phpunit_iban_requests']);
     }
 
     public function testBankDetailsRequestIsNotSentWhenAnotherSubmissionHoldsTheLock(): void
     {
-        // Lost the INSERT IGNORE race: the other request's lock has not expired.
+        // Free when the page loads, then held by the other submission when claiming it.
+        $GLOBALS['wpdb']->expiries = [null, (string) (time() + 600)];
         $this->postIban('FR76 3000 6000 0112 3456 7890 189');
-        $GLOBALS['wpdb'] = new class () extends wpdb {
-            public function get_var(string $query): mixed
-            {
-                $this->calls[] = ['method' => 'get_var', 'query' => $query];
-
-                // Free when the page loads, held by the other submission when claiming.
-                return 1 === count(array_filter($this->calls, static fn (array $call): bool => 'get_var' === $call['method']))
-                    ? null
-                    : (string) (time() + 600);
-            }
-        };
         $GLOBALS['wpdb']->query_results = [0];
 
         $xpath = $this->render('page-modification-coordonnees-bancaire.php');
 
         self::assertSame([], $GLOBALS['__phpunit_iban_requests']);
         self::assertStringContainsString('Votre demande a déjà été envoyée, elle est en cours de traitement.', $xpath->document->textContent);
+    }
+
+    public function testBankDetailsRequestIsNotSentWhenSalesforceRequestsAreUnavailable(): void
+    {
+        $GLOBALS['__phpunit_demands'] = new WP_Error('salesforce', 'down');
+        $this->postIban('FR76 3000 6000 0112 3456 7890 189');
+
+        $xpath = $this->render('page-modification-coordonnees-bancaire.php');
+
+        self::assertSame([], $GLOBALS['__phpunit_iban_requests']);
+        self::assertSame([], self::lockQueries());
+        self::assertStringContainsString('Un problème technique est survenu.', $xpath->document->textContent);
+        self::assertSame('FR76 3000 6000 0112 3456 7890 189', self::submittedIban($xpath));
+    }
+
+    public function testBankDetailsPageStillLoadsWhenSalesforceRequestsAreUnavailable(): void
+    {
+        $GLOBALS['__phpunit_demands'] = new WP_Error('salesforce', 'down');
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $xpath = $this->render('page-modification-coordonnees-bancaire.php');
+
+        self::assertSame(1, $xpath->query('//button[@id="iban-submit"][not(@disabled)]')->length);
     }
 
     public static function rejectedIbans(): iterable
@@ -217,7 +247,7 @@ final class DonationPagesTest extends TestCase
     }
 
     #[DataProvider('rejectedIbans')]
-    public function testBankDetailsRequestIsNotSentForARejectedIban(string $iban, string $error, string $fieldValue): void
+    public function testBankDetailsRequestIsNotSentForARejectedIban(string $iban, string $error, string $submittedIban): void
     {
         $GLOBALS['__phpunit_active_mandate'] = self::mandate('FR1420041010050500013M02606');
         $this->postIban($iban);
@@ -227,9 +257,9 @@ final class DonationPagesTest extends TestCase
         self::assertSame([], $GLOBALS['__phpunit_iban_requests']);
         self::assertSame([], self::lockQueries());
         self::assertStringContainsString($error, $xpath->document->textContent);
-        // The donor's input stays in the field (an empty one falls back to the current IBAN).
-        $expected = '' === $fieldValue ? 'FR14 2004 1010 0505 0001 3M02 606' : $fieldValue;
-        self::assertSame($expected, $xpath->query('//input[@id="iban"]/@value')->item(0)?->nodeValue);
+        // The JS puts the donor's input back in the field; "Annuler" restores the current IBAN.
+        self::assertSame($submittedIban, self::submittedIban($xpath));
+        self::assertSame('FR14 2004 1010 0505 0001 3M02 606', $xpath->query('//input[@id="iban"]/@value')->item(0)?->nodeValue);
     }
 
     public function testBankDetailsLockIsReleasedWhenSalesforceDoesNotCreateTheRequest(): void
@@ -242,7 +272,7 @@ final class DonationPagesTest extends TestCase
         self::assertSame(['FR7630006000011234567890189'], $GLOBALS['__phpunit_iban_requests']);
         self::assertStringStartsWith('DELETE FROM', self::lockQueries()[1] ?? '');
         self::assertStringContainsString('Un problème technique est survenu.', $xpath->document->textContent);
-        self::assertSame('FR76 3000 6000 0112 3456 7890 189', $xpath->query('//input[@id="iban"]/@value')->item(0)?->nodeValue);
+        self::assertSame('FR76 3000 6000 0112 3456 7890 189', self::submittedIban($xpath));
     }
 
     public function testBankDetailsSuccessMessageNeedsAPendingRequest(): void
@@ -264,9 +294,16 @@ final class DonationPagesTest extends TestCase
         $_POST = ['iban_nonce' => 'iban-nonce', 'iban' => $iban];
     }
 
-    private function lockIbanRequest(): void
+    /** Lock set when Salesforce knew $knownRequests IBAN requests. */
+    private function lockIbanRequest(int $knownRequests = 0): void
     {
-        $GLOBALS['wpdb']->var_result = (string) (time() + 600);
+        $GLOBALS['wpdb']->expiry = (string) (time() + 600);
+        $GLOBALS['wpdb']->count = (string) $knownRequests;
+    }
+
+    private static function submittedIban(DOMXPath $xpath): ?string
+    {
+        return $xpath->query('//input[@id="iban"]/@data-submitted-iban')->item(0)?->nodeValue;
     }
 
     /** @return list<string> INSERT, UPDATE and DELETE queries sent on the lock. */
@@ -286,5 +323,28 @@ final class DonationPagesTest extends TestCase
     private static function mandate(string $iban): object
     {
         return (object) ['Tech_Iban__c' => $iban, 'Date_paiement_Avenir__c' => '2026-12-05', 'Periodicite__c' => 'Mensuelle', 'Montant__c' => '15'];
+    }
+}
+
+/**
+ * $wpdb answering the IBAN request lock reads: its expiry, then how many IBAN
+ * requests Salesforce knew when it was set. $expiries is consumed first, one per read.
+ */
+class IbanLockWpdb extends wpdb
+{
+    public ?string $expiry = null;
+    public ?string $count = null;
+    /** @var array<int, ?string> */
+    public array $expiries = [];
+
+    public function get_var(string $query): mixed
+    {
+        $this->calls[] = ['method' => 'get_var', 'query' => $query];
+
+        if (!str_contains($query, '_transient_timeout_')) {
+            return $this->count;
+        }
+
+        return [] !== $this->expiries ? array_shift($this->expiries) : $this->expiry;
     }
 }

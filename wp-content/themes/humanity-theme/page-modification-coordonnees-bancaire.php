@@ -32,10 +32,17 @@ if ($has_valid_mandate) {
 $pending_message = 'Votre demande a déjà été envoyée, elle est en cours de traitement.';
 
 // Une demande est en cours tant qu'un « Changement IBAN » est ouvert dans Salesforce (Mes demandes),
-// ou tant que le verrou posé à l'envoi n'a pas expiré (le temps que le Case apparaisse dans Salesforce).
+// ou tant que le verrou posé à l'envoi tient : il est levé dès que le Case apparaît dans Salesforce.
 $demands = get_salesforce_user_demands($sf_user_ID);
-$has_pending_request = aif_is_iban_request_locked($sf_user_ID)
-    || (is_array($demands) && aif_has_open_iban_request($demands));
+$known_iban_requests = is_array($demands) ? aif_count_iban_requests($demands) : null;
+$is_locked = aif_is_iban_request_locked($sf_user_ID);
+
+if ($is_locked && null !== $known_iban_requests && $known_iban_requests > (aif_get_iban_request_lock_count($sf_user_ID) ?? PHP_INT_MAX)) {
+    aif_release_iban_request_lock($sf_user_ID);
+    $is_locked = false;
+}
+
+$has_pending_request = $is_locked || (is_array($demands) && aif_has_open_iban_request($demands));
 
 $is_post = isset($_SERVER['REQUEST_METHOD']) && 'POST' === $_SERVER['REQUEST_METHOD'];
 $request_sent = !$is_post && isset($_GET['iban_sent']) && '1' === $_GET['iban_sent'] && $has_pending_request;
@@ -64,11 +71,11 @@ if ($is_post && isset($_POST['iban_nonce']) && isset($_POST['iban'])) {
         } elseif (!aif_is_valid_iban($new_iban)) {
             $error_message = 'L’IBAN saisi n’est pas valide. Vérifiez-le et réessayez.';
             $has_error = true;
-        } else {
+        } elseif (null === $known_iban_requests) {
             // Sans la liste des demandes, impossible de savoir si une demande est déjà ouverte : rien n'est envoyé.
-            aif_require_salesforce_array($demands, 'demands');
-
-            if (!aif_claim_iban_request($sf_user_ID)) {
+            $error_message = 'Un problème technique est survenu. Merci de réessayer plus tard';
+        } else {
+            if (!aif_claim_iban_request_lock($sf_user_ID, $known_iban_requests)) {
                 // Un autre envoi (autre onglet, double clic) a pris le verrou juste avant.
                 $has_pending_request = true;
                 $submitted_iban = null;
@@ -76,7 +83,7 @@ if ($is_post && isset($_POST['iban_nonce']) && isset($_POST['iban'])) {
                 $request_result = create_duplicate_update_IBAN_request($sf_user_ID, $new_iban);
 
                 if (is_wp_error($request_result)) {
-                    aif_release_iban_request($sf_user_ID);
+                    aif_release_iban_request_lock($sf_user_ID);
                     aif_salesforce_service_unavailable($request_result);
                 }
 
@@ -86,7 +93,7 @@ if ($is_post && isset($_POST['iban_nonce']) && isset($_POST['iban'])) {
                     exit;
                 }
 
-                aif_release_iban_request($sf_user_ID);
+                aif_release_iban_request_lock($sf_user_ID);
                 $error_message = 'Un problème technique est survenu. Merci de réessayer plus tard';
             }
         }
@@ -99,10 +106,11 @@ if ($request_sent) {
     $success_message = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
 }
 
-// Après une erreur, le champ garde la saisie du donateur plutôt que l'IBAN actuel.
-$field_iban = null !== $submitted_iban && '' !== $submitted_iban
+// Après une erreur, iban-formatter.js remet la saisie du donateur dans le champ. La valeur du champ
+// reste l'IBAN actuel, que le bouton « Annuler » restaure.
+$submitted_field_iban = null !== $submitted_iban && '' !== $submitted_iban
     ? implode(' ', str_split($submitted_iban, 4))
-    : $formattedIban;
+    : '';
 
 $show_pending_message = $has_pending_request && !$request_sent;
 
@@ -153,7 +161,8 @@ if (!empty($success_message)) {
 				<input placeholder="FR 14 2001 0101 1505 0001 3M02" type="text" id="iban" name="iban"
 					aria-labelledby="iban-help-message"
 					data-initial-iban="<?php echo esc_attr($current_iban); ?>"
-					value="<?php echo esc_attr($field_iban); ?>"
+					value="<?php echo esc_attr($formattedIban); ?>"
+					data-submitted-iban="<?php echo esc_attr($submitted_field_iban); ?>"
 					class="<?= $has_error ? 'aif-input-error' : '' ?>"
 				/>
 

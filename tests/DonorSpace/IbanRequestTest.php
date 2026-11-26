@@ -42,7 +42,7 @@ final class IbanRequestTest extends TestCase
     {
         yield 'no request' => [[], false];
         yield 'IBAN change in progress' => [[self::demand('Changement IBAN', 'En cours de traitement')], true];
-        yield 'IBAN change with an unknown status' => [[self::demand('Changement IBAN', 'Nouveau')], true];
+        yield 'IBAN change with an unknown status' => [[self::demand('Changement IBAN', 'Nouveau')], false];
         yield 'IBAN change done' => [[self::demand('Changement IBAN', 'Traité')], false];
         yield 'IBAN change rejected' => [[self::demand('Changement IBAN', 'Rejeté')], false];
         yield 'IBAN change failed' => [[self::demand('Changement IBAN', 'Fermé - Echoué')], false];
@@ -56,12 +56,34 @@ final class IbanRequestTest extends TestCase
         self::assertSame($expected, aif_has_open_iban_request($demands));
     }
 
+    public function testCountsTheIbanRequestsWhateverTheirStatus(): void
+    {
+        $demands = [
+            self::demand('Changement IBAN', 'Traité'),
+            self::demand('Envoi duplicata', 'En cours de traitement'),
+            self::demand('Changement IBAN', 'En cours de traitement'),
+        ];
+
+        self::assertSame(2, aif_count_iban_requests($demands));
+    }
+
     public function testClaimsTheLockWhenItIsFree(): void
     {
         $GLOBALS['wpdb']->query_results = [2];
 
-        self::assertTrue(aif_claim_iban_request(self::CONTACT_ID));
+        self::assertTrue(aif_claim_iban_request_lock(self::CONTACT_ID, 3));
         self::assertStringStartsWith('INSERT IGNORE', $GLOBALS['wpdb']->calls[0]['query']);
+        self::assertStringContainsString("'_transient_" . aif_iban_request_lock_key(self::CONTACT_ID) . "', '3'", $GLOBALS['wpdb']->calls[0]['query']);
+    }
+
+    public function testClaimsTheLockWhenOnlyItsExpiryWasMissing(): void
+    {
+        // A leftover value row without its expiry: only our expiry row was inserted.
+        $GLOBALS['wpdb']->query_results = [1, 1];
+        $GLOBALS['wpdb']->var_result = (string) (time() + AIF_IBAN_REQUEST_LOCK_TTL);
+
+        self::assertTrue(aif_claim_iban_request_lock(self::CONTACT_ID, 3));
+        self::assertStringStartsWith('UPDATE wp_options SET option_value = \'3\'', self::queries()[1]);
     }
 
     public function testDoesNotClaimALockHeldByAnotherRequest(): void
@@ -69,7 +91,7 @@ final class IbanRequestTest extends TestCase
         $GLOBALS['wpdb']->query_results = [0];
         $GLOBALS['wpdb']->var_result = (string) (time() + 600);
 
-        self::assertFalse(aif_claim_iban_request(self::CONTACT_ID));
+        self::assertFalse(aif_claim_iban_request_lock(self::CONTACT_ID, 0));
         self::assertCount(1, self::queries());
     }
 
@@ -86,7 +108,9 @@ final class IbanRequestTest extends TestCase
         $GLOBALS['wpdb']->query_results = [0, $updated];
         $GLOBALS['wpdb']->var_result = $expired;
 
-        self::assertSame($expected, aif_claim_iban_request(self::CONTACT_ID));
+        $GLOBALS['wpdb']->query_results = [0, $updated, 1];
+
+        self::assertSame($expected, aif_claim_iban_request_lock(self::CONTACT_ID, 0));
         self::assertStringContainsString("AND option_value = '{$expired}'", self::queries()[1]);
     }
 
@@ -94,7 +118,7 @@ final class IbanRequestTest extends TestCase
     {
         $GLOBALS['wpdb']->query_results = [false];
 
-        self::assertFalse(aif_claim_iban_request(self::CONTACT_ID));
+        self::assertFalse(aif_claim_iban_request_lock(self::CONTACT_ID, 0));
     }
 
     public static function lockExpiries(): iterable
@@ -114,7 +138,7 @@ final class IbanRequestTest extends TestCase
 
     public function testReleaseDeletesTheLockAndItsExpiry(): void
     {
-        aif_release_iban_request(self::CONTACT_ID);
+        aif_release_iban_request_lock(self::CONTACT_ID);
 
         $key = aif_iban_request_lock_key(self::CONTACT_ID);
         self::assertSame(
