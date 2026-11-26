@@ -38,4 +38,25 @@ export const test = base.extend({
     await context.setExtraHTTPHeaders({ 'X-AIF-E2E-Test-Id': testId });
     await use(testId);
   }, { auto: true }],
+
+  // The exit popin's inactivity timer runs on touch devices (mobile-chromium),
+  // and Playwright's clicks do not reset it: a spec staying 10 s on a page
+  // could get the popin over the elements it clicks next. Mark the popin as
+  // already shown in every tab. exit-popin.spec.mjs turns this off with
+  // test.use({ exitPopinAlreadyShown: false }).
+  exitPopinAlreadyShown: [true, { option: true }],
+
+  exitPopinFlag: [async ({ context, exitPopinAlreadyShown }, use) => {
+    if (exitPopinAlreadyShown) {
+      await context.addInitScript(() => {
+        try {
+          // Same key as STORAGE_KEY in src/scripts/modules/exit-popin.js.
+          window.sessionStorage.setItem('aif_exit_popin_shown', 'true');
+        } catch {
+          // Opaque-origin frames (about:blank, sandboxed iframes) have no storage.
+        }
+      });
+    }
+    await use();
+  }, { auto: true }],
 });
