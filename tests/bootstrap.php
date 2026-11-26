@@ -155,6 +155,44 @@ if (!function_exists('sanitize_text_field')) {
     }
 }
 
+if (!function_exists('wp_generate_uuid4')) {
+    /**
+     * Same output format as WordPress core, but uses mt_rand().
+     */
+    function wp_generate_uuid4(): string
+    {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
+        );
+    }
+}
+
+if (!function_exists('wp_is_uuid')) {
+    /**
+     * Same validation as WordPress core (version 4 or any version).
+     */
+    function wp_is_uuid(mixed $uuid, ?int $version = null): bool
+    {
+        if (!is_string($uuid)) {
+            return false;
+        }
+
+        $regex = 4 === $version
+            ? '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/'
+            : '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/';
+
+        return (bool) preg_match($regex, $uuid);
+    }
+}
+
 if (!function_exists('is_wp_error')) {
     function is_wp_error(mixed $thing): bool
     {
@@ -328,10 +366,18 @@ if (!defined('DAY_IN_SECONDS')) {
 }
 
 if (!function_exists('get_transient')) {
+    // Values in __phpunit_transients; the expiry timestamp of a transient set
+    // with an expiration in __phpunit_transient_expirations.
     $GLOBALS['__phpunit_transients'] = [];
+    $GLOBALS['__phpunit_transient_expirations'] = [];
 
     function get_transient(string $transient): mixed
     {
+        $expires_at = $GLOBALS['__phpunit_transient_expirations'][$transient] ?? null;
+        if (null !== $expires_at && $expires_at <= time()) {
+            return false;
+        }
+
         return $GLOBALS['__phpunit_transients'][$transient] ?? false;
     }
 
@@ -339,12 +385,18 @@ if (!function_exists('get_transient')) {
     {
         $GLOBALS['__phpunit_transients'][$transient] = $value;
 
+        if ($expiration > 0) {
+            $GLOBALS['__phpunit_transient_expirations'][$transient] = time() + $expiration;
+        } else {
+            unset($GLOBALS['__phpunit_transient_expirations'][$transient]);
+        }
+
         return true;
     }
 
     function delete_transient(string $transient): bool
     {
-        unset($GLOBALS['__phpunit_transients'][$transient]);
+        unset($GLOBALS['__phpunit_transients'][$transient], $GLOBALS['__phpunit_transient_expirations'][$transient]);
 
         return true;
     }
@@ -365,16 +417,19 @@ if (!function_exists('wp_verify_nonce')) {
 
 if (!function_exists('add_action')) {
     $GLOBALS['__phpunit_registered_actions'] = [];
+    $GLOBALS['__phpunit_registered_action_priorities'] = [];
 
     /**
      * No-op recorder for add_action(). Only records the registration so that
      * requiring a file which calls add_action() at the top level (e.g. to
      * register a REST route on 'rest_api_init') doesn't fatal; it does NOT
      * invoke the callback, so tests call the registered function directly.
+     * The priorities are recorded apart, as [callback, priority] pairs.
      */
     function add_action(string $hook, callable $callback, int $priority = 10, int $accepted_args = 1): void
     {
         $GLOBALS['__phpunit_registered_actions'][$hook][] = $callback;
+        $GLOBALS['__phpunit_registered_action_priorities'][$hook][] = [$callback, $priority];
     }
 }
 
@@ -672,6 +727,7 @@ if (!class_exists('wpdb')) {
     class wpdb
     {
         public string $prefix = 'wp_';
+        public string $options = 'wp_options';
         public int $insert_id = 0;
 
         /** @var array<int,array<string,mixed>> */
@@ -684,6 +740,9 @@ if (!class_exists('wpdb')) {
         public bool|int $insert_result = 1;
         public bool|int $update_result = 1;
         public bool|int $query_result = 1;
+        /** @var array<int,bool|int> Consumed one per query() call before falling back to $query_result. */
+        public array $query_results = [];
+        public string $last_error = '';
 
         public function get_charset_collate(): string
         {
@@ -751,6 +810,10 @@ if (!class_exists('wpdb')) {
         public function query(string $query): bool|int
         {
             $this->calls[] = ['method' => 'query', 'query' => $query];
+
+            if ($this->query_results !== []) {
+                return array_shift($this->query_results);
+            }
 
             return $this->query_result;
         }

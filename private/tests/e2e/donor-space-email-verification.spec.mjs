@@ -4,10 +4,19 @@ import { getSalesforceCalls, resetSalesforceCalls } from './support/salesforce';
 
 // Seeded by support/seed-wordpress.php; the member lookup for these addresses
 // is faked by aif-e2e-support.php.
-const UNVERIFIED_DONOR = { email: 'e2e-unverified-donor@example.test', password: 'E2e-Unverified-1!' };
+const UNVERIFIED_DONOR = {
+  email: 'e2e-unverified-donor@example.test',
+  password: 'E2e-Unverified-1!',
+};
 const VERIFIED_DONOR = { email: 'e2e-verified-donor@example.test', password: 'E2e-Verified-1!' };
-const LEGACY_EDITOR_DONOR = { email: 'e2e-legacy-editor-donor@example.test', password: 'E2e-Legacy-Editor-1!' };
-const LEGACY_SUBSCRIBER = { email: 'e2e-legacy-subscriber@example.test', password: 'E2e-Legacy-Subscriber-1!' };
+const LEGACY_EDITOR_DONOR = {
+  email: 'e2e-legacy-editor-donor@example.test',
+  password: 'E2e-Legacy-Editor-1!',
+};
+const LEGACY_SUBSCRIBER = {
+  email: 'e2e-legacy-subscriber@example.test',
+  password: 'E2e-Legacy-Subscriber-1!',
+};
 
 const LOGIN_FORM = '.login-form form.aif-form-container';
 
@@ -23,7 +32,8 @@ test.describe('donor space e-mail verification', () => {
     ['equals sign', 'donor=tag'],
     ['combined path sub-delimiters', 'donor!$&=tag'],
   ].forEach(([character, localPart, providerStatus = 200]) => {
-    const outcome = providerStatus === 200 ? 'starts account verification' : 'reports a provider error';
+    const outcome =
+      providerStatus === 200 ? 'starts account verification' : 'reports a provider error';
     test(`${outcome} for a donor address with ${character}`, async ({
       page,
       request,
@@ -43,10 +53,16 @@ test.describe('donor space e-mail verification', () => {
       if (providerStatus === 404) {
         await expect(page).toHaveURL(/\/creer-votre-compte\//);
         await expect(page.getByText('Votre espace est temporairement indisponible.')).toBeVisible();
-        await expect(page.getByText('L’adresse email renseignée ne trouve pas de correspondance dans notre système.')).toHaveCount(0);
+        await expect(
+          page.getByText(
+            'L’adresse email renseignée ne trouve pas de correspondance dans notre système.',
+          ),
+        ).toHaveCount(0);
       } else {
         await expect(page).toHaveURL(/\/verifier-votre-email\//);
-        await expect(page.getByRole('heading', { name: 'Validation de la création de mon compte' })).toBeVisible();
+        await expect(
+          page.getByRole('heading', { name: 'Validation de la création de mon compte' }),
+        ).toBeVisible();
         expect(new URL(page.url()).searchParams.get('user')).toBe(email);
       }
 
@@ -79,7 +95,13 @@ test.describe('donor space e-mail verification', () => {
       await setServerSideTurnstileResult(page, signup, { success: true });
       await page.locator(`${signup} #email`).fill(VERIFIED_DONOR.email);
       await page.locator(`${signup} button[type="submit"]`).click();
-      await expect(page.getByText('L’adresse email renseignée ne trouve pas de correspondance dans notre système.')).toBeVisible();
+      // Same outcome as a successful signup: the page does not tell whether the address has access.
+      await expect(page).toHaveURL(/\/verifier-votre-email\//);
+      await expect(
+        page.getByText(
+          'L’adresse email renseignée ne trouve pas de correspondance dans notre système.',
+        ),
+      ).toHaveCount(0);
       await expect(page.getByText('Votre espace est temporairement indisponible.')).toHaveCount(0);
 
       await gotoWithoutCookieOverlay('/connectez-vous/');
@@ -87,13 +109,22 @@ test.describe('donor space e-mail verification', () => {
       await page.locator(`${LOGIN_FORM} #email`).fill(VERIFIED_DONOR.email);
       await page.locator(`${LOGIN_FORM} #password`).fill(VERIFIED_DONOR.password);
       await page.locator(`${LOGIN_FORM} button[type="submit"]`).click();
-      await expect(page.getByText("L'adresse email renseignée ne trouve pas de correspondance dans notre système")).toBeVisible();
+      await expect(
+        page.getByText(
+          "L'adresse email renseignée ne trouve pas de correspondance dans notre système",
+        ),
+      ).toBeVisible();
 
-      await gotoWithoutCookieOverlay(`/verifier-votre-email/?user=${encodeURIComponent(VERIFIED_DONOR.email)}`);
+      await gotoWithoutCookieOverlay(
+        `/verifier-votre-email/?user=${encodeURIComponent(VERIFIED_DONOR.email)}`,
+      );
       const resend = 'form:has(input[value="2FA_send_code"])';
       await setServerSideTurnstileResult(page, resend, { success: true });
       await page.locator(`${resend} button[type="submit"]`).click();
-      await expect(page.getByText('Utilisateur inconnu', { exact: true })).toBeVisible();
+      await expect(
+        page.getByText(/Si votre adresse correspond à un compte, un code arrivera/),
+      ).toBeVisible();
+      await expect(page.getByText('Utilisateur inconnu', { exact: true })).toHaveCount(0);
       await expect(page.getByText('Votre espace est temporairement indisponible.')).toHaveCount(0);
     });
   });
@@ -142,7 +173,9 @@ test.describe('donor space e-mail verification', () => {
     await page.locator(`${LOGIN_FORM} button[type="submit"]`).click();
 
     await expect(page.getByText('Mauvais email ou mot de passe')).toBeVisible();
-    await expect(page.getByText("Ce compte ne permet pas d'accéder à l'Espace Don.")).toHaveCount(0);
+    await expect(page.getByText("Ce compte ne permet pas d'accéder à l'Espace Don.")).toHaveCount(
+      0,
+    );
   });
 
   test('lets a historically verified subscriber log in with the existing password', async ({
@@ -184,7 +217,9 @@ test.describe('donor space e-mail verification', () => {
     await page.locator('#user_pass').fill(UNVERIFIED_DONOR.password);
     await page.locator('#wp-submit').click();
 
-    await expect(page.locator('#login_error')).toContainText('Votre adresse e-mail n’est pas encore vérifiée.');
+    await expect(page.locator('#login_error')).toContainText(
+      'Votre adresse e-mail n’est pas encore vérifiée.',
+    );
 
     // No session was opened above, so this only checks the guard for visitors;
     // session revocation is covered by the e-mail change test below.

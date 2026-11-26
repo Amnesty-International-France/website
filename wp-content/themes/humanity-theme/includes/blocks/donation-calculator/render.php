@@ -19,12 +19,13 @@ if (! function_exists('render_donation_calculator_block')) {
         $with_tabs   = $attributes['with_tabs'] ?? false;
         $with_legend = $attributes['with_legend'] ?? false;
         $href        = $attributes['href'] ?? '';
-        $rate        = $attributes['rate'] ?? 66;
+        $rate        = (int) ($attributes['rate'] ?? 66);
         $is_popin     = $attributes['is_popin'] ?? false;
         $position    = $attributes['position'] ?? '';
+        $default_tab = $attributes['default_tab'] ?? 'monthly';
 
         if (! in_array($rate, [ 66, 75 ], true)) {
-            $taux = 66;
+            $rate = 66;
         }
 
         $args = [
@@ -36,6 +37,7 @@ if (! function_exists('render_donation_calculator_block')) {
             'rate'        => $rate,
             'is_popin'     => $is_popin,
             'position'    => $position,
+            'default_tab' => $default_tab,
         ];
 
         ob_start();

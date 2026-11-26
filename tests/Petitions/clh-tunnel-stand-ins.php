@@ -19,6 +19,22 @@ if (!function_exists('is_ssl')) {
     }
 }
 
+if (!function_exists('aif_turnstile_enabled')) {
+    /** Turnstile is on, unless a test sets $GLOBALS['__phpunit_turnstile_enabled'] to false to switch the switchable forms off. */
+    function aif_turnstile_enabled(bool $switchable): bool
+    {
+        return !$switchable || false !== ($GLOBALS['__phpunit_turnstile_enabled'] ?? true);
+    }
+}
+
+if (!function_exists('amnesty_write_clh_tunnel_cookie')) {
+    /** Records the tunnel cookies a handler sends, with their options, instead of sending them. */
+    function amnesty_write_clh_tunnel_cookie(string $name, string $value, array $options): void
+    {
+        $GLOBALS['__phpunit_clh_cookie_writes'][$name] = ['value' => $value] + $options;
+    }
+}
+
 if (!class_exists('ClhRedirect')) {
     /** Thrown by the wp_redirect() stand-in, so tests can read where a handler redirects. */
     final class ClhRedirect extends RuntimeException
@@ -34,7 +50,7 @@ if (!function_exists('wp_redirect')) {
 }
 
 if (!class_exists('WP_Post')) {
-    eval('class WP_Post { public int $ID = 0; public int $post_parent = 0; public string $post_title = ""; }');
+    eval('class WP_Post { public int $ID = 0; public int $post_parent = 0; public string $post_title = ""; public string $post_name = ""; }');
 }
 
 if (!class_exists('WP_Query')) {

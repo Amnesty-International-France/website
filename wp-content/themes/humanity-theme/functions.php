@@ -8,37 +8,11 @@
 
 /**
  * Analytics
+ *
+ * Required first, so the GTM container comes before the theme's other wp_head
+ * and wp_body_open callbacks of the same priority.
  */
-add_action('wp_head', function () {
-    ?>
-	<!-- Google Tag Manager -->
-	<script>(function (w, d, s, l, i) {
-			w[l] = w[l] || [];
-			w[l].push({
-				'gtm.start':
-					new Date().getTime(), event: 'gtm.js'
-			});
-			var f = d.getElementsByTagName(s)[0],
-				j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
-			j.async = true;
-			j.src =
-				'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-			f.parentNode.insertBefore(j, f);
-		})(window, document, 'script', 'dataLayer', 'GTM-MBQ25R');</script>
-	<!-- End Google Tag Manager -->
-	<?php
-}, 1);
-
-add_action('wp_body_open', function () {
-    ?>
-	<!-- Google Tag Manager (noscript) -->
-	<noscript>
-		<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MBQ25R"
-		        height="0" width="0" style="display:none;visibility:hidden"></iframe>
-	</noscript>
-	<!-- End Google Tag Manager (noscript) -->
-	<?php
-}, 1);
+require_once realpath(__DIR__ . '/includes/theme-setup/analytics/gtm-container.php');
 
 /**
  * Theme root includes
@@ -484,95 +458,7 @@ add_filter('block_editor_settings_all', function ($settings, $context) {
 /**
  * Cloudflare Turnstile
  */
-function aif_turnstile_site_key(): string
-{
-    return (string) getenv('TURNSTILE_SITE_KEY');
-}
-
-function aif_turnstile_secret_key(): string
-{
-    return (string) getenv('TURNSTILE_SECRET_KEY');
-}
-
-add_action('wp_enqueue_scripts', function () {
-    if (!aif_turnstile_site_key()) {
-        return;
-    }
-
-    $theme = wp_get_theme();
-
-    wp_enqueue_script(
-        'aif-turnstile',
-        get_template_directory_uri() . '/assets/scripts/turnstile.js',
-        [],
-        $theme->get('Version'),
-        ['in_footer' => false]
-    );
-    wp_enqueue_script(
-        'cf-turnstile',
-        'https://challenges.cloudflare.com/turnstile/v0/api.js',
-        ['aif-turnstile'],
-        null,
-        [
-            'in_footer' => false,
-            'strategy'  => 'defer',
-        ]
-    );
-});
-
-add_filter('wp_resource_hints', function (array $urls, string $relation_type): array {
-    if ('preconnect' !== $relation_type || !aif_turnstile_site_key()) {
-        return $urls;
-    }
-
-    if (!in_array('https://challenges.cloudflare.com', $urls, true)) {
-        $urls[] = 'https://challenges.cloudflare.com';
-    }
-
-    return $urls;
-}, 10, 2);
-
-function verify_turnstile(): ?string
-{
-    $response = $_POST['cf-turnstile-response'] ?? '';
-    if (empty($response)) {
-        return 'missing-input-response';
-    }
-
-    $result = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-        'body' => [
-            'secret' => aif_turnstile_secret_key(),
-            'response' => $response,
-            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
-        ],
-    ]);
-
-    if (is_wp_error($result)) {
-        return 'wp-http-error: ' . $result->get_error_message();
-    }
-
-    $body = json_decode(wp_remote_retrieve_body($result), true);
-
-    if (!empty($body['success'])) {
-        return null;
-    }
-
-    $codes = $body['error-codes'] ?? ['unknown-error'];
-    return $codes[0];
-}
-
-function turnstile_friendly_error(string $error): string
-{
-    return match ($error) {
-        'missing-input-response' => 'La vérification de sécurité n’a pas pu être effectuée. Veuillez recharger la page puis réessayer.',
-        'invalid-input-response' => 'La vérification de sécurité a échoué. Veuillez recharger la page puis réessayer.',
-        'timeout-or-duplicate' => 'La session de vérification a expiré. Veuillez recharger la page puis réessayer.',
-        'bad-request' => 'La requête de vérification est invalide. Veuillez réessayer.',
-        'internal-error' => 'Le service de vérification est temporairement indisponible. Veuillez réessayer dans quelques instants.',
-        'missing-input-secret', 'invalid-input-secret', 'invalid-widget-id', 'invalid-parsed-secret' => 'Une erreur de configuration est survenue. Veuillez contacter le support.',
-        default => 'La vérification de sécurité a échoué. Veuillez réessayer.',
-    };
-}
+require_once realpath(__DIR__ . '/includes/features/turnstile.php');
 
 if (defined('WP_CLI') && WP_CLI) {
     require_once __DIR__ . '/commands/duplicate-country-pages.php';

@@ -105,6 +105,8 @@ final class DonorContactPatternTest extends TestCase
         // Unmodified upstream registry from the WordPress 7.1.3 investigation.
         require_once __DIR__ . '/fixtures/wordpress-7.1.3-patterns-registry.php';
 
+        $GLOBALS['wpdb'] = new wpdb();
+        $GLOBALS['wpdb']->query_result = 2; // INSERT IGNORE of the value and its timeout: the token is free.
         $GLOBALS['__phpunit_wp_remote_calls'] = [];
         $GLOBALS['__phpunit_wp_remote_response_queue'] = [];
         $GLOBALS['__phpunit_wp_remote_response'] = ['response' => ['code' => 200], 'body' => '{"Id":"contact-id","Tech_Lien_Mandat_Actif__c":null}'];
@@ -159,9 +161,18 @@ final class DonorContactPatternTest extends TestCase
         $_POST = array_replace([
             'aif_donor_contact_form' => '1',
             'contact_nonce' => 'contact-nonce',
+            'submission_token' => self::TOKEN,
             'subject' => 'My request',
             'message' => 'My message',
         ], $fields);
+    }
+
+    private const TOKEN = '0b8f6a52-3c4d-4e5f-9a1b-2c3d4e5f6a7b';
+
+    /** Each render carries a fresh token: compare everything else. */
+    private static function withoutToken(string $html): string
+    {
+        return (string) preg_replace('/name="submission_token" value="[^"]+"/', 'name="submission_token" value=""', $html);
     }
 
     public static function catalogueRequests(): iterable
@@ -227,7 +238,7 @@ final class DonorContactPatternTest extends TestCase
         set_query_var('aif_donor_contact_form', []);
         aif_handle_donor_contact_form();
         $first = render_donor_contact_form_block();
-        self::assertSame($first, render_donor_contact_form_block());
+        self::assertSame(self::withoutToken($first), self::withoutToken(render_donor_contact_form_block()));
         self::assertStringContainsString('Votre demande de contact a bien été prise en compte', $first);
         self::assertStringContainsString('https://wordpress.example.test/mon-espace/mes-dons/mes-demandes/', $first);
         self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
@@ -396,7 +407,7 @@ final class DonorContactPatternTest extends TestCase
         aif_handle_donor_contact_form();
         $first = render_donor_contact_form_block();
 
-        self::assertSame($first, render_donor_contact_form_block());
+        self::assertSame(self::withoutToken($first), self::withoutToken(render_donor_contact_form_block()));
         self::assertStringContainsString("Votre demande n'a pas pu aboutir", $first);
         self::assertStringContainsString('value="&quot;&gt;alert(1)"', $first);
         self::assertStringContainsString("First\n\nSecond</textarea>", $first);
@@ -414,6 +425,135 @@ final class DonorContactPatternTest extends TestCase
             self::assertSame(503, $error->status);
         }
         self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    public function testEachRenderedFormCarriesAFreshSubmissionToken(): void
+    {
+        $this->prepareMember();
+        preg_match('/name="submission_token" value="([^"]+)"/', render_donor_contact_form_block(), $first);
+        preg_match('/name="submission_token" value="([^"]+)"/', render_donor_contact_form_block(), $second);
+
+        self::assertTrue(wp_is_uuid($first[1] ?? null, 4));
+        self::assertTrue(wp_is_uuid($second[1] ?? null, 4));
+        self::assertNotSame($first[1], $second[1]);
+    }
+
+    public function testSuccessfulSubmissionClaimsItsTokenAtomicallyAndRecordsTheOutcome(): void
+    {
+        $this->preparePost();
+        try {
+            aif_handle_donor_contact_form();
+            self::fail('A successful POST must redirect.');
+        } catch (AccountVerificationRedirect) {
+        }
+
+        $calls = $GLOBALS['wpdb']->calls;
+        $key = '_transient_' . aif_get_donor_contact_submission_key(42, self::TOKEN);
+        self::assertSame('query', $calls[0]['method']);
+        self::assertStringStartsWith('INSERT IGNORE INTO wp_options', $calls[0]['query']);
+        self::assertStringContainsString("'" . $key . "', 'pending:", $calls[0]['query']);
+        self::assertStringContainsString("'_transient_timeout_" . substr($key, 11) . "', '", $calls[0]['query']);
+        self::assertCount(1, array_filter($calls, static fn (array $call): bool => 'query' === $call['method']));
+        self::assertSame('update', end($calls)['method']);
+        self::assertSame(['option_value' => 'sent'], end($calls)['data']);
+        self::assertSame(['option_name' => $key], end($calls)['where']);
+    }
+
+    public static function invalidTokens(): iterable
+    {
+        yield 'missing' => [null];
+        yield 'not a uuid' => ['not-a-token'];
+        yield 'array' => [[self::TOKEN]];
+    }
+
+    #[DataProvider('invalidTokens')]
+    public function testSubmissionWithoutAValidTokenAsksToSendAgainBeforeSalesforce(mixed $token): void
+    {
+        $this->preparePost(['submission_token' => $token]);
+        aif_handle_donor_contact_form();
+        $html = render_donor_contact_form_block();
+
+        self::assertStringContainsString('Le formulaire a expiré. Veuillez renvoyer votre demande.', $html);
+        self::assertStringContainsString('value="My request"', $html);
+        self::assertSame([], $GLOBALS['__phpunit_wp_remote_calls']);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    public function testResentFormAfterASuccessRedirectsWithoutCreatingAnotherCase(): void
+    {
+        $this->preparePost();
+        $GLOBALS['wpdb']->query_result = 0; // The token is already claimed.
+        $GLOBALS['wpdb']->var_result = 'sent';
+        try {
+            aif_handle_donor_contact_form();
+            self::fail('A resent form must show the confirmation of the first submission.');
+        } catch (AccountVerificationRedirect $redirect) {
+            self::assertSame('https://wordpress.example.test/mon-espace/nous-contacter/?contact_sent=1', $redirect->getMessage());
+        }
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    public static function retryableStatuses(): iterable
+    {
+        yield 'failed' => ['failed'];
+        yield 'abandoned pending' => ['pending:' . (time() - 600)];
+    }
+
+    #[DataProvider('retryableStatuses')]
+    public function testResentFormAfterAFailureOrAnAbandonedAttemptTriesAgain(string $status): void
+    {
+        $this->preparePost();
+        $GLOBALS['wpdb']->query_results = [0, 1]; // Already claimed, then the compare-and-swap wins.
+        $GLOBALS['wpdb']->var_result = $status;
+        try {
+            aif_handle_donor_contact_form();
+            self::fail('A retried submission must redirect once sent.');
+        } catch (AccountVerificationRedirect) {
+        }
+
+        $queries = array_values(array_filter($GLOBALS['wpdb']->calls, static fn (array $call): bool => 'query' === $call['method']));
+        self::assertStringStartsWith('UPDATE wp_options', $queries[1]['query']);
+        self::assertStringEndsWith("option_value = '" . $status . "'", $queries[1]['query']);
+        self::assertCount(1, $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    public function testConcurrentRetryThatLosesTheRaceDoesNotCreateAnotherCase(): void
+    {
+        $this->preparePost();
+        $GLOBALS['wpdb']->query_results = [0, 0]; // Another request retook the token first.
+        $GLOBALS['wpdb']->var_result = 'failed';
+        aif_handle_donor_contact_form();
+
+        self::assertStringContainsString("Votre demande n'a pas pu aboutir", render_donor_contact_form_block());
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    public function testContactLookupFailureReleasesTheTokenForARetry(): void
+    {
+        $this->preparePost();
+        $GLOBALS['__phpunit_wp_remote_response'] = new WP_Error('http_request_failed', 'Transport failure');
+        try {
+            aif_handle_donor_contact_form();
+            self::fail('A Salesforce outage must stop with 503.');
+        } catch (ContactFormHttpError $error) {
+            self::assertSame(503, $error->status);
+        }
+
+        self::assertSame('query', $GLOBALS['wpdb']->calls[0]['method']);
+        self::assertSame(['option_value' => 'failed'], end($GLOBALS['wpdb']->calls)['data']);
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
+    }
+
+    public function testDatabaseErrorWhileClaimingIsLoggedAndSendsNothing(): void
+    {
+        $this->preparePost();
+        $GLOBALS['wpdb']->query_result = false;
+        $GLOBALS['wpdb']->last_error = 'Table is read only';
+        aif_handle_donor_contact_form();
+
+        self::assertStringContainsString("Votre demande n'a pas pu aboutir", render_donor_contact_form_block());
+        self::assertStringContainsString('[AIF contact] Submission token claim failed: Table is read only', (string) file_get_contents($this->log_file));
+        self::assertSame([], $GLOBALS['__phpunit_sent_mails']);
     }
 
     public function testFormUsesTheResolvedTemplate(): void

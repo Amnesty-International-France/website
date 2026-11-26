@@ -49,6 +49,11 @@ function get_header(): void
 {
 }
 
+function status_header(int $code, string $description = ''): void
+{
+    $GLOBALS['__phpunit_status_header'] = $code;
+}
+
 function get_footer(): void
 {
 }
@@ -91,13 +96,16 @@ function seed_permalink_with_apostrophe(string $path): string
     return $url;
 }
 
-function aif_turnstile_site_key(): string
+/** Empty for a switchable form when a test sets $GLOBALS['__phpunit_turnstile_enabled'] to false. */
+function aif_turnstile_site_key(bool $switchable = false): string
 {
-    return 'site-key';
+    return $switchable && false === ($GLOBALS['__phpunit_turnstile_enabled'] ?? true) ? '' : 'site-key';
 }
 
-function verify_turnstile(): ?string
+function verify_turnstile(bool $switchable = false): ?string
 {
+    $GLOBALS['__phpunit_turnstile_switchable'][] = $switchable;
+
     return null;
 }
 
@@ -157,3 +165,32 @@ function wp_remote_post(string $url, array $args = []): mixed
 
     return $GLOBALS['__phpunit_mail_response'];
 }
+
+/**
+ * Like WordPress, a password is checked against the stored hash; here the
+ * "hash" is the password itself. Every check is recorded.
+ */
+function wp_check_password(string $password, string $hash, int|string $user_id = ''): bool
+{
+    $GLOBALS['__phpunit_password_checks'][] = $hash;
+
+    return '' !== $hash && $password === $hash;
+}
+
+/** Like WordPress, the trimmed password is stored. */
+function wp_set_password(string $password, int $user_id): void
+{
+    $GLOBALS['__phpunit_password_sets'][] = $user_id;
+    $GLOBALS['__phpunit_users'][$user_id]->user_pass = trim($password);
+}
+
+function wp_hash_password(string $password): string
+{
+    return 'hashed:' . $password;
+}
+
+function wp_hash(string $data, string $scheme = 'auth'): string
+{
+    return hash_hmac('md5', $data, 'test-salt');
+}
+

@@ -9,15 +9,7 @@ declare(strict_types=1);
  * Inserter: no
  */
 
-$signature_status = sanitize_key($_GET['signature_status'] ?? '');
-$signature_status_messages = [
-    'invalid' => AMNESTY_PETITION_INVALID_EMAIL_MESSAGE,
-    'missing_fields' => 'Merci de renseigner vos nom et prénom pour signer la pétition.',
-    'expired' => 'La pétition que vous avez essayé de signer est terminée, merci pour votre soutien.',
-    'error' => 'Une erreur est survenue pendant la signature. Veuillez réessayer.',
-    'turnstile' => 'La vérification de sécurité a échoué. Veuillez réessayer.',
-];
-$signature_status_message = $signature_status_messages[$signature_status] ?? '';
+$signature_status_message = amnesty_get_requested_signature_status_message();
 
 $post = get_post();
 $parent = $post->post_parent;
@@ -44,6 +36,8 @@ $total_steps = min(10, count($list_petitions_clh));
 $next_petition = $context['next_petition'];
 $show_final_screen = $next_petition === null;
 // Once the visitor has passed Turnstile, the tunnel forms submit without a new check.
+// Also true while TURNSTILE_ENABLED=0, which hides the widgets below: rendered then,
+// they would make the Turnstile guard script hold the forms.
 $turnstile_verified = amnesty_is_clh_tunnel_turnstile_verified();
 
 if ($show_final_screen) {
@@ -183,8 +177,9 @@ if ($show_final_screen) {
                                 <p>En faisant un don dès aujourd'hui, vous soutenez notre liberté d'action et nous permettez de changer la vie de personnes dont les droits sont bafoués.</p>
 
                                 <?php
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- block markup rendered by core.
                                     echo do_blocks(
-                                        '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=395&lang=fr_FR&reserved_originecode=26PJPWSI02", "is_popin": true, "position": "clh_merci" } /-->'
+                                        '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=395&lang=fr_FR&reserved_originecode=26PJPWSI02", "is_popin": true, "position": "clh_merci", "default_tab": "punctual" } /-->'
                                     );
     ?>
                             </div>
@@ -313,10 +308,10 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 									data-expired-callback="aifTurnstileFailure"
 									data-timeout-callback="aifTurnstileFailure"
 									data-unsupported-callback="aifTurnstileFailure"
-									data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"
+									data-sitekey="<?= esc_attr(aif_turnstile_site_key()); ?>"
 								></div>
 								<?php endif; ?>
-								<?php wp_nonce_field('clh_skip_petition', 'clh_skip_nonce'); ?>
+								<?php amnesty_clh_skip_nonce_field(); ?>
 								<input type="hidden" name="petition_id"
 								       value="<?= esc_attr((string)$next_petition['id']); ?>">
 							</form>
@@ -327,7 +322,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 									<?php if (!$turnstile_verified) : ?>
 									<div class="cf-turnstile"
 									     data-appearance="interaction-only"
-									     data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+									     data-sitekey="<?= esc_attr(aif_turnstile_site_key()); ?>"></div>
 									<?php endif; ?>
 									<input type="hidden" name="petition_id" value="<?= esc_attr((string)$next_petition['id']); ?>">
 									<input type="hidden" name="from_tunnel" value="1">
@@ -372,7 +367,7 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 									<?php if (!$turnstile_verified) : ?>
 									<div class="cf-turnstile"
 									     data-appearance="interaction-only"
-									     data-sitekey="<?= esc_attr(getenv('TURNSTILE_SITE_KEY')); ?>"></div>
+									     data-sitekey="<?= esc_attr(aif_turnstile_site_key()); ?>"></div>
 									<?php endif; ?>
 									<?php if ($turnstile_error_message) : ?>
 										<?php aif_include_partial('alert', ['state' => 'error', 'title' => 'Une erreur est survenue', 'content' => $turnstile_error_message]); ?>
@@ -413,7 +408,8 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 						        class="page-tunnel-clh-action-button mobile is-secondary"
 								data-gtm="clic_cta"
 								data-name="passer la petition"
-								data-value="<?php echo esc_attr((string) $next_petition['id']); ?>">
+								data-value="<?php echo esc_attr((string) $next_petition['id']); ?>"
+								data-petition-name="<?php echo esc_attr($next_petition['slug']); ?>">
 							<span>Passer la pétition</span>
 						</button>
 					</article>

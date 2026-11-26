@@ -6,7 +6,7 @@ if (!isset($_GET['user']) || !isset($_GET['token'])) {
 }
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password']) && isset($_POST['confirm-password']) && isset($_GET['user']) && isset($_GET['token'])) {
-    $turnstile_error = verify_turnstile();
+    $turnstile_error = verify_turnstile(switchable: true);
     if ($turnstile_error !== null) {
         $error_title = 'La vérification de sécurité a échoué.';
         $error_message = turnstile_friendly_error($turnstile_error);
@@ -47,9 +47,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
                 $error_message = 'Les informations fournies sont erronnées';
             }
         } else {
-            $error_title = 'Votre utilisateur nous est inconnu';
-            $error_message = "Devenez donateur en <a>réalisant un don </a>ou <a
-                              class=\"aif-link--primary\" href=\"mailto:smd@amnesty.fr\">contacter le Service membres et donateurs</a> si vous pensez que c'est une erreur.";
+            // Same answer as an invalid link for a known account.
+            $error_title = 'Une erreur est survenue';
+            $error_message = 'Les informations fournies sont erronnées';
         }
     }
 }
@@ -74,7 +74,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
 	<section class="aif-container--form">
 		<h2>Modifier mon mot de passe</h2>
 		<form class="aif-form-container" action="" method="POST">
-			<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr(aif_turnstile_site_key()); ?>"></div>
+			<?php $turnstile_site_key = aif_turnstile_site_key(switchable: true); ?>
+			<?php if ($turnstile_site_key) : ?>
+			<div class="cf-turnstile" data-callback="aifTurnstileSuccess" data-error-callback="aifTurnstileFailure" data-expired-callback="aifTurnstileFailure" data-timeout-callback="aifTurnstileFailure" data-unsupported-callback="aifTurnstileFailure" data-sitekey="<?php echo esc_attr($turnstile_site_key); ?>"></div>
+			<?php endif; ?>
 			<div class="aif-password-container">
 				<label class="aif-password-container__label" for="password">Nouveau mot de passe (obligatoire)</label>
 				<div class="aif-password-container__input-wrapper">

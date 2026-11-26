@@ -39,6 +39,17 @@ if (! function_exists('aif_get_form_submit_tracking_args')) {
     }
 }
 
+if (! function_exists('aif_remove_form_submit_tracking_args')) {
+    /**
+     * The URL without its form_submit query args, so a link or redirect built from it
+     * never pushes the event again.
+     */
+    function aif_remove_form_submit_tracking_args(string $url): string
+    {
+        return remove_query_arg(aif_get_form_submit_tracking_keys(), $url);
+    }
+}
+
 if (! function_exists('aif_get_clh_tracking_campaign')) {
     /**
      * Campaign of the tag plan, named after the start year set on the campaign page
@@ -112,7 +123,7 @@ if (! function_exists('aif_output_form_submit_push')) {
             return;
         }
         ?>
-		<script type="text/javascript">
+		<script data-cfasync="false" type="text/javascript">
 			window.dataLayer = window.dataLayer || [];
 			window.dataLayer.push(<?php echo wp_json_encode($push); ?>);
 

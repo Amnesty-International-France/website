@@ -20,9 +20,10 @@
     }
     ?>
 
-    <form method="post" action="">
+    <form method="post" action="" data-aif-single-submit data-aif-submit-status="Envoi de votre demande en cours, veuillez patienter.">
         <?php wp_nonce_field('contact_form', 'contact_nonce'); ?>
         <input type="hidden" name="aif_donor_contact_form" value="1">
+        <input type="hidden" name="submission_token" value="<?= esc_attr($submission_token) ?>" autocomplete="off" data-aif-submission-token>
         <label for="subject">Objet de la demande (obligatoire)</label>
         <input placeholder="L'objet de votre demande" type="text" name="subject"
             aria-describedby="contact-subject-help-message"
@@ -49,6 +50,18 @@
         'content' => $errors['message'] ?? 'Décrivez en détail votre demande.',
     ]);
     ?>
-        <button class="btn aif-mt1w aif-button--full" type="submit">Enregistrer</button>
+        <div class="custom-button-block center">
+            <button type="submit" class="custom-button" data-aif-loading-label="Envoi en cours…">
+                <span class="content bg-yellow medium">
+                    <span class="icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" focusable="false">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                    </span>
+                    <span class="button-label" data-aif-button-label>Envoyer</span>
+                </span>
+            </button>
+        </div>
+        <p class="screen-reader-text" role="status" data-aif-submit-status></p>
     </form>
 </section>
