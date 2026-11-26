@@ -188,6 +188,44 @@ final class CreatePetitionTest extends TestCase
         self::assertSame(str_repeat('a', 79), self::salesforceCalls()[0]['params']['Name']);
     }
 
+    #[DataProvider('longTitleCases')]
+    public function testLongTitleCarriesTheFullTitle(string $title, string $expectedName): void
+    {
+        self::publishedPetitionPost($title);
+
+        create_petition(self::POST_ID);
+
+        $payload = self::salesforceCalls()[0]['params'];
+        self::assertSame($expectedName, $payload['Name']);
+        self::assertSame($title, $payload['Libelle_long__c']);
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function longTitleCases(): iterable
+    {
+        // CA-426-01: a title of 80 chars or less goes unchanged into both fields.
+        yield '80 chars or less' => [str_repeat('é', 80), str_repeat('é', 80)];
+
+        // CA-426-02: Name keeps the first 80 chars, the long title gets the whole title.
+        yield 'over 80 chars' => [
+            str_repeat('a', 79) . '  reste du titre, bien au-delà des 80 caractères',
+            str_repeat('a', 79),
+        ];
+    }
+
+    public function testLongTitleIsNotSentWhenOnlyTheEndDateIsUpdated(): void
+    {
+        // The long title is sent once, when the petition is created in Salesforce.
+        self::publishedPetitionPost();
+        $GLOBALS['__phpunit_acf_field_values'][self::POST_ID]['uidsf'] = 'ext-42';
+
+        update_petition_end_date(self::POST_ID);
+
+        self::assertArrayNotHasKey('Libelle_long__c', self::salesforceCalls()[0]['params']);
+    }
+
     public function testTypeActionFallsBackToActionDeSoutienWhenTypeIsNotPetition(): void
     {
         self::publishedPetitionPost();
