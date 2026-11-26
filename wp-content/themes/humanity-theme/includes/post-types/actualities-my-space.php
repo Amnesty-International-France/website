@@ -35,24 +35,27 @@ function amnesty_register_actualities_my_space_cpt()
 }
 add_action('init', 'amnesty_register_actualities_my_space_cpt');
 
+const AMNESTY_ACTUALITIES_MY_SPACE_PAGINATION_REGEX = '^mon-espace/actualites/page/?([0-9]{1,})/?$';
+
 /**
  * Route the pagination of the "mon-espace/actualites" page.
  */
 function amnesty_actualities_my_space_pagination_rewrite_rule(): void
 {
-    $regex = '^mon-espace/actualites/page/?([0-9]{1,})/?$';
     add_rewrite_rule(
-        $regex,
+        AMNESTY_ACTUALITIES_MY_SPACE_PAGINATION_REGEX,
         'index.php?pagename=mon-espace/actualites&paged=$matches[1]',
         'top'
     );
+}
+add_action('init', 'amnesty_actualities_my_space_pagination_rewrite_rule');
 
+add_action('wp_loaded', function (): void {
     $rules = get_option('rewrite_rules');
-    if (is_array($rules) && ! isset($rules[ $regex ])) {
+    if (is_array($rules) && ! isset($rules[ AMNESTY_ACTUALITIES_MY_SPACE_PAGINATION_REGEX ])) {
         flush_rewrite_rules(false);
     }
-}
-add_action('init', 'amnesty_actualities_my_space_pagination_rewrite_rule', 20);
+});
 
 add_action('acf/include_fields', function () {
     if (! function_exists('acf_add_local_field_group')) {
