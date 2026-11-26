@@ -71,7 +71,7 @@ describe('exit popin content before the deadline', () => {
     const title = dialog.querySelector('h2');
     expect(title.id).not.toBe('');
     expect(dialog.getAttribute('aria-labelledby')).toBe(title.id);
-    expect(title.textContent.trim()).toBe('PSSST... AVANT DE PARTIR !');
+    expect(title.textContent.trim()).toBe('PSSST... AVANT DE PARTIR\u00A0!');
   });
 
   it('is described by its text', () => {
@@ -94,7 +94,7 @@ describe('exit popin content before the deadline', () => {
     expect(paragraphs(dialog)).toEqual([
       'Nous refusons tout financement de gouvernement et d’entreprise qui pourrait compromettre notre impartialité et notre indépendance.',
       'Pour garantir le respect des droits humains et préserver notre liberté d’action, nous dépendons du soutien de nos donatrices et donateurs.',
-      'Faites un don au plus tard le 31 décembre et bénéficier d’une réduction d’impôt.',
+      'Faites un don au plus tard le 31 décembre et bénéficiez d’une réduction d’impôt.',
     ]);
   });
 
@@ -112,12 +112,12 @@ describe('exit popin content from the deadline on', () => {
   const dialog = buildPopin(AFTER);
 
   it('keeps the title', () => {
-    expect(dialog.querySelector('h2').textContent.trim()).toBe('PSSST... AVANT DE PARTIR !');
+    expect(dialog.querySelector('h2').textContent.trim()).toBe('PSSST... AVANT DE PARTIR\u00A0!');
   });
 
-  it('shows the generic appeal in lowercase, broken after France!', () => {
+  it('shows the generic appeal in lowercase, broken after France !', () => {
     expect(paragraphs(dialog)).toEqual([
-      'Faites un don à Amnesty International France!',
+      'Faites un don à Amnesty International France\u00A0!',
       'Vous dénoncez les violations des droits humains et agissez concrètement pour protéger celles et ceux qui en sont victimes.',
     ]);
   });
@@ -158,7 +158,7 @@ describe('exit popin refresh', () => {
     const dialog = buildPopin(new Date('2026-12-31T23:59:00+01:00'));
     updatePopin(dialog, AFTER);
     expect(dialog.querySelector('.exit-popin-countdown')).toBeNull();
-    expect(paragraphs(dialog)[0]).toBe('Faites un don à Amnesty International France!');
+    expect(paragraphs(dialog)[0]).toBe('Faites un don à Amnesty International France\u00A0!');
     expect(ctaLabel(dialog)).toBe('Je fais un don');
   });
 });

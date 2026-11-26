@@ -9,7 +9,7 @@ export const hasEnded = (now) => now >= END;
 export const CTA_URL =
   'https://soutenir.amnesty.fr/b?cid=442&lang=fr_FR&reserved_originecode=26PFAWSI01';
 
-const TITLE = 'PSSST... AVANT DE PARTIR !';
+const TITLE = 'PSSST... AVANT DE PARTIR\u00A0!';
 const TITLE_ID = 'exit-popin-title';
 const TEXT_ID = 'exit-popin-text';
 
@@ -21,14 +21,14 @@ const BEFORE_DEADLINE = {
   paragraphs: [
     'Nous refusons tout financement de gouvernement et d’entreprise qui pourrait compromettre notre impartialité et notre indépendance.',
     'Pour garantir le respect des droits humains et préserver notre liberté d’action, nous dépendons du soutien de nos donatrices et donateurs.',
-    'Faites un don au plus tard le 31 décembre et bénéficier d’une réduction d’impôt.',
+    'Faites un don au plus tard le 31 décembre et bénéficiez d’une réduction d’impôt.',
   ],
   cta: 'JE FAIS UN DON',
 };
 
 const FROM_DEADLINE = {
   paragraphs: [
-    'Faites un don à Amnesty International France!',
+    'Faites un don à Amnesty International France\u00A0!',
     'Vous dénoncez les violations des droits humains et agissez concrètement pour protéger celles et ceux qui en sont victimes.',
   ],
   cta: 'Je fais un don',
