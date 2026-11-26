@@ -44,13 +44,13 @@ final class DonationPagesTest extends TestCase
             }
             function get_active_sepa_mandate(array $records): ?object
             {
-                return null;
+                return $GLOBALS['__phpunit_active_mandate'] ?? null;
             }
             function create_duplicate_update_IBAN_request(string $id, string $iban): object
             {
                 $GLOBALS['__phpunit_iban_requests'][] = $iban;
 
-                return (object) ['success' => true];
+                return $GLOBALS['__phpunit_iban_request_response'] ?? (object) ['success' => true];
             }
             function wp_nonce_field(string $action, string $name): void
             {
@@ -61,7 +61,7 @@ final class DonationPagesTest extends TestCase
             }
             function get_salesforce_user_demands(string $id): array
             {
-                return $GLOBALS['__phpunit_demands'];
+                return $GLOBALS['__phpunit_demands'] ?? [];
             }
         }
     }
@@ -124,7 +124,7 @@ final class DonationPagesTest extends TestCase
     public function testBankDetailsLinksKeepTheWholeRequestsUrl(): void
     {
         $requests = seed_permalink_with_apostrophe('mes-demandes');
-        set_transient(aif_iban_request_pending_key('003000000000001'), '', DAY_IN_SECONDS);
+        $this->lockIbanRequest();
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_GET = ['iban_sent' => '1'];
 
@@ -135,7 +135,6 @@ final class DonationPagesTest extends TestCase
 
     public function testBankDetailsRequestRedirectsAfterSendingIt(): void
     {
-        $GLOBALS['__phpunit_iban_requests'] = [];
         $this->postIban('FR76 3000 6000 0112 3456 7890 189');
 
         try {
@@ -145,14 +144,24 @@ final class DonationPagesTest extends TestCase
             self::assertStringEndsWith('?iban_sent=1', $redirect->getMessage());
         }
 
+        self::assertSame(303, $GLOBALS['__phpunit_redirect_status']);
         self::assertSame(['FR7630006000011234567890189'], $GLOBALS['__phpunit_iban_requests']);
-        self::assertSame('', get_transient(aif_iban_request_pending_key('003000000000001')));
+        self::assertStringStartsWith('INSERT IGNORE', self::lockQueries()[0]);
     }
 
-    public function testBankDetailsRequestIsNotSentAgainWhilePending(): void
+    public static function pendingRequests(): iterable
     {
-        $GLOBALS['__phpunit_iban_requests'] = [];
-        set_transient(aif_iban_request_pending_key('003000000000001'), '', DAY_IN_SECONDS);
+        yield 'lock set when the request was sent' => [true, []];
+        yield 'request still open in Salesforce' => [false, [self::ibanDemand('En cours de traitement')]];
+    }
+
+    #[DataProvider('pendingRequests')]
+    public function testBankDetailsRequestIsNotSentAgainWhilePending(bool $locked, array $demands): void
+    {
+        if ($locked) {
+            $this->lockIbanRequest();
+        }
+        $GLOBALS['__phpunit_demands'] = $demands;
         $this->postIban('FR76 3000 6000 0112 3456 7890 189');
 
         $xpath = $this->render('page-modification-coordonnees-bancaire.php');
@@ -162,21 +171,120 @@ final class DonationPagesTest extends TestCase
         self::assertSame('disabled', $xpath->query('//button[@id="iban-submit"]/@disabled')->item(0)?->nodeName);
     }
 
-    public function testBankDetailsRequestIsNotSentWithoutIban(): void
+    public function testBankDetailsRequestCanBeSentAgainOnceSalesforceClosedThePreviousOne(): void
     {
-        $GLOBALS['__phpunit_iban_requests'] = [];
-        $this->postIban('   ');
+        $GLOBALS['__phpunit_demands'] = [self::ibanDemand('Rejeté'), self::ibanDemand('Traité')];
+        $this->postIban('FR76 3000 6000 0112 3456 7890 189');
+
+        try {
+            $this->render('page-modification-coordonnees-bancaire.php');
+            self::fail('The bank details form should send the request once the previous one is closed.');
+        } catch (AccountVerificationRedirect) {
+        }
+
+        self::assertSame(['FR7630006000011234567890189'], $GLOBALS['__phpunit_iban_requests']);
+    }
+
+    public function testBankDetailsRequestIsNotSentWhenAnotherSubmissionHoldsTheLock(): void
+    {
+        // Lost the INSERT IGNORE race: the other request's lock has not expired.
+        $this->postIban('FR76 3000 6000 0112 3456 7890 189');
+        $GLOBALS['wpdb'] = new class () extends wpdb {
+            public function get_var(string $query): mixed
+            {
+                $this->calls[] = ['method' => 'get_var', 'query' => $query];
+
+                // Free when the page loads, held by the other submission when claiming.
+                return 1 === count(array_filter($this->calls, static fn (array $call): bool => 'get_var' === $call['method']))
+                    ? null
+                    : (string) (time() + 600);
+            }
+        };
+        $GLOBALS['wpdb']->query_results = [0];
 
         $xpath = $this->render('page-modification-coordonnees-bancaire.php');
 
         self::assertSame([], $GLOBALS['__phpunit_iban_requests']);
-        self::assertStringContainsString('Veuillez renseigner un IBAN.', $xpath->document->textContent);
+        self::assertStringContainsString('Votre demande a déjà été envoyée, elle est en cours de traitement.', $xpath->document->textContent);
+    }
+
+    public static function rejectedIbans(): iterable
+    {
+        yield 'empty' => ['   ', 'Veuillez renseigner un IBAN.', ''];
+        yield 'identical to the current IBAN' => ['fr14 2004 1010 0505 0001 3m02 606', 'L’IBAN saisi est identique à votre IBAN actuel.', 'FR14 2004 1010 0505 0001 3M02 606'];
+        yield 'wrong check digits' => ['FR76 3000 6000 0112 3456 7890 188', 'L’IBAN saisi n’est pas valide.', 'FR76 3000 6000 0112 3456 7890 188'];
+        yield 'not an IBAN' => ['abc', 'L’IBAN saisi n’est pas valide.', 'ABC'];
+    }
+
+    #[DataProvider('rejectedIbans')]
+    public function testBankDetailsRequestIsNotSentForARejectedIban(string $iban, string $error, string $fieldValue): void
+    {
+        $GLOBALS['__phpunit_active_mandate'] = self::mandate('FR1420041010050500013M02606');
+        $this->postIban($iban);
+
+        $xpath = $this->render('page-modification-coordonnees-bancaire.php');
+
+        self::assertSame([], $GLOBALS['__phpunit_iban_requests']);
+        self::assertSame([], self::lockQueries());
+        self::assertStringContainsString($error, $xpath->document->textContent);
+        // The donor's input stays in the field (an empty one falls back to the current IBAN).
+        $expected = '' === $fieldValue ? 'FR14 2004 1010 0505 0001 3M02 606' : $fieldValue;
+        self::assertSame($expected, $xpath->query('//input[@id="iban"]/@value')->item(0)?->nodeValue);
+    }
+
+    public function testBankDetailsLockIsReleasedWhenSalesforceDoesNotCreateTheRequest(): void
+    {
+        $GLOBALS['__phpunit_iban_request_response'] = (object) ['success' => false];
+        $this->postIban('FR76 3000 6000 0112 3456 7890 189');
+
+        $xpath = $this->render('page-modification-coordonnees-bancaire.php');
+
+        self::assertSame(['FR7630006000011234567890189'], $GLOBALS['__phpunit_iban_requests']);
+        self::assertStringStartsWith('DELETE FROM', self::lockQueries()[1] ?? '');
+        self::assertStringContainsString('Un problème technique est survenu.', $xpath->document->textContent);
+        self::assertSame('FR76 3000 6000 0112 3456 7890 189', $xpath->query('//input[@id="iban"]/@value')->item(0)?->nodeValue);
+    }
+
+    public function testBankDetailsSuccessMessageNeedsAPendingRequest(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_GET = ['iban_sent' => '1'];
+
+        $xpath = $this->render('page-modification-coordonnees-bancaire.php');
+
+        self::assertStringNotContainsString('Votre demande de modification a bien été prise en compte', $xpath->document->textContent);
     }
 
     private function postIban(string $iban): void
     {
+        $GLOBALS['__phpunit_iban_requests'] = [];
         $GLOBALS['__phpunit_valid_nonces'] = ['iban-nonce'];
+        $GLOBALS['wpdb']->query_results = [2];
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_POST = ['iban_nonce' => 'iban-nonce', 'iban' => $iban];
+    }
+
+    private function lockIbanRequest(): void
+    {
+        $GLOBALS['wpdb']->var_result = (string) (time() + 600);
+    }
+
+    /** @return list<string> INSERT, UPDATE and DELETE queries sent on the lock. */
+    private static function lockQueries(): array
+    {
+        return array_values(array_map(
+            static fn (array $call): string => $call['query'],
+            array_filter($GLOBALS['wpdb']->calls, static fn (array $call): bool => 'query' === $call['method'])
+        ));
+    }
+
+    private static function ibanDemand(string $status): object
+    {
+        return (object) ['Type_de_demande_AIF__c' => 'Changement IBAN', 'Statut_Espace_Don__c' => $status, 'Date_de_la_demande__c' => '2026-11-20'];
+    }
+
+    private static function mandate(string $iban): object
+    {
+        return (object) ['Tech_Iban__c' => $iban, 'Date_paiement_Avenir__c' => '2026-12-05', 'Periodicite__c' => 'Mensuelle', 'Montant__c' => '15'];
     }
 }

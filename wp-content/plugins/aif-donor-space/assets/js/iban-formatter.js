@@ -26,14 +26,6 @@ if (ibanInput) {
     updateSubmitState();
   });
 
-  // Empêche un double envoi (double-clic) pendant l'appel à Salesforce.
-  ibanInput.form?.addEventListener('submit', () => {
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.dataset.locked = '1';
-    }
-  });
-
   ibanInput.form?.addEventListener('reset', () => {
     // La valeur du champ est restaurée après l'événement reset.
     setTimeout(updateSubmitState, 0);
