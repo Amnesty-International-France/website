@@ -50,7 +50,7 @@ if (!function_exists('wp_redirect')) {
 }
 
 if (!class_exists('WP_Post')) {
-    eval('class WP_Post { public int $ID = 0; public int $post_parent = 0; public string $post_title = ""; }');
+    eval('class WP_Post { public int $ID = 0; public int $post_parent = 0; public string $post_title = ""; public string $post_name = ""; }');
 }
 
 if (!class_exists('WP_Query')) {

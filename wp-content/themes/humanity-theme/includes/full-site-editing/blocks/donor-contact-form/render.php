@@ -32,6 +32,9 @@ function render_donor_contact_form_block(): string
         }
     }
 
+    // A fresh token per display: the server accepts each one only once.
+    $submission_token = aif_create_donor_contact_submission_token();
+
     $template = locate_template('partials/my-space/contact-form.php');
     if (!$template) {
         return '';

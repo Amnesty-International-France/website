@@ -177,8 +177,9 @@ if ($show_final_screen) {
                                 <p>En faisant un don dès aujourd'hui, vous soutenez notre liberté d'action et nous permettez de changer la vie de personnes dont les droits sont bafoués.</p>
 
                                 <?php
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- block markup rendered by core.
                                     echo do_blocks(
-                                        '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=395&lang=fr_FR&reserved_originecode=26PJPWSI02", "is_popin": true, "position": "clh_merci" } /-->'
+                                        '<!-- wp:amnesty-core/donation-calculator { "size":"medium", "with_header": false, "with_tabs": true, "with_legend": false, "href": "https://soutenir.amnesty.fr/b?cid=395&lang=fr_FR&reserved_originecode=26PJPWSI02", "is_popin": true, "position": "clh_merci", "default_tab": "punctual" } /-->'
                                     );
     ?>
                             </div>
@@ -407,7 +408,8 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 						        class="page-tunnel-clh-action-button mobile is-secondary"
 								data-gtm="clic_cta"
 								data-name="passer la petition"
-								data-value="<?php echo esc_attr((string) $next_petition['id']); ?>">
+								data-value="<?php echo esc_attr((string) $next_petition['id']); ?>"
+								data-petition-name="<?php echo esc_attr($next_petition['slug']); ?>">
 							<span>Passer la pétition</span>
 						</button>
 					</article>

@@ -102,6 +102,7 @@ final class ClhTunnelContextTest extends TestCase
         $petition = new WP_Post();
         $petition->ID = $id;
         $petition->post_title = 'Pétition ' . $id;
+        $petition->post_name = 'petition-' . $id;
 
         return $petition;
     }
@@ -316,6 +317,15 @@ final class ClhTunnelContextTest extends TestCase
         );
         self::assertSame('[103]', $_COOKIE['clh_skipped_petitions']);
         self::assertSame('1', $_COOKIE['clh_tunnel_active']);
+    }
+
+    public function testShownPetitionCarriesItsSlug(): void
+    {
+        $_GET['clh_petition'] = '102';
+
+        $context = amnesty_get_clh_tunnel_context($this->tunnelPage());
+
+        self::assertSame('petition-102', $context['next_petition']['slug']);
     }
 
     public function testFirstSignatureStartsTheProgress(): void
