@@ -98,25 +98,31 @@ function amnesty_extend_kept_clh_origin_code(): ?string
  * Origin code sent to Salesforce for a petition signature.
  *
  * - A posted code is used as before; on a CLH petition, a well-formed one is also kept.
- * - Without a posted code, a tunnel signature uses the kept code, which stays kept for
- *   another inactivity window.
+ * - Without a posted code, a tunnel signature uses the kept code.
  * - Otherwise, the default code of the petition.
+ *
+ * Like the tunnel progress, the kept code stays kept for another inactivity window after
+ * any CLH signature, from the tunnel or from a petition page.
  */
 function amnesty_resolve_petition_origin_code(mixed $posted, mixed $default, bool $is_clh_petition, bool $is_tunnel_submission): string
 {
     // Same emptiness rule as before AIF-450 (`!empty($_POST['code_origine'])`).
     if (is_string($posted) && !empty($posted)) {
-        $code = amnesty_sanitize_origin_code($posted);
-        if ($is_clh_petition && $code !== null) {
-            amnesty_keep_clh_origin_code($code);
+        if ($is_clh_petition) {
+            $code = amnesty_sanitize_origin_code($posted);
+            if ($code !== null) {
+                amnesty_keep_clh_origin_code($code);
+            } else {
+                amnesty_extend_kept_clh_origin_code();
+            }
         }
 
         return $posted;
     }
 
-    if ($is_clh_petition && $is_tunnel_submission) {
+    if ($is_clh_petition) {
         $kept = amnesty_extend_kept_clh_origin_code();
-        if ($kept !== null) {
+        if ($is_tunnel_submission && $kept !== null) {
             return $kept;
         }
     }

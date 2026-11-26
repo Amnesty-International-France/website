@@ -56,6 +56,33 @@ final class ClhOriginCodeTest extends TestCase
         self::assertSame('DEFAULT', amnesty_resolve_petition_origin_code(null, 'DEFAULT', false, false));
     }
 
+    #[DataProvider('campaignPetitionPageSignatures')]
+    public function testAnyCampaignSignatureKeepsTheCodeLikeTheTunnelProgress(mixed $posted): void
+    {
+        // Kept 10 minutes ago, then a campaign petition page is signed without a usable code.
+        $_SESSION[AMNESTY_CLH_ORIGIN_CODE_SESSION_KEY] = ['code' => 'CODEA', 'at' => time() - 10 * 60];
+        amnesty_resolve_petition_origin_code($posted, 'DEFAULT', true, false);
+
+        // 10 more minutes: 20 minutes after the code was kept, 10 after the last signature.
+        $_SESSION[AMNESTY_CLH_ORIGIN_CODE_SESSION_KEY]['at'] -= 10 * 60;
+        self::assertSame('CODEA', amnesty_resolve_petition_origin_code(null, 'DEFAULT', true, true));
+    }
+
+    public static function campaignPetitionPageSignatures(): iterable
+    {
+        yield 'without code' => [null];
+        yield 'with a malformed code' => ['a b'];
+    }
+
+    public function testSignatureOutsideTheCampaignDoesNotKeepTheCode(): void
+    {
+        $_SESSION[AMNESTY_CLH_ORIGIN_CODE_SESSION_KEY] = ['code' => 'CODEA', 'at' => time() - 10 * 60];
+        amnesty_resolve_petition_origin_code(null, 'DEFAULT', false, false);
+
+        $_SESSION[AMNESTY_CLH_ORIGIN_CODE_SESSION_KEY]['at'] -= 10 * 60;
+        self::assertSame('DEFAULT', amnesty_resolve_petition_origin_code(null, 'DEFAULT', true, true));
+    }
+
     public function testKeptCodeIsForgottenAfterTheTunnelInactivityWindow(): void
     {
         $_SESSION[AMNESTY_CLH_ORIGIN_CODE_SESSION_KEY] = ['code' => 'CODEA', 'at' => time() - AMNESTY_CLH_TUNNEL_STATE_TTL];

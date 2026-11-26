@@ -209,7 +209,7 @@ final class ClhTunnelOriginCodeTest extends TestCase
     public function testSkippingAPetitionKeepsTheCodeLikeTheRestOfTheTunnelProgress(): void
     {
         // Kept 14 minutes ago: it would be forgotten one minute later without any activity.
-        $_SESSION['clh_origin_code'] = ['code' => 'CODEA', 'at' => time() - AMNESTY_CLH_TUNNEL_STATE_TTL + 60];
+        $_SESSION[AMNESTY_CLH_ORIGIN_CODE_SESSION_KEY] = ['code' => 'CODEA', 'at' => time() - AMNESTY_CLH_TUNNEL_STATE_TTL + 60];
         $GLOBALS['__phpunit_valid_nonces'] = ['nonce'];
         $_POST = ['skip_petition' => '', 'petition_id' => '101', 'clh_skip_nonce' => 'nonce'];
 
@@ -219,7 +219,7 @@ final class ClhTunnelOriginCodeTest extends TestCase
         } catch (ClhRedirect) {
         }
 
-        self::assertGreaterThanOrEqual(time() - 1, $_SESSION['clh_origin_code']['at']);
+        self::assertGreaterThanOrEqual(time() - 1, $_SESSION[AMNESTY_CLH_ORIGIN_CODE_SESSION_KEY]['at']);
         $this->sign(102, ['from_tunnel' => '1']);
         self::assertSame([102 => 'CODEA'], $GLOBALS['__phpunit_signature_codes']);
     }
