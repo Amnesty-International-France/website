@@ -156,6 +156,60 @@ describe('exit popin touch trigger', () => {
     vi.advanceTimersByTime(1);
     expect(dialog().hasAttribute('open')).toBe(true);
   });
+
+  it('pauses while the focus is in an iframe, and restarts the 10 s when it comes back', () => {
+    exitPopin();
+    vi.advanceTimersByTime(9000);
+    window.dispatchEvent(new Event('blur'));
+    vi.advanceTimersByTime(60000);
+    expect(dialog()).toBeNull();
+
+    window.dispatchEvent(new Event('focus'));
+    vi.advanceTimersByTime(9999);
+    expect(dialog()).toBeNull();
+    vi.advanceTimersByTime(1);
+    expect(dialog().hasAttribute('open')).toBe(true);
+  });
+
+  it('pauses while the tab is hidden, and restarts the 10 s when it is shown again', () => {
+    const hidden = vi.spyOn(document, 'hidden', 'get').mockReturnValue(true);
+    exitPopin();
+    vi.advanceTimersByTime(9000);
+    document.dispatchEvent(new Event('visibilitychange'));
+    vi.advanceTimersByTime(60000);
+    expect(dialog()).toBeNull();
+
+    hidden.mockReturnValue(false);
+    document.dispatchEvent(new Event('visibilitychange'));
+    vi.advanceTimersByTime(9999);
+    expect(dialog()).toBeNull();
+    vi.advanceTimersByTime(1);
+    expect(dialog().hasAttribute('open')).toBe(true);
+  });
+
+  it('waits while a video is playing', () => {
+    document.body.insertAdjacentHTML('beforeend', '<video></video>');
+    const video = document.querySelector('video');
+    const paused = vi.spyOn(video, 'paused', 'get').mockReturnValue(false);
+    exitPopin();
+    vi.advanceTimersByTime(10000);
+    expect(dialog()).toBeNull();
+    expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull();
+
+    paused.mockReturnValue(true);
+    vi.advanceTimersByTime(10000);
+    expect(dialog().hasAttribute('open')).toBe(true);
+  });
+
+  it('stops listening to focus and visibility once the popin opened', () => {
+    exitPopin();
+    vi.advanceTimersByTime(10000);
+    dialog().querySelector('.exit-popin-close').click();
+    const afterClose = vi.getTimerCount();
+    window.dispatchEvent(new Event('focus'));
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(vi.getTimerCount()).toBe(afterClose);
+  });
 });
 
 describe('exit popin and other overlays', () => {

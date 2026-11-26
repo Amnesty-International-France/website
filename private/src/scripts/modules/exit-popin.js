@@ -53,7 +53,12 @@ const isShown = (element) => {
   return style.display !== 'none' && style.visibility !== 'hidden';
 };
 
+const isVideoPlaying = () =>
+  [...document.querySelectorAll('video')].some((video) => !video.paused && !video.ended);
+
+// Covers the page, or holds the visitor's attention (a video playing).
 const isOverlayShown = () =>
+  isVideoPlaying() ||
   Boolean(
     document.querySelector(
       [
@@ -121,11 +126,24 @@ const restartInactivityTimer = () => {
   }, INACTIVITY_DELAY);
 };
 
+// Touches inside an iframe (a video embed) never reach the page, and a hidden
+// tab gets no touch at all: pause until the page has the focus again.
+const pauseInactivityTimer = () => {
+  clearTimeout(state.inactivityTimer);
+  state.inactivityTimer = null;
+};
+
+const onVisibilityChange = () =>
+  document.hidden ? pauseInactivityTimer() : restartInactivityTimer();
+
 const stopTriggers = () => {
   document.removeEventListener('mouseout', onMouseOut);
   ACTIVITY_EVENTS.forEach((type) =>
     window.removeEventListener(type, restartInactivityTimer, { capture: true }),
   );
+  window.removeEventListener('blur', pauseInactivityTimer);
+  window.removeEventListener('focus', restartInactivityTimer);
+  document.removeEventListener('visibilitychange', onVisibilityChange);
   clearTimeout(state.inactivityTimer);
   clearTimeout(state.openTimer);
   state.inactivityTimer = null;
@@ -150,6 +168,9 @@ const exitPopin = () => {
     ACTIVITY_EVENTS.forEach((type) =>
       window.addEventListener(type, restartInactivityTimer, { capture: true, passive: true }),
     );
+    window.addEventListener('blur', pauseInactivityTimer);
+    window.addEventListener('focus', restartInactivityTimer);
+    document.addEventListener('visibilitychange', onVisibilityChange);
     restartInactivityTimer();
   }
 };
