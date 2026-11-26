@@ -313,3 +313,76 @@ function aif_formation_archive_fix_pagination($preempt, $wp_query)
     return $preempt;
 }
 add_filter('pre_handle_404', 'aif_formation_archive_fix_pagination', 10, 2);
+
+/**
+ * Page "Se former" of the space being browsed (public or Mon Espace).
+ *
+ * Looked up by path rather than hard-coded URL so the link follows the page
+ * permalink. Link labels stay fixed ("Se former", "Toutes les formations"),
+ * as specified in the ticket. Changing the target page itself goes through
+ * the TMA (AIF-388: no back-office setting on purpose).
+ */
+function aif_get_training_home_page(): ?WP_Post
+{
+    $path = get_query_var('is_my_space_training')
+        ? 'mon-espace/boite-a-outils/se-former'
+        : 'agir-avec-nous/se-former-home';
+
+    $page = get_page_by_path($path);
+
+    return $page instanceof WP_Post && 'publish' === $page->post_status ? $page : null;
+}
+
+/**
+ * "Toutes les formations" arrow link, displayed under a training content.
+ */
+function aif_render_training_home_link(): void
+{
+    $page = aif_get_training_home_page();
+
+    if (null === $page) {
+        return;
+    }
+    ?>
+    <div class="category-link training-home-link">
+        <div class="icon-container">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+            </svg>
+        </div>
+        <a class="cat-link" href="<?php echo esc_url(get_permalink($page)); ?>">Toutes les formations</a>
+    </div>
+    <?php
+}
+
+/**
+ * Add "Se former" between "Accueil" and "Formations" in the public breadcrumbs
+ * of a training and of the trainings catalogue (MAINT-388).
+ *
+ * Mon Espace trainings already get their own breadcrumbs, which include
+ * "Se former" (see includes/my-space/breadcrumb.php).
+ *
+ * @param array<int, array<string, mixed>> $links Yoast breadcrumb links.
+ *
+ * @return array<int, array<string, mixed>>
+ */
+function aif_training_breadcrumb_links($links)
+{
+    if (get_query_var('is_my_space_training')) {
+        return $links;
+    }
+
+    if (is_singular('training') || is_post_type_archive('training')) {
+        $page = aif_get_training_home_page();
+
+        if (null !== $page) {
+            array_splice($links, 1, 0, [[
+                'url' => get_permalink($page),
+                'text' => 'Se former',
+            ]]);
+        }
+    }
+
+    return $links;
+}
+add_filter('wpseo_breadcrumb_links', 'aif_training_breadcrumb_links');
