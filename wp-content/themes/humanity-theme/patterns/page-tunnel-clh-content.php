@@ -195,7 +195,7 @@ if ($show_final_screen) {
                             <div class="share-content">
                                 <div class="title-wrapper">
                                     <h3>Aidez-nous en partageant !</h3>
-                                    <p>Partagez la campagne avec votre réseau pour augmenter notre pouvoir collectif et changer les conditions de vie de nos 10 défenseurs.</p>
+                                    <p>Partagez la campagne avec votre réseau pour augmenter notre pouvoir collectif et changer les conditions de vie de nos <?= esc_html(number_format_i18n($total_steps)); ?> défenseurs.</p>
                                 </div>
                                 <div class="social-networks">
                                     <div class="article-shareCopy"
@@ -258,8 +258,8 @@ $turnstile_error_message = $GLOBALS['petition_turnstile_error_message'] ?? '';
 			<h2 class="page-tunnel-clh-subtitle">Signez pour changer leur histoire</h2>
 			<p class="page-tunnel-clh-description">Votre signature compte bien plus que vous ne l'imaginez.
 				Elle change des lois, brise des chaînes, libère des personnes.
-				Nous avons identifié 10 situations qui nécessitent votre mobilisation dès aujourd'hui.
-				Ensemble, nous avons le pouvoir de les aider.</p>
+				Nous avons identifié <?= esc_html(number_format_i18n($total_steps)); ?> situations qui nécessitent votre mobilisation dès aujourd'hui.
+				Ensemble, nous avons le pouvoir de changer leur histoire.</p>
 			<?php
             get_template_part('partials/tunnel-clh-stepper', null, [
                 'signed_count' => $signed_count,
