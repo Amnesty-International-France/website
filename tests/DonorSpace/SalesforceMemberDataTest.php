@@ -273,6 +273,53 @@ final class SalesforceMemberDataTest extends TestCase
         self::assertSame('', $output);
     }
 
+    public function testHttpErrorKeepsSalesforceErrorCodesAndFieldsWithoutMessages(): void
+    {
+        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(400, json_encode([
+            [
+                'message' => 'Record Type ID: this ID value isn\'t valid for the user: private@example.test',
+                'errorCode' => 'INVALID_CROSS_REFERENCE_KEY',
+                'fields' => ['RecordTypeId'],
+            ],
+            [
+                'message' => 'Mandat SEPA: id value of incorrect type',
+                'errorCode' => 'MALFORMED_ID',
+                'fields' => ['Mandat_SEPA__c', '<script>'],
+            ],
+        ]));
+
+        $result = post_salesforce_data_donor_space('services/data/v57.0/sobjects/Case', []);
+
+        self::assertInstanceOf(WP_Error::class, $result);
+        self::assertSame('salesforce_http_error', $result->get_error_code());
+        self::assertSame([
+            ['error_code' => 'INVALID_CROSS_REFERENCE_KEY', 'fields' => ['RecordTypeId']],
+            ['error_code' => 'MALFORMED_ID', 'fields' => ['Mandat_SEPA__c']],
+        ], $result->get_error_data()['salesforce_errors']);
+        self::assertStringNotContainsString('private@example.test', json_encode($result->get_error_data()));
+    }
+
+    #[DataProvider('unstructuredErrorBodyProvider')]
+    public function testHttpErrorWithoutSalesforceErrorListHasNoErrorCodes(string $body): void
+    {
+        $GLOBALS['__phpunit_wp_remote_response'] = $this->response(400, $body);
+
+        $result = post_salesforce_data_donor_space('services/data/v57.0/sobjects/Case', []);
+
+        self::assertInstanceOf(WP_Error::class, $result);
+        self::assertArrayNotHasKey('salesforce_errors', $result->get_error_data());
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function unstructuredErrorBodyProvider(): iterable
+    {
+        yield 'object instead of list' => ['{"message":"Request failed"}'];
+        yield 'html' => ['<html>Bad Request</html>'];
+        yield 'empty' => [''];
+        yield 'list without error codes' => ['[{"message":"Request failed"}]'];
+        yield 'invalid error code' => ['[{"errorCode":"private@example.test"}]'];
+    }
+
     public function testPatchNoContentReturnsTrue(): void
     {
         $GLOBALS['__phpunit_wp_remote_response'] = $this->response(204, '');
@@ -334,6 +381,19 @@ final class SalesforceMemberDataTest extends TestCase
             'body_size' => 42,
             'json_error' => 'Syntax error',
         ], $context);
+    }
+
+    public function testSalesforceLogContextKeepsSalesforceErrorCodes(): void
+    {
+        $salesforce_errors = [['error_code' => 'INVALID_CROSS_REFERENCE_KEY', 'fields' => ['RecordTypeId']]];
+        $error = new WP_Error('salesforce_http_error', 'Request failed', [
+            'status' => 400,
+            'salesforce_errors' => $salesforce_errors,
+        ]);
+
+        $context = aif_get_salesforce_log_context($error);
+
+        self::assertSame($salesforce_errors, $context['salesforce_errors']);
     }
 
     public function testSalesforceErrorLogFallbackIsStructuredAndAnonymized(): void

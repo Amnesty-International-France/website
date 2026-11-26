@@ -36,6 +36,36 @@ function my_space_custom_breadcrumb($links)
         }
     }
 
+    // Mon Espace trainings catalogue (target of the "Voir tout" of Mon Espace sliders):
+    // "Se former" goes before it, as for the public catalogue (AIF-388, CA-388-04).
+    $page_militants_se_former = get_page_by_path('mon-espace/boite-a-outils/militants-se-former');
+
+    if ($page_militants_se_former && is_page($page_militants_se_former->ID)) {
+        $page_mon_espace = get_page_by_path('mon-espace');
+        $page_boite_a_outils = get_page_by_path('mon-espace/boite-a-outils');
+        $page_se_former = get_page_by_path('mon-espace/boite-a-outils/se-former');
+
+        if ($page_mon_espace && $page_boite_a_outils && $page_se_former) {
+            return [
+                [
+                    'text' => get_the_title($page_mon_espace),
+                    'url'  => get_permalink($page_mon_espace),
+                ],
+                [
+                    'text' => get_the_title($page_boite_a_outils),
+                    'url'  => get_permalink($page_boite_a_outils),
+                ],
+                [
+                    'text' => get_the_title($page_se_former),
+                    'url'  => get_permalink($page_se_former),
+                ],
+                [
+                    'text' => get_the_title($page_militants_se_former),
+                ],
+            ];
+        }
+    }
+
     if (is_singular('petition') && get_query_var('is_my_space_petition')) {
         $page_mon_espace = get_page_by_path('mon-espace');
         $page_agir_et_se_mobiliser = get_page_by_path('mon-espace/agir-et-se-mobiliser');

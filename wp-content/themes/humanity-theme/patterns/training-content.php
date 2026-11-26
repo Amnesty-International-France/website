@@ -32,6 +32,7 @@ declare(strict_types=1);
 	<article class="wp-block-group training-content">
 		<!-- wp:pattern {"slug":"amnesty/featured-image"} /-->
 		<!-- wp:post-content /-->
+		<?php aif_render_training_home_link(); ?>
 
 		<!-- wp:group {"tagName":"footer","className":"article-footer"} -->
 		<footer class="wp-block-group article-footer">
