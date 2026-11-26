@@ -158,3 +158,63 @@ if (! function_exists('amnesty_cloudflare_edge_cache_header')) {
 }
 
 add_action('template_redirect', 'amnesty_cloudflare_edge_cache_header');
+
+if (! function_exists('amnesty_cloudflare_cdn_cache_control')) {
+    /**
+     * Cloudflare edge TTL for the CLH campaign page.
+     *
+     * The page renders live figures (signatures, percentage, days remaining).
+     * A signature changes no post, so the plugin never purges the page when
+     * the figures change, and APO would otherwise keep it for 30 days. Cloudflare reads this value
+     * from Cloudflare-CDN-Cache-Control and does not forward it to browsers.
+     *
+     * @package Amnesty\Caching
+     *
+     * @return string|null the header value, or null to send none
+     */
+    function amnesty_cloudflare_cdn_cache_control(): ?string
+    {
+        if (
+            ! function_exists('amnesty_get_clh_petition_campaign_page')
+            || ! amnesty_is_cacheable_request()
+        ) {
+            return null;
+        }
+
+        $campaign_page = amnesty_get_clh_petition_campaign_page();
+
+        if ($campaign_page === null || ! is_page($campaign_page->ID)) {
+            return null;
+        }
+
+        return sprintf('max-age=%d', MINUTE_IN_SECONDS);
+    }
+}
+
+if (! function_exists('amnesty_send_cloudflare_cdn_cache_control')) {
+    /**
+     * Send the Cloudflare edge TTL header, when the page has one.
+     *
+     * Independent of AIF_HTTP_CACHE, which only governs Cache-Control.
+     *
+     * @package Amnesty\Caching
+     *
+     * @return void
+     */
+    function amnesty_send_cloudflare_cdn_cache_control(): void
+    {
+        if (headers_sent()) {
+            return;
+        }
+
+        $value = amnesty_cloudflare_cdn_cache_control();
+
+        if ($value === null) {
+            return;
+        }
+
+        header('Cloudflare-CDN-Cache-Control: ' . $value);
+    }
+}
+
+add_action('template_redirect', 'amnesty_send_cloudflare_cdn_cache_control');
