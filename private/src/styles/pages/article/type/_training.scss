@@ -179,3 +179,36 @@
     }
   }
 }
+
+// MAINT-388: "Toutes les formations" link, same look as the slider "Voir toutes les formations"
+.training-single .training-home-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 0 12px 0;
+
+  .icon-container {
+    width: 20px;
+    height: 20px;
+
+    .icon {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .cat-link {
+    cursor: pointer;
+    text-decoration: none;
+    font-family: var(--wp--preset--font-family--secondary);
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 19px;
+
+    &:hover {
+      color: var(--wp--preset--color--black);
+      background-color: transparent;
+      text-decoration: underline;
+    }
+  }
+}
