@@ -1,5 +1,6 @@
 <?php
 
+require_once dirname(__DIR__) . '/clh/origin-code.php';
 require_once dirname(__DIR__) . '/clh/tunnel-selection.php';
 require_once dirname(__DIR__) . '/clh/tunnel-form-retry.php';
 require_once dirname(__DIR__) . '/petitions/signature-status.php';
@@ -896,11 +897,33 @@ function amnesty_handle_petition_skip(): void
     }
 
     amnesty_set_clh_skipped_petition($petition_id);
+    // A skip keeps the external origin code as long as the rest of the tunnel progress (AIF-450).
+    amnesty_extend_kept_clh_origin_code();
 
     wp_redirect(amnesty_get_clh_petition_tunnel_url());
     exit;
 }
 add_action('template_redirect', 'amnesty_handle_petition_skip', 5);
+
+/**
+ * A visitor can land on the tunnel itself with an origin code in the URL. The tunnel page is
+ * never cached, so the code is kept from here for the tunnel signatures (AIF-450).
+ */
+function amnesty_keep_clh_origin_code_from_tunnel_url(): void
+{
+    if (!amnesty_is_clh_petition_tunnel_page()) {
+        return;
+    }
+
+    $code = amnesty_get_origin_code_from_query(wp_unslash($_GET));
+    if ($code === null) {
+        return;
+    }
+
+    amnesty_start_secure_session();
+    amnesty_keep_clh_origin_code($code);
+}
+add_action('template_redirect', 'amnesty_keep_clh_origin_code_from_tunnel_url', 5);
 
 function amnesty_is_petition_not_expired($petition_id): bool
 {
@@ -1009,7 +1032,17 @@ function amnesty_handle_petition_signature(): void
         }
     }
 
-    $code_origine = isset($_POST['code_origine']) && !empty($_POST['code_origine']) ? $_POST['code_origine'] : get_field('code_origine', $petition_id) ?? '';
+    if ($is_clh_petition) {
+        // The external origin code of the CLH tunnel is kept in the session.
+        amnesty_start_secure_session();
+    }
+
+    $code_origine = amnesty_resolve_petition_origin_code(
+        isset($_POST['code_origine']) ? sanitize_text_field(wp_unslash($_POST['code_origine'])) : null,
+        get_field('code_origine', $petition_id),
+        $is_clh_petition,
+        $is_clh_tunnel_submission,
+    );
     $message = $type === 'action-soutien' && isset($_POST['user_message']) && !empty($_POST['user_message']) ? sanitize_textarea_field($_POST['user_message']) : '';
 
     if (!$already_signed) {
