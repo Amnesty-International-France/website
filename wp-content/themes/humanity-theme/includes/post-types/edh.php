@@ -752,7 +752,8 @@ function amnesty_edh_document_redirect_url(int $post_id): string
 /**
  * Redirect the page of an EDH resource of type Document to its file (AIF-419).
  *
- * Temporary redirect: the file can be replaced, the redirect must follow it.
+ * Temporary and uncached redirect (browser and Cloudflare): the file can be
+ * replaced, the redirect must follow it. A password-protected resource keeps its page.
  */
 function amnesty_edh_maybe_redirect_document(): void
 {
@@ -760,9 +761,19 @@ function amnesty_edh_maybe_redirect_document(): void
         return;
     }
 
-    $url = amnesty_edh_document_redirect_url((int) get_queried_object_id());
+    $post_id = (int) get_queried_object_id();
+    if (post_password_required($post_id)) {
+        return;
+    }
+
+    $url = amnesty_edh_document_redirect_url($post_id);
     if ('' === $url) {
         return;
+    }
+
+    nocache_headers();
+    if (defined('CLOUDFLARE_PLUGIN_DIR')) {
+        header('cf-edge-cache: no-cache');
     }
 
     wp_redirect($url, 302);
