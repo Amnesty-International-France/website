@@ -38,6 +38,9 @@
         <testsuite name="Clh">
             <directory>tests/Clh</directory>
         </testsuite>
+        <testsuite name="Edh">
+            <directory>tests/Edh</directory>
+        </testsuite>
         <testsuite name="Users">
             <directory>tests/Users</directory>
         </testsuite>
