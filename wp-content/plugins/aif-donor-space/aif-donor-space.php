@@ -41,6 +41,7 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/sales-force/user-data.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/rest-controllers.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/tax-receipt/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/bank/IBAN.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/bank/iban-request.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/bank/SEPA-mandate.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/2FA/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/user-authentification.php';
@@ -197,7 +198,8 @@ function aif_donor_space_enqueue_assets()
         'aif-donor-iban-formatter',
         AIF_DONOR_SPACE_URL . 'assets/js/iban-formatter.js',
         ['jquery'],
-        '1.0',
+        // Version tirée du fichier : le navigateur et Cloudflare reprennent le script quand il change.
+        (string) filemtime(AIF_DONOR_SPACE_PATH . 'assets/js/iban-formatter.js'),
         true
     );
 

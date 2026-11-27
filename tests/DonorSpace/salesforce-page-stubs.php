@@ -12,7 +12,7 @@ declare(strict_types=1);
 if (!function_exists('aif_get_request_salesforce_member')) {
     function aif_get_request_salesforce_member(): object
     {
-        return (object) ['Id' => '003000000000001', 'isMembre' => true, 'isDonateur' => false, 'hasMandatActif' => false];
+        return (object) ['Id' => '003000000000001', 'isMembre' => true, 'isDonateur' => false, 'hasMandatActif' => isset($GLOBALS['__phpunit_active_mandate'])];
     }
 }
 

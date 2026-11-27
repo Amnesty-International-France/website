@@ -15,6 +15,7 @@ $has_error = false;
 
 $ibanBlocks = [];
 $formattedIban = '';
+$current_iban = '';
 
 $actifMandate = get_active_sepa_mandate($SEPA_mandates->records);
 $has_valid_mandate = $SF_membre_data->hasMandatActif && null !== $actifMandate;
@@ -25,34 +26,93 @@ if ($has_valid_mandate) {
     $ibanBlocks = str_split($actifMandate->Tech_Iban__c, 4);
     $formattedIban = implode(' ', $ibanBlocks);
     $last4IBANDigit = substr($actifMandate->Tech_Iban__c, -4);
+    $current_iban = aif_normalize_iban($actifMandate->Tech_Iban__c);
 }
+
+$pending_message = 'Votre demande a déjà été envoyée, elle est en cours de traitement.';
+
+// Une demande est en cours tant qu'un « Changement IBAN » est ouvert dans Salesforce (Mes demandes),
+// ou tant que le verrou posé à l'envoi tient : il est levé dès que le Case apparaît dans Salesforce.
+$demands = get_salesforce_user_demands($sf_user_ID);
+$known_iban_requests = is_array($demands) ? aif_count_iban_requests($demands) : null;
+$is_locked = aif_is_iban_request_locked($sf_user_ID);
+
+if ($is_locked && null !== $known_iban_requests && $known_iban_requests > (aif_get_iban_request_lock_count($sf_user_ID) ?? PHP_INT_MAX)) {
+    aif_release_iban_request_lock($sf_user_ID);
+    $is_locked = false;
+}
+
+$has_pending_request = $is_locked || (is_array($demands) && aif_has_open_iban_request($demands));
+
+$is_post = isset($_SERVER['REQUEST_METHOD']) && 'POST' === $_SERVER['REQUEST_METHOD'];
+$request_sent = !$is_post && isset($_GET['iban_sent']) && '1' === $_GET['iban_sent'] && $has_pending_request;
+$submitted_iban = null;
 
 $user_status = aif_get_user_status($SF_membre_data);
 
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iban_nonce']) && isset($_POST['iban'])) {
+if ($is_post && isset($_POST['iban_nonce']) && isset($_POST['iban'])) {
     if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['iban_nonce'])), 'iban_form')) {
         die('Invalid nonce.');
     }
 
     unset($_POST['iban_nonce'], $_POST['_wp_http_referer']);
-    $ibandirty = sanitize_text_field(wp_unslash($_POST['iban']));
-    $newIban = str_replace(' ', '', $ibandirty);
+    $new_iban = aif_normalize_iban(sanitize_text_field(wp_unslash($_POST['iban'])));
 
-    $request_result = create_duplicate_update_IBAN_request($sf_user_ID, $newIban);
+    // Si une demande est déjà en cours, rien n'est envoyé : le message « demande en cours » est affiché plus bas.
+    if (!$has_pending_request) {
+        $submitted_iban = $new_iban;
 
-    if (is_wp_error($request_result)) {
-        aif_salesforce_service_unavailable($request_result);
-    }
+        if ('' === $new_iban) {
+            $error_message = 'Veuillez renseigner un IBAN.';
+            $has_error = true;
+        } elseif ($new_iban === $current_iban) {
+            $error_message = 'L’IBAN saisi est identique à votre IBAN actuel. Aucune modification n’a été envoyée.';
+            $has_error = true;
+        } elseif (!aif_is_valid_iban($new_iban)) {
+            $error_message = 'L’IBAN saisi n’est pas valide. Vérifiez-le et réessayez.';
+            $has_error = true;
+        } elseif (null === $known_iban_requests) {
+            // Sans la liste des demandes, impossible de savoir si une demande est déjà ouverte : rien n'est envoyé.
+            $error_message = 'Un problème technique est survenu. Merci de réessayer plus tard';
+        } else {
+            if (!aif_claim_iban_request_lock($sf_user_ID, $known_iban_requests)) {
+                // Un autre envoi (autre onglet, double clic) a pris le verrou juste avant.
+                $has_pending_request = true;
+                $submitted_iban = null;
+            } else {
+                $request_result = create_duplicate_update_IBAN_request($sf_user_ID, $new_iban);
 
-    if (is_object($request_result) && !empty($request_result->success)) {
-        $success_message_title = 'Votre demande de modification a bien été prise en compte';
+                if (is_wp_error($request_result)) {
+                    aif_release_iban_request_lock($sf_user_ID);
+                    aif_salesforce_service_unavailable($request_result);
+                }
 
-        $url = esc_url(get_permalink(get_page_by_path('mes-demandes')));
-        $success_message = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
-    } else {
-        $error_message = 'Un problème technique est survenu. Merci de réessayer plus tard';
+                if (is_object($request_result) && !empty($request_result->success)) {
+                    // Post/Redirect/Get : un rechargement ne renvoie plus le formulaire.
+                    wp_safe_redirect(add_query_arg('iban_sent', '1', get_permalink()), 303);
+                    exit;
+                }
+
+                aif_release_iban_request_lock($sf_user_ID);
+                $error_message = 'Un problème technique est survenu. Merci de réessayer plus tard';
+            }
+        }
     }
 }
+
+if ($request_sent) {
+    $success_message_title = 'Votre demande de modification a bien été prise en compte';
+    $url = esc_url(get_permalink(get_page_by_path('mes-demandes')));
+    $success_message = "Les modifications ne sont pas immédiates. Vous pouvez voir le suivi du traitement de vos demandes dans <a class='aif-link--secondary' href='{$url}'> Mes demandes. </a>";
+}
+
+// Après une erreur, iban-formatter.js remet la saisie du donateur dans le champ. La valeur du champ
+// reste l'IBAN actuel, que le bouton « Annuler » restaure.
+$submitted_field_iban = null !== $submitted_iban && '' !== $submitted_iban
+    ? implode(' ', str_split($submitted_iban, 4))
+    : '';
+
+$show_pending_message = $has_pending_request && !$request_sent;
 
 ?>
 
@@ -81,8 +141,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
                     'content' => $error_message]);
             }
 
+if ($show_pending_message) {
+    aif_include_partial('alert', [
+        'title' => 'Demande en cours',
+        'content' => $pending_message]);
+}
+
 if (!empty($success_message)) {
-    $title = 'Une erreur est survenue';
     aif_include_partial('alert', [
         'title' => $success_message_title,
         'content' => $success_message,
@@ -90,12 +155,14 @@ if (!empty($success_message)) {
 }
 ?>
 
-			<form method="post" action="">
+			<form method="post" action="" data-aif-single-submit>
 				<?php wp_nonce_field('iban_form', 'iban_nonce'); ?>
 				<label for="iban">N° IBAN (obligatoire)</label>
 				<input placeholder="FR 14 2001 0101 1505 0001 3M02" type="text" id="iban" name="iban"
 					aria-labelledby="iban-help-message"
+					data-initial-iban="<?php echo esc_attr($current_iban); ?>"
 					value="<?php echo esc_attr($formattedIban); ?>"
+					data-submitted-iban="<?php echo esc_attr($submitted_field_iban); ?>"
 					class="<?= $has_error ? 'aif-input-error' : '' ?>"
 				/>
 
@@ -107,7 +174,7 @@ aif_include_partial('info-message', [
     'content' => $content]);
 ?>
 
-				<button class="btn aif-mt1w aif-button--full" type="submit">Enregistrer</button>
+				<button class="btn aif-mt1w aif-button--full" type="submit" id="iban-submit"<?php echo $has_pending_request ? ' disabled data-locked="1"' : ''; ?>>Enregistrer</button>
 				<button class="btn btn--dark aif-mt1w aif-button--full" type="reset">Annuler</button>
 			</form>
 		</section>
