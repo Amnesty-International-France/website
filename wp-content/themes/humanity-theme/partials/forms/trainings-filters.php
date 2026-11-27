@@ -15,7 +15,7 @@ if ($cat_field_obj && isset($cat_field_obj['choices'])) {
 }
 
 $active_location = isset($_GET['qlieu']) ? sanitize_text_field($_GET['qlieu']) : '';
-$location_options = ['' => 'Tous les lieux'];
+$location_options = ['' => 'Tous les formats'];
 $lieu_field_obj = get_field_object('field_6883319051ddc');
 if ($lieu_field_obj && isset($lieu_field_obj['choices'])) {
     $location_options += $lieu_field_obj['choices'];
@@ -54,7 +54,7 @@ if (!empty($periods_query)) {
 }
 ?>
 
-<div class="taxonomyArchive-filters">
+<div class="taxonomyArchive-filters taxonomyArchive-filters--trainings">
     <?php
     amnesty_render_custom_select([
         'label' => 'Catégorie',
@@ -64,7 +64,7 @@ if (!empty($periods_query)) {
         'options' => $category_options,
     ]);
 amnesty_render_custom_select([
-    'label' => 'Lieu',
+    'label' => 'Format',
     'show_label' => true,
     'name' => 'qlieu',
     'active' => $active_location,
