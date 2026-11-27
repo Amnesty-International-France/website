@@ -25,7 +25,7 @@ test.describe('CLH tunnel signature rejected by the server', () => {
     const formId = await form.getAttribute('id');
 
     await form.locator('input[name="user_email"]').fill(email);
-    // The rest of the form appears once /check-email reports an unknown address.
+    // The rest of the form appears once the address is valid.
     await expect(form.locator('input[name="user_firstname"]')).toBeVisible();
     // The civility radio inputs are visually hidden; their labels are the visible controls.
     await form.getByText('Mme', { exact: true }).click();

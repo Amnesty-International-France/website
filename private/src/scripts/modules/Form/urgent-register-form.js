@@ -40,42 +40,13 @@ const throwGlobalFormMessage = (element, message, type = 'error') => {
   formMessageDiv.textContent = message;
 };
 
-const checkIfEmailExist = async (email) => {
-  try {
-    const urlForCheckEmail = '/wp-json/humanity/v1/check-email';
-    const emailExisting = await fetch(urlForCheckEmail, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        email,
-      }),
-    });
-    const res = await emailExisting;
-
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({ message: 'Erreur inconnue' }));
-      return throwGlobalFormMessage(
-        '.form-mess',
-        errorData.message || `Erreur HTTP: ${res.status}`,
-      );
-    }
-
-    return res.json();
-  } catch (e) {
-    throwGlobalFormMessage('.form-mess', e.message, e.status);
-    return false;
-  }
-};
-
 const disabledSubmit = (form) => {
   if (!form) return true;
 
   return [...form.elements].some((field) => field.required && !field.value.trim());
 };
 
-const showAdditionalForm = async (email) => {
+const showAdditionalForm = async () => {
   const additionalForm = document.querySelector('.additional-form');
   const form = document.querySelector(`#urgent-register`);
   const submitButton = form.querySelector('button[type="submit"]');
@@ -86,28 +57,10 @@ const showAdditionalForm = async (email) => {
   }
 
   try {
-    const emailExisting = await checkIfEmailExist(email);
-
-    const showAdditional = emailExisting && emailExisting.exists === false;
-
-    additionalForm.classList.toggle('hidden', !showAdditional);
-    notRequiredHiddenFields(showAdditional);
-
-    if (showAdditional === false) {
-      const telFields = form.querySelectorAll('input[name="tel"]');
-
-      telFields.forEach((field) => {
-        const currentField = field;
-        currentField.required = false;
-
-        const errorContainer = currentField.nextElementSibling;
-        if (errorContainer && errorContainer.classList.contains('input-error')) {
-          errorContainer.classList.add('hidden');
-          currentField.classList.remove('error');
-          currentField.classList.remove('success');
-        }
-      });
-    }
+    // The additional fields are always shown: whether the address is already
+    // known is never asked to the server. Known subscribers keep their data.
+    additionalForm.classList.remove('hidden');
+    notRequiredHiddenFields(true);
 
     submitButton.disabled = disabledSubmit(form);
   } catch (error) {
@@ -162,7 +115,7 @@ const throwInputOnError = (input) => {
     showSuccess();
 
     if (input.type === 'email' && isValidEmail(value)) {
-      await showAdditionalForm(value);
+      await showAdditionalForm();
     }
 
     return true;
