@@ -720,6 +720,68 @@ function target_link_card_edh($block_content, $block)
 
 add_filter('render_block', 'target_link_card_edh', 10, 2);
 
+/**
+ * URL of the file an EDH resource of type Document redirects to.
+ *
+ * Same source as the EDH card link (target_link_card_edh), read at visit time so a
+ * replaced file is followed. Empty for a Page resource, a Document without a file,
+ * or a Document marked private: those keep their page.
+ */
+function amnesty_edh_document_redirect_url(int $post_id): string
+{
+    if (! function_exists('get_field')) {
+        return '';
+    }
+
+    if ('Document' !== get_field('support_edh', $post_id)) {
+        return '';
+    }
+
+    if (get_field('document_private', $post_id)) {
+        return '';
+    }
+
+    $doc = get_field('upload_du_document', $post_id);
+    if (! is_array($doc) || empty($doc['url']) || ! is_string($doc['url'])) {
+        return '';
+    }
+
+    return $doc['url'];
+}
+
+/**
+ * Redirect the page of an EDH resource of type Document to its file (AIF-419).
+ *
+ * Temporary and uncached redirect (browser and Cloudflare): the file can be
+ * replaced, the redirect must follow it. A password-protected resource keeps its page.
+ */
+function amnesty_edh_maybe_redirect_document(): void
+{
+    if (! is_singular('edh')) {
+        return;
+    }
+
+    $post_id = (int) get_queried_object_id();
+    if (post_password_required($post_id)) {
+        return;
+    }
+
+    $url = amnesty_edh_document_redirect_url($post_id);
+    if ('' === $url) {
+        return;
+    }
+
+    nocache_headers();
+    if (defined('CLOUDFLARE_PLUGIN_DIR')) {
+        header('cf-edge-cache: no-cache');
+    }
+
+    wp_redirect($url, 302);
+    exit;
+}
+
+add_action('template_redirect', 'amnesty_edh_maybe_redirect_document', 1);
+
 function disabled_support_edh_field($hook)
 {
     global $post_type;
