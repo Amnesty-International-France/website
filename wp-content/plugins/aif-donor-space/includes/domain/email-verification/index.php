@@ -98,6 +98,7 @@ function aif_reset_email_verification_on_email_change($user_id, $old_user_data)
     }
 
     delete_user_meta($user_id, 'email-verfied');
+    delete_user_meta($user_id, 'email-verified-at');
     delete_2fa_code($user_id);
     delete_email_token($user_id);
     delete_user_meta($user_id, 'aif_native_password_reset_email');

@@ -150,6 +150,34 @@ final class TwoFactorAuthTest extends TestCase
         self::assertSame('donor@example.org', get_user_meta(self::USER_ID, 'email-verfied', true));
     }
 
+    public function testFirstProofRecordsTheVerificationDate(): void
+    {
+        $before = time();
+
+        store_email_is_verified(self::USER_ID);
+
+        self::assertGreaterThanOrEqual($before, get_user_meta(self::USER_ID, 'email-verified-at', true));
+    }
+
+    public function testLaterProofKeepsTheFirstVerificationDate(): void
+    {
+        store_email_is_verified(self::USER_ID);
+        update_user_meta(self::USER_ID, 'email-verified-at', 1_700_000_000);
+
+        store_email_is_verified(self::USER_ID);
+
+        self::assertSame(1_700_000_000, get_user_meta(self::USER_ID, 'email-verified-at', true));
+    }
+
+    public function testLegacyVerifiedAccountGetsNoDateOnALaterProof(): void
+    {
+        update_user_meta(self::USER_ID, 'email-verfied', '1');
+
+        store_email_is_verified(self::USER_ID);
+
+        self::assertSame('', get_user_meta(self::USER_ID, 'email-verified-at', true));
+    }
+
     public function testVerifiedAddressDoesNotAuthorizeAnotherAddress(): void
     {
         store_email_is_verified(self::USER_ID);
