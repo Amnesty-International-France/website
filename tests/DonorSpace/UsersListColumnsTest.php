@@ -7,6 +7,34 @@ use PHPUnit\Framework\TestCase;
 require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/2FA/index.php';
 require_once dirname(__DIR__, 2) . '/wp-content/plugins/aif-donor-space/includes/domain/email-verification/users-list.php';
 
+if (!class_exists('WP_User_Query')) {
+    /**
+     * Stand-in for WP_User_Query: query vars and the SQL fragments pre_user_query edits.
+     */
+    class WP_User_Query
+    {
+        public string $query_from = 'FROM wp_users';
+        public string $query_where = 'WHERE 1=1';
+
+        /**
+         * @param array<string,mixed> $query_vars
+         */
+        public function __construct(public array $query_vars = [])
+        {
+        }
+
+        public function get(string $query_var): mixed
+        {
+            return $this->query_vars[$query_var] ?? null;
+        }
+
+        public function set(string $query_var, mixed $value): void
+        {
+            $this->query_vars[$query_var] = $value;
+        }
+    }
+}
+
 /**
  * AIF-443: creation date and verified address in the back-office users list.
  */
@@ -61,6 +89,39 @@ final class UsersListColumnsTest extends TestCase
         update_user_meta(self::USER_ID, 'email-verfied', 'old@example.org');
 
         self::assertSame('Non', aif_users_list_verified_label($GLOBALS['__phpunit_users'][self::USER_ID]));
+    }
+
+    public function testUnverifiedQueryKeepsSubscribersWithoutProofForTheirCurrentAddress(): void
+    {
+        $previous = $GLOBALS['wpdb'];
+        $GLOBALS['wpdb'] = (object) ['users' => 'wp_users', 'usermeta' => 'wp_usermeta'];
+        $query = new WP_User_Query([AIF_USERS_LIST_UNVERIFIED_ARG => true]);
+
+        try {
+            aif_users_list_restrict_unverified($query);
+        } finally {
+            $GLOBALS['wpdb'] = $previous;
+        }
+
+        self::assertSame(
+            "FROM wp_users LEFT JOIN wp_usermeta AS aif_ev ON (aif_ev.user_id = wp_users.ID AND aif_ev.meta_key = 'email-verfied')",
+            $query->query_from
+        );
+        // Same rule as get_email_is_verified(): no proof, or neither the legacy "1" nor the current address.
+        self::assertSame(
+            "WHERE 1=1 AND (aif_ev.meta_value IS NULL OR (aif_ev.meta_value <> '1' AND LOWER(aif_ev.meta_value) <> LOWER(wp_users.user_email)))",
+            $query->query_where
+        );
+    }
+
+    public function testOtherUserQueriesAreLeftUntouched(): void
+    {
+        $query = new WP_User_Query(['role' => 'subscriber']);
+
+        aif_users_list_restrict_unverified($query);
+
+        self::assertSame('FROM wp_users', $query->query_from);
+        self::assertSame('WHERE 1=1', $query->query_where);
     }
 
     public function testOtherRolesShowNothing(): void
