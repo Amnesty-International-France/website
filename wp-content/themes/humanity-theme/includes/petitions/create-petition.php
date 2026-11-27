@@ -40,9 +40,56 @@ function create_petition(int $post_id)
         if ($sf_obj !== false) {
             update_field('uidsf', $sf_obj['Ext_ID_Petition__c'], $post_id);
             update_field('code_origine', $sf_obj['Code_defaut__c'], $post_id);
+            update_field('reserved_codeorigine', $sf_obj['Code_Newsletter__c'] ?? '', $post_id);
         }
     }
 }
+
+/**
+ * Salesforce may fill Code_Newsletter__c after create_petition() read it, and
+ * petitions migrated from Prismic never read it. While the code origine NL is
+ * empty, read it again from Salesforce each time the petition is saved.
+ *
+ * Runs before create_petition(), so a petition created by this same save is not
+ * read twice.
+ */
+function refresh_petition_newsletter_code($post_id)
+{
+    // acf/save_post also fires for options pages, users and terms ('options', 'user_1'...).
+    if (! is_numeric($post_id)) {
+        return;
+    }
+
+    $post_id = (int) $post_id;
+    $post = get_post($post_id);
+
+    if (! $post || $post->post_type !== 'petition') {
+        return;
+    }
+
+    if ((string) get_field('reserved_codeorigine', $post_id, false) !== '') {
+        return;
+    }
+
+    $sfid = (string) get_field('sfid', $post_id, false);
+    $ext_id = (string) get_field('uidsf', $post_id, false);
+
+    if (is_salesforce_id($sfid)) {
+        $sf_obj = get_salesforce_petition($sfid);
+    } elseif ($ext_id !== '') {
+        $sf_obj = get_salesforce_petition_by_ext_id($ext_id);
+    } else {
+        return;
+    }
+
+    $code = is_array($sf_obj) ? ($sf_obj['Code_Newsletter__c'] ?? '') : '';
+
+    if (is_string($code) && $code !== '') {
+        update_field('reserved_codeorigine', $code, $post_id);
+    }
+}
+
+add_action('acf/save_post', 'refresh_petition_newsletter_code', 15);
 
 add_action('acf/save_post', 'create_petition', 20);
 
@@ -77,10 +124,10 @@ add_action('acf/save_post', 'update_petition_end_date', 20);
 
 /**
  * The editor's ACF metabox isn't re-rendered after a save, so it keeps posting
- * the empty Salesforce ID and code origine it was loaded with, even once
- * create_petition() stored them (on publish, or from WP-Cron). Keep the stored
- * values instead of letting that stale form wipe them, which would make
- * create_petition() create the petition in Salesforce again.
+ * the empty Salesforce ID, code origine and code origine NL it was loaded with,
+ * even once create_petition() stored them (on publish, or from WP-Cron). Keep
+ * the stored values instead of letting that stale form wipe them, which would
+ * make create_petition() create the petition in Salesforce again.
  */
 function keep_petition_salesforce_link($value, $post_id, $field)
 {
@@ -93,3 +140,4 @@ function keep_petition_salesforce_link($value, $post_id, $field)
 
 add_filter('acf/update_value/name=uidsf', 'keep_petition_salesforce_link', 10, 3);
 add_filter('acf/update_value/name=code_origine', 'keep_petition_salesforce_link', 10, 3);
+add_filter('acf/update_value/name=reserved_codeorigine', 'keep_petition_salesforce_link', 10, 3);

@@ -418,6 +418,7 @@ if (!function_exists('wp_verify_nonce')) {
 if (!function_exists('add_action')) {
     $GLOBALS['__phpunit_registered_actions'] = [];
     $GLOBALS['__phpunit_registered_action_priorities'] = [];
+    $GLOBALS['__phpunit_registered_actions_by_priority'] = [];
 
     /**
      * No-op recorder for add_action(). Only records the registration so that
@@ -429,6 +430,7 @@ if (!function_exists('add_action')) {
     function add_action(string $hook, callable $callback, int $priority = 10, int $accepted_args = 1): void
     {
         $GLOBALS['__phpunit_registered_actions'][$hook][] = $callback;
+        $GLOBALS['__phpunit_registered_actions_by_priority'][$hook][$priority][] = $callback;
         $GLOBALS['__phpunit_registered_action_priorities'][$hook][] = [$callback, $priority];
     }
 }
