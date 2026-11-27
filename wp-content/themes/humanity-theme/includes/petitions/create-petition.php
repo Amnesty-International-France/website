@@ -26,6 +26,8 @@ function create_petition(int $post_id)
         'Name' => mb_strlen($post->post_title) > 80
             ? rtrim(mb_substr($post->post_title, 0, 80))
             : $post->post_title,
+        // Full title, Name being limited to 80 characters by Salesforce.
+        'Libelle_long__c' => $post->post_title,
         'RecordTypeId' => '0121o000000kdzmAAA',
         'Date_de_cloture__c' => (new DateTime(get_field('date_de_fin', $post_id)))->format('Y-m-d'),
         'Description_de_la_petition__c' => $post->post_excerpt,
