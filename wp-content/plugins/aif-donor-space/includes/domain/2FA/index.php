@@ -51,6 +51,12 @@ function store_email_is_verified($user_id)
     $user = get_userdata($user_id);
 
     if ($user) {
+        // Date of the first proof for the current address (AIF-443): a later proof
+        // (password reset, new code) keeps it. Deleted with the proof on e-mail change.
+        if (!get_email_is_verified($user_id)) {
+            update_user_meta($user_id, 'email-verified-at', time());
+        }
+
         update_user_meta($user_id, 'email-verfied', strtolower($user->user_email));
     }
 }

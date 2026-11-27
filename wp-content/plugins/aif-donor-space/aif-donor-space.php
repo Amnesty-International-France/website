@@ -46,6 +46,7 @@ require_once AIF_DONOR_SPACE_PATH. '/includes/domain/2FA/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/user-authentification.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/email-verification/index.php';
 require_once AIF_DONOR_SPACE_PATH. '/includes/domain/contact/index.php';
+require_once AIF_DONOR_SPACE_PATH. '/includes/domain/email-verification/users-list.php';
 
 /*
 /  Utils
